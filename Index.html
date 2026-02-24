@@ -1,0 +1,2405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="BowlingDB">
+<title>BowlingDB Pro</title>
+<style>
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
+:root {
+  --bg0: #0E0314;
+  --bg1: #160920;
+  --bg2: #1E0E28;
+  --bg3: #261630;
+  --bg4: #301E3A;
+  --teal:   #00D9D9;
+  --cyan:   #00FFFF;
+  --purple: #9D4EDD;
+  --sedona: #E85D4C;
+  --gold:   #FFD700;
+  --green:  #00DD66;
+  --white:  #FFFFFF;
+  --t1: #FFFFFF;
+  --t2: #B0A8C0;
+  --t3: #706880;
+  --border1: #2A1A35;
+  --border2: #3D2850;
+  --pin-base:    #1A0A22;
+  --pin-stand:   #FFFFFF;
+  --pin-knock:   #00D9D9;
+  --pin-border-base:  #2E1A3E;
+  --pin-border-stand: #888888;
+  --pin-border-knock: #00A0A0;
+  --glow-teal:   0 0 18px rgba(0,217,217,0.45);
+  --glow-purple: 0 0 18px rgba(157,78,221,0.45);
+  --glow-gold:   0 0 14px rgba(255,215,0,0.4);
+  --safe-t: env(safe-area-inset-top, 44px);
+  --safe-b: env(safe-area-inset-bottom, 20px);
+  --transition: 0.22s cubic-bezier(0.4,0,0.2,1);
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+html { height:100%; overflow:hidden; }
+body {
+  height:100%;
+  background:var(--bg0);
+  color:var(--t1);
+  font-family:-apple-system,'SF Pro Display',BlinkMacSystemFont,'Helvetica Neue',sans-serif;
+  -webkit-font-smoothing:antialiased;
+  overflow:hidden;
+  user-select:none;
+  -webkit-user-select:none;
+}
+
+/* ============================================================
+   APP SHELL
+   ============================================================ */
+#app {
+  display:flex;
+  flex-direction:column;
+  height:100%;
+  max-width:430px;
+  margin:0 auto;
+  position:relative;
+  overflow:hidden;
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+#hdr {
+  flex-shrink:0;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:calc(var(--safe-t) + 6px) 16px 10px;
+  background:var(--bg1);
+  border-bottom:1px solid var(--border1);
+  z-index:20;
+  min-height:calc(var(--safe-t) + 50px);
+}
+#hdr-back {
+  width:34px; height:34px;
+  display:flex; align-items:center; justify-content:center;
+  color:var(--teal); font-size:26px;
+  cursor:pointer; flex-shrink:0;
+  opacity:0; pointer-events:none;
+  transition:opacity 0.2s;
+}
+#hdr-back.show { opacity:1; pointer-events:auto; }
+#hdr-title { flex:1; font-size:17px; font-weight:700; letter-spacing:0.2px; }
+#hdr-title .brand { color:var(--teal); }
+#hdr-right { display:flex; align-items:center; gap:8px; flex-shrink:0; }
+.hdr-icon-btn {
+  width:34px; height:34px;
+  border-radius:50%;
+  background:var(--bg3);
+  border:1px solid var(--border2);
+  color:var(--t2);
+  font-size:16px;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer;
+  transition:all 0.15s;
+}
+.hdr-icon-btn:active { transform:scale(0.88); background:var(--bg4); }
+
+/* ============================================================
+   SCREEN STACK  
+   ============================================================ */
+#screens {
+  flex:1;
+  position:relative;
+  overflow:hidden;
+}
+.screen {
+  position:absolute;
+  inset:0;
+  overflow-y:auto;
+  overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+  padding:14px 14px calc(var(--safe-b) + 10px);
+  visibility:hidden;
+  pointer-events:none;
+  transform:translateX(100%);
+  transition:transform var(--transition), opacity var(--transition);
+  opacity:0;
+}
+.screen.active {
+  visibility:visible;
+  pointer-events:auto;
+  transform:translateX(0);
+  opacity:1;
+}
+.screen.prev {
+  transform:translateX(-30%);
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+}
+
+/* ============================================================
+   BOTTOM NAV
+   ============================================================ */
+#bnav {
+  flex-shrink:0;
+  display:flex;
+  background:var(--bg1);
+  border-top:1px solid var(--border1);
+  padding-bottom:var(--safe-b);
+}
+.bnav-item {
+  flex:1;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  padding:8px 4px 5px;
+  cursor:pointer;
+  gap:3px;
+  transition:opacity 0.15s;
+}
+.bnav-item:active { opacity:0.6; }
+.bnav-icon { font-size:22px; transition:filter 0.2s, transform 0.2s; }
+.bnav-label { font-size:9px; color:var(--t3); font-weight:600; letter-spacing:0.5px; text-transform:uppercase; }
+.bnav-item.on .bnav-icon { filter:drop-shadow(0 0 5px var(--teal)); }
+.bnav-item.on .bnav-label { color:var(--teal); }
+
+/* ============================================================
+   SHARED COMPONENTS
+   ============================================================ */
+.sec-header {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:14px;
+}
+.sec-title { font-size:22px; font-weight:800; letter-spacing:-0.5px; }
+
+/* Buttons */
+.btn {
+  display:flex; align-items:center; justify-content:center;
+  width:100%; padding:14px 20px;
+  border-radius:14px; border:none;
+  font-size:15px; font-weight:700;
+  cursor:pointer;
+  transition:transform 0.12s, opacity 0.12s;
+  gap:6px;
+}
+.btn:active { transform:scale(0.97); opacity:0.85; }
+.btn + .btn { margin-top:8px; }
+.btn-primary {
+  background:linear-gradient(135deg, #00B8B8, var(--teal));
+  color:#000;
+  box-shadow:var(--glow-teal);
+}
+.btn-secondary {
+  background:var(--bg3);
+  color:var(--t1);
+  border:1px solid var(--border2);
+}
+.btn-ghost {
+  background:transparent;
+  color:var(--teal);
+  border:1.5px solid rgba(0,217,217,0.35);
+}
+.btn-danger {
+  background:rgba(232,93,76,0.15);
+  color:var(--sedona);
+  border:1px solid rgba(232,93,76,0.4);
+}
+.btn-gold {
+  background:linear-gradient(135deg, #B8900A, var(--gold));
+  color:#000;
+  box-shadow:var(--glow-gold);
+}
+.btn-sm {
+  width:auto; padding:8px 16px;
+  font-size:13px; border-radius:10px;
+}
+
+/* Add button */
+.add-btn {
+  width:36px; height:36px;
+  border-radius:50%;
+  background:linear-gradient(135deg, var(--teal), var(--purple));
+  border:none; color:#000;
+  font-size:22px; font-weight:300;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer;
+  box-shadow:var(--glow-teal);
+  transition:transform 0.15s;
+  flex-shrink:0;
+}
+.add-btn:active { transform:scale(0.85); }
+
+/* Cards */
+.card {
+  background:var(--bg2);
+  border-radius:16px;
+  border:1px solid var(--border1);
+  padding:14px;
+  margin-bottom:10px;
+}
+.card-tap {
+  cursor:pointer;
+  transition:transform 0.12s, background 0.12s;
+}
+.card-tap:active { transform:scale(0.985); background:var(--bg3); }
+
+/* Form elements */
+.fgroup { margin-bottom:14px; }
+.flabel {
+  display:block;
+  font-size:10px; font-weight:700; letter-spacing:1px;
+  text-transform:uppercase; color:var(--t3);
+  margin-bottom:7px;
+}
+.finput {
+  width:100%;
+  background:var(--bg3); border:1.5px solid var(--border2);
+  border-radius:12px; padding:13px 14px;
+  color:var(--t1); font-size:16px;
+  outline:none; -webkit-appearance:none;
+  transition:border-color 0.15s;
+}
+.finput:focus { border-color:var(--teal); }
+select.finput {
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2300D9D9' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 14px center;
+  padding-right:38px;
+}
+
+.divider { height:1px; background:var(--border1); margin:14px 0; }
+.pill {
+  display:inline-flex; align-items:center;
+  padding:3px 10px; border-radius:20px;
+  font-size:11px; font-weight:700; letter-spacing:0.4px;
+}
+.pill-teal { background:rgba(0,217,217,0.12); color:var(--teal); border:1px solid rgba(0,217,217,0.3); }
+.pill-gold { background:rgba(255,215,0,0.12); color:var(--gold); border:1px solid rgba(255,215,0,0.3); }
+.pill-sedona { background:rgba(232,93,76,0.12); color:var(--sedona); border:1px solid rgba(232,93,76,0.3); }
+
+.empty-state {
+  text-align:center; padding:50px 20px 30px;
+  color:var(--t3);
+}
+.empty-icon { font-size:52px; margin-bottom:14px; opacity:0.7; }
+.empty-label { font-size:16px; font-weight:700; color:var(--t2); margin-bottom:6px; }
+.empty-sub { font-size:13px; }
+
+/* List items */
+.list-row {
+  display:flex; align-items:center;
+  background:var(--bg2); border-radius:14px;
+  border:1px solid var(--border1);
+  padding:13px 14px;
+  margin-bottom:9px;
+  cursor:pointer;
+  transition:transform 0.12s, background 0.12s;
+  gap:12px;
+}
+.list-row:active { transform:scale(0.985); background:var(--bg3); }
+.list-row-body { flex:1; min-width:0; }
+.list-row-name { font-size:16px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.list-row-meta { font-size:12px; color:var(--t3); margin-top:2px; }
+.list-row-chevron { color:var(--t3); font-size:20px; flex-shrink:0; }
+.list-row-dashed { border-style:dashed; border-color:var(--border2); }
+
+/* ============================================================
+   HOME SCREEN
+   ============================================================ */
+.home-hero { text-align:center; padding:18px 0 22px; }
+.home-logo {
+  font-size:38px; font-weight:900; letter-spacing:-2px;
+  background:linear-gradient(135deg, var(--cyan) 0%, var(--teal) 50%, var(--purple) 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.home-sub { font-size:10px; color:var(--t3); letter-spacing:3px; text-transform:uppercase; margin-top:4px; }
+
+.qs-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:14px; }
+.qs-card {
+  background:var(--bg2); border-radius:14px;
+  border:1px solid var(--border1);
+  padding:12px 8px; text-align:center;
+}
+.qs-val { font-size:24px; font-weight:800; color:var(--teal); }
+.qs-lbl { font-size:10px; color:var(--t3); margin-top:3px; font-weight:600; letter-spacing:0.5px; }
+
+.nav-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px; }
+.nav-tile {
+  background:var(--bg2); border-radius:16px;
+  border:1px solid var(--border1);
+  padding:18px 14px;
+  display:flex; align-items:center; gap:12px;
+  cursor:pointer; transition:transform 0.12s, background 0.12s;
+}
+.nav-tile:active { transform:scale(0.96); background:var(--bg3); }
+.nav-tile-icon { font-size:28px; }
+.nav-tile-txt { font-size:15px; font-weight:700; }
+
+.bsk-legend {
+  display:flex; gap:16px; justify-content:center;
+  padding:12px 16px;
+  background:var(--bg2); border-radius:14px;
+  border:1px solid var(--border1);
+}
+.leg-item { display:flex; align-items:center; gap:7px; font-size:12px; color:var(--t2); font-weight:500; }
+.leg-dot { width:11px; height:11px; border-radius:50%; }
+.leg-dot.base { background:var(--pin-base); border:1.5px solid var(--pin-border-base); }
+.leg-dot.stand { background:var(--pin-stand); }
+.leg-dot.knock { background:var(--pin-knock); box-shadow:0 0 6px var(--teal); }
+
+/* ============================================================
+   SCORECARD
+   ============================================================ */
+.sc-wrap {
+  background:var(--bg2); border-radius:16px;
+  border:1px solid var(--border1);
+  overflow:hidden; margin-bottom:12px;
+}
+.sc-scroll { overflow-x:auto; -webkit-overflow-scrolling:touch; }
+.sc-grid {
+  display:grid;
+  grid-template-columns:repeat(9,38px) 60px;
+  gap:1px;
+  background:var(--border1);
+  min-width:fit-content;
+  padding:1px;
+}
+.sc-frame {
+  background:var(--bg1);
+  display:flex; flex-direction:column;
+  transition:background 0.2s;
+}
+.sc-frame.cur { background:rgba(0,217,217,0.06); }
+
+.sc-fn {
+  text-align:center; padding:4px 2px;
+  font-size:9px; font-weight:800; color:var(--t3);
+  border-bottom:1px solid var(--border1);
+  letter-spacing:0.5px;
+}
+.sc-frame.cur .sc-fn { color:var(--teal); }
+
+/* Mini BSK triangle */
+.sc-bsk {
+  display:flex; flex-direction:column; align-items:center;
+  padding:5px 2px; gap:1.5px;
+  min-height:40px;
+}
+.sc-bsk.f10 { flex-direction:row; justify-content:center; padding:3px 1px; gap:2px; min-height:40px; }
+.bsk-tri { display:flex; flex-direction:column; align-items:center; gap:1.5px; }
+.bsk-tri.tiny { transform:scale(0.82); transform-origin:center; }
+.bsk-row-m { display:flex; gap:1.5px; }
+.dot {
+  width:5.5px; height:5.5px; border-radius:50%;
+  background:var(--pin-base);
+  transition:background 0.2s, box-shadow 0.2s;
+}
+.dot.S { background:var(--pin-stand); }
+.dot.K { background:var(--pin-knock); box-shadow:0 0 3px var(--teal); }
+
+/* Attempt boxes */
+.sc-atts {
+  display:flex; justify-content:center; align-items:center;
+  gap:2px; padding:4px 2px;
+  border-top:1px solid var(--border1);
+  min-height:24px;
+}
+.att {
+  width:17px; height:17px;
+  border-radius:3px;
+  background:var(--bg2);
+  display:flex; align-items:center; justify-content:center;
+  font-size:11px; font-weight:800;
+}
+.att.X { color:var(--gold); }
+.att.sp { color:var(--teal); }
+.att.op { color:var(--sedona); }
+.att.split { color:var(--sedona); border:1.5px solid var(--sedona); border-radius:50%; width:19px; height:19px; }
+.att.cur { background:rgba(0,217,217,0.18); color:var(--teal); font-size:8px; }
+
+/* Running total */
+.sc-tot {
+  text-align:center; padding:4px 2px;
+  font-size:13px; font-weight:800; color:var(--t1);
+  border-top:1px solid var(--border1);
+  background:var(--bg0);
+  min-height:22px;
+}
+.sc-tot.pend { color:rgba(0,217,217,0.4); font-size:9px; letter-spacing:0.5px; }
+
+/* ============================================================
+   SCORING SCREEN LAYOUT
+   ============================================================ */
+.sc-ctx {
+  display:flex; align-items:center; justify-content:space-between;
+  background:var(--bg2); border-radius:14px;
+  border:1px solid var(--border1);
+  padding:10px 14px; margin-bottom:10px;
+}
+.ctx-block { text-align:center; }
+.ctx-lbl { font-size:9px; font-weight:700; color:var(--t3); letter-spacing:1px; text-transform:uppercase; }
+.ctx-val { font-size:22px; font-weight:800; color:var(--teal); line-height:1.1; }
+.ctx-sub { font-size:10px; color:var(--t3); margin-top:2px; }
+
+/* Pinfall readout */
+.pf-display {
+  text-align:center; padding:8px 14px;
+  background:var(--bg2); border-radius:14px;
+  border:1px solid var(--border1);
+  margin-bottom:10px;
+}
+.pf-big { font-size:48px; font-weight:900; color:var(--teal); line-height:1; }
+.pf-lbl { font-size:10px; color:var(--t3); letter-spacing:1px; text-transform:uppercase; margin-top:2px; }
+
+/* ============================================================
+   PIN BUTTONS
+   ============================================================ */
+.pin-stage {
+  display:flex; flex-direction:column; align-items:center;
+  gap:12px; padding:14px 0 10px;
+}
+.pin-row { display:flex; gap:14px; justify-content:center; }
+
+.pin-btn {
+  width:62px; height:62px;
+  border-radius:50%; border:2.5px solid var(--pin-border-base);
+  background:var(--pin-base); color:#3A2A4A;
+  font-size:18px; font-weight:800;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer;
+  transition:all 0.12s;
+  position:relative;
+  box-shadow:inset 0 3px 8px rgba(0,0,0,0.5);
+}
+
+/* STANDING — white/bright */
+.pin-btn.S {
+  border-color:var(--pin-border-stand);
+  background:rgba(255,255,255,0.08);
+  color:var(--t1);
+  box-shadow:inset 0 2px 6px rgba(0,0,0,0.3), 0 0 10px rgba(255,255,255,0.07);
+}
+
+/* KNOCKED — teal glow (spare mode: pin you hit) */
+.pin-btn.K {
+  border-color:var(--pin-border-knock);
+  background:rgba(0,217,217,0.15);
+  color:var(--teal);
+  box-shadow:0 0 18px rgba(0,217,217,0.35), inset 0 2px 6px rgba(0,0,0,0.2);
+}
+
+/* LEAVE — pin marked as STANDING on attempt 1 (amber/gold highlight) */
+.pin-btn.L {
+  border-color:#CC9900;
+  background:rgba(255,215,0,0.14);
+  color:var(--gold);
+  box-shadow:0 0 18px rgba(255,215,0,0.3), inset 0 2px 6px rgba(0,0,0,0.2);
+}
+
+/* BASE — already down, greyed out */
+.pin-btn.B {
+  border-color:#1A0A22;
+  background:var(--bg0);
+  color:#2A1A35;
+  cursor:default;
+  box-shadow:none;
+  opacity:0.35;
+}
+
+.pin-btn:not(.B):active { transform:scale(0.84); }
+
+/* ============================================================
+   MODE BADGE — FRESH / LEAVE / SPARE
+   ============================================================ */
+.mode-badge {
+  display:inline-flex; align-items:center; justify-content:center;
+  padding:3px 10px; border-radius:20px;
+  font-size:10px; font-weight:800; letter-spacing:1px;
+  text-transform:uppercase; margin-top:4px;
+  transition:all 0.2s;
+}
+.mode-badge.FRESH {
+  background:rgba(0,217,217,0.12);
+  color:var(--teal);
+  border:1px solid rgba(0,217,217,0.3);
+}
+.mode-badge.LEAVE {
+  background:rgba(255,215,0,0.12);
+  color:var(--gold);
+  border:1px solid rgba(255,215,0,0.35);
+}
+.mode-badge.SPARE {
+  background:rgba(157,78,221,0.12);
+  color:var(--purple);
+  border:1px solid rgba(157,78,221,0.3);
+}
+
+/* Mode instruction banner — shown below context bar */
+.mode-instruction {
+  text-align:center;
+  font-size:12px; font-weight:600;
+  padding:8px 14px;
+  border-radius:12px; margin-bottom:10px;
+  transition:all 0.25s;
+}
+.mode-instruction.FRESH {
+  background:rgba(0,217,217,0.07);
+  color:var(--teal);
+  border:1px solid rgba(0,217,217,0.2);
+}
+.mode-instruction.LEAVE {
+  background:rgba(255,215,0,0.07);
+  color:var(--gold);
+  border:1px solid rgba(255,215,0,0.2);
+}
+.mode-instruction.SPARE {
+  background:rgba(157,78,221,0.07);
+  color:var(--purple);
+  border:1px solid rgba(157,78,221,0.2);
+}
+
+/* Pinfall display adapts to mode */
+.pf-big.leave-mode { color:var(--gold); }
+.pf-big.spare-mode { color:var(--purple); }
+.qa-row { display:flex; gap:8px; margin-bottom:9px; }
+.qa-btn {
+  flex:1; padding:13px 8px;
+  border-radius:13px; border:none;
+  font-size:14px; font-weight:800;
+  cursor:pointer;
+  transition:all 0.12s;
+}
+.qa-btn:active { transform:scale(0.95); opacity:0.8; }
+.qa-strike { background:linear-gradient(135deg,#AA7800,var(--gold)); color:#000; }
+.qa-spare  { background:linear-gradient(135deg,#008080,var(--teal)); color:#000; }
+.qa-miss   { background:var(--bg3); color:var(--sedona); border:1.5px solid rgba(232,93,76,0.4); }
+
+/* UNDO BAR */
+.undo-bar {
+  display:flex; align-items:center; justify-content:space-between;
+  background:rgba(157,78,221,0.12);
+  border:1px solid rgba(157,78,221,0.3);
+  border-radius:12px; padding:10px 14px;
+  margin-bottom:9px;
+  opacity:0; pointer-events:none;
+  transform:translateY(-8px);
+  transition:all 0.3s;
+}
+.undo-bar.show { opacity:1; pointer-events:auto; transform:translateY(0); }
+.undo-txt { font-size:13px; color:var(--t2); }
+.undo-btn {
+  padding:6px 14px; border-radius:8px;
+  background:var(--purple); color:#FFF;
+  font-size:13px; font-weight:700;
+  border:none; cursor:pointer;
+  transition:transform 0.12s;
+}
+.undo-btn:active { transform:scale(0.92); }
+.undo-countdown {
+  width:20px; height:20px;
+  border-radius:50%;
+  border:2px solid var(--purple);
+  display:flex; align-items:center; justify-content:center;
+  font-size:10px; font-weight:700; color:var(--purple);
+}
+
+/* Ball bar */
+.ball-bar {
+  display:flex; align-items:center; justify-content:space-between;
+  background:var(--bg2); border:1px solid var(--border1);
+  border-radius:12px; padding:9px 14px;
+  margin-bottom:9px;
+}
+.ball-info { display:flex; align-items:center; gap:10px; font-size:13px; color:var(--t2); }
+.ball-icon {
+  width:30px; height:30px; border-radius:50%;
+  background:radial-gradient(circle at 35% 35%, var(--purple), #280060);
+  border:2px solid rgba(157,78,221,0.5);
+  box-shadow:0 0 8px rgba(157,78,221,0.3);
+}
+.ball-change { font-size:12px; color:var(--teal); font-weight:600; cursor:pointer; }
+
+/* ============================================================
+   SERIES / LEAGUE LIST
+   ============================================================ */
+.series-card {
+  background:var(--bg2); border-radius:16px;
+  border:1px solid var(--border1);
+  padding:14px; margin-bottom:10px;
+  cursor:pointer;
+  transition:transform 0.12s, background 0.12s;
+}
+.series-card:active { transform:scale(0.985); background:var(--bg3); }
+.series-hdr { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; }
+.series-date { font-size:15px; font-weight:800; }
+.series-total { font-size:26px; font-weight:900; color:var(--teal); }
+.series-games { display:flex; gap:8px; }
+.game-badge {
+  flex:1; text-align:center; padding:8px 4px;
+  background:var(--bg1); border-radius:10px;
+  font-size:18px; font-weight:800;
+  border:1px solid var(--border1);
+}
+.game-badge.done { color:var(--teal); }
+.game-badge.inprog { color:var(--gold); font-size:11px; padding-top:11px; }
+.game-badge.empty { color:var(--t3); font-size:20px; }
+
+/* ============================================================
+   GAME COMPLETE SCREEN
+   ============================================================ */
+.gc-hero {
+  text-align:center; padding:20px 0 18px;
+}
+.gc-score { font-size:80px; font-weight:900; line-height:1;
+  background:linear-gradient(135deg,var(--cyan),var(--teal));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.gc-lbl { font-size:12px; color:var(--t3); letter-spacing:1.5px; text-transform:uppercase; margin-top:4px; }
+.gc-diff { font-size:16px; font-weight:700; margin-top:8px; }
+.gc-diff.pos { color:var(--green); }
+.gc-diff.neg { color:var(--sedona); }
+.gc-diff.neu { color:var(--t3); }
+
+.stat-row {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:12px 0; border-bottom:1px solid var(--border1);
+  font-size:14px;
+}
+.stat-row:last-child { border-bottom:none; }
+.sval { font-weight:800; }
+.sval.t { color:var(--teal); }
+.sval.g { color:var(--gold); }
+.sval.s { color:var(--sedona); }
+
+/* ============================================================
+   STATS SCREEN
+   ============================================================ */
+.stat-card { background:var(--bg2); border-radius:16px; border:1px solid var(--border1); padding:16px; margin-bottom:10px; }
+.stat-card-title { font-size:10px; font-weight:700; color:var(--t3); letter-spacing:1px; text-transform:uppercase; margin-bottom:6px; }
+.stat-card-val { font-size:40px; font-weight:900; line-height:1; }
+.stat-card-sub { font-size:12px; color:var(--t3); margin-top:6px; }
+.prog-bar { height:5px; background:var(--bg1); border-radius:3px; margin-top:12px; overflow:hidden; }
+.prog-fill { height:100%; background:linear-gradient(90deg,var(--teal),var(--cyan)); border-radius:3px; transition:width 0.8s ease; }
+
+/* ============================================================
+   MODAL SHEET
+   ============================================================ */
+.modal-bg {
+  position:fixed; inset:0;
+  background:rgba(0,0,0,0.75);
+  z-index:100;
+  display:flex; align-items:flex-end;
+  opacity:0; pointer-events:none;
+  transition:opacity 0.25s;
+}
+.modal-bg.open { opacity:1; pointer-events:auto; }
+.modal-sheet {
+  width:100%; max-height:88vh;
+  background:var(--bg2);
+  border-radius:22px 22px 0 0;
+  border-top:1px solid var(--border2);
+  padding:16px 16px calc(var(--safe-b) + 16px);
+  overflow-y:auto;
+  transform:translateY(100%);
+  transition:transform 0.28s cubic-bezier(0.32,0.72,0,1);
+}
+.modal-bg.open .modal-sheet { transform:translateY(0); }
+.modal-handle { width:40px; height:4px; background:var(--border2); border-radius:2px; margin:0 auto 18px; }
+.modal-title { font-size:20px; font-weight:800; margin-bottom:16px; }
+
+/* ============================================================
+   TOAST & HAPTIC FEEDBACK
+   ============================================================ */
+.toast {
+  position:fixed; z-index:200;
+  top:calc(var(--safe-t) + 56px);
+  left:50%; transform:translateX(-50%) translateY(-80px);
+  background:var(--bg4); border:1px solid var(--border2);
+  border-radius:22px; padding:9px 20px;
+  font-size:13px; font-weight:700;
+  white-space:nowrap;
+  transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+.toast.show { transform:translateX(-50%) translateY(0); }
+
+/* ============================================================
+   FRAME 10 SCENARIO INDICATOR
+   ============================================================ */
+.f10-indicator {
+  text-align:center; padding:8px 14px;
+  background:rgba(157,78,221,0.08);
+  border:1px solid rgba(157,78,221,0.25);
+  border-radius:12px; margin-bottom:10px;
+  font-size:12px; color:var(--purple);
+  font-weight:700; letter-spacing:0.5px;
+}
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+@keyframes pop {
+  0%   { transform:scale(1); }
+  40%  { transform:scale(1.12); }
+  100% { transform:scale(1); }
+}
+@keyframes strikeFlash {
+  0%,100% { opacity:1; }
+  50%     { opacity:0.5; }
+}
+.pin-btn.K { animation:pop 0.2s ease; }
+.att.X.new { animation:strikeFlash 0.4s ease; }
+
+@keyframes scoreIn {
+  from { transform:scale(0.7); opacity:0; }
+  to   { transform:scale(1); opacity:1; }
+}
+.sc-tot.new { animation:scoreIn 0.3s cubic-bezier(0.34,1.56,0.64,1); }
+
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- HEADER -->
+  <div id="hdr">
+    <div id="hdr-back" onclick="navBack()">‹</div>
+    <div id="hdr-title"><span class="brand">Bowling</span>DB</div>
+    <div id="hdr-right">
+      <div class="hdr-icon-btn" id="hdr-sync-btn" onclick="openExportModal()" title="Export">↑</div>
+      <div class="hdr-icon-btn" onclick="openSettingsModal()">⚙</div>
+    </div>
+  </div>
+
+  <!-- SCREENS -->
+  <div id="screens">
+
+    <!-- HOME -->
+    <div id="s-home" class="screen active" data-title="<span class='brand'>Bowling</span>DB">
+      <div class="home-hero">
+        <div class="home-logo">BowlingDB</div>
+        <div class="home-sub">Pro Vibrant Edition</div>
+      </div>
+      <div class="qs-grid">
+        <div class="qs-card"><div class="qs-val" id="qs-avg">—</div><div class="qs-lbl">Average</div></div>
+        <div class="qs-card"><div class="qs-val" id="qs-games">—</div><div class="qs-lbl">Games</div></div>
+        <div class="qs-card"><div class="qs-val" id="qs-high">—</div><div class="qs-lbl">High</div></div>
+      </div>
+      <div class="nav-grid">
+        <div class="nav-tile" onclick="navTo('s-leagues')"><span class="nav-tile-icon">🏆</span><span class="nav-tile-txt">Leagues</span></div>
+        <div class="nav-tile" onclick="startOpenBowling()"><span class="nav-tile-icon">🎳</span><span class="nav-tile-txt">Open Bowl</span></div>
+        <div class="nav-tile" onclick="navTo('s-stats')"><span class="nav-tile-icon">📊</span><span class="nav-tile-txt">Stats</span></div>
+        <div class="nav-tile" onclick="openExportModal()"><span class="nav-tile-icon">📤</span><span class="nav-tile-txt">Export</span></div>
+      </div>
+      <div class="bsk-legend">
+        <div class="leg-item"><div class="leg-dot base"></div>Base</div>
+        <div class="leg-item"><div class="leg-dot stand"></div>Standing</div>
+        <div class="leg-item"><div class="leg-dot knock"></div>Knocked</div>
+      </div>
+    </div>
+
+    <!-- LEAGUES -->
+    <div id="s-leagues" class="screen" data-title="Leagues">
+      <div class="sec-header">
+        <span class="sec-title">Leagues</span>
+        <button class="add-btn" onclick="openNewLeagueModal()">+</button>
+      </div>
+      <div id="leagues-list"></div>
+    </div>
+
+    <!-- SERIES -->
+    <div id="s-series" class="screen">
+      <div class="sec-header">
+        <span class="sec-title" id="series-title">Series</span>
+        <button class="add-btn" onclick="openNewSeriesModal()">+</button>
+      </div>
+      <div id="series-list"></div>
+    </div>
+
+    <!-- GAME SELECT (within a series) -->
+    <div id="s-game-select" class="screen">
+      <div class="sec-header">
+        <span class="sec-title" id="game-select-title">Games</span>
+      </div>
+      <div id="game-select-list"></div>
+    </div>
+
+    <!-- SCORING -->
+    <div id="s-scoring" class="screen" data-title="Game">
+      <!-- Scorecard -->
+      <div class="sc-wrap">
+        <div class="sc-scroll"><div class="sc-grid" id="sc-grid"></div></div>
+      </div>
+
+      <!-- Frame context bar -->
+      <div class="sc-ctx">
+        <div class="ctx-block">
+          <div class="ctx-lbl">Frame</div>
+          <div class="ctx-val" id="ctx-frame">1</div>
+        </div>
+        <div class="ctx-block">
+          <div class="ctx-lbl">Attempt</div>
+          <div class="ctx-val" id="ctx-att">1</div>
+          <div id="ctx-mode-badge" class="mode-badge FRESH">FRESH</div>
+        </div>
+        <div class="ctx-block">
+          <div class="ctx-lbl">Score</div>
+          <div class="ctx-val" id="ctx-score">—</div>
+        </div>
+      </div>
+
+      <!-- Mode instruction banner -->
+      <div class="mode-instruction FRESH" id="mode-instruction">
+        Tap pins that are <strong>still standing</strong> after your shot
+      </div>
+
+      <!-- Frame 10 scenario indicator (hidden in F1-9) -->
+      <div class="f10-indicator" id="f10-ind" style="display:none"></div>
+
+      <!-- Pinfall readout -->
+      <div class="pf-display">
+        <div class="pf-big" id="pf-num">0</div>
+        <div class="pf-lbl" id="pf-lbl">Pins Still Standing (Leave)</div>
+      </div>
+
+      <!-- Pin Triangle -->
+      <div class="pin-stage" id="pin-stage">
+        <div class="pin-row">
+          <button class="pin-btn" id="pb7" onclick="togglePin(7)">7</button>
+          <button class="pin-btn" id="pb8" onclick="togglePin(8)">8</button>
+          <button class="pin-btn" id="pb9" onclick="togglePin(9)">9</button>
+          <button class="pin-btn" id="pb10" onclick="togglePin(10)">10</button>
+        </div>
+        <div class="pin-row">
+          <button class="pin-btn" id="pb4" onclick="togglePin(4)">4</button>
+          <button class="pin-btn" id="pb5" onclick="togglePin(5)">5</button>
+          <button class="pin-btn" id="pb6" onclick="togglePin(6)">6</button>
+        </div>
+        <div class="pin-row">
+          <button class="pin-btn" id="pb2" onclick="togglePin(2)">2</button>
+          <button class="pin-btn" id="pb3" onclick="togglePin(3)">3</button>
+        </div>
+        <div class="pin-row">
+          <button class="pin-btn" id="pb1" onclick="togglePin(1)">1</button>
+        </div>
+      </div>
+
+      <!-- Quick Actions — labels updated by JS per mode -->
+      <div class="qa-row">
+        <button class="qa-btn qa-strike" id="qa-primary" onclick="quickPrimary()">Strike ✕</button>
+        <button class="qa-btn qa-spare" id="qa-spare" onclick="quickSpare()">Spare /</button>
+        <button class="qa-btn qa-miss" id="qa-secondary" onclick="quickSecondary()">Miss —</button>
+      </div>
+
+      <!-- Undo bar -->
+      <div class="undo-bar" id="undo-bar">
+        <span class="undo-txt" id="undo-txt">Attempt recorded</span>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="undo-countdown" id="undo-countdown">3</div>
+          <button class="undo-btn" onclick="doUndo()">Undo</button>
+        </div>
+      </div>
+
+      <!-- Confirm button -->
+      <button class="btn btn-primary" id="btn-confirm" onclick="confirmAttempt()">Confirm →</button>
+
+      <!-- Ball bar -->
+      <div class="ball-bar">
+        <div class="ball-info"><div class="ball-icon"></div><span id="ball-name-display">Select Ball</span></div>
+        <span class="ball-change" onclick="openBallModal()">Change</span>
+      </div>
+    </div>
+
+    <!-- GAME COMPLETE -->
+    <div id="s-game-complete" class="screen" data-title="Game Complete">
+      <div class="sc-wrap">
+        <div class="sc-scroll"><div class="sc-grid" id="sc-grid-complete"></div></div>
+      </div>
+      <div class="card gc-hero">
+        <div class="gc-score" id="gc-score">—</div>
+        <div class="gc-lbl">Final Score</div>
+        <div class="gc-diff" id="gc-diff"></div>
+      </div>
+      <div class="card" id="gc-stats"></div>
+      <button class="btn btn-gold" id="btn-next-game" onclick="goNextGame()" style="display:none">Start Game 2 →</button>
+      <button class="btn btn-primary" id="btn-end-series" onclick="endSeries()">View Series</button>
+    </div>
+
+    <!-- STATS -->
+    <div id="s-stats" class="screen" data-title="Statistics">
+      <div id="stats-content"></div>
+    </div>
+
+  </div><!-- /screens -->
+
+  <!-- BOTTOM NAV -->
+  <div id="bnav">
+    <div class="bnav-item on" data-sc="s-home" onclick="navTo('s-home')">
+      <span class="bnav-icon">🏠</span><span class="bnav-label">Home</span>
+    </div>
+    <div class="bnav-item" data-sc="s-leagues" onclick="navTo('s-leagues')">
+      <span class="bnav-icon">🏆</span><span class="bnav-label">Leagues</span>
+    </div>
+    <div class="bnav-item" data-sc="s-stats" onclick="navTo('s-stats')">
+      <span class="bnav-icon">📊</span><span class="bnav-label">Stats</span>
+    </div>
+    <div class="bnav-item" onclick="openExportModal()">
+      <span class="bnav-icon">📤</span><span class="bnav-label">Export</span>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Modal -->
+  <div class="modal-bg" id="modal-bg" onclick="handleModalBgClick(event)">
+    <div class="modal-sheet" id="modal-sheet">
+      <div class="modal-handle"></div>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+
+</div><!-- /app -->
+
+<script>
+/* =============================================================
+   DATA STORE
+   ============================================================= */
+const STORE_KEY = 'bowlingdb_v2';
+
+function loadDB() {
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    return raw ? JSON.parse(raw) : buildFreshDB();
+  } catch { return buildFreshDB(); }
+}
+
+function buildFreshDB() {
+  return {
+    centers: [
+      { CenterID:1, CenterName:'AMF Mesa Lanes' },
+      { CenterID:2, CenterName:'Virtue Bowling Center' }
+    ],
+    leagues: [
+      { LeagueID:1, LeagueName:'NFL 25/26', CenterID:1, GamesPerSeries:3 },
+      { LeagueID:2, LeagueName:'Virtue Fun Spring 2026', CenterID:2, GamesPerSeries:3 }
+    ],
+    balls: [
+      { BallID:1, BallName:'Envy Tour Pearl', Weight:15 },
+      { BallID:2, BallName:'2-Trend Evo', Weight:15 },
+      { BallID:3, BallName:'House Ball', Weight:14 }
+    ],
+    series: [], games: [], frames: [], attempts: [],
+    ids: { series:1, game:1, frame:1, attempt:1 }
+  };
+}
+
+function saveDB() { localStorage.setItem(STORE_KEY, JSON.stringify(db)); }
+let db = loadDB();
+
+/* =============================================================
+   APP STATE — the single source of truth
+   ============================================================= */
+const G = {
+  screenHistory: [],
+  leagueID: null,
+  seriesID: null,
+  gameID: null,
+  gameNum: 1,
+  // Scoring state
+  frame: 1,
+  attempt: 1,
+  // pinState[1..10]: 'S'=standing, 'B'=base(already down)
+  pinState: {},
+  // What user has tapped this attempt
+  knocked: new Set(),
+  // LEAVE mode: pins user has marked as still standing (attempt 1)
+  leave: new Set(),
+  // Selected ball
+  ballID: null,
+  // Undo state
+  undoAvailable: false,
+  undoSnapshot: null,
+  undoTimer: null,
+  undoTick: null,
+  // Frame 10 scenario (computed)
+  f10scenario: null,
+};
+
+/* =============================================================
+   NAVIGATION ENGINE
+   ============================================================= */
+const ROOT_SCREENS = ['s-home','s-leagues','s-stats'];
+
+function navTo(screenId, opts={}) {
+  if (!opts.back) G.screenHistory.push(getCurrentScreen());
+
+  // Slide out current
+  const cur = document.querySelector('.screen.active');
+  if (cur && cur.id !== screenId) {
+    cur.classList.remove('active');
+    if (!opts.back) cur.classList.add('prev');
+    else cur.classList.remove('prev');
+    // clean prev class after animation
+    setTimeout(()=> cur.classList.remove('prev'), 300);
+  }
+
+  // Slide in target
+  const target = document.getElementById(screenId);
+  if (!target) return;
+  target.classList.add('active');
+  target.scrollTop = 0;
+
+  // Header back button
+  const isRoot = ROOT_SCREENS.includes(screenId);
+  document.getElementById('hdr-back').classList.toggle('show', !isRoot);
+
+  // Header title
+  const customTitle = target.dataset.title;
+  if (customTitle) document.getElementById('hdr-title').innerHTML = customTitle;
+
+  // Bottom nav
+  document.querySelectorAll('.bnav-item').forEach(b =>
+    b.classList.toggle('on', b.dataset.sc === screenId));
+
+  // Screen-specific render
+  ({
+    'home': renderHome,
+    's-home': renderHome,
+    's-leagues': renderLeagues,
+    's-series': renderSeriesList,
+    's-game-select': renderGameSelect,
+    's-scoring': renderScoringScreen,
+    's-game-complete': renderGameComplete,
+    's-stats': renderStats
+  })[screenId]?.();
+}
+
+function getCurrentScreen() {
+  return document.querySelector('.screen.active')?.id || 's-home';
+}
+
+function navBack() {
+  const prev = G.screenHistory.pop();
+  if (prev) navTo(prev, { back:true });
+  else navTo('s-home', { back:true });
+}
+
+/* =============================================================
+   HOME
+   ============================================================= */
+function renderHome() {
+  document.getElementById('hdr-title').innerHTML = "<span class='brand'>Bowling</span>DB";
+  const scores = db.games.map(g=>g.FinalScore).filter(s=>s!=null);
+  document.getElementById('qs-avg').textContent = scores.length
+    ? Math.round(scores.reduce((a,b)=>a+b,0)/scores.length) : '—';
+  document.getElementById('qs-games').textContent = scores.length || '—';
+  document.getElementById('qs-high').textContent = scores.length ? Math.max(...scores) : '—';
+}
+
+/* =============================================================
+   LEAGUES
+   ============================================================= */
+function renderLeagues() {
+  const el = document.getElementById('leagues-list');
+  if (!db.leagues.length) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">🏆</div><div class="empty-label">No leagues yet</div><div class="empty-sub">Tap + to add a league</div></div>`;
+    return;
+  }
+  el.innerHTML = db.leagues.map(l => {
+    const center = db.centers.find(c=>c.CenterID===l.CenterID);
+    const sCount = db.series.filter(s=>s.LeagueID===l.LeagueID).length;
+    return `<div class="list-row" onclick="selectLeague(${l.LeagueID})">
+      <div class="list-row-body">
+        <div class="list-row-name">${l.LeagueName}</div>
+        <div class="list-row-meta">${center?.CenterName||'—'} · ${sCount} series</div>
+      </div>
+      <span class="list-row-chevron">›</span>
+    </div>`;
+  }).join('');
+}
+
+function selectLeague(id) {
+  G.leagueID = id;
+  const l = db.leagues.find(x=>x.LeagueID===id);
+  document.getElementById('series-title').textContent = l?.LeagueName||'Series';
+  document.getElementById('hdr-title').textContent = l?.LeagueName||'Series';
+  navTo('s-series');
+}
+
+/* =============================================================
+   SERIES LIST
+   ============================================================= */
+function renderSeriesList() {
+  const el = document.getElementById('series-list');
+  const mySeries = db.series.filter(s=>s.LeagueID===G.leagueID)
+    .sort((a,b)=>new Date(b.DateBowled)-new Date(a.DateBowled));
+
+  if (!mySeries.length) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">📅</div><div class="empty-label">No series yet</div><div class="empty-sub">Tap + to start bowling</div></div>`;
+    return;
+  }
+  el.innerHTML = mySeries.map(s => {
+    const games = db.games.filter(g=>g.SeriesID===s.SeriesID).sort((a,b)=>a.GameNumber-b.GameNumber);
+    const scores = games.map(g=>g.FinalScore).filter(x=>x!=null);
+    const total = scores.reduce((a,b)=>a+b,0);
+    const d = new Date(s.DateBowled);
+    const dateStr = d.toLocaleDateString('en-US',{month:'numeric',day:'numeric',year:'2-digit'});
+
+    const badges = games.map(g => {
+      if (g.FinalScore!=null) return `<div class="game-badge done">${g.FinalScore}</div>`;
+      const anyAttempt = db.attempts.some(a=>a.GameID===g.GameID && a.Pinfall!=null);
+      if (anyAttempt) return `<div class="game-badge inprog">In Prog</div>`;
+      return `<div class="game-badge empty">—</div>`;
+    }).join('');
+
+    const league = db.leagues.find(l=>l.LeagueID===G.leagueID);
+    const emptyCount = (league?.GamesPerSeries||3) - games.length;
+    const emptyBadges = Array(emptyCount).fill(`<div class="game-badge empty">—</div>`).join('');
+
+    return `<div class="series-card" onclick="selectSeries(${s.SeriesID})">
+      <div class="series-hdr">
+        <span class="series-date">${dateStr}</span>
+        <span class="series-total">${total||'...'}</span>
+      </div>
+      <div class="series-games">${badges}${emptyBadges}</div>
+    </div>`;
+  }).join('');
+}
+
+function selectSeries(id) {
+  G.seriesID = id;
+  navTo('s-game-select');
+}
+
+/* =============================================================
+   GAME SELECT
+   ============================================================= */
+function renderGameSelect() {
+  const league = db.leagues.find(l=>l.LeagueID===G.leagueID);
+  document.getElementById('game-select-title').textContent = 'Games';
+  document.getElementById('hdr-title').textContent = league?.LeagueName||'Games';
+
+  const games = db.games.filter(g=>g.SeriesID===G.seriesID).sort((a,b)=>a.GameNumber-b.GameNumber);
+  const maxGames = league?.GamesPerSeries||3;
+  const el = document.getElementById('game-select-list');
+
+  let html = '';
+  games.forEach(g => {
+    const done = g.FinalScore != null;
+    const meta = done ? `Score: ${g.FinalScore}` : 'In Progress — Tap to Continue';
+    const metaColor = done ? 'var(--teal)' : 'var(--gold)';
+    html += `<div class="list-row" onclick="openGame(${g.GameID}, ${g.GameNumber})">
+      <div class="list-row-body">
+        <div class="list-row-name">Game ${g.GameNumber}</div>
+        <div class="list-row-meta" style="color:${metaColor}">${meta}</div>
+      </div>
+      <span class="list-row-chevron">›</span>
+    </div>`;
+  });
+
+  if (games.length < maxGames) {
+    html += `<div class="list-row list-row-dashed" onclick="createAndStartGame()">
+      <div class="list-row-body">
+        <div class="list-row-name" style="color:var(--teal)">+ Start Game ${games.length+1}</div>
+        <div class="list-row-meta">Begin scoring</div>
+      </div>
+    </div>`;
+  }
+  el.innerHTML = html;
+}
+
+function createAndStartGame() {
+  const series = db.series.find(s=>s.SeriesID===G.seriesID);
+  const existing = db.games.filter(g=>g.SeriesID===G.seriesID);
+  const gameNum = existing.length + 1;
+  const gameID = db.ids.game++;
+
+  db.games.push({
+    GameID:gameID, SeriesID:G.seriesID, GameNumber:gameNum,
+    LeagueID:G.leagueID, CenterID:series?.CenterID||1, FinalScore:null
+  });
+
+  // Create 10 frames + attempts
+  for (let fn=1; fn<=10; fn++) {
+    const fid = db.ids.frame++;
+    db.frames.push({ FrameID:fid, GameID:gameID, FrameNumber:fn, Strike:false, Spare:false, FrameScore:null, RunningTotal:null });
+    const attCount = fn===10 ? 3 : 2;
+    for (let an=1; an<=attCount; an++) {
+      db.attempts.push(blankAttempt(db.ids.attempt++, fid, fn, gameNum, gameID, an));
+    }
+  }
+  saveDB();
+  openGame(gameID, gameNum);
+}
+
+function blankAttempt(id, fid, fn, gn, gid, an) {
+  const a = { AttemptID:id, FrameID:fid, FrameNumber:fn, GameNumber:gn, GameID:gid, Attempt:an,
+    Pinfall:null, LeaveID:null, BallID:null, BSK_Progressive:null };
+  for (let p=1;p<=10;p++) {
+    a[`Pin${p}`]=null; a[`PinStart${p}`]=null; a[`PinDelta${p}`]=null;
+  }
+  return a;
+}
+
+function openGame(gameID, gameNum) {
+  G.gameID = gameID;
+  G.gameNum = gameNum;
+  initScoringState();
+  document.getElementById('hdr-title').textContent = `Game ${gameNum}`;
+  navTo('s-scoring');
+}
+
+/* =============================================================
+   SCORING STATE MACHINE — INIT
+   ============================================================= */
+function initScoringState() {
+  G.frame = 1; G.attempt = 1;
+  G.knocked = new Set();
+  G.leave = new Set();
+  G.pinState = freshPins();
+  G.f10scenario = null;
+  cancelUndo();
+
+  // Find earliest incomplete attempt
+  const frames = gameFrames().sort((a,b)=>a.FrameNumber-b.FrameNumber);
+  for (const fr of frames) {
+    const atts = frameAttempts(fr.FrameID);
+    for (const at of atts) {
+      if (at.Pinfall === null) {
+        G.frame = fr.FrameNumber;
+        G.attempt = at.Attempt;
+        rebuildPinStateForCurrentAttempt();
+        return;
+      }
+    }
+  }
+  // If all attempts filled, game is done
+  finishGame();
+}
+
+function freshPins() {
+  const p = {};
+  for (let i=1;i<=10;i++) p[i]='S'; // S = standing
+  return p;
+}
+
+/* =============================================================
+   PIN STATE REBUILD
+   Based on database — called when resuming a game mid-entry
+   Mirrors modBSKCore fresh/progressive logic exactly
+   ============================================================= */
+function rebuildPinStateForCurrentAttempt() {
+  G.pinState = freshPins();
+  G.knocked = new Set();
+
+  if (G.attempt === 1) return; // Always fresh for attempt 1
+
+  const frame = getFrame(G.frame);
+  if (!frame) return;
+  const atts = frameAttempts(frame.FrameID);
+
+  if (G.frame <= 9) {
+    // Att 2: inherit from att 1
+    const a1 = atts.find(a=>a.Attempt===1);
+    if (a1 && a1.Pinfall !== null) applyPreviousAttempt(a1);
+  } else {
+    // Frame 10: fresh/progressive logic per scenario
+    const a1 = atts.find(a=>a.Attempt===1);
+    const a2 = atts.find(a=>a.Attempt===2);
+    if (G.attempt === 2) {
+      if (a1?.Pinfall === 10) {
+        G.pinState = freshPins(); // X → fresh for att2
+      } else {
+        applyPreviousAttempt(a1);
+      }
+    } else if (G.attempt === 3) {
+      if (a2?.Pinfall === 10) {
+        G.pinState = freshPins(); // X on att2 → fresh for att3
+      } else {
+        applyPreviousAttempt(a2);
+      }
+    }
+  }
+}
+
+function applyPreviousAttempt(att) {
+  if (!att) return;
+  for (let p=1;p<=10;p++) {
+    if (att[`PinDelta${p}`] === 1) G.pinState[p] = 'B'; // knocked in prev attempt
+  }
+}
+
+/* =============================================================
+   IS-FRESH LOGIC  (mirrors VBA Frame 10 scenario table)
+   ============================================================= */
+function isFreshAttempt() {
+  if (G.attempt === 1) return true;
+  if (G.frame <= 9) return false; // att 2 in F1-9 is always spare
+  // Frame 10
+  const frame = getFrame(10);
+  const atts = frameAttempts(frame?.FrameID);
+  const a1 = atts.find(a=>a.Attempt===1);
+  const a2 = atts.find(a=>a.Attempt===2);
+  if (G.attempt === 2) return (a1?.Pinfall === 10); // X on att1 → fresh
+  if (G.attempt === 3) return (a2?.Pinfall === 10); // X on att2 → fresh
+  return false;
+}
+
+/* =============================================================
+   ATTEMPT MODE — drives all pin interaction and display logic
+   
+   FRESH:  Attempt 1 on a genuinely fresh rack (all 10 pins up).
+           Also applies to Frame 10 attempts that reset to fresh
+           (XX_, X#/, #/_ after a strike on att2, etc.)
+   LEAVE:  Attempt 1 on a non-fresh-rack scenario — impossible in
+           standard bowling, but kept as alias. In practice,
+           Attempt 1 is always FRESH. We use LEAVE as the
+           interaction MODE for Attempt 1: user marks REMAINING
+           pins (leave), not pins knocked.
+   SPARE:  Attempt 2+ on a non-fresh rack. User marks pins KNOCKED.
+   ============================================================= */
+function getAttemptMode() {
+  // Attempt 1 (and fresh F10 attempts) → LEAVE mode
+  // (User taps what's still standing, i.e. their leave)
+  if (isFreshAttempt()) return 'LEAVE';
+  // Attempt 2+ on inherited pin state → SPARE mode
+  // (User taps what they knocked)
+  return 'SPARE';
+}
+
+/* =============================================================
+   PIN INTERACTION — DUAL MODE
+   
+   LEAVE mode (Attempt 1 / fresh rack):
+     All pins start as "will be knocked" (dark/base visual).
+     User taps pins that are STILL STANDING after the shot.
+     Tapped = gold/standing. Un-tapped = knocked (teal glow when confirmed).
+     G.leave tracks which pins are still standing.
+     Pinfall = 10 - G.leave.size
+   
+   SPARE mode (Attempt 2+ / inherited rack):
+     Only standing pins (from previous attempt) are interactive.
+     User taps pins they KNOCKED this attempt.
+     G.knocked tracks what went down.
+     Pinfall = G.knocked.size
+   ============================================================= */
+
+// G.leave: Set of pin numbers the user has marked as STILL STANDING (LEAVE mode)
+// Initialized when entering LEAVE mode
+
+function togglePin(p) {
+  if (G.pinState[p] === 'B') return; // already down — not interactive
+  haptic('light');
+
+  const mode = getAttemptMode();
+
+  if (mode === 'LEAVE') {
+    // Toggle whether this pin is part of the leave (still standing)
+    if (G.leave.has(p)) {
+      G.leave.delete(p);  // Pin is now considered knocked
+    } else {
+      G.leave.add(p);     // Pin is now marked as leave (still standing)
+    }
+    // Derive knocked from leave: anything standing (S) that's NOT in leave = knocked
+    G.knocked = new Set();
+    for (let i=1;i<=10;i++) {
+      if (G.pinState[i] === 'S' && !G.leave.has(i)) G.knocked.add(i);
+    }
+  } else {
+    // SPARE mode: toggle knocked status directly
+    if (G.knocked.has(p)) {
+      G.knocked.delete(p);
+    } else {
+      G.knocked.add(p);
+    }
+  }
+
+  updatePinDisplay();
+  updatePinfallDisplay();
+}
+
+function quickPrimary() {
+  const mode = getAttemptMode();
+  if (mode === 'LEAVE') {
+    // "Strike" — clear all leave (all pins knocked)
+    G.leave = new Set();
+    G.knocked = new Set();
+    for (let p=1;p<=10;p++) {
+      if (G.pinState[p] === 'S') G.knocked.add(p);
+    }
+    updatePinDisplay(); updatePinfallDisplay();
+    haptic('medium');
+    confirmAttempt();
+  } else {
+    // SPARE: knock all remaining standing pins
+    quickSpare();
+  }
+}
+
+function quickSecondary() {
+  const mode = getAttemptMode();
+  if (mode === 'LEAVE') {
+    // "All Miss" — mark all pins as still standing (gutter ball / zero pinfall)
+    G.leave = new Set();
+    for (let p=1;p<=10;p++) {
+      if (G.pinState[p] === 'S') G.leave.add(p);
+    }
+    G.knocked = new Set();
+    updatePinDisplay(); updatePinfallDisplay();
+    haptic('light');
+    confirmAttempt();
+  } else {
+    // SPARE miss: zero knocked
+    G.knocked = new Set();
+    updatePinDisplay(); updatePinfallDisplay();
+    haptic('light');
+    confirmAttempt();
+  }
+}
+
+// Keep quickStrike and quickMiss as aliases for backward compat
+function quickStrike() { quickPrimary(); }
+function quickMiss()   { quickSecondary(); }
+function quickSpare()  {
+  // Called directly by qa-spare button — only valid in SPARE mode
+  const mode = getAttemptMode();
+  if (mode !== 'SPARE') return;
+  G.knocked = new Set();
+  for (let p=1;p<=10;p++) {
+    if (G.pinState[p] === 'S') G.knocked.add(p);
+  }
+  updatePinDisplay(); updatePinfallDisplay();
+  haptic('medium');
+  confirmAttempt();
+}
+
+/* =============================================================
+   CONFIRM ATTEMPT — CORE ENGINE
+   ============================================================= */
+function confirmAttempt() {
+  cancelUndo(); // Cancel any pending undo
+
+  // In LEAVE mode, derive G.knocked from the leave set before proceeding
+  const mode = getAttemptMode();
+  if (mode === 'LEAVE') {
+    G.knocked = new Set();
+    for (let p=1;p<=10;p++) {
+      if (G.pinState[p] === 'S' && !G.leave.has(p)) G.knocked.add(p);
+    }
+  }
+
+  const pinfall = G.knocked.size;
+  const frame = getFrame(G.frame);
+  const att = frameAttempts(frame.FrameID).find(a=>a.Attempt===G.attempt);
+  if (!att) { toast('Error: attempt not found'); return; }
+
+  // Save snapshot for undo
+  G.undoSnapshot = JSON.stringify({
+    db: JSON.parse(JSON.stringify(db)),
+    G_frame: G.frame, G_attempt: G.attempt,
+    G_pinState: {...G.pinState},
+    G_knocked: [...G.knocked],
+    G_leave: [...G.leave]
+  });
+
+  // Write pin data
+  for (let p=1;p<=10;p++) {
+    att[`PinStart${p}`] = G.pinState[p] === 'S' ? 1 : 0;
+    att[`PinDelta${p}`] = G.knocked.has(p) ? 1 : 0;
+    att[`Pin${p}`] = G.knocked.has(p) ? true : false;
+  }
+  att.Pinfall = pinfall;
+  att.BallID = G.ballID;
+  att.BSK_Progressive = buildBSK();
+
+  // Update frame flags
+  updateFrameFlags(frame);
+  calculateScores();
+  saveDB();
+
+  // Show undo bar
+  showUndoBar(frame, att);
+
+  // Advance state
+  advanceState();
+
+  // Refresh scorecard
+  renderScorecard('sc-grid', false);
+  updateScoringContext();
+  haptic('success');
+}
+
+/* =============================================================
+   BSK ENGINE — mirrors modBSKCore.BuildBSKFromPins
+   B = pin was down before this attempt (PinStart=0)
+   S = pin still standing after this attempt (PinStart=1, Delta=0)
+   K = pin knocked this attempt (PinStart=1, Delta=1)
+   ============================================================= */
+function buildBSK() {
+  let bsk = '';
+  for (let p=1;p<=10;p++) {
+    const start = G.pinState[p]; // 'S' or 'B'
+    const knocked = G.knocked.has(p);
+    if (start === 'B') bsk += 'B';      // Was already down
+    else if (knocked)  bsk += 'K';      // Knocked this attempt
+    else               bsk += 'S';      // Still standing
+  }
+  return bsk;
+}
+
+/* =============================================================
+   FRAME FLAGS UPDATE
+   ============================================================= */
+function updateFrameFlags(frame) {
+  const atts = frameAttempts(frame.FrameID);
+  const a1 = atts.find(a=>a.Attempt===1);
+  const a2 = atts.find(a=>a.Attempt===2);
+  if (!a1 || a1.Pinfall===null) return;
+
+  if (frame.FrameNumber <= 9) {
+    frame.Strike = a1.Pinfall === 10;
+    frame.Spare = !frame.Strike && a2?.Pinfall !== null && (a1.Pinfall + a2.Pinfall) >= 10;
+  }
+  // Frame 10 strike/spare flags not used for scoring here — handled inline
+}
+
+/* =============================================================
+   STATE ADVANCE — The critical flow controller
+   ============================================================= */
+function advanceState() {
+  const frame = getFrame(G.frame);
+  const atts = frameAttempts(frame.FrameID);
+  const a1 = atts.find(a=>a.Attempt===1);
+  const a2 = atts.find(a=>a.Attempt===2);
+
+  if (G.frame <= 9) {
+    if (frame.Strike || G.attempt === 2) {
+      // Frame complete → next frame
+      G.frame++;
+      G.attempt = 1;
+      G.pinState = freshPins();
+      G.knocked = new Set();
+      G.leave = new Set();
+    } else {
+      // Move to attempt 2 — apply knocked pins as base
+      G.attempt = 2;
+      for (let p=1;p<=10;p++) {
+        if (a1[`PinDelta${p}`] === 1) G.pinState[p] = 'B';
+      }
+      G.knocked = new Set();
+      G.leave = new Set();
+    }
+  } else {
+    // ========================================================
+    // FRAME 10 — full scenario state machine
+    // ========================================================
+    if (G.attempt === 1) {
+      G.attempt = 2;
+      if (a1.Pinfall === 10) {
+        // Strike → fresh pins for att2
+        G.pinState = freshPins();
+      } else {
+        // Carry over standing pins
+        for (let p=1;p<=10;p++) {
+          if (a1[`PinDelta${p}`] === 1) G.pinState[p] = 'B';
+        }
+      }
+      G.knocked = new Set();
+      G.leave = new Set();
+
+    } else if (G.attempt === 2) {
+      const att1Strike = a1?.Pinfall === 10;
+      const att2Pinfall = a2?.Pinfall ?? 0;
+      const att2IsStrike = att2Pinfall === 10;
+      const att1A2Spare = !att1Strike && (a1.Pinfall + att2Pinfall) >= 10;
+
+      computeF10Scenario();
+
+      if (att1Strike || att1A2Spare) {
+        // Get bonus ball
+        G.attempt = 3;
+        if (att2IsStrike || att1A2Spare) {
+          G.pinState = freshPins(); // Fresh if XX or #/
+        } else {
+          // X## → carry att2 standing pins
+          for (let p=1;p<=10;p++) {
+            if (a2[`PinDelta${p}`] === 1) G.pinState[p] = 'B';
+          }
+        }
+        G.knocked = new Set();
+        G.leave = new Set();
+      } else {
+        // ## — frame 10 done, no bonus
+        finishGame();
+        return;
+      }
+
+    } else if (G.attempt === 3) {
+      finishGame();
+      return;
+    }
+  }
+
+  // Bounds check — past frame 10
+  if (G.frame > 10) { finishGame(); return; }
+
+  updatePinDisplay();
+  updatePinfallDisplay();
+  updateScoringContext();
+}
+
+/* =============================================================
+   FRAME 10 SCENARIO
+   ============================================================= */
+function computeF10Scenario() {
+  if (G.frame !== 10) return;
+  const fr = getFrame(10);
+  const atts = frameAttempts(fr?.FrameID);
+  const a1 = atts.find(a=>a.Attempt===1);
+  const a2 = atts.find(a=>a.Attempt===2);
+  const a3 = atts.find(a=>a.Attempt===3);
+  const p1 = a1?.Pinfall??null, p2 = a2?.Pinfall??null, p3 = a3?.Pinfall??null;
+
+  if (p1===null) { G.f10scenario = null; return; }
+  if (p1===10) {
+    if (p2===null) { G.f10scenario='X__'; return; }
+    if (p2===10) {
+      G.f10scenario = p3===null ? 'XX_' : p3===10 ? 'XXX' : 'XX#';
+    } else {
+      if (p2+p3===10) G.f10scenario='X#/';
+      else G.f10scenario='X##';
+    }
+  } else if (p2!==null && p1+p2===10) {
+    if (p3===null) { G.f10scenario='#/__'; return; }
+    G.f10scenario = p3===10 ? '#/X' : '#/#';
+  } else {
+    G.f10scenario = '##';
+  }
+}
+
+/* =============================================================
+   SCORE CALCULATION — forward-projection bowling scorer
+   ============================================================= */
+function calculateScores() {
+  const frames = gameFrames().sort((a,b)=>a.FrameNumber-b.FrameNumber);
+  let running = 0;
+
+  for (let i=0; i<frames.length; i++) {
+    const fr = frames[i];
+    const atts = frameAttempts(fr.FrameID);
+    const a1 = atts.find(a=>a.Attempt===1);
+    const a2 = atts.find(a=>a.Attempt===2);
+    const a3 = atts.find(a=>a.Attempt===3);
+    const p1 = a1?.Pinfall, p2 = a2?.Pinfall, p3 = a3?.Pinfall;
+
+    if (p1===null || p1===undefined) {
+      fr.FrameScore = null; fr.RunningTotal = null; continue;
+    }
+
+    if (fr.FrameNumber <= 9) {
+      if (fr.Strike) {
+        const bonus = nextBalls(frames, i, 2);
+        if (bonus===null) { fr.FrameScore=null; fr.RunningTotal=null; continue; }
+        fr.FrameScore = 10 + bonus;
+      } else if (fr.Spare) {
+        const bonus = nextBalls(frames, i, 1);
+        if (bonus===null) { fr.FrameScore=null; fr.RunningTotal=null; continue; }
+        fr.FrameScore = 10 + bonus;
+      } else {
+        if (p2===null) { fr.FrameScore=null; fr.RunningTotal=null; continue; }
+        fr.FrameScore = p1 + p2;
+      }
+    } else {
+      // Frame 10: direct sum, capped at possible
+      let sum = p1;
+      if (p2!==null) sum += p2;
+      if (p3!==null) sum += p3;
+      fr.FrameScore = sum;
+    }
+
+    running += fr.FrameScore;
+    fr.RunningTotal = running;
+  }
+}
+
+function nextBalls(frames, fromIdx, count) {
+  const balls = [];
+  for (let j=fromIdx+1; j<frames.length && balls.length<count; j++) {
+    const atts = frameAttempts(frames[j].FrameID);
+    for (const a of atts) {
+      if (a.Pinfall===null) return null;
+      balls.push(a.Pinfall);
+      if (balls.length>=count) break;
+    }
+  }
+  return balls.length>=count ? balls.slice(0,count).reduce((a,b)=>a+b,0) : null;
+}
+
+/* =============================================================
+   FINISH GAME
+   ============================================================= */
+function finishGame() {
+  calculateScores();
+  const frames = gameFrames();
+  const lastFrame = frames.find(f=>f.FrameNumber===10);
+  const game = db.games.find(g=>g.GameID===G.gameID);
+  if (game) game.FinalScore = lastFrame?.RunningTotal || 0;
+  saveDB();
+  navTo('s-game-complete');
+}
+
+/* =============================================================
+   SCORING SCREEN RENDER
+   ============================================================= */
+function renderScoringScreen() {
+  if (G.ballID) {
+    const ball = db.balls.find(b=>b.BallID===G.ballID);
+    document.getElementById('ball-name-display').textContent = ball?.BallName||'Select Ball';
+  } else {
+    document.getElementById('ball-name-display').textContent = 'Select Ball';
+  }
+  renderScorecard('sc-grid', false);
+  updatePinDisplay();
+  updatePinfallDisplay();
+  updateScoringContext();
+}
+
+function updateScoringContext() {
+  const mode = getAttemptMode();
+
+  document.getElementById('ctx-frame').textContent = G.frame;
+  document.getElementById('ctx-att').textContent = G.attempt;
+  document.getElementById('hdr-title').textContent = `Game ${G.gameNum}`;
+
+  // Mode badge
+  const badge = document.getElementById('ctx-mode-badge');
+  badge.textContent = mode === 'LEAVE' ? 'LEAVE' : 'SPARE';
+  badge.className = `mode-badge ${mode}`;
+
+  // Instruction banner
+  const banner = document.getElementById('mode-instruction');
+  banner.className = `mode-instruction ${mode}`;
+  if (mode === 'LEAVE') {
+    banner.innerHTML = `Tap pins <strong>still standing</strong> after your shot &nbsp;·&nbsp; Leave Mode`;
+  } else {
+    banner.innerHTML = `Tap each pin you <strong>knocked down</strong> this attempt &nbsp;·&nbsp; Spare Mode`;
+  }
+
+  // Running score so far
+  const frames = gameFrames();
+  const latest = [...frames].filter(f=>f.RunningTotal!=null).sort((a,b)=>b.FrameNumber-a.FrameNumber)[0];
+  document.getElementById('ctx-score').textContent = latest?.RunningTotal || '—';
+
+  // Quick action buttons — labels change per mode
+  const primaryBtn = document.getElementById('qa-primary');
+  const spareBtn = document.getElementById('qa-spare');
+  const secondaryBtn = document.getElementById('qa-secondary');
+
+  if (mode === 'LEAVE') {
+    primaryBtn.textContent = 'Strike ✕';
+    primaryBtn.className = 'qa-btn qa-strike';
+    secondaryBtn.textContent = 'Gutter —';
+    secondaryBtn.className = 'qa-btn qa-miss';
+    // Spare not applicable on first attempt (no pins to spare against yet)
+    spareBtn.style.opacity = '0.3';
+    spareBtn.disabled = true;
+  } else {
+    // SPARE mode
+    primaryBtn.textContent = 'Spare /';
+    primaryBtn.className = 'qa-btn qa-spare';
+    secondaryBtn.textContent = 'Miss —';
+    secondaryBtn.className = 'qa-btn qa-miss';
+    spareBtn.style.opacity = '0'; // Hidden — primary button IS the spare
+    spareBtn.disabled = true;
+  }
+
+  // Frame 10 indicator
+  const f10El = document.getElementById('f10-ind');
+  if (G.frame === 10) {
+    computeF10Scenario();
+    f10El.style.display = 'block';
+    const scenMap = {
+      'X__': '⚡ Strike! — Fresh rack for Attempt 2',
+      'XX_': '⚡⚡ Double! — Fresh rack for Attempt 3',
+      'XXX': '🦃 Turkey!',
+      'XX#': 'Double + spare attempt',
+      'X#/': '⚡ Strike + Spare — Fresh for Att 3',
+      'X##': '⚡ Strike + Open — Frame done',
+      '#/__': 'Spare! — Strike or open for Att 3',
+      '#/X': 'Spare + Strike! 🎳',
+      '#/#': 'Spare + Open',
+      '##':  'Open frame — Done',
+      null:  ''
+    };
+    f10El.textContent = `Frame 10 · ${scenMap[G.f10scenario] || ''}`;
+  } else {
+    f10El.style.display = 'none';
+  }
+}
+
+/* =============================================================
+   PIN DISPLAY UPDATE
+   LEAVE mode visual contract:
+     B = already down (not applicable on fresh rack — all start as 'S')
+     L = pin is STILL STANDING (user tapped it as leave) — gold glow
+     (no class / dark) = pin will be KNOCKED (not in leave set) — dark
+   SPARE mode visual contract:
+     B = was already down before this attempt
+     S = still standing (user hasn't knocked it)
+     K = user tapped as knocked this attempt — teal glow
+   ============================================================= */
+function updatePinDisplay() {
+  const mode = getAttemptMode();
+
+  for (let p=1;p<=10;p++) {
+    const btn = document.getElementById('pb'+p);
+    btn.className = 'pin-btn';
+
+    if (G.pinState[p] === 'B') {
+      btn.classList.add('B'); // Already down — always inactive
+    } else if (mode === 'LEAVE') {
+      // LEAVE mode: gold = standing (leave), dark pin = will be knocked
+      if (G.leave.has(p)) {
+        btn.classList.add('L'); // Still standing — user marked as leave
+      }
+      // else: no extra class = default dark = "this pin got knocked"
+    } else {
+      // SPARE mode: teal = knocked this attempt, white = still standing
+      if (G.knocked.has(p)) {
+        btn.classList.add('K');
+      } else {
+        btn.classList.add('S');
+      }
+    }
+  }
+}
+
+function updatePinfallDisplay() {
+  const mode = getAttemptMode();
+  const pfEl = document.getElementById('pf-num');
+  const lblEl = document.getElementById('pf-lbl');
+
+  if (mode === 'LEAVE') {
+    // Pinfall = standing pins minus leave pins = knocked count
+    const standingCount = Object.values(G.pinState).filter(v=>v==='S').length;
+    const pinfall = standingCount - G.leave.size;
+    pfEl.textContent = pinfall;
+    pfEl.className = 'pf-big leave-mode';
+    lblEl.textContent = `Pins Knocked  ·  ${G.leave.size} standing`;
+  } else {
+    pfEl.textContent = G.knocked.size;
+    pfEl.className = 'pf-big spare-mode';
+    lblEl.textContent = `Pins Knocked This Attempt`;
+  }
+}
+
+/* =============================================================
+   SCORECARD RENDER — with BSK triangles
+   ============================================================= */
+function renderScorecard(containerId, isComplete) {
+  const grid = document.getElementById(containerId);
+  if (!grid) return;
+  calculateScores();
+
+  const frames = gameFrames().sort((a,b)=>a.FrameNumber-b.FrameNumber);
+  let html = '';
+
+  frames.forEach(fr => {
+    const atts = frameAttempts(fr.FrameID);
+    const isF10 = fr.FrameNumber === 10;
+    const isCur = !isComplete && G.frame === fr.FrameNumber;
+
+    html += `<div class="sc-frame${isCur?' cur':''}">`;
+    html += `<div class="sc-fn">${fr.FrameNumber}</div>`;
+
+    // BSK display
+    if (isF10) {
+      const completedAtts = atts.filter(a=>a.BSK_Progressive && a.Pinfall!==null);
+      html += `<div class="sc-bsk f10">`;
+      if (completedAtts.length) {
+        const tiny = completedAtts.length === 3;
+        completedAtts.forEach(a => html += bskTriangleHTML(a.BSK_Progressive, tiny));
+      } else {
+        html += '<div style="height:32px"></div>';
+      }
+      html += `</div>`;
+    } else {
+      const lastBSK = [...atts].filter(a=>a.BSK_Progressive && a.Pinfall!==null).pop();
+      html += `<div class="sc-bsk">`;
+      html += lastBSK?.BSK_Progressive ? bskTriangleHTML(lastBSK.BSK_Progressive, false) : '<div style="height:32px"></div>';
+      html += `</div>`;
+    }
+
+    // Attempts row
+    html += `<div class="sc-atts">`;
+    if (isF10) {
+      const a1=atts.find(a=>a.Attempt===1), a2=atts.find(a=>a.Attempt===2), a3=atts.find(a=>a.Attempt===3);
+      if (a1?.Pinfall!=null) html += attBoxHTML(a1, fr, 1, atts);
+      if (a2?.Pinfall!=null) html += attBoxHTML(a2, fr, 2, atts);
+      if (a3?.Pinfall!=null) html += attBoxHTML(a3, fr, 3, atts);
+    } else {
+      const a1=atts.find(a=>a.Attempt===1), a2=atts.find(a=>a.Attempt===2);
+      if (a1?.Pinfall!=null) html += attBoxHTML(a1, fr, 1, atts);
+      if (a2?.Pinfall!=null && !fr.Strike) html += attBoxHTML(a2, fr, 2, atts);
+    }
+    if (isCur) html += `<div class="att cur">·</div>`;
+    html += `</div>`;
+
+    // Running total
+    const tot = fr.RunningTotal;
+    html += `<div class="sc-tot${tot==null?' pend':''}">${tot??'—'}</div>`;
+    html += `</div>`;
+  });
+
+  grid.innerHTML = html;
+}
+
+/* =============================================================
+   BSK TRIANGLE HTML
+   BSK string: positions 1-10 = pins 1-10
+   Display layout:
+     Row 1 (back):  7  8  9  10  → indices 6,7,8,9
+     Row 2:         4  5  6      → indices 3,4,5
+     Row 3:         2  3         → indices 1,2
+     Row 4 (front): 1            → index 0
+   ============================================================= */
+function bskTriangleHTML(bsk, tiny) {
+  if (!bsk || bsk.length < 10) return '';
+  const p = bsk.split('');
+  const d = c => `<div class="dot ${c}"></div>`;
+  return `<div class="bsk-tri${tiny?' tiny':''}">
+    <div class="bsk-row-m">${d(p[6])}${d(p[7])}${d(p[8])}${d(p[9])}</div>
+    <div class="bsk-row-m">${d(p[3])}${d(p[4])}${d(p[5])}</div>
+    <div class="bsk-row-m">${d(p[1])}${d(p[2])}</div>
+    <div class="bsk-row-m">${d(p[0])}</div>
+  </div>`;
+}
+
+/* =============================================================
+   ATTEMPT BOX HTML
+   ============================================================= */
+function attBoxHTML(att, frame, attNum, allAtts) {
+  if (att.Pinfall === null) return '';
+  let cls = 'att', disp = att.Pinfall;
+
+  if (frame.FrameNumber <= 9) {
+    if (attNum===1 && att.Pinfall===10) { cls+=' X'; disp='X'; }
+    else if (attNum===2 && frame.Spare)   { cls+=' sp'; disp='/'; }
+    else if (att.Pinfall===0)              { cls+=' op'; disp='—'; }
+    else                                   { cls+=' op'; }
+  } else {
+    const a1=allAtts.find(a=>a.Attempt===1), a2=allAtts.find(a=>a.Attempt===2);
+    if (attNum===1) {
+      if (att.Pinfall===10) { cls+=' X'; disp='X'; } else { cls+=' op'; }
+    } else if (attNum===2) {
+      if (att.Pinfall===10) { cls+=' X'; disp='X'; }
+      else if (a1?.Pinfall!==10 && (a1?.Pinfall||0)+att.Pinfall>=10) { cls+=' sp'; disp='/'; }
+      else { cls+=' op'; }
+    } else {
+      if (att.Pinfall===10) { cls+=' X'; disp='X'; }
+      else if (att.Pinfall===0) { cls+=' op'; disp='—'; }
+      else { cls+=' op'; }
+    }
+  }
+  return `<div class="${cls}">${disp}</div>`;
+}
+
+/* =============================================================
+   GAME COMPLETE SCREEN
+   ============================================================= */
+function renderGameComplete() {
+  renderScorecard('sc-grid-complete', true);
+
+  const game = db.games.find(g=>g.GameID===G.gameID);
+  const score = game?.FinalScore || 0;
+  document.getElementById('gc-score').textContent = score;
+
+  // Avg comparison
+  const otherScores = db.games.filter(g=>g.FinalScore!=null&&g.GameID!==G.gameID).map(g=>g.FinalScore);
+  const diffEl = document.getElementById('gc-diff');
+  if (otherScores.length) {
+    const avg = Math.round(otherScores.reduce((a,b)=>a+b,0)/otherScores.length);
+    const diff = score - avg;
+    diffEl.textContent = `${diff>=0?'+':''}${diff} vs avg ${avg}`;
+    diffEl.className = 'gc-diff ' + (diff>0?'pos':diff<0?'neg':'neu');
+  } else { diffEl.textContent = 'First recorded game!'; diffEl.className='gc-diff neu'; }
+
+  // Stats
+  const frames = gameFrames();
+  const strikes = frames.filter(f=>f.Strike).length;
+  const spares = frames.filter(f=>f.Spare).length;
+  const opens = 10 - strikes - spares;
+  document.getElementById('gc-stats').innerHTML = `
+    <div class="stat-row"><span>Strikes</span><span class="sval g">${strikes}</span></div>
+    <div class="stat-row"><span>Spares</span><span class="sval t">${spares}</span></div>
+    <div class="stat-row"><span>Open Frames</span><span class="sval s">${opens}</span></div>
+    <div class="stat-row"><span>Spare Rate</span><span class="sval">${frames.length ? Math.round(spares/Math.max(spares+opens,1)*100) : 0}%</span></div>
+  `;
+
+  // Next game button
+  const league = db.leagues.find(l=>l.LeagueID===G.leagueID);
+  const allGames = db.games.filter(g=>g.SeriesID===G.seriesID).sort((a,b)=>a.GameNumber-b.GameNumber);
+  const nextGame = allGames.find(g=>g.GameNumber===G.gameNum+1);
+  const btn = document.getElementById('btn-next-game');
+  if (nextGame && nextGame.FinalScore===null && allGames.length < (league?.GamesPerSeries||3)) {
+    btn.style.display='flex';
+    btn.textContent = `Start Game ${G.gameNum+1} →`;
+  } else if (!nextGame && allGames.length < (league?.GamesPerSeries||3)) {
+    btn.style.display='flex';
+    btn.textContent = `Start Game ${G.gameNum+1} →`;
+  } else {
+    btn.style.display='none';
+  }
+}
+
+function goNextGame() {
+  const allGames = db.games.filter(g=>g.SeriesID===G.seriesID).sort((a,b)=>a.GameNumber-b.GameNumber);
+  const nextGame = allGames.find(g=>g.GameNumber===G.gameNum+1);
+  if (nextGame) {
+    openGame(nextGame.GameID, nextGame.GameNumber);
+  } else {
+    createAndStartGame(); // Will auto-go to scoring
+  }
+}
+
+function endSeries() {
+  G.gameID = null;
+  navTo('s-series');
+}
+
+/* =============================================================
+   STATS
+   ============================================================= */
+function renderStats() {
+  const scores = db.games.map(g=>g.FinalScore).filter(s=>s!=null);
+  const avg = scores.length ? (scores.reduce((a,b)=>a+b,0)/scores.length).toFixed(1) : '—';
+  const high = scores.length ? Math.max(...scores) : '—';
+  const low = scores.length ? Math.min(...scores) : '—';
+
+  const allFrames = db.frames.filter(f=>db.games.some(g=>g.GameID===f.GameID&&g.FinalScore!=null));
+  const strikeFr = allFrames.filter(f=>f.Strike).length;
+  const spareFr  = allFrames.filter(f=>f.Spare).length;
+  const sPct = allFrames.length ? ((strikeFr/allFrames.length)*100).toFixed(1) : 0;
+  const spPct = allFrames.length ? ((spareFr/allFrames.length)*100).toFixed(1) : 0;
+
+  document.getElementById('stats-content').innerHTML = `
+    <div class="stat-card">
+      <div class="stat-card-title">Average</div>
+      <div class="stat-card-val" style="color:var(--teal)">${avg}</div>
+      <div class="stat-card-sub">${scores.length} games recorded</div>
+    </div>
+    <div class="stat-card" style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+      <div>
+        <div class="stat-card-title">High Game</div>
+        <div class="stat-card-val" style="color:var(--gold);font-size:30px">${high}</div>
+      </div>
+      <div>
+        <div class="stat-card-title">Low Game</div>
+        <div class="stat-card-val" style="color:var(--sedona);font-size:30px">${low}</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-title">Strike Rate</div>
+      <div class="stat-card-val" style="color:var(--gold);font-size:30px">${sPct}%</div>
+      <div class="prog-bar"><div class="prog-fill" style="width:${sPct}%"></div></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-title">Spare Rate</div>
+      <div class="stat-card-val" style="color:var(--teal);font-size:30px">${spPct}%</div>
+      <div class="prog-bar"><div class="prog-fill" style="width:${spPct}%"></div></div>
+    </div>
+  `;
+}
+
+/* =============================================================
+   UNDO SYSTEM
+   ============================================================= */
+function showUndoBar(frame, att) {
+  G.undoAvailable = true;
+  const bar = document.getElementById('undo-bar');
+  const label = document.getElementById('undo-txt');
+  const countdown = document.getElementById('undo-countdown');
+  const what = att.Pinfall===10 ? 'Strike!' : att.Pinfall===0 ? 'Miss' : `${att.Pinfall} pins`;
+  label.textContent = `Frame ${frame.FrameNumber} Att ${att.Attempt} · ${what}`;
+  bar.classList.add('show');
+
+  let secs = 4;
+  countdown.textContent = secs;
+  G.undoTick = setInterval(()=>{
+    secs--;
+    countdown.textContent = secs;
+    if (secs<=0) cancelUndo();
+  }, 1000);
+  G.undoTimer = setTimeout(()=> cancelUndo(), 4500);
+}
+
+function cancelUndo() {
+  G.undoAvailable = false;
+  clearTimeout(G.undoTimer);
+  clearInterval(G.undoTick);
+  document.getElementById('undo-bar').classList.remove('show');
+}
+
+function doUndo() {
+  if (!G.undoSnapshot) return;
+  const snap = JSON.parse(G.undoSnapshot);
+  db = snap.db;
+  G.frame = snap.G_frame;
+  G.attempt = snap.G_attempt;
+  G.pinState = snap.G_pinState;
+  G.knocked = new Set(snap.G_knocked);
+  G.leave = new Set(snap.G_leave || []);
+  G.undoSnapshot = null;
+  cancelUndo();
+  saveDB();
+  renderScorecard('sc-grid', false);
+  updatePinDisplay();
+  updatePinfallDisplay();
+  updateScoringContext();
+  toast('Undone ↩');
+  haptic('light');
+}
+
+/* =============================================================
+   OPEN BOWLING SHORTCUT
+   ============================================================= */
+function startOpenBowling() {
+  let openLeague = db.leagues.find(l=>l.LeagueName==='Open Bowling');
+  if (!openLeague) {
+    const id = Math.max(0,...db.leagues.map(l=>l.LeagueID))+1;
+    db.leagues.push({ LeagueID:id, LeagueName:'Open Bowling', CenterID:1, GamesPerSeries:3 });
+    saveDB();
+    openLeague = db.leagues.find(l=>l.LeagueName==='Open Bowling');
+  }
+  G.leagueID = openLeague.LeagueID;
+  openNewSeriesModal();
+}
+
+/* =============================================================
+   MODALS
+   ============================================================= */
+function openModal(html) {
+  document.getElementById('modal-body').innerHTML = html;
+  document.getElementById('modal-bg').classList.add('open');
+}
+function closeModal() { document.getElementById('modal-bg').classList.remove('open'); }
+function handleModalBgClick(e) { if (e.target===document.getElementById('modal-bg')) closeModal(); }
+
+function openNewLeagueModal() {
+  const cOpts = db.centers.map(c=>`<option value="${c.CenterID}">${c.CenterName}</option>`).join('');
+  openModal(`
+    <div class="modal-title">New League</div>
+    <div class="fgroup"><label class="flabel">League Name</label>
+      <input class="finput" id="ml-name" placeholder="e.g. NFL 25/26" type="text" autocomplete="off"></div>
+    <div class="fgroup"><label class="flabel">Bowling Center</label>
+      <select class="finput" id="ml-center">${cOpts}</select></div>
+    <div class="fgroup"><label class="flabel">Games Per Series</label>
+      <select class="finput" id="ml-gps">
+        <option value="2">2</option><option value="3" selected>3</option>
+        <option value="4">4</option><option value="5">5</option></select></div>
+    <button class="btn btn-primary" onclick="saveNewLeague()">Create League</button>
+    <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+  `);
+  setTimeout(()=>document.getElementById('ml-name')?.focus(), 350);
+}
+
+function saveNewLeague() {
+  const name = document.getElementById('ml-name').value.trim();
+  if (!name) { toast('Enter a league name'); return; }
+  const cid = parseInt(document.getElementById('ml-center').value);
+  const gps = parseInt(document.getElementById('ml-gps').value);
+  const id = Math.max(0,...db.leagues.map(l=>l.LeagueID))+1;
+  db.leagues.push({ LeagueID:id, LeagueName:name, CenterID:cid, GamesPerSeries:gps });
+  saveDB(); closeModal(); renderLeagues(); toast('League created!');
+}
+
+function openNewSeriesModal() {
+  const today = new Date().toISOString().split('T')[0];
+  const bOpts = db.balls.map(b=>`<option value="${b.BallID}">${b.BallName}</option>`).join('');
+  openModal(`
+    <div class="modal-title">New Series</div>
+    <div class="fgroup"><label class="flabel">Date</label>
+      <input class="finput" id="ms-date" type="date" value="${today}"></div>
+    <div class="fgroup"><label class="flabel">Primary Ball</label>
+      <select class="finput" id="ms-ball">${bOpts}</select></div>
+    <button class="btn btn-primary" onclick="saveNewSeries()">Start Bowling →</button>
+    <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+  `);
+}
+
+function saveNewSeries() {
+  const date = document.getElementById('ms-date').value;
+  const ballID = parseInt(document.getElementById('ms-ball').value);
+  G.ballID = ballID;
+  const league = db.leagues.find(l=>l.LeagueID===G.leagueID);
+  const id = db.ids.series++;
+  db.series.push({ SeriesID:id, LeagueID:G.leagueID, CenterID:league?.CenterID||1, DateBowled:date });
+  G.seriesID = id;
+  saveDB(); closeModal();
+  createAndStartGame();
+}
+
+function openBallModal() {
+  const rows = db.balls.map(b=>`
+    <div class="list-row" onclick="selectBall(${b.BallID})">
+      <div class="list-row-body">
+        <div class="list-row-name">${b.BallName}</div>
+        <div class="list-row-meta">${b.Weight} lb</div>
+      </div>
+      ${b.BallID===G.ballID?'<span style="color:var(--teal);font-size:20px">✓</span>':''}
+    </div>`).join('');
+  openModal(`<div class="modal-title">Select Ball</div>${rows}
+    <button class="btn btn-ghost btn-sm" style="margin-top:8px;width:auto" onclick="openAddBallModal()">+ Add Ball</button>`);
+}
+
+function selectBall(id) {
+  G.ballID = id;
+  const ball = db.balls.find(b=>b.BallID===id);
+  document.getElementById('ball-name-display').textContent = ball?.BallName||'';
+  closeModal();
+}
+
+function openAddBallModal() {
+  openModal(`
+    <div class="modal-title">Add Ball</div>
+    <div class="fgroup"><label class="flabel">Ball Name</label>
+      <input class="finput" id="ab-name" placeholder="e.g. Roto Grip Idol Pearl" type="text" autocomplete="off"></div>
+    <div class="fgroup"><label class="flabel">Weight (lbs)</label>
+      <input class="finput" id="ab-wt" type="number" value="15" min="6" max="16"></div>
+    <button class="btn btn-primary" onclick="saveNewBall()">Add Ball</button>
+    <button class="btn btn-secondary" onclick="openBallModal()">Back</button>
+  `);
+}
+
+function saveNewBall() {
+  const name = document.getElementById('ab-name').value.trim();
+  if (!name) { toast('Enter a ball name'); return; }
+  const wt = parseInt(document.getElementById('ab-wt').value)||15;
+  const id = Math.max(0,...db.balls.map(b=>b.BallID))+1;
+  db.balls.push({ BallID:id, BallName:name, Weight:wt });
+  saveDB(); closeModal(); toast('Ball added!');
+}
+
+function openExportModal() {
+  const json = JSON.stringify(db, null, 2);
+  const kb = (new Blob([json]).size/1024).toFixed(1);
+  const attempts = db.attempts.filter(a=>a.Pinfall!==null).length;
+  openModal(`
+    <div class="modal-title">Export Data</div>
+    <p style="font-size:13px;color:var(--t2);line-height:1.5;margin-bottom:16px">
+      Export mirrors your Access schema:<br>
+      <span style="color:var(--teal)">tblSeries → tblGames → tblFrames → tblAttempts</span><br>
+      All Pin, PinStart, PinDelta, and BSK_Progressive fields included.
+    </p>
+    <div class="card" style="font-size:12px;color:var(--t3);margin-bottom:16px">
+      📊 ${db.series.length} series · ${db.games.length} games · ${attempts} attempts · ~${kb} KB
+    </div>
+    <button class="btn btn-primary" onclick="downloadExport()">⬇ Download JSON</button>
+    <button class="btn btn-secondary" onclick="copyExport()">📋 Copy to Clipboard</button>
+    <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+  `);
+}
+
+function downloadExport() {
+  const blob = new Blob([JSON.stringify(db, null, 2)],{type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download=`BowlingDB_${new Date().toISOString().split('T')[0]}.json`;
+  a.click(); URL.revokeObjectURL(url);
+  toast('Exported!');
+}
+
+function copyExport() {
+  navigator.clipboard?.writeText(JSON.stringify(db,null,2))
+    .then(()=>toast('Copied!')).catch(()=>toast('Use Download instead'));
+}
+
+function openSettingsModal() {
+  const balls = db.balls.map(b=>`<div class="stat-row"><span>${b.BallName}</span><span class="sval" style="font-size:12px;color:var(--t3)">${b.Weight}lb</span></div>`).join('');
+  const centers = db.centers.map(c=>`<div class="stat-row"><span>${c.CenterName}</span></div>`).join('');
+  openModal(`
+    <div class="modal-title">Settings</div>
+    <div class="flabel" style="margin-bottom:8px">Your Balls</div>
+    ${balls}
+    <button class="btn btn-ghost btn-sm" style="margin-bottom:16px" onclick="openAddBallModal()">+ Add Ball</button>
+    <div class="flabel" style="margin-bottom:8px">Centers</div>
+    ${centers}
+    <button class="btn btn-ghost btn-sm" style="margin-bottom:16px" onclick="openAddCenterModal()">+ Add Center</button>
+    <div class="divider"></div>
+    <button class="btn btn-danger" onclick="confirmReset()">Reset All Data</button>
+    <button class="btn btn-secondary" onclick="closeModal()" style="margin-top:8px">Close</button>
+  `);
+}
+
+function openAddCenterModal() {
+  openModal(`
+    <div class="modal-title">Add Center</div>
+    <div class="fgroup"><label class="flabel">Center Name</label>
+      <input class="finput" id="ac-name" placeholder="e.g. Bowlero Tempe" type="text" autocomplete="off"></div>
+    <button class="btn btn-primary" onclick="saveNewCenter()">Add Center</button>
+    <button class="btn btn-secondary" onclick="openSettingsModal()">Back</button>
+  `);
+}
+
+function saveNewCenter() {
+  const name = document.getElementById('ac-name').value.trim();
+  if (!name) { toast('Enter a center name'); return; }
+  const id = Math.max(0,...db.centers.map(c=>c.CenterID))+1;
+  db.centers.push({ CenterID:id, CenterName:name });
+  saveDB(); closeModal(); toast('Center added!');
+}
+
+function confirmReset() {
+  if (confirm('Delete ALL bowling data? This cannot be undone.')) {
+    localStorage.removeItem(STORE_KEY);
+    db = buildFreshDB(); saveDB();
+    closeModal(); navTo('s-home');
+    toast('Data reset');
+  }
+}
+
+/* =============================================================
+   HAPTIC FEEDBACK (iPhone Taptic Engine via Vibration API)
+   ============================================================= */
+function haptic(type) {
+  if (!navigator.vibrate) return;
+  const patterns = { light:10, medium:20, heavy:40, success:[10,50,20], error:[30,50,30,50,30] };
+  navigator.vibrate(patterns[type]||10);
+}
+
+/* =============================================================
+   TOAST
+   ============================================================= */
+let toastTimer;
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 2500);
+}
+
+/* =============================================================
+   DB HELPERS
+   ============================================================= */
+function gameFrames() { return db.frames.filter(f=>f.GameID===G.gameID); }
+function getFrame(fn) { return db.frames.find(f=>f.GameID===G.gameID && f.FrameNumber===fn); }
+function frameAttempts(fid) { return db.attempts.filter(a=>a.FrameID===fid).sort((a,b)=>a.Attempt-b.Attempt); }
+
+/* =============================================================
+   INIT
+   ============================================================= */
+document.addEventListener('DOMContentLoaded', ()=>{
+  G.ballID = db.balls[0]?.BallID || null;
+  renderHome();
+});
+</script>
+</body>
+</html>
