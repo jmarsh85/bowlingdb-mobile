@@ -1400,6 +1400,33 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
   transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
 }
 .toast.show { transform:translateX(-50%) translateY(0); }
+.toast-x { margin-left:10px; opacity:0.6; font-size:11px; font-weight:400; cursor:pointer; }
+
+/* ── Beer frame indicator dot ──────────────────────────────── */
+.sc-beer {
+  text-align:center; font-size:8px; line-height:1;
+  padding-bottom:3px; color:var(--gold);
+  min-height:12px;
+}
+.beer-bowler-chip {
+  padding:7px 14px; border-radius:20px;
+  background:var(--bg3); border:1px solid var(--border2);
+  color:var(--t2); font-size:13px; font-weight:600;
+  cursor:pointer;
+}
+.beer-bowler-chip.selected {
+  background:rgba(255,215,0,0.12);
+  border-color:var(--gold); color:var(--gold);
+}
+.beer-other-input {
+  width:100%; box-sizing:border-box;
+  background:var(--bg3); border:1px solid var(--border2);
+  border-radius:20px; padding:9px 16px;
+  color:var(--t1); font-size:13px; font-weight:600;
+  outline:none; -webkit-appearance:none;
+}
+.beer-other-input:focus { border-color:var(--gold); }
+.beer-other-input::placeholder { color:var(--t3); font-weight:400; }
 
 /* ============================================================
    ATTEMPT NAVIGATION BAR  (prev / frame-att indicator / next)
@@ -2885,7 +2912,7 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
   </div>
 
   <!-- Toast -->
-  <div class="toast" id="toast"></div>
+  <div class="toast" id="toast" onclick="toastDismiss()"><span id="toast-msg"></span><span class="toast-x">✕</span></div>
 
   <!-- Modal -->
   <div class="modal-bg" id="modal-bg" onclick="handleModalBgClick(event)">
@@ -6364,6 +6391,22 @@ function renderSeriesList() {
               ${s.LanePair ? `<span class="pill pill-teal" style="font-size:10px">🎳 ${s.LanePair}</span>` : ''}
               ${s.NoTap ? `<span class="pill pill-gold" style="font-size:10px">✦ NoTap</span>` : ''}
               ${s.Notes ? `<span class="pill" style="font-size:10px;color:var(--t3)">📝</span>` : ''}
+              ${(()=>{
+                const bl=(s.beerLog||[]);
+                if (!bl.length) return '';
+                const winner = s.beerSeriesWinner || null;
+                const tally = {};
+                bl.forEach(e=>{ tally[e.bowlerName]=(tally[e.bowlerName]||0)+1; });
+                const top = Math.max(...Object.values(tally), 0);
+                const tied = Object.entries(tally).filter(([,ct])=>ct===top).map(([n])=>n);
+                const leader = tied.length===1 ? tied[0] : null;
+                const winnerValid = winner && tied.includes(winner);
+                const displayWinner = leader || (winnerValid ? winner : null);
+                const first = n => n ? n.split(' ')[0] : '';
+                const winnerBadge = displayWinner
+                  ? `<span class="pill pill-gold" style="font-size:10px;margin-left:4px">🏆 ${first(displayWinner)}</span>` : '';
+                return `<span class="pill pill-gold" style="font-size:10px">🍺 ×${bl.length}</span>${winnerBadge}`;
+              })()}
             </div>
           </div>
           <div>
@@ -6728,6 +6771,20 @@ function renderGameSelect() {
       </div>`;
     }
 
+    // Beer frame summary row for this game
+    let beerRowHTML = '';
+    if (done || hasFrames) {
+      const seriesBeerLog = db.series.find(s=>s.SeriesID===G.seriesID)?.beerLog||[];
+      const gameBeerEntries = seriesBeerLog.filter(e=>e.game===g.GameNumber);
+      if (gameBeerEntries.length) {
+        const beerTally = {};
+        gameBeerEntries.forEach(e=>{ beerTally[e.bowlerName]=(beerTally[e.bowlerName]||0)+1; });
+        const beerParts = Object.entries(beerTally).sort((a,b)=>b[1]-a[1])
+          .map(([name,ct])=>`${name}${ct>1?` ×${ct}`:''}`).join(', ');
+        beerRowHTML = `<div style="font-size:11px;color:rgba(255,215,0,0.7);margin-top:4px">🍺 ${gameBeerEntries.length} frame${gameBeerEntries.length>1?'s':''} — ${beerParts}</div>`;
+      }
+    }
+
     const _gscore = done ? (g.FinalScore/300).toFixed(4)
       : (() => {
           const _f = db.frames.filter(f=>f.GameID===g.GameID);
@@ -6746,6 +6803,7 @@ function renderGameSelect() {
           </div>
           ${patternLbl ? `<div class="list-row-meta" style="margin-top:2px">${patternLbl.slice(3)}</div>` : ''}
           ${inlineStats}
+          ${beerRowHTML}
         </div>
         <span class="list-row-chevron">›</span>
       </div>
@@ -8992,10 +9050,44 @@ function renderScorecard(containerId, isComplete) {
     // ── Running total ───────────────────────────────────────────
     const tot = showNoTap ? fr.NoTapRunningTotal : fr.RunningTotal;
     html += `<div class="sc-tot${tot==null?' pend':''}">${tot??'—'}</div>`;
+    // Beer frame dot indicator
+    if (!isComplete) {
+      const beerLog = (db.series.find(s=>s.SeriesID===G.seriesID)?.beerLog||[]);
+      const hasBeer = beerLog.some(e=>e.game===G.gameNum && e.frame===fr.FrameNumber);
+      html += `<div class="sc-beer">${hasBeer?'🍺':''}</div>`;
+    } else {
+      const beerLog = (db.series.find(s=>s.SeriesID===G.seriesID)?.beerLog||[]);
+      const gameNum = db.games.find(g=>g.GameID===G.gameID)?.GameNumber||0;
+      const hasBeer = beerLog.some(e=>e.game===gameNum && e.frame===fr.FrameNumber);
+      html += `<div class="sc-beer">${hasBeer?'🍺':''}</div>`;
+    }
     html += `</div>`;
   });
 
   grid.innerHTML = html;
+
+  // #48 — Soft-lock active frame into view (active scoring only)
+  if (!isComplete) {
+    const cur = grid.querySelector('.sc-frame.cur');
+    const scroll = grid.parentElement;
+    if (cur && scroll) {
+      const curRight = cur.offsetLeft + cur.offsetWidth;
+      const visRight = scroll.scrollLeft + scroll.clientWidth;
+      if (curRight > visRight) {
+        scroll.scrollLeft = curRight - scroll.clientWidth + 16;
+      }
+    }
+  }
+
+  // #58 — Long-press any frame cell to log a beer frame (active scoring only)
+  if (!isComplete) {
+    grid.querySelectorAll('.sc-frame').forEach(cell => {
+      const fn = parseInt(cell.querySelector('.sc-fn')?.textContent || '0');
+      if (fn >= 1 && fn <= 10) {
+        addLongPress(cell, () => openBeerFrameModal(fn));
+      }
+    });
+  }
 }
 
 /* Select the correct BSK string to show for a frame 1-9 cell.
@@ -12449,7 +12541,7 @@ function openSeriesStatsModal(seriesID) {
   const games = db.games.filter(g=>g.SeriesID===seriesID).sort((a,b)=>a.GameNumber-b.GameNumber);
   const scores = games.map(g=>g.FinalScore).filter(x=>x!=null && x > 0);
   const total = scores.reduce((a,b)=>a+b,0);
-  const avg = scores.length ? Math.round(total/scores.length) : 0;
+  const avg = scores.length ? (total/scores.length).toFixed(2) : 0;
 
   // Calculate advanced stats using shared helper (only standard games)
   const validGames = games.filter(g => g.FinalScore != null && g.FinalScore > 0);
@@ -13743,7 +13835,7 @@ function openBallOptions(ballID) {
   openModal(`
     <div class="modal-title">${b.BallName}</div>
     <button class="btn btn-secondary" style="margin-bottom:8px" onclick="closeModal();openBallDetailModal(${ballID})">View / Edit Details</button>
-    <button class="btn btn-secondary" style="margin-bottom:8px" onclick="closeModal();openSurfacePrepModal(${ballID})">+ Surface Prep</button>
+    <button class="btn btn-secondary" style="margin-bottom:8px" onclick="closeModal();openLogSurfacePrepModal(${ballID})">+ Surface Prep</button>
     <button class="btn btn-secondary" style="margin-bottom:8px" onclick="closeModal();fetchBallInfo(${ballID})">Fetch Specs</button>
     <button class="btn btn-secondary" style="margin-bottom:8px" onclick="closeModal();toggleBallArchive(${ballID})">
       ${b.Archived ? 'Unarchive Ball' : 'Archive Ball'}
@@ -16186,12 +16278,300 @@ function haptic(type) {
 let toastTimer;
 function toast(msg, duration=2500) {
   const t = document.getElementById('toast');
-  t.textContent = msg;
+  const m = document.getElementById('toast-msg');
+  if (m) m.textContent = msg; else t.textContent = msg;
   clearTimeout(toastTimer);
   t.classList.remove('show');
-  void t.offsetWidth; // force reflow so CSS transition replays cleanly
+  void t.offsetWidth;
   t.classList.add('show');
   toastTimer = setTimeout(()=>t.classList.remove('show'), duration);
+}
+function toastDismiss() {
+  clearTimeout(toastTimer);
+  document.getElementById('toast').classList.remove('show');
+}
+
+/* ─── Beer Frame Modal (#58) ────────────────────────────────── */
+function openBeerFrameModal(frameNum) {
+  const series = db.series.find(s=>s.SeriesID===G.seriesID);
+  if (!series) return;
+  const gameNum = db.games.find(g=>g.GameID===G.gameID)?.GameNumber || 1;
+  const isF10 = frameNum === 10;
+  window._beerModalLastFrame = frameNum;
+  window._beerModalLastAtt   = 1;
+
+  // Build running tally: series / game / league scope
+  const _gameLog   = (series.beerLog||[]).filter(e=>e.game===gameNum);
+  const _seriesLog = (series.beerLog||[]);
+  const _leagueLog = db.series.filter(s=>s.LeagueID===series.LeagueID)
+                       .flatMap(s=>s.beerLog||[]);
+  const _anyLeague = _leagueLog.length > 0;
+
+  // Display first name only; use 'First L.' when first names collide in a given log
+  const _displayName = (fullName, log) => {
+    const first = fullName.split(' ')[0];
+    const clash = log.some(e => e.bowlerName !== fullName && e.bowlerName.split(' ')[0] === first);
+    if (!clash) return first;
+    const parts = fullName.split(' ');
+    return parts.length > 1 ? `${parts[0]} ${parts[parts.length-1][0]}.` : first;
+  };
+
+  const _buildTallyRow = (log) => {
+    const tally = {};
+    log.forEach(e => { tally[e.bowlerName] = (tally[e.bowlerName]||0) + 1; });
+    const entries = Object.entries(tally).sort((a,b)=>b[1]-a[1]);
+    if (!entries.length) return '<span style="color:var(--t3);font-size:11px">—</span>';
+    return entries.map(([name,ct]) =>
+      `<span style="color:var(--t1);font-weight:700">${_displayName(name,log)}</span><span style="color:var(--t2)"> ${ct}</span>`
+    ).join('<span style="color:var(--border1);margin:0 6px">·</span>');
+  };
+
+  // Series tie-breaker logic
+  const _seriesTally = {};
+  _seriesLog.forEach(e => { _seriesTally[e.bowlerName] = (_seriesTally[e.bowlerName]||0) + 1; });
+  const _seriesEntries = Object.entries(_seriesTally).sort((a,b)=>b[1]-a[1]);
+  const _topCount = _seriesEntries[0]?.[1] || 0;
+  const _tiedNames = _seriesEntries.filter(([,ct])=>ct===_topCount).map(([n])=>n);
+  const _isTied = _tiedNames.length > 1 && _topCount > 0;
+  const _winner = series.beerSeriesWinner || null;
+  const _winnerStillValid = _winner && _tiedNames.includes(_winner);
+
+  const _tieHTML = _isTied ? (() => {
+    if (_winnerStillValid) {
+      return `<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border1);font-size:11px;color:var(--t2)">
+        Series winner: <span style="color:var(--gold);font-weight:700">🏆 ${_displayName(_winner,_seriesLog)}</span>
+        <span style="color:var(--t3);margin-left:8px;cursor:pointer" onclick="clearBeerSeriesWinner()">✕ clear</span>
+      </div>`;
+    }
+    const tiedChips = _tiedNames.map(n =>
+      `<div class="beer-bowler-chip" style="flex:1;text-align:center" onclick="setBeerSeriesWinner('${n.replace(/'/g,"\\'")}')">
+        ${_displayName(n,_seriesLog)}
+      </div>`
+    ).join('');
+    return `<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border1)">
+      <div style="font-size:11px;color:var(--t2);margin-bottom:6px">Series tied — pick winner:</div>
+      <div style="display:flex;gap:6px">${tiedChips}</div>
+    </div>`;
+  })() : '';
+
+  // Tally panel: Series first (highlighted), then Game, then League
+  const tallyHTML = _anyLeague ? `
+    <div style="margin-bottom:16px">
+      <div style="background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.25);border-radius:10px;padding:10px 12px;margin-bottom:6px">
+        <div style="display:grid;grid-template-columns:56px 1fr;align-items:baseline">
+          <span style="color:var(--gold);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px">Series</span>
+          <span style="font-size:13px">${_buildTallyRow(_seriesLog)}</span>
+        </div>
+        ${_tieHTML}
+      </div>
+      <div style="background:var(--bg3);border-radius:10px;padding:8px 12px;font-size:12px">
+        <div style="display:grid;grid-template-columns:56px 1fr;row-gap:5px;align-items:baseline">
+          <span style="color:var(--t2);font-size:11px;text-transform:uppercase;letter-spacing:0.5px">Game</span>
+          <span>${_buildTallyRow(_gameLog)}</span>
+          <span style="color:var(--t2);font-size:11px;text-transform:uppercase;letter-spacing:0.5px">League</span>
+          <span>${_buildTallyRow(_leagueLog)}</span>
+        </div>
+      </div>
+    </div>` : '';
+
+  // Build bowler chips from roster + Other option
+  const roster = (db.bowlers||[]).filter(b=>b.Active!==false);
+
+  // For F10: pre-select bowler if all existing F10 entries share the same bowler
+  const f10Entries = isF10 ? (series.beerLog||[]).filter(e=>e.game===gameNum&&e.frame===10) : [];
+  const f10Bowler  = isF10 && f10Entries.length && f10Entries.every(e=>e.bowlerName===f10Entries[0].bowlerName)
+    ? f10Entries[0].bowlerName : null;
+  const preselect  = isF10 ? f10Bowler : (series.beerLog||[]).find(e=>e.game===gameNum&&e.frame===frameNum)?.bowlerName || null;
+
+  const rosterChips = roster.map(b =>
+    `<div class="beer-bowler-chip${preselect===b.Name?' selected':''}" onclick="beerSelectBowler(this,'${b.Name.replace(/'/g,"\\'")}')">
+      ${b.IsMe?'★ ':''}${b.Name}
+    </div>`
+  ).join('');
+  const otherPresel = preselect && !roster.some(b=>b.Name===preselect);
+
+  // F10 attempt checkboxes (shown after bowler selection via JS toggle)
+  const f10ChecksHTML = isF10 ? `
+    <div id="beer-att-wrap" style="display:${preselect?'block':'none'};margin-bottom:16px">
+      <div style="font-size:12px;font-weight:700;color:var(--t3);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px">Which attempts?</div>
+      <div style="display:flex;gap:8px">
+        ${[1,2,3].map(n => {
+          const att1c = f10Entries.some(e=>e.attempt===1 && e.bowlerName===(preselect||''));
+          const att2c = f10Entries.some(e=>e.attempt===2 && e.bowlerName===(preselect||''));
+          const checked = f10Entries.some(e=>e.attempt===n && e.bowlerName===(preselect||''));
+          const disabled = (n===2 && !att1c) || (n===3 && !(att1c && att2c));
+          return `<label style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:8px;border-radius:10px;background:var(--bg3);border:1px solid ${checked?'var(--gold)':'var(--border2)'};cursor:pointer;opacity:${disabled?'0.4':'1'}">
+            <input type="checkbox" id="beer-att-${n}" ${checked?'checked':''} ${disabled?'disabled':''} onchange="beerAttChange(${n})" style="accent-color:var(--gold);width:16px;height:16px">
+            <span style="font-size:13px;font-weight:600;color:var(--t1)">Att ${n}</span>
+          </label>`;
+        }).join('')}
+      </div>
+    </div>` : '';
+
+  openModal(`
+    <div class="modal-title">🍺 Beer Frame</div>
+    <div style="font-size:13px;color:var(--t2);text-align:center;margin-bottom:16px">
+      Game ${gameNum} · Frame ${frameNum}
+    </div>
+    ${tallyHTML}
+    <div style="font-size:12px;font-weight:700;color:var(--t3);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px">Who owed?</div>
+    <div id="beer-bowler-chips" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px">
+      ${rosterChips}
+      <div class="beer-bowler-chip${otherPresel?' selected':''}" onclick="beerSelectBowler(this,'__other__')">+ Other</div>
+    </div>
+    <div id="beer-other-wrap" style="display:${otherPresel?'block':'none'};margin-bottom:16px">
+      <input id="beer-other-input" class="beer-other-input" placeholder="Enter name" value="${otherPresel?preselect:''}" style="width:100%;box-sizing:border-box">
+    </div>
+    ${f10ChecksHTML}
+    ${!isF10 && preselect ? `<button class="btn" style="background:var(--bg3);color:var(--red);margin-bottom:8px;width:100%" onclick="deleteBeerFrame(${gameNum},${frameNum},1)">Remove Entry</button>` : ''}
+    ${isF10 && f10Entries.length ? `<button class="btn" style="background:var(--bg3);color:var(--red);margin-bottom:8px;width:100%" onclick="deleteAllF10Beer(${gameNum})">Clear Frame 10</button>` : ''}
+    <button class="btn btn-gold" onclick="saveBeerFrame(${gameNum},${frameNum})">Save</button>
+  `);
+}
+
+
+function beerSelectBowler(el, name) {
+  document.querySelectorAll('.beer-bowler-chip').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  const wrap = document.getElementById('beer-other-wrap');
+  if (wrap) wrap.style.display = name==='__other__' ? 'block' : 'none';
+  // Show attempt checkboxes for F10 once a bowler is chosen
+  const attWrap = document.getElementById('beer-att-wrap');
+  if (attWrap) attWrap.style.display = 'block';
+}
+
+function beerAttChange(changed) {
+  const cb1 = document.getElementById('beer-att-1');
+  const cb2 = document.getElementById('beer-att-2');
+  const cb3 = document.getElementById('beer-att-3');
+  if (!cb1 || !cb2 || !cb3) return;
+
+  // Sequential dependency: att2 requires att1; att3 requires att1+att2
+  if (changed === 1 && !cb1.checked) {
+    cb2.checked = false;
+    cb3.checked = false;
+  }
+  if (changed === 2 && !cb2.checked) {
+    cb3.checked = false;
+  }
+  if (changed === 2 && cb2.checked && !cb1.checked) {
+    cb2.checked = false; // can't check 2 without 1
+  }
+  if (changed === 3 && cb3.checked && (!cb1.checked || !cb2.checked)) {
+    cb3.checked = false; // can't check 3 without 1+2
+  }
+
+  // Update disabled state + border colors
+  cb2.disabled = !cb1.checked;
+  cb3.disabled = !(cb1.checked && cb2.checked);
+
+  [1,2,3].forEach(n => {
+    const cb = document.getElementById('beer-att-'+n);
+    if (!cb) return;
+    const lbl = cb.closest('label');
+    if (!lbl) return;
+    lbl.style.borderColor = cb.checked ? 'var(--gold)' : 'var(--border2)';
+    lbl.style.opacity = cb.disabled ? '0.4' : '1';
+  });
+}
+
+function saveBeerFrame(gameNum, frameNum) {
+  const isF10 = frameNum === 10;
+  let bowlerName = '';
+  const sel = document.querySelector('.beer-bowler-chip.selected');
+  if (!sel) { toast('Select who owed'); return; }
+  const raw = sel.textContent.trim().replace(/^★\s*/, '');
+  if (raw === '+ Other') {
+    bowlerName = (document.getElementById('beer-other-input')?.value||'').trim();
+    if (!bowlerName) { toast('Enter a name'); return; }
+  } else {
+    bowlerName = raw;
+  }
+  const series = db.series.find(s=>s.SeriesID===G.seriesID);
+  if (!series) return;
+  if (!series.beerLog) series.beerLog = [];
+
+  if (isF10) {
+    const checkedAtts = [1,2,3].filter(n => document.getElementById('beer-att-'+n)?.checked);
+    if (!checkedAtts.length) { toast('Select at least one attempt'); return; }
+    // Overwrite any existing entries for the checked attempt slots
+    checkedAtts.forEach(n => {
+      series.beerLog = series.beerLog.filter(e => !(e.game===gameNum && e.frame===10 && e.attempt===n));
+      series.beerLog.push({ game: gameNum, frame: 10, attempt: n, bowlerName, ts: Date.now() });
+    });
+    // Also remove unchecked attempts if they were previously logged for this bowler
+    [1,2,3].filter(n=>!checkedAtts.includes(n)).forEach(n => {
+      series.beerLog = series.beerLog.filter(e => !(e.game===gameNum && e.frame===10 && e.attempt===n && e.bowlerName===bowlerName));
+    });
+  } else {
+    series.beerLog = series.beerLog.filter(e => !(e.game===gameNum && e.frame===frameNum));
+    series.beerLog.push({ game: gameNum, frame: frameNum, attempt: 1, bowlerName, ts: Date.now() });
+  }
+  beerRevalidateWinner(series);
+  saveAll();
+  closeModal();
+  renderScorecard('sc-grid', false);
+  toast('🍺 Beer frame logged');
+}
+
+function deleteBeerFrame(gameNum, frameNum, att) {
+  const attNum = att || 1;
+  const isF10 = frameNum === 10;
+  const series = db.series.find(s=>s.SeriesID===G.seriesID);
+  if (!series) return;
+  series.beerLog = (series.beerLog||[]).filter(e => !(
+    e.game===gameNum && e.frame===frameNum && (isF10 ? e.attempt===attNum : true)
+  ));
+  beerRevalidateWinner(series);
+  saveAll();
+  closeModal();
+  renderScorecard('sc-grid', false);
+  toast('Beer frame removed');
+}
+
+function setBeerSeriesWinner(name) {
+  const series = db.series.find(s=>s.SeriesID===G.seriesID);
+  if (!series) return;
+  series.beerSeriesWinner = name;
+  saveAll();
+  // Reopen modal at same context — re-derive frameNum from last known state
+  const lastFrame = window._beerModalLastFrame || 1;
+  const lastAtt   = window._beerModalLastAtt   || 1;
+  openBeerFrameModal(lastFrame, lastAtt);
+}
+
+function clearBeerSeriesWinner() {
+  const series = db.series.find(s=>s.SeriesID===G.seriesID);
+  if (!series) return;
+  delete series.beerSeriesWinner;
+  saveAll();
+  const lastFrame = window._beerModalLastFrame || 1;
+  const lastAtt   = window._beerModalLastAtt   || 1;
+  openBeerFrameModal(lastFrame, lastAtt);
+}
+
+function deleteAllF10Beer(gameNum) {
+  const series = db.series.find(s=>s.SeriesID===G.seriesID);
+  if (!series) return;
+  series.beerLog = (series.beerLog||[]).filter(e=>!(e.game===gameNum && e.frame===10));
+  beerRevalidateWinner(series);
+  saveAll();
+  closeModal();
+  renderScorecard('sc-grid', false);
+  toast('Frame 10 beer entries cleared');
+}
+
+function beerRevalidateWinner(series) {
+  if (!series.beerSeriesWinner) return;
+  const tally = {};
+  (series.beerLog||[]).forEach(e => { tally[e.bowlerName] = (tally[e.bowlerName]||0) + 1; });
+  const entries = Object.entries(tally).sort((a,b)=>b[1]-a[1]);
+  const topCount = entries[0]?.[1] || 0;
+  const tiedNames = entries.filter(([,ct])=>ct===topCount).map(([n])=>n);
+  // Keep winner only if they're still in a tie; otherwise clear
+  if (tiedNames.length <= 1 || !tiedNames.includes(series.beerSeriesWinner)) {
+    delete series.beerSeriesWinner;
+  }
 }
 
 /* =============================================================
