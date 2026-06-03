@@ -2925,7 +2925,24 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
 
   <!-- ── DEVKIT OVERLAY ─────────────────────────────────────── -->
   <div id="dk-version">DEV v22</div>
-  <div id="dk-toggle" onclick="dkTogglePanel()" title="DevKit">🐛</div>
+  <div id="dk-toggle" onclick="dkTogglePanel()" title="DevKit"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="ball-grad" cx="38%" cy="35%" r="60%">
+      <stop offset="0%" stop-color="#9D4EDD"/>
+      <stop offset="100%" stop-color="#3a1060"/>
+    </radialGradient>
+    <radialGradient id="ball-sheen" cx="35%" cy="30%" r="45%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.22)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+    </radialGradient>
+  </defs>
+  <circle cx="11" cy="11" r="10" fill="url(#ball-grad)"/>
+  <circle cx="11" cy="11" r="10" fill="url(#ball-sheen)"/>
+  <!-- finger holes -->
+  <circle cx="8.5" cy="8" r="1.35" fill="rgba(0,0,0,0.45)"/>
+  <circle cx="12" cy="7" r="1.35" fill="rgba(0,0,0,0.45)"/>
+  <circle cx="13.5" cy="10.5" r="1.35" fill="rgba(0,0,0,0.45)"/>
+</svg></div>
   <div id="dk-inspect-overlay"></div>
   <div id="dk-inspect-banner"></div>
 
@@ -2964,7 +2981,7 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
     <!-- Tabs -->
     <div id="dk-tabs">
       <div class="dk-tab dk-active" onclick="dkTab('entries')">Entries</div>
-      <div class="dk-tab" onclick="dkTab('map');if(!_dk.mapLoaded){dkmInit();_dk.mapLoaded=true;}">Log Item</div>
+      <div class="dk-tab" onclick="dkTab('map');if(!_dk.mapLoaded){dkmInit();_dk.mapLoaded=true;}dkmStep('quicklog');">Log Item</div>
       <div class="dk-tab" onclick="dkTab('state')">State</div>
     </div>
     <!-- Body -->
@@ -3029,6 +3046,7 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
             <button onclick="dkmSaveDetail()" style="width:100%;margin-top:8px;padding:11px;border-radius:10px;background:var(--teal);color:#000;font-size:14px;font-weight:700;border:none;cursor:pointer">Save Changes</button>
           </div>
           <!-- Step 4: New object form -->
+          <div id="dkm-step-quicklog" style="display:none"></div>
           <div id="dkm-step-new" style="display:none;padding:8px 10px 12px">
             <div style="font-size:12px;color:var(--t2);margin-bottom:10px;line-height:1.5" id="dkm-new-ctx"></div>
             <div style="background:var(--bg2);border:1px solid var(--border1);border-radius:10px;overflow:hidden">
@@ -3512,6 +3530,7 @@ const ROOT_SCREENS = ['s-home','s-leagues','s-open','s-tournaments','s-stats','s
 const SCORING_SCREENS = new Set(['s-series','s-tournament-series','s-game-select','s-scoring','s-game-complete','s-stats','s-games','s-handicap-tb','s-handicap-league','s-tb-sessions']);
 
 async function navTo(screenId, opts={}) {
+  toastDismiss(); // clear any stuck toast on navigation
   if (!opts.back) G.screenHistory.push(getCurrentScreen());
   // Persist state every time we navigate (cheap; catches mid-session tab-switches too)
   saveGState();
@@ -4044,6 +4063,14 @@ function openLeagueHandicap(leagueID) {
   navTo('s-handicap-league');
 }
 
+function hdcpManualRecalc() {
+  if (!_hdcpLeagueID) return;
+  silentHdcpRecalc(_hdcpLeagueID).then(() => {
+    renderLeagueHandicap();
+    toast('Handicap recalculated ✓');
+  });
+}
+
 function renderLeagueHandicap() {
   const el = document.getElementById('hdcp-league-content');
   if (!el || _hdcpLeagueID == null) return;
@@ -4058,7 +4085,7 @@ function renderLeagueHandicap() {
         <div class="hdcp-hero">
           <div class="hdcp-hero-val">${result.handicap}${result.locked ? ' 🔒' : ''}</div>
           <div class="hdcp-hero-lbl">${result.locked ? 'Locked Handicap · per game' : 'Current Handicap · per game'}</div>
-          ${result.avg != null ? `<div class="hdcp-hero-avg">Avg: ${result.avg} · ${result.reason}</div>` : `<div class="hdcp-hero-avg" style="color:var(--gold)">${result.reason}</div>`}
+          ${result.avg != null ? `<div class="hdcp-hero-avg">Avg: ${result.avg != null ? Number(result.avg).toFixed(2) : result.avg} · ${result.reason}</div>` : `<div class="hdcp-hero-avg" style="color:var(--gold)">${result.reason}</div>`}
           <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border1);
             font-size:11px;color:var(--t3);line-height:1.7">
             Season games: ${result.totalGames} &nbsp;|&nbsp;
@@ -4075,6 +4102,9 @@ function renderLeagueHandicap() {
         <button class="btn btn-secondary btn-sm" style="font-size:11px;color:var(--red);
           border-color:rgba(232,93,76,0.3);padding:6px 14px"
           onclick="hdcpResetConfig()">Reset Config</button>
+        <button class="btn btn-ghost btn-sm" style="font-size:11px;color:var(--gold);
+          border-color:rgba(255,215,0,0.3);padding:6px 14px;margin-top:6px"
+          onclick="hdcpManualRecalc()">↺ Recalculate from Games</button>
       </div>
     </div>
 
@@ -11505,21 +11535,21 @@ function stepDateBack() {
 }
 
 function openGameFromList(gameID, seriesID) {
-  // Set up context and navigate to game complete screen
+  // Set up context and navigate to series game list (s-game-select)
   const game = db.games.find(g => g.GameID === gameID);
   const series = db.series.find(s => s.SeriesID === seriesID);
   if (!game || !series) { toast('Game not found'); return; }
-  
+
   G.leagueID = series.LeagueID;
   G.seriesID = seriesID;
   G.gameID = gameID;
   G.gameNum = game.GameNumber || 1;
-  
+
   // Check if this is a score-only game
   const frames = db.frames.filter(f => f.GameID === gameID);
   G.scoreOnlyGame = frames.length === 0;
-  
-  navTo('s-game-complete');
+
+  navTo('s-game-select');
 }
 
 /* =============================================================
@@ -15407,6 +15437,121 @@ function devDeletePattern(id) {
   saveDB(); toast('Pattern removed'); openDevModal('patterns');
 }
 
+function runDataIntegrityScan() {
+  // Collect suspect records
+  const issues = [];
+
+  // Zero or null score games (that have been completed / closed)
+  const zeroScore = db.games.filter(g =>
+    (g.FinalScore === 0 || g.FinalScore == null) && g.GameNumber
+  );
+  zeroScore.forEach(g => {
+    const s = db.series.find(s => s.SeriesID === g.SeriesID);
+    issues.push({
+      type: 'zero-score',
+      label: `Zero/null score — Game #${g.GameNumber}`,
+      sub: s ? `Series ${g.SeriesID} · ${s.DateBowled || '?'}` : `Orphaned (no series)`,
+      gameID: g.GameID,
+      seriesID: g.SeriesID
+    });
+  });
+
+  // Games with no parent series
+  const seriesIDs = new Set(db.series.map(s => s.SeriesID));
+  db.games.filter(g => !seriesIDs.has(g.SeriesID)).forEach(g => {
+    issues.push({
+      type: 'orphan-game',
+      label: `Orphaned game — Game #${g.GameNumber}`,
+      sub: `SeriesID ${g.SeriesID} not found`,
+      gameID: g.GameID,
+      seriesID: g.SeriesID
+    });
+  });
+
+  // Series with no games
+  const gameSeriesIDs = new Set(db.games.map(g => g.SeriesID));
+  db.series.filter(s => !gameSeriesIDs.has(s.SeriesID)).forEach(s => {
+    issues.push({
+      type: 'empty-series',
+      label: `Empty series — ${s.DateBowled || 'no date'}`,
+      sub: `SeriesID ${s.SeriesID} · LeagueID ${s.LeagueID}`,
+      gameID: null,
+      seriesID: s.SeriesID
+    });
+  });
+
+  // Frames with no parent game
+  const gameIDs = new Set(db.games.map(g => g.GameID));
+  const orphanFrames = db.frames.filter(f => !gameIDs.has(f.GameID));
+  if (orphanFrames.length) {
+    issues.push({
+      type: 'orphan-frames',
+      label: `${orphanFrames.length} orphaned frame record${orphanFrames.length !== 1 ? 's' : ''}`,
+      sub: 'Frames referencing missing GameIDs',
+      gameID: null,
+      seriesID: null,
+      frameIDs: orphanFrames.map(f => f.FrameID)
+    });
+  }
+
+  if (!issues.length) {
+    openModal(`
+      <div class="modal-title">🔍 Data Scan</div>
+      <div style="text-align:center;padding:20px 0">
+        <div style="font-size:32px;margin-bottom:8px">✅</div>
+        <div style="font-size:15px;font-weight:700;color:var(--t1)">No issues found</div>
+        <div style="font-size:12px;color:var(--t3);margin-top:6px">
+          ${db.games.length} games · ${db.series.length} series · ${db.frames.length} frames
+        </div>
+      </div>
+      <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+    `);
+    return;
+  }
+
+  const rows = issues.map((iss, i) => `
+    <div style="background:var(--bg3);border-radius:10px;padding:10px 12px;margin-bottom:8px;
+      border-left:3px solid ${iss.type==='zero-score'?'var(--gold)':iss.type==='orphan-game'?'var(--red)':iss.type==='empty-series'?'var(--purple)':'var(--teal)'}">
+      <div style="font-size:13px;font-weight:700;color:var(--t1)">${iss.label}</div>
+      <div style="font-size:11px;color:var(--t3);margin-top:2px">${iss.sub}</div>
+      ${iss.gameID ? `<button class="btn btn-ghost btn-sm" style="margin-top:6px;font-size:11px;color:var(--red);border-color:rgba(232,93,76,0.3)"
+        onclick="scanDeleteGame(${iss.gameID},${iss.seriesID||'null'},${i})">Delete Game</button>` : ''}
+      ${iss.type==='empty-series' ? `<button class="btn btn-ghost btn-sm" style="margin-top:6px;font-size:11px;color:var(--red);border-color:rgba(232,93,76,0.3)"
+        onclick="scanDeleteSeries(${iss.seriesID},${i})">Delete Series</button>` : ''}
+      ${iss.type==='orphan-frames' ? `<button class="btn btn-ghost btn-sm" style="margin-top:6px;font-size:11px;color:var(--red);border-color:rgba(232,93,76,0.3)"
+        onclick="scanDeleteOrphanFrames()">Delete Orphaned Frames</button>` : ''}
+    </div>`).join('');
+
+  openModal(`
+    <div class="modal-title">🔍 Data Scan</div>
+    <div style="font-size:13px;color:var(--t3);margin-bottom:14px">${issues.length} issue${issues.length!==1?'s':''} found</div>
+    ${rows}
+    <button class="btn btn-secondary" onclick="closeModal()" style="margin-top:8px">Close</button>
+  `);
+}
+
+function scanDeleteGame(gameID, seriesID, issueIdx) {
+  if (!confirm('Delete this game and its frames/attempts?')) return;
+  db.games = db.games.filter(g => g.GameID !== gameID);
+  db.frames = db.frames.filter(f => f.GameID !== gameID);
+  db.attempts = db.attempts.filter(a => a.GameID !== gameID);
+  saveAll().then(() => { closeModal(); toast('Game deleted'); runDataIntegrityScan(); });
+}
+
+function scanDeleteSeries(seriesID, issueIdx) {
+  if (!confirm('Delete this empty series?')) return;
+  db.series = db.series.filter(s => s.SeriesID !== seriesID);
+  saveAll().then(() => { closeModal(); toast('Series deleted'); runDataIntegrityScan(); });
+}
+
+function scanDeleteOrphanFrames() {
+  if (!confirm('Delete all orphaned frame records?')) return;
+  const gameIDs = new Set(db.games.map(g => g.GameID));
+  db.frames = db.frames.filter(f => gameIDs.has(f.GameID));
+  db.attempts = db.attempts.filter(a => gameIDs.has(a.GameID));
+  saveAll().then(() => { closeModal(); toast('Orphaned frames cleared'); runDataIntegrityScan(); });
+}
+
 function openSettingsModal() {
   openModal(`
     <div class="modal-title">Settings</div>
@@ -15482,6 +15627,8 @@ function openSettingsModal() {
           </div>`).join('')}
       </div>
       <button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="openExportModal()">↕ Import / Export</button>
+      <button class="btn btn-ghost btn-sm" style="margin-top:6px;color:var(--gold);border-color:rgba(255,215,0,0.3)"
+        onclick="runDataIntegrityScan()">🔍 Scan &amp; Report</button>
     </div>
 
 
@@ -22448,9 +22595,10 @@ function dkRenderEntries() {
         _dkmRow:  true
       };
     });
-  // Also include legacy standalone log entries that have no mapRowId
-  var legacy = dkLoadLog().filter(function(e){ return !e.mapRowId; });
-  var all = dkmEntries.concat(legacy).sort(function(a,b){ return b.id - a.id; });
+  // Standalone log entries (no mapRowId) sorted newest-first, then map items with content
+  var standalone = dkLoadLog().filter(function(e){ return !e.mapRowId; })
+    .sort(function(a,b){ return b.id - a.id; });
+  var all = standalone.concat(dkmEntries.sort(function(a,b){ return b.id - a.id; }));
   // Apply filter
   var filtered = filter === 'all' ? all : all.filter(function(e){
     return (e.status||'open') === filter;
@@ -23382,11 +23530,88 @@ function dkmInit() { dkmLoadEdits(); dkmStep('screen'); dkmRenderScreens(); }
 
 function dkmStep(step) {
   DKM.step = step;
-  ['screen','object','detail','new'].forEach(function(s){
+  ['screen','object','detail','new','quicklog'].forEach(function(s){
     var el = document.getElementById('dkm-step-'+s);
     if (el) el.style.display = s===step ? '' : 'none';
   });
+  if (step === 'quicklog') dkmRenderQuickLog();
   dkmRenderBreadcrumb();
+}
+
+function dkmRenderQuickLog() {
+  var cats = [
+    {id:'bug',  label:'Bug',     cls:'dk-sel-bug'},
+    {id:'ui',   label:'UI',      cls:'dk-sel-ui'},
+    {id:'feat', label:'Feature', cls:'dk-sel-feat'},
+    {id:'note', label:'Note',    cls:'dk-sel-note'}
+  ];
+  var selCat = DKM._editCat || 'note';
+  var catBtns = cats.map(function(c){
+    return '<button class="dk-cat-btn'+(selCat===c.id?' '+c.cls:'')+'" onclick="dkmSetQuickCat(\'' +c.id+ '\')">'
+      +c.label+'</button>';
+  }).join('');
+
+  var screens = ['HOME','LEAGUES','SERIES','SCORING','TEAMBOWL','STATS','BALLS','OPEN','MODALS'];
+  var curScreen = dkmScreenKey();
+  var screenOpts = screens.map(function(s){
+    return '<option value="'+s+'"'+(curScreen===s?' selected':'')+'>'+s+'</option>';
+  }).join('');
+
+  var el = document.getElementById('dkm-step-quicklog');
+  if (!el) return;
+  el.innerHTML =
+    '<div style="padding:10px 10px 12px">'
+    +'<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--t3);margin-bottom:6px">Type</div>'
+    +'<div class="dk-cat-row" id="dkm-ql-cats">'+catBtns+'</div>'
+    +'<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--t3);margin-bottom:6px">Description</div>'
+    +'<textarea id="dkm-ql-msg" rows="3" style="width:100%;background:var(--bg3);border:1px solid var(--border1);'
+    +'color:var(--t1);font-size:13px;padding:8px 10px;border-radius:8px;font-family:inherit;resize:none;outline:none;'
+    +'box-sizing:border-box;line-height:1.5;margin-bottom:8px" placeholder="Describe the issue or request…"></textarea>'
+    +'<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--t3);margin-bottom:6px">Screen</div>'
+    +'<select id="dkm-ql-screen" style="width:100%;background:var(--bg3);border:1px solid var(--border1);'
+    +'color:var(--t1);font-size:13px;padding:8px 10px;border-radius:8px;outline:none;margin-bottom:12px;'
+    +'font-family:inherit;-webkit-appearance:none">'+screenOpts+'</select>'
+    +'<button onclick="dkmSaveQuickLog()" style="width:100%;padding:11px;border-radius:10px;'
+    +'background:rgba(0,217,217,0.15);color:var(--teal);font-size:14px;font-weight:700;'
+    +'border:1px solid rgba(0,217,217,0.35);cursor:pointer">Save Log Entry</button>'
+    +'<button onclick="dkmStep(\'new\')" style="width:100%;margin-top:6px;padding:9px;border-radius:10px;'
+    +'background:var(--bg3);color:var(--t3);font-size:12px;font-weight:600;'
+    +'border:1px solid var(--border1);cursor:pointer">+ Add to Map instead</button>'
+    +'</div>';
+}
+
+function dkmSetQuickCat(cat) {
+  DKM._editCat = cat;
+  var cats = ['bug','ui','feat','note'];
+  var clsMap = {bug:'dk-sel-bug',ui:'dk-sel-ui',feat:'dk-sel-feat',note:'dk-sel-note'};
+  document.querySelectorAll('#dkm-ql-cats .dk-cat-btn').forEach(function(btn, i){
+    btn.className = 'dk-cat-btn' + (cats[i]===cat ? ' '+clsMap[cat] : '');
+  });
+}
+
+function dkmSaveQuickLog() {
+  var msg    = (document.getElementById('dkm-ql-msg')    ||{}).value||'';
+  var screen = (document.getElementById('dkm-ql-screen') ||{}).value||getCurrentScreen();
+  if (!msg.trim()) { toast('Add a description first'); return; }
+  var snap = {
+    screen:   getCurrentScreen(),
+    leagueID: G.leagueID||null, seriesID: G.seriesID||null, gameID: G.gameID||null,
+    modalOpen: !!(document.getElementById('modal-bg')&&document.getElementById('modal-bg').classList.contains('open'))
+  };
+  var entry = {
+    id: Date.now(), ts: new Date().toISOString(),
+    cat: DKM._editCat||'note', msg: msg.trim(),
+    screen: screen, ref: null, mapRowId: null,
+    status: 'open', snap: snap
+  };
+  var log = dkLoadLog();
+  log.unshift(entry);
+  dkSaveLog(log);
+  dkRenderEntries();
+  // Clear and confirm
+  var msgEl = document.getElementById('dkm-ql-msg');
+  if (msgEl) msgEl.value = '';
+  toast('Log entry saved ✓');
 }
 
 function dkmRenderBreadcrumb() {
