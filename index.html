@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="BowlingDB">
-<title>BowlingDB v 3.0.0</title>
+<title>BowlingDB v3.0.1</title>
 <style>
 /* ============================================================
    DESIGN TOKENS
@@ -124,6 +124,20 @@ body {
 }
 #hdr-back.show { opacity:1; pointer-events:auto; }
 #hdr-title { flex:1; font-size:18px; font-weight:800; letter-spacing:-0.3px; }
+/* ── Build reference badge ─────────────────────────────────── */
+#hdr-build-ref {
+  font-size: 9px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.28);
+  letter-spacing: 0.3px;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+  align-self: flex-end;
+  padding-bottom: 4px;
+  margin-left: 2px;
+}
 #hdr-title .brand { color:var(--teal); }
 #hdr-right { display:flex; align-items:center; gap:8px; flex-shrink:0; }
 .hdr-icon-btn {
@@ -2464,6 +2478,7 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
       </svg>
     </div>
     <div id="hdr-title" onclick="dkHeaderTap()"><span class="brand">Bowling</span>DB</div>
+    <span id="hdr-build-ref">v30 · 2026-06-07</span>
     <div id="hdr-right">
       <div class="hdr-icon-btn" id="hdr-delete-game-btn" onclick="confirmDeleteGame(G.gameID)" title="Delete Game" style="display:none">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -9882,834 +9897,993 @@ function openBowlSeriesIDs() {
   return new Set((db.openSessions||[]).map(s=>s.SessionID));
 }
 
+/* ============================================================
+   STATS SCREEN — v31 Redesign
+   Scope bar → Hero row → Tabs (Overview / Strikes / Spares / Balls)
+   ============================================================ */
+
+/* ── Season derivation helper ───────────────────────────────
+   A series belongs to season Y–(Y+1) if DateBowled is
+   Aug 1 of Y through Jul 31 of (Y+1).
+   Edge case: leagues ending before Aug of a calendar year
+   belong to the prior season start. ────────────────────────*/
+function getSeriesSeason(dateStr) {
+  if (!dateStr) return null;
+  const d = new Date(dateStr + 'T12:00:00');
+  const y = d.getFullYear();
+  const m = d.getMonth() + 1; // 1-based
+  const startYear = m >= 8 ? y : y - 1;
+  const short = (n) => String(n).slice(-2);
+  return `${short(startYear)}-${short(startYear + 1)}`;
+}
+
+function deriveSeasons(games) {
+  const seen = new Set();
+  games.forEach(g => {
+    const s = db.series.find(x => x.SeriesID === g.SeriesID);
+    const season = getSeriesSeason(s?.DateBowled);
+    if (season) seen.add(season);
+  });
+  return [...seen].sort((a, b) => b.localeCompare(a)); // most recent first
+}
+
+/* ── Scope state ─────────────────────────────────────────────
+   Persisted in localStorage as bowlingdb_stats_scope.
+   context: 'all' | 'league:{id}' | 'center:{id}'
+   period:  'all' | 'season:{label}' | 'last10wks' | 'custom'
+   condition: 'any' | 'standard' | 'sport'
+   customFrom / customTo: date strings for custom period
+   activeTab: 'overview' | 'strikes' | 'spares' | 'balls'
+   tabOrder: array of tab keys
+   ──────────────────────────────────────────────────────────── */
+const STATS_SCOPE_KEY = 'bowlingdb_stats_scope';
+function _statsLoadScope() {
+  try { return JSON.parse(localStorage.getItem(STATS_SCOPE_KEY) || '{}'); } catch(e) { return {}; }
+}
+function _statsSaveScope(sc) {
+  try { localStorage.setItem(STATS_SCOPE_KEY, JSON.stringify(sc)); } catch(e) {}
+}
+function _statsGetScope() {
+  const sc = _statsLoadScope();
+  if (!sc.context)   sc.context   = 'all';
+  if (!sc.period)    sc.period    = 'last10wks';
+  if (!sc.condition) sc.condition = 'any';
+  if (!sc.activeTab) sc.activeTab = 'overview';
+  if (!sc.tabOrder)  sc.tabOrder  = ['overview','strikes','spares','balls'];
+  return sc;
+}
+
+/* ── Apply scope filter to a game list ──────────────────────*/
+function _statsFilterGames(allGames, sc) {
+  let games = [...allGames];
+
+  // Context filter
+  if (sc.context && sc.context !== 'all') {
+    const [type, idStr] = sc.context.split(':');
+    const id = parseInt(idStr);
+    if (type === 'league') {
+      const sids = new Set(db.series.filter(s => s.LeagueID === id).map(s => s.SeriesID));
+      games = games.filter(g => sids.has(g.SeriesID));
+    } else if (type === 'center') {
+      const sids = new Set(db.series.filter(s => s.CenterID === id).map(s => s.SeriesID));
+      games = games.filter(g => sids.has(g.SeriesID));
+    }
+  }
+
+  // Condition filter
+  if (sc.condition === 'sport') {
+    games = games.filter(g => {
+      const series = db.series.find(s => s.SeriesID === g.SeriesID);
+      const league = series ? db.leagues.find(l => l.LeagueID === series.LeagueID) : null;
+      return !!(league?.Sport);
+    });
+  } else if (sc.condition === 'standard') {
+    games = games.filter(g => {
+      const series = db.series.find(s => s.SeriesID === g.SeriesID);
+      const league = series ? db.leagues.find(l => l.LeagueID === series.LeagueID) : null;
+      return !(league?.Sport);
+    });
+  }
+
+  // Period filter
+  const period = sc.period || 'all';
+  if (period === 'last10wks') {
+    // Last 10 distinct calendar weeks in which at least one LEAGUE series was bowled
+    // Only league series (LeagueID>0, no TournamentID) define what a "bowling week" is
+    const leagueSeriesWithDates = db.series.filter(s => s.DateBowled && s.LeagueID > 0 && !s.TournamentID);
+    const weekKey = (dateStr) => {
+      const d = new Date(dateStr + 'T12:00:00');
+      const thursday = new Date(d);
+      thursday.setDate(d.getDate() - ((d.getDay() + 6) % 7) + 3);
+      const year = thursday.getFullYear();
+      const jan4 = new Date(year, 0, 4);
+      const week = Math.ceil(((thursday - jan4) / 86400000 + jan4.getDay() + 1) / 7);
+      return `${year}-W${String(week).padStart(2,'0')}`;
+    };
+    const allWeeks = [...new Set(leagueSeriesWithDates.map(s => weekKey(s.DateBowled)))]
+      .sort((a,b) => b.localeCompare(a));
+    const last10Weeks = new Set(allWeeks.slice(0, 10));
+    const validSIDs = new Set(leagueSeriesWithDates.filter(s => last10Weeks.has(weekKey(s.DateBowled))).map(s => s.SeriesID));
+    games = games.filter(g => validSIDs.has(g.SeriesID));
+  } else if (period.startsWith('season:')) {
+    const label = period.slice(7);
+    const validSIDs = new Set(
+      db.series.filter(s => getSeriesSeason(s.DateBowled) === label).map(s => s.SeriesID)
+    );
+    games = games.filter(g => validSIDs.has(g.SeriesID));
+  } else if (period === 'custom') {
+    const from = sc.customFrom ? new Date(sc.customFrom + 'T00:00:00') : null;
+    const to   = sc.customTo   ? new Date(sc.customTo   + 'T23:59:59') : null;
+    games = games.filter(g => {
+      const s = db.series.find(x => x.SeriesID === g.SeriesID);
+      if (!s?.DateBowled) return true;
+      const d = new Date(s.DateBowled + 'T12:00:00');
+      if (from && d < from) return false;
+      if (to   && d > to)   return false;
+      return true;
+    });
+  }
+  // 'all' → no filter
+  return games;
+}
+
+/* ── Scope label for hero subtitle ─────────────────────────*/
+function _statsScopeLabel(sc) {
+  let parts = [];
+  if (sc.context && sc.context !== 'all') {
+    const [type, idStr] = sc.context.split(':');
+    const id = parseInt(idStr);
+    if (type === 'league') {
+      const lg = db.leagues.find(l => l.LeagueID === id);
+      parts.push(lg?.LeagueName || 'League');
+    } else if (type === 'center') {
+      const ct = db.centers.find(c => c.CenterID === id);
+      parts.push(ct?.CenterName || 'Center');
+    }
+  }
+  const period = sc.period || 'all';
+  if (period === 'last10wks') parts.push('Last 10 wks');
+  else if (period === 'all') parts.push('All time');
+  else if (period.startsWith('season:')) parts.push(period.slice(7) + ' season');
+  else if (period === 'custom') {
+    const f = sc.customFrom || ''; const t = sc.customTo || '';
+    if (f && t) parts.push(f.slice(5) + ' – ' + t.slice(5));
+    else if (f) parts.push('From ' + f.slice(5));
+    else if (t) parts.push('To ' + t.slice(5));
+    else parts.push('Custom');
+  }
+  if (sc.condition === 'sport') parts.push('Sport');
+  else if (sc.condition === 'standard') parts.push('Standard');
+  return parts.join(' · ') || 'All time';
+}
+
+/* ── Trend: compare current period avg vs prior equivalent ─*/
+function _statsTrendDelta(scopedGames, sc, allStdGames) {
+  if (!scopedGames.length) return null;
+  const curAvg = scopedGames.reduce((s,g) => s + g.FinalScore, 0) / scopedGames.length;
+  // For last10wks: prior 10 weeks before the current window
+  // For season: prior season
+  // For all/custom: no comparison
+  const period = sc.period || 'all';
+  let priorGames = [];
+  if (period === 'last10wks') {
+    const leagueSeriesWithDates = db.series.filter(s => s.DateBowled && s.LeagueID > 0 && !s.TournamentID);
+    const weekKey = (dateStr) => {
+      const d = new Date(dateStr + 'T12:00:00');
+      const thursday = new Date(d);
+      thursday.setDate(d.getDate() - ((d.getDay() + 6) % 7) + 3);
+      const year = thursday.getFullYear();
+      const jan4 = new Date(year, 0, 4);
+      const week = Math.ceil(((thursday - jan4) / 86400000 + jan4.getDay() + 1) / 7);
+      return `${year}-W${String(week).padStart(2,'0')}`;
+    };
+    const allWeeks = [...new Set(leagueSeriesWithDates.map(s => weekKey(s.DateBowled)))]
+      .sort((a,b) => b.localeCompare(a));
+    const priorWeeks = new Set(allWeeks.slice(10, 20));
+    const priorSIDs = new Set(leagueSeriesWithDates.filter(s => priorWeeks.has(weekKey(s.DateBowled))).map(s => s.SeriesID));
+    priorGames = allStdGames.filter(g => priorSIDs.has(g.SeriesID));
+  } else if (period.startsWith('season:')) {
+    const label = period.slice(7);
+    const [yA, yB] = label.split('-').map(s => parseInt(s.length === 2 ? '20' + s : s));
+    const priorLabel = `${String(yA - 1).slice(-2)}-${String(yB - 1).slice(-2)}`;
+    const priorSIDs = new Set(db.series.filter(s => getSeriesSeason(s.DateBowled) === priorLabel).map(s => s.SeriesID));
+    priorGames = allStdGames.filter(g => priorSIDs.has(g.SeriesID));
+  }
+  if (!priorGames.length) return null;
+  const priorAvg = priorGames.reduce((s,g) => s + g.FinalScore, 0) / priorGames.length;
+  const delta = curAvg - priorAvg;
+  return { delta: delta.toFixed(1), up: delta >= 0.5, down: delta <= -0.5 };
+}
+
+/* ── SVG sparkline (standalone — extracted from old renderStats) ─*/
+function buildStatsSparkline(pts, color, label) {
+  if (!pts || pts.length < 2) return `<div style="text-align:center;font-size:11px;color:var(--t3);padding:16px">Not enough data</div>`;
+  const vals = pts.map(p => typeof p === 'number' ? p : p.score);
+  const dates = pts.map(p => typeof p === 'number' ? '' : (p.date || ''));
+  const W=320, H=100, pad={t:10,r:8,b:26,l:34};
+  const minV = Math.floor(Math.min(...vals)/10)*10;
+  const maxV = Math.ceil(Math.max(...vals)/10)*10;
+  const rangeV = maxV - minV || 1;
+  const avgV = vals.reduce((a,b)=>a+b,0)/vals.length;
+  const cx = i => pad.l + i/(pts.length-1)*(W-pad.l-pad.r);
+  const cy = v => pad.t + (1-(v-minV)/rangeV)*(H-pad.t-pad.b);
+  const pathD = vals.map((v,i)=>(i===0?'M':'L')+cx(i).toFixed(1)+','+cy(v).toFixed(1)).join(' ');
+  const areaD = pathD + ` L${cx(vals.length-1).toFixed(1)},${(H-pad.b).toFixed(1)} L${cx(0).toFixed(1)},${(H-pad.b).toFixed(1)} Z`;
+  const yStep = rangeV <= 50 ? 10 : rangeV <= 150 ? 50 : 100;
+  let yLabels = '';
+  for (let v = Math.ceil(minV/yStep)*yStep; v <= maxV; v += yStep) {
+    yLabels += `<text x="${pad.l-3}" y="${cy(v)+3}" text-anchor="end" font-size="8" fill="rgba(255,255,255,0.3)">${v}</text>`;
+  }
+  const showDots = pts.length <= 20;
+  const minIdx = vals.indexOf(Math.min(...vals));
+  const maxIdx = vals.indexOf(Math.max(...vals));
+  let dots = '';
+  if (showDots) {
+    vals.forEach((v,i) => {
+      const isSpecial = i === minIdx || i === maxIdx;
+      dots += `<circle cx="${cx(i)}" cy="${cy(v)}" r="${isSpecial?3.5:2}" fill="${color}" opacity="${isSpecial?1:0.6}"/>`;
+      if (isSpecial) dots += `<text x="${cx(i)}" y="${cy(v)-(i===maxIdx?6:-10)}" text-anchor="middle" font-size="8" fill="${color}" font-weight="700">${v}</text>`;
+    });
+  }
+  const fmtD = d => { if(!d) return ''; const m=d.slice(5,7),dy=d.slice(8,10); return `${parseInt(m)}/${parseInt(dy)}`; };
+  const xLabels = [
+    `<text x="${cx(0)}" y="${H-pad.b+11}" text-anchor="middle" font-size="8" fill="rgba(255,255,255,0.35)">${fmtD(dates[0])}</text>`,
+    `<text x="${cx(pts.length-1)}" y="${H-pad.b+11}" text-anchor="middle" font-size="8" fill="rgba(255,255,255,0.35)">${fmtD(dates[dates.length-1])}</text>`
+  ].join('');
+  const avgLine = `<line x1="${pad.l}" y1="${cy(avgV)}" x2="${W-pad.r}" y2="${cy(avgV)}" stroke="${color}" stroke-width="1" stroke-dasharray="3 3" opacity="0.4"/>
+    <text x="${W-pad.r+2}" y="${cy(avgV)+3}" font-size="7" fill="${color}" opacity="0.6">avg${Math.round(avgV)}</text>`;
+  const gradId = `sg-${label.replace(/[^a-z0-9]/gi,'')}`;
+  return `<svg width="100%" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="display:block">
+    <defs><linearGradient id="${gradId}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="${color}" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="${color}" stop-opacity="0.02"/>
+    </linearGradient></defs>
+    <path d="${areaD}" fill="url(#${gradId})"/>
+    <path d="${pathD}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+    ${avgLine}${yLabels}${xLabels}${dots}
+  </svg>`;
+}
+
+/* ── Frame-data availability check ─────────────────────────*/
+function _statsHasFrameData(games) {
+  return games.some(g => db.frames.some(f => f.GameID === g.GameID));
+}
+
+/* ── Compute stats object for scoped games ──────────────────*/
+function _statsComputeCore(games) {
+  const scores = games.map(g => g.FinalScore).filter(x => x != null && x > 0);
+  const gameCount = scores.length;
+  const avg = gameCount ? (scores.reduce((a,b)=>a+b,0) / gameCount) : null;
+  const high = gameCount ? Math.max(...scores) : null;
+  const low  = gameCount ? Math.min(...scores) : null;
+  const totalPins = gameCount ? scores.reduce((a,b)=>a+b,0) : 0;
+
+  // High series
+  let highSeriesTotal = null, highSeriesID = null;
+  const sids = [...new Set(games.map(g => g.SeriesID))];
+  sids.forEach(sid => {
+    const sg = games.filter(g => g.SeriesID === sid);
+    const tot = sg.reduce((s,g)=>s+(g.FinalScore||0),0);
+    if (highSeriesTotal === null || tot > highSeriesTotal) { highSeriesTotal = tot; highSeriesID = sid; }
+  });
+
+  const cleanGames = games.filter(g => isGameClean(g.GameID)).length;
+  return { scores, gameCount, avg, high, low, totalPins, highSeriesTotal, highSeriesID, cleanGames };
+}
+
+/* ── MAIN renderStats ───────────────────────────────────────*/
 function renderStats() {
-  /* ── Raw data pools — filtered by _statsGameFilter ───────── */
+  const el = document.getElementById('stats-content');
+  if (!el) return;
+  try { _renderStatsInner(el); } catch(e) {
+    console.error('renderStats error:', e);
+    el.innerHTML = `<div style="padding:24px 16px;color:var(--t3);font-size:13px">
+      <div style="color:var(--gold);font-weight:700;margin-bottom:8px">Stats render error</div>
+      <div style="font-family:monospace;font-size:11px;word-break:break-all">${e.message||String(e)}</div>
+    </div>`;
+  }
+}
+function _renderStatsInner(el) {
+
+  const sc = _statsGetScope();
   const _openIDs = openBowlSeriesIDs();
 
-  // All-time standard league games (no date cap) — sorted newest first
-  const _allStdGames = db.games
-    .filter(g => g.FinalScore != null && g.FinalScore > 0 && !g.IsTeammate && !_openIDs.has(g.SeriesID))
-    .sort((a, b) => {
+  // Full standard game pool (no teammates, no open bowl, positive scores)
+  // League series IDs: LeagueID > 0 and no TournamentID — excludes open bowl,
+  // NoTap virtual league (LeagueID=-1), and tournament rounds (TournamentID set)
+  const _leagueSIDs = new Set(
+    db.series.filter(s => s.LeagueID > 0 && !s.TournamentID).map(s => s.SeriesID)
+  );
+  const allStdGames = db.games
+    .filter(g => g.FinalScore != null && g.FinalScore > 0 && !g.IsTeammate && !g.NoTap
+               && !_openIDs.has(g.SeriesID) && _leagueSIDs.has(g.SeriesID))
+    .sort((a,b) => {
       const sa = db.series.find(s => s.SeriesID === a.SeriesID);
       const sb = db.series.find(s => s.SeriesID === b.SeriesID);
       return (sb?.DateBowled||'').localeCompare(sa?.DateBowled||'');
     });
 
-  // Apply game count filter
-  const _filtered = typeof _statsGameFilter === 'number'
-    ? _allStdGames.slice(0, _statsGameFilter)
-    : _allStdGames; // 'all'
+  const scopedGames = _statsFilterGames(allStdGames, sc);
+  const core = _statsComputeCore(scopedGames);
+  const hasFrames = _statsHasFrameData(scopedGames);
+  const trend = _statsTrendDelta(scopedGames, sc, allStdGames);
 
-  const allGamesAll = _filtered;
-  const allGames  = allGamesAll.filter(g => !g.NoTap);
-  const ntGames   = allGamesAll.filter(g => g.NoTap);
-  const scores    = allGames.map(g => g.FinalScore);
-  const gameIDs   = new Set(allGames.map(g => g.GameID));
-
-  /* ── Game Statistics ─────────────────────────────────────── */
-  const gameCount = scores.length;
-  const avg       = gameCount ? (scores.reduce((a,b)=>a+b,0) / gameCount).toFixed(1) : '—';
-  const high      = gameCount ? Math.max(...scores) : '—';
-  const highGameID = gameCount ? (allGames.find(g=>g.FinalScore===high)?.GameID ?? null) : null;
-  const lowScore   = gameCount ? Math.min(...scores) : null;
-  const totalPins = gameCount ? scores.reduce((a,b)=>a+b,0) : 0;
-
-  // High series (within the current filter window)
-  let highSeriesTotal = null, highSeriesID = null;
-  const _filteredSIDs = new Set(allGames.map(g => g.SeriesID));
-  [..._filteredSIDs].forEach(sid => {
-    const sg = allGames.filter(g => g.SeriesID === sid);
-    if (!sg.length) return;
-    const tot = sg.reduce((s,g)=>s+g.FinalScore,0);
-    if (highSeriesTotal === null || tot > highSeriesTotal) { highSeriesTotal=tot; highSeriesID=sid; }
+  // ── Scope bar ───────────────────────────────────────────
+  const seasons = deriveSeasons(allStdGames);
+  const hasSport = allStdGames.some(g => {
+    const s = db.series.find(x => x.SeriesID === g.SeriesID);
+    return !!(db.leagues.find(l => l.LeagueID === s?.LeagueID)?.Sport);
   });
 
-  // Clean game = every frame 1–9 is a mark AND frame 10 is clean (via attempt data)
-  const cleanGames = allGames.filter(g => isGameClean(g.GameID)).length;
+  // ── Period options ────────────────────────────────────────
+  const periodOptions = [
+    { val: 'last10wks', label: 'Last 10 Wks' },
+    { val: 'all',       label: 'All Time' },
+    ...seasons.map(s => ({ val: `season:${s}`, label: s })),
+    { val: 'custom',    label: 'Custom…' }
+  ];
 
-  /* ── Frame pool: 1-9 plus qualifying Frame 10 attempts ────── */
-  // Frames 1-9: always included as normal scoring frames.
-  // Frame 10: include att1 (always a first-ball delivery) and att2 IF att1 was not a strike
-  //   (i.e. att2 is a true spare-conversion attempt, not a fill shot after a strike).
-  //   Att3 is ALWAYS excluded — it is a fill shot regardless of scenario.
-  //
-  // Specifically we add Frame 10 as a "virtual frame" when:
-  //   A) att1 is a strike (count strike, then att2 is fill — skip att2/att3)
-  //   B) att1 + att2 < 10 → open (count as open frame)
-  //   C) att1 + att2 >= 10 AND att1 < 10 → spare (count as spare opp + conversion)
-  //
-  // For strike/spare/open counts we synthesize Frame 10 data from attempts directly.
-
-  // Frames 1-9 base pool
-  const frames19  = db.frames.filter(f => f.FrameNumber <= 9 && gameIDs.has(f.GameID));
-  const frameIDs9 = new Set(frames19.map(f => f.FrameID));
-
-  // Strike / spare / open tallies for frames 1-9
-  let strikeFr = frames19.filter(f => f.Strike).length;
-  let spareFr  = frames19.filter(f => f.Spare).length;
-  let openFr   = frames19.filter(f => !f.Strike && !f.Spare).length;
-  let totalFr  = frames19.length;
-  let spareOpps = frames19.filter(f => !f.Strike).length; // non-strike frames = spare opportunities
-
-  // Frame 10 contributions — virtual frame model
-  //   att1 strike  → 2 virtual frames: vf1=X, vf2=att2+att3 (open/spare/X)
-  //   att1 non-X   → 1 virtual frame:  vf1=att1+att2 spare or open
-  const f10Frames = db.frames.filter(f => f.FrameNumber === 10 && gameIDs.has(f.GameID));
-  f10Frames.forEach(f10 => {
-    const a1 = db.attempts.find(a => a.FrameID === f10.FrameID && a.Attempt === 1);
-    const a2 = db.attempts.find(a => a.FrameID === f10.FrameID && a.Attempt === 2);
-    const a3 = db.attempts.find(a => a.FrameID === f10.FrameID && a.Attempt === 3);
-    if (!a1 || a1.Pinfall === null) return;
-
-    // F10 totalFr = fresh rack opportunities
-    totalFr++;                                           // att1: always fresh
-    if (a1.Pinfall === 10) strikeFr++;
-    if (a2 && a2.Pinfall !== null) {
-      if (a1.Pinfall === 10) {
-        totalFr++;                                       // att2: fresh after strike
-        if (a2.Pinfall === 10) {
-          strikeFr++;
-        } else if (a3 && a3.Pinfall !== null) {
-          // X then non-strike: att2+att3 is a spare attempt
-          spareOpps++;
-          if (a2.Pinfall + a3.Pinfall >= 10) spareFr++;
-          else openFr++;
-        }
-      } else {
-        // non-strike att1: att1+att2 is a spare attempt
-        spareOpps++;
-        if (a1.Pinfall + a2.Pinfall >= 10) { spareFr++; }
-        else { openFr++; }
-      }
-      if (a3 && a3.Pinfall !== null) {
-        const att3Fresh = (a1.Pinfall === 10 && a2.Pinfall === 10) ||
-                          (a1.Pinfall < 10 && a1.Pinfall + a2.Pinfall >= 10);
-        if (att3Fresh) {
-          totalFr++;                                     // att3: fresh after XX or #/
-          if (a3.Pinfall === 10) strikeFr++;
-        }
-      }
-    }
-  });
-
-  const sPct  = totalFr   ? ((strikeFr / totalFr)   * 100).toFixed(1) : '0.0';
-  const spPct = spareOpps ? ((spareFr  / spareOpps)  * 100).toFixed(1) : '0.0';
-
-  // Clutch Strike %: F10 att1 strike rate
-  let clutchOpps = 0, clutchStrikes = 0;
-  f10Frames.forEach(f10 => {
-    const a1 = db.attempts.find(a => a.FrameID === f10.FrameID && a.Attempt === 1);
-    if (!a1 || a1.Pinfall === null) return;
-    clutchOpps++;
-    if (a1.Pinfall === 10) clutchStrikes++;
-  });
-  const clutchPct = clutchOpps ? `${Math.round(clutchStrikes/clutchOpps*100)}% (${clutchStrikes}/${clutchOpps})` : '—';
-
-  // Fill Ball Avg: F10 att2 after X + att3 after XX
-  let fillBallSum = 0, fillBallCount = 0;
-  f10Frames.forEach(f10 => {
-    const a1f = db.attempts.find(a => a.FrameID === f10.FrameID && a.Attempt === 1);
-    const a2f = db.attempts.find(a => a.FrameID === f10.FrameID && a.Attempt === 2);
-    const a3f = db.attempts.find(a => a.FrameID === f10.FrameID && a.Attempt === 3);
-    if (!a1f || a1f.Pinfall === null) return;
-    if (a1f.Pinfall === 10 && a2f && a2f.Pinfall !== null) {
-      fillBallSum += a2f.Pinfall; fillBallCount++;
-      if (a2f.Pinfall === 10 && a3f && a3f.Pinfall !== null) {
-        fillBallSum += a3f.Pinfall; fillBallCount++;
-      }
-    }
-  });
-  const fillBallAvg = fillBallCount > 0 ? (fillBallSum / fillBallCount).toFixed(2) : '—';
-
-  /* ── First Ball Average ──────────────────────────────────── */
-  // Att1 Pinfall for frames 1-9 + att1 of frame 10 (always a first-ball delivery).
-  // Uses Pinfall directly — equals pins knocked on that ball.
-  const att1F9   = db.attempts.filter(a =>
-    a.FrameNumber <= 9 && a.Attempt === 1 && frameIDs9.has(a.FrameID) && a.Pinfall !== null
+  // ── Context options — scoped to what's present in current period ──
+  // First apply period filter to determine what's actually in scope
+  const periodScopedGames = _statsFilterGames(allStdGames, { ...sc, context: 'all', condition: 'any' });
+  const periodSIDs = new Set(periodScopedGames.map(g => g.SeriesID));
+  const periodSeries = db.series.filter(s => periodSIDs.has(s.SeriesID));
+  const periodLeagueIDs = new Set(periodSeries.map(s => s.LeagueID).filter(Boolean));
+  const periodCenterIDs = new Set(
+    periodSeries.map(s => db.leagues.find(l => l.LeagueID === s.LeagueID)?.CenterID).filter(Boolean)
   );
-  const f10FrameIDs = new Set(f10Frames.map(f => f.FrameID));
-  const att1F10  = db.attempts.filter(a =>
-    a.Attempt === 1 && f10FrameIDs.has(a.FrameID) && a.Pinfall !== null
-  );
-  const allAtt1  = [...att1F9, ...att1F10];
-  const firstBallAvg = allAtt1.length
-    ? (allAtt1.reduce((s,a) => s + (a.Pinfall||0), 0) / allAtt1.length).toFixed(2)
-    : '—';
 
-  /* ── X-on-X & BounceBack Calculation ─────────────────────── */
-  // X-on-X: After a strike, how often is the next first-ball also a strike?
-  //         Frames 1-9 consecutive; F10 att1→att2 and att2→att3 if both strikes.
-  // BounceBack: After a NON-strike (spare or open), how often does the next frame strike?
-  //         Frames 2-9 evaluated (frame 1 is never an "evaluated" frame — no prior frame).
-  //         F10 att1 evaluated if F9 was non-strike. F10 att2/att3 excluded entirely.
-  let xOnXOpps = 0, xOnXConv = 0;
-  let bbOpps = 0, bbConv = 0;
-  
-  allGames.forEach(game => {
-    const gFrames = db.frames.filter(f => f.GameID === game.GameID).sort((a,b) => a.FrameNumber - b.FrameNumber);
-    
-    // Frames 1-9: each consecutive pair; frame 1 can trigger but is never the evaluated frame
-    for (let i = 0; i < gFrames.length - 1; i++) {
-      const currFrame = gFrames[i];
-      const nextFrame = gFrames[i + 1];
-      const currA1 = db.attempts.find(a => a.FrameID === currFrame.FrameID && a.Attempt === 1);
-      const nextA1 = db.attempts.find(a => a.FrameID === nextFrame.FrameID && a.Attempt === 1);
-      
-      if (!currA1 || currA1.Pinfall === null) continue;
-      if (!nextA1 || nextA1.Pinfall === null) continue;
+  // Centers active in this period only
+  const activeCenters = db.centers.filter(c => periodCenterIDs.has(c.CenterID));
 
-      if (currA1.Pinfall === 10) {
-        // X-on-X opportunity: previous frame was a strike
-        xOnXOpps++;
-        if (nextA1.Pinfall === 10) xOnXConv++;
-      } else {
-        // BounceBack opportunity: previous frame was non-strike (spare or open)
-        bbOpps++;
-        if (nextA1.Pinfall === 10) bbConv++;
-      }
+  // If a center is selected, show leagues within that center (period-scoped)
+  const selectedCenter = sc.context && sc.context.startsWith('center:')
+    ? parseInt(sc.context.split(':')[1]) : null;
+  const selectedLeague = sc.context && sc.context.startsWith('league:')
+    ? parseInt(sc.context.split(':')[1]) : null;
+
+  // Auto-derive which center a selected league belongs to (for showing back button)
+  const selectedLeagueObj = selectedLeague
+    ? db.leagues.find(l => l.LeagueID === selectedLeague) : null;
+  const selectedLeagueCenterID = selectedLeagueObj?.CenterID || null;
+
+  // League drill-down: shown when a center is selected OR when a league is selected (show siblings)
+  const drillCenterID = selectedCenter || selectedLeagueCenterID;
+  const drillLeagues = drillCenterID
+    ? db.leagues.filter(l => l.CenterID === drillCenterID && periodLeagueIDs.has(l.LeagueID))
+    : [];
+
+  function pill(options, current, fn, small) {
+    const sz = small ? '11px' : '12px';
+    const pad = small ? '4px 10px' : '5px 12px';
+    return `<div style="display:flex;gap:6px;flex-wrap:wrap">` +
+      options.map(o => {
+        const active = o.val === current;
+        return `<button onclick="${fn}('${o.val}')"
+          style="padding:${pad};border-radius:20px;font-size:${sz};font-weight:${active?700:500};
+          border:1px solid ${active?'var(--teal)':'var(--border)'};
+          background:${active?'rgba(0,217,217,0.12)':'var(--bg3)'};
+          color:${active?'var(--teal)':'var(--t2)'};cursor:pointer;white-space:nowrap;
+          -webkit-tap-highlight-color:transparent">${o.label}</button>`;
+      }).join('') + `</div>`;
+  }
+
+  // ── Scope bar open/closed state ──────────────────────────
+  const scopeOpen = sc.scopeOpen !== false;
+
+  // ── Summary chips for collapsed row ─────────────────────
+  const activeCtxLabel = selectedLeague
+    ? (selectedLeagueObj?.LeagueName || 'League')
+    : selectedCenter
+      ? (db.centers.find(c => c.CenterID === selectedCenter)?.CenterName || 'Center')
+      : 'All';
+  // For custom period, show the date range in the summary chip instead of "Custom…"
+  const activePeriodLabel = (() => {
+    if (sc.period === 'custom') {
+      const fmtD = d => {
+        if (!d) return '';
+        const parts = d.split('-');
+        return `${parseInt(parts[1])}/${parseInt(parts[2])}/${parts[0].slice(2)}`;
+      };
+      const f = fmtD(sc.customFrom), t = fmtD(sc.customTo);
+      if (f && t) return `${f} – ${t}`;
+      if (f) return `From ${f}`;
+      if (t) return `To ${t}`;
+      return 'Custom';
     }
-    
-    // Frame 10: X-on-X fill balls only (no BounceBack compounding within F10)
-    // F10 att1 as BounceBack evaluated above via F9→F10 transition (i = frames.length-2)
-    const f10 = gFrames.find(f => f.FrameNumber === 10);
-    if (f10) {
-      const a1 = db.attempts.find(a => a.FrameID === f10.FrameID && a.Attempt === 1);
-      const a2 = db.attempts.find(a => a.FrameID === f10.FrameID && a.Attempt === 2);
-      if (a1 && a1.Pinfall === 10 && a2 && a2.Pinfall !== null) {
-        xOnXOpps++;
-        if (a2.Pinfall === 10) xOnXConv++;
-      }
-      if (a1 && a1.Pinfall === 10 && a2 && a2.Pinfall === 10) {
-        const a3 = db.attempts.find(a => a.FrameID === f10.FrameID && a.Attempt === 3);
-        if (a3 && a3.Pinfall !== null) {
-          xOnXOpps++;
-          if (a3.Pinfall === 10) xOnXConv++;
-        }
-      }
-    }
-  });
-  
-  const bounceBackOpps = bbOpps;
-  const bounceBackConv = bbConv;
+    return periodOptions.find(o => o.val === sc.period)?.label || 'Last 10 Wks';
+  })();
+  const activeCondLabel = (hasSport && sc.condition !== 'any')
+    ? (sc.condition === 'sport' ? 'Sport' : 'Standard') : null;
+  const summaryChips = [activeCtxLabel, activePeriodLabel, ...(activeCondLabel ? [activeCondLabel] : [])]
+    .map(lbl => `<span style="padding:4px 10px;border-radius:14px;font-size:12px;font-weight:600;
+      background:rgba(0,217,217,0.1);border:1px solid rgba(0,217,217,0.3);color:var(--teal);
+      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px;display:inline-block;vertical-align:middle">${lbl}</span>`).join('');
 
-  /* ── Split Detection — ported from modSplitDetection v3.0 ── */
-  // Vertical adjacency ONLY (no horizontal-only connections within same row).
-  // Uses flood-fill cluster counting: a leave is a split when pin 1 is down,
-  // 2+ pins remain, and those pins form more than one disconnected cluster.
-  //
-  // Adjacency map (vertical/diagonal connections only, per VBA source):
-  //   Pin 1: 2,3,5         Pin 2: 1,4,5,8       Pin 3: 1,5,6,9
-  //   Pin 4: 2,7,8         Pin 5: 1,2,3,8,9      Pin 6: 3,9,10
-  //   Pin 7: 4             Pin 8: 2,4,5           Pin 9: 3,5,6
-  //   Pin 10: 6
-  // NOTE: Same-row pins (2-3, 4-5, 4-6, 5-6, 7-8, 7-9, 8-9, 8-10, 9-10)
-  //       are NOT adjacent — horizontal contact alone doesn't bridge a split.
+  // ── Center row ───────────────────────────────────────────
+  const centerOptions = [
+    { val: 'all', label: 'All' },
+    ...activeCenters.map(c => ({ val: `center:${c.CenterID}`, label: c.CenterName }))
+  ];
+  // Active value for center row: 'all' if no center selected, else 'center:{id}'
+  const centerRowVal = drillCenterID ? `center:${drillCenterID}` : sc.context === 'all' ? 'all' : sc.context;
+  const centerBar = pill(centerOptions, centerRowVal, '_statsSetCenter');
 
-  // Helper: get standing pins after att1 using PinStart/PinDelta fields
-  function getLeave(a1) { return getLeaveFromAtt(a1); }
-  function isSplit(leave) { return isSplitLeave(leave); }
+  // ── League drill-down row (only shown when a center is active) ──
+  const leagueOptions = drillLeagues.length > 1
+    ? [{ val: `center:${drillCenterID}`, label: 'All' }, ...drillLeagues.map(l => ({ val: `league:${l.LeagueID}`, label: l.LeagueName }))]
+    : [];
+  const leagueBar = leagueOptions.length
+    ? pill(leagueOptions, sc.context, '_statsSetContext', true) : '';
 
-  /* ── Spare breakdown (frames 1-9, non-strike frames only) ── (frames 1-9, non-strike frames only) ── */
-  // Frame 10 is excluded from spare breakdown — the second delivery in F10
-  // after a non-strike is a spare attempt, but split/single/multi categorization
-  // of F10 leaves is atypical and would skew the breakdown.
-  let makeableOpp = 0, makeableConv = 0;
-  let singleOpp   = 0, singleConv   = 0;
-  let multiOpp    = 0, multiConv    = 0;
-  let splitOpp    = 0, splitConv    = 0;
-  let hasPinData  = false;
+  // ── Period row ───────────────────────────────────────────
+  const periodBar = pill(periodOptions, sc.period, '_statsSetPeriod');
 
-  // Build unified spare opportunity list: frames 1-9 non-strikes + all F10 spare attempts
-  const spareOpsList = frames19.filter(f => !f.Strike).map(f => ({
-    a1: db.attempts.find(a => a.FrameID === f.FrameID && a.Attempt === 1),
-    converted: f.Spare
-  }));
-  // Frame 10: two possible spare attempts
-  //   Case A: att1 non-strike → att1+att2 is spare attempt
-  //   Case B: att1 strike, att2 non-strike → att2+att3 is spare attempt
-  f10Frames.forEach(f10 => {
-    const a1 = db.attempts.find(a => a.FrameID === f10.FrameID && a.Attempt === 1);
-    const a2 = db.attempts.find(a => a.FrameID === f10.FrameID && a.Attempt === 2);
-    const a3 = db.attempts.find(a => a.FrameID === f10.FrameID && a.Attempt === 3);
-    if (!a1 || a1.Pinfall === null) return;
-    if (a1.Pinfall !== 10) {
-      // Case A: non-strike att1
-      if (!a2 || a2.Pinfall === null) return;
-      spareOpsList.push({ a1, converted: (a1.Pinfall + a2.Pinfall) >= 10 });
-    } else if (a2 && a2.Pinfall !== null && a2.Pinfall !== 10) {
-      // Case B: strike att1, non-strike att2 → use a2 as the leave ball for classification
-      if (!a3 || a3.Pinfall === null) return;
-      spareOpsList.push({ a1: a2, converted: (a2.Pinfall + a3.Pinfall) >= 10 });
-    }
-  });
+  // ── Condition row ────────────────────────────────────────
+  const condBar = hasSport ? pill(
+    [{val:'any',label:'Any'},{val:'standard',label:'Standard'},{val:'sport',label:'Sport'}],
+    sc.condition, '_statsSetCondition'
+  ) : '';
 
-  spareOpsList.forEach(({ a1, converted }) => {
-    if (!a1 || a1.Pinfall === null || a1.Pinfall === 10) return;
-    const pinDataOk = [1,2,3,4,5,6,7,8,9,10].some(p => a1[`PinDelta${p}`] !== null);
-    const leave = getLeave(a1);
-    // hasPinData = true if PinDelta present OR if LeaveID fallback produced a leave
-    if (pinDataOk || leave.size > 0) hasPinData = true;
-    if (leave.size === 0) return;
-    const isS      = isSplit(leave);
-    const isSingle = leave.size === 1;
-    if (isS) {
-      splitOpp++;   if (converted) splitConv++;
-    } else {
-      makeableOpp++; if (converted) makeableConv++;
-      if (isSingle) { singleOpp++; if (converted) singleConv++; }
-      else          { multiOpp++;  if (converted) multiConv++;  }
-    }
-  });
-
-  const mkPct  = makeableOpp ? Math.round(makeableConv / makeableOpp * 100) : '—';
-  const spgPct = singleOpp   ? Math.round(singleConv  / singleOpp  * 100) : '—';
-  const mpPct  = multiOpp    ? Math.round(multiConv   / multiOpp   * 100) : '—';
-  const slPct  = splitOpp    ? Math.round(splitConv   / splitOpp   * 100) : '—';
-
-  /* ── Frame-level clean % (for radar) ────────────────────── */
-  // Clean frame = Strike || Spare (no open). Denominator = all frames with data.
-  const allFramesPool = db.frames.filter(f => gameIDs.has(f.GameID));
-  const cleanFrames = allFramesPool.filter(f => f.Strike || f.Spare).length;
-  const totalFramesAll = allFramesPool.filter(f => {
-    // Only count frames that have at least one attempt with pinfall data
-    const a1 = db.attempts.find(a => a.FrameID === f.FrameID && a.Attempt === 1);
-    return a1 && a1.Pinfall !== null;
-  }).length;
-  const cleanFramePct = totalFramesAll > 0 ? Math.round(cleanFrames / totalFramesAll * 100) : 0;
-
-  // Build a stats-shaped object for renderRadarChart
-  const stats = {
-    totalFr, strikes: strikeFr, spares: spareFr, opens: openFr,
-    spareOpps, xOnXOpps, xOnXConv,
-    bbOpps: bounceBackOpps, bbConv: bounceBackConv,
-    firstBallAvg: firstBallAvg,
-    cleanPct: cleanFramePct
-  };
-
-  /* ── Render ──────────────────────────────────────────────── */
-  const pct = (n, tot) => tot ? `${Math.round(n/tot*100)}% (${n}/${tot})` : '—';
-
-  // Filter pills — same pattern as Top Leaves
-  const filterPills = ['all', 30, 50, 100].map(f => {
-    const active = _statsGameFilter === f;
-    const lbl = f === 'all' ? 'All' : `Last ${f}`;
-    return `<button onclick="setStatsFilter(${f === 'all' ? "'all'" : f})"
-      style="padding:5px 12px;border-radius:20px;font-size:12px;font-weight:${active?700:500};
-      border:1px solid ${active?'var(--teal)':'var(--border1)'};
-      background:${active?'rgba(0,217,217,0.12)':'var(--bg2)'};
-      color:${active?'var(--teal)':'var(--t2)'};cursor:pointer;white-space:nowrap">${lbl}</button>`;
-  }).join('');
-  const filterBar = `<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:4px">${filterPills}</div>
-    <div style="font-size:11px;color:var(--t3);margin-bottom:14px">${allGames.length} game${allGames.length!==1?'s':''} · standard league · no NoTap</div>`;
-
-  const noData = `${filterBar}<div style="padding:24px;text-align:center;color:var(--t3);font-size:13px">No games in this range yet</div>`;
-
-  if (!gameCount) { document.getElementById('stats-content').innerHTML = noData; return; }
-
-  /* ── Milestones ───────────────────────────────────────────── */
-  // All-time pools (no 10-week cap)
-  const _allTimeGames = db.games.filter(g => g.FinalScore != null && g.FinalScore > 0 && !g.IsTeammate && !g.NoTap && !_openIDs.has(g.SeriesID));
-  const _allTimeSeries = {};
-  _allTimeGames.forEach(g => {
-    _allTimeSeries[g.SeriesID] = (_allTimeSeries[g.SeriesID] || 0) + g.FinalScore;
-  });
-  const _allTimeSeriesTotals = Object.values(_allTimeSeries);
-  // Filtered window pools (allGames = current filter)
-  const _10wkSeries = {};
-  allGames.forEach(g => { _10wkSeries[g.SeriesID] = (_10wkSeries[g.SeriesID] || 0) + g.FinalScore; });
-  const _10wkSeriesTotals = Object.values(_10wkSeries);
-  const ms = {
-    s675_10: _10wkSeriesTotals.filter(t=>t>=675).length,
-    s675_at: _allTimeSeriesTotals.filter(t=>t>=675).length,
-    s750_10: _10wkSeriesTotals.filter(t=>t>=750).length,
-    s750_at: _allTimeSeriesTotals.filter(t=>t>=750).length,
-    s800_10: _10wkSeriesTotals.filter(t=>t>=800).length,
-    s800_at: _allTimeSeriesTotals.filter(t=>t>=800).length,
-    g270_10: allGames.filter(g=>g.FinalScore>=270).length,
-    g270_at: _allTimeGames.filter(g=>g.FinalScore>=270).length,
-    g290_10: allGames.filter(g=>g.FinalScore>=290).length,
-    g290_at: _allTimeGames.filter(g=>g.FinalScore>=290).length,
-    g300_10: allGames.filter(g=>g.FinalScore>=300).length,
-    g300_at: _allTimeGames.filter(g=>g.FinalScore>=300).length,
-  };
-  const msHasData = ms.s675_at > 0 || ms.g270_at > 0;
-  const msCell = (recent, alltime, label) => `
-    <div>
-      <div style="font-size:11px;color:var(--t3);font-weight:600;margin-bottom:4px">${label}</div>
-      <div style="font-size:${alltime>0?'28px':'20px'};font-weight:900;color:${alltime>0?'var(--teal)':'var(--t3)'};line-height:1">${alltime>0?alltime:'—'}</div>
-      <div style="font-size:10px;color:var(--t3);margin-top:2px">${recent>0?recent:'—'} last 10 wks</div>
+  const scopeBarHTML = `
+    <div style="background:var(--bg2);border-bottom:1px solid var(--border1);position:sticky;top:0;z-index:10">
+      <!-- Collapsed summary row — always visible, tap to toggle -->
+      <div onclick="_statsScopeToggle()" style="display:flex;align-items:center;justify-content:space-between;
+        padding:8px 14px;cursor:pointer;-webkit-tap-highlight-color:transparent;min-height:40px">
+        <div style="display:flex;gap:6px;align-items:center;flex:1;min-width:0;overflow:hidden">
+          ${summaryChips}
+        </div>
+        <div style="flex-shrink:0;margin-left:10px;width:28px;height:28px;border-radius:50%;
+          background:var(--bg3);display:flex;align-items:center;justify-content:center;
+          font-size:14px;color:var(--t3);transform:rotate(${scopeOpen?'180':'0'}deg);transition:transform 0.2s">⌃</div>
+      </div>
+      <!-- Expanded panel — own scroll, never bleeds to page -->
+      ${scopeOpen ? `
+      <div style="max-height:50vh;overflow-y:auto;-webkit-overflow-scrolling:touch;
+        overscroll-behavior:contain;padding:6px 14px 12px;border-top:1px solid var(--border1)">
+        <div style="font-size:10px;font-weight:700;color:var(--t3);letter-spacing:0.6px;
+          text-transform:uppercase;margin-bottom:6px">Center</div>
+        <div style="margin-bottom:${leagueBar?'10px':'0'}">${centerBar}</div>
+        ${leagueBar ? `
+        <div style="font-size:10px;font-weight:700;color:var(--t3);letter-spacing:0.6px;
+          text-transform:uppercase;margin-bottom:6px">League</div>
+        <div style="margin-bottom:0">${leagueBar}</div>` : ''}
+        <div style="font-size:10px;font-weight:700;color:var(--t3);letter-spacing:0.6px;
+          text-transform:uppercase;margin:10px 0 6px">Period</div>
+        <div style="margin-bottom:${(condBar)?'0':'0'}">${periodBar}</div>
+        ${sc.period === 'custom' ? `
+        <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
+          <input type="date" value="${sc.customFrom||''}" class="form-input"
+            style="flex:1;padding:6px 8px;font-size:12px;border-radius:12px"
+            onchange="event.stopPropagation();_statsSetCustom('from',this.value)">
+          <span style="color:var(--t3);font-size:12px">–</span>
+          <input type="date" value="${sc.customTo||''}" class="form-input"
+            style="flex:1;padding:6px 8px;font-size:12px;border-radius:12px"
+            onchange="event.stopPropagation();_statsSetCustom('to',this.value)">
+          ${(sc.customFrom||sc.customTo) ? `<button onclick="_statsClearCustom()"
+            style="background:none;border:none;color:var(--t3);font-size:18px;cursor:pointer;padding:0 2px">×</button>` : ''}
+        </div>` : ''}
+        ${condBar ? `
+        <div style="font-size:10px;font-weight:700;color:var(--t3);letter-spacing:0.6px;
+          text-transform:uppercase;margin:10px 0 6px">Condition</div>
+        ${condBar}` : ''}
+      </div>` : ''}
     </div>`;
 
-  /* ── Score Trends data ────────────────────────────────────── */
-  // Trends use the same allGames pool as the current stats filter
-  const trendGames = [...allGames].sort((a,b) => {
-    const sa = db.series.find(s=>s.SeriesID===a.SeriesID);
-    const sb = db.series.find(s=>s.SeriesID===b.SeriesID);
-    return (sa?.DateBowled||'').localeCompare(sb?.DateBowled||'');
-  });
-  // Series totals (chronological)
-  const trendSeriesMap = {};
-  trendGames.forEach(g => {
-    const s = db.series.find(x=>x.SeriesID===g.SeriesID);
-    if (!s?.DateBowled) return;
-    if (!trendSeriesMap[g.SeriesID]) trendSeriesMap[g.SeriesID] = { date: s.DateBowled, total: 0, sid: g.SeriesID };
-    trendSeriesMap[g.SeriesID].total += g.FinalScore;
-  });
-  const trendSeries = Object.values(trendSeriesMap).sort((a,b)=>a.date.localeCompare(b.date));
-  // Individual game scores with slight jitter by GameNumber to avoid same-date stacking
-  const trendGamePts = trendGames.map(g => {
-    const s = db.series.find(x=>x.SeriesID===g.SeriesID);
-    const d = new Date(s?.DateBowled || '1970-01-01');
-    d.setDate(d.getDate() + ((g.GameNumber||1)-1));
-    return { date: d.toISOString().split('T')[0], score: g.FinalScore };
-  });
-  // Per-game strike% and makeable spare% for trend charts
-  const trendStrikePts = trendGames.map(g => {
-    const s = db.series.find(x=>x.SeriesID===g.SeriesID);
-    const d = new Date(s?.DateBowled||'1970-01-01');
-    d.setDate(d.getDate() + ((g.GameNumber||1)-1));
-    const frms = db.frames.filter(f=>f.GameID===g.GameID && f.FrameNumber<=9);
-    if (!frms.length) return null;
-    const xCount = frms.filter(f=>f.Strike).length;
-    return { date: d.toISOString().split('T')[0], score: Math.round(xCount/frms.length*100) };
-  }).filter(Boolean);
-  const trendSparePts = trendGames.map(g => {
-    const s = db.series.find(x=>x.SeriesID===g.SeriesID);
-    const d = new Date(s?.DateBowled||'1970-01-01');
-    d.setDate(d.getDate() + ((g.GameNumber||1)-1));
-    const frms = db.frames.filter(f=>f.GameID===g.GameID && f.FrameNumber<=9);
-    const spareOpps = frms.filter(f=>!f.Strike);
-    if (!spareOpps.length) return null;
-    const convCount = spareOpps.filter(f=>f.Spare).length;
-    return { date: d.toISOString().split('T')[0], score: Math.round(convCount/spareOpps.length*100) };
-  }).filter(Boolean);
+  // ── Hero row ────────────────────────────────────────────
+  const avgDisplay = core.avg != null ? core.avg.toFixed(2) : '—';
+  const trendHTML = trend
+    ? `<div style="font-size:13px;font-weight:700;color:${trend.up?'var(--teal)':'rgba(157,78,221,0.9)'}">
+        ${trend.up?'↑':'↓'} ${trend.up?'+':''}${trend.delta}
+        <span style="font-size:10px;font-weight:400;color:var(--t3)"> vs prior period</span>
+       </div>`
+    : `<div style="font-size:11px;color:var(--t3)">No prior period</div>`;
+  const scopeLabel = _statsScopeLabel(sc);
 
-  function buildSVGLine(pts, color, label, yKey='score') {
-    if (pts.length < 2) return `<div style="text-align:center;font-size:11px;color:var(--t3);padding:20px">Not enough data</div>`;
-    const vals = pts.map(p => typeof p === 'number' ? p : p[yKey]);
-    const dates = pts.map(p => typeof p === 'number' ? '' : p.date);
-    const W=320, H=110, pad={t:12,r:8,b:28,l:36};
-    const minV = Math.floor(Math.min(...vals)/10)*10;
-    const maxV = Math.ceil(Math.max(...vals)/10)*10;
-    const rangeV = maxV-minV || 1;
-    const avgV = vals.reduce((a,b)=>a+b,0)/vals.length;
-    const cx = i => pad.l + i/(pts.length-1)*(W-pad.l-pad.r);
-    const cy = v => pad.t + (1-(v-minV)/rangeV)*(H-pad.t-pad.b);
-    const pathD = vals.map((v,i)=>(i===0?'M':'L')+cx(i).toFixed(1)+','+cy(v).toFixed(1)).join(' ');
-    const areaD = pathD + ` L${cx(vals.length-1).toFixed(1)},${(H-pad.b).toFixed(1)} L${cx(0).toFixed(1)},${(H-pad.b).toFixed(1)} Z`;
-    // Adaptive dots: thin at scale — only max/min labeled when many points
-    const maxI = vals.indexOf(Math.max(...vals));
-    const minI = vals.indexOf(Math.min(...vals));
-    const n = vals.length;
-    // Threshold: show first/last dots only when few points; always show max/min
-    const showFirstLast = n <= 20;
-    const specialI = new Set(showFirstLast ? [0, n-1, maxI, minI] : [maxI, minI]);
-    // For dense charts, also thin the line: every Nth point gets a dot
-    const dotEvery = n > 60 ? 0 : n > 30 ? 2 : 1; // 0 = only special dots
-    const dots = vals.map((v,i) => {
-      const isMax=i===maxI, isMin=i===minI;
-      const isSpecial = specialI.has(i);
-      const showDot = isSpecial || (dotEvery > 0 && i % dotEvery === 0);
-      if (!showDot) return '';
-      const dotColor = isMax?'var(--gold)':isMin?'rgba(157,78,221,0.8)':color;
-      const showLabel = isSpecial; // only label special points
-      const labelTxt = showLabel ? String(v) : '';
-      const r = isSpecial ? 4 : 2.5;
-      const labelY = cy(v) > H/2 ? cy(v)-7 : cy(v)+13;
-      return `<circle cx="${cx(i).toFixed(1)}" cy="${cy(v).toFixed(1)}" r="${r}" fill="${dotColor}" stroke="var(--bg1)" stroke-width="1.5"/>
-        ${labelTxt ? `<text x="${cx(i).toFixed(1)}" y="${labelY.toFixed(1)}" text-anchor="middle" font-size="8" font-weight="700" fill="${dotColor}">${labelTxt}</text>` : ''}`;
-    }).join('');
-    // Y axis labels
-    const yLabels = [minV, Math.round((minV+maxV)/2), maxV].map(v =>
-      `<text x="${pad.l-4}" y="${cy(v)+3}" text-anchor="end" font-size="8" fill="rgba(255,255,255,0.35)">${v}</text>`
-    ).join('');
-    // X axis date labels (first and last only)
-    const fmtD = d => { if(!d) return ''; const m=d.slice(5,7),dy=d.slice(8,10); return `${parseInt(m)}/${parseInt(dy)}`; };
-    const xLabels = [
-      `<text x="${cx(0)}" y="${H-pad.b+11}" text-anchor="middle" font-size="8" fill="rgba(255,255,255,0.4)">${fmtD(dates[0])}</text>`,
-      `<text x="${cx(pts.length-1)}" y="${H-pad.b+11}" text-anchor="middle" font-size="8" fill="rgba(255,255,255,0.4)">${fmtD(dates[dates.length-1])}</text>`
-    ].join('');
-    // Avg dashed line
-    const avgLine = `<line x1="${pad.l}" y1="${cy(avgV)}" x2="${W-pad.r}" y2="${cy(avgV)}" stroke="${color}" stroke-width="1" stroke-dasharray="3 3" opacity="0.45"/>
-      <text x="${W-pad.r+1}" y="${cy(avgV)+3}" font-size="7.5" fill="${color}" opacity="0.7">avg${Math.round(avgV)}</text>`;
-    return `<svg width="100%" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="display:block">
-      <defs><linearGradient id="tg-${label.replace(/\s/g,'')}" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="${color}" stop-opacity="0.25"/>
-        <stop offset="100%" stop-color="${color}" stop-opacity="0.02"/>
-      </linearGradient></defs>
-      <path d="${areaD}" fill="url(#tg-${label.replace(/\s/g,'')})" />
-      <path d="${pathD}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-      ${avgLine}${yLabels}${xLabels}${dots}
-    </svg>`;
+  const heroHTML = `
+    <div style="padding:12px 14px 8px;border-bottom:1px solid var(--border1)">
+      <div style="font-size:10px;font-weight:700;color:var(--t3);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:8px">${scopeLabel}</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center">
+        <div>
+          <div style="font-size:22px;font-weight:800;color:var(--teal)">${avgDisplay}</div>
+          <div style="font-size:10px;color:var(--t3)">Avg</div>
+        </div>
+        <div ${core.highSeriesID ? `onclick="goToHighSeries(${core.highSeriesID})" style="cursor:pointer"` : ''}>
+          <div style="font-size:22px;font-weight:800;color:var(--purple)">${core.highSeriesTotal??'—'}</div>
+          <div style="font-size:10px;color:var(--t3)">Hi Series${core.highSeriesID?' ▶':''}</div>
+        </div>
+        <div>
+          <div style="font-size:22px;font-weight:800;color:var(--gold)">${core.high??'—'}</div>
+          <div style="font-size:10px;color:var(--t3)">Hi Game</div>
+        </div>
+        <div>
+          <div style="font-size:22px;font-weight:800;color:var(--t2)">${core.gameCount}</div>
+          <div style="font-size:10px;color:var(--t3)">Games</div>
+        </div>
+      </div>
+      <div style="margin-top:8px">${trendHTML}</div>
+    </div>`;
+
+  // ── Tab bar ─────────────────────────────────────────────
+  const tabDefs = { overview:'Overview', strikes:'Strikes', spares:'Spares', balls:'Balls' };
+  const tabOrder = (sc.tabOrder || ['overview','strikes','spares','balls']).filter(t => tabDefs[t]);
+
+  const tabBarHTML = `
+    <div id="stats-tab-bar" style="display:flex;border-bottom:1px solid var(--border1);background:var(--bg2);overflow-x:auto;-webkit-overflow-scrolling:touch">
+      ${tabOrder.map(t => {
+        const active = sc.activeTab === t;
+        return `<button onclick="_statsSetTab('${t}')"
+          style="flex:1;padding:10px 4px;font-size:13px;font-weight:${active?700:500};
+          border:none;border-bottom:2px solid ${active?'var(--teal)':'transparent'};
+          background:transparent;color:${active?'var(--teal)':'var(--t3)'};cursor:pointer;
+          white-space:nowrap;-webkit-tap-highlight-color:transparent">${tabDefs[t]}</button>`;
+      }).join('')}
+    </div>`;
+
+  // ── Tab content ─────────────────────────────────────────
+  let tabContent = '';
+  const tab = sc.activeTab || 'overview';
+
+  const noDataHTML = `<div style="text-align:center;padding:40px 20px">
+    <div style="font-size:32px;margin-bottom:12px">🎳</div>
+    <div style="color:var(--t3);font-size:14px">No games in this scope</div>
+    <div style="color:var(--t3);font-size:12px;margin-top:6px">Adjust the filters above</div>
+  </div>`;
+
+  if (!scopedGames.length) {
+    tabContent = noDataHTML;
+  } else if (tab === 'overview') {
+    tabContent = _statsTabOverview(scopedGames, core, allStdGames, sc, hasFrames);
+  } else if (tab === 'strikes') {
+    tabContent = _statsTabStrikes(scopedGames, hasFrames);
+  } else if (tab === 'spares') {
+    tabContent = _statsTabSpares(scopedGames, hasFrames);
+  } else if (tab === 'balls') {
+    tabContent = _statsTabBalls(scopedGames, sc);
   }
 
-  // Trending table (first 5 vs last 5 weeks of the trend window)
-  function trendArrow(a, b, threshold=1.5, absThresh=0.5) {
-    const diff = b - a;
-    const relDiff = a !== 0 ? Math.abs(diff/a)*100 : Math.abs(diff);
-    if (relDiff < threshold && Math.abs(diff) < absThresh) return '<span style="color:var(--t3)">→</span>';
-    return diff > 0
-      ? '<span style="color:var(--teal)">↑</span>'
-      : '<span style="color:rgba(157,78,221,0.8)">↓</span>';
+  el.innerHTML = scopeBarHTML + heroHTML + tabBarHTML +
+    `<div style="padding:14px;padding-bottom:80px">${tabContent}</div>`;
+}
+
+/* ── Tab: Overview ──────────────────────────────────────────*/
+function _statsTabOverview(games, core, allStdGames, sc, hasFrames) {
+  const gameIDs = games.map(g => g.GameID);
+
+  // Series trend sparkline (up to 24 most recent series in scope)
+  const seriesInScope = [...new Set(games.map(g => g.SeriesID))];
+  const seriesTrendPts = seriesInScope
+    .map(sid => {
+      const sg = games.filter(g => g.SeriesID === sid);
+      const s = db.series.find(x => x.SeriesID === sid);
+      const tot = sg.reduce((a,g)=>a+g.FinalScore,0);
+      return { date: s?.DateBowled || '', score: tot };
+    })
+    .filter(p => p.date)
+    .sort((a,b) => a.date.localeCompare(b.date))
+    .slice(-24);
+
+  const sparkHTML = seriesTrendPts.length >= 2
+    ? `<div style="margin-bottom:16px">
+        <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:0.8px;text-transform:uppercase;margin-bottom:6px">
+          Series Totals <span style="font-weight:400">(${seriesTrendPts.length})</span>
+        </div>
+        <div style="background:var(--bg2);border-radius:12px;padding:10px">
+          ${buildStatsSparkline(seriesTrendPts,'var(--purple)','seriesTotals')}
+        </div>
+      </div>`
+    : '';
+
+  // Game-in-series breakdown (G1/G2/G3 avg) — 3-game series only
+  const byGame = {1:[], 2:[], 3:[]};
+  games.forEach(g => {
+    const s = db.series.find(x => x.SeriesID === g.SeriesID);
+    const seriesGames = games.filter(x => x.SeriesID === g.SeriesID);
+    if (seriesGames.length === 3 && g.GameNumber >= 1 && g.GameNumber <= 3) {
+      byGame[g.GameNumber].push(g.FinalScore);
+    }
+  });
+  const gAvg = arr => arr.length ? arr.reduce((a,b)=>a+b,0)/arr.length : null;
+  const g1a = gAvg(byGame[1]), g2a = gAvg(byGame[2]), g3a = gAvg(byGame[3]);
+  const hasGameBreakdown = g1a && g2a && g3a;
+  const maxGAvg = hasGameBreakdown ? Math.max(g1a, g2a, g3a) : 1;
+  const gameBreakdownHTML = hasGameBreakdown ? `
+    <div class="stat-card" style="margin-bottom:16px">
+      <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:0.8px;text-transform:uppercase;margin-bottom:10px">Game-by-Game Avg (3-game series)</div>
+      ${[1,2,3].map(n => {
+        const a = gAvg(byGame[n]);
+        const pct = a ? (a / maxGAvg * 100).toFixed(1) : 0;
+        const col = a >= maxGAvg - 2 ? 'var(--teal)' : a <= Math.min(g1a,g2a,g3a) + 2 ? 'rgba(157,78,221,0.8)' : 'var(--t2)';
+        return `<div style="margin-bottom:8px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:3px">
+            <span style="font-size:12px;color:var(--t2)">Game ${n}</span>
+            <span style="font-size:12px;font-weight:700;color:${col}">${a.toFixed(1)}</span>
+          </div>
+          <div style="background:var(--bg3);border-radius:4px;height:6px">
+            <div style="background:${col};border-radius:4px;height:6px;width:${pct}%;transition:width 0.3s"></div>
+          </div>
+        </div>`;
+      }).join('')}
+      <div style="font-size:10px;color:var(--t3);margin-top:4px">${byGame[1].length} 3-game series</div>
+    </div>` : '';
+
+  // Milestones
+  const ms200 = games.filter(g=>g.FinalScore>=200).length;
+  const ms225 = games.filter(g=>g.FinalScore>=225).length;
+  const ms250 = games.filter(g=>g.FinalScore>=250).length;
+  const ms275 = games.filter(g=>g.FinalScore>=275).length;
+  const ms300 = games.filter(g=>g.FinalScore>=300).length;
+  const milestonesHTML = `
+    <div class="stat-card" style="margin-bottom:16px">
+      <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:0.8px;text-transform:uppercase;margin-bottom:10px">Milestones</div>
+      <div style="display:flex;justify-content:space-around;text-align:center">
+        ${[{lbl:'200+',val:ms200,col:'var(--t2)'},{lbl:'225+',val:ms225,col:'var(--teal)'},{lbl:'250+',val:ms250,col:'var(--gold)'},{lbl:'275+',val:ms275,col:'var(--purple)'},{lbl:'300',val:ms300,col:'var(--gold)'}].map(m=>`
+        <div>
+          <div style="font-size:${m.lbl==='300'?'26px':'20px'};font-weight:900;color:${m.val>0?m.col:'var(--t3)'}${m.lbl==='300'&&m.val>0?';text-shadow:0 0 12px var(--gold)':''}">${m.val}</div>
+          <div style="font-size:10px;color:var(--t3);margin-top:2px">${m.lbl}</div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+
+  // Summary stats
+  const summaryHTML = `
+    <div class="stat-card" style="margin-bottom:16px">
+      <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:0.8px;text-transform:uppercase;margin-bottom:10px">Summary</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div class="stat-row" style="border:none;padding:2px 0"><span>Clean Games</span><span class="sval t">${core.cleanGames} / ${core.gameCount}</span></div>
+        <div class="stat-row" style="border:none;padding:2px 0"><span>Low Game</span><span class="sval" style="color:rgba(157,78,221,0.7)">${core.low??'—'}</span></div>
+        <div class="stat-row" style="border:none;padding:2px 0"><span>Total Pins</span><span class="sval" style="color:var(--teal)">${core.totalPins.toLocaleString()}</span></div>
+        <div class="stat-row" style="border:none;padding:2px 0"><span>Series</span><span class="sval t">${seriesInScope.length}</span></div>
+      </div>
+      <div style="margin-top:10px">
+        <button class="btn btn-ghost" style="width:100%;font-size:13px" onclick="navTo('s-games')">🎳 Browse All Games</button>
+      </div>
+    </div>`;
+
+  // Radar chart (needs frame data)
+  const advStats = hasFrames ? calculateAdvancedStats(gameIDs) : null;
+  const radarHTML = advStats ? `<div class="stat-card" style="margin-bottom:16px">${renderRadarChart(advStats, core.avg?.toFixed(2))}</div>` : '';
+
+  // Context comparison (only when not showing All)
+  let compareHTML = '';
+  if (sc.context !== 'all' && allStdGames.length > games.length) {
+    const allCore = _statsComputeCore(allStdGames);
+    const curAvg = core.avg;
+    const allAvg = allCore.avg;
+    const delta = curAvg != null && allAvg != null ? (curAvg - allAvg) : null;
+    const col = delta == null ? 'var(--t3)' : delta >= 0 ? 'var(--teal)' : 'rgba(157,78,221,0.8)';
+    compareHTML = `
+      <div class="stat-card" style="margin-bottom:16px">
+        <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:0.8px;text-transform:uppercase;margin-bottom:10px">This Scope vs All Time</div>
+        <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;text-align:center">
+          <div>
+            <div style="font-size:20px;font-weight:800;color:var(--teal)">${core.avg!=null?core.avg.toFixed(2):'—'}</div>
+            <div style="font-size:10px;color:var(--t3)">Scope Avg</div>
+            <div style="font-size:11px;color:var(--t3);margin-top:4px">${core.high??'—'} hi · ${core.cleanGames} clean</div>
+          </div>
+          <div style="font-size:${delta!=null?'16px':'12px'};font-weight:700;color:${col}">
+            ${delta!=null ? (delta>=0?'+':'')+delta.toFixed(1) : '—'}
+          </div>
+          <div>
+            <div style="font-size:20px;font-weight:800;color:var(--t2)">${allAvg!=null?allAvg.toFixed(2):'—'}</div>
+            <div style="font-size:10px;color:var(--t3)">All Time Avg</div>
+            <div style="font-size:11px;color:var(--t3);margin-top:4px">${allCore.high??'—'} hi · ${allCore.cleanGames} clean</div>
+          </div>
+        </div>
+      </div>`;
   }
-  const half = Math.max(1, Math.floor(trendGames.length/2));
-  const firstHalf = trendGames.slice(0, half);
-  const lastHalf  = trendGames.slice(trendGames.length - half);
-  const tAvg = gs => gs.length ? gs.reduce((a,g)=>a+g.FinalScore,0)/gs.length : 0;
-  const fAvg = tAvg(firstHalf), lAvg = tAvg(lastHalf);
 
-  // Per-half frame stats for trending table
-  function halfFrameStats(games) {
-    const gids = new Set(games.map(g => g.GameID));
-    const frms = db.frames.filter(f => gids.has(f.GameID));
-    const frms19 = frms.filter(f => f.FrameNumber <= 9);
-    const strikes = frms19.filter(f => f.Strike).length;
-    const spares  = frms19.filter(f => f.Spare).length;
-    const total   = frms19.length || 1;
-    const spareOpps = frms19.filter(f => !f.Strike).length || 1;
-    // Clean %: frame-level — a frame is clean if it contains a strike or spare
-    const cleanFrames = frms19.filter(f => f.Strike || f.Spare).length;
-    // Splits: att1 frames 1-9 where leave is a split
-    const frameIDs = new Set(frms19.map(f => f.FrameID));
-    const att1s = db.attempts.filter(a => frameIDs.has(a.FrameID) && a.Attempt === 1 && a.Pinfall !== null && a.Pinfall < 10);
-    let splitOpps = att1s.length, splitCount = 0;
-    att1s.forEach(a => { if (isSplitLeave(getLeaveFromAtt(a))) splitCount++; });
-    return {
-      strikePct: Math.round(strikes / total * 100),
-      sparePct:  Math.round(spares  / spareOpps * 100),
-      cleanPct:  frms19.length ? Math.round(cleanFrames / frms19.length * 100) : 0,
-      splitPct:  splitOpps ? Math.round(splitCount / splitOpps * 100) : 0,
-    };
+  return sparkHTML + gameBreakdownHTML + milestonesHTML + summaryHTML + radarHTML + compareHTML;
+}
+
+/* ── Tab: Strikes ───────────────────────────────────────────*/
+function _statsTabStrikes(games, hasFrames) {
+  if (!hasFrames) return `
+    <div class="stat-card" style="text-align:center;padding:30px 20px">
+      <div style="font-size:28px;margin-bottom:10px">📊</div>
+      <div style="color:var(--t3);font-size:14px">Frame data not recorded</div>
+      <div style="color:var(--t3);font-size:12px;margin-top:6px;line-height:1.6">
+        Strike stats require per-frame tracking.<br>Switch to a recent season for full stats.
+      </div>
+    </div>`;
+
+  const gameIDs = games.map(g => g.GameID);
+  const stats = calculateAdvancedStats(gameIDs);
+
+  // Per-frame strike % heatmap
+  const frameStrikePcts = [];
+  for (let fn = 1; fn <= 10; fn++) {
+    let opps = 0, hits = 0;
+    games.forEach(g => {
+      const fr = db.frames.find(f => f.GameID === g.GameID && f.FrameNumber === fn);
+      if (!fr) return;
+      if (fn <= 9) {
+        opps++;
+        if (fr.Strike) hits++;
+      } else {
+        // F10: count att1 as a fresh rack opportunity
+        const a1 = db.attempts.find(a => a.FrameID === fr.FrameID && a.Attempt === 1);
+        if (a1?.Pinfall != null) { opps++; if (a1.Pinfall === 10) hits++; }
+        // att2 if att1 was a strike
+        const a2 = db.attempts.find(a => a.FrameID === fr.FrameID && a.Attempt === 2);
+        if (a1?.Pinfall === 10 && a2?.Pinfall != null) { opps++; if (a2.Pinfall === 10) hits++; }
+        // att3 if att1+att2 were strikes
+        const a3 = db.attempts.find(a => a.FrameID === fr.FrameID && a.Attempt === 3);
+        if (a1?.Pinfall === 10 && a2?.Pinfall === 10 && a3?.Pinfall != null) { opps++; if (a3.Pinfall === 10) hits++; }
+      }
+    });
+    const pct = opps > 0 ? Math.round(hits / opps * 100) : 0;
+    frameStrikePcts.push({ fn, pct, opps, hits });
   }
-  const fStats = halfFrameStats(firstHalf), lStats = halfFrameStats(lastHalf);
+  const maxPct = Math.max(...frameStrikePcts.map(f=>f.pct), 1);
 
-  // ── Block assembly — collapsible + reorderable ──────────────
-  // State stored in localStorage as { order:[ids], collapsed:{id:bool} }
-  const STATS_BLOCKS_KEY = 'bowlingdb_stats_layout';
-  const DEFAULT_ORDER = ['trends','milestones','summary','firstball','radar','gamestats','framestats','notap','leaves'];
-  let sbState;
-  try { sbState = JSON.parse(localStorage.getItem(STATS_BLOCKS_KEY) || '{}'); } catch(e) { sbState = {}; }
-  if (!sbState.order) sbState.order = [...DEFAULT_ORDER];
-  if (!sbState.collapsed) sbState.collapsed = {};
-  // Ensure all default blocks exist in order (additive if new blocks added later)
-  DEFAULT_ORDER.forEach(id => { if (!sbState.order.includes(id)) sbState.order.push(id); });
-  function sbSave() { try { localStorage.setItem(STATS_BLOCKS_KEY, JSON.stringify(sbState)); } catch(e) {} }
-
-  // Define block content
-  const blockDefs = {
-    trends: {
-      label: 'Score Trends',
-      html: () => `
-        ${trendSeries.length >= 2 ? `
-        <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">
-          Series Totals <span style="font-weight:400;color:var(--t3)">(${trendSeries.length})</span></div>
-        <div style="background:var(--bg2);border-radius:12px;padding:10px;margin-bottom:12px">
-          ${buildSVGLine(trendSeries.map(s=>({date:s.date,score:s.total})), 'var(--purple)', 'series')}
-        </div>` : ''}
-        ${trendGamePts.length >= 2 ? `
-        <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">
-          Game Scores <span style="font-weight:400;color:var(--t3)">(${trendGamePts.length})</span></div>
-        <div style="background:var(--bg2);border-radius:12px;padding:10px;margin-bottom:12px">
-          ${buildSVGLine(trendGamePts, 'var(--teal)', 'games')}
-        </div>` : ''}
-        ${trendStrikePts.length >= 2 ? `
-        <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">
-          Strike % <span style="font-weight:400;color:var(--t3)">per game</span></div>
-        <div style="background:var(--bg2);border-radius:12px;padding:10px;margin-bottom:12px">
-          ${buildSVGLine(trendStrikePts, 'var(--gold)', 'strikePct')}
-        </div>` : ''}
-        ${trendSparePts.length >= 2 ? `
-        <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">
-          Makeable Spare % <span style="font-weight:400;color:var(--t3)">per game</span></div>
-        <div style="background:var(--bg2);border-radius:12px;padding:10px;margin-bottom:12px">
-          ${buildSVGLine(trendSparePts, 'var(--green)', 'sparePct')}
-        </div>` : ''}
-        ${trendGames.length >= 4 ? `
-        <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">
-          Trends <span style="font-size:9px;font-weight:400">First half → Last half</span></div>
-        <div class="stat-card" style="padding:10px 14px;margin-bottom:12px">
-          <div class="stat-row" style="padding:3px 0;border:none">
-            <span>Avg Score</span>
-            <span style="display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700">
-              <span style="color:var(--t3)">${fAvg.toFixed(1)} → ${lAvg.toFixed(1)}</span>
-              ${trendArrow(fAvg,lAvg,1.5,1)}
-              <span style="color:${lAvg>fAvg?'var(--teal)':'rgba(157,78,221,0.8)'}"> ${Math.abs(Math.round(lAvg-fAvg))}</span>
-            </span></div>
-          <div class="stat-row" style="padding:3px 0">
-            <span>Strike %</span>
-            <span style="display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700">
-              <span style="color:var(--t3)">${fStats.strikePct}% → ${lStats.strikePct}%</span>
-              ${trendArrow(fStats.strikePct,lStats.strikePct)}
-              <span style="color:${lStats.strikePct>fStats.strikePct?'var(--teal)':'rgba(157,78,221,0.8)'}">
-                ${Math.abs(lStats.strikePct-fStats.strikePct)}%</span>
-            </span></div>
-          <div class="stat-row" style="padding:3px 0">
-            <span>Spare %</span>
-            <span style="display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700">
-              <span style="color:var(--t3)">${fStats.sparePct}% → ${lStats.sparePct}%</span>
-              ${trendArrow(fStats.sparePct,lStats.sparePct)}
-              <span style="color:${lStats.sparePct>fStats.sparePct?'var(--teal)':'rgba(157,78,221,0.8)'}">
-                ${Math.abs(lStats.sparePct-fStats.sparePct)}%</span>
-            </span></div>
-          <div class="stat-row" style="padding:3px 0">
-            <span>Clean %</span>
-            <span style="display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700">
-              <span style="color:var(--t3)">${fStats.cleanPct}% → ${lStats.cleanPct}%</span>
-              ${trendArrow(fStats.cleanPct,lStats.cleanPct)}
-              <span style="color:${lStats.cleanPct>fStats.cleanPct?'var(--teal)':'rgba(157,78,221,0.8)'}">
-                ${Math.abs(lStats.cleanPct-fStats.cleanPct)}%</span>
-            </span></div>
-          <div class="stat-row" style="padding:3px 0">
-            <span style="color:var(--purple)">Split %</span>
-            <span style="display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700">
-              <span style="color:var(--t3)">${fStats.splitPct}% → ${lStats.splitPct}%</span>
-              ${trendArrow(lStats.splitPct,fStats.splitPct)}
-              <span style="color:${lStats.splitPct<fStats.splitPct?'var(--teal)':'rgba(157,78,221,0.8)'}">
-                ${Math.abs(lStats.splitPct-fStats.splitPct)}%</span>
-            </span></div>
-        </div>` : ''}`,
-    },
-    milestones: {
-      label: 'Milestones',
-      hidden: !msHasData,
-      html: () => `
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
-          <div>
-            <div style="font-size:10px;font-weight:700;color:var(--t3);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:10px">Series</div>
-            <div style="display:flex;flex-direction:column;gap:12px">
-              ${msCell(ms.s675_10,ms.s675_at,'675+')}
-              ${msCell(ms.s750_10,ms.s750_at,'750+')}
-              ${msCell(ms.s800_10,ms.s800_at,'800+')}
-            </div>
-          </div>
-          <div>
-            <div style="font-size:10px;font-weight:700;color:var(--t3);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:10px">Games</div>
-            <div style="display:flex;flex-direction:column;gap:12px">
-              ${msCell(ms.g270_10,ms.g270_at,'270+')}
-              ${msCell(ms.g290_10,ms.g290_at,'290+')}
-              ${msCell(ms.g300_10,ms.g300_at,'300')}
-            </div>
-          </div>
-        </div>
-        <div style="text-align:center;font-size:9px;color:var(--t3);margin-top:12px;border-top:1px solid var(--border1);padding-top:8px">large = all-time &nbsp;·&nbsp; small = last 10 weeks</div>
-        <div style="display:flex;gap:8px;margin-top:10px">
-          <button class="btn btn-ghost" style="flex:1;font-size:12px;padding:8px"
-            onclick="openAllTimeHighsModal()">🏆 All-Time Highs &amp; Streaks</button>
-          <button class="btn btn-ghost" style="flex:1;font-size:12px;padding:8px"
-            onclick="openHighsByVenueModal()">🎳 By Center / League</button>
-        </div>`,
-    },
-    summary: {
-      label: 'Summary',
-      html: () => `
-        <div class="stat-card" style="margin-bottom:8px">
-          <div class="stat-card-title">Average</div>
-          <div class="stat-card-val" style="color:var(--teal)">${avg}</div>
-          <div class="stat-card-sub">${gameCount} game${gameCount===1?'':'s'} recorded</div>
-        </div>
-        <div class="stat-card" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;padding:12px 14px">
-          <div${highSeriesID ? ` onclick="goToHighSeries(${highSeriesID})" style="cursor:pointer"` : ''}>
-            <div class="stat-card-title">Hi Series${highSeriesID ? ' <span style="font-size:9px;color:var(--teal)">▶</span>' : ''}</div>
-            <div class="stat-card-val" style="color:var(--teal);font-size:26px">${highSeriesTotal ?? '—'}</div>
-          </div>
-          <div${highGameID ? ` onclick="goToHighGame(${highGameID})" style="cursor:pointer"` : ''}>
-            <div class="stat-card-title">Hi Game${highGameID ? ' <span style="font-size:9px;color:var(--teal)">▶</span>' : ''}</div>
-            <div class="stat-card-val" style="color:var(--gold);font-size:26px">${high}</div>
-          </div>
-          <div>
-            <div class="stat-card-title">Low Game</div>
-            <div class="stat-card-val" style="color:rgba(157,78,221,0.65);font-size:26px">${lowScore ?? '—'}</div>
-          </div>
-        </div>
-        <div style="height:8px"></div>
-        <button class="btn btn-ghost" style="width:100%" onclick="navTo('s-games')">
-          <span style="font-size:16px">🎳</span> Browse All Games
-        </button>`,
-    },
-    firstball: {
-      label: 'First Ball',
-      html: () => `
-        <div style="display:flex;justify-content:space-around;align-items:center">
-          ${[
-            { pct: totalFr ? Math.round(strikeFr/totalFr*100) : 0, label: 'Strikes', color: '#C084FC' },
-            { pct: totalFr ? Math.round((totalFr-strikeFr)/totalFr*100) : 0, label: 'Leaves', color: '#C084FC' },
-            { pct: spareOpps ? Math.round(splitOpp/spareOpps*100) : 0, label: 'Splits', color: '#C084FC' }
-          ].map(({pct:p, label, color}) => {
-            const r=38, circ=2*Math.PI*r, dash=circ*p/100, gap=circ-dash;
-            return `<div style="text-align:center">
-              <svg width="96" height="96" viewBox="0 0 96 96">
-                <circle cx="48" cy="48" r="${r}" fill="none" stroke="rgba(192,132,252,0.12)" stroke-width="7"/>
-                <circle cx="48" cy="48" r="${r}" fill="none" stroke="${color}" stroke-width="7"
-                  stroke-dasharray="${dash.toFixed(1)} ${gap.toFixed(1)}"
-                  stroke-dashoffset="${(circ*0.25).toFixed(1)}" stroke-linecap="round"
-                  style="filter:drop-shadow(0 0 6px #C084FC66)"/>
-                <text x="48" y="44" text-anchor="middle" font-size="17" font-weight="900" fill="white">${p}%</text>
-                <text x="48" y="60" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.5)">${label}</text>
-              </svg>
+  const heatmapHTML = `
+    <div class="stat-card" style="margin-bottom:16px">
+      <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:0.8px;text-transform:uppercase;margin-bottom:10px">Strike % by Frame</div>
+      <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -4px">
+        <div style="display:grid;grid-template-columns:repeat(10,minmax(52px,1fr));gap:4px;min-width:520px;padding:0 4px">
+          ${frameStrikePcts.map(f => {
+            const intensity = maxPct > 0 ? f.pct / maxPct : 0;
+            const bg = `rgba(0,217,217,${(0.08 + intensity * 0.55).toFixed(2)})`;
+            const textCol = intensity > 0.6 ? '#000' : 'var(--t1)';
+            return `<div style="text-align:center;background:${bg};border-radius:8px;padding:8px 4px;cursor:pointer;-webkit-tap-highlight-color:transparent"
+              onclick="_statsFrameStrikeDetail(${f.fn},[${games.map(g=>g.GameID).join(',')}])">
+              <div style="font-size:15px;font-weight:800;color:${textCol}">${f.pct}%</div>
+              <div style="font-size:9px;color:var(--t3);margin-top:3px">F${f.fn}</div>
             </div>`;
           }).join('')}
-        </div>`,
-    },
-    radar: {
-      label: 'Performance Radar',
-      html: () => renderRadarChart(stats, avg),
-    },
-    gamestats: {
-      label: 'Game Statistics',
-      html: () => `
-        <div class="stat-row" style="border:none;padding:4px 0"><span>Games Bowled</span><span class="sval t">${gameCount}</span></div>
-        <div class="stat-row" style="padding:4px 0"><span>Clean Games</span><span class="sval t">${cleanGames}${gameCount?' / '+gameCount:''}</span></div>
-        <div class="stat-row" style="padding:4px 0"><span>Total Pins</span><span class="sval" style="color:var(--teal)">${totalPins.toLocaleString()}</span></div>`,
-    },
-    framestats: {
-      label: 'Frame Statistics',
-      html: () => `
-        <div class="stat-row" style="border:none;padding:4px 0"><span>First Ball Average</span><span class="sval t">${firstBallAvg}</span></div>
-        <div class="stat-row clickable" style="padding:4px 0" onclick="openStrikeStreaksModal([${allGames.map(g=>g.GameID).join(',')}])">
-          <span>Strikes <span style="font-size:11px;color:var(--t3)">▶</span></span>
-          <span class="sval g">${pct(strikeFr, totalFr)}</span></div>
-        <div class="stat-row" style="padding:4px 0 4px;padding-left:14px"><span style="color:var(--t2)">X-on-X</span><span class="sval" style="color:var(--teal)">${xOnXOpps ? pct(xOnXConv, xOnXOpps) : '—'}</span></div>
-        <div class="stat-row" style="padding:4px 0 4px;padding-left:14px"><span style="color:var(--t2)">BounceBack</span><span class="sval" style="color:var(--purple)">${bounceBackOpps ? pct(bounceBackConv, bounceBackOpps) : '—'}</span></div>
-        <div class="stat-row" style="padding:4px 0 4px;padding-left:14px"><span style="color:var(--t2)">Clutch Strike</span><span class="sval" style="color:var(--gold)">${clutchPct}</span></div>
-        <div class="stat-row" style="padding:4px 0 4px;padding-left:14px"><span style="color:var(--t2)">Fill Ball Avg</span><span class="sval" style="color:var(--teal)">${fillBallAvg}</span></div>
-        <div class="stat-row clickable" style="padding:4px 0" onclick="openStatsScreenSpareDetail()"><span>Spares <span style="font-size:11px;color:var(--t3)">▶</span></span><span class="sval t">${pct(spareFr, spareOpps)}</span></div>
-        <div class="stat-row" style="padding:6px 0 2px;margin-top:4px;border-top:1px solid var(--border1)"><span>Opens</span><span class="sval s">${openFr > 0 ? openFr+' ('+Math.round(openFr/totalFr*100)+'%)' : '0'}</span></div>
-        ${!hasPinData && spareOpps > 0 ? `<div style="font-size:11px;color:var(--t3);padding:6px 4px 0;line-height:1.5">ⓘ Spare breakdown requires per-pin tracking.</div>` : ''}`,
-    },
-    streaks: {
-      label: 'Strike Streaks',
-      html: () => {
-        const { counts, maxStreak, allStreaks, crossGameStreaks, topStreaks } = calculateStrikeStreaks(allGames.map(g=>g.GameID));
-        let totalInst = 0, totalStrikes = 0;
-        for (let i=1;i<=12;i++) { totalInst+=counts[i]; totalStrikes+=counts[i]*i; }
-        const avgLen = totalInst > 0 ? (totalStrikes/totalInst).toFixed(1) : '—';
-
-        // Distribution rows (3–12 only; skip 4-11 if zero; single & double excluded)
-        const streakNames = {3:'Turkey',4:'Four-bagger',5:'Five-bagger',6:'Six-pack',7:'Seven',8:'Eight',9:'Nine',10:'Ten',11:'Eleven',12:'Perfect'};
-        let distRows = '';
-        for (let i=3;i<=12;i++) {
-          const c=counts[i];
-          if (c===0 && i>3 && i<12) continue;
-          const pct = totalInst>0?Math.round(c/totalInst*100):0;
-          const col = i>=12?'var(--gold)':i>=6?'var(--teal)':i>=3?'var(--green)':'var(--t1)';
-          const xs = i<=2?'X'.repeat(i):i===3?'XXX':`${i}X`;
-          distRows += `<div class="stat-row" style="padding:4px 0">
-            <span><span style="color:${col};font-weight:700;letter-spacing:-1px">${xs}</span>
-              <span style="color:var(--t2);margin-left:6px;font-size:13px">${streakNames[i]||i+'-bagger'}</span></span>
-            <span class="sval" style="color:${c>0?col:'var(--t3)'}">${c>0?c+` (${pct}%)`:'—'}</span>
-          </div>`;
-        }
-
-        // Unified top streaks (within-game + cross-game, sorted desc, top 20)
-        const fmtD = d => d ? new Date(d+'T12:00:00').toLocaleDateString('en-US',{month:'numeric',day:'numeric',year:'2-digit'}) : '';
-        const topList = topStreaks.slice(0,20).map(s => {
-          const col = s.length>=12?'var(--gold)':s.length>=6?'var(--teal)':s.length>=3?'var(--green)':'var(--t1)';
-          const xs = s.length<=2?'X'.repeat(s.length):s.length===3?'XXX':`${s.length}X`;
-          const dateStr = fmtD(s.dateBowled);
-          const scoresStr = s.gameScores&&s.gameScores.length
-            ? s.gameScores.map((sc,i)=>`G${i+1}: ${sc}`).join(' · ')+(s.gameScores.length>1?` = ${s.seriesTotal}`:'')
-            : '';
-          const crossTag = s.crossGame
-            ? `<span style="font-size:9px;background:rgba(0,217,217,0.12);color:var(--teal);border-radius:4px;padding:1px 5px;font-weight:700;margin-left:5px">CROSS</span>`
-            : '';
-          return `<div style="padding:7px 0;border-bottom:1px solid var(--border1)">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px">
-              <span style="color:${col};font-weight:900;font-size:14px">${xs}${crossTag}</span>
-              ${dateStr?`<span style="font-size:10px;color:var(--t3)">${dateStr}</span>`:''}
-            </div>
-            ${scoresStr?`<div style="font-size:11px;color:var(--t2)">${scoresStr}</div>`:''}
-          </div>`;
-        }).join('');
-
-        if (!totalInst) return `<div style="color:var(--t3);font-size:13px;padding:8px 0">No strike data in this window.</div>`;
-
-        return `
-          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px">
-            <div style="text-align:center;background:var(--bg3);border-radius:10px;padding:10px 4px">
-              <div style="font-size:22px;font-weight:900;color:var(--gold)">${maxStreak||'—'}</div>
-              <div style="font-size:10px;color:var(--t3);margin-top:2px">Longest</div>
-            </div>
-            <div style="text-align:center;background:var(--bg3);border-radius:10px;padding:10px 4px">
-              <div style="font-size:22px;font-weight:900;color:var(--teal)">${totalStrikes}</div>
-              <div style="font-size:10px;color:var(--t3);margin-top:2px">Strikes</div>
-            </div>
-            <div style="text-align:center;background:var(--bg3);border-radius:10px;padding:10px 4px">
-              <div style="font-size:22px;font-weight:900;color:var(--green)">${avgLen}</div>
-              <div style="font-size:10px;color:var(--t3);margin-top:2px">Avg Length</div>
-            </div>
-          </div>
-          ${distRows}
-          ${topStreaks.length ? `<div style="font-size:10px;font-weight:700;color:var(--t3);letter-spacing:0.06em;margin:10px 0 6px">TOP STREAKS</div>${topList}` : ''}
-          ${topStreaks.length>20?`<div style="font-size:11px;color:var(--t3);margin-top:4px">+ ${topStreaks.length-20} more</div>`:''}`;
-      }
-    },
-    notap: {
-      label: 'NoTap Statistics',
-      hidden: !ntGames.length,
-      html: () => renderNoTapStatsSectionHTML(ntGames),
-    },
-    leaves: {
-      label: 'Top Leaves',
-      html: () => `<div id="stats-leaves-content">${buildTopLeavesHTML(undefined)}</div>`,
-    },
-  };
-
-  // Build each block as a collapsible panel with reorder arrows
-  function renderStatsBlock(id, idx, total) {
-    const def = blockDefs[id];
-    if (!def || def.hidden) return '';
-    const collapsed = !!sbState.collapsed[id];
-    const visibleIDs = sbState.order.filter(bid => blockDefs[bid] && !blockDefs[bid].hidden);
-    const visIdx = visibleIDs.indexOf(id);
-    const canUp   = visIdx > 0;
-    const canDown = visIdx < visibleIDs.length - 1;
-    const chevron = collapsed ? '∨' : '∧';
-
-    // Blocks that wrap their content in stat-card
-    const wrapInCard = ['gamestats','framestats','milestones'].includes(id);
-    const contentHTML = wrapInCard
-      ? `<div class="stat-card" style="padding:12px 14px;margin-top:6px">${def.html()}</div>`
-      : `<div style="margin-top:${id==='trends'?'0':'6px'}">${def.html()}</div>`;
-
-    return `<div class="stats-block" id="sb-${id}" style="margin-bottom:4px">
-      <div style="display:flex;align-items:center;gap:6px;padding:6px 2px;cursor:pointer;user-select:none"
-        onclick="toggleStatsBlock('${id}')">
-        <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:1px;text-transform:uppercase;flex:1">${def.label}</div>
-        <div style="display:flex;gap:2px">
-          <button onclick="moveStatsBlock('${id}',-1);event.stopPropagation()"
-            style="background:none;border:none;color:${canUp?'var(--t3)':'var(--border2)'};font-size:13px;cursor:${canUp?'pointer':'default'};padding:2px 4px;line-height:1;-webkit-tap-highlight-color:transparent"
-            ${canUp?'':'disabled'}>↑</button>
-          <button onclick="moveStatsBlock('${id}',1);event.stopPropagation()"
-            style="background:none;border:none;color:${canDown?'var(--t3)':'var(--border2)'};font-size:13px;cursor:${canDown?'pointer':'default'};padding:2px 4px;line-height:1;-webkit-tap-highlight-color:transparent"
-            ${canDown?'':'disabled'}>↓</button>
         </div>
-        <div style="font-size:12px;color:var(--t3);transition:transform 0.2s;display:inline-block;transform:${collapsed?'rotate(180deg)':'rotate(0deg)'}">&and;</div>
       </div>
-      <div id="sb-content-${id}" style="display:${collapsed?'none':'block'}">${contentHTML}</div>
+      <div style="font-size:10px;color:var(--t3);margin-top:8px;text-align:center">Tap a frame for detail · Darker = higher %</div>
     </div>`;
+
+  // Key metrics
+  const { strikePct, xOnXPct, bounceBackPct, clutchPct } = stats;
+  const metricsHTML = `
+    <div class="stat-card" style="margin-bottom:16px">
+      <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:0.8px;text-transform:uppercase;margin-bottom:10px">Strike Metrics</div>
+      <div class="stat-row" style="border:none;padding:4px 0">
+        <span style="font-weight:600">Strike %</span>
+        <span class="sval" style="color:var(--teal)">${strikePct}</span>
+      </div>
+      <div class="stat-row" style="padding:4px 0">
+        <span>X on X <span style="font-size:10px;color:var(--t3)">(after a strike)</span></span>
+        <span class="sval" style="color:var(--teal)">${xOnXPct}</span>
+      </div>
+      <div class="stat-row" style="padding:4px 0">
+        <span>Bounce Back <span style="font-size:10px;color:var(--t3)">(after non-strike)</span></span>
+        <span class="sval" style="color:var(--purple)">${bounceBackPct}</span>
+      </div>
+      <div class="stat-row" style="padding:4px 0">
+        <span>Clutch <span style="font-size:10px;color:var(--t3)">(F10 att1)</span></span>
+        <span class="sval" style="color:var(--gold)">${clutchPct}</span>
+      </div>
+    </div>`;
+
+  // Streak summary
+  const { counts, maxStreak } = calculateStrikeStreaks(gameIDs);
+  let totalInst = 0;
+  for (let i=1;i<=12;i++) totalInst += counts[i];
+  const streakHTML = `
+    <div class="stat-card" style="margin-bottom:16px">
+      <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:0.8px;text-transform:uppercase;margin-bottom:10px">Strike Streaks</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center;margin-bottom:12px">
+        <div style="background:var(--bg3);border-radius:10px;padding:10px 4px">
+          <div style="font-size:22px;font-weight:900;color:var(--gold)">${maxStreak||'—'}</div>
+          <div style="font-size:10px;color:var(--t3)">Longest</div>
+        </div>
+        <div style="background:var(--bg3);border-radius:10px;padding:10px 4px">
+          <div style="font-size:22px;font-weight:900;color:var(--teal)">${counts[3]||0}</div>
+          <div style="font-size:10px;color:var(--t3)">Turkeys</div>
+        </div>
+        <div style="background:var(--bg3);border-radius:10px;padding:10px 4px">
+          <div style="font-size:22px;font-weight:900;color:var(--purple)">${counts[6]||0}</div>
+          <div style="font-size:10px;color:var(--t3)">Six-packs</div>
+        </div>
+      </div>
+      <button class="btn btn-ghost" style="width:100%;font-size:13px"
+        onclick="openStrikeStreaksModal([${gameIDs.join(',')}])">Full Streak Detail ▶</button>
+    </div>`;
+
+  return heatmapHTML + metricsHTML + streakHTML;
+}
+
+/* ── Tab: Spares ────────────────────────────────────────────*/
+function _statsTabSpares(games, hasFrames) {
+  if (!hasFrames) return `
+    <div class="stat-card" style="text-align:center;padding:30px 20px">
+      <div style="font-size:28px;margin-bottom:10px">📊</div>
+      <div style="color:var(--t3);font-size:14px">Frame data not recorded</div>
+      <div style="color:var(--t3);font-size:12px;margin-top:6px;line-height:1.6">
+        Spare stats require per-frame tracking.<br>Switch to a recent season for full stats.
+      </div>
+    </div>`;
+
+  const gameIDs = games.map(g => g.GameID);
+  const stats = calculateAdvancedStats(gameIDs);
+  const { sparePct, makeablePct, singlePct, multiPct, splitPct } = stats;
+
+  // Core metrics
+  const metricsHTML = `
+    <div class="stat-card" style="margin-bottom:16px">
+      <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:0.8px;text-transform:uppercase;margin-bottom:10px">Spare Conversion</div>
+      <div class="stat-row" style="border:none;padding:4px 0">
+        <span style="font-weight:600">Overall Spare %</span>
+        <span class="sval t">${sparePct}</span>
+      </div>
+      <div class="stat-row" style="padding:4px 0">
+        <span>Makeable Spare %</span>
+        <span class="sval t">${makeablePct}</span>
+      </div>
+      <div class="stat-row" style="padding:4px 0 4px;padding-left:14px">
+        <span style="color:var(--t2)">Single Pin</span>
+        <span class="sval" style="color:var(--teal)">${singlePct}</span>
+      </div>
+      <div class="stat-row" style="padding:4px 0 4px;padding-left:14px">
+        <span style="color:var(--t2)">Multi Pin</span>
+        <span class="sval" style="color:var(--t2)">${multiPct}</span>
+      </div>
+      <div class="stat-row" style="padding:4px 0">
+        <span style="color:var(--purple)">Split Conv. %</span>
+        <span class="sval" style="color:var(--purple)">${splitPct}</span>
+      </div>
+      <button class="btn btn-ghost" style="width:100%;margin-top:10px;font-size:13px"
+        onclick="openSpareDetailModal([${gameIDs.join(',')}],'${sparePct}','${makeablePct}','${singlePct}','${multiPct}','${splitPct}')">
+        Full Spare Detail ▶</button>
+    </div>`;
+
+  // Leave frequency / worst leaves
+  const leavesHTML = `
+    <div class="stat-card" style="margin-bottom:16px">
+      <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:0.8px;text-transform:uppercase;margin-bottom:10px">Leaves</div>
+      ${buildTopLeavesHTML(gameIDs)}
+    </div>`;
+
+  return metricsHTML + leavesHTML;
+}
+
+/* ── Tab: Balls ─────────────────────────────────────────────*/
+function _statsTabBalls(games, sc) {
+  const gameIDs = new Set(games.map(g => g.GameID));
+
+  // Per-ball usage in scope
+  const ballUsage = {};
+  games.forEach(g => {
+    // Primary ball: att1 of frame 1
+    const fr1 = db.frames.find(f => f.GameID === g.GameID && f.FrameNumber === 1);
+    const att1 = fr1 ? db.attempts.find(a => a.FrameID === fr1.FrameID && a.Attempt === 1) : null;
+    const bid = att1?.BallID || null;
+    if (!bid) return;
+    if (!ballUsage[bid]) ballUsage[bid] = { games:[], scores:[], strikes:0, spareOpps:0, spares:0 };
+    ballUsage[bid].games.push(g.GameID);
+    if (g.FinalScore) ballUsage[bid].scores.push(g.FinalScore);
+    // Strikes + spares for this game
+    const gFrames = db.frames.filter(f => f.GameID === g.GameID && f.FrameNumber <= 9);
+    ballUsage[bid].strikes  += gFrames.filter(f=>f.Strike).length;
+    ballUsage[bid].spareOpps += gFrames.filter(f=>!f.Strike).length;
+    ballUsage[bid].spares   += gFrames.filter(f=>f.Spare).length;
+  });
+
+  if (!Object.keys(ballUsage).length) {
+    return `<div style="text-align:center;padding:40px 20px;color:var(--t3);font-size:14px">No ball data in this scope</div>`;
   }
 
-  // Store spare stats for the clickable Spares row in framestats block
-  window._statsSpareData = {
-    gameIDs: allGames.map(g=>g.GameID),
-    sparePct: pct(spareFr, spareOpps),
-    makeablePct: makeableOpp ? mkPct+'% ('+makeableConv+'/'+makeableOpp+')' : '—',
-    singlePct:   singleOpp   ? spgPct+'% ('+singleConv+'/'+singleOpp+')' : '—',
-    multiPct:    multiOpp    ? mpPct+'% ('+multiConv+'/'+multiOpp+')' : '—',
-    splitPct:    splitOpp    ? slPct+'% ('+splitConv+'/'+splitOpp+')' : '—'
-  };
+  const ballCards = Object.entries(ballUsage)
+    .sort((a,b) => b[1].games.length - a[1].games.length)
+    .map(([bidStr, u]) => {
+      const bid = parseInt(bidStr);
+      const ball = db.balls.find(b => b.BallID === bid);
+      if (!ball) return '';
+      const avg = u.scores.length ? (u.scores.reduce((a,b)=>a+b,0)/u.scores.length).toFixed(1) : '—';
+      const strikeRate = u.games.length ? Math.round(u.strikes / (u.games.length * 9) * 100) : 0; // approx
+      const spareRate  = u.spareOpps ? Math.round(u.spares / u.spareOpps * 100) : 0;
+      const imgSrc = getBallImgSrc(bid, 'cover') || '';
+      // Most recent surface prep
+      const preps = (db.surfaceDetails||[]).filter(s=>s.BallID===bid).sort((a,b)=>(b.Date||'').localeCompare(a.Date||''));
+      const lastPrep = preps[0];
+      const prepStr = lastPrep
+        ? `${lastPrep.Date || ''}${lastPrep.Grit ? ' · ' + lastPrep.Grit : ''}${lastPrep.Polished?' · Polished':''}`
+        : 'No prep logged';
+      return `
+        <div class="stat-card" style="margin-bottom:12px;cursor:pointer" onclick="navToBall(${bid})">
+          <div style="display:flex;gap:12px;align-items:center">
+            ${imgSrc ? `<img src="${imgSrc}" alt="${ball.BallName}"
+              style="width:44px;height:44px;border-radius:50%;object-fit:cover;flex-shrink:0"
+              onerror="this.style.display='none'">` :
+              `<div style="width:44px;height:44px;border-radius:50%;background:var(--bg3);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px">🎳</div>`}
+            <div style="flex:1;min-width:0">
+              <div style="font-size:14px;font-weight:700;color:var(--t1)">${ball.BallName}</div>
+              <div style="font-size:11px;color:var(--t3);margin-top:2px">${ball.Weight||''}lb${ball.Weight?' ·':''} ${ball.Coverstock||''}</div>
+            </div>
+            <div style="text-align:right;flex-shrink:0">
+              <div style="font-size:20px;font-weight:800;color:var(--teal)">${avg}</div>
+              <div style="font-size:10px;color:var(--t3)">${u.games.length} games</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:16px;margin-top:10px;padding-top:8px;border-top:1px solid var(--border1)">
+            <div style="text-align:center;flex:1">
+              <div style="font-size:14px;font-weight:700;color:var(--gold)">${strikeRate}%</div>
+              <div style="font-size:10px;color:var(--t3)">Strike</div>
+            </div>
+            <div style="text-align:center;flex:1">
+              <div style="font-size:14px;font-weight:700;color:var(--teal)">${spareRate}%</div>
+              <div style="font-size:10px;color:var(--t3)">Spare</div>
+            </div>
+            <div style="text-align:center;flex:2">
+              <div style="font-size:11px;font-weight:600;color:var(--t3)">Surface</div>
+              <div style="font-size:11px;color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${prepStr}</div>
+            </div>
+          </div>
+        </div>`;
+    }).join('');
 
-  document.getElementById('stats-content').innerHTML =
-    filterBar +
-    sbState.order.map((id, idx) => renderStatsBlock(id, idx, sbState.order.length)).join('');
+  return `<div>
+    <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:0.8px;text-transform:uppercase;margin-bottom:10px">
+      Ball Performance <span style="font-weight:400;color:var(--t3)">(primary ball per game)</span>
+    </div>
+    ${ballCards}
+    <div style="font-size:10px;color:var(--t3);text-align:center;margin-top:8px">Tap a card to open ball detail</div>
+  </div>`;
 }
 
-/* Re-render stats screen when filter tab is tapped */
-function setStatsFilter(f) {
-  _statsGameFilter = f;
-  renderStats();
+/* ── Per-frame strike detail modal ─────────────────────────*/
+function _statsFrameStrikeDetail(frameNum, gameIDs) {
+  const frames = db.frames.filter(f => gameIDs.includes(f.GameID) && f.FrameNumber === frameNum);
+  let opps = 0, hits = 0;
+  frames.forEach(f => {
+    if (frameNum <= 9) { opps++; if (f.Strike) hits++; }
+    else {
+      const a1 = db.attempts.find(a => a.FrameID === f.FrameID && a.Attempt === 1);
+      if (a1?.Pinfall != null) { opps++; if (a1.Pinfall === 10) hits++; }
+    }
+  });
+  const pct = opps ? Math.round(hits/opps*100) : 0;
+  openModal(`
+    <div class="modal-title">Frame ${frameNum} — Strike Detail</div>
+    <div style="text-align:center;padding:20px 0">
+      <div style="font-size:48px;font-weight:900;color:var(--teal)">${pct}%</div>
+      <div style="font-size:14px;color:var(--t3);margin-top:8px">${hits} strikes / ${opps} opportunities</div>
+    </div>
+    <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+  `);
 }
-/* Re-render just the leaves section (called from the leaves block's own filter if still needed) */
+
+/* ── Scope mutation helpers (called from inline onclick) ────*/
+function _statsSetCenter(val) {
+  // Selecting a center: set context to the center (shows all leagues within it)
+  // Selecting All: reset context to 'all'
+  const sc = _statsGetScope();
+  sc.context = val; // 'all' or 'center:{id}'
+  _statsSaveScope(sc); renderStats();
+}
+function _statsSetContext(val) {
+  const sc = _statsGetScope(); sc.context = val; _statsSaveScope(sc); renderStats();
+}
+function _statsSetPeriod(val) {
+  const sc = _statsGetScope(); sc.period = val; _statsSaveScope(sc); renderStats();
+}
+function _statsSetCondition(val) {
+  const sc = _statsGetScope(); sc.condition = val; _statsSaveScope(sc); renderStats();
+}
+function _statsSetTab(val) {
+  const sc = _statsGetScope(); sc.activeTab = val; _statsSaveScope(sc); renderStats();
+}
+function _statsSetCustom(key, val) {
+  const sc = _statsGetScope();
+  if (key === 'from') sc.customFrom = val; else sc.customTo = val;
+  _statsSaveScope(sc); renderStats();
+}
+function _statsClearCustom() {
+  const sc = _statsGetScope(); sc.customFrom = ''; sc.customTo = ''; _statsSaveScope(sc); renderStats();
+}
+function _statsScopeToggle() {
+  const sc = _statsGetScope();
+  sc.scopeOpen = sc.scopeOpen === false ? true : false; // toggle; default was open
+  _statsSaveScope(sc); renderStats();
+}
+
+/* Legacy stubs — kept so any existing navTo/onclick refs don't break */
+function setStatsFilter(f) { renderStats(); }
 function setLeavesFilter(filterGames) {
   var el = document.getElementById('stats-leaves-content');
   if (el) el.innerHTML = buildTopLeavesHTML(filterGames);
@@ -12263,6 +12437,7 @@ function swapModal(html) {
   document.getElementById('modal-bg').classList.add('open');
 }
 function closeModal() {
+  toastDismiss(); // #103 — clear any lingering toast when modal closes
   const bg = document.getElementById('modal-bg');
   bg.classList.remove('open');
   // Clear content after transition so nothing lingers
@@ -15193,6 +15368,7 @@ function openDevModal(tab = 'balls') {
     { id:'balls',    label:'Balls' },
     { id:'centers',  label:'Centers' },
     { id:'patterns', label:'Patterns' },
+    { id:'data',     label:'Data' },
   ];
   const tabStrip = `<div style="display:flex;gap:4px;margin-bottom:14px">
     ${tabs.map(t => `
@@ -15288,6 +15464,10 @@ function openDevModal(tab = 'balls') {
     body = `
       ${rows || '<div style="font-size:12px;color:var(--t3);padding:6px 0">No patterns yet</div>'}
       <button class="btn btn-ghost btn-sm" style="margin-top:10px;width:100%" onclick="devAddPattern()">＋ Add Pattern</button>`;
+  }
+
+  if (tab === 'data') {
+    body = devDataTabHTML();
   }
 
   openModal(`
@@ -15435,6 +15615,379 @@ function devDeletePattern(id) {
   if (!confirm('Remove this pattern?')) return;
   db.patterns = db.patterns.filter(p => p.PatternID !== id);
   saveDB(); toast('Pattern removed'); openDevModal('patterns');
+}
+
+/* ── DevKit Data Tab ───────────────────────────────────────── */
+function devDataTabHTML() {
+  const tables = [
+    { key:'series',   label:'Series',   count: db.series.length },
+    { key:'games',    label:'Games',    count: db.games.length },
+    { key:'frames',   label:'Frames',   count: db.frames.length },
+    { key:'attempts', label:'Attempts', count: db.attempts.length },
+    { key:'leagues',  label:'Leagues',  count: db.leagues.length },
+    { key:'balls',    label:'Balls',    count: db.balls.length },
+  ];
+  const rows = tables.map(t => `
+    <div style="display:flex;align-items:center;justify-content:space-between;
+      padding:8px 0;border-bottom:1px solid var(--border1)">
+      <div>
+        <span style="font-size:13px;font-weight:600;color:var(--t1)">${t.label}</span>
+        <span style="font-size:11px;color:var(--t3);margin-left:8px">${t.count.toLocaleString()} rows</span>
+      </div>
+      <button class="btn btn-ghost btn-sm" style="font-size:11px;padding:4px 10px"
+        onclick="devExportTableCSV('${t.key}')">CSV ↓</button>
+    </div>`).join('');
+
+  return `
+    <div style="margin-bottom:14px">${rows}</div>
+    <button class="btn btn-secondary" style="width:100%;margin-bottom:8px"
+      onclick="devDeepScan()">🔬 Deep Scan</button>
+    <button class="btn btn-ghost btn-sm" style="width:100%;color:var(--gold);border-color:rgba(255,215,0,0.3)"
+      onclick="devExportAllCSV()">Export All Tables as ZIP</button>`;
+}
+
+/* ── CSV export for a single db table ──────────────────────── */
+function _devBuildCSV(tableKey) {
+  const tableMap = {
+    series:   db.series,
+    games:    db.games,
+    frames:   db.frames,
+    attempts: db.attempts,
+    leagues:  db.leagues,
+    balls:    db.balls,
+  };
+  const rows = tableMap[tableKey];
+  if (!rows || !rows.length) return null;
+  const NL = String.fromCharCode(10);
+  const keys = [...new Set(rows.flatMap(r => Object.keys(r)))];
+  const escape = v => {
+    if (v == null) return '';
+    const s = String(v);
+    return /[,"\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+  };
+  return keys.join(',') + NL + rows.map(r => keys.map(k => escape(r[k])).join(',')).join(NL);
+}
+
+function devExportTableCSV(tableKey) {
+  const csv = _devBuildCSV(tableKey);
+  if (!csv) { toast('No data in ' + tableKey); return; }
+
+  // iOS Safari PWA: programmatic anchor click is blocked.
+  // Instead open the CSV in a new tab as a data URI — Safari allows long-press → Save.
+  // For large tables (frames/attempts) show inline viewer to copy instead.
+  const rowCount = (csv.match(/\n/g)||[]).length;
+  const filename = 'bowlingdb_' + tableKey + '_' + new Date().toISOString().slice(0,10) + '.csv';
+
+  if (rowCount <= 500) {
+    // Small table: open as data URI in new tab — user can long-press → Download/Share
+    const dataURI = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+    const w = window.open(dataURI, '_blank');
+    if (!w) {
+      // Popup blocked — fall through to inline viewer
+      _devShowCSVModal(tableKey, csv, filename);
+    } else {
+      toast('Opened in new tab — long-press to save');
+    }
+  } else {
+    // Large table: show inline viewer with copy button + row count
+    _devShowCSVModal(tableKey, csv, filename);
+  }
+}
+
+function _devShowCSVModal(tableKey, csv, filename) {
+  const lines = csv.split(String.fromCharCode(10));
+  const preview = lines.slice(0, 6).join(String.fromCharCode(10));
+  const totalRows = lines.length - 1; // subtract header
+
+  // Store full CSV on window for copy
+  window._devCSVExport = csv;
+
+  swapModal(`
+    <div class="modal-title" style="font-size:15px">${filename}</div>
+    <div style="font-size:12px;color:var(--t3);margin-bottom:10px">${totalRows.toLocaleString()} rows · ${(csv.length/1024).toFixed(1)} KB</div>
+    <textarea readonly id="dev-csv-preview"
+      style="width:100%;height:140px;background:var(--bg3);border:1px solid var(--border1);
+        border-radius:8px;padding:8px;font-size:10px;font-family:monospace;color:var(--t2);
+        resize:none;-webkit-overflow-scrolling:touch"
+      onclick="this.select()">${preview}${totalRows > 5 ? String.fromCharCode(10) + '… (' + (totalRows-5) + ' more rows)' : ''}</textarea>
+    <div style="font-size:11px;color:var(--t3);margin:8px 0 12px;line-height:1.5">
+      Tap the text above to select, then Copy. Or use the button below to copy the full table to clipboard.
+    </div>
+    <button class="btn btn-primary" style="width:100%;margin-bottom:8px"
+      onclick="navigator.clipboard.writeText(window._devCSVExport||'').then(()=>toast('Copied to clipboard ✓')).catch(()=>toast('Tap text above and copy manually'))">
+      Copy Full CSV to Clipboard
+    </button>
+    <button class="btn btn-secondary" style="width:100%"
+      onclick="openDevModal('data')">← Back to Data</button>
+  `);
+}
+
+/* ── Export all tables — open each as data URI sequenced ─── */
+function devExportAllCSV() {
+  // For iOS PWA, sequence opens with a delay so Safari doesn't block
+  const tables = ['leagues','series','games','balls'];  // skip frames/attempts (too large for URI)
+  let i = 0;
+  const next = () => {
+    if (i >= tables.length) { toast('Small tables opened · Use individual CSV for frames/attempts'); return; }
+    devExportTableCSV(tables[i++]);
+    setTimeout(next, 1200);
+  };
+  next();
+}
+
+/* ── Deep Scan — detailed anomaly report for diagnosis ─────── */
+function devDeepScan() {
+  const leagueSIDs = new Set(
+    db.series.filter(s => s.LeagueID > 0 && !s.TournamentID).map(s => s.SeriesID)
+  );
+  const openIDs = new Set((db.openSessions||[]).map(s => s.SessionID));
+  const allSeriesIDs = new Set(db.series.map(s => s.SeriesID));
+  const allGameIDs   = new Set(db.games.map(g => g.GameID));
+
+  // ── Determine accepted game count per league ───────────────
+  // A league's accepted game count = the mode (most common) game count
+  // across all its series. Leagues with consistent 4-game series are 4-game leagues.
+  const gamesBySeries = {};
+  db.games.forEach(g => { (gamesBySeries[g.SeriesID] = gamesBySeries[g.SeriesID]||[]).push(g); });
+
+  const acceptedGameCountByLeague = {};
+  db.leagues.forEach(lg => {
+    const lgSeries = db.series.filter(s => s.LeagueID === lg.LeagueID && !s.TournamentID);
+    if (!lgSeries.length) return;
+    const counts = lgSeries.map(s => (gamesBySeries[s.SeriesID]||[]).length).filter(n => n > 0);
+    if (!counts.length) return;
+    // Mode: most frequent count
+    const freq = {};
+    counts.forEach(c => { freq[c] = (freq[c]||0) + 1; });
+    const mode = parseInt(Object.entries(freq).sort((a,b) => b[1]-a[1])[0][0]);
+    acceptedGameCountByLeague[lg.LeagueID] = mode;
+  });
+
+  // ── Issue buckets ─────────────────────────────────────────
+  // importGaps: series where ALL games have null/zero score (pre-2024 avg-only records)
+  // scoreIssues: series where SOME (not all) games have null/zero score (partial)
+  // orphans: structural integrity problems
+  // anomalies: unexpected game counts (after suppressing known formats)
+  // info: informational (tournament exclusions, teammate games, NoTap)
+  const importGaps   = []; // { seriesID, date, leagueID, gameCount }
+  const scoreIssues  = []; // { gameID, seriesID, gameNum, score }
+  const orphans      = []; // { type, msg, detail }
+  const anomalies    = []; // { seriesID, date, leagueID, found, expected }
+  const infoItems    = []; // { msg, detail }
+
+  // ── Games scan ────────────────────────────────────────────
+  db.games.forEach(g => {
+    if (!allSeriesIDs.has(g.SeriesID))
+      orphans.push({ type:'orphan-game', msg:`G#${g.GameID} orphaned`, detail:`SeriesID ${g.SeriesID} not found in series table` });
+    if (g.IsTeammate)
+      infoItems.push({ msg:`G#${g.GameID} IsTeammate`, detail:`SeriesID ${g.SeriesID} — excluded from stats` });
+    if (g.NoTap)
+      infoItems.push({ msg:`G#${g.GameID} NoTap`, detail:`SeriesID ${g.SeriesID} · Score ${g.FinalScore}` });
+  });
+
+  // ── Series scan ───────────────────────────────────────────
+  db.series.forEach(s => {
+    const sg = gamesBySeries[s.SeriesID] || [];
+    const league = db.leagues.find(l => l.LeagueID === s.LeagueID);
+
+    // Structural: no games at all
+    if (!sg.length) {
+      orphans.push({ type:'empty-series', msg:`S#${s.SeriesID} has no games`, detail:`LeagueID ${s.LeagueID} · ${s.DateBowled||'no date'}` });
+      return;
+    }
+
+    // Info: tournament rounds (excluded from stats, not an issue)
+    if (s.TournamentID) {
+      infoItems.push({ msg:`S#${s.SeriesID} tournament round`, detail:`TournamentID ${s.TournamentID} · ${s.DateBowled||''} — excluded from stats` });
+      return;
+    }
+
+    // Info: non-league, non-tournament, non-open series
+    if (s.LeagueID <= 0 && !openIDs.has(s.SeriesID)) {
+      infoItems.push({ msg:`S#${s.SeriesID} LeagueID=${s.LeagueID}`, detail:`Not league/tournament/open · ${s.DateBowled||''}` });
+      return;
+    }
+
+    if (!leagueSIDs.has(s.SeriesID)) return; // open bowl etc — skip further checks
+
+    const scored    = sg.filter(g => g.FinalScore > 0 && !g.IsTeammate && !g.NoTap);
+    const nullGames = sg.filter(g => (g.FinalScore == null || g.FinalScore === 0) && !g.IsTeammate && !g.NoTap);
+    const accepted  = acceptedGameCountByLeague[s.LeagueID] || 3;
+    const leagueName = league?.LeagueName || `League ${s.LeagueID}`;
+
+    // Import gap: ALL games in this series have null/zero score
+    if (nullGames.length === sg.length) {
+      importGaps.push({
+        seriesID: s.SeriesID,
+        date: s.DateBowled || 'no date',
+        leagueName,
+        gameCount: sg.length
+      });
+      return; // don't also flag as anomaly
+    }
+
+    // Partial score issue: SOME games null/zero in an otherwise scored series
+    nullGames.forEach(g => {
+      scoreIssues.push({ gameID: g.GameID, seriesID: s.SeriesID, gameNum: g.GameNumber, date: s.DateBowled||'', leagueName });
+    });
+
+    // Game count anomaly — only flag if different from this league's accepted format
+    if (sg.length !== accepted) {
+      anomalies.push({
+        seriesID: s.SeriesID,
+        date: s.DateBowled || '',
+        leagueName,
+        found: sg.length,
+        expected: accepted
+      });
+    }
+  });
+
+  // ── Frames / Attempts orphan scan ─────────────────────────
+  const orphanFrames = db.frames.filter(f => !allGameIDs.has(f.GameID));
+  if (orphanFrames.length)
+    orphans.push({ type:'orphan-frames', msg:`${orphanFrames.length} orphaned frame records`, detail:`GameIDs missing: ${[...new Set(orphanFrames.map(f=>f.GameID))].slice(0,10).join(', ')}` });
+
+  const allFrameIDs = new Set(db.frames.map(f => f.FrameID));
+  const orphanAtts  = db.attempts.filter(a => !allFrameIDs.has(a.FrameID));
+  if (orphanAtts.length)
+    orphans.push({ type:'orphan-atts', msg:`${orphanAtts.length} orphaned attempt records`, detail:`FrameIDs missing: ${[...new Set(orphanAtts.map(a=>a.FrameID))].slice(0,10).join(', ')}` });
+
+  // ── Stats pool summary ────────────────────────────────────
+  const statGames     = db.games.filter(g => g.FinalScore > 0 && !g.IsTeammate && !g.NoTap && !openIDs.has(g.SeriesID) && leagueSIDs.has(g.SeriesID));
+  const noTapGames    = db.games.filter(g => g.NoTap);
+  const teammateGames = db.games.filter(g => g.IsTeammate);
+  const tournGames    = db.games.filter(g => db.series.find(x => x.SeriesID === g.SeriesID)?.TournamentID);
+  const importGapGameCount = importGaps.reduce((sum, ig) => sum + ig.gameCount, 0);
+
+  // Compute expected total accounting for accepted per-league formats
+  const expectedTotal = [...leagueSIDs].reduce((sum, sid) => {
+    const s = db.series.find(x => x.SeriesID === sid);
+    if (!s) return sum;
+    const sg = gamesBySeries[sid] || [];
+    if (!sg.length) return sum;
+    const allNull = sg.every(g => !g.FinalScore);
+    if (allNull) return sum; // import gap — don't count
+    return sum + (acceptedGameCountByLeague[s.LeagueID] || 3);
+  }, 0);
+  const poolMatchesExpected = statGames.length === expectedTotal;
+
+  // ── Render helpers ────────────────────────────────────────
+  function sectionHead(title, count, color) {
+    return `<div style="font-size:11px;font-weight:700;color:${color||'var(--t3)'};
+      text-transform:uppercase;letter-spacing:0.6px;margin:12px 0 6px;
+      padding-bottom:4px;border-bottom:1px solid var(--border1)">${title}
+      <span style="font-weight:400;color:var(--t3)">(${count})</span></div>`;
+  }
+  function issueCard(borderColor, title, detail) {
+    return `<div style="background:var(--bg3);border-radius:8px;padding:8px 10px;margin-bottom:5px;
+      border-left:3px solid ${borderColor}">
+      <div style="font-size:12px;font-weight:700;color:var(--t1)">${title}</div>
+      <div style="font-size:10px;color:var(--t3);margin-top:2px;font-family:monospace">${detail}</div>
+    </div>`;
+  }
+
+  // ── Summary card ──────────────────────────────────────────
+  const summaryHTML = `
+    <div class="stat-card" style="margin-bottom:10px">
+      <div style="font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:8px">Stats Pool Summary</div>
+      ${[
+        ['League games in pool', statGames.length, poolMatchesExpected ? 'var(--teal)' : 'var(--gold)'],
+        ['Import gaps (avg-only series)', importGaps.length, importGaps.length ? 'var(--t3)' : 'var(--t3)'],
+        ['Gap games excluded', importGapGameCount, importGapGameCount ? 'var(--t3)' : 'var(--t3)'],
+        ['NoTap games (excluded)', noTapGames.length, 'var(--t3)'],
+        ['Teammate games (excluded)', teammateGames.length, 'var(--t3)'],
+        ['Tournament games (excluded)', tournGames.length, 'var(--t3)'],
+        ['Unique league series', leagueSIDs.size, 'var(--t2)'],
+      ].map(([lbl,val,col]) => `
+        <div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--border1);font-size:12px">
+          <span style="color:var(--t2)">${lbl}</span>
+          <span style="font-weight:700;color:${col}">${val}</span>
+        </div>`).join('')}
+      ${!poolMatchesExpected ? `<div style="font-size:11px;color:var(--gold);margin-top:6px">
+        ⚠ Pool has ${statGames.length} games, expected ${expectedTotal} — ${Math.abs(expectedTotal-statGames.length)} missing
+      </div>` : `<div style="font-size:11px;color:var(--teal);margin-top:6px">✓ Pool count matches expected</div>`}
+    </div>`;
+
+  // ── Issue sections ────────────────────────────────────────
+  let bodyHTML = '';
+
+  if (importGaps.length) {
+    bodyHTML += sectionHead('Import Gaps — Avg-Only Records', importGaps.length, 'var(--t3)');
+    bodyHTML += `<div style="font-size:11px;color:var(--t3);margin-bottom:6px;line-height:1.5">
+      These series have no scored games — likely pre-2024 Access records where only averages were tracked.
+      They are automatically excluded from stats. No action needed unless you want to delete the shells.
+    </div>`;
+    // Group by league for compactness
+    const byLeague = {};
+    importGaps.forEach(ig => { (byLeague[ig.leagueName] = byLeague[ig.leagueName]||[]).push(ig); });
+    Object.entries(byLeague).forEach(([lgName, items]) => {
+      bodyHTML += issueCard('var(--bg4)',
+        `${lgName} — ${items.length} unscored series`,
+        `SeriesIDs: ${items.map(i=>i.seriesID).join(', ')} · Dates: ${items[0].date}${items.length>1?' … '+items[items.length-1].date:''}`
+      );
+    });
+  }
+
+  if (scoreIssues.length) {
+    bodyHTML += sectionHead('Partial Score Issues', scoreIssues.length, 'var(--gold)');
+    bodyHTML += `<div style="font-size:11px;color:var(--t3);margin-bottom:6px;line-height:1.5">
+      These games are inside otherwise-scored series but have a null or zero score.
+      Each one reduces the stats pool by 1 game and breaks the ÷3 balance.
+    </div>`;
+    scoreIssues.forEach(si => {
+      bodyHTML += issueCard('var(--gold)',
+        `G#${si.gameID} — zero/null score`,
+        `${si.leagueName} · S#${si.seriesID} · Game ${si.gameNum} · ${si.date}`
+      );
+    });
+  }
+
+  if (anomalies.length) {
+    bodyHTML += sectionHead('Game Count Anomalies', anomalies.length, 'var(--purple)');
+    bodyHTML += `<div style="font-size:11px;color:var(--t3);margin-bottom:6px;line-height:1.5">
+      These series have a different game count than the accepted format for their league.
+      Expected count is derived from the most common count in that league.
+    </div>`;
+    anomalies.forEach(an => {
+      bodyHTML += issueCard('var(--purple)',
+        `S#${an.seriesID} — ${an.found} games (expected ${an.expected})`,
+        `${an.leagueName} · ${an.date}`
+      );
+    });
+  }
+
+  if (orphans.length) {
+    bodyHTML += sectionHead('Structural Issues', orphans.length, 'rgba(232,93,76,0.9)');
+    orphans.forEach(o => {
+      bodyHTML += issueCard('rgba(232,93,76,0.9)', o.msg, o.detail);
+    });
+  }
+
+  if (infoItems.length) {
+    bodyHTML += sectionHead('Info — Excluded Records', infoItems.length, 'var(--t3)');
+    infoItems.slice(0, 20).forEach(o => {
+      bodyHTML += issueCard('var(--border1)', o.msg, o.detail);
+    });
+    if (infoItems.length > 20)
+      bodyHTML += `<div style="font-size:11px;color:var(--t3);padding:6px 0">… and ${infoItems.length-20} more</div>`;
+  }
+
+  const totalIssues = scoreIssues.length + anomalies.length + orphans.length;
+
+  openModal(`
+    <div class="modal-title">🔬 Deep Scan</div>
+    ${summaryHTML}
+    <div style="font-size:12px;font-weight:700;color:var(--t3);margin-bottom:4px">
+      ${totalIssues} actionable issue${totalIssues!==1?'s':''} ·
+      ${importGaps.length} import gap${importGaps.length!==1?'s':''} ·
+      ${infoItems.length} info
+    </div>
+    <div style="max-height:48vh;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain">
+      ${bodyHTML || '<div style="text-align:center;padding:16px;color:var(--teal);font-size:13px">✅ No anomalies</div>'}
+    </div>
+    <button class="btn btn-secondary" style="width:100%;margin-top:10px" onclick="openDevModal('data')">← Back</button>
+  `);
 }
 
 function runDataIntegrityScan() {
@@ -17502,76 +18055,114 @@ function renderNoTapList() {
   const el = document.getElementById('notap-series-list');
   if (!el) return;
 
-  const series = db.series
-    .filter(s => s.LeagueID === -1)
-    .sort((a,b) => new Date(b.DateBowled||0) - new Date(a.DateBowled||0));
+  // Source: ALL games with NoTap=true, regardless of series LeagueID.
+  // This captures both standalone NoTap series (LeagueID=-1) and
+  // league-night NoTap games (LeagueID>0, NoTap toggle was on during scoring).
+  const ntGameIDs = new Set(db.games.filter(g => g.NoTap).map(g => g.SeriesID));
+  const allNtSeriesIDs = new Set([
+    ...db.series.filter(s => s.LeagueID === -1).map(s => s.SeriesID), // standalone sessions
+    ...ntGameIDs                                                         // series containing NT games
+  ]);
+
+  const series = [...allNtSeriesIDs]
+    .map(sid => db.series.find(s => s.SeriesID === sid))
+    .filter(Boolean)
+    .sort((a,b) => (b.DateBowled||'').localeCompare(a.DateBowled||''));
 
   if (!series.length) {
     el.innerHTML = `<div class="empty-state">
       <div class="empty-icon">✦</div>
-      <div class="empty-label">No NoTap sessions yet</div>
+      <div class="empty-label">No NoTap games yet</div>
       <div class="empty-sub">Tap + to start a NoTap session</div>
     </div>`;
     return;
   }
 
-  // NoTap PB: highest series total across all NT sessions
+  // ── Summary bar ───────────────────────────────────────────
+  const allNtGames = db.games.filter(g => g.NoTap && g.FinalScore > 0);
+  const ntCount    = allNtGames.length;
+  const ntAvg      = ntCount ? Math.floor(allNtGames.reduce((s,g)=>s+g.FinalScore,0)/ntCount) : null;
+  const ntHigh     = ntCount ? Math.max(...allNtGames.map(g=>g.FinalScore)) : null;
+
+  // Series totals for PB detection
   const ntTotals = series.map(s => {
-    const sc = db.games.filter(g=>g.SeriesID===s.SeriesID)
-      .map(g=>g.FinalScore).filter(x=>x!=null && x>0);
-    return { SeriesID: s.SeriesID, total: sc.reduce((a,b)=>a+b,0), hasScores: sc.length>0 };
+    const ntOnly = db.games.filter(g=>g.SeriesID===s.SeriesID && g.NoTap && g.FinalScore>0);
+    return { sid: s.SeriesID, total: ntOnly.reduce((a,b)=>a+b.FinalScore,0), count: ntOnly.length };
   });
-  const ntBestTotal = Math.max(0, ...ntTotals.filter(x=>x.hasScores).map(x=>x.total));
+  const ntBestTotal = Math.max(0, ...ntTotals.filter(x=>x.count>0).map(x=>x.total));
 
-  let html = '';
+  // ── Section header: standalone vs embedded ────────────────
+  const standaloneSIDs = new Set(db.series.filter(s=>s.LeagueID===-1).map(s=>s.SeriesID));
+
+  let standaloneHTML = '';
+  let embeddedHTML   = '';
+
   series.forEach(s => {
-    const center = db.centers.find(c=>c.CenterID===s.CenterID);
-    const games  = db.games.filter(g=>g.SeriesID===s.SeriesID).sort((a,b)=>a.GameNumber-b.GameNumber);
-    const scores = games.map(g=>g.FinalScore).filter(x=>x!=null && x>0);
-    const total  = scores.reduce((a,b)=>a+b,0);
-    const avg    = scores.length ? Math.round(total/scores.length) : null;
-    const d      = s.DateBowled ? fmtDate(s.DateBowled,{month:'numeric',day:'numeric',year:'2-digit'}) : '—';
+    const isStandalone = standaloneSIDs.has(s.SeriesID);
+    // For embedded series, only show the NoTap games — not all games in that series
+    const games = isStandalone
+      ? db.games.filter(g=>g.SeriesID===s.SeriesID).sort((a,b)=>a.GameNumber-b.GameNumber)
+      : db.games.filter(g=>g.SeriesID===s.SeriesID && g.NoTap).sort((a,b)=>a.GameNumber-b.GameNumber);
 
-    const meta = [
-      center?.CenterName,
-      s.LanePair ? 'Ln '+s.LanePair : null,
-      scores.length ? `Avg ${avg}` : null
-    ].filter(Boolean).join(' · ');
+    const scores  = games.map(g=>g.FinalScore).filter(x=>x!=null && x>0);
+    const total   = scores.reduce((a,b)=>a+b,0);
+    const avg     = scores.length ? Math.floor(total/scores.length) : null;
+    const d       = s.DateBowled ? fmtDate(s.DateBowled,{month:'numeric',day:'numeric',year:'2-digit'}) : '—';
+    const center  = db.centers.find(c=>c.CenterID===s.CenterID);
+    const league  = !isStandalone ? db.leagues.find(l=>l.LeagueID===s.LeagueID) : null;
 
-    // Semantic bar
-    const ntIsActive = games.some(g => g.FinalScore==null);
-    const ntIsBest   = scores.length>0 && ntBestTotal>0 && total===ntBestTotal;
+    const ntIsActive = games.some(g=>g.FinalScore==null);
+    const thisTot    = ntTotals.find(x=>x.sid===s.SeriesID);
+    const ntIsBest   = thisTot?.count>0 && ntBestTotal>0 && thisTot.total===ntBestTotal;
     const ntBarClass = ntIsActive ? 'sc-active' : ntIsBest ? 'sc-best' : 'sc-notap';
     const ntArcColor = ntIsActive ? 'var(--teal)' : ntIsBest ? 'var(--gold)' : 'var(--bar-notap)';
+
+    const meta = [
+      !isStandalone ? (league?.LeagueName || null) : null,
+      center?.CenterName,
+      s.LanePair ? 'Ln '+s.LanePair : null,
+      avg != null ? `Avg ${avg}` : null,
+      !isStandalone ? `${games.length} NT game${games.length!==1?'s':''}` : null
+    ].filter(Boolean).join(' · ');
 
     const badges = games.map(g => {
       if (g.FinalScore!=null) {
         const hasFrames = db.frames.some(f=>f.GameID===g.GameID);
         return buildScoreRingBadge({ arcColor:ntArcColor, score:g.FinalScore, hasFrames });
       }
-      const anyAttempt = db.attempts.some(a=>a.GameID===g.GameID && a.Pinfall!=null);
+      const anyAttempt = db.attempts.some(a=>a.GameID===g.GameID&&a.Pinfall!=null);
       if (anyAttempt) {
-        const inprogFrames = db.frames.filter(f=>f.GameID===g.GameID);
-        const inprogScore  = inprogFrames.reduce((acc,f)=>acc+(f.RunningTotal||0),0) ||
+        const inprogScore = db.frames.filter(f=>f.GameID===g.GameID)
+          .reduce((acc,f)=>acc+(f.RunningTotal||0),0) ||
           db.attempts.filter(a=>a.GameID===g.GameID&&a.Pinfall!=null).reduce((acc,a)=>acc+a.Pinfall,0);
         return buildScoreRingBadge({ arcColor:ntArcColor, score:inprogScore||0, inprog:true });
       }
       return buildScoreRingBadge({ arcColor:ntArcColor, empty:true });
     }).join('');
 
-    html += `<div class="series-card-wrap">
-      <button class="card-del-corner" onclick="confirmDeleteNoTapSeries(${s.SeriesID});event.stopPropagation()" title="Delete">−</button>
-      <div class="series-card ${ntBarClass}" onclick="selectNoTapSeries(${s.SeriesID})">
+    // Delete button: only for standalone sessions; embedded are managed via their league series
+    const delBtn = isStandalone
+      ? `<button class="card-del-corner" onclick="confirmDeleteNoTapSeries(${s.SeriesID});event.stopPropagation()" title="Delete">−</button>`
+      : '';
+
+    // Navigation: standalone → game-select in NT context; embedded → game-select in league context
+    const navFn = isStandalone ? `selectNoTapSeries(${s.SeriesID})` : `selectEmbeddedNoTapSeries(${s.SeriesID})`;
+
+    const card = `<div class="series-card-wrap">
+      ${delBtn}
+      <div class="series-card ${ntBarClass}" onclick="${navFn}">
         <div class="series-hdr">
-          <div>
-            <div class="list-row-name" style="font-size:16px;font-weight:800">
-              ${d} <span class="pill pill-gold" style="font-size:10px;vertical-align:middle">✦ NoTap</span>
+          <div style="flex:1;min-width:0">
+            <div class="list-row-name" style="font-size:15px;font-weight:800">
+              ${d}
+              <span class="pill pill-gold" style="font-size:10px;vertical-align:middle">✦ NoTap</span>
+              ${!isStandalone ? `<span class="pill" style="font-size:9px;vertical-align:middle;background:rgba(0,217,217,0.1);color:var(--teal);border:1px solid rgba(0,217,217,0.3)">League</span>` : ''}
             </div>
             <div class="list-row-meta" style="margin-top:2px">${meta}</div>
           </div>
-          <div style="text-align:right;flex-shrink:0">
-            <div style="font-size:22px;font-weight:900;color:var(--gold)">${total||'...'}</div>
-            <div style="font-size:9px;color:var(--t3)">series total</div>
+          <div style="text-align:right;flex-shrink:0;margin-left:10px">
+            <div style="font-size:22px;font-weight:900;color:${ntIsBest?'var(--gold)':'var(--bar-notap)'}">${total||'—'}</div>
+            <div style="font-size:9px;color:var(--t3)">${scores.length ? 'series total' : 'no scores'}</div>
           </div>
         </div>
         <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">${badges}</div>
@@ -17581,15 +18172,67 @@ function renderNoTapList() {
         <div class="sc-act-btn edit" onclick="openEditSeriesModal(${s.SeriesID});event.stopPropagation()">⋯</div>
       </div>
     </div>`;
+
+    if (isStandalone) standaloneHTML += card;
+    else embeddedHTML += card;
   });
 
-  el.innerHTML = html;
+  // ── Summary strip ─────────────────────────────────────────
+  const _ntStats = [
+    ['Games', ntCount,   'var(--bar-notap)'],
+    ['Avg',   ntAvg != null ? ntAvg : '—', 'var(--gold)'],
+    ['High',  ntHigh ?? '—', 'var(--teal)'],
+  ];
+  const summaryStrip = ntCount ? `
+    <div style="display:flex;margin-bottom:14px;background:var(--bg2);
+      border-radius:12px;overflow:hidden;border:1px solid var(--border1)">
+      <div style="flex:1;text-align:center;padding:10px 4px;border-right:1px solid var(--border1)">
+        <div style="font-size:18px;font-weight:900;color:var(--bar-notap)">${ntCount}</div>
+        <div style="font-size:10px;color:var(--t3);margin-top:2px">Games</div>
+      </div>
+      <div style="flex:1;text-align:center;padding:10px 4px;border-right:1px solid var(--border1)">
+        <div style="font-size:18px;font-weight:900;color:var(--gold)">${ntAvg != null ? ntAvg : '—'}</div>
+        <div style="font-size:10px;color:var(--t3);margin-top:2px">Avg</div>
+      </div>
+      <div style="flex:1;text-align:center;padding:10px 4px">
+        <div style="font-size:18px;font-weight:900;color:var(--teal)">${ntHigh ?? '—'}</div>
+        <div style="font-size:10px;color:var(--t3);margin-top:2px">High</div>
+      </div>
+    </div>` : '';
+
+  // ── Section labels ────────────────────────────────────────
+  const sectionLabel = (title, count) =>
+    `<div style="font-size:10px;font-weight:700;color:var(--t3);letter-spacing:0.8px;
+      text-transform:uppercase;margin:14px 0 8px;padding-bottom:4px;
+      border-bottom:1px solid var(--border1)">${title} <span style="font-weight:400">(${count})</span></div>`;
+
+  let bodyHTML = summaryStrip;
+  if (standaloneHTML) {
+    const n = series.filter(s=>standaloneSIDs.has(s.SeriesID)).length;
+    bodyHTML += sectionLabel('Standalone NoTap Sessions', n) + standaloneHTML;
+  }
+  if (embeddedHTML) {
+    const n = series.filter(s=>!standaloneSIDs.has(s.SeriesID)).length;
+    bodyHTML += sectionLabel('NoTap Games Within League Series', n) + embeddedHTML;
+  }
+
+  el.innerHTML = bodyHTML;
 }
 
 function selectNoTapSeries(seriesID) {
+  // Standalone NoTap session — navigate in NT context
   G.leagueID = -1;
   G.seriesID = seriesID;
   document.getElementById('hdr-title').textContent = 'NoTap';
+  navTo('s-game-select');
+}
+
+function selectEmbeddedNoTapSeries(seriesID) {
+  // League-embedded NoTap games — navigate in league context so scoring works correctly
+  const s = db.series.find(x => x.SeriesID === seriesID);
+  if (!s) return;
+  G.leagueID = s.LeagueID;
+  G.seriesID = seriesID;
   navTo('s-game-select');
 }
 
@@ -22481,6 +23124,7 @@ function dkTogglePanel() {
   } else {
     panel.classList.remove('dk-open');
     if (_dk.inspecting) dkToggleInspect();
+    toastDismiss(); // #103 — clear any lingering toast when DevKit closes
   }
 }
 
