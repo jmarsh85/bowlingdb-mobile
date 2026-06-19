@@ -2617,9 +2617,11 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
     <div id="s-ai-chat" class="screen" data-title="AI Assistant">
       <div class="sec-header" style="margin-bottom:10px">
         <span class="sec-title">AI Assistant</span>
-        <div style="display:flex;align-items:center;gap:6px">
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end">
           <button class="btn btn-ghost btn-sm" style="margin-top:0"
             onclick="generateDevHandoff()" title="Generate dev handoff for a new Claude session">Handoff</button>
+          <button class="btn btn-ghost btn-sm" style="margin-top:0"
+            onclick="copyAIChatFull()" title="Copy the full conversation">Copy</button>
           <button class="btn btn-ghost btn-sm" style="margin-top:0;color:var(--t3);border-color:var(--border2)"
             onclick="clearAIChat()" title="Clear conversation">Clear</button>
         </div>
@@ -23311,6 +23313,35 @@ function _aiRefLabel(type, id) {
   return `${type} ${id}`;
 }
 
+/* Plain-text version of a reply for copying — same {{type:id}} resolution
+   as _aiChatRenderText, but as readable text instead of a tappable chip.
+   Used by both the per-message and full-conversation copy actions. */
+function _aiChatPlainText(text) {
+  return text.replace(/\{\{(game|series|league|ball):(\d+)\}\}/g, (m, type, idStr) =>
+    _aiRefLabel(type, parseInt(idStr)));
+}
+
+function copyAIChatMessage(index) {
+  const msgs = _aiChatLoad();
+  const m = msgs[index];
+  if (!m) return;
+  const text = m.role === 'assistant' ? _aiChatPlainText(m.content) : m.content;
+  navigator.clipboard?.writeText(text)
+    .then(() => toast('Copied'))
+    .catch(() => toast('Copy failed — select text manually'));
+}
+
+function copyAIChatFull() {
+  const msgs = _aiChatLoad().filter(m => m.role === 'user' || m.role === 'assistant');
+  if (!msgs.length) { toast('Nothing to copy yet'); return; }
+  const text = msgs.map(m =>
+    (m.role === 'user' ? 'You: ' + m.content : 'Assistant: ' + _aiChatPlainText(m.content))
+  ).join('\n\n');
+  navigator.clipboard?.writeText(text)
+    .then(() => toast('Conversation copied'))
+    .catch(() => toast('Copy failed — select text manually'));
+}
+
 /* Tapping a reference chip navigates to the real screen/edit modal for that
    record. navTo() already pushes onto G.screenHistory, so the header back
    button returns to the chat for free. Snapshot key fields beforehand so we
@@ -23366,12 +23397,16 @@ function renderAIChat() {
     el.innerHTML = `<div class="empty-state"><div class="empty-icon">🤖</div>
       <div class="empty-label">Ask about your stats, get a debrief, or just talk bowling</div></div>`;
   } else {
-    el.innerHTML = msgs.map(m => {
+    el.innerHTML = msgs.map((m, i) => {
       if (m.role === 'system-note') {
         return `<div style="align-self:center;font-size:11px;color:var(--teal);background:rgba(0,217,217,0.1);padding:4px 10px;border-radius:10px">✓ ${m.content}</div>`;
       }
       const isUser = m.role === 'user';
-      return `<div style="align-self:${isUser?'flex-end':'flex-start'};max-width:85%;background:${isUser?'var(--purple)':'var(--bg3)'};color:${isUser?'#fff':'var(--t1)'};padding:10px 13px;border-radius:14px;font-size:14px;line-height:1.5">${isUser ? m.content.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') : _aiChatRenderText(m.content)}</div>`;
+      const bubble = `<div style="background:${isUser?'var(--purple)':'var(--bg3)'};color:${isUser?'#fff':'var(--t1)'};padding:10px 13px;border-radius:14px;font-size:14px;line-height:1.5">${isUser ? m.content.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') : _aiChatRenderText(m.content)}</div>`;
+      const copyLink = !isUser
+        ? `<div style="font-size:10px;color:var(--t3);cursor:pointer;padding:0 4px" onclick="copyAIChatMessage(${i})">⧉ Copy</div>`
+        : '';
+      return `<div style="align-self:${isUser?'flex-end':'flex-start'};max-width:85%;display:flex;flex-direction:column;gap:3px">${bubble}${copyLink}</div>`;
     }).join('');
   }
   const scroller = document.getElementById('ai-chat-messages-wrap');
@@ -24863,6 +24898,7 @@ var DKM_ROWS = [
   {id:114,form:'MODALS', object:'AI model override',     type:'INPUT',  trigger:'tap',   stores:'yes',status:'done',priority:2,current:'getAIModelFast()/getAIModelDeep() — Settings fields let user override the model string per tier without a code edit; falls back to AI_MODEL_DEFAULTS',desired:'',notes:'Replaced 6 previously-hardcoded model strings, including a stale claude-sonnet-4-5 in the DKM diagnostic tool that had drifted from the rest',domHint:'#ai-model-fast-input,#ai-model-deep-input'},
   {id:115,form:'AICHAT', object:'AI tool-use architecture', type:'NOTE',  trigger:'auto',  stores:'no', status:'done',priority:2,current:'sendAIChatMessage() now runs a tool-use loop (Anthropic tools param) instead of dumping stats into every prompt. AI_TOOLS catalog: get_stats_summary, get_spare_conversion, find_series, find_game, get_game_frames, list_leagues, list_balls. find_series/find_game resolve natural language to IDs so the user never sees a database key. All tools wrap existing canonical functions (getCanonicalLast10WksGames, getAllTimeLeagueGames, buildAISpareConversionSummary, frameAttempts) so numbers can never disagree with Stats',desired:'',notes:'Replaced the regex-based _aiChatBuildDeepDive ID-detection hack entirely; tool loop capped at 5 rounds',domHint:''},
   {id:116,form:'MODALS', object:'Force-reload app',      type:'BUTTON', trigger:'tap',   stores:'no', status:'done',priority:2,current:'forceReloadApp() — cache-busted location reload to fetch latest GitHub Pages deployment without quitting the app',desired:'',notes:'No service worker registered; relies on query-string cache-busting',domHint:'[onclick*="forceReloadApp"]'},
+  {id:117,form:'AICHAT', object:'Copy conversation/message', type:'BUTTON', trigger:'tap', stores:'no', status:'done',priority:2,current:'copyAIChatFull() in header copies the whole thread; copyAIChatMessage(i) under each assistant bubble copies that one reply. Both resolve {{type:id}} markup to plain readable text via _aiChatPlainText() before copying',desired:'',notes:'',domHint:'[onclick*="copyAIChatFull"],[onclick*="copyAIChatMessage"]'},
 ];
 
 /* ── DKM Storage ─────────────────────────────────────────── */
