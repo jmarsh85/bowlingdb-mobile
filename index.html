@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="BowlingDB">
-<title>BowlingDB v3.0.1</title>
+<title>BowlingDB v22</title>
 <style>
 /* ============================================================
    DESIGN TOKENS
@@ -194,6 +194,10 @@ body {
   visibility:hidden;
   pointer-events:none;
 }
+/* AI Chat — proper chat-app shell: fixed header, independently-scrolling
+   message log, fixed input bar. Overrides the base .screen's whole-page
+   scroll (ID specificity beats the .screen class rule). */
+#s-ai-chat { display:flex; flex-direction:column; overflow-y:hidden; }
 
 /* ============================================================
    BOTTOM NAV
@@ -2610,6 +2614,29 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
       <div id="notap-series-list"></div>
     </div>
 
+    <div id="s-ai-chat" class="screen" data-title="AI Assistant">
+      <div class="sec-header" style="margin-bottom:10px">
+        <span class="sec-title">AI Assistant</span>
+        <div style="display:flex;align-items:center;gap:6px">
+          <button class="btn btn-ghost btn-sm" style="margin-top:0"
+            onclick="generateDevHandoff()" title="Generate dev handoff for a new Claude session">Handoff</button>
+          <button class="btn btn-ghost btn-sm" style="margin-top:0;color:var(--t3);border-color:var(--border2)"
+            onclick="clearAIChat()" title="Clear conversation">Clear</button>
+        </div>
+      </div>
+      <div id="ai-chat-messages-wrap" style="flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
+        background:var(--bg2);border:1px solid var(--border1);border-radius:16px;padding:12px">
+        <div id="ai-chat-messages" style="display:flex;flex-direction:column;gap:10px;min-height:100%"></div>
+      </div>
+      <div style="flex-shrink:0;padding-top:10px;display:flex;gap:8px;align-items:flex-end">
+        <textarea id="ai-chat-input" class="finput" rows="2" placeholder="Ask about your bowling data..."
+          style="flex:1;resize:none;min-height:54px;max-height:120px"
+          onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendAIChatMessage();}"></textarea>
+        <button class="btn btn-primary" style="width:auto;padding:14px 20px;flex-shrink:0;margin-top:0"
+          onclick="sendAIChatMessage()" id="ai-chat-send-btn">Send</button>
+      </div>
+    </div>
+
     <div id="s-series" class="screen">
       <div class="sec-header">
         <span class="sec-title" id="series-title">Series</span>
@@ -3540,7 +3567,7 @@ const G = {
 /* =============================================================
    NAVIGATION ENGINE
    ============================================================= */
-const ROOT_SCREENS = ['s-home','s-leagues','s-open','s-tournaments','s-stats','s-tb-sessions','s-notap'];
+const ROOT_SCREENS = ['s-home','s-leagues','s-open','s-tournaments','s-stats','s-tb-sessions','s-notap','s-ai-chat'];
 
 const SCORING_SCREENS = new Set(['s-series','s-tournament-series','s-game-select','s-scoring','s-game-complete','s-stats','s-games','s-handicap-tb','s-handicap-league','s-tb-sessions']);
 
@@ -3607,7 +3634,8 @@ async function navTo(screenId, opts={}) {
       's-group': renderGroupScreen,
       's-tb-sessions': renderTBSessions,
       's-tb-games': renderTBGames,
-      's-notap': renderNoTapList
+      's-notap': renderNoTapList,
+      's-ai-chat': renderAIChat
     })[screenId]?.();
   } catch(e) {
     console.error('navTo render error:', e);
@@ -3631,7 +3659,7 @@ function navBack() {
 /* =============================================================
    HOME SCREEN — NAV TILE DATA + TAP-TO-SWAP REARRANGE
    ============================================================= */
-const NAV_TILES_DEFAULT = ['leagues','tb','open','balls','settings','export','notap','stats','tournament'];
+const NAV_TILES_DEFAULT = ['leagues','tb','open','balls','settings','export','notap','stats','tournament','aichat'];
 
 const NAV_TILE_DEFS = {
   leagues: {
@@ -3706,6 +3734,18 @@ const NAV_TILE_DEFS = {
       <defs><linearGradient id="g-nt" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#9D4EDD"/><stop offset="100%" stop-color="#00D9D9"/></linearGradient></defs>
       <circle cx="12" cy="12" r="9" stroke="url(#g-nt)" stroke-width="2"/>
       <text x="12" y="16.5" text-anchor="middle" font-size="11" font-weight="900" fill="url(#g-nt)">&#x2726;</text>
+    </svg>`
+  },
+  aichat: {
+    label: 'AI Chat',
+    action: () => navTo('s-ai-chat'),
+    bg: 'linear-gradient(135deg,rgba(0,217,217,0.26),rgba(157,78,221,0.28))',
+    svg: `<svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs><linearGradient id="g-ac" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#00D9D9"/><stop offset="100%" stop-color="#9D4EDD"/></linearGradient></defs>
+      <rect x="3" y="5" width="18" height="12" rx="3" stroke="url(#g-ac)" stroke-width="2"/>
+      <path d="M8 21l3-4h2l3 4" stroke="url(#g-ac)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="9" cy="11" r="1.3" fill="url(#g-ac)"/>
+      <circle cx="15" cy="11" r="1.3" fill="url(#g-ac)"/>
     </svg>`
   },
   stats: {
@@ -4287,7 +4327,7 @@ function hdcpSaveField(field) {
       <div class="hdcp-hero">
         <div class="hdcp-hero-val">${result.handicap}</div>
         <div class="hdcp-hero-lbl">Current Handicap · per game</div>
-        <div class="hdcp-hero-avg">Avg: ${result.avg} · ${result.reason}</div>
+        <div class="hdcp-hero-avg">Avg: ${result.avg != null ? Number(result.avg).toFixed(2) : result.avg} · ${result.reason}</div>
       </div>
     ` : `<div class="hdcp-unqualified">⚠ Not yet qualified — ${result.reason}</div>`;
   }
@@ -5994,24 +6034,51 @@ function readSeriesHdcpSection() {
   return { totalGames, totalPins, baseScore, pct, qualifyGames, entryAvg };
 }
 
+/* Canonical "last 10 bowling weeks" game pool -- same definition used by the
+   Stats screen (context:'all', period:'last10wks', condition:'any'):
+   league games only (LeagueID>0, no TournamentID), no open bowl, no teammates,
+   no NoTap, positive scores; window = last 10 distinct calendar weeks in which
+   at least one LEAGUE series was bowled. Single source of truth so Home and
+   Stats can never drift apart again. */
+function getCanonicalLast10WksGames() {
+  const _openIDs = openBowlSeriesIDs();
+  const _leagueSIDs = new Set(
+    db.series.filter(s => s.LeagueID > 0 && !s.TournamentID).map(s => s.SeriesID)
+  );
+  const allStdGames = db.games.filter(g =>
+    g.FinalScore != null && g.FinalScore > 0 && !g.IsTeammate && !g.NoTap &&
+    !_openIDs.has(g.SeriesID) && _leagueSIDs.has(g.SeriesID)
+  );
+
+  const leagueSeriesWithDates = db.series.filter(s => s.DateBowled && s.LeagueID > 0 && !s.TournamentID);
+  const weekKey = (dateStr) => {
+    const d = new Date(dateStr + 'T12:00:00');
+    const thursday = new Date(d);
+    thursday.setDate(d.getDate() - ((d.getDay() + 6) % 7) + 3);
+    const year = thursday.getFullYear();
+    const jan4 = new Date(year, 0, 4);
+    const week = Math.ceil(((thursday - jan4) / 86400000 + jan4.getDay() + 1) / 7);
+    return `${year}-W${String(week).padStart(2,'0')}`;
+  };
+  const allWeeks = [...new Set(leagueSeriesWithDates.map(s => weekKey(s.DateBowled)))]
+    .sort((a,b) => b.localeCompare(a));
+  const last10Weeks = new Set(allWeeks.slice(0, 10));
+  const validSIDs = new Set(
+    leagueSeriesWithDates.filter(s => last10Weeks.has(weekKey(s.DateBowled))).map(s => s.SeriesID)
+  );
+  return allStdGames.filter(g => validSIDs.has(g.SeriesID));
+}
+
 function renderHome() {
   document.getElementById('hdr-title').innerHTML = "<span class='brand'>Bowling</span>DB";
-  const _homeOpenIDs = openBowlSeriesIDs();
 
-  const cutoff = azDateOffset(-70).toISOString().split('T')[0];
-
-  // Build 10-week game pool: league games only, no open bowl, no teammates, no NoTap
-  const recentSeriesIDs = new Set(
-    db.series.filter(s => s.DateBowled && s.DateBowled >= cutoff).map(s => s.SeriesID)
-  );
-  const recentGames = db.games.filter(g =>
-    !g.NoTap && !g.IsTeammate && !_homeOpenIDs.has(g.SeriesID) &&
-    recentSeriesIDs.has(g.SeriesID) && g.FinalScore != null && g.FinalScore > 0
-  );
+  // Build 10-week game pool -- canonical definition, shared with Stats screen
+  const recentGames = getCanonicalLast10WksGames();
+  const recentSeriesIDs = new Set(recentGames.map(g => g.SeriesID));
   const recentScores = recentGames.map(g => g.FinalScore);
 
   document.getElementById('qs-avg').textContent = recentScores.length
-    ? Math.round(recentScores.reduce((a,b)=>a+b,0)/recentScores.length) : '—';
+    ? Math.floor(recentScores.reduce((a,b)=>a+b,0)/recentScores.length) : '—';
   const avgCard = document.getElementById('qs-avg-card');
   if (avgCard) {
     avgCard.querySelector('.qs-lbl').textContent = recentScores.length ? 'Avg · 10wk ▶' : 'Avg · 10wk';
@@ -6220,7 +6287,7 @@ async function openLeagueStatsModal(leagueID) {
   
   const scores = allGames.map(g=>g.FinalScore);
   const total  = scores.reduce((a,b)=>a+b,0);
-  const avg    = scores.length ? Math.round(total/scores.length) : 0;
+  const avg    = scores.length ? Math.floor(total/scores.length) : 0;
   const high   = scores.length ? Math.max(...scores) : 0;
   const low    = scores.length ? Math.min(...scores) : 0;
 
@@ -6343,6 +6410,38 @@ function buildScoreRingBadge({ arcColor, score, inprog, empty, hasFrames, gameID
   </div>`;
 }
 
+/* ── Lane pair drill-down ─────────────────────────────────────
+   Tapping a series card's lane-pair pill opens the All Games list
+   (s-games) pre-filtered to that lane + that center, sorted/grouped
+   by league. Starting lane is visually distinguished (bold+underline). */
+function formatLanePairWithStart(lanePair, laneStart) {
+  if (!lanePair) return '';
+  const startNum = laneStart && laneStart !== 0 ? Number(laneStart) : null;
+  const parts = String(lanePair).split(/([\s,\-\.]+)/); // keep separators
+  return parts.map(p => {
+    const n = Number(p);
+    if (!isNaN(n) && n > 0 && startNum != null && n === startNum) {
+      return `<span style="font-weight:800;text-decoration:underline">${p}</span>`;
+    }
+    return p;
+  }).join('');
+}
+
+function openLanePairGames(seriesID, event) {
+  if (event) event.stopPropagation();
+  const s = db.series.find(x => x.SeriesID === seriesID);
+  if (!s || !s.LanePair) return;
+  window._gamesFilter = {
+    league: 'all',
+    center: s.CenterID || 'all',
+    sort: 'league',
+    lane: s.LanePair,
+    dateFrom: '', dateTo: ''
+  };
+  window._glFiltersOpen = true;
+  navTo('s-games');
+}
+
 function renderSeriesList() {
   const el = document.getElementById('series-list');
   const mySeries = db.series.filter(s=>s.LeagueID===G.leagueID)
@@ -6433,7 +6532,7 @@ function renderSeriesList() {
             <span class="series-date">${dateStr}</span>
             ${center ? `<div style="font-size:10px;color:var(--t3);margin-top:1px">${center.CenterName}</div>` : ''}
             <div style="display:flex;gap:6px;margin-top:4px;flex-wrap:wrap">
-              ${s.LanePair ? `<span class="pill pill-teal" style="font-size:10px">🎳 ${s.LanePair}</span>` : ''}
+              ${s.LanePair ? `<span class="pill pill-teal" style="font-size:10px;cursor:pointer" onclick="openLanePairGames(${s.SeriesID},event)" title="View games on this lane pair">🎳 ${formatLanePairWithStart(s.LanePair, s.LaneStart)}</span>` : ''}
               ${s.NoTap ? `<span class="pill pill-gold" style="font-size:10px">✦ NoTap</span>` : ''}
               ${s.Notes ? `<span class="pill" style="font-size:10px;color:var(--t3)">📝</span>` : ''}
               ${(()=>{
@@ -9375,7 +9474,7 @@ function renderGameComplete() {
   const otherScores = db.games.filter(g=>g.FinalScore!=null&&g.GameID!==G.gameID).map(g=>g.FinalScore);
   const diffEl = document.getElementById('gc-diff');
   if (otherScores.length) {
-    const avg = Math.round(otherScores.reduce((a,b)=>a+b,0)/otherScores.length);
+    const avg = Math.floor(otherScores.reduce((a,b)=>a+b,0)/otherScores.length);
     const diff = score - avg;
     diffEl.textContent = `${diff>=0?'+':''}${diff} vs avg ${avg}`;
     diffEl.className = 'gc-diff ' + (diff>0?'pos':diff<0?'neg':'neu');
@@ -10972,8 +11071,10 @@ function clearTrendDates() {
 }
 
 function goToAvgGames() {
-  const cutoff = azDateOffset(-70).toISOString().split('T')[0];
-  window._gamesFilter = { league:'all', center:'all', sort:'date-desc', lane:'', dateFrom:cutoff, dateTo:'' };
+  const pool = getCanonicalLast10WksGames();
+  const dates = pool.map(g => db.series.find(s => s.SeriesID === g.SeriesID)?.DateBowled).filter(Boolean);
+  const earliest = dates.length ? dates.reduce((a,b) => a < b ? a : b) : '';
+  window._gamesFilter = { league:'all', center:'all', sort:'date-desc', lane:'', dateFrom:earliest, dateTo:'' };
   window._glFiltersOpen = true;
   navTo('s-games');
 }
@@ -11503,6 +11604,7 @@ function renderGamesList() {
         <option value="date-asc" ${filter.sort === 'date-asc' ? 'selected' : ''}>Oldest</option>
         <option value="score-desc" ${filter.sort === 'score-desc' ? 'selected' : ''}>High Score</option>
         <option value="score-asc" ${filter.sort === 'score-asc' ? 'selected' : ''}>Low Score</option>
+        <option value="league" ${filter.sort === 'league' ? 'selected' : ''}>League</option>
       </select>
     </div>
     <div style="display:flex;gap:8px;align-items:center">
@@ -11582,6 +11684,12 @@ function renderGamesList() {
     filtered.sort((a, b) => b.FinalScore - a.FinalScore);
   } else if (filter.sort === 'score-asc') {
     filtered.sort((a, b) => a.FinalScore - b.FinalScore);
+  } else if (filter.sort === 'league') {
+    filtered.sort((a, b) => {
+      const ln = (a.league?.LeagueName || '\uffff').localeCompare(b.league?.LeagueName || '\uffff');
+      if (ln !== 0) return ln;
+      return new Date(b.series?.DateBowled || 0) - new Date(a.series?.DateBowled || 0);
+    });
   }
   // date-desc is default (already sorted)
 
@@ -11647,7 +11755,7 @@ function renderGamesList() {
           <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
             <div style="flex:1;min-width:0">
               <div style="font-size:15px;font-weight:600;color:var(--t1)">${date}${gameNum ? ' · G'+gameNum : ''}</div>
-              <div style="font-size:12px;color:var(--t3);margin-top:2px">${leagueName}${centerName ? ' @ '+centerName : ''} ${(()=>{const lp=g.LanePair||g.series?.LanePair; const ls=g.LaneStart&&g.LaneStart!==0?g.LaneStart:null; const lpClean=lp&&lp!=='null'?lp:null; return lpClean ? '&middot; Ln&nbsp;'+lpClean : ls ? '&middot; Ln&nbsp;'+ls : '';})()}</div>
+              <div style="font-size:12px;color:var(--t3);margin-top:2px">${leagueName}${centerName ? ' @ '+centerName : ''} ${(()=>{const lp=g.LanePair||g.series?.LanePair; const ls=g.LaneStart&&g.LaneStart!==0?g.LaneStart:null; const lpClean=lp&&lp!=='null'?lp:null; return lpClean ? '&middot; Ln&nbsp;'+formatLanePairWithStart(lpClean, ls) : ls ? '&middot; Ln&nbsp;'+ls : '';})()}</div>
               ${hasFrameData ? `<div style="font-size:11px;color:var(--t3);margin-top:4px">
                 <span style="color:var(--gold)">X${strikes}</span> ·
                 <span style="color:var(--teal)">/${spares}</span> ·
@@ -11841,7 +11949,7 @@ function openOpenSessionStatsModal(sessionID) {
   const ntSessionGames  = validGames.filter(g => g.NoTap);
   const scores = stdSessionGames.map(g => g.FinalScore);
   const total = scores.reduce((a,b) => a + b, 0);
-  const avg = scores.length ? Math.round(total / scores.length) : 0;
+  const avg = scores.length ? Math.floor(total / scores.length) : 0;
   const d = s.DateBowled ? fmtDate(s.DateBowled, {month:'short',day:'numeric',year:'numeric'}) : '';
 
   // Calculate advanced stats
@@ -12253,7 +12361,7 @@ function renderTournamentSeriesList() {
             <span class="series-date">Round ${rn} · ${dateStr}</span>
             ${center?`<div style="font-size:10px;color:var(--t3);margin-top:1px">${center.CenterName}</div>`:''}
             <div style="display:flex;gap:6px;margin-top:4px;flex-wrap:wrap">
-              ${s.LanePair?`<span class="pill pill-teal" style="font-size:10px">🎳 ${s.LanePair}</span>`:''}
+              ${s.LanePair?`<span class="pill pill-teal" style="font-size:10px;cursor:pointer" onclick="openLanePairGames(${s.SeriesID},event)" title="View games on this lane pair">🎳 ${formatLanePairWithStart(s.LanePair, s.LaneStart)}</span>`:''}
               ${s.NoTap?`<span class="pill pill-gold" style="font-size:10px">✦ NoTap</span>`:''}
               ${s.Notes?`<span class="pill" style="font-size:10px;color:var(--t3)">📝</span>`:''}
             </div>
@@ -13211,7 +13319,7 @@ function renderNoTapStatsSectionHTML(ntGames) {
   const ntCount  = ntScores.length;
   if (!ntCount) return '';
 
-  const ntAvg  = Math.round(ntScores.reduce((a,b)=>a+b,0) / ntCount);
+  const ntAvg  = Math.floor(ntScores.reduce((a,b)=>a+b,0) / ntCount);
   const ntHigh = Math.max(...ntScores);
   const ntLow  = Math.min(...ntScores);
 
@@ -14117,6 +14225,26 @@ function savePrefs(patch) {
     const prefs = { ...getPrefs(), ...patch };
     localStorage.setItem('bowlingdb_prefs', JSON.stringify(prefs));
   } catch(e) { console.warn('savePrefs:', e); }
+}
+
+/* ── AI model selection — editable via Settings, no code edit needed ──
+   "Fast" tier: quick/cheap tasks (ball info fetch, debrief, DevKit AI tools)
+   "Deep" tier: richer reasoning (AI Chat, DevKit IndexedDB diagnostics)
+   Falls back to the current known-good model string if nothing is saved. */
+const AI_MODEL_DEFAULTS = { fast: 'claude-haiku-4-5-20251001', deep: 'claude-sonnet-4-6' };
+function getAIModelFast() { return localStorage.getItem('bowlingdb_ai_model_fast') || AI_MODEL_DEFAULTS.fast; }
+function getAIModelDeep() { return localStorage.getItem('bowlingdb_ai_model_deep') || AI_MODEL_DEFAULTS.deep; }
+function saveAIModel(tier) {
+  const input = document.getElementById('ai-model-' + tier + '-input');
+  const val = (input?.value || '').trim();
+  if (!val) { localStorage.removeItem('bowlingdb_ai_model_' + tier); toast(tier[0].toUpperCase()+tier.slice(1)+' model reset to default'); }
+  else { localStorage.setItem('bowlingdb_ai_model_' + tier, val); toast(tier[0].toUpperCase()+tier.slice(1)+' model saved ✓'); }
+  openSettingsModal();
+}
+function resetAIModel(tier) {
+  localStorage.removeItem('bowlingdb_ai_model_' + tier);
+  toast(tier[0].toUpperCase()+tier.slice(1)+' model reset to default');
+  openSettingsModal();
 }
 
 function saveAIKey() {
@@ -15642,6 +15770,8 @@ function devDataTabHTML() {
     <div style="margin-bottom:14px">${rows}</div>
     <button class="btn btn-secondary" style="width:100%;margin-bottom:8px"
       onclick="devDeepScan()">🔬 Deep Scan</button>
+    <button class="btn btn-secondary" style="width:100%;margin-bottom:8px"
+      onclick="closeModal();setTimeout(generateDevHandoff,320)">📄 Generate Dev Handoff</button>
     <button class="btn btn-ghost btn-sm" style="width:100%;color:var(--gold);border-color:rgba(255,215,0,0.3)"
       onclick="devExportAllCSV()">Export All Tables as ZIP</button>`;
 }
@@ -16207,6 +16337,27 @@ function openSettingsModal() {
           ${saved ? `<button class="btn btn-ghost btn-sm" style="width:100%;color:var(--sedona);border-color:rgba(220,80,60,0.3)"
             onclick="clearAIKey()">Clear Key</button>` : ''}`;
       })()}
+      <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border1)">
+        <div style="font-size:11px;color:var(--t3);margin-bottom:8px">
+          AI model — override anytime a new version ships, no code edit needed
+        </div>
+        ${['fast','deep'].map(tier => {
+          const override = localStorage.getItem('bowlingdb_ai_model_' + tier);
+          const label = tier === 'fast' ? 'Fast (ball info, debrief, DevKit tools)' : 'Deep (AI Chat, diagnostics)';
+          return `
+          <div style="margin-bottom:10px">
+            <label class="flabel" style="font-size:11px">${label}</label>
+            <div style="display:flex;gap:6px">
+              <input id="ai-model-${tier}-input" type="text" class="finput"
+                style="flex:1;font-size:12px;font-family:monospace;box-sizing:border-box"
+                placeholder="${AI_MODEL_DEFAULTS[tier]}" value="${override || ''}"
+                autocomplete="off" autocorrect="off" spellcheck="false">
+              <button class="btn btn-ghost btn-sm" style="flex-shrink:0;padding:0 12px" onclick="saveAIModel('${tier}')">Save</button>
+              ${override ? `<button class="btn btn-ghost btn-sm" style="flex-shrink:0;padding:0 10px;color:var(--t3)" onclick="resetAIModel('${tier}')" title="Reset to default">↺</button>` : ''}
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
     </div>
 
     <!-- ── Developer Tools ───────────────────────────────────── -->
@@ -22559,7 +22710,7 @@ async function _bdetCallAI(prompt) {
       'anthropic-dangerous-direct-browser-access': 'true'
     },
     body: JSON.stringify({
-      model: 'claude-haiku-4-5-20251001',
+      model: getAIModelFast(),
       max_tokens: 1200,
       messages: [{ role: 'user', content: prompt }]
     })
@@ -22671,7 +22822,7 @@ async function _seriesCallAI(prompt) {
       'anthropic-dangerous-direct-browser-access': 'true'
     },
     body: JSON.stringify({
-      model: 'claude-haiku-4-5-20251001',
+      model: getAIModelFast(),
       max_tokens: 1000,
       messages: [{ role: 'user', content: prompt }]
     })
@@ -22829,6 +22980,304 @@ async function openSeriesDebriefModal(seriesID) {
       bodyEl.innerHTML = `<div style="color:var(--red);font-size:13px">Debrief failed: ${err.message}</div>`;
     }
   }
+}
+
+/* ════════════════════════════════════════════════════════════════
+   AI DIALOG — conversational assistant + clickable data references
+   ════════════════════════════════════════════════════════════════ */
+const AI_CHAT_KEY = 'bowlingdb_ai_chat_history';
+
+function _aiChatLoad() {
+  try { return JSON.parse(localStorage.getItem(AI_CHAT_KEY) || '[]'); } catch(e) { return []; }
+}
+function _aiChatSave(msgs) {
+  try { localStorage.setItem(AI_CHAT_KEY, JSON.stringify(msgs)); } catch(e) {}
+}
+
+/* Compact snapshot of current app state, sent as system context on every
+   turn (stateless API — no memory between calls). Kept small by design. */
+function buildAIChatContext() {
+  const pool = getCanonicalLast10WksGames();
+  const scores = pool.map(g => g.FinalScore);
+  const avg = scores.length ? Math.floor(scores.reduce((a,b)=>a+b,0)/scores.length) : null;
+  const leagues = db.leagues.filter(l => !l._virtual && !l.Archived)
+    .map(l => `${l.LeagueName} (LeagueID ${l.LeagueID})`).join(', ') || 'none';
+  const recentSeries = [...db.series]
+    .filter(s => s.LeagueID > 0 && !s.TournamentID && s.DateBowled)
+    .sort((a,b) => b.DateBowled.localeCompare(a.DateBowled))
+    .slice(0, 5)
+    .map(s => {
+      const sGames = db.games.filter(g => g.SeriesID === s.SeriesID && !g.IsTeammate && g.FinalScore != null);
+      const total = sGames.reduce((a,g)=>a+g.FinalScore,0);
+      return `SeriesID ${s.SeriesID}: ${s.DateBowled}, ${sGames.length} games, total ${total}`;
+    }).join('\n') || 'none';
+  const balls = db.balls.map(b => `${b.BallName} (BallID ${b.BallID})`).join(', ') || 'none';
+
+  return `You are a bowling coach/assistant embedded in BowlingDB, a personal bowling stats app. The user is an active league bowler (anchor position).
+
+CURRENT DATA SNAPSHOT:
+- Last 10 bowling weeks avg: ${avg ?? 'n/a'} (${scores.length} games)
+- Active leagues: ${leagues}
+- Recent series (most recent first):
+${recentSeries}
+- Balls in arsenal: ${balls}
+
+REFERENCE MARKUP: when you mention a specific game, series, league, or ball that exists in the data above (or that the user mentions by ID), wrap it as {{game:ID}}, {{series:ID}}, {{league:ID}}, or {{ball:ID}} so the app can render it as a tappable link back to that record. Only use IDs you actually know from this context or the conversation — never invent one.
+
+Answer naturally and conversationally. You can discuss stats, give coaching advice, or do deeper analysis if asked (e.g. "how was my last series" or "give me a debrief on SeriesID 423").`;
+}
+
+function _aiChatRenderText(text) {
+  // Parse {{type:id}} reference markup into tappable chips with friendly labels
+  const escaped = text
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return escaped.replace(/\{\{(game|series|league|ball):(\d+)\}\}/g, (m, type, idStr) => {
+    const id = parseInt(idStr);
+    const label = _aiRefLabel(type, id);
+    return `<span class="pill pill-teal" style="cursor:pointer;font-size:11px;font-weight:700" onclick="aiRefNav('${type}',${id})">${label}</span>`;
+  });
+}
+
+function _aiRefLabel(type, id) {
+  if (type === 'game') {
+    const g = db.games.find(x => x.GameID === id);
+    if (!g) return `Game ${id}`;
+    const s = db.series.find(x => x.SeriesID === g.SeriesID);
+    return `G${g.GameNumber} · ${s?.DateBowled || '?'} · ${g.FinalScore ?? '—'}`;
+  }
+  if (type === 'series') {
+    const s = db.series.find(x => x.SeriesID === id);
+    if (!s) return `Series ${id}`;
+    return `Series · ${s.DateBowled || '?'}`;
+  }
+  if (type === 'league') {
+    const l = db.leagues.find(x => x.LeagueID === id);
+    return l?.LeagueName || `League ${id}`;
+  }
+  if (type === 'ball') {
+    const b = db.balls.find(x => x.BallID === id);
+    return b?.BallName || `Ball ${id}`;
+  }
+  return `${type} ${id}`;
+}
+
+/* Tapping a reference chip navigates to the real screen/edit modal for that
+   record. navTo() already pushes onto G.screenHistory, so the header back
+   button returns to the chat for free. Snapshot key fields beforehand so we
+   can tell the AI about edits when the user comes back. */
+async function aiRefNav(type, id) {
+  if (type === 'game') {
+    await loadScoringData();
+    const g = db.games.find(x => x.GameID === id);
+    if (!g) { toast('Game not found'); return; }
+    window._aiRefSnapshot = { type, id, prevScore: g.FinalScore };
+    const s = db.series.find(x => x.SeriesID === g.SeriesID);
+    G.gameID = id; G.seriesID = g.SeriesID; G.leagueID = s?.LeagueID ?? G.leagueID;
+    await navTo('s-game-select');
+    setTimeout(() => openEditGameModal(id), 250);
+  } else if (type === 'series') {
+    await loadScoringData();
+    const s = db.series.find(x => x.SeriesID === id);
+    if (!s) { toast('Series not found'); return; }
+    G.seriesID = id; G.leagueID = s.LeagueID;
+    await navTo('s-game-select');
+  } else if (type === 'league') {
+    selectLeague(id);
+  } else if (type === 'ball') {
+    navToBall(id);
+  }
+}
+
+/* Called by renderAIChat() on screen entry — detects an edit made via a
+   reference chip and, if found, surfaces it in the thread + feeds it to
+   the AI as a system note on the next turn. */
+function _aiChatCheckPendingEdit() {
+  const snap = window._aiRefSnapshot;
+  if (!snap) return;
+  window._aiRefSnapshot = null;
+  if (snap.type === 'game') {
+    const g = db.games.find(x => x.GameID === snap.id);
+    if (g && g.FinalScore !== snap.prevScore) {
+      const note = `Game ${snap.id} updated: ${snap.prevScore} → ${g.FinalScore}`;
+      const msgs = _aiChatLoad();
+      msgs.push({ role: 'system-note', content: note });
+      _aiChatSave(msgs);
+      window._aiChatPendingNote = note;
+    }
+  }
+}
+
+function renderAIChat() {
+  _aiChatCheckPendingEdit();
+  const el = document.getElementById('ai-chat-messages');
+  if (!el) return;
+  const msgs = _aiChatLoad();
+  if (!msgs.length) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">🤖</div>
+      <div class="empty-label">Ask about your stats, get a debrief, or just talk bowling</div></div>`;
+  } else {
+    el.innerHTML = msgs.map(m => {
+      if (m.role === 'system-note') {
+        return `<div style="align-self:center;font-size:11px;color:var(--teal);background:rgba(0,217,217,0.1);padding:4px 10px;border-radius:10px">✓ ${m.content}</div>`;
+      }
+      const isUser = m.role === 'user';
+      return `<div style="align-self:${isUser?'flex-end':'flex-start'};max-width:85%;background:${isUser?'var(--purple)':'var(--bg3)'};color:${isUser?'#fff':'var(--t1)'};padding:10px 13px;border-radius:14px;font-size:14px;line-height:1.5">${isUser ? m.content.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') : _aiChatRenderText(m.content)}</div>`;
+    }).join('');
+  }
+  const scroller = document.getElementById('ai-chat-messages-wrap');
+  if (scroller) requestAnimationFrame(() => scroller.scrollTop = scroller.scrollHeight);
+}
+
+async function sendAIChatMessage() {
+  if (!localStorage.getItem('bowlingdb_ai_key')) { toast('Add an AI key in Settings first'); return; }
+  const input = document.getElementById('ai-chat-input');
+  const text = (input?.value || '').trim();
+  if (!text) return;
+  input.value = '';
+
+  const msgs = _aiChatLoad();
+  msgs.push({ role: 'user', content: text });
+  _aiChatSave(msgs);
+  renderAIChat();
+
+  const btn = document.getElementById('ai-chat-send-btn');
+  if (btn) { btn.disabled = true; btn.textContent = '…'; }
+
+  try {
+    const system = buildAIChatContext() +
+      (window._aiChatPendingNote ? `\n\nNOTE: ${window._aiChatPendingNote}` : '');
+    window._aiChatPendingNote = null;
+
+    const apiMsgs = msgs
+      .filter(m => m.role === 'user' || m.role === 'assistant')
+      .map(m => ({ role: m.role, content: m.content }));
+    // Prepend system context as a leading user-turn preamble since this
+    // endpoint call uses a single messages array (no separate system param
+    // wired here) — keeps it consistent with the rest of the app's AI calls.
+    const key = localStorage.getItem('bowlingdb_ai_key');
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': key,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: getAIModelDeep(),
+        max_tokens: 1024,
+        system: system,
+        messages: apiMsgs
+      })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message);
+    const reply = (data.content || []).map(c => c.text || '').join('').trim();
+
+    const msgs2 = _aiChatLoad();
+    msgs2.push({ role: 'assistant', content: reply });
+    _aiChatSave(msgs2);
+    renderAIChat();
+  } catch(err) {
+    const msgs2 = _aiChatLoad();
+    msgs2.push({ role: 'system-note', content: 'Error: ' + err.message });
+    _aiChatSave(msgs2);
+    renderAIChat();
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'Send'; }
+  }
+}
+
+function clearAIChat() {
+  if (!confirm('Clear this conversation?')) return;
+  _aiChatSave([]);
+  renderAIChat();
+}
+
+/* ════════════════════════════════════════════════════════════════
+   DEV HANDOFF EXPORT — hybrid template + AI prose, for starting a
+   new Claude.ai dev session on the PWA codebase itself. Reachable
+   from DevKit and from the AI chat tile (same underlying function).
+   ════════════════════════════════════════════════════════════════ */
+function _buildDevHandoffFacts() {
+  const openItems = (DKM_ROWS || []).filter(r => r.status && r.status !== 'tbd' && r.status !== 'done');
+  const backlogLines = openItems.map(r =>
+    `- [${r.form}] ${r.object}: status=${r.status}, priority=${r.priority}${r.desired ? `, desired="${r.desired}"` : ''}`
+  ).join('\n') || '(none currently flagged in DKM_ROWS)';
+
+  return `APP: BowlingDB PWA (personal bowling stats + scoring PWA, single-file HTML/CSS/JS, iPhone Safari standalone)
+VERSION: see in-app build badge
+ARCHITECTURE: IndexedDB for scoring data (Series/Games/Frames/Attempts), localStorage for reference/session state. Data pipeline xlsx_to_pwa_json.py exports from a legacy Access database.
+
+KNOWN OPEN ITEMS (from in-app DevKit log):
+${backlogLines}
+
+MANDATORY INVARIANTS:
+- Math.floor always for avg/handicap calculations, never Math.round
+- grpCalcScores null sentinel — never ?? 0
+- idbPutAll is upsert-only — call idbDeleteKeys() before re-transferring
+- idbPutAll in batches of 500 (iOS Safari IDB transaction timeout)
+- No JS objects in onclick attributes — primitives only
+- stream:false required for all Anthropic API calls (iOS Safari PWA standalone)
+- isGameClean() for clean-game checks, never check F10.IsStrike directly
+- Delete sequence: attempts → frames → games → series
+- Always traverse full League→Series→Games→Frames→Attempts relationship chain
+- node --check after every change; Python content.replace(old,new,1) for JS template literal edits`;
+}
+
+async function generateDevHandoff() {
+  if (!localStorage.getItem('bowlingdb_ai_key')) { toast('Add an AI key in Settings first'); return; }
+
+  openModal(`
+    <div class="modal-handle"></div>
+    <div class="modal-title">📄 Dev Handoff</div>
+    <div id="handoff-body" style="color:var(--t3);font-size:13px;text-align:center;padding:24px 0">
+      Assembling handoff…
+    </div>
+    <button class="btn btn-secondary" onclick="closeModal()" style="margin-top:16px">Close</button>
+  `);
+
+  try {
+    const facts = _buildDevHandoffFacts();
+    const prompt = `Turn the following raw facts about a software project into a well-organized prose handoff document, suitable for pasting at the start of a new Claude.ai chat to continue development. Use clear section headers (plain text, not markdown headers), keep it factual and concise, and preserve every invariant and backlog item listed — do not drop any. Do not invent details not present below.\n\n${facts}`;
+    const text = await _seriesCallAI(prompt);
+    window._lastDevHandoff = text;
+
+    const bodyEl = document.getElementById('handoff-body');
+    if (!bodyEl) return;
+    const paras = text.split(/\n\s*\n/).map(p => p.trim()).filter(Boolean);
+    bodyEl.innerHTML = `<div style="color:var(--t2);font-size:13px;line-height:1.6;text-align:left;max-height:50vh;overflow-y:auto;padding:0 2px">` +
+      paras.map(p => `<p style="margin:0 0 10px;white-space:pre-wrap">${p.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</p>`).join('') +
+      `</div>
+      <div style="display:flex;gap:8px;margin-top:14px">
+        <button class="btn btn-secondary" style="flex:1;margin-top:0" onclick="copyDevHandoff()">Copy</button>
+        <button class="btn btn-secondary" style="flex:1;margin-top:0" onclick="downloadDevHandoff()">Download .md</button>
+      </div>`;
+  } catch(err) {
+    const bodyEl = document.getElementById('handoff-body');
+    if (bodyEl) bodyEl.innerHTML = `<div style="color:var(--red);font-size:13px">Handoff generation failed: ${err.message}</div>`;
+  }
+}
+
+function copyDevHandoff() {
+  if (!window._lastDevHandoff) return;
+  navigator.clipboard?.writeText(window._lastDevHandoff)
+    .then(() => toast('Copied to clipboard'))
+    .catch(() => toast('Copy failed — select text manually'));
+}
+
+function downloadDevHandoff() {
+  if (!window._lastDevHandoff) return;
+  const blob = new Blob([window._lastDevHandoff], { type: 'text/markdown' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const d = azToday ? azToday() : new Date().toISOString().split('T')[0];
+  a.href = url;
+  a.download = `BowlingDB_Dev_Handoff_${d}.md`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
 async function _bdetSave() {
@@ -23421,7 +23870,7 @@ function dkAskAI(entryId) {
   fetch('https://api.anthropic.com/v1/messages', {
     method:'POST',
     headers:{ 'Content-Type':'application/json', 'x-api-key':key, 'anthropic-version':'2023-06-01', 'anthropic-dangerous-direct-browser-access':'true' },
-    body: JSON.stringify({ model:'claude-haiku-4-5-20251001', max_tokens:600,
+    body: JSON.stringify({ model:getAIModelFast(), max_tokens:600,
       messages:[{role:'user', content:prompt}] })
   }).then(function(r){ return r.json(); }).then(function(data){
     var text = (data.content||[]).map(function(c){ return c.text||''; }).join('');
@@ -23455,7 +23904,7 @@ function dkReviewAndExport() {
   fetch('https://api.anthropic.com/v1/messages', {
     method:'POST',
     headers:{ 'Content-Type':'application/json', 'x-api-key':key, 'anthropic-version':'2023-06-01', 'anthropic-dangerous-direct-browser-access':'true' },
-    body: JSON.stringify({ model:'claude-haiku-4-5-20251001', max_tokens:1000,
+    body: JSON.stringify({ model:getAIModelFast(), max_tokens:1000,
       messages:[{role:'user', content:prompt}] })
   }).then(function(r){ return r.json(); }).then(function(data){
     var text = (data.content||[]).map(function(c){ return c.text||''; }).join('');
@@ -23734,7 +24183,7 @@ async function dkAIAnalyze() {
     var resp = await fetch('https://api.anthropic.com/v1/messages', {
       method:'POST',
       headers:{'Content-Type':'application/json','x-api-key':aiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:1024,messages:[{role:'user',content:prompt}]})
+      body:JSON.stringify({model:getAIModelDeep(),max_tokens:1024,messages:[{role:'user',content:prompt}]})
     });
     var data = await resp.json();
     var text = (data.content||[]).map(function(b){ return b.text||''; }).join('');
@@ -24112,6 +24561,12 @@ var DKM_ROWS = [
   {id:104,form:'MODALS', object:'Developer data tables', type:'MODAL',  trigger:'tap',   stores:'yes',status:'tbd',priority:3,current:'Triple-tap version text → openDevModal() — Balls, Centers, Patterns',desired:'',notes:'Consolidated settings section; triple-tap activation',domHint:'[onclick*="openDevModal"]'},
   {id:105,form:'MODALS', object:'Handicap config modal', type:'MODAL',  trigger:'tap',   stores:'yes',status:'tbd',priority:2,current:'Per-league handicap setup: base score, pct, entry avg',desired:'',notes:'Per-series snapshot model',domHint:'[onclick*="handicapConfig"],[onclick*="openHandicap"]'},
   {id:106,form:'MODALS', object:'AI debrief modal',      type:'MODAL',  trigger:'auto',  stores:'no', status:'tbd',priority:2,current:'Post-series AI analysis via buildSeriesDebriefContext()',desired:'',notes:'stream:false required for iOS Safari PWA',domHint:'[onclick*="debrief"],[onclick*="Debrief"],.debrief-modal'},
+  // ── AI DIALOG (added Jun 18 session) ────────────────────────────────────
+  {id:110,form:'HOME', object:'AI Chat tile',            type:'TILE',   trigger:'tap',   stores:'no', status:'done',priority:2,current:'Navigates to s-ai-chat screen',desired:'',notes:'Added to NAV_TILE_DEFS as aichat',domHint:'.home-tile[onclick*="s-ai-chat"]'},
+  {id:111,form:'AICHAT', object:'AI chat send',          type:'BUTTON', trigger:'tap',   stores:'yes',status:'done',priority:2,current:'sendAIChatMessage() — Sonnet model, stream:false, running history in localStorage',desired:'',notes:'Uses shared bowlingdb_ai_key',domHint:'#ai-chat-send-btn'},
+  {id:112,form:'AICHAT', object:'AI reference chip',     type:'CARD',   trigger:'tap',   stores:'no', status:'done',priority:2,current:'aiRefNav() — {{type:id}} markup renders as tappable chip, navigates to real screen/edit modal, edits feed back as system note on return',desired:'',notes:'Supports game/series/league/ball types',domHint:'[onclick*="aiRefNav"]'},
+  {id:113,form:'AICHAT', object:'Dev Handoff generator', type:'BUTTON', trigger:'tap',   stores:'no', status:'done',priority:2,current:'generateDevHandoff() — template assembles DKM_ROWS/invariants, AI polishes to prose, modal with Copy + Download .md',desired:'',notes:'Two entry points: DevKit Data tab and AI Chat header button',domHint:'[onclick*="generateDevHandoff"]'},
+  {id:114,form:'MODALS', object:'AI model override',     type:'INPUT',  trigger:'tap',   stores:'yes',status:'done',priority:2,current:'getAIModelFast()/getAIModelDeep() — Settings fields let user override the model string per tier without a code edit; falls back to AI_MODEL_DEFAULTS',desired:'',notes:'Replaced 6 previously-hardcoded model strings, including a stale claude-sonnet-4-5 in the DKM diagnostic tool that had drifted from the rest',domHint:'#ai-model-fast-input,#ai-model-deep-input'},
 ];
 
 /* ── DKM Storage ─────────────────────────────────────────── */
