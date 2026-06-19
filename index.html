@@ -2628,6 +2628,7 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
         background:var(--bg2);border:1px solid var(--border1);border-radius:16px;padding:12px">
         <div id="ai-chat-messages" style="display:flex;flex-direction:column;gap:10px;min-height:100%"></div>
       </div>
+      <div id="ai-chat-status" style="display:none;flex-shrink:0;font-size:11px;color:var(--teal);padding:6px 2px 0"></div>
       <div style="flex-shrink:0;padding-top:10px;display:flex;gap:8px;align-items:flex-end">
         <textarea id="ai-chat-input" class="finput" rows="2" placeholder="Ask about your bowling data..."
           style="flex:1;resize:none;min-height:54px;max-height:120px"
@@ -14266,6 +14267,23 @@ function clearAIKey() {
   openSettingsModal();
 }
 
+/* Force-reload from network, bypassing any cached copy of the page.
+   No service worker is registered, so the iOS standalone PWA can hold onto
+   a stale fetch of index.html across launches — this gives a reliable way
+   to pull the latest pushed GitHub Pages version without quitting the app
+   or clearing Safari data. Cache-busting query param forces a real network
+   fetch since it's technically a different URL each time. Local data (IndexedDB
+   + localStorage) lives separately from the page and is untouched by this. */
+function forceReloadApp() {
+  if (!confirm('Reload now to fetch the latest version from GitHub? Your saved bowling data is stored separately on this device and will not be affected — only the app\'s code will refresh.')) return;
+  toast('Reloading…');
+  setTimeout(() => {
+    const url = new URL(window.location.href);
+    url.searchParams.set('_v', Date.now());
+    window.location.href = url.toString();
+  }, 250);
+}
+
 /* ── Ball order management ──────────────────────────────────────
    prefs.ballOrder = [BallID, BallID, ...] — user-defined display order
    Applied as tiebreak in sortedBalls() when MRU is equal.          */
@@ -16240,6 +16258,14 @@ function openSettingsModal() {
     <div class="modal-title">Settings</div>
     <button class="btn btn-secondary" style="width:100%;margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:8px"
       onclick="openThemeModal()">🎨 Theme &amp; Appearance</button>
+
+    <!-- ── App Update ────────────────────────────────────── -->
+    <div class="settings-section">
+      <div class="settings-section-hdr">App Update
+        <span class="settings-section-hint">Force-reload to pick up the latest version pushed to GitHub</span>
+      </div>
+      <button class="btn btn-secondary" style="width:100%" onclick="forceReloadApp()">↻ Reload Latest Version</button>
+    </div>
 
     <!-- ── Bowler Roster ────────────────────────────────── -->
     <div class="settings-section">
@@ -22996,35 +23022,259 @@ function _aiChatSave(msgs) {
 
 /* Compact snapshot of current app state, sent as system context on every
    turn (stateless API — no memory between calls). Kept small by design. */
-function buildAIChatContext() {
-  const pool = getCanonicalLast10WksGames();
-  const scores = pool.map(g => g.FinalScore);
-  const avg = scores.length ? Math.floor(scores.reduce((a,b)=>a+b,0)/scores.length) : null;
-  const leagues = db.leagues.filter(l => !l._virtual && !l.Archived)
-    .map(l => `${l.LeagueName} (LeagueID ${l.LeagueID})`).join(', ') || 'none';
-  const recentSeries = [...db.series]
-    .filter(s => s.LeagueID > 0 && !s.TournamentID && s.DateBowled)
-    .sort((a,b) => b.DateBowled.localeCompare(a.DateBowled))
-    .slice(0, 5)
-    .map(s => {
-      const sGames = db.games.filter(g => g.SeriesID === s.SeriesID && !g.IsTeammate && g.FinalScore != null);
-      const total = sGames.reduce((a,g)=>a+g.FinalScore,0);
-      return `SeriesID ${s.SeriesID}: ${s.DateBowled}, ${sGames.length} games, total ${total}`;
-    }).join('\n') || 'none';
-  const balls = db.balls.map(b => `${b.BallName} (BallID ${b.BallID})`).join(', ') || 'none';
+/* All-time league game pool — same filters as the 10-week pool, minus the
+   week-window. Used to give the AI career-long context, not just recent form. */
+function getAllTimeLeagueGames() {
+  const _openIDs = openBowlSeriesIDs();
+  const _leagueSIDs = new Set(
+    db.series.filter(s => s.LeagueID > 0 && !s.TournamentID).map(s => s.SeriesID)
+  );
+  return db.games.filter(g =>
+    g.FinalScore != null && g.FinalScore > 0 && !g.IsTeammate && !g.NoTap &&
+    !_openIDs.has(g.SeriesID) && _leagueSIDs.has(g.SeriesID)
+  );
+}
 
+/* Spare conversion by pin (7, 10) and splits, computed for a set of games.
+   Reuses getLeaveFromAtt()/isSplitLeave() — the same 3-method pin-detection
+   chain the Stats screen's leave/split breakdown uses — so these numbers
+   can never disagree with what the app shows elsewhere. */
+function buildAISpareConversionSummary(games) {
+  const gameIDs = new Set(games.map(g => g.GameID));
+  const frames = db.frames.filter(f => gameIDs.has(f.GameID));
+  let opps = 0, conv = 0, opps7 = 0, conv7 = 0, opps10 = 0, conv10 = 0, oppsSplit = 0, convSplit = 0;
+
+  frames.forEach(f => {
+    const atts = frameAttempts(f.FrameID);
+    const a1 = atts.find(a => a.Attempt === 1);
+    if (!a1 || a1.Pinfall == null || a1.Pinfall === 10) return; // no attempt, or a strike — no spare opportunity
+    const leave = getLeaveFromAtt(a1);
+    if (!leave.size) return; // no usable pin data for this frame
+    const a2 = atts.find(a => a.Attempt === 2);
+    const converted = !!(a2 && a2.Pinfall != null && (a1.Pinfall + a2.Pinfall) === 10);
+
+    opps++; if (converted) conv++;
+    if (leave.size === 1 && leave.has(7))  { opps7++;  if (converted) conv7++; }
+    if (leave.size === 1 && leave.has(10)) { opps10++; if (converted) conv10++; }
+    if (isSplitLeave(leave))               { oppsSplit++; if (converted) convSplit++; }
+  });
+
+  const pct = (c, o) => o ? Math.round(c / o * 100) + '%' : null;
+  const lines = [];
+  if (opps)      lines.push(`Overall spare conversion: ${pct(conv, opps)} (${conv}/${opps})`);
+  if (opps7)     lines.push(`7-pin: ${pct(conv7, opps7)} (${conv7}/${opps7})`);
+  if (opps10)    lines.push(`10-pin: ${pct(conv10, opps10)} (${conv10}/${opps10})`);
+  if (oppsSplit) lines.push(`Splits: ${pct(convSplit, oppsSplit)} (${convSplit}/${oppsSplit})`);
+  return lines.join(', ') || 'not enough recorded frame data yet';
+}
+
+/* On-demand frame-level deep dive — only built when the user's message
+   names a specific game/series by ID, so token cost stays low on every
+   other message. Keeps full raw frame dumps out of the default context. */
+/* ════════════════════════════════════════════════════════════════
+   AI TOOL CATALOG — the model never recalculates stats itself. It
+   calls one of these, the PWA runs its own existing, tested data
+   functions, and hands back a finished answer. This is what keeps
+   numbers consistent with Stats and keeps default token usage low
+   (no more dumping recent series / spare conversion into every
+   message "just in case"). The model also never needs a raw
+   database ID from the user — find_series/find_game resolve natural
+   language ("my last series", "Tuesday league") to a record.       */
+const AI_TOOLS = [
+  {
+    name: 'get_stats_summary',
+    description: 'Get average score, games played, high series, and high game for a time period. Always use this instead of estimating or calculating an average yourself.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        period: { type: 'string', enum: ['last10wks', 'alltime'],
+          description: 'last10wks = last 10 distinct calendar weeks in which a league series was bowled; alltime = full league history' }
+      },
+      required: ['period']
+    }
+  },
+  {
+    name: 'get_spare_conversion',
+    description: 'Get spare conversion rate (overall, 7-pin, 10-pin, splits) for a time period. Always use this instead of inferring conversion rates from frame data yourself.',
+    input_schema: {
+      type: 'object',
+      properties: { period: { type: 'string', enum: ['last10wks', 'alltime'] } },
+      required: ['period']
+    }
+  },
+  {
+    name: 'find_series',
+    description: 'Find one or more series (a bowling session, usually 3 games) matching natural criteria. Returns SeriesID(s) plus a summary of games/scores per match, so a follow-up call is often unnecessary. Use this whenever the user refers to a series by description ("my last series", "that 700 series", "my Tuesday league last week") — never guess or ask for a raw ID.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        relative: { type: 'string', enum: ['most_recent', 'previous'], description: 'most_recent = latest bowled series; previous = the one before that' },
+        league: { type: 'string', description: 'partial or full league name to filter by' },
+        dateFrom: { type: 'string', description: 'YYYY-MM-DD' },
+        dateTo: { type: 'string', description: 'YYYY-MM-DD' },
+        limit: { type: 'number', description: 'max results, default 5' }
+      }
+    }
+  },
+  {
+    name: 'find_game',
+    description: 'Find one or more individual games matching natural criteria (e.g. "my last game", "my high game this season", a specific date). Returns GameID(s) plus score/date per match. Never guess or ask the user for a raw ID.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        relative: { type: 'string', enum: ['most_recent', 'highest', 'lowest'] },
+        league: { type: 'string' },
+        dateFrom: { type: 'string' },
+        dateTo: { type: 'string' },
+        seriesId: { type: 'number', description: 'restrict to a specific series if already known from an earlier tool result' },
+        limit: { type: 'number' }
+      }
+    }
+  },
+  {
+    name: 'get_game_frames',
+    description: 'Get the exact frame-by-frame pinfall for one specific game. Call find_game first to resolve the GameID unless you already have it from an earlier tool result in this conversation.',
+    input_schema: {
+      type: 'object',
+      properties: { gameId: { type: 'number' } },
+      required: ['gameId']
+    }
+  },
+  {
+    name: 'list_leagues',
+    description: 'List all active leagues with their LeagueID and name.',
+    input_schema: { type: 'object', properties: {} }
+  },
+  {
+    name: 'list_balls',
+    description: 'List all bowling balls in the arsenal with their BallID and name.',
+    input_schema: { type: 'object', properties: {} }
+  }
+];
+
+/* Dispatcher — runs the requested tool against the PWA's own real data
+   functions and returns a small JSON-serializable result. Never throws;
+   errors come back as a {error} field so the model can recover gracefully. */
+function executeAITool(name, input) {
+  input = input || {};
+  try {
+    switch (name) {
+      case 'get_stats_summary':   return _aiToolStatsSummary(input.period);
+      case 'get_spare_conversion':return _aiToolSpareConversion(input.period);
+      case 'find_series':         return _aiToolFindSeries(input);
+      case 'find_game':           return _aiToolFindGame(input);
+      case 'get_game_frames':     return _aiToolGetGameFrames(input.gameId);
+      case 'list_leagues':        return db.leagues.filter(l => !l._virtual && !l.Archived)
+                                     .map(l => ({ LeagueID: l.LeagueID, name: l.LeagueName }));
+      case 'list_balls':          return db.balls.map(b => ({ BallID: b.BallID, name: b.BallName }));
+      default:                    return { error: 'Unknown tool: ' + name };
+    }
+  } catch (e) {
+    return { error: e.message };
+  }
+}
+
+function _aiToolStatsSummary(period) {
+  const games = period === 'alltime' ? getAllTimeLeagueGames() : getCanonicalLast10WksGames();
+  const scores = games.map(g => g.FinalScore);
+  const avg = scores.length ? Math.floor(scores.reduce((a,b)=>a+b,0)/scores.length) : null;
+  const hiGame = scores.length ? Math.max(...scores) : null;
+  const bySeries = {};
+  games.forEach(g => { bySeries[g.SeriesID] = (bySeries[g.SeriesID] || 0) + g.FinalScore; });
+  const hiSeries = Object.keys(bySeries).length ? Math.max(...Object.values(bySeries)) : null;
+  return { period: period || 'last10wks', avg, games: scores.length, hiGame, hiSeries };
+}
+
+function _aiToolSpareConversion(period) {
+  const games = period === 'alltime' ? getAllTimeLeagueGames() : getCanonicalLast10WksGames();
+  return { period: period || 'last10wks', conversion: buildAISpareConversionSummary(games) };
+}
+
+function _aiToolFindSeries(input) {
+  let candidates = db.series.filter(s => s.LeagueID > 0 && !s.TournamentID && s.DateBowled);
+  if (input.league) {
+    const q = String(input.league).toLowerCase();
+    const leagueIDs = new Set(db.leagues.filter(l => l.LeagueName.toLowerCase().includes(q)).map(l => l.LeagueID));
+    candidates = candidates.filter(s => leagueIDs.has(s.LeagueID));
+  }
+  if (input.dateFrom) candidates = candidates.filter(s => s.DateBowled >= input.dateFrom);
+  if (input.dateTo)   candidates = candidates.filter(s => s.DateBowled <= input.dateTo);
+  candidates = [...candidates].sort((a,b) => b.DateBowled.localeCompare(a.DateBowled));
+
+  if (input.relative === 'most_recent') candidates = candidates.slice(0, 1);
+  else if (input.relative === 'previous') candidates = candidates.slice(1, 2);
+  else candidates = candidates.slice(0, input.limit || 5);
+
+  if (!candidates.length) return { results: [], note: 'No series matched those criteria.' };
+
+  return { results: candidates.map(s => {
+    const league = db.leagues.find(l => l.LeagueID === s.LeagueID);
+    const sGames = db.games.filter(g => g.SeriesID === s.SeriesID && !g.IsTeammate && g.FinalScore != null)
+      .sort((a,b) => a.GameNumber - b.GameNumber);
+    return {
+      SeriesID: s.SeriesID,
+      date: s.DateBowled,
+      league: league?.LeagueName || null,
+      games: sGames.map(g => ({ GameID: g.GameID, gameNumber: g.GameNumber, score: g.FinalScore })),
+      total: sGames.reduce((a,g) => a + g.FinalScore, 0)
+    };
+  })};
+}
+
+function _aiToolFindGame(input) {
+  let candidates = getAllTimeLeagueGames();
+  if (input.seriesId) candidates = candidates.filter(g => g.SeriesID === input.seriesId);
+  if (input.league) {
+    const q = String(input.league).toLowerCase();
+    const leagueIDs = new Set(db.leagues.filter(l => l.LeagueName.toLowerCase().includes(q)).map(l => l.LeagueID));
+    const seriesIDsForLeague = new Set(db.series.filter(s => leagueIDs.has(s.LeagueID)).map(s => s.SeriesID));
+    candidates = candidates.filter(g => seriesIDsForLeague.has(g.SeriesID));
+  }
+  let withDate = candidates.map(g => ({ g, date: db.series.find(s => s.SeriesID === g.SeriesID)?.DateBowled || '' }));
+  if (input.dateFrom) withDate = withDate.filter(x => x.date >= input.dateFrom);
+  if (input.dateTo)   withDate = withDate.filter(x => x.date <= input.dateTo);
+
+  if (input.relative === 'highest') withDate.sort((a,b) => b.g.FinalScore - a.g.FinalScore);
+  else if (input.relative === 'lowest') withDate.sort((a,b) => a.g.FinalScore - b.g.FinalScore);
+  else withDate.sort((a,b) => b.date.localeCompare(a.date)); // most_recent / default
+
+  if (input.relative === 'most_recent') withDate = withDate.slice(0, 1);
+  else withDate = withDate.slice(0, input.limit || 5);
+
+  if (!withDate.length) return { results: [], note: 'No games matched those criteria.' };
+
+  return { results: withDate.map(({g, date}) => ({
+    GameID: g.GameID, SeriesID: g.SeriesID, date, gameNumber: g.GameNumber, score: g.FinalScore
+  }))};
+}
+
+function _aiToolGetGameFrames(gameId) {
+  const g = db.games.find(x => x.GameID === gameId);
+  if (!g) return { error: 'GameID not found: ' + gameId };
+  const frames = db.frames.filter(f => f.GameID === gameId).sort((a,b) => a.FrameNum - b.FrameNum);
+  return {
+    GameID: gameId,
+    score: g.FinalScore,
+    frames: frames.map(f => ({
+      frame: f.FrameNum,
+      pinfall: frameAttempts(f.FrameID).map(a => a.Pinfall)
+    }))
+  };
+}
+
+/* Compact system prompt — no more pre-dumping stats/series/balls into every
+   message. The model fetches exactly what a question needs via tools, so
+   default token usage drops regardless of how much data the app holds. */
+function buildAIChatContext() {
   return `You are a bowling coach/assistant embedded in BowlingDB, a personal bowling stats app. The user is an active league bowler (anchor position).
 
-CURRENT DATA SNAPSHOT:
-- Last 10 bowling weeks avg: ${avg ?? 'n/a'} (${scores.length} games)
-- Active leagues: ${leagues}
-- Recent series (most recent first):
-${recentSeries}
-- Balls in arsenal: ${balls}
+You do not have the user's data in this prompt. Use the provided tools to fetch exact numbers for anything you state — never estimate, guess, or calculate a stat, average, or frame result yourself. Every figure in your answer must come from a tool result.
 
-REFERENCE MARKUP: when you mention a specific game, series, league, or ball that exists in the data above (or that the user mentions by ID), wrap it as {{game:ID}}, {{series:ID}}, {{league:ID}}, or {{ball:ID}} so the app can render it as a tappable link back to that record. Only use IDs you actually know from this context or the conversation — never invent one.
+The user does not know or use internal database IDs. When they refer to something by description — "my last series," "that league," "my high game," a date — call find_series or find_game to resolve it. Never ask the user for a raw ID.
 
-Answer naturally and conversationally. You can discuss stats, give coaching advice, or do deeper analysis if asked (e.g. "how was my last series" or "give me a debrief on SeriesID 423").`;
+REFERENCE MARKUP: when a tool result gives you a GameID, SeriesID, LeagueID, or BallID that's relevant to your answer, wrap it as {{game:ID}}, {{series:ID}}, {{league:ID}}, or {{ball:ID}} in your reply so the app renders it as a tappable link. Only use IDs that came from a tool result — never invent one.
+
+Answer naturally and conversationally.`;
 }
 
 function _aiChatRenderText(text) {
@@ -23128,6 +23378,44 @@ function renderAIChat() {
   if (scroller) requestAnimationFrame(() => scroller.scrollTop = scroller.scrollHeight);
 }
 
+/* Transient "🔧 doing X…" indicator while a tool round is in flight.
+   Never persisted — purely a live status display. */
+function _aiChatShowToolStatus(names) {
+  const el = document.getElementById('ai-chat-status');
+  if (!el) return;
+  if (!names || !names.length) { el.style.display = 'none'; el.textContent = ''; return; }
+  const labels = {
+    get_stats_summary: 'Checking your stats', get_spare_conversion: 'Checking spare conversion',
+    find_series: 'Finding that series', find_game: 'Finding that game',
+    get_game_frames: 'Pulling frame detail', list_leagues: 'Checking leagues', list_balls: 'Checking your balls'
+  };
+  el.textContent = '🔧 ' + names.map(n => labels[n] || n).join(', ') + '…';
+  el.style.display = 'block';
+}
+
+async function _aiChatCallAPI(messages) {
+  const key = localStorage.getItem('bowlingdb_ai_key');
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': key,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model: getAIModelDeep(),
+      max_tokens: 1024,
+      system: buildAIChatContext(),
+      tools: AI_TOOLS,
+      messages: messages
+    })
+  });
+  const data = await res.json();
+  if (data.error) throw new Error(data.error.message);
+  return data;
+}
+
 async function sendAIChatMessage() {
   if (!localStorage.getItem('bowlingdb_ai_key')) { toast('Add an AI key in Settings first'); return; }
   const input = document.getElementById('ai-chat-input');
@@ -23144,38 +23432,42 @@ async function sendAIChatMessage() {
   if (btn) { btn.disabled = true; btn.textContent = '…'; }
 
   try {
-    const system = buildAIChatContext() +
-      (window._aiChatPendingNote ? `\n\nNOTE: ${window._aiChatPendingNote}` : '');
-    window._aiChatPendingNote = null;
-
-    const apiMsgs = msgs
+    // Live, in-memory conversation for this send only — tool_use/tool_result
+    // plumbing is never persisted to localStorage; only the final visible
+    // text exchange gets saved (see below), keeping history small on disk.
+    const history = _aiChatLoad()
       .filter(m => m.role === 'user' || m.role === 'assistant')
       .map(m => ({ role: m.role, content: m.content }));
-    // Prepend system context as a leading user-turn preamble since this
-    // endpoint call uses a single messages array (no separate system param
-    // wired here) — keeps it consistent with the rest of the app's AI calls.
-    const key = localStorage.getItem('bowlingdb_ai_key');
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': key,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
-      body: JSON.stringify({
-        model: getAIModelDeep(),
-        max_tokens: 1024,
-        system: system,
-        messages: apiMsgs
-      })
-    });
-    const data = await res.json();
-    if (data.error) throw new Error(data.error.message);
-    const reply = (data.content || []).map(c => c.text || '').join('').trim();
+
+    if (window._aiChatPendingNote) {
+      history.push({ role: 'user', content: `[System note: ${window._aiChatPendingNote}]` });
+      window._aiChatPendingNote = null;
+    }
+
+    let finalText = '';
+    for (let round = 0; round < 5; round++) {
+      const data = await _aiChatCallAPI(history);
+      const toolUses = (data.content || []).filter(b => b.type === 'tool_use');
+
+      if (!toolUses.length) {
+        finalText = (data.content || []).map(b => b.text || '').join('').trim();
+        break;
+      }
+
+      _aiChatShowToolStatus(toolUses.map(t => t.name));
+      history.push({ role: 'assistant', content: data.content });
+      const toolResults = toolUses.map(tu => ({
+        type: 'tool_result',
+        tool_use_id: tu.id,
+        content: JSON.stringify(executeAITool(tu.name, tu.input))
+      }));
+      history.push({ role: 'user', content: toolResults });
+    }
+
+    if (!finalText) finalText = "I wasn't able to finish that — try rephrasing or asking again.";
 
     const msgs2 = _aiChatLoad();
-    msgs2.push({ role: 'assistant', content: reply });
+    msgs2.push({ role: 'assistant', content: finalText });
     _aiChatSave(msgs2);
     renderAIChat();
   } catch(err) {
@@ -23185,8 +23477,10 @@ async function sendAIChatMessage() {
     renderAIChat();
   } finally {
     if (btn) { btn.disabled = false; btn.textContent = 'Send'; }
+    _aiChatShowToolStatus(null);
   }
 }
+
 
 function clearAIChat() {
   if (!confirm('Clear this conversation?')) return;
@@ -24567,6 +24861,8 @@ var DKM_ROWS = [
   {id:112,form:'AICHAT', object:'AI reference chip',     type:'CARD',   trigger:'tap',   stores:'no', status:'done',priority:2,current:'aiRefNav() — {{type:id}} markup renders as tappable chip, navigates to real screen/edit modal, edits feed back as system note on return',desired:'',notes:'Supports game/series/league/ball types',domHint:'[onclick*="aiRefNav"]'},
   {id:113,form:'AICHAT', object:'Dev Handoff generator', type:'BUTTON', trigger:'tap',   stores:'no', status:'done',priority:2,current:'generateDevHandoff() — template assembles DKM_ROWS/invariants, AI polishes to prose, modal with Copy + Download .md',desired:'',notes:'Two entry points: DevKit Data tab and AI Chat header button',domHint:'[onclick*="generateDevHandoff"]'},
   {id:114,form:'MODALS', object:'AI model override',     type:'INPUT',  trigger:'tap',   stores:'yes',status:'done',priority:2,current:'getAIModelFast()/getAIModelDeep() — Settings fields let user override the model string per tier without a code edit; falls back to AI_MODEL_DEFAULTS',desired:'',notes:'Replaced 6 previously-hardcoded model strings, including a stale claude-sonnet-4-5 in the DKM diagnostic tool that had drifted from the rest',domHint:'#ai-model-fast-input,#ai-model-deep-input'},
+  {id:115,form:'AICHAT', object:'AI tool-use architecture', type:'NOTE',  trigger:'auto',  stores:'no', status:'done',priority:2,current:'sendAIChatMessage() now runs a tool-use loop (Anthropic tools param) instead of dumping stats into every prompt. AI_TOOLS catalog: get_stats_summary, get_spare_conversion, find_series, find_game, get_game_frames, list_leagues, list_balls. find_series/find_game resolve natural language to IDs so the user never sees a database key. All tools wrap existing canonical functions (getCanonicalLast10WksGames, getAllTimeLeagueGames, buildAISpareConversionSummary, frameAttempts) so numbers can never disagree with Stats',desired:'',notes:'Replaced the regex-based _aiChatBuildDeepDive ID-detection hack entirely; tool loop capped at 5 rounds',domHint:''},
+  {id:116,form:'MODALS', object:'Force-reload app',      type:'BUTTON', trigger:'tap',   stores:'no', status:'done',priority:2,current:'forceReloadApp() — cache-busted location reload to fetch latest GitHub Pages deployment without quitting the app',desired:'',notes:'No service worker registered; relies on query-string cache-busting',domHint:'[onclick*="forceReloadApp"]'},
 ];
 
 /* ── DKM Storage ─────────────────────────────────────────── */
