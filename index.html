@@ -137,6 +137,7 @@ body {
   pointer-events: none;
   user-select: none;
   white-space: nowrap;
+  flex-shrink: 0;
   align-self: flex-end;
   padding-bottom: 4px;
   margin-left: 2px;
@@ -3810,6 +3811,15 @@ async function navTo(screenId, opts={}) {
   // Header back button
   const isRoot = ROOT_SCREENS.includes(screenId);
   document.getElementById('hdr-back').classList.toggle('show', !isRoot);
+
+  // Build-ref badge: only on root screens. Sub-screens combine a back button
+  // with often-several header icons (scoring screen alone can show delete/
+  // focus/move-frames/export/settings), leaving no room for both a real
+  // title and this small reference label without squeezing the title down
+  // to near-nothing. The badge is a debug/reference nicety, not user-facing
+  // functionality, so it's the one that yields room here.
+  const buildRefEl = document.getElementById('hdr-build-ref');
+  if (buildRefEl) buildRefEl.style.display = isRoot ? '' : 'none';
 
   // Header title
   const customTitle = target.dataset.title;
