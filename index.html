@@ -123,7 +123,10 @@ body {
   border-radius:50%;
 }
 #hdr-back.show { opacity:1; pointer-events:auto; }
-#hdr-title { flex:1; font-size:18px; font-weight:800; letter-spacing:-0.3px; }
+#hdr-title {
+  flex:1; min-width:0; font-size:17px; font-weight:800; letter-spacing:-0.3px;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
 /* ── Build reference badge ─────────────────────────────────── */
 #hdr-build-ref {
   font-size: 9px;
