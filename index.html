@@ -1015,6 +1015,79 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
 .pin-btn:not(.B):active { transform:scale(0.84); }
 
 /* ============================================================
+   FOCUS MODE — alternate per-frame scoring view (Item 3)
+   ============================================================ */
+#hdr-focus-btn.active { color:var(--teal); background:rgba(0,217,217,0.12); }
+
+.fm-header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:10px 14px 6px; gap:8px;
+}
+.fm-header-left { display:flex; flex-direction:column; gap:1px; flex-shrink:0; }
+.fm-frame-label { font-size:20px; font-weight:900; color:var(--t1); letter-spacing:0.3px; }
+.fm-game-label  { font-size:11px; font-weight:600; color:var(--t3); text-transform:uppercase; letter-spacing:0.5px; }
+.fm-header-right { display:flex; flex-direction:column; align-items:flex-end; gap:1px; flex-shrink:0; }
+.fm-score-label { font-size:9px; font-weight:700; color:var(--t3); letter-spacing:1px; text-transform:uppercase; }
+.fm-score-val   { font-size:24px; font-weight:900; color:var(--teal); }
+
+/* Mini frame-history strip: current-2, current-1, current — simple #/X/— notation,
+   reuses attBoxHTML() symbol logic so it always matches the main scorecard's rules */
+.fm-mini-strip { display:flex; align-items:center; gap:5px; flex:1; justify-content:center; min-width:0; }
+.fm-mini-cell {
+  display:flex; flex-direction:column; align-items:center; gap:2px;
+  min-width:30px; padding:3px 4px; border-radius:7px; cursor:pointer;
+}
+.fm-mini-cell.cur { background:rgba(0,217,217,0.10); border:1px solid rgba(0,217,217,0.3); }
+.fm-mini-fn { font-size:8px; font-weight:700; color:var(--t3); letter-spacing:0.3px; }
+.fm-mini-beer { font-size:8px; }
+.fm-mini-cell.cur .fm-mini-fn { color:var(--teal); }
+.fm-mini-atts { display:flex; gap:2px; }
+.fm-mini-att {
+  font-size:10px; font-weight:800; color:var(--t2);
+  min-width:12px; text-align:center;
+}
+.fm-mini-att.X { color:var(--gold); }
+.fm-mini-att.sp { color:var(--teal); }
+.fm-mini-att.empty { color:var(--t3); opacity:0.4; }
+
+.fm-beer-row {
+  margin:0 14px 8px; padding:6px 10px;
+  border-radius:8px; border:1px solid var(--border1); background:var(--bg2);
+  font-size:11px; color:var(--t2); text-align:center; cursor:pointer;
+}
+.fm-beer-row.active { border-color:rgba(255,215,0,0.35); background:rgba(255,215,0,0.08); color:var(--gold); font-weight:700; }
+
+.fm-ball-strip {
+  display:flex; align-items:center; gap:10px;
+  padding:6px 0 10px;
+}
+/* Relocated .ball-bar sits full-width here; chip strip + ALT toggle keep their own styling */
+#fm-ball-anchor { padding:0 14px; }
+.fm-alt-pill {
+  display:inline-flex; align-items:center; gap:4px; width:fit-content; flex-shrink:0;
+  font-size:10px; font-weight:800; letter-spacing:0.4px;
+  padding:2px 8px; border-radius:20px; margin-right:14px;
+}
+.fm-alt-pill.ball1 { background:rgba(255,255,255,0.10); color:#FFFFFF; border:1px solid rgba(255,255,255,0.25); }
+.fm-alt-pill.ball2 { background:rgba(255,215,0,0.12); color:var(--gold); border:1px solid rgba(255,215,0,0.3); }
+
+/* Enlarged pin diagram when relocated into focus mode panel */
+#fm-pin-anchor .pin-stage { gap:10px; padding:10px 0 6px; }
+#fm-pin-anchor .pin-row { gap:12px; }
+#fm-pin-anchor .pin-btn { width:50px; height:50px; font-size:16px; }
+#fm-pin-anchor .num-pad { padding:0 14px; }
+
+.fm-nav-row { display:flex; gap:10px; padding:4px 14px 10px; }
+.fm-nav-btn {
+  flex:1; padding:12px 8px; border-radius:12px;
+  border:1.5px solid var(--border2); background:var(--bg2);
+  color:var(--t1); font-size:13px; font-weight:800; cursor:pointer;
+}
+.fm-nav-btn:active { transform:scale(0.96); opacity:0.85; }
+.fm-nav-btn:disabled { opacity:0.3; cursor:default; }
+
+
+/* ============================================================
    MODE BADGE — FRESH / LEAVE / SPARE
    ============================================================ */
 .mode-badge {
@@ -2489,6 +2562,11 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
           <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/>
         </svg>
       </div>
+      <div class="hdr-icon-btn" id="hdr-focus-btn" onclick="toggleFocusMode()" title="Focus Mode (one frame at a time)" style="display:none">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
+        </svg>
+      </div>
       <div class="hdr-icon-btn" id="hdr-sync-btn" onclick="openExportModal()" title="Export">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
@@ -2705,6 +2783,45 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
     <!-- SCORING -->
     <div id="s-scoring" class="screen" data-title="Game">
 
+      <!-- FOCUS MODE — alternate per-frame view. Hidden by default; toggled via hdr-focus-btn.
+           Reuses #pin-stage (moved into this panel via CSS, not duplicated) and existing
+           togglePin()/jumpToPosition() — this is a layout overlay only, no parallel state. -->
+      <div id="focus-mode-panel" style="display:none">
+        <div class="fm-header">
+          <div class="fm-header-left">
+            <div class="fm-frame-label">Frame <span id="fm-frame-num">1</span></div>
+            <div class="fm-game-label">Game <span id="fm-game-num">1</span></div>
+          </div>
+          <div class="fm-mini-strip" id="fm-mini-strip"></div>
+          <div class="fm-header-right">
+            <div class="fm-score-label">SCORE</div>
+            <div class="fm-score-val" id="fm-score-val">—</div>
+          </div>
+        </div>
+
+        <div class="fm-beer-row" id="fm-beer-row" onclick="focusModeOpenBeer()">
+          <span id="fm-beer-text">🍺 Tap to log beer frame</span>
+        </div>
+
+        <div class="fm-ball-strip">
+          <!-- The real .ball-bar (chip strip + ALT toggle) is relocated here at runtime —
+               same selectBall()/toggleAltMode() logic, not a static read-only display. -->
+          <div id="fm-ball-anchor" style="flex:1;min-width:0"></div>
+          <div class="fm-alt-pill" id="fm-alt-pill" style="display:none"></div>
+        </div>
+
+        <!-- #pin-stage is relocated here at runtime via DOM move (enterFocusMode), not cloned -->
+        <div id="fm-pin-anchor"></div>
+
+        <!-- .qa-row (Strike/Spare/Miss/Confirm) is relocated here too — same buttons, same handlers -->
+        <div id="fm-qa-anchor"></div>
+
+        <div class="fm-nav-row">
+          <button class="fm-nav-btn" id="fm-prev-btn" onclick="focusModePrevFrame()">‹ Prev</button>
+          <button class="fm-nav-btn" id="fm-next-btn" onclick="focusModeNextFrame()">Next ›</button>
+        </div>
+      </div>
+
       <!-- Game navigation pills — shows when multiple games in series exist -->
       <div id="scoring-game-nav" style="display:flex;gap:5px;padding:4px 8px 0"></div>
 
@@ -2714,7 +2831,8 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
       </div>
 
       <!-- Ball bar — scrollable chip strip, smart sort by league/center/global recency -->
-      <div class="ball-bar">
+      <span id="fm-anchor-ballbar" style="display:none"></span>
+      <div class="ball-bar" id="ball-bar">
         <div class="ball-bar-chips" id="ball-bar-chips">
           <!-- populated by renderBallBar() -->
         </div>
@@ -2750,6 +2868,7 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
       </div>
 
       <!-- Pin Triangle — compact, directly under scorecard/ball/nav -->
+      <span id="fm-anchor-pinstage" style="display:none"></span>
       <div class="pin-stage" id="pin-stage">
         <div class="pin-row">
           <button class="pin-btn" id="pb7" onclick="togglePin(7)">7</button>
@@ -2798,6 +2917,7 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
       </div>
 
       <!-- Numeric input pad — shown instead of pin triangle in numeric mode -->
+      <span id="fm-anchor-numpad" style="display:none"></span>
       <div class="num-pad" id="num-pad" style="display:none">
         <button class="num-pad-btn" id="npb1" onclick="tapNumericPin(1)">1</button>
         <button class="num-pad-btn" id="npb2" onclick="tapNumericPin(2)">2</button>
@@ -2811,7 +2931,8 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
       </div>
 
       <!-- Single action row: quick actions + confirm together -->
-      <div class="qa-row" style="margin-bottom:7px">
+      <span id="fm-anchor-qarow" style="display:none"></span>
+      <div class="qa-row" id="qa-row" style="margin-bottom:7px">
         <button class="qa-btn qa-strike" id="qa-primary" onclick="quickPrimary()">Strike ✕</button>
         <button class="qa-btn qa-spare" id="qa-spare" onclick="quickSpare()">Spare /</button>
         <button class="qa-btn qa-miss" id="qa-secondary" onclick="quickSecondary()">Miss —</button>
@@ -8444,6 +8565,197 @@ function renderScoringScreen() {
   // Show delete-game icon only on scoring screen
   const delBtn = document.getElementById('hdr-delete-game-btn');
   if (delBtn) delBtn.style.display = 'flex';
+  // Focus Mode icon also only shows on scoring screen
+  const focusBtn = document.getElementById('hdr-focus-btn');
+  if (focusBtn) {
+    focusBtn.style.display = 'flex';
+    focusBtn.classList.toggle('active', !!getPrefs().focusMode);
+  }
+  // Focus Mode: ensure DOM state matches the saved preference every render.
+  // Idempotent — checks actual DOM location rather than assuming prior state,
+  // so it self-corrects whether arriving fresh, via back-navigation, or reload.
+  const wantFocus = !!getPrefs().focusMode;
+  const pinStageNow = document.getElementById('pin-stage');
+  const pinIsInFocusPanel = pinStageNow && pinStageNow.closest('#focus-mode-panel');
+  if (wantFocus && !pinIsInFocusPanel) enterFocusMode();
+  else if (!wantFocus && pinIsInFocusPanel) exitFocusMode();
+  else if (wantFocus) renderFocusModePanel();
+}
+
+/* ============================================================
+   FOCUS MODE — alternate per-frame scoring view (Item 3)
+   Design: reuses #pin-stage, #num-pad, and #qa-row by relocating
+   the same DOM nodes (same IDs/handlers) into the focus panel,
+   rather than duplicating pin/state logic. Toggled via a header
+   icon button; preference persists across sessions in
+   bowlingdb_prefs (getPrefs/savePrefs), independent of game data.
+   ============================================================ */
+
+function toggleFocusMode() {
+  const on = !getPrefs().focusMode;
+  savePrefs({ focusMode: on });
+  if (on) enterFocusMode(); else exitFocusMode();
+  const focusBtn = document.getElementById('hdr-focus-btn');
+  if (focusBtn) focusBtn.classList.toggle('active', on);
+  haptic('light');
+}
+
+function enterFocusMode() {
+  const panel = document.getElementById('focus-mode-panel');
+  const pinAnchor = document.getElementById('fm-pin-anchor');
+  const qaAnchor = document.getElementById('fm-qa-anchor');
+  const ballAnchor = document.getElementById('fm-ball-anchor');
+  const pinStage = document.getElementById('pin-stage');
+  const numPad = document.getElementById('num-pad');
+  const qaRow = document.getElementById('qa-row');
+  const ballBar = document.getElementById('ball-bar');
+  if (!panel || !pinAnchor || !qaAnchor) return;
+
+  // Relocate (not clone) the live pin/numeric/action/ball controls into the panel.
+  // Their IDs and onclick handlers are untouched — togglePin()/tapNumericPin()/
+  // quickPrimary()/selectBall()/toggleAltMode() etc. keep working exactly as
+  // before. Sentinel <span> anchors left behind in the original markup mark
+  // exactly where each belongs on exit.
+  if (pinStage) pinAnchor.appendChild(pinStage);
+  if (numPad) pinAnchor.appendChild(numPad);
+  if (qaRow) qaAnchor.appendChild(qaRow);
+  if (ballBar && ballAnchor) ballAnchor.appendChild(ballBar);
+
+  // Hide the standard scorecard while in focus mode.
+  // (sc-grid itself is left intact — frame-cell tap-to-jump still works if
+  // the user exits focus mode, and jumpToPosition() still updates it live.)
+  document.querySelectorAll('.sc-wrap').forEach(el => el.style.display = 'none');
+
+  panel.style.display = 'block';
+  renderFocusModePanel();
+}
+
+function exitFocusMode() {
+  const panel = document.getElementById('focus-mode-panel');
+  const pinStage = document.getElementById('pin-stage');
+  const numPad = document.getElementById('num-pad');
+  const qaRow = document.getElementById('qa-row');
+  const ballBar = document.getElementById('ball-bar');
+  const pinAnchorSentinel = document.getElementById('fm-anchor-pinstage');
+  const numAnchorSentinel = document.getElementById('fm-anchor-numpad');
+  const qaAnchorSentinel = document.getElementById('fm-anchor-qarow');
+  const ballAnchorSentinel = document.getElementById('fm-anchor-ballbar');
+
+  // Restore each relocated element to its exact original position via sentinel anchors
+  if (pinStage && pinAnchorSentinel) pinAnchorSentinel.insertAdjacentElement('afterend', pinStage);
+  if (numPad && numAnchorSentinel) numAnchorSentinel.insertAdjacentElement('afterend', numPad);
+  if (qaRow && qaAnchorSentinel) qaAnchorSentinel.insertAdjacentElement('afterend', qaRow);
+  if (ballBar && ballAnchorSentinel) ballAnchorSentinel.insertAdjacentElement('afterend', ballBar);
+
+  document.querySelectorAll('.sc-wrap').forEach(el => el.style.display = '');
+  if (panel) panel.style.display = 'none';
+  // Re-apply numeric mode display rules now that pin-stage/num-pad are back in normal flow
+  applyNumericModeUI();
+}
+
+function renderFocusModePanel() {
+  const panel = document.getElementById('focus-mode-panel');
+  if (!panel || panel.style.display === 'none') return;
+
+  const frameNumEl = document.getElementById('fm-frame-num');
+  const gameNumEl = document.getElementById('fm-game-num');
+  const scoreEl = document.getElementById('fm-score-val');
+  if (frameNumEl) frameNumEl.textContent = G.frame;
+  if (gameNumEl) gameNumEl.textContent = G.gameNum;
+  // Mirror the already-computed running score rather than re-deriving it
+  const ctxScore = document.getElementById('ctx-score');
+  if (scoreEl) scoreEl.textContent = ctxScore ? ctxScore.textContent : '—';
+
+  // Mini frame-history strip: current-2, current-1, current.
+  // Reuses attBoxHTML() so the X/spare/numeric notation always matches the
+  // main scorecard's rules (incl. F10 special-casing) rather than duplicating them.
+  // Hoisted once — used by both the mini-strip beer dots and the beer-row banner below
+  const series = db.series.find(s => s.SeriesID === G.seriesID);
+  const beerLog = series?.beerLog || [];
+
+  const miniEl = document.getElementById('fm-mini-strip');
+  if (miniEl) {
+    const wantFrames = [G.frame - 2, G.frame - 1, G.frame].filter(n => n >= 1 && n <= 10);
+    miniEl.innerHTML = wantFrames.map(fn => {
+      const fr = getFrame(fn);
+      const isCur = fn === G.frame;
+      const hasBeer = beerLog.some(e => e.game === G.gameNum && e.frame === fn);
+      let attsHTML = '<span class="fm-mini-att empty">—</span>';
+      if (fr) {
+        const atts = frameAttempts(fr.FrameID);
+        const showNoTap = !!(db.games.find(g => g.GameID === G.gameID)?.NoTap);
+        const boxes = atts
+          .filter(a => a.Pinfall !== null)
+          .map(a => {
+            const html = attBoxHTML(a, fr, a.Attempt, atts, showNoTap);
+            // attBoxHTML always returns a single `<div class="att ...">DISP</div>` —
+            // pull the class list and display char straight out of that fixed shape.
+            const m = html.match(/^<div class="att\s*([^"]*)">([^<]*)<\/div>$/);
+            const cls = m ? m[1] : '';
+            const sym = m ? m[2] : String(a.Pinfall);
+            let dotCls = '';
+            if (/\bX\b|\bnt\b/.test(cls)) dotCls = 'X';
+            else if (/\bsp\b/.test(cls)) dotCls = 'sp';
+            return `<span class="fm-mini-att ${dotCls}">${sym}</span>`;
+          });
+        attsHTML = boxes.length ? boxes.join('') : '<span class="fm-mini-att empty">—</span>';
+      }
+      return `<div class="fm-mini-cell${isCur ? ' cur' : ''}" onclick="jumpToFrame(${fn})">
+        <div class="fm-mini-fn">F${fn}${hasBeer ? ' <span class="fm-mini-beer">🍺</span>' : ''}</div>
+        <div class="fm-mini-atts">${attsHTML}</div>
+      </div>`;
+    }).join('');
+  }
+
+  // Alt-mode parity indicator — surfaces which ball slot applies to THIS frame,
+  // resolving the "no clear odd/even indicator" gap from the backlog item.
+  const altPillEl = document.getElementById('fm-alt-pill');
+  if (altPillEl) {
+    if (G.altMode && G.altBall1 && G.altBall2) {
+      const isOdd = G.frame % 2 === 1;
+      altPillEl.style.display = 'inline-flex';
+      altPillEl.className = 'fm-alt-pill ' + (isOdd ? 'ball1' : 'ball2');
+      altPillEl.textContent = isOdd ? '⇄ BALL 1' : '⇄ BALL 2';
+    } else {
+      altPillEl.style.display = 'none';
+    }
+  }
+
+  // Beer frame status for this game/frame, read from series.beerLog (existing source of truth)
+  const beerRowEl = document.getElementById('fm-beer-row');
+  const beerTextEl = document.getElementById('fm-beer-text');
+  const entries = beerLog.filter(e => e.game === G.gameNum && e.frame === G.frame);
+  if (beerRowEl && beerTextEl) {
+    if (entries.length) {
+      const names = [...new Set(entries.map(e => e.bowlerName))].join(', ');
+      beerTextEl.textContent = `🍺 ${names}`;
+      beerRowEl.classList.add('active');
+    } else {
+      beerTextEl.textContent = '🍺 Tap to log beer frame';
+      beerRowEl.classList.remove('active');
+    }
+  }
+
+  // Prev/Next bounds
+  const prevBtn = document.getElementById('fm-prev-btn');
+  const nextBtn = document.getElementById('fm-next-btn');
+  if (prevBtn) prevBtn.disabled = G.frame <= 1;
+  if (nextBtn) nextBtn.disabled = G.frame >= 10;
+}
+
+function focusModePrevFrame() {
+  if (G.frame <= 1) return;
+  jumpToPosition(G.frame - 1, 1);
+}
+
+function focusModeNextFrame() {
+  if (G.frame >= 10) return;
+  jumpToPosition(G.frame + 1, 1);
+}
+
+function focusModeOpenBeer() {
+  // Reuse the existing beer frame modal exactly as the scorecard does
+  openBeerFrameModal(G.frame);
 }
 
 /* Save Starting Board / Target Board from the input fields to the current attempt record */
@@ -8604,6 +8916,13 @@ function updateScoringContext() {
 
   updateNotesIconState();
   loadBoardData(); // refresh SB/TB fields when frame/attempt changes
+
+  // Focus Mode panel has its own frame#/score/mini-strip labels that live
+  // outside this function's DOM targets. Hooking in here (rather than at each
+  // of updateScoringContext's ~10 call sites individually) guarantees every
+  // scoring action — confirm, quick strike/spare/miss, undo, frame jump —
+  // keeps the panel in sync without having to track down every call path.
+  if (getPrefs().focusMode) renderFocusModePanel();
 }
 
 /* =============================================================
@@ -8801,6 +9120,10 @@ function jumpToPosition(frameNum, attNum) {
   updatePinfallDisplay();
   applyNumericModeUI();
   updateScoringContext();
+  // Focus Mode panel has its own frame-number/score/ball labels that don't
+  // live inside updateScoringContext() — must refresh explicitly or Prev/Next
+  // appear broken even though G.frame is actually advancing correctly.
+  if (getPrefs().focusMode) renderFocusModePanel();
 }
 
 /* Load a previously-recorded attempt into the editing state */
@@ -14486,6 +14809,7 @@ function selectBall(id) {
     G.ballID = id;
     G.lastBallAtt2 = id;
     renderBallBar();
+    if (getPrefs().focusMode) renderFocusModePanel();
     return;
   }
   if (G.altMode) {
@@ -14515,6 +14839,7 @@ function selectBall(id) {
     G.ballID = id;
   }
   renderBallBar();
+  if (getPrefs().focusMode) renderFocusModePanel();
   if (document.getElementById('modal-overlay')?.style.display !== 'none') closeModal();
 }
 
@@ -14528,6 +14853,8 @@ function toggleAltMode() {
     toast('Alt mode on — tap Ball 1, then Ball 2');
   }
   renderBallBar();
+  // Keep the Focus Mode parity pill in sync immediately, not just on next render cycle
+  if (getPrefs().focusMode) renderFocusModePanel();
 }
 
 function updateBallIcon(ball) {
@@ -17289,8 +17616,20 @@ function openBeerFrameModal(frameNum) {
 
   openModal(`
     <div class="modal-title">🍺 Beer Frame</div>
-    <div style="font-size:13px;color:var(--t2);text-align:center;margin-bottom:16px">
-      Game ${gameNum} · Frame ${frameNum}
+    <div style="display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:16px">
+      <button onclick="beerModalNavFrame(-1)" ${frameNum<=1?'disabled':''}
+        style="background:var(--bg3);border:1px solid var(--border2);border-radius:8px;
+        width:30px;height:30px;display:flex;align-items:center;justify-content:center;
+        color:var(--t1);font-size:14px;font-weight:800;cursor:pointer;
+        ${frameNum<=1?'opacity:0.3;cursor:default':''}">‹</button>
+      <div style="font-size:13px;color:var(--t2);min-width:110px;text-align:center">
+        Game ${gameNum} · Frame ${frameNum}
+      </div>
+      <button onclick="beerModalNavFrame(1)" ${frameNum>=10?'disabled':''}
+        style="background:var(--bg3);border:1px solid var(--border2);border-radius:8px;
+        width:30px;height:30px;display:flex;align-items:center;justify-content:center;
+        color:var(--t1);font-size:14px;font-weight:800;cursor:pointer;
+        ${frameNum>=10?'opacity:0.3;cursor:default':''}">›</button>
     </div>
     ${tallyHTML}
     <div style="font-size:12px;font-weight:700;color:var(--t3);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px">Who owed?</div>
@@ -17308,6 +17647,18 @@ function openBeerFrameModal(frameNum) {
   `);
 }
 
+
+/* Navigate Prev/Next frame within the beer frame modal — re-opens the modal
+   at the new frame, same pattern as setBeerSeriesWinner()/clearBeerSeriesWinner().
+   Does NOT move G.frame/G.attempt — this is independent of live scoring position,
+   so the modal can browse to log/review a different frame's beer entry without
+   disturbing where the user is actually scoring. */
+function beerModalNavFrame(delta) {
+  const cur = window._beerModalLastFrame || 1;
+  const next = cur + delta;
+  if (next < 1 || next > 10) return;
+  openBeerFrameModal(next);
+}
 
 function beerSelectBowler(el, name) {
   document.querySelectorAll('.beer-bowler-chip').forEach(c=>c.classList.remove('selected'));
@@ -24902,6 +25253,7 @@ var DKM_ROWS = [
   {id:56, form:'SCORING', object:'Game Edit button',      type:'BUTTON', trigger:'tap',   stores:'yes',status:'tbd',priority:2,current:'Opens edit modal to change game metadata',desired:'',notes:'',domHint:'.gr-act-btn.edit'},
   {id:57, form:'SCORING', object:'Game Scorecard toggle', type:'BUTTON', trigger:'tap',   stores:'no', status:'tbd',priority:3,current:'Expands/collapses inline scorecard snapshot below game card',desired:'',notes:'',domHint:'.gr-act-btn.expand'},
   {id:58, form:'SCORING', object:'Start next game row',   type:'CARD',   trigger:'tap',   stores:'yes',status:'tbd',priority:1,current:'Dashed card at bottom — tap to create and start next game',desired:'',notes:'',domHint:'.list-row-dashed,[onclick*="createAndStartGame"]'},
+  {id:119, form:'SCORING', object:'Focus Mode toggle',    type:'BUTTON', trigger:'tap',   stores:'no', status:'done',priority:2,current:'Header icon toggles alternate one-frame-at-a-time view; persists in bowlingdb_prefs',desired:'',notes:'Relocates #pin-stage/#num-pad/#qa-row into #focus-mode-panel rather than duplicating; Prev/Next call jumpToPosition()',domHint:'#hdr-focus-btn,#focus-mode-panel'},
   // ── TEAM BOWL ─────────────────────────────────────────────────────────
   {id:60, form:'TEAMBOWL', object:'Team session card',   type:'CARD',   trigger:'tap',   stores:'no', status:'tbd',priority:2,current:'Opens team bowl session for scoring',desired:'',notes:'',domHint:'.tb-session,.grp-session,.team-session'},
   {id:61, form:'TEAMBOWL', object:'New team session',    type:'BUTTON', trigger:'tap',   stores:'yes',status:'tbd',priority:1,current:'Creates new team bowl session',desired:'',notes:'',domHint:'[onclick*="newGrp"],[onclick*="newTeam"],[onclick*="newSession"]'},
