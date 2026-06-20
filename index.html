@@ -850,8 +850,18 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
   font-size:9px; font-weight:800; color:var(--t3);
   border-bottom:1px solid var(--border1);
   letter-spacing:0.5px;
+  position:relative;
 }
 .sc-frame.cur .sc-fn { color:var(--teal); }
+
+/* ── Frame Locking (Item 1, v30.6) ───────────────────────────── */
+.sc-frame.locked { background:rgba(255,255,255,0.015); }
+.sc-lock {
+  position:absolute; top:1px; right:2px;
+  font-size:7px; line-height:1; opacity:0.65;
+  cursor:pointer; padding:2px;
+}
+.sc-lock:active { opacity:1; }
 
 /* Mini BSK triangle */
 .sc-bsk {
@@ -1019,6 +1029,50 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
    ============================================================ */
 #hdr-focus-btn.active { color:var(--teal); background:rgba(0,217,217,0.12); }
 
+/* ============================================================
+   MOVE FRAMES — select/shift correction tool (Item 2, v30.6)
+   ============================================================ */
+#hdr-move-btn.active { color:var(--gold); background:rgba(255,215,0,0.12); }
+
+.sc-frame.move-mode { cursor:pointer; }
+.sc-frame.move-sel {
+  background:rgba(255,215,0,0.14);
+  outline:1px solid rgba(255,215,0,0.5);
+  outline-offset:-1px;
+}
+.sc-frame.move-sel .sc-fn { color:var(--gold); }
+.fm-mini-cell.move-sel {
+  background:rgba(255,215,0,0.14);
+  border:1px solid rgba(255,215,0,0.5);
+}
+
+.move-frames-bar {
+  margin:8px 10px 0;
+  background:var(--bg2); border:1px solid var(--border2);
+  border-radius:14px; padding:12px 14px;
+  display:flex; flex-direction:column; align-items:center; gap:8px;
+  box-shadow:0 4px 16px rgba(0,0,0,0.3);
+}
+.mfb-label { font-size:12px; font-weight:700; color:var(--gold); letter-spacing:0.3px; }
+.mfb-controls { display:flex; align-items:center; gap:8px; }
+.mfb-btn {
+  background:var(--bg3); border:1px solid var(--border2); color:var(--t1);
+  font-size:12px; font-weight:700; padding:8px 12px; border-radius:10px;
+  cursor:pointer; white-space:nowrap;
+}
+.mfb-btn:active { background:rgba(255,215,0,0.12); }
+.mfb-btn:disabled { opacity:0.35; cursor:default; }
+.mfb-count {
+  background:var(--bg3); border:1px solid var(--border2); color:var(--t1);
+  font-size:13px; font-weight:700; padding:7px 8px; border-radius:8px;
+  text-align:center; min-width:42px;
+}
+.mfb-cancel {
+  background:none; border:none; color:var(--t3);
+  font-size:11px; font-weight:600; padding:2px 6px; cursor:pointer;
+}
+.mfb-cancel:active { color:var(--t2); }
+
 .fm-header {
   display:flex; align-items:center; justify-content:space-between;
   padding:10px 14px 6px; gap:8px;
@@ -1040,6 +1094,7 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
 .fm-mini-cell.cur { background:rgba(0,217,217,0.10); border:1px solid rgba(0,217,217,0.3); }
 .fm-mini-fn { font-size:8px; font-weight:700; color:var(--t3); letter-spacing:0.3px; }
 .fm-mini-beer { font-size:8px; }
+.fm-mini-lock { font-size:8px; opacity:0.7; cursor:pointer; padding:1px; }
 .fm-mini-cell.cur .fm-mini-fn { color:var(--teal); }
 .fm-mini-atts { display:flex; gap:2px; }
 .fm-mini-att {
@@ -2567,6 +2622,11 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
           <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
         </svg>
       </div>
+      <div class="hdr-icon-btn" id="hdr-move-btn" onclick="toggleMoveFramesMode()" title="Move Frames" style="display:none">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="9" width="6" height="6" rx="1"/><rect x="15" y="9" width="6" height="6" rx="1"/><line x1="9" y1="12" x2="14" y2="12"/><polyline points="11.5 9.5 14 12 11.5 14.5"/>
+        </svg>
+      </div>
       <div class="hdr-icon-btn" id="hdr-sync-btn" onclick="openExportModal()" title="Export">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
@@ -2829,6 +2889,12 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
       <div class="sc-wrap">
         <div class="sc-scroll"><div class="sc-grid" id="sc-grid"></div></div>
       </div>
+
+      <!-- Move Frames (Item 2, v30.6) control bar — lives in normal document
+           flow right under the scorecard it operates on, so it can never
+           overlap the qa-row/Strike-Spare-Confirm buttons further down.
+           Populated by renderMoveFramesBar(), cleared by closeMoveFramesBar(). -->
+      <div id="move-frames-bar-anchor"></div>
 
       <!-- Ball bar — scrollable chip strip, smart sort by league/center/global recency -->
       <span id="fm-anchor-ballbar" style="display:none"></span>
@@ -3698,7 +3764,16 @@ const G = {
   // Numeric input mode — bypasses pin-pick UI
   numericMode: false,
   numericPinfall: null, // currently selected count on the numeric pad
+  // Frame Locking (Item 1, v30.6) — frames more than LOCK_BUFFER behind the
+  // live cursor auto-lock against manual re-entry. Set of FrameIDs the user
+  // has manually tapped open again; cleared whenever a new game loads.
+  unlockedFrames: new Set(),
 };
+
+// Frame Locking — frames this many positions behind G.frame stay editable
+// without a lock. 1 means: the current frame and the one immediately before
+// it are always open; anything 2+ frames back auto-locks.
+const LOCK_BUFFER = 1;
 
 /* =============================================================
    NAVIGATION ENGINE
@@ -7414,6 +7489,9 @@ function initScoringState() {
   G.leave = new Set();
   G.pinState = freshPins();
   G.f10scenario = null;
+  G.unlockedFrames = new Set(); // Frame Locking (Item 1) — manual overrides don't carry across games
+  MOVE.active = false; MOVE.selected = new Set(); // Move Frames (Item 2) — select mode doesn't carry across games
+  closeMoveFramesBar();
   cancelUndo();
 
   const frames = gameFrames().sort((a,b)=>a.FrameNumber-b.FrameNumber);
@@ -7782,6 +7860,14 @@ function confirmAttempt() {
     const isReEdit = att.Pinfall !== null;
     const game = db.games.find(g=>g.GameID===G.gameID);
 
+    // Frame Locking (Item 1): block manual re-entry into a locked frame.
+    // Only applies to re-edits of already-committed data — fresh entry
+    // into a never-locked, never-touched attempt is unaffected.
+    if (isReEdit && isFrameLocked(G.frame)) {
+      toast('Frame locked — tap \uD83D\uDD12 to unlock');
+      return;
+    }
+
     if (isReEdit && game?.FinalScore != null) {
       G._pendingEdit = {
         pinfall, frame: G.frame, attempt: G.attempt,
@@ -7884,6 +7970,13 @@ function confirmAttempt() {
 
   const isReEdit = att.Pinfall !== null; // Overwriting existing data
   const game = db.games.find(g=>g.GameID===G.gameID);
+
+  // Frame Locking (Item 1): block manual re-entry into a locked frame.
+  // Only applies to re-edits of already-committed data.
+  if (isReEdit && isFrameLocked(G.frame)) {
+    toast('Frame locked — tap \uD83D\uDD12 to unlock');
+    return;
+  }
 
   // If this is a completed game (FinalScore set), require confirmation before
   // overwriting any frame data. Store pending state and show modal.
@@ -8571,6 +8664,16 @@ function renderScoringScreen() {
     focusBtn.style.display = 'flex';
     focusBtn.classList.toggle('active', !!getPrefs().focusMode);
   }
+  // Move Frames icon also only shows on scoring screen (Item 2, v30.6)
+  const moveBtn = document.getElementById('hdr-move-btn');
+  if (moveBtn) {
+    moveBtn.style.display = 'flex';
+    moveBtn.classList.toggle('active', MOVE.active);
+  }
+  // Idempotent — keeps the control bar in sync with MOVE state on every
+  // render (mirrors the Focus Mode self-correction pattern just below),
+  // not just immediately after a tap.
+  renderMoveFramesBar();
   // Focus Mode: ensure DOM state matches the saved preference every render.
   // Idempotent — checks actual DOM location rather than assuming prior state,
   // so it self-corrects whether arriving fresh, via back-navigation, or reload.
@@ -8680,6 +8783,8 @@ function renderFocusModePanel() {
       const fr = getFrame(fn);
       const isCur = fn === G.frame;
       const hasBeer = beerLog.some(e => e.game === G.gameNum && e.frame === fn);
+      const isLocked = isFrameLocked(fn);
+      const isMoveSelected = MOVE.active && MOVE.selected.has(fn);
       let attsHTML = '<span class="fm-mini-att empty">—</span>';
       if (fr) {
         const atts = frameAttempts(fr.FrameID);
@@ -8700,8 +8805,8 @@ function renderFocusModePanel() {
           });
         attsHTML = boxes.length ? boxes.join('') : '<span class="fm-mini-att empty">—</span>';
       }
-      return `<div class="fm-mini-cell${isCur ? ' cur' : ''}" onclick="jumpToFrame(${fn})">
-        <div class="fm-mini-fn">F${fn}${hasBeer ? ' <span class="fm-mini-beer">🍺</span>' : ''}</div>
+      return `<div class="fm-mini-cell${isCur ? ' cur' : ''}${isLocked ? ' locked' : ''}${isMoveSelected ? ' move-sel' : ''}" onclick="jumpToFrame(${fn})">
+        <div class="fm-mini-fn">F${fn}${hasBeer ? ' <span class="fm-mini-beer">🍺</span>' : ''}${isLocked ? ` <span class="fm-mini-lock" onclick="event.stopPropagation();toggleFrameLock(${fn})" title="Frame locked — tap to unlock">\uD83D\uDD12</span>` : ''}</div>
         <div class="fm-mini-atts">${attsHTML}</div>
       </div>`;
     }).join('');
@@ -9064,8 +9169,12 @@ function navNextAttempt() {
   jumpToPosition(next.frame, next.att);
 }
 
-/* Jump to a specific frame (tap on scorecard) — defaults to attempt 1 */
+/* Jump to a specific frame (tap on scorecard) — defaults to attempt 1.
+   Single canonical onclick target for every frame cell (main scorecard +
+   Focus Mode mini-strip), so Move Frames select-mode (Item 2) intercepts
+   taps here rather than needing its own onclick wired into every cell. */
 function jumpToFrame(frameNum) {
+  if (MOVE.active) { moveFramesTapCell(frameNum); return; }
   if (frameNum === G.frame && G.attempt === 1) return; // Already there
   cancelUndo();
   jumpToPosition(frameNum, 1);
@@ -9444,9 +9553,11 @@ function renderScorecard(containerId, isComplete) {
     const atts = frameAttempts(fr.FrameID);
     const isF10 = fr.FrameNumber === 10;
     const isCur = !isComplete && G.frame === fr.FrameNumber;
+    const isLocked = !isComplete && isFrameLocked(fr.FrameNumber);
+    const isMoveSelected = !isComplete && MOVE.active && MOVE.selected.has(fr.FrameNumber);
 
-    html += `<div class="sc-frame${isCur?' cur':''}"${!isComplete ? ` onclick="jumpToFrame(${fr.FrameNumber})"` : ''}>`;
-    html += `<div class="sc-fn">${fr.FrameNumber}</div>`;
+    html += `<div class="sc-frame${isCur?' cur':''}${isLocked?' locked':''}${isMoveSelected?' move-sel':''}${!isComplete && MOVE.active?' move-mode':''}"${!isComplete ? ` onclick="jumpToFrame(${fr.FrameNumber})"` : ''}>`;
+    html += `<div class="sc-fn">${fr.FrameNumber}${isLocked ? `<span class="sc-lock" onclick="event.stopPropagation();toggleFrameLock(${fr.FrameNumber})" title="Frame locked — tap to unlock">\uD83D\uDD12</span>` : ''}</div>`;
 
     // ── BSK visual ─────────────────────────────────────────────
     if (isF10) {
@@ -17810,6 +17921,345 @@ function beerRevalidateWinner(series) {
 function gameFrames() { return db.frames.filter(f=>f.GameID===G.gameID); }
 function getFrame(fn) { return db.frames.find(f=>f.GameID===G.gameID && f.FrameNumber===fn); }
 function frameAttempts(fid) { return db.attempts.filter(a=>a.FrameID===fid).sort((a,b)=>a.Attempt-b.Attempt); }
+
+/* =============================================================
+   FRAME LOCKING (Item 1, v30.6)
+   ─────────────────────────────────────────────────────────────
+   Mid-game soft-lock: any frame more than LOCK_BUFFER positions
+   behind the live cursor (G.frame) is locked against manual
+   re-entry through pin-entry/numeric UI. This is purely a status
+   display + tap-to-toggle — no confirm modal, no IndexedDB field.
+   Lock state is DERIVED from cursor position each render; the only
+   persisted bit is the manual-unlock override in G.unlockedFrames,
+   which is session-scoped (cleared on game load, not saved to IDB).
+
+   This is independent of and layered on top of the EXISTING
+   "Overwrite Completed Game?" gold-modal guard in confirmAttempt(),
+   which still owns the completed-game (game.FinalScore != null) case.
+   Frame Locking only governs the mid-game, already-committed-but-
+   game-not-finished window that guard doesn't cover.
+   ============================================================= */
+
+/* True if frameNum is currently locked. Frame 10 and the live cursor
+   frame are never locked (you can't be "behind" yourself). Respects
+   a manual override if the user has tapped the lock open. */
+function isFrameLocked(frameNum) {
+  if (frameNum == null) return false;
+  if (frameNum >= G.frame) return false; // current/future frame — never locked
+  const fr = getFrame(frameNum);
+  if (!fr) return false;
+  if (G.unlockedFrames.has(fr.FrameID)) return false; // manual override
+  return (G.frame - frameNum) > LOCK_BUFFER;
+}
+
+/* Toggle the manual unlock override for a frame. Locking a frame back up
+   (tapping an unlocked-by-override frame again) just removes the override,
+   letting it fall back to the normal auto-derived state. */
+function toggleFrameLock(frameNum) {
+  const fr = getFrame(frameNum);
+  if (!fr) return;
+  if (G.unlockedFrames.has(fr.FrameID)) {
+    G.unlockedFrames.delete(fr.FrameID);
+  } else {
+    G.unlockedFrames.add(fr.FrameID);
+  }
+  renderScorecard('sc-grid', false);
+  if (getPrefs().focusMode) renderFocusModePanel();
+  haptic('light');
+}
+
+/* Find the actual "current" position — the last recorded attempt, or the
+   live cursor itself if nothing's been recorded yet. This is the target
+   for the standing "Jump to Current Frame" control (used after a Move
+   Frames operation, or any time the cursor has wandered via review/edit). */
+function findCurrentFrameAttempt() {
+  const allPositions = getAllAttemptPositions();
+  let last = { frame: 1, att: 1 };
+  for (const pos of allPositions) {
+    const fr = getFrame(pos.frame);
+    if (!fr) continue;
+    const att = frameAttempts(fr.FrameID).find(a=>a.Attempt===pos.att);
+    if (att && att.Pinfall !== null) last = pos;
+  }
+  return last;
+}
+
+/* Jump the cursor to the actual current (last-scored) frame/attempt.
+   General-purpose — not specific to Move Frames, usable any time the
+   cursor has wandered away from live scoring. */
+function jumpToCurrentFrame() {
+  const target = findCurrentFrameAttempt();
+  cancelUndo();
+  jumpToPosition(target.frame, target.att);
+  haptic('light');
+}
+
+/* =============================================================
+   MOVE FRAMES (Item 2, v30.6)
+   ─────────────────────────────────────────────────────────────
+   Mid-game-only correction tool. Select a contiguous range of
+   frames, shift their full data (pinfall, leave, ball selection —
+   everything) left or right by N frames. This is a FIELD-LEVEL
+   overwrite across frame boundaries, not an IndexedDB delete/
+   recreate — frame/attempt rows already exist from series seeding,
+   so we never touch the attempts→frames→games→series delete
+   ordering invariant; we only rewrite field contents.
+
+   Locking (Item 1) is silently ignored by this operation — shifting
+   is a structural move, not manual re-entry, so it overwrites
+   locked frames on either end without prompting.
+
+   Hard stop at Frame 10 in both directions: the operation refuses
+   to run (not a partial shift) if the requested shift would push
+   any selected frame's data past frame 10 or before frame 1.
+
+   After a successful shift, the cursor parks at attempt 1 of the
+   first vacated frame — i.e. where correction continues — per
+   product decision. The separate jumpToCurrentFrame() control
+   (above) is how the user gets back to live scoring afterward.
+   ============================================================= */
+let MOVE = {
+  active: false,           // select-mode is on
+  selected: new Set(),     // selected FrameNumbers (contiguous, enforced on tap)
+};
+
+function toggleMoveFramesMode() {
+  MOVE.active = !MOVE.active;
+  MOVE.selected = new Set();
+  if (!MOVE.active) closeMoveFramesBar();
+  renderScorecard('sc-grid', false);
+  if (getPrefs().focusMode) renderFocusModePanel();
+  const btn = document.getElementById('hdr-move-btn');
+  if (btn) btn.classList.toggle('active', MOVE.active);
+
+  // Focus Mode normally hides .sc-wrap (enterFocusMode) and shows only the
+  // abbreviated current-2/-1/current mini-strip — too narrow a window to
+  // select an arbitrary contiguous frame range. While Move Frames select
+  // mode is active, force the full scorecard visible regardless of Focus
+  // Mode state; restore Focus Mode's hidden-scorecard state on exit.
+  if (getPrefs().focusMode) {
+    document.querySelectorAll('.sc-wrap').forEach(el => {
+      el.style.display = MOVE.active ? '' : 'none';
+    });
+  }
+
+  if (MOVE.active) {
+    toast(getPrefs().focusMode
+      ? 'Select frames on the scorecard below, then choose a direction'
+      : 'Select frames to move, then choose a direction');
+  }
+}
+
+/* Tap a frame cell while in select mode. Enforces a contiguous range:
+   tapping a frame adjacent to (or inside) the current selection grows/
+   shrinks it; tapping a non-adjacent frame starts a new selection. */
+function moveFramesTapCell(frameNum) {
+  if (!MOVE.active) return;
+  if (frameNum < 1 || frameNum > 10) return;
+
+  if (MOVE.selected.size === 0) {
+    MOVE.selected.add(frameNum);
+  } else {
+    const min = Math.min(...MOVE.selected);
+    const max = Math.max(...MOVE.selected);
+    if (MOVE.selected.has(frameNum)) {
+      // Tapping an already-selected edge frame trims the range from that end
+      if (frameNum === min) MOVE.selected.delete(min);
+      else if (frameNum === max) MOVE.selected.delete(max);
+      else { MOVE.selected = new Set([frameNum]); } // mid-range tap — restart
+    } else if (frameNum === min - 1 || frameNum === max + 1) {
+      MOVE.selected.add(frameNum); // extends the contiguous range
+    } else {
+      MOVE.selected = new Set([frameNum]); // non-adjacent — restart selection
+    }
+  }
+  renderScorecard('sc-grid', false);
+  if (getPrefs().focusMode) renderFocusModePanel();
+  renderMoveFramesBar();
+  haptic('light');
+}
+
+function renderMoveFramesBar() {
+  const anchor = document.getElementById('move-frames-bar-anchor');
+  if (!anchor) return;
+
+  if (!MOVE.active || MOVE.selected.size === 0) {
+    anchor.innerHTML = '';
+    return;
+  }
+  const min = Math.min(...MOVE.selected);
+  const max = Math.max(...MOVE.selected);
+  const rangeLabel = min === max ? `Frame ${min}` : `Frames ${min}–${max}`;
+  const maxRight = 10 - max;       // how far right this range can shift before hitting F10
+  const maxLeft = min - 1;         // how far left this range can shift before hitting F1
+
+  anchor.innerHTML = `
+    <div class="move-frames-bar">
+      <div class="mfb-label">${rangeLabel} selected</div>
+      <div class="mfb-controls">
+        <button class="mfb-btn" ${maxLeft<1?'disabled':''} onclick="runMoveFrames(-1)">&larr; Shift Left</button>
+        <select id="mfb-count" class="mfb-count">
+          ${Array.from({length: Math.max(maxLeft, maxRight, 1)}, (_,i)=>i+1)
+            .map(n => `<option value="${n}">${n}</option>`).join('')}
+        </select>
+        <button class="mfb-btn" ${maxRight<1?'disabled':''} onclick="runMoveFrames(1)">Shift Right &rarr;</button>
+      </div>
+      <button class="mfb-cancel" onclick="toggleMoveFramesMode()">Cancel</button>
+    </div>
+  `;
+}
+
+function closeMoveFramesBar() {
+  const anchor = document.getElementById('move-frames-bar-anchor');
+  if (anchor) anchor.innerHTML = '';
+}
+
+/* Copy every recorded field from one attempt record onto another.
+   Mirrors the field list clearDownstreamAttempts() resets — pinfall,
+   leave, ball, BSK, notes, board data — i.e. "ALL recorded data for
+   a given attempt", per product decision. */
+function copyAttemptFields(src, dest) {
+  dest.Pinfall = src.Pinfall;
+  dest.LeaveID = src.LeaveID;
+  dest.BallID = src.BallID;
+  dest.BSK_Progressive = src.BSK_Progressive;
+  dest.AttemptNotes = src.AttemptNotes;
+  dest.StartingBoard = src.StartingBoard;
+  dest.TargetBoard = src.TargetBoard;
+  dest.NumericEntry = src.NumericEntry;
+  for (let p=1;p<=10;p++) {
+    dest[`Pin${p}`] = src[`Pin${p}`];
+    dest[`PinStart${p}`] = src[`PinStart${p}`];
+    dest[`PinDelta${p}`] = src[`PinDelta${p}`];
+  }
+}
+
+/* Reset an attempt record back to its blank/seeded state (phase-1,
+   per Item 1's data model) — used to vacate frames after a shift. */
+function blankOutAttempt(att) {
+  att.Pinfall = null;
+  att.LeaveID = null;
+  att.BallID = null;
+  att.BSK_Progressive = null;
+  att.AttemptNotes = '';
+  att.StartingBoard = null;
+  att.TargetBoard = null;
+  att.NumericEntry = false;
+  for (let p=1;p<=10;p++) {
+    att[`Pin${p}`] = null;
+    att[`PinStart${p}`] = null;
+    att[`PinDelta${p}`] = null;
+  }
+}
+
+/* Execute the shift. dir: -1 = left, +1 = right. Count comes from the
+   #mfb-count select (defaults to 1 — the common "missed one frame" case). */
+function runMoveFrames(dir) {
+  if (MOVE.selected.size === 0) return;
+  const countEl = document.getElementById('mfb-count');
+  const n = countEl ? parseInt(countEl.value, 10) || 1 : 1;
+  const min = Math.min(...MOVE.selected);
+  const max = Math.max(...MOVE.selected);
+  const shift = dir * n;
+  const newMin = min + shift, newMax = max + shift;
+
+  // Hard stop at Frame 10 (and Frame 1) — block entirely, no partial shift.
+  if (newMin < 1 || newMax > 10) {
+    toast(dir > 0 ? "Can't shift — would push data past Frame 10" : "Can't shift — would push data before Frame 1");
+    return;
+  }
+
+  // Frame 10 has 3 attempts (bonus ball); frames 1-9 only have 2. Shifting
+  // Frame 10 LEFT into a 1-9 slot would silently drop its 3rd attempt, which
+  // is a real scoring decision (the bonus ball), not something to discard
+  // quietly. Block it explicitly rather than let copyAttemptFields() skip it.
+  if (dir < 0 && max === 10) {
+    const f10 = getFrame(10);
+    const f10Att3 = f10 ? frameAttempts(f10.FrameID).find(a => a.Attempt === 3) : null;
+    if (f10Att3 && f10Att3.Pinfall !== null) {
+      toast("Can't shift Frame 10 left — its 3rd ball has data and frames 1-9 only hold 2 attempts");
+      return;
+    }
+  }
+
+  // Snapshot source frames' attempt data BEFORE writing anything, since
+  // source and target ranges can overlap once the shift count is small.
+  const sourceFrames = [];
+  for (let fn = min; fn <= max; fn++) {
+    const fr = getFrame(fn);
+    if (!fr) { toast(`Error: frame ${fn} not found`); return; }
+    sourceFrames.push({ frameNum: fn, atts: frameAttempts(fr.FrameID).map(a => ({...a})) });
+  }
+
+  G.undoSnapshot = JSON.stringify({
+    db: JSON.parse(JSON.stringify(db)),
+    G_frame: G.frame, G_attempt: G.attempt,
+    G_pinState: {...G.pinState}, G_knocked: [...G.knocked], G_leave: [...G.leave]
+  });
+
+  // Write source data into target frames.
+  sourceFrames.forEach(sf => {
+    const targetFn = sf.frameNum + shift;
+    const targetFr = getFrame(targetFn);
+    if (!targetFr) return;
+    const targetAtts = frameAttempts(targetFr.FrameID);
+    sf.atts.forEach(srcAtt => {
+      const destAtt = targetAtts.find(a => a.Attempt === srcAtt.Attempt);
+      if (destAtt) copyAttemptFields(srcAtt, destAtt);
+    });
+    updateFrameFlags(targetFr);
+  });
+
+  // Vacate the frames the data moved FROM, unless they're also a target
+  // (i.e. the shift is smaller than the selection width and ranges overlap).
+  const targetRangeMin = min + shift, targetRangeMax = max + shift;
+  sourceFrames.forEach(sf => {
+    const isAlsoTarget = sf.frameNum >= targetRangeMin && sf.frameNum <= targetRangeMax;
+    if (isAlsoTarget) return;
+    const fr = getFrame(sf.frameNum);
+    if (!fr) return;
+    frameAttempts(fr.FrameID).forEach(a => blankOutAttempt(a));
+    fr.Strike = false;
+    fr.Spare = false;
+  });
+
+  // Clear FinalScore — a mid-game shift means the game (if it had somehow
+  // been marked complete) needs its score recalculated from scratch.
+  const game = db.games.find(g => g.GameID === G.gameID);
+  if (game) game.FinalScore = null;
+
+  calculateScores();
+  saveAll();
+
+  // Exit select mode, then park the cursor at the first vacated frame —
+  // attempt 1 — per product decision, regardless of which direction we shifted.
+  // Right shift vacates the LOW end of the original range [min..min+n-1];
+  // left shift vacates the HIGH end [max-n+1..max]. Land on the lowest-
+  // numbered vacated frame in either case.
+  let landingFrame;
+  if (dir > 0) {
+    landingFrame = min; // frames [min .. min+n-1] are vacated (the low end)
+  } else {
+    landingFrame = Math.max(max - n + 1, 1); // frames [max-n+1 .. max] are vacated (the high end)
+  }
+
+  MOVE.active = false;
+  MOVE.selected = new Set();
+  closeMoveFramesBar();
+  const btn = document.getElementById('hdr-move-btn');
+  if (btn) btn.classList.remove('active');
+
+  // Re-hide the full scorecard if Focus Mode was active before this move
+  // started — same restore the cancel path (toggleMoveFramesMode) performs.
+  if (getPrefs().focusMode) {
+    document.querySelectorAll('.sc-wrap').forEach(el => { el.style.display = 'none'; });
+  }
+
+  cancelUndo();
+  jumpToPosition(landingFrame, 1);
+  toast(`Moved ${max-min+1===1?'frame':'frames'} ${dir>0?'right':'left'} by ${n}`);
+  haptic('success');
+}
 
 /* =============================================================
    INIT
