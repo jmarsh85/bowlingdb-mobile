@@ -2954,6 +2954,18 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
       </div>
       <span class="bnav-label">Balls</span>
     </div>
+    <div class="bnav-item" data-sc="s-ai-chat" onclick="navTo('s-ai-chat')">
+      <div class="bnav-icon-wrap">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs><linearGradient id="bn-ai" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#00D9D9"/><stop offset="100%" stop-color="#9D4EDD"/></linearGradient></defs>
+          <rect x="3" y="5" width="18" height="12" rx="3" stroke="url(#bn-ai)" stroke-width="2"/>
+          <path d="M8 21l3-4h2l3 4" stroke="url(#bn-ai)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="9" cy="11" r="1.3" fill="url(#bn-ai)"/>
+          <circle cx="15" cy="11" r="1.3" fill="url(#bn-ai)"/>
+        </svg>
+      </div>
+      <span class="bnav-label">AI</span>
+    </div>
   </div>
 
   <!-- Toast -->
@@ -3662,7 +3674,7 @@ function navBack() {
 /* =============================================================
    HOME SCREEN — NAV TILE DATA + TAP-TO-SWAP REARRANGE
    ============================================================= */
-const NAV_TILES_DEFAULT = ['leagues','tb','open','balls','settings','export','notap','stats','tournament','aichat'];
+const NAV_TILES_DEFAULT = ['leagues','tb','open','balls','settings','export','notap','stats','tournament'];
 
 const NAV_TILE_DEFS = {
   leagues: {
@@ -3737,18 +3749,6 @@ const NAV_TILE_DEFS = {
       <defs><linearGradient id="g-nt" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#9D4EDD"/><stop offset="100%" stop-color="#00D9D9"/></linearGradient></defs>
       <circle cx="12" cy="12" r="9" stroke="url(#g-nt)" stroke-width="2"/>
       <text x="12" y="16.5" text-anchor="middle" font-size="11" font-weight="900" fill="url(#g-nt)">&#x2726;</text>
-    </svg>`
-  },
-  aichat: {
-    label: 'AI Chat',
-    action: () => navTo('s-ai-chat'),
-    bg: 'linear-gradient(135deg,rgba(0,217,217,0.26),rgba(157,78,221,0.28))',
-    svg: `<svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <defs><linearGradient id="g-ac" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#00D9D9"/><stop offset="100%" stop-color="#9D4EDD"/></linearGradient></defs>
-      <rect x="3" y="5" width="18" height="12" rx="3" stroke="url(#g-ac)" stroke-width="2"/>
-      <path d="M8 21l3-4h2l3 4" stroke="url(#g-ac)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      <circle cx="9" cy="11" r="1.3" fill="url(#g-ac)"/>
-      <circle cx="15" cy="11" r="1.3" fill="url(#g-ac)"/>
     </svg>`
   },
   stats: {
@@ -23529,17 +23529,51 @@ function clearAIChat() {
    from DevKit and from the AI chat tile (same underlying function).
    ════════════════════════════════════════════════════════════════ */
 function _buildDevHandoffFacts() {
-  const openItems = (DKM_ROWS || []).filter(r => r.status && r.status !== 'tbd' && r.status !== 'done');
-  const backlogLines = openItems.map(r =>
-    `- [${r.form}] ${r.object}: status=${r.status}, priority=${r.priority}${r.desired ? `, desired="${r.desired}"` : ''}`
-  ).join('\n') || '(none currently flagged in DKM_ROWS)';
+  // Real, live backlog — from the on-device DevKit log and interaction-map
+  // edits (localStorage), NOT the static DKM_ROWS array baked into the
+  // source. DKM_ROWS is just default reference documentation; it isn't
+  // where actually-logged bugs/requests live, so reading it alone produced
+  // a handoff that said "no open items" even when the device had several.
+  let logEntries = [], mapEdits = [];
+  try { logEntries = JSON.parse(localStorage.getItem(DK_KEY) || '[]'); } catch(e) {}
+  try { mapEdits = JSON.parse(localStorage.getItem(DKM_MAP_KEY) || '[]'); } catch(e) {}
+
+  const openLogItems = logEntries.filter(e => e.status === 'open');
+  const openMapEdits = mapEdits.filter(e => e.desired && e.desired.trim() && e.status !== 'done');
+
+  const logLines = openLogItems.map(e =>
+    `- [${e.screen || '?'}] ${e.msg || '(no description captured)'}${e.ref ? ` (${e.ref})` : ''}`
+  ).join('\n') || '(none logged on this device)';
+
+  const mapLines = openMapEdits.map(e =>
+    `- [${e.form}] ${e.object}: ${e.desired}${e.priority ? ` (priority ${e.priority})` : ''}`
+  ).join('\n') || '(none logged on this device)';
+
+  // Recently-completed work — gives a fresh session context on what was
+  // just built (and why) instead of only what's still broken, so it
+  // doesn't have to rediscover recent architecture by reading 25k lines.
+  const doneItems = (DKM_ROWS || []).filter(r => r.status === 'done');
+  const doneLines = doneItems.map(r => `- [${r.form}] ${r.object}: ${r.current}`).join('\n')
+    || '(none flagged in DKM_ROWS)';
+
+  const versionBadge = document.getElementById('hdr-build-ref')?.textContent?.trim() || 'unknown';
+  const today = (typeof azToday === 'function') ? azToday() : new Date().toISOString().split('T')[0];
 
   return `APP: BowlingDB PWA (personal bowling stats + scoring PWA, single-file HTML/CSS/JS, iPhone Safari standalone)
-VERSION: see in-app build badge
-ARCHITECTURE: IndexedDB for scoring data (Series/Games/Frames/Attempts), localStorage for reference/session state. Data pipeline xlsx_to_pwa_json.py exports from a legacy Access database.
+VERSION: ${versionBadge} (handoff generated ${today})
+DEPLOYMENT: GitHub Pages, repo jmarsh85/bowlingdb-mobile (ball images on the 'balls' branch). No service worker — Settings > App Update > "Reload Latest Version" force-refreshes via cache-busted reload.
+ARCHITECTURE: IndexedDB for scoring data (Series→Games→Frames→Attempts), localStorage for reference/session state. Data pipeline xlsx_to_pwa_json.py exports from a legacy Access database to JSON for import.
+DEV WORKFLOW: After every JS edit, extract the <script> block and run node --check (substitute non-ASCII chars with ? first). One pre-existing false positive to ignore: a regex using a unicode star character throws "Nothing to repeat" — known, harmless, unrelated to real edits. For editing JS template-literal blocks, use Python content.replace(old, new, 1) — naive find/replace tools are unreliable on this file's escaping.
+SELF-DOCUMENTATION: In-app dev tool (DevKit) — triple-tap the BowlingDB wordmark, gated behind Settings > Developer Tools. DKM_ROWS (in source) is the default interaction-map reference; the LIVE, user-edited backlog lives in localStorage and is what's reflected below. Keep DKM_ROWS in sync when adding/changing UI elements.
 
-KNOWN OPEN ITEMS (from in-app DevKit log):
-${backlogLines}
+RECENTLY COMPLETED (context, not action items):
+${doneLines}
+
+OPEN BUGS (on-device DevKit log):
+${logLines}
+
+OPEN FEATURE/UI REQUESTS (on-device interaction-map edits):
+${mapLines}
 
 MANDATORY INVARIANTS:
 - Math.floor always for avg/handicap calculations, never Math.round
@@ -23551,7 +23585,13 @@ MANDATORY INVARIANTS:
 - isGameClean() for clean-game checks, never check F10.IsStrike directly
 - Delete sequence: attempts → frames → games → series
 - Always traverse full League→Series→Games→Frames→Attempts relationship chain
-- node --check after every change; Python content.replace(old,new,1) for JS template literal edits`;
+- node --check after every change; Python content.replace(old,new,1) for JS template literal edits
+
+AI INTEGRATION:
+- Anthropic API called directly from the browser, no backend proxy; key in localStorage as bowlingdb_ai_key
+- Two configurable model tiers in Settings > AI Integration: Fast (ball info, debrief, DevKit tools) and Deep (AI Chat, diagnostics) via getAIModelFast()/getAIModelDeep() — never hardcode a model string
+- AI Chat (s-ai-chat) uses Anthropic tool-use, not context-stuffing: AI_TOOLS catalog (get_stats_summary, get_spare_conversion, find_series, find_game, get_game_frames, list_leagues, list_balls) — the model fetches exact numbers from the app's own functions, never calculates anything itself
+- {{type:id}} markup (game/series/league/ball) in AI replies renders as a tappable reference chip that navigates to the real screen/edit modal — preserve this convention in any AI-facing feature work`;
 }
 
 async function generateDevHandoff() {
@@ -24891,7 +24931,7 @@ var DKM_ROWS = [
   {id:105,form:'MODALS', object:'Handicap config modal', type:'MODAL',  trigger:'tap',   stores:'yes',status:'tbd',priority:2,current:'Per-league handicap setup: base score, pct, entry avg',desired:'',notes:'Per-series snapshot model',domHint:'[onclick*="handicapConfig"],[onclick*="openHandicap"]'},
   {id:106,form:'MODALS', object:'AI debrief modal',      type:'MODAL',  trigger:'auto',  stores:'no', status:'tbd',priority:2,current:'Post-series AI analysis via buildSeriesDebriefContext()',desired:'',notes:'stream:false required for iOS Safari PWA',domHint:'[onclick*="debrief"],[onclick*="Debrief"],.debrief-modal'},
   // ── AI DIALOG (added Jun 18 session) ────────────────────────────────────
-  {id:110,form:'HOME', object:'AI Chat tile',            type:'TILE',   trigger:'tap',   stores:'no', status:'done',priority:2,current:'Navigates to s-ai-chat screen',desired:'',notes:'Added to NAV_TILE_DEFS as aichat',domHint:'.home-tile[onclick*="s-ai-chat"]'},
+  {id:110,form:'HOME', object:'AI Chat bottom nav item', type:'NAV',    trigger:'tap',   stores:'no', status:'done',priority:2,current:'5th bottom-nav item (after Balls), navTo s-ai-chat. Moved here from a Home tile for faster access',desired:'',notes:'Removed from NAV_TILE_DEFS/NAV_TILES_DEFAULT entirely — no longer selectable as a Home tile',domHint:'.bnav-item[data-sc="s-ai-chat"]'},
   {id:111,form:'AICHAT', object:'AI chat send',          type:'BUTTON', trigger:'tap',   stores:'yes',status:'done',priority:2,current:'sendAIChatMessage() — Sonnet model, stream:false, running history in localStorage',desired:'',notes:'Uses shared bowlingdb_ai_key',domHint:'#ai-chat-send-btn'},
   {id:112,form:'AICHAT', object:'AI reference chip',     type:'CARD',   trigger:'tap',   stores:'no', status:'done',priority:2,current:'aiRefNav() — {{type:id}} markup renders as tappable chip, navigates to real screen/edit modal, edits feed back as system note on return',desired:'',notes:'Supports game/series/league/ball types',domHint:'[onclick*="aiRefNav"]'},
   {id:113,form:'AICHAT', object:'Dev Handoff generator', type:'BUTTON', trigger:'tap',   stores:'no', status:'done',priority:2,current:'generateDevHandoff() — template assembles DKM_ROWS/invariants, AI polishes to prose, modal with Copy + Download .md',desired:'',notes:'Two entry points: DevKit Data tab and AI Chat header button',domHint:'[onclick*="generateDevHandoff"]'},
@@ -24899,6 +24939,7 @@ var DKM_ROWS = [
   {id:115,form:'AICHAT', object:'AI tool-use architecture', type:'NOTE',  trigger:'auto',  stores:'no', status:'done',priority:2,current:'sendAIChatMessage() now runs a tool-use loop (Anthropic tools param) instead of dumping stats into every prompt. AI_TOOLS catalog: get_stats_summary, get_spare_conversion, find_series, find_game, get_game_frames, list_leagues, list_balls. find_series/find_game resolve natural language to IDs so the user never sees a database key. All tools wrap existing canonical functions (getCanonicalLast10WksGames, getAllTimeLeagueGames, buildAISpareConversionSummary, frameAttempts) so numbers can never disagree with Stats',desired:'',notes:'Replaced the regex-based _aiChatBuildDeepDive ID-detection hack entirely; tool loop capped at 5 rounds',domHint:''},
   {id:116,form:'MODALS', object:'Force-reload app',      type:'BUTTON', trigger:'tap',   stores:'no', status:'done',priority:2,current:'forceReloadApp() — cache-busted location reload to fetch latest GitHub Pages deployment without quitting the app',desired:'',notes:'No service worker registered; relies on query-string cache-busting',domHint:'[onclick*="forceReloadApp"]'},
   {id:117,form:'AICHAT', object:'Copy conversation/message', type:'BUTTON', trigger:'tap', stores:'no', status:'done',priority:2,current:'copyAIChatFull() in header copies the whole thread; copyAIChatMessage(i) under each assistant bubble copies that one reply. Both resolve {{type:id}} markup to plain readable text via _aiChatPlainText() before copying',desired:'',notes:'',domHint:'[onclick*="copyAIChatFull"],[onclick*="copyAIChatMessage"]'},
+  {id:118,form:'AICHAT', object:'Dev Handoff data source', type:'NOTE',  trigger:'auto', stores:'no', status:'done',priority:1,current:'_buildDevHandoffFacts() now reads the real on-device backlog (DK_KEY devlog + DKM_MAP_KEY interaction-map edits in localStorage) instead of the static DKM_ROWS reference array, which was producing "no open items" even when real bugs were logged. Also pulls real version badge text, adds a Recently Completed section (DKM_ROWS rows marked done), deployment info, dev workflow notes, and AI architecture notes',desired:'',notes:'DKM_ROWS remains the default interaction-map reference for DevKit itself — only the handoff generator changed which source it reads',domHint:''},
 ];
 
 /* ── DKM Storage ─────────────────────────────────────────── */
