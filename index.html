@@ -49,8 +49,8 @@
   --pin-base:    #0D1018;
   --pin-stand:   #ECF0FA;
   --pin-knock:   #00D9D9;
-  --pin-border-base:  rgba(255,255,255,0.08);
-  --pin-border-stand: #6A768F;
+  --pin-border-base:  rgba(255,255,255,0.22);
+  --pin-border-stand: #9AAAC8;
   --pin-border-knock: #00A0A0;
 
   /* ── Home card customization ────────────────────────────────── */
@@ -1517,11 +1517,11 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
   position:fixed; inset:0;
   background:rgba(0,0,0,0.75);
   z-index:100;
-  display:flex; align-items:flex-end;
+  display:none; align-items:flex-end;
   opacity:0; pointer-events:none;
   transition:opacity 0.25s;
 }
-.modal-bg.open { opacity:1; pointer-events:auto; }
+.modal-bg.open { display:flex; opacity:1; pointer-events:auto; }
 .modal-sheet {
   width:100%; max-height:88vh;
   background:var(--bg1);
@@ -11985,6 +11985,7 @@ function renderGamesList() {
     .filter(g => {
       if (g.FinalScore == null || g.FinalScore <= 0) return false;
       if (g.IsTeammate) return false; // teammate records, not personal scoring
+      if (g.NoTap) return false; // NoTap tracked separately, excluded from global stats
       if (_glOpenIDs.has(g.SeriesID)) return false; // active open bowl session
       // Exclude orphaned games (SeriesID has no matching league series)
       const hasSeries = db.series.some(s => s.SeriesID === g.SeriesID);
@@ -16648,17 +16649,103 @@ function runDataIntegrityScan() {
     });
   }
 
+  // ── Avg discrepancy audit ──────────────────────────────────────────────
+  // Compute canonical 10wk pool and All Games pool, diff them, categorise why
+  // games fall out. This is always shown as an informational section even when
+  // there are no structural issues.
+  const _openIDs2 = openBowlSeriesIDs();
+  const _leagueSIDs2 = new Set(
+    db.series.filter(s => s.LeagueID > 0 && !s.TournamentID).map(s => s.SeriesID)
+  );
+  const canonicalPool = getCanonicalLast10WksGames();
+  const canonicalIDs  = new Set(canonicalPool.map(g => g.GameID));
+  const canonicalAvg  = canonicalPool.length
+    ? Math.floor(canonicalPool.reduce((a,g) => a + g.FinalScore, 0) / canonicalPool.length) : null;
+
+  // All Games pool (same logic as renderGamesList with NoTap now excluded)
+  const allGamesPool = db.games.filter(g => {
+    if (g.FinalScore == null || g.FinalScore <= 0) return false;
+    if (g.IsTeammate) return false;
+    if (g.NoTap) return false;
+    if (_openIDs2.has(g.SeriesID)) return false;
+    return db.series.some(s => s.SeriesID === g.SeriesID);
+  });
+
+  // Build weekKey helper (mirrors canonical)
+  const _wk = (dateStr) => {
+    if (!dateStr) return null;
+    const d = new Date(dateStr + 'T12:00:00');
+    const thu = new Date(d);
+    thu.setDate(d.getDate() - ((d.getDay() + 6) % 7) + 3);
+    const yr = thu.getFullYear();
+    const jan4 = new Date(yr, 0, 4);
+    const wk = Math.ceil(((thu - jan4) / 86400000 + jan4.getDay() + 1) / 7);
+    return yr + '-W' + String(wk).padStart(2, '0');
+  };
+  const leagueSeriesWithDates2 = db.series.filter(s => s.DateBowled && s.LeagueID > 0 && !s.TournamentID);
+  const allWeeks2 = [...new Set(leagueSeriesWithDates2.map(s => _wk(s.DateBowled)))].sort((a,b)=>b.localeCompare(a));
+  const last10Wks2 = new Set(allWeeks2.slice(0, 10));
+  const validSIDs2 = new Set(leagueSeriesWithDates2.filter(s => last10Wks2.has(_wk(s.DateBowled))).map(s => s.SeriesID));
+
+  // Games in All Games pool that are NOT in canonical — categorise each
+  const excluded = allGamesPool.filter(g => !canonicalIDs.has(g.GameID));
+  const byReason = {};
+  excluded.forEach(g => {
+    const s = db.series.find(s => s.SeriesID === g.SeriesID);
+    let reason = 'Unknown';
+    if (!_leagueSIDs2.has(g.SeriesID))   reason = 'Non-league series (open bowl / tournament)';
+    else if (!validSIDs2.has(g.SeriesID)) reason = 'Outside 10wk window';
+    (byReason[reason] = byReason[reason] || []).push({ g, s });
+  });
+
+  const avgSection = `
+    <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border1)">
+      <div style="font-size:13px;font-weight:800;color:var(--t1);margin-bottom:10px">📊 Avg · 10wk Audit</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:12px">
+        <div style="background:var(--bg3);border-radius:8px;padding:8px;text-align:center">
+          <div style="font-size:18px;font-weight:900;color:var(--teal)">${canonicalAvg ?? '—'}</div>
+          <div style="font-size:9px;color:var(--t3);margin-top:2px;text-transform:uppercase;letter-spacing:0.5px">Home Avg</div>
+        </div>
+        <div style="background:var(--bg3);border-radius:8px;padding:8px;text-align:center">
+          <div style="font-size:18px;font-weight:900;color:var(--t1)">${canonicalPool.length}</div>
+          <div style="font-size:9px;color:var(--t3);margin-top:2px;text-transform:uppercase;letter-spacing:0.5px">10wk Games</div>
+        </div>
+        <div style="background:var(--bg3);border-radius:8px;padding:8px;text-align:center">
+          <div style="font-size:18px;font-weight:900;color:${excluded.length?'var(--gold)':'var(--teal)'}">${excluded.length}</div>
+          <div style="font-size:9px;color:var(--t3);margin-top:2px;text-transform:uppercase;letter-spacing:0.5px">Excluded</div>
+        </div>
+      </div>
+      ${Object.keys(byReason).length === 0
+        ? '<div style="font-size:12px;color:var(--teal)">✓ All Games and 10wk pool are in sync</div>'
+        : Object.entries(byReason).map(([reason, entries]) => `
+          <div style="margin-bottom:8px">
+            <div style="font-size:11px;font-weight:700;color:var(--gold);margin-bottom:4px">${reason} (${entries.length})</div>
+            ${entries.slice(0,5).map(({g,s}) => `
+              <div style="font-size:11px;color:var(--t3);padding:3px 0;border-bottom:1px solid var(--border1)">
+                G#${g.GameNumber} · ${g.FinalScore} · ${s?.DateBowled||'?'} · Series ${g.SeriesID}
+                ${g.NoTap?' <span style="color:var(--purple)">NoTap</span>':''}
+                ${g.IsTeammate?' <span style="color:var(--t3)">Teammate</span>':''}
+              </div>`).join('')}
+            ${entries.length > 5 ? `<div style="font-size:10px;color:var(--t3);padding-top:3px">…and ${entries.length-5} more</div>` : ''}
+          </div>`).join('')
+      }
+      <div style="font-size:10px;color:var(--t3);margin-top:8px">
+        10wk window: ${[...last10Wks2].sort().slice(-1)[0]||'?'} → ${[...last10Wks2].sort().reverse()[0]||'?'}
+      </div>
+    </div>`;
+
   if (!issues.length) {
     openModal(`
       <div class="modal-title">🔍 Data Scan</div>
-      <div style="text-align:center;padding:20px 0">
+      <div style="text-align:center;padding:16px 0 8px">
         <div style="font-size:32px;margin-bottom:8px">✅</div>
-        <div style="font-size:15px;font-weight:700;color:var(--t1)">No issues found</div>
+        <div style="font-size:15px;font-weight:700;color:var(--t1)">No structural issues found</div>
         <div style="font-size:12px;color:var(--t3);margin-top:6px">
           ${db.games.length} games · ${db.series.length} series · ${db.frames.length} frames
         </div>
       </div>
-      <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+      ${avgSection}
+      <button class="btn btn-secondary" onclick="closeModal()" style="margin-top:14px">Close</button>
     `);
     return;
   }
@@ -16680,6 +16767,7 @@ function runDataIntegrityScan() {
     <div class="modal-title">🔍 Data Scan</div>
     <div style="font-size:13px;color:var(--t3);margin-bottom:14px">${issues.length} issue${issues.length!==1?'s':''} found</div>
     ${rows}
+    ${avgSection}
     <button class="btn btn-secondary" onclick="closeModal()" style="margin-top:8px">Close</button>
   `);
 }
@@ -18699,6 +18787,33 @@ document.addEventListener('DOMContentLoaded', async ()=>{
       armed = false; dragging = false;
       if (backBtn) { backBtn.style.opacity = ''; backBtn.style.transform = ''; }
     }, { passive: true });
+  })();
+
+  // Pin drag-swipe: drag finger across pin-stage to toggle each pin once per gesture
+  (function initPinDrag() {
+    const stage = document.getElementById('pin-stage');
+    if (!stage) return;
+    let _dragActive = false, _dragTouched = new Set();
+    function _pinFromTouch(touch) {
+      const el = document.elementFromPoint(touch.clientX, touch.clientY);
+      if (!el) return null;
+      const btn = el.closest('.pin-btn');
+      if (!btn) return null;
+      const m = btn.id.match(/^pb(\d+)$/);
+      return m ? parseInt(m[1], 10) : null;
+    }
+    stage.addEventListener('touchstart', e => {
+      _dragActive = true; _dragTouched = new Set();
+      const p = _pinFromTouch(e.touches[0]);
+      if (p !== null) _dragTouched.add(p);
+    }, { passive: true });
+    stage.addEventListener('touchmove', e => {
+      if (!_dragActive) return;
+      const p = _pinFromTouch(e.touches[0]);
+      if (p !== null && !_dragTouched.has(p)) { _dragTouched.add(p); togglePin(p); }
+    }, { passive: true });
+    stage.addEventListener('touchend',   () => { _dragActive = false; _dragTouched = new Set(); }, { passive: true });
+    stage.addEventListener('touchcancel',() => { _dragActive = false; _dragTouched = new Set(); }, { passive: true });
   })();
 });
 
