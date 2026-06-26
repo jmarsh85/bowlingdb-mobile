@@ -1027,6 +1027,7 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
 }
 
 .pin-btn:not(.B):active { transform:scale(0.84); }
+.pin-btn.pressing { transform:scale(0.84); }
 
 /* ============================================================
    FOCUS MODE — alternate per-frame scoring view (Item 3)
@@ -3756,8 +3757,9 @@ const G = {
   lastBallAtt2: null, // most recent att2 ball this game
   // Alternating ball mode
   altMode: false,
-  altBall1: null,  // teal ring — att1 odd frames (or all odd att1s)
-  altBall2: null,  // gold ring — att1 even frames
+  altBall1: null,     // teal ring — ball for the frame ALT was activated on
+  altBall2: null,     // gold ring — ball for the next frame, then alternates
+  altStartFrame: 1,   // frame number when altMode was turned on (parity anchor)
   // Undo state
   undoAvailable: false,
   undoSnapshot: null,
@@ -8352,8 +8354,11 @@ function updateFrameFlags(frame) {
 function autoSelectBall() {
   if (G.attempt === 1) {
     if (G.altMode && G.altBall1 && G.altBall2) {
-      // Alternating mode: odd frames get altBall1, even frames get altBall2
-      const newBall = (G.frame % 2 === 1) ? G.altBall1 : G.altBall2;
+      // Alternating mode: frames at even offset from altStartFrame get altBall1,
+      // odd-offset frames get altBall2 — so altBall1 always applies to the frame
+      // where the user set up ALT, altBall2 to the next, and so on.
+      const offset = (G.frame - (G.altStartFrame || 1));
+      const newBall = (offset % 2 === 0) ? G.altBall1 : G.altBall2;
       if (db.balls.find(b => b.BallID === newBall && b.Active !== false)) {
         G.ballID = newBall;
       }
@@ -14855,26 +14860,20 @@ function renderBallBar() {
 
   const activeBalls = db.balls.filter(b => b.Active !== false);
 
-  // Build order: selected ball first, then most recently used in this game, then fill
-  const usedIDs = [];
-  if (G.gameID) {
-    const gameAtts = db.attempts
-      .filter(a => {
-        const fr = db.frames.find(f => f.FrameID === a.FrameID);
-        return fr && fr.GameID === G.gameID && a.BallID;
-      })
-      .sort((a, b) => b.AttemptID - a.AttemptID);
-    gameAtts.forEach(a => {
-      if (!usedIDs.includes(a.BallID)) usedIDs.push(a.BallID);
-    });
-  }
+  // Base order: sortedBalls() applies league/center/global recency scoring +
+  // user-defined ballOrder as tiebreak — exactly what the Balls screen uses.
+  // We pin the current ball at position 0, then fill in sorted order.
+  const baseSorted = sortedBalls(G.ballID); // G.ballID gets prefer slot → leads
 
   const ordered = [];
   const add = id => { if (id && !ordered.includes(id) && activeBalls.find(b=>b.BallID===id)) ordered.push(id); };
+  // 1. Current ball always leftmost
   add(G.ballID);
-  // In alt mode, ensure both alt balls are visible
+  // 2. Alt slot balls immediately after current — they're contextually relevant
   if (G.altMode) { add(G.altBall1); add(G.altBall2); }
-  usedIDs.forEach(add);
+  // 3. Remaining balls in sortedBalls() order (league/center/recency + user order)
+  baseSorted.forEach(b => add(b.BallID));
+  // 4. Any stragglers (shouldn't happen but belt-and-suspenders)
   activeBalls.forEach(b => add(b.BallID));
 
   // Render all active balls in sort order — no cutoff, bar scrolls horizontally
@@ -14920,6 +14919,17 @@ function renderBallBar() {
   } else {
     altBtn.className = `ball-alt-toggle${altActive}`;
   }
+
+  // Scroll the chip strip so the selected ball is visible at the left edge.
+  // This handles the case where a ball was picked from the far right of the strip —
+  // after re-render it moves to position 0 but the scroll position may still be offset.
+  requestAnimationFrame(() => {
+    const selChip = wrap.querySelector('.ball-chip.sel');
+    if (selChip) {
+      // Snap to the left edge — selected chip is always position 0 after render
+      wrap.scrollLeft = 0;
+    }
+  });
 }
 
 function selectBall(id) {
@@ -14949,6 +14959,8 @@ function selectBall(id) {
       G.altBall2 = null;
     } else if (!G.altBall1) {
       G.altBall1 = id;
+      // Anchor parity to current frame so this ball applies to this frame onward
+      G.altStartFrame = G.frame || 1;
       toast('Ball 1 set — now tap Ball 2');
     } else if (!G.altBall2) {
       G.altBall2 = id;
@@ -14971,10 +14983,12 @@ function selectBall(id) {
 function toggleAltMode() {
   G.altMode = !G.altMode;
   if (!G.altMode) {
-    // Exiting alt mode — clear slot assignments, keep current ball
-    G.altBall1 = null; G.altBall2 = null;
+    // Exiting alt mode — clear slot assignments and parity anchor, keep current ball
+    G.altBall1 = null; G.altBall2 = null; G.altStartFrame = 1;
     toast('Alternating mode off');
   } else {
+    // Anchor parity to the current frame so altBall1 applies here, altBall2 next
+    G.altStartFrame = G.frame || 1;
     toast('Alt mode on — tap Ball 1, then Ball 2');
   }
   renderBallBar();
@@ -18384,9 +18398,10 @@ function saveGState() {
         ballID:   G.ballID,
         lastBallAtt1: G.lastBallAtt1,
         lastBallAtt2: G.lastBallAtt2,
-        altMode:  G.altMode,
-        altBall1: G.altBall1,
-        altBall2: G.altBall2,
+        altMode:       G.altMode,
+        altBall1:      G.altBall1,
+        altBall2:      G.altBall2,
+        altStartFrame: G.altStartFrame,
         noTap:    G.noTap,
         scoreDisplay: G.scoreDisplay,
         laneStart: G.laneStart,
@@ -18436,9 +18451,10 @@ function restoreGState() {
       if (sg.ballID   != null)   G.ballID     = sg.ballID;
       G.lastBallAtt1 = sg.lastBallAtt1 ?? null;
       G.lastBallAtt2 = sg.lastBallAtt2 ?? null;
-      G.altMode      = sg.altMode  ?? false;
-      G.altBall1     = sg.altBall1 ?? null;
-      G.altBall2     = sg.altBall2 ?? null;
+      G.altMode       = sg.altMode       ?? false;
+      G.altBall1      = sg.altBall1      ?? null;
+      G.altBall2      = sg.altBall2      ?? null;
+      G.altStartFrame = sg.altStartFrame ?? 1;
       G.noTap        = sg.noTap    ?? false;
       G.scoreDisplay = sg.scoreDisplay ?? 'standard';
       G.laneStart    = sg.laneStart ?? null;
@@ -18789,31 +18805,73 @@ document.addEventListener('DOMContentLoaded', async ()=>{
     }, { passive: true });
   })();
 
-  // Pin drag-swipe: drag finger across pin-stage to toggle each pin once per gesture
+  // Pin drag-swipe: drag finger across pins to toggle each one once per gesture.
+  // togglePin fires immediately on touchstart for the initial pin so every contact
+  // — even a short tap that turns into a tiny drag — is reliably captured.
+  // The .pressing class applies a scale visual since :active is suppressed during touch drag.
   (function initPinDrag() {
     const stage = document.getElementById('pin-stage');
     if (!stage) return;
-    let _dragActive = false, _dragTouched = new Set();
+
+    let _dragActive   = false;
+    let _dragTouched  = new Set(); // pins fired this gesture
+    let _pressEl      = null;      // element receiving visual press state
+
     function _pinFromTouch(touch) {
       const el = document.elementFromPoint(touch.clientX, touch.clientY);
-      if (!el) return null;
+      if (!el) return { pin: null, btn: null };
       const btn = el.closest('.pin-btn');
-      if (!btn) return null;
+      if (!btn) return { pin: null, btn: null };
       const m = btn.id.match(/^pb(\d+)$/);
-      return m ? parseInt(m[1], 10) : null;
+      return { pin: m ? parseInt(m[1], 10) : null, btn };
     }
+
+    function _clearPress() {
+      if (_pressEl) { _pressEl.classList.remove('pressing'); _pressEl = null; }
+    }
+
     stage.addEventListener('touchstart', e => {
-      _dragActive = true; _dragTouched = new Set();
-      const p = _pinFromTouch(e.touches[0]);
-      if (p !== null) _dragTouched.add(p);
-    }, { passive: true });
+      _dragActive  = true;
+      _dragTouched = new Set();
+      _clearPress();
+
+      const { pin, btn } = _pinFromTouch(e.touches[0]);
+      if (pin !== null) {
+        _dragTouched.add(pin);
+        // Suppress the default onclick so it doesn't double-fire after our togglePin call
+        e.preventDefault();
+        // Apply visual press state manually
+        if (btn && !btn.classList.contains('B')) {
+          _pressEl = btn;
+          btn.classList.add('pressing');
+        }
+        togglePin(pin);
+      }
+    }, { passive: false }); // passive:false needed so e.preventDefault() works
+
     stage.addEventListener('touchmove', e => {
       if (!_dragActive) return;
-      const p = _pinFromTouch(e.touches[0]);
-      if (p !== null && !_dragTouched.has(p)) { _dragTouched.add(p); togglePin(p); }
+      _clearPress();
+      const { pin, btn } = _pinFromTouch(e.touches[0]);
+      if (pin !== null && !_dragTouched.has(pin)) {
+        _dragTouched.add(pin);
+        if (btn && !btn.classList.contains('B')) {
+          _pressEl = btn;
+          btn.classList.add('pressing');
+          setTimeout(_clearPress, 120);
+        }
+        togglePin(pin);
+      }
     }, { passive: true });
-    stage.addEventListener('touchend',   () => { _dragActive = false; _dragTouched = new Set(); }, { passive: true });
-    stage.addEventListener('touchcancel',() => { _dragActive = false; _dragTouched = new Set(); }, { passive: true });
+
+    function _end() {
+      _dragActive  = false;
+      _dragTouched = new Set();
+      setTimeout(_clearPress, 120);
+    }
+
+    stage.addEventListener('touchend',    _end, { passive: true });
+    stage.addEventListener('touchcancel', _end, { passive: true });
   })();
 });
 
