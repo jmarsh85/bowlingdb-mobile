@@ -3068,6 +3068,8 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
         </div>
 
         <!-- QA row -->
+        <!-- Move Frames bar in FM — flex child, sits above QA row, expands upward -->
+        <div id="fm-mfb-overlay" style="display:none"></div>
         <div id="fm-qa-anchor"></div>
 
       </div>
@@ -8926,7 +8928,7 @@ function enterFocusMode() {
   if (ballBar && ballAnchor) ballAnchor.appendChild(ballBar);
 
   // Hide elements that remain in normal flow but must not show in FM
-  var toHide = ['att-nav','board-row','ctx-leave','f10-ind','pf-display'];
+  var toHide = ['att-nav','board-row','ctx-leave','f10-ind','pf-display','move-frames-bar-anchor'];
   toHide.forEach(function(id) {
     var el = document.getElementById(id);
     if (el) { el.dataset.fmHidden = el.style.display || ''; el.style.display = 'none'; }
@@ -8966,7 +8968,7 @@ function exitFocusMode() {
   if (ballBar && ballAnchorSentinel) ballAnchorSentinel.insertAdjacentElement('afterend', ballBar);
 
   // Restore hidden elements
-  var toRestore = ['att-nav','board-row','ctx-leave','f10-ind','pf-display'];
+  var toRestore = ['att-nav','board-row','ctx-leave','f10-ind','pf-display','move-frames-bar-anchor'];
   toRestore.forEach(function(id) {
     var el = document.getElementById(id);
     if (el && el.dataset.fmHidden !== undefined) {
@@ -18714,6 +18716,7 @@ function toggleMoveFramesMode() {
   }
 
   if (MOVE.active) {
+    renderMoveFramesBar();
     toast(getPrefs().focusMode
       ? 'Select frames on the scorecard below, then choose a direction'
       : 'Select frames to move, then choose a direction');
@@ -18751,37 +18754,70 @@ function moveFramesTapCell(frameNum) {
 
 function renderMoveFramesBar() {
   const anchor = document.getElementById('move-frames-bar-anchor');
-  if (!anchor) return;
+  const fmAnchor = document.getElementById('fm-mfb-overlay');
 
   if (!MOVE.active || MOVE.selected.size === 0) {
-    anchor.innerHTML = '';
+    if (anchor) anchor.innerHTML = '';
+    if (fmAnchor) { fmAnchor.style.display = 'none'; fmAnchor.innerHTML = ''; }
     return;
   }
+
   const min = Math.min(...MOVE.selected);
   const max = Math.max(...MOVE.selected);
   const rangeLabel = min === max ? `Frame ${min}` : `Frames ${min}–${max}`;
-  const maxRight = 10 - max;       // how far right this range can shift before hitting F10
-  const maxLeft = min - 1;         // how far left this range can shift before hitting F1
+  const maxRight = 10 - max;
+  const maxLeft  = min - 1;
+  const allSelected = MOVE.selected.size === 10;
+  const selAllLabel = allSelected ? '✕ Clear All' : '✓ Select All';
+  const selAllFn    = allSelected ? 'mfbClearAll()' : 'mfbSelectAll()';
 
-  anchor.innerHTML = `
-    <div class="move-frames-bar">
-      <div class="mfb-label">${rangeLabel} selected</div>
-      <div class="mfb-controls">
-        <button class="mfb-btn" ${maxLeft<1?'disabled':''} onclick="runMoveFrames(-1)">&larr; Shift Left</button>
-        <select id="mfb-count" class="mfb-count">
-          ${Array.from({length: Math.max(maxLeft, maxRight, 1)}, (_,i)=>i+1)
-            .map(n => `<option value="${n}">${n}</option>`).join('')}
-        </select>
-        <button class="mfb-btn" ${maxRight<1?'disabled':''} onclick="runMoveFrames(1)">Shift Right &rarr;</button>
-      </div>
-      <button class="mfb-cancel" onclick="toggleMoveFramesMode()">Cancel</button>
-    </div>
-  `;
+  const countOptions = Array.from({length: Math.max(maxLeft, maxRight, 1)}, function(_,i) {
+    return '<option value="' + (i+1) + '">' + (i+1) + '</option>';
+  }).join('');
+
+  // Build bar using original template — no nested backticks
+  const barHTML =
+    '<div class="move-frames-bar">' +
+      '<div class="mfb-label">' + rangeLabel + ' selected</div>' +
+      '<div class="mfb-controls">' +
+        '<button class="mfb-btn" ' + (maxLeft  < 1 ? 'disabled' : '') + ' onclick="runMoveFrames(-1)">&larr; Shift Left</button>' +
+        '<select id="mfb-count" class="mfb-count">' + countOptions + '</select>' +
+        '<button class="mfb-btn" ' + (maxRight < 1 ? 'disabled' : '') + ' onclick="runMoveFrames(1)">Shift Right &rarr;</button>' +
+      '</div>' +
+      '<div style="display:flex;gap:12px;align-items:center;margin-top:2px">' +
+        '<button class="mfb-btn" style="font-size:11px;padding:5px 10px" onclick="' + selAllFn + '">' + selAllLabel + '</button>' +
+        '<button class="mfb-cancel" onclick="toggleMoveFramesMode()">Cancel</button>' +
+      '</div>' +
+    '</div>';
+
+  if (anchor) anchor.innerHTML = barHTML;
+
+  // FM: mirror same bar into the flex child above the QA row
+  if (fmAnchor) {
+    fmAnchor.style.display = 'block';
+    fmAnchor.innerHTML = barHTML;
+  }
+}
+
+function mfbSelectAll() {
+  for (var i = 1; i <= 10; i++) MOVE.selected.add(i);
+  renderScorecard('sc-grid', false);
+  if (getPrefs().focusMode) renderFocusModePanel();
+  renderMoveFramesBar();
+}
+
+function mfbClearAll() {
+  MOVE.selected = new Set();
+  renderScorecard('sc-grid', false);
+  if (getPrefs().focusMode) renderFocusModePanel();
+  renderMoveFramesBar();
 }
 
 function closeMoveFramesBar() {
   const anchor = document.getElementById('move-frames-bar-anchor');
   if (anchor) anchor.innerHTML = '';
+  const fmAnchor = document.getElementById('fm-mfb-overlay');
+  if (fmAnchor) { fmAnchor.style.display = 'none'; fmAnchor.innerHTML = ''; }
 }
 
 /* Copy every recorded field from one attempt record onto another.
