@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="BowlingDB">
@@ -1078,6 +1078,21 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
 }
 .mfb-cancel:active { color:var(--t2); }
 
+#focus-mode-panel {
+  display:none;
+  flex-direction:column;
+  overflow:hidden;
+}
+/* fm-active just marks state — display driven by inline style in enterFocusMode */
+#focus-mode-panel.fm-active {
+  display:flex;
+  min-height:0;
+}
+/* When s-scoring hosts FM, strip its padding so panel fills the full area */
+#s-scoring.fm-host {
+  padding:0 !important;
+}
+
 .fm-header {
   display:flex; align-items:center; justify-content:space-between;
   padding:10px 14px 6px; gap:8px;
@@ -1110,41 +1125,171 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
 .fm-mini-att.sp { color:var(--teal); }
 .fm-mini-att.empty { color:var(--t3); opacity:0.4; }
 
+/* ── Beer row — compressed in Focus Mode ───────────────────── */
 .fm-beer-row {
-  margin:0 14px 8px; padding:6px 10px;
+  margin:0 10px 4px; padding:0 10px;
+  height:28px; box-sizing:border-box;
   border-radius:8px; border:1px solid var(--border1); background:var(--bg2);
   font-size:11px; color:var(--t2); text-align:center; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  transition:height 0.15s ease, background 0.15s;
+  overflow:hidden;
 }
-.fm-beer-row.active { border-color:rgba(255,215,0,0.35); background:rgba(255,215,0,0.08); color:var(--gold); font-weight:700; }
+.fm-beer-row.active {
+  height:36px;
+  border-color:rgba(255,215,0,0.35); background:rgba(255,215,0,0.08); color:var(--gold); font-weight:700;
+}
 
-.fm-ball-strip {
-  display:flex; align-items:center; gap:10px;
-  padding:6px 0 10px;
+/* ── Collapsed ball row ─────────────────────────────────────── */
+.fm-ball-row-collapsed {
+  position:relative;
+  display:flex; align-items:center; justify-content:center;
+  height:44px; padding:0 10px; gap:18px;
+  margin:0 10px 2px;
+  box-sizing:border-box; overflow:visible;
 }
-/* Relocated .ball-bar sits full-width here; chip strip + ALT toggle keep their own styling */
-#fm-ball-anchor { padding:0 14px; }
+
+/* Floating ball chip — absolute within #fm-pin-anchor */
+.fm-float-chip {
+  position:absolute;
+  z-index:10;
+  display:flex; flex-direction:column; align-items:center; gap:2px;
+  cursor:pointer; -webkit-tap-highlight-color:transparent;
+  opacity:0.72;
+  touch-action:none;
+}
+.fm-chip-img {
+  width:38px; height:38px; border-radius:50%;
+  border:2px solid var(--teal);
+  object-fit:cover; background:var(--bg3);
+}
+.fm-chip-name {
+  font-size:7px; font-weight:700; color:var(--t3);
+  max-width:46px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  text-align:center;
+}
+
+/* Ball row: centered wheels only (chip is floating) */
+.fm-ball-row-collapsed {
+  justify-content:center; gap:16px;
+}
+
+/* SB/TB drum wheels */
+/* Wheel unit: horizontal row — [SB] [number] [½] */
+.fm-wheel-wrap {
+  display:flex; flex-direction:row; align-items:center; gap:4px;
+}
+.fm-wheel-wrap.disabled { opacity:0.35; pointer-events:none; }
+.fm-wheel-lbl {
+  font-size:9px; font-weight:800; color:var(--t3);
+  letter-spacing:0.6px; text-transform:uppercase;
+  cursor:pointer; -webkit-tap-highlight-color:transparent;
+  user-select:none; flex-shrink:0;
+}
+/* Half-board toggle — compact pill inline with number */
+.fm-half-btn {
+  font-size:9px; font-weight:800; color:var(--t3);
+  background:none; border:1px solid var(--border2);
+  border-radius:4px; padding:1px 4px;
+  cursor:pointer; -webkit-tap-highlight-color:transparent;
+  line-height:1.3; flex-shrink:0;
+  transition:all 0.12s;
+}
+.fm-half-btn.on {
+  border-color:var(--teal); color:var(--teal);
+}
+
+/* Drum: borderless, just the scrolling number */
+.fm-wheel-drum {
+  width:40px; height:36px;
+  overflow-y:scroll; overflow-x:hidden;
+  scroll-snap-type:y mandatory;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+  position:relative; flex-shrink:0;
+}
+.fm-wheel-drum::-webkit-scrollbar { display:none; }
+
+.fm-wheel-item {
+  height:36px;
+  scroll-snap-align:center;
+  display:flex; align-items:center; justify-content:center;
+  font-size:20px; font-weight:900; color:var(--t1);
+  cursor:pointer; user-select:none;
+  -webkit-tap-highlight-color:transparent;
+  flex-shrink:0;
+}
+.fm-wheel-pad {
+  height:18px; flex-shrink:0;
+  scroll-snap-align:none;
+}
+
+/* Right zone: NT + NUM toggles + ALT pill */
+.fm-ball-right {
+  display:flex; flex-direction:row; align-items:center; gap:5px; flex-shrink:0;
+}
+.fm-nt-btn, .fm-num-btn {
+  padding:4px 7px; border-radius:7px;
+  border:1px solid var(--border2); background:none;
+  color:var(--t3); font-size:10px; font-weight:800;
+  cursor:pointer; -webkit-tap-highlight-color:transparent;
+  transition:all 0.15s; letter-spacing:0.3px; white-space:nowrap;
+}
+.fm-nt-btn.on {
+  border-color:var(--purple); color:var(--purple);
+}
+.fm-num-btn.on {
+  border-color:var(--teal); color:var(--teal);
+}
 .fm-alt-pill {
-  display:inline-flex; align-items:center; gap:4px; width:fit-content; flex-shrink:0;
-  font-size:10px; font-weight:800; letter-spacing:0.4px;
-  padding:2px 8px; border-radius:20px; margin-right:14px;
+  display:inline-flex; align-items:center; gap:4px; width:fit-content;
+  font-size:9px; font-weight:800; letter-spacing:0.4px;
+  padding:2px 7px; border-radius:20px;
 }
 .fm-alt-pill.ball1 { background:rgba(255,255,255,0.10); color:#FFFFFF; border:1px solid rgba(255,255,255,0.25); }
 .fm-alt-pill.ball2 { background:rgba(255,215,0,0.12); color:var(--gold); border:1px solid rgba(255,215,0,0.3); }
 
-/* Enlarged pin diagram when relocated into focus mode panel */
-#fm-pin-anchor .pin-stage { gap:10px; padding:10px 0 6px; }
-#fm-pin-anchor .pin-row { gap:12px; }
-#fm-pin-anchor .pin-btn { width:50px; height:50px; font-size:16px; }
-#fm-pin-anchor .num-pad { padding:0 14px; }
-
-.fm-nav-row { display:flex; gap:10px; padding:4px 14px 10px; }
-.fm-nav-btn {
-  flex:1; padding:12px 8px; border-radius:12px;
-  border:1.5px solid var(--border2); background:var(--bg2);
-  color:var(--t1); font-size:13px; font-weight:800; cursor:pointer;
+/* Expanded ball strip — slides up from above collapsed row */
+.fm-ball-expanded {
+  position:absolute;
+  bottom:calc(100% + 4px);
+  left:0; right:0;
+  background:var(--bg2);
+  border:1px solid var(--border1);
+  border-radius:12px;
+  overflow:hidden;
+  max-height:0;
+  transition:max-height 0.15s ease;
+  z-index:20;
 }
-.fm-nav-btn:active { transform:scale(0.96); opacity:0.85; }
-.fm-nav-btn:disabled { opacity:0.3; cursor:default; }
+.fm-ball-expanded.open { max-height:100px; }
+#fm-ball-anchor { padding:6px 8px; }
+
+/* ── Pin anchor — flex:1 to fill remaining height ──────────── */
+#fm-pin-anchor {
+  flex:1; position:relative;
+  display:flex; flex-direction:column; align-items:stretch;
+  min-height:0;
+}
+#fm-pin-anchor .pin-stage { gap:12px; padding:14px 44px 8px; flex:1; }
+#fm-pin-anchor .pin-row { gap:12px; }
+#fm-pin-anchor .pin-btn { width:56px; height:56px; font-size:17px; }
+#fm-pin-anchor .num-pad { padding:0 14px; } /* display managed entirely by applyNumericModeUI() inline style */
+
+/* ── Side strip Prev/Next ───────────────────────────────────── */
+.fm-side-strip {
+  position:absolute; top:0; bottom:0;
+  width:44px;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; z-index:5;
+  -webkit-tap-highlight-color:transparent;
+}
+.fm-side-strip.prev { left:0; }
+.fm-side-strip.next { right:0; }
+.fm-side-strip svg { color:var(--t3); opacity:0.45; transition:opacity 0.1s; }
+.fm-side-strip:active svg { opacity:1; }
+.fm-side-strip.disabled { opacity:0.1; pointer-events:none; }
+
 
 
 /* ============================================================
@@ -2852,39 +2997,78 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
            Reuses #pin-stage (moved into this panel via CSS, not duplicated) and existing
            togglePin()/jumpToPosition() — this is a layout overlay only, no parallel state. -->
       <div id="focus-mode-panel" style="display:none">
+
+        <!-- FM Header -->
         <div class="fm-header">
           <div class="fm-header-left">
-            <div class="fm-frame-label">Frame <span id="fm-frame-num">1</span></div>
-            <div class="fm-game-label">Game <span id="fm-game-num">1</span></div>
+            <div style="display:flex;align-items:baseline;gap:4px">
+              <span class="fm-frame-label" id="fm-frame-num">1</span>
+              <span class="fm-game-label" id="fm-game-badge">G1</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:4px;margin-top:1px">
+              <span id="fm-att-badge" style="font-size:9px;font-weight:800;color:var(--teal)">A1</span>
+              <span id="fm-mode-pill" class="att-nav-modepill FRESH">LEAVE</span>
+            </div>
           </div>
           <div class="fm-mini-strip" id="fm-mini-strip"></div>
           <div class="fm-header-right">
             <div class="fm-score-label">SCORE</div>
-            <div class="fm-score-val" id="fm-score-val">—</div>
+            <div class="fm-score-val" id="fm-score-val">&#x2014;</div>
           </div>
         </div>
 
+        <!-- Beer row: 28px idle, 36px active -->
         <div class="fm-beer-row" id="fm-beer-row" onclick="focusModeOpenBeer()">
-          <span id="fm-beer-text">🍺 Tap to log beer frame</span>
+          <span id="fm-beer-text">&#x1F37A;</span>
         </div>
 
-        <div class="fm-ball-strip">
-          <!-- The real .ball-bar (chip strip + ALT toggle) is relocated here at runtime —
-               same selectBall()/toggleAltMode() logic, not a static read-only display. -->
-          <div id="fm-ball-anchor" style="flex:1;min-width:0"></div>
-          <div class="fm-alt-pill" id="fm-alt-pill" style="display:none"></div>
+        <!-- Collapsed ball row: SB/TB wheels | NT + ALT (chip is floating, lives in pin anchor) -->
+        <div class="fm-ball-row-collapsed" id="fm-ball-row-collapsed">
+          <!-- Expanded strip overlays upward -->
+          <div class="fm-ball-expanded" id="fm-ball-expanded">
+            <div id="fm-ball-anchor"></div>
+          </div>
+
+          <!-- SB wheel -->
+          <div class="fm-wheel-wrap" id="fm-sb-wrap">
+            <div class="fm-wheel-lbl" id="fm-sb-lbl" onclick="fmToggleWheel('sb')">SB</div>
+            <div class="fm-wheel-drum" id="fm-sb-drum"></div>
+            <button class="fm-half-btn" id="fm-sb-half" onclick="fmToggleHalf('sb')">&#xBD;</button>
+          </div>
+
+          <!-- TB wheel -->
+          <div class="fm-wheel-wrap" id="fm-tb-wrap">
+            <div class="fm-wheel-lbl" id="fm-tb-lbl" onclick="fmToggleWheel('tb')">TB</div>
+            <div class="fm-wheel-drum" id="fm-tb-drum"></div>
+            <button class="fm-half-btn" id="fm-tb-half" onclick="fmToggleHalf('tb')">&#xBD;</button>
+          </div>
+
+          <!-- NT + NUM + ALT -->
+          <div class="fm-ball-right">
+            <button class="fm-nt-btn" id="fm-nt-btn" onclick="toggleNoTap()">NT</button>
+            <button class="fm-num-btn" id="fm-num-btn" onclick="fmToggleNumeric()">NUM</button>
+            <div class="fm-alt-pill" id="fm-alt-pill" style="display:none"></div>
+          </div>
         </div>
 
-        <!-- #pin-stage is relocated here at runtime via DOM move (enterFocusMode), not cloned -->
-        <div id="fm-pin-anchor"></div>
+        <!-- Pin canvas with floating chip + side strips -->
+        <div id="fm-pin-anchor">
+          <!-- Floating ball chip: long-press to drag, snaps to corner -->
+          <div class="fm-float-chip" id="fm-float-chip">
+            <img class="fm-chip-img" id="fm-chip-img" src="" alt="">
+            <span class="fm-chip-name" id="fm-chip-name"></span>
+          </div>
+          <div class="fm-side-strip prev" id="fm-prev-strip" onclick="fmHandlePrev()">
+            <svg width="10" height="18" viewBox="0 0 10 18" fill="none"><path d="M8.5 1L1 9l7.5 8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="fm-side-strip next" id="fm-next-strip" onclick="fmHandleNext()">
+            <svg width="10" height="18" viewBox="0 0 10 18" fill="none"><path d="M1.5 1L9 9l-7.5 8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+        </div>
 
-        <!-- .qa-row (Strike/Spare/Miss/Confirm) is relocated here too — same buttons, same handlers -->
+        <!-- QA row -->
         <div id="fm-qa-anchor"></div>
 
-        <div class="fm-nav-row">
-          <button class="fm-nav-btn" id="fm-prev-btn" onclick="focusModePrevFrame()">‹ Prev</button>
-          <button class="fm-nav-btn" id="fm-next-btn" onclick="focusModeNextFrame()">Next ›</button>
-        </div>
       </div>
 
       <!-- Game navigation pills — shows when multiple games in series exist -->
@@ -3774,6 +3958,9 @@ const G = {
   // live cursor auto-lock against manual re-entry. Set of FrameIDs the user
   // has manually tapped open again; cleared whenever a new game loads.
   unlockedFrames: new Set(),
+  // Focus Mode board tracking (session carry-forward)
+  lastSB: null,
+  lastTB: null,
 };
 
 // Frame Locking — frames this many positions behind G.frame stay editable
@@ -8722,188 +8909,550 @@ function toggleFocusMode() {
 }
 
 function enterFocusMode() {
-  const panel = document.getElementById('focus-mode-panel');
-  const pinAnchor = document.getElementById('fm-pin-anchor');
-  const qaAnchor = document.getElementById('fm-qa-anchor');
-  const ballAnchor = document.getElementById('fm-ball-anchor');
-  const pinStage = document.getElementById('pin-stage');
-  const numPad = document.getElementById('num-pad');
-  const qaRow = document.getElementById('qa-row');
-  const ballBar = document.getElementById('ball-bar');
+  var panel    = document.getElementById('focus-mode-panel');
+  var pinAnchor = document.getElementById('fm-pin-anchor');
+  var qaAnchor  = document.getElementById('fm-qa-anchor');
+  var ballAnchor = document.getElementById('fm-ball-anchor');
+  var pinStage = document.getElementById('pin-stage');
+  var numPad   = document.getElementById('num-pad');
+  var qaRow    = document.getElementById('qa-row');
+  var ballBar  = document.getElementById('ball-bar');
   if (!panel || !pinAnchor || !qaAnchor) return;
 
-  // Relocate (not clone) the live pin/numeric/action/ball controls into the panel.
-  // Their IDs and onclick handlers are untouched — togglePin()/tapNumericPin()/
-  // quickPrimary()/selectBall()/toggleAltMode() etc. keep working exactly as
-  // before. Sentinel <span> anchors left behind in the original markup mark
-  // exactly where each belongs on exit.
   if (pinStage) pinAnchor.appendChild(pinStage);
-  if (numPad) pinAnchor.appendChild(numPad);
-  if (qaRow) qaAnchor.appendChild(qaRow);
+  if (numPad)   pinAnchor.appendChild(numPad);
+  if (qaRow)    qaAnchor.appendChild(qaRow);
   if (ballBar && ballAnchor) ballAnchor.appendChild(ballBar);
 
-  // Hide the standard scorecard while in focus mode.
-  // (sc-grid itself is left intact — frame-cell tap-to-jump still works if
-  // the user exits focus mode, and jumpToPosition() still updates it live.)
-  document.querySelectorAll('.sc-wrap').forEach(el => el.style.display = 'none');
+  // Hide elements that remain in normal flow but must not show in FM
+  var toHide = ['att-nav','board-row','ctx-leave','f10-ind','pf-display'];
+  toHide.forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) { el.dataset.fmHidden = el.style.display || ''; el.style.display = 'none'; }
+  });
 
-  panel.style.display = 'block';
+  panel.classList.add('fm-active');
+  panel.style.display = 'flex';
+  var scoringScreen = document.getElementById('s-scoring');
+  if (scoringScreen) scoringScreen.classList.add('fm-host');
+
+  document.querySelectorAll('.sc-wrap').forEach(function(el) { el.style.display = 'none'; });
+
+  setFMSizingVars();
+  window.addEventListener('resize', setFMSizingVars);
+  window.addEventListener('orientationchange', setFMSizingVars);
+
+  fmInitWheels();
+  fmChipInit();
+  fmRenderActiveBallChip();
   renderFocusModePanel();
 }
 
 function exitFocusMode() {
-  const panel = document.getElementById('focus-mode-panel');
-  const pinStage = document.getElementById('pin-stage');
-  const numPad = document.getElementById('num-pad');
-  const qaRow = document.getElementById('qa-row');
-  const ballBar = document.getElementById('ball-bar');
-  const pinAnchorSentinel = document.getElementById('fm-anchor-pinstage');
-  const numAnchorSentinel = document.getElementById('fm-anchor-numpad');
-  const qaAnchorSentinel = document.getElementById('fm-anchor-qarow');
-  const ballAnchorSentinel = document.getElementById('fm-anchor-ballbar');
+  var panel    = document.getElementById('focus-mode-panel');
+  var pinStage = document.getElementById('pin-stage');
+  var numPad   = document.getElementById('num-pad');
+  var qaRow    = document.getElementById('qa-row');
+  var ballBar  = document.getElementById('ball-bar');
+  var pinAnchorSentinel  = document.getElementById('fm-anchor-pinstage');
+  var numAnchorSentinel  = document.getElementById('fm-anchor-numpad');
+  var qaAnchorSentinel   = document.getElementById('fm-anchor-qarow');
+  var ballAnchorSentinel = document.getElementById('fm-anchor-ballbar');
 
-  // Restore each relocated element to its exact original position via sentinel anchors
   if (pinStage && pinAnchorSentinel) pinAnchorSentinel.insertAdjacentElement('afterend', pinStage);
-  if (numPad && numAnchorSentinel) numAnchorSentinel.insertAdjacentElement('afterend', numPad);
-  if (qaRow && qaAnchorSentinel) qaAnchorSentinel.insertAdjacentElement('afterend', qaRow);
+  if (numPad && numAnchorSentinel)   numAnchorSentinel.insertAdjacentElement('afterend', numPad);
+  if (qaRow && qaAnchorSentinel)     qaAnchorSentinel.insertAdjacentElement('afterend', qaRow);
   if (ballBar && ballAnchorSentinel) ballAnchorSentinel.insertAdjacentElement('afterend', ballBar);
 
-  document.querySelectorAll('.sc-wrap').forEach(el => el.style.display = '');
-  if (panel) panel.style.display = 'none';
-  // Re-apply numeric mode display rules now that pin-stage/num-pad are back in normal flow
+  // Restore hidden elements
+  var toRestore = ['att-nav','board-row','ctx-leave','f10-ind','pf-display'];
+  toRestore.forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el && el.dataset.fmHidden !== undefined) {
+      el.style.display = el.dataset.fmHidden;
+      delete el.dataset.fmHidden;
+    }
+  });
+
+  document.querySelectorAll('.sc-wrap').forEach(function(el) { el.style.display = ''; });
+  if (panel) { panel.classList.remove('fm-active'); panel.style.display = 'none'; }
+  var scoringScreen = document.getElementById('s-scoring');
+  if (scoringScreen) scoringScreen.classList.remove('fm-host');
+
+  window.removeEventListener('resize', setFMSizingVars);
+  window.removeEventListener('orientationchange', setFMSizingVars);
   applyNumericModeUI();
 }
 
+function setFMSizingVars() {
+  var fixed = 48 + 44 + 32 + 68 + 64 + 12;
+  var canvasH = Math.max(180, window.innerHeight - fixed);
+  document.documentElement.style.setProperty('--fm-canvas-h', canvasH + 'px');
+}
+
+/* ── SB/TB Drum Wheels ───────────────────────────────────────
+   Integer values 1-40. Half-board stored separately via ½ toggle.
+   Item height = 52px; 26px pads allow first/last to center.     */
+var FM_WHEEL_VALUES = (function() {
+  var arr = [];
+  for (var v = 1; v <= 40; v++) arr.push(v);
+  return arr;
+})();
+
+function fmBuildWheelHTML() {
+  var pad = '<div class="fm-wheel-pad"></div>';
+  var items = FM_WHEEL_VALUES.map(function(v, i) {
+    return '<div class="fm-wheel-item" data-idx="' + i + '">' + v + '</div>';
+  }).join('');
+  return pad + items + pad;
+}
+
+function fmInitWheels() {
+  var prefs  = getPrefs();
+  var sbDrum = document.getElementById('fm-sb-drum');
+  var tbDrum = document.getElementById('fm-tb-drum');
+  if (!sbDrum || !tbDrum) return;
+
+  // Rebuild HTML (re-entry safe)
+  sbDrum.innerHTML = fmBuildWheelHTML();
+  tbDrum.innerHTML = fmBuildWheelHTML();
+
+  var sbBase = (G.lastSB != null) ? Math.floor(G.lastSB) : (prefs.defaultSB != null ? Math.floor(prefs.defaultSB) : 17);
+  var tbBase = (G.lastTB != null) ? Math.floor(G.lastTB) : (prefs.defaultTB != null ? Math.floor(prefs.defaultTB) : 10);
+  var sbHalf = (G.lastSB != null) ? (G.lastSB % 1 >= 0.5) : !!(prefs.defaultSB && prefs.defaultSB % 1 >= 0.5);
+  var tbHalf = (G.lastTB != null) ? (G.lastTB % 1 >= 0.5) : !!(prefs.defaultTB && prefs.defaultTB % 1 >= 0.5);
+
+  fmScrollWheelTo(sbDrum, sbBase);
+  fmScrollWheelTo(tbDrum, tbBase);
+  fmSetHalfToggle('sb', sbHalf);
+  fmSetHalfToggle('tb', tbHalf);
+
+  var sbWrap = document.getElementById('fm-sb-wrap');
+  var tbWrap = document.getElementById('fm-tb-wrap');
+  if (sbWrap) sbWrap.classList.toggle('disabled', prefs.sbEnabled === false);
+  if (tbWrap) tbWrap.classList.toggle('disabled', prefs.tbEnabled === false);
+
+  // Remove old listeners before adding (re-entry safe)
+  var sbNew = sbDrum.cloneNode(true);
+  var tbNew = tbDrum.cloneNode(true);
+  sbDrum.parentNode.replaceChild(sbNew, sbDrum);
+  tbDrum.parentNode.replaceChild(tbNew, tbDrum);
+  sbNew.addEventListener('scroll', function() { fmOnWheelScroll('sb'); }, { passive: true });
+  tbNew.addEventListener('scroll', function() { fmOnWheelScroll('tb'); }, { passive: true });
+  // Re-scroll after DOM replace
+  fmScrollWheelTo(sbNew, sbBase);
+  fmScrollWheelTo(tbNew, tbBase);
+}
+
+function fmSetHalfToggle(type, on) {
+  var btn = document.getElementById('fm-' + type + '-half');
+  if (btn) btn.classList.toggle('on', !!on);
+}
+
+function fmToggleHalf(type) {
+  var btn = document.getElementById('fm-' + type + '-half');
+  if (!btn) return;
+  var nowOn = btn.classList.toggle('on');
+  // Update G.last* immediately
+  var drumId = (type === 'sb') ? 'fm-sb-drum' : 'fm-tb-drum';
+  var base = fmGetWheelValue(drumId);
+  if (base == null) return;
+  var val = nowOn ? base + 0.5 : base;
+  if (type === 'sb') G.lastSB = val; else G.lastTB = val;
+  fmSaveBoardData();
+}
+
+function fmScrollWheelTo(drum, value) {
+  var intVal = Math.floor(value);
+  var idx = FM_WHEEL_VALUES.indexOf(intVal);
+  if (idx < 0) idx = 0;
+  drum.scrollTop = idx * 36;
+}
+
+function fmGetWheelValue(drumId) {
+  var drum = document.getElementById(drumId);
+  if (!drum) return null;
+  var idx = Math.round(drum.scrollTop / 36);
+  idx = Math.max(0, Math.min(idx, FM_WHEEL_VALUES.length - 1));
+  return FM_WHEEL_VALUES[idx];
+}
+
+var _fmScrollTimers = { sb: null, tb: null };
+function fmOnWheelScroll(type) {
+  clearTimeout(_fmScrollTimers[type]);
+  _fmScrollTimers[type] = setTimeout(function() {
+    var drumId = (type === 'sb') ? 'fm-sb-drum' : 'fm-tb-drum';
+    var base = fmGetWheelValue(drumId);
+    if (base == null) return;
+    var halfBtn = document.getElementById('fm-' + type + '-half');
+    var isHalf = halfBtn && halfBtn.classList.contains('on');
+    var val = isHalf ? base + 0.5 : base;
+    if (type === 'sb') G.lastSB = val; else G.lastTB = val;
+    fmSaveBoardData();
+  }, 150);
+}
+
+function fmToggleWheel(type) {
+  var prefs = getPrefs();
+  var key = (type === 'sb') ? 'sbEnabled' : 'tbEnabled';
+  var patch = {};
+  patch[key] = (prefs[key] === false) ? true : false;
+  savePrefs(patch);
+  var wrap = document.getElementById('fm-' + type + '-wrap');
+  if (wrap) wrap.classList.toggle('disabled', patch[key] === false);
+}
+
+function fmSaveBoardData() {
+  var frame = getFrame(G.frame);
+  if (!frame) return;
+  var att = frameAttempts(frame.FrameID).find(function(a) { return a.Attempt === G.attempt; });
+  if (!att) return;
+  var prefs = getPrefs();
+  var sbBase = fmGetWheelValue('fm-sb-drum');
+  var tbBase = fmGetWheelValue('fm-tb-drum');
+  var sbHalfBtn = document.getElementById('fm-sb-half');
+  var tbHalfBtn = document.getElementById('fm-tb-half');
+  var sbHalf = sbHalfBtn && sbHalfBtn.classList.contains('on');
+  var tbHalf = tbHalfBtn && tbHalfBtn.classList.contains('on');
+  att.StartingBoard = (prefs.sbEnabled !== false && sbBase != null) ? (sbHalf ? sbBase + 0.5 : sbBase) : null;
+  att.TargetBoard   = (prefs.tbEnabled !== false && tbBase != null) ? (tbHalf ? tbBase + 0.5 : tbBase) : null;
+  saveAll();
+}
+
+function fmLoadBoardData() {
+  var frame = getFrame(G.frame);
+  if (!frame) return;
+  var att = frameAttempts(frame.FrameID).find(function(a) { return a.Attempt === G.attempt; });
+  var sbDrum = document.getElementById('fm-sb-drum');
+  var tbDrum = document.getElementById('fm-tb-drum');
+  if (!sbDrum || !tbDrum) return;
+  var prefs = getPrefs();
+
+  var sbVal = (att && att.StartingBoard != null) ? att.StartingBoard
+              : (G.lastSB != null ? G.lastSB : (prefs.defaultSB != null ? prefs.defaultSB : 17));
+  var tbVal = (att && att.TargetBoard != null) ? att.TargetBoard
+              : (G.lastTB != null ? G.lastTB : (prefs.defaultTB != null ? prefs.defaultTB : 10));
+
+  fmScrollWheelTo(sbDrum, sbVal);
+  fmScrollWheelTo(tbDrum, tbVal);
+  fmSetHalfToggle('sb', sbVal % 1 >= 0.5);
+  fmSetHalfToggle('tb', tbVal % 1 >= 0.5);
+}
+
+/* ── Floating ball chip — 4-corner dock within #fm-pin-anchor ──
+   Corners: TL=0, TR=1, BL=2, BR=3. Saved to localStorage.
+   Long-press (>300ms) initiates drag; release snaps to nearest corner. */
+var FM_CHIP_DOCK = 0; // default top-left
+var _fmChipDragState = null;
+
+function fmChipInit() {
+  var chip = document.getElementById('fm-float-chip');
+  if (!chip) return;
+  var stored = parseInt(localStorage.getItem('fm_chip_dock') || '0', 10);
+  // Remap legacy TL(0)/TR(1) to BL(0)/BR(1); BL(2)->BL(0), BR(3)->BR(1)
+  FM_CHIP_DOCK = (stored === 3) ? 1 : (stored === 1) ? 1 : 0;
+  fmChipApplyDock(FM_CHIP_DOCK, false);
+
+  chip.addEventListener('touchstart', fmChipTouchStart, { passive: false });
+  chip.addEventListener('touchmove',  fmChipTouchMove,  { passive: false });
+  chip.addEventListener('touchend',   fmChipTouchEnd,   { passive: false });
+}
+
+function fmChipApplyDock(corner, animate) {
+  var chip = document.getElementById('fm-float-chip');
+  if (!chip) return;
+  chip.style.transition = animate ? 'top 0.15s ease, left 0.15s ease, right 0.15s ease, bottom 0.15s ease' : 'none';
+  chip.style.top = chip.style.left = chip.style.right = chip.style.bottom = 'auto';
+  // Only BL (0) and BR (1) allowed — bottom corners only, away from pin triangle top
+  var gap = '6px';
+  if (corner === 0 || corner === 2) { chip.style.bottom = gap; chip.style.left = '50px'; }  // BL
+  else { chip.style.bottom = gap; chip.style.right = '50px'; }                               // BR
+}
+
+function fmChipTouchStart(e) {
+  var chip = document.getElementById('fm-float-chip');
+  _fmChipDragState = {
+    startX: e.touches[0].clientX,
+    startY: e.touches[0].clientY,
+    dragging: false,
+    longPressTimer: setTimeout(function() {
+      if (_fmChipDragState) {
+        _fmChipDragState.dragging = true;
+        chip.style.opacity = '1';
+        chip.style.transition = 'none';
+        haptic && haptic('light');
+      }
+    }, 300)
+  };
+}
+
+function fmChipTouchMove(e) {
+  if (!_fmChipDragState || !_fmChipDragState.dragging) return;
+  e.preventDefault();
+  var chip = document.getElementById('fm-float-chip');
+  var anchor = document.getElementById('fm-pin-anchor');
+  if (!chip || !anchor) return;
+  var rect = anchor.getBoundingClientRect();
+  var tx = e.touches[0].clientX - rect.left;
+  var ty = e.touches[0].clientY - rect.top;
+  // Move chip center to touch position, clamped within anchor
+  var cw = chip.offsetWidth, ch = chip.offsetHeight;
+  var x = Math.max(50, Math.min(tx - cw / 2, rect.width - cw - 50));
+  var y = Math.max(0,  Math.min(ty - ch / 2, rect.height - ch));
+  chip.style.top = 'auto'; chip.style.bottom = 'auto';
+  chip.style.left = 'auto'; chip.style.right = 'auto';
+  chip.style.top  = y + 'px';
+  chip.style.left = x + 'px';
+}
+
+function fmChipTouchEnd(e) {
+  if (!_fmChipDragState) return;
+  clearTimeout(_fmChipDragState.longPressTimer);
+  var wasDragging = _fmChipDragState.dragging;
+  _fmChipDragState = null;
+
+  var chip = document.getElementById('fm-float-chip');
+  if (!chip) return;
+  chip.style.opacity = '0.72';
+
+  if (!wasDragging) {
+    // Tap: expand ball strip
+    fmToggleBallStrip();
+    return;
+  }
+
+  // Snap to nearest corner based on current position
+  var anchor = document.getElementById('fm-pin-anchor');
+  var rect = anchor.getBoundingClientRect();
+  var chipRect = chip.getBoundingClientRect();
+  var cx = chipRect.left - rect.left + chipRect.width / 2;
+  var cy = chipRect.top  - rect.top  + chipRect.height / 2;
+  var midX = rect.width  / 2;
+  var midY = rect.height / 2;
+  // Only BL(0) or BR(1) — left/right based on horizontal position only
+  var corner = (cx < midX) ? 0 : 1;
+  FM_CHIP_DOCK = corner;
+  localStorage.setItem('fm_chip_dock', String(corner));
+  fmChipApplyDock(corner, true);
+}
+
+/* ── Active ball chip render ─────────────────────────────────── */
+function fmRenderActiveBallChip() {
+  var img  = document.getElementById('fm-chip-img');
+  var name = document.getElementById('fm-chip-name');
+  if (!img || !name) return;
+  var ball = (db.balls || []).find(function(b) { return b.BallID === G.ballID; });
+  if (ball) {
+    var slug = (ball.BallName || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    img.src = 'https://raw.githubusercontent.com/jmarsh85/bowlingdb-mobile/balls/balls/' + slug + '.png';
+    img.onerror = function() { img.src = ''; img.style.background = 'var(--bg4)'; };
+    name.textContent = ball.BallName || '';
+  } else {
+    img.src = '';
+    name.textContent = '\u2014';
+  }
+  var ntBtn = document.getElementById('fm-nt-btn');
+  if (ntBtn) {
+    var game = (db.games || []).find(function(g) { return g.GameID === G.gameID; });
+    ntBtn.classList.toggle('on', !!(game && game.NoTap));
+  }
+  var numBtn = document.getElementById('fm-num-btn');
+  if (numBtn) numBtn.classList.toggle('on', !!G.numericMode);
+}
+
+/* ── Expanded ball strip ─────────────────────────────────────── */
+function fmToggleBallStrip() {
+  var expanded = document.getElementById('fm-ball-expanded');
+  if (!expanded) return;
+  if (expanded.classList.contains('open')) fmCollapseBallStrip();
+  else fmExpandBallStrip();
+}
+function fmExpandBallStrip() {
+  var expanded = document.getElementById('fm-ball-expanded');
+  if (expanded) expanded.classList.add('open');
+}
+function fmCollapseBallStrip() {
+  var expanded = document.getElementById('fm-ball-expanded');
+  if (expanded) expanded.classList.remove('open');
+}
+
+/* ── Side strip navigation ───────────────────────────────────── */
+function fmHandlePrev() {
+  fmCollapseBallStrip();
+  if (G.attempt > 1) {
+    jumpToPosition(G.frame, G.attempt - 1);
+  } else {
+    if (G.frame <= 1) return;
+    jumpToPosition(G.frame - 1, 1);
+  }
+}
+
+function fmHandleNext() {
+  fmCollapseBallStrip();
+  if (fmIsFrameComplete()) {
+    if (G.frame >= 10) return;
+    jumpToPosition(G.frame + 1, 1);
+  } else {
+    confirmAttempt();
+  }
+}
+
+function fmIsFrameComplete() {
+  var frame = getFrame(G.frame);
+  if (!frame) return false;
+  var atts = frameAttempts(frame.FrameID);
+  if (G.frame <= 9) {
+    var a1 = atts.find(function(a) { return a.Attempt === 1; });
+    if (!a1 || a1.Pinfall === null) return false;
+    if (a1.Pinfall === 10) return true;
+    var a2 = atts.find(function(a) { return a.Attempt === 2; });
+    return !!(a2 && a2.Pinfall !== null);
+  } else {
+    var a1 = atts.find(function(a) { return a.Attempt === 1; });
+    var a2 = atts.find(function(a) { return a.Attempt === 2; });
+    if (!a1 || a1.Pinfall === null || !a2 || a2.Pinfall === null) return false;
+    var needs3 = (a1.Pinfall === 10) || (a1.Pinfall + a2.Pinfall === 10);
+    if (!needs3) return true;
+    var a3 = atts.find(function(a) { return a.Attempt === 3; });
+    return !!(a3 && a3.Pinfall !== null);
+  }
+}
+
 function renderFocusModePanel() {
-  const panel = document.getElementById('focus-mode-panel');
+  var panel = document.getElementById('focus-mode-panel');
   if (!panel || panel.style.display === 'none') return;
 
-  const frameNumEl = document.getElementById('fm-frame-num');
-  const gameNumEl = document.getElementById('fm-game-num');
-  const scoreEl = document.getElementById('fm-score-val');
-  if (frameNumEl) frameNumEl.textContent = G.frame;
-  if (gameNumEl) gameNumEl.textContent = G.gameNum;
-  // Mirror the already-computed running score rather than re-deriving it
-  const ctxScore = document.getElementById('ctx-score');
-  if (scoreEl) scoreEl.textContent = ctxScore ? ctxScore.textContent : '—';
+  var frameNumEl  = document.getElementById('fm-frame-num');
+  var gameBadgeEl = document.getElementById('fm-game-badge');
+  var attBadgeEl  = document.getElementById('fm-att-badge');
+  var modePillEl  = document.getElementById('fm-mode-pill');
+  var scoreEl     = document.getElementById('fm-score-val');
 
-  // Mini frame-history strip: current-2, current-1, current.
-  // Reuses attBoxHTML() so the X/spare/numeric notation always matches the
-  // main scorecard's rules (incl. F10 special-casing) rather than duplicating them.
-  // Hoisted once — used by both the mini-strip beer dots and the beer-row banner below
-  const series = db.series.find(s => s.SeriesID === G.seriesID);
-  const beerLog = series?.beerLog || [];
+  if (frameNumEl)  frameNumEl.textContent  = G.frame;
+  if (gameBadgeEl) gameBadgeEl.textContent = 'G' + G.gameNum;
+  if (attBadgeEl)  attBadgeEl.textContent  = 'A' + G.attempt;
+  if (modePillEl) {
+    var mode = getAttemptMode();
+    modePillEl.textContent = mode;
+    modePillEl.className = 'att-nav-modepill ' + mode;
+  }
+  var ctxScore = document.getElementById('ctx-score');
+  if (scoreEl) scoreEl.textContent = ctxScore ? ctxScore.textContent : '\u2014';
 
-  const miniEl = document.getElementById('fm-mini-strip');
+  var series  = db.series.find(function(s) { return s.SeriesID === G.seriesID; });
+  var beerLog = (series && series.beerLog) ? series.beerLog : [];
+  var miniEl  = document.getElementById('fm-mini-strip');
   if (miniEl) {
-    const wantFrames = [G.frame - 2, G.frame - 1, G.frame].filter(n => n >= 1 && n <= 10);
-    miniEl.innerHTML = wantFrames.map(fn => {
-      const fr = getFrame(fn);
-      const isCur = fn === G.frame;
-      const hasBeer = beerLog.some(e => e.game === G.gameNum && e.frame === fn);
-      const isLocked = isFrameLocked(fn);
-      const isMoveSelected = MOVE.active && MOVE.selected.has(fn);
-      let attsHTML = '<span class="fm-mini-att empty">—</span>';
+    var wantFrames = [G.frame - 2, G.frame - 1, G.frame].filter(function(n) { return n >= 1 && n <= 10; });
+    miniEl.innerHTML = wantFrames.map(function(fn) {
+      var fr = getFrame(fn);
+      var isCur = fn === G.frame;
+      var hasBeer = beerLog.some(function(e) { return e.game === G.gameNum && e.frame === fn; });
+      var isLocked = isFrameLocked(fn);
+      var isMoveSelected = MOVE.active && MOVE.selected.has(fn);
+      var attsHTML = '<span class="fm-mini-att empty">\u2014</span>';
       if (fr) {
-        const atts = frameAttempts(fr.FrameID);
-        const showNoTap = !!(db.games.find(g => g.GameID === G.gameID)?.NoTap);
-        const boxes = atts
-          .filter(a => a.Pinfall !== null)
-          .map(a => {
-            const html = attBoxHTML(a, fr, a.Attempt, atts, showNoTap);
-            // attBoxHTML always returns a single `<div class="att ...">DISP</div>` —
-            // pull the class list and display char straight out of that fixed shape.
-            const m = html.match(/^<div class="att\s*([^"]*)">([^<]*)<\/div>$/);
-            const cls = m ? m[1] : '';
-            const sym = m ? m[2] : String(a.Pinfall);
-            let dotCls = '';
+        var atts = frameAttempts(fr.FrameID);
+        var game = db.games.find(function(g) { return g.GameID === G.gameID; });
+        var showNoTap = !!(game && game.NoTap);
+        var boxes = atts
+          .filter(function(a) { return a.Pinfall !== null; })
+          .map(function(a) {
+            var html = attBoxHTML(a, fr, a.Attempt, atts, showNoTap);
+            var m = html.match(/^<div class="att\s*([^"]*)">(.*?)<\/div>$/);
+            var cls = m ? m[1] : '';
+            var sym = m ? m[2] : String(a.Pinfall);
+            var dotCls = '';
             if (/\bX\b|\bnt\b/.test(cls)) dotCls = 'X';
             else if (/\bsp\b/.test(cls)) dotCls = 'sp';
-            return `<span class="fm-mini-att ${dotCls}">${sym}</span>`;
+            return '<span class="fm-mini-att ' + dotCls + '">' + sym + '</span>';
           });
-        attsHTML = boxes.length ? boxes.join('') : '<span class="fm-mini-att empty">—</span>';
+        attsHTML = boxes.length ? boxes.join('') : '<span class="fm-mini-att empty">\u2014</span>';
       }
-      return `<div class="fm-mini-cell${isCur ? ' cur' : ''}${isLocked ? ' locked' : ''}${isMoveSelected ? ' move-sel' : ''}" onclick="jumpToFrame(${fn})">
-        <div class="fm-mini-fn">F${fn}${hasBeer ? ' <span class="fm-mini-beer">🍺</span>' : ''}${isLocked ? ` <span class="fm-mini-lock" onclick="event.stopPropagation();toggleFrameLock(${fn})" title="Frame locked — tap to unlock">\uD83D\uDD12</span>` : ''}</div>
-        <div class="fm-mini-atts">${attsHTML}</div>
-      </div>`;
+      var lockSpan = isLocked ? ' <span class="fm-mini-lock" onclick="event.stopPropagation();toggleFrameLock(' + fn + ')" title="Frame locked">\uD83D\uDD12</span>' : '';
+      var beerSpan = hasBeer ? ' <span class="fm-mini-beer">\uD83C\uDF7A</span>' : '';
+      return '<div class="fm-mini-cell' + (isCur?' cur':'') + (isLocked?' locked':'') + (isMoveSelected?' move-sel':'') + '" onclick="jumpToFrame(' + fn + ')">' +
+        '<div class="fm-mini-fn">F' + fn + beerSpan + lockSpan + '</div>' +
+        '<div class="fm-mini-atts">' + attsHTML + '</div></div>';
     }).join('');
   }
 
-  // Alt-mode parity indicator — surfaces which ball slot applies to THIS frame,
-  // resolving the "no clear odd/even indicator" gap from the backlog item.
-  const altPillEl = document.getElementById('fm-alt-pill');
+  var altPillEl = document.getElementById('fm-alt-pill');
   if (altPillEl) {
     if (G.altMode && G.altBall1 && G.altBall2) {
-      const isOdd = G.frame % 2 === 1;
+      var isOdd = G.frame % 2 === 1;
       altPillEl.style.display = 'inline-flex';
       altPillEl.className = 'fm-alt-pill ' + (isOdd ? 'ball1' : 'ball2');
-      altPillEl.textContent = isOdd ? '⇄ BALL 1' : '⇄ BALL 2';
+      altPillEl.textContent = isOdd ? '\u21c4 BALL 1' : '\u21c4 BALL 2';
     } else {
       altPillEl.style.display = 'none';
     }
   }
 
-  // Beer frame status for this game/frame, read from series.beerLog (existing source of truth)
-  const beerRowEl = document.getElementById('fm-beer-row');
-  const beerTextEl = document.getElementById('fm-beer-text');
-  const entries = beerLog.filter(e => e.game === G.gameNum && e.frame === G.frame);
+  var beerRowEl  = document.getElementById('fm-beer-row');
+  var beerTextEl = document.getElementById('fm-beer-text');
+  var entries = beerLog.filter(function(e) { return e.game === G.gameNum && e.frame === G.frame; });
   if (beerRowEl && beerTextEl) {
     if (entries.length) {
-      const names = [...new Set(entries.map(e => e.bowlerName))].join(', ');
-      beerTextEl.textContent = `🍺 ${names}`;
+      var names = [];
+      entries.forEach(function(e) { if (names.indexOf(e.bowlerName) < 0) names.push(e.bowlerName); });
+      beerTextEl.textContent = '\uD83C\uDF7A ' + names.join(', ');
       beerRowEl.classList.add('active');
     } else {
-      beerTextEl.textContent = '🍺 Tap to log beer frame';
+      beerTextEl.textContent = '\uD83C\uDF7A';
       beerRowEl.classList.remove('active');
     }
   }
 
-  // Prev/Next bounds
-  const prevBtn = document.getElementById('fm-prev-btn');
-  const nextBtn = document.getElementById('fm-next-btn');
-  if (prevBtn) prevBtn.disabled = G.frame <= 1;
-  if (nextBtn) nextBtn.disabled = G.frame >= 10;
+  var prevStrip = document.getElementById('fm-prev-strip');
+  var nextStrip = document.getElementById('fm-next-strip');
+  if (prevStrip) prevStrip.classList.toggle('disabled', G.frame <= 1 && G.attempt <= 1);
+  if (nextStrip) nextStrip.classList.toggle('disabled', G.frame >= 10 && fmIsFrameComplete());
+
+  fmRenderActiveBallChip();
+
+  if (document.getElementById('fm-sb-drum') && document.getElementById('fm-sb-drum').children.length > 0) {
+    fmLoadBoardData();
+  }
 }
 
-function focusModePrevFrame() {
-  if (G.frame <= 1) return;
-  jumpToPosition(G.frame - 1, 1);
-}
-
-function focusModeNextFrame() {
-  if (G.frame >= 10) return;
-  jumpToPosition(G.frame + 1, 1);
+/* Toggle numeric input mode from FM NUM button */
+function fmToggleNumeric() {
+  toggleNumericMode();
+  var btn = document.getElementById('fm-num-btn');
+  if (btn) btn.classList.toggle('on', !!G.numericMode);
+  // In FM, mode-instruction banner sits in qa-anchor below pins — hide it in numeric mode
+  var banner = document.getElementById('mode-instruction');
+  if (banner && getPrefs().focusMode) banner.style.display = G.numericMode ? 'none' : '';
 }
 
 function focusModeOpenBeer() {
-  // Reuse the existing beer frame modal exactly as the scorecard does
   openBeerFrameModal(G.frame);
 }
 
-/* Save Starting Board / Target Board from the input fields to the current attempt record */
 function saveBoardData() {
-  const frame = getFrame(G.frame);
+  var frame = getFrame(G.frame);
   if (!frame) return;
-  const att = frameAttempts(frame.FrameID).find(a=>a.Attempt===G.attempt);
+  var att = frameAttempts(frame.FrameID).find(function(a) { return a.Attempt === G.attempt; });
   if (!att) return;
-  const sb = document.getElementById('board-sb')?.value;
-  const tb = document.getElementById('board-tb')?.value;
-  att.StartingBoard = sb ? parseInt(sb) : null;
-  att.TargetBoard   = tb ? parseInt(tb) : null;
-  saveAll(); // persist immediately — no undo needed for board data
+  var sb = document.getElementById('board-sb') ? document.getElementById('board-sb').value : '';
+  var tb = document.getElementById('board-tb') ? document.getElementById('board-tb').value : '';
+  att.StartingBoard = sb ? parseFloat(sb) : null;
+  att.TargetBoard   = tb ? parseFloat(tb) : null;
+  saveAll();
 }
 
-/* Load SB/TB into the input fields from the current attempt record */
 function loadBoardData() {
-  const frame = getFrame(G.frame);
+  var frame = getFrame(G.frame);
   if (!frame) return;
-  const att = frameAttempts(frame.FrameID).find(a=>a.Attempt===G.attempt);
-  const sbEl = document.getElementById('board-sb');
-  const tbEl = document.getElementById('board-tb');
-  if (sbEl) sbEl.value = att?.StartingBoard ?? '';
-  if (tbEl) tbEl.value = att?.TargetBoard ?? '';
+  var att = frameAttempts(frame.FrameID).find(function(a) { return a.Attempt === G.attempt; });
+  var sbEl = document.getElementById('board-sb');
+  var tbEl = document.getElementById('board-tb');
+  if (sbEl) sbEl.value = (att && att.StartingBoard != null) ? att.StartingBoard : '';
+  if (tbEl) tbEl.value = (att && att.TargetBoard   != null) ? att.TargetBoard   : '';
 }
+
+
 
 function updateScoringContext() {
   const mode = getAttemptMode();
@@ -17384,6 +17933,10 @@ function applyNumericModeUI() {
   const numPad    = document.getElementById('num-pad');
   const toggle    = document.getElementById('num-mode-toggle');
   const banner    = document.getElementById('mode-instruction');
+  // v30.8 diagnostic: verify elements found and their current parent
+  console.log('[applyNumericModeUI] numericMode='+G.numericMode
+    +' pinStage='+(pinStage ? pinStage.parentElement?.id : 'null')
+    +' numPad='+(numPad ? numPad.parentElement?.id : 'null'));
   if (pinStage) pinStage.style.display = G.numericMode ? 'none' : '';
   if (numPad)   numPad.style.display   = G.numericMode ? 'grid' : 'none';
   if (toggle)   toggle.classList.toggle('active', G.numericMode);
