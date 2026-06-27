@@ -1086,6 +1086,7 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
 /* fm-active just marks state — display driven by inline style in enterFocusMode */
 #focus-mode-panel.fm-active {
   display:flex;
+  height:100%;
   min-height:0;
 }
 /* When s-scoring hosts FM, strip its padding so panel fills the full area */
@@ -9243,9 +9244,10 @@ function fmRenderActiveBallChip() {
   if (!img || !name) return;
   var ball = (db.balls || []).find(function(b) { return b.BallID === G.ballID; });
   if (ball) {
-    var slug = (ball.BallName || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-    img.src = 'https://raw.githubusercontent.com/jmarsh85/bowlingdb-mobile/balls/balls/' + slug + '.png';
-    img.onerror = function() { img.src = ''; img.style.background = 'var(--bg4)'; };
+    var src = getBallImgSrc(ball.BallID, 'cover') || '';
+    img.src = src;
+    img.onerror = function() { this.style.display = 'none'; };
+    img.style.display = src ? '' : 'none';
     name.textContent = ball.BallName || '';
   } else {
     img.src = '';
