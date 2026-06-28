@@ -7903,7 +7903,9 @@ function openGame(gameID, gameNum) {
   // correction now so the ball bar shows the right ball immediately on game open.
   // (autoSelectBall is normally only called by advanceState, not at game open.)
   if (G.altMode && G.altBall1 && G.altBall2 && !att1s.length) {
-    const frame1Ball = (1 % 2 === 1) ? G.altBall1 : G.altBall2; // frame 1 is odd → altBall1
+    // Use same offset formula as autoSelectBall() so parity is always consistent
+    const openOffset = 1 - (G.altStartFrame || 1);
+    const frame1Ball = (openOffset % 2 === 0) ? G.altBall1 : G.altBall2;
     if (db.balls.find(b => b.BallID === frame1Ball && b.Active !== false)) {
       G.ballID = frame1Ball;
       G.lastBallAtt1 = frame1Ball;
@@ -8801,10 +8803,9 @@ function updateFrameFlags(frame) {
    Called by advanceState() after frame/attempt is updated. */
 function autoSelectBall() {
   if (G.attempt === 1) {
-    if (G.altMode && G.altBall1 && G.altBall2) {
-      // Alternating mode: frames at even offset from altStartFrame get altBall1,
-      // odd-offset frames get altBall2 — so altBall1 always applies to the frame
-      // where the user set up ALT, altBall2 to the next, and so on.
+    if (G.altMode && G.altBall1 && G.altBall2 && G.frame < 10) {
+      // Alternating mode applies only to frames 1-9 (lane alternation between frames).
+      // Frame 10 is one lane position held for the whole frame — no alternation.
       const offset = (G.frame - (G.altStartFrame || 1));
       const newBall = (offset % 2 === 0) ? G.altBall1 : G.altBall2;
       if (db.balls.find(b => b.BallID === newBall && b.Active !== false)) {
@@ -10160,10 +10161,12 @@ function renderFocusModePanel() {
   var altPillEl = document.getElementById('fm-alt-pill');
   if (altPillEl) {
     if (G.altMode && G.altBall1 && G.altBall2) {
-      var isOdd = G.frame % 2 === 1;
+      // Parity must match autoSelectBall(): even offset from altStartFrame = Ball 1
+      var altOffset = G.frame - (G.altStartFrame || 1);
+      var isBall1 = (altOffset % 2 === 0);
       altPillEl.style.display = 'inline-flex';
-      altPillEl.className = 'fm-alt-pill ' + (isOdd ? 'ball1' : 'ball2');
-      altPillEl.textContent = isOdd ? '\u21c4 BALL 1' : '\u21c4 BALL 2';
+      altPillEl.className = 'fm-alt-pill ' + (isBall1 ? 'ball1' : 'ball2');
+      altPillEl.textContent = isBall1 ? '\u21c4 BALL 1' : '\u21c4 BALL 2';
     } else {
       altPillEl.style.display = 'none';
     }
@@ -16321,11 +16324,17 @@ function selectBall(id) {
     renderBallBar();
     return;
   }
-  // Att2 (spare attempt, frames 1-9): selecting a ball only updates lastBallAtt2,
-  // never touches alt slots. Alt mode only applies to first-ball (att1) selections.
-  if (G.altMode && G.attempt === 2 && G.frame <= 9) {
+  // Frame 10 (all attempts) and spare/fill attempts (att2+ any frame):
+  // ball selection only updates G.ballID / lastBallAtt1 or lastBallAtt2 as appropriate.
+  // Alt slots (altBall1/altBall2/altStartFrame) are NEVER touched — frame 10 is one
+  // lane position, not subject to lane alternation, and spare attempts never affect alt.
+  if (G.altMode && (G.frame === 10 || G.attempt > 1)) {
     G.ballID = id;
-    G.lastBallAtt2 = id;
+    if (G.attempt === 1) {
+      G.lastBallAtt1 = id; // F10 att1: remember for att2/att3 fresh-rack ball selection
+    } else {
+      G.lastBallAtt2 = id;
+    }
     renderBallBar();
     if (getPrefs().focusMode) renderFocusModePanel();
     return;
