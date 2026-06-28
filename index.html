@@ -1094,7 +1094,7 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
    any non-FM content that would otherwise be reachable by scrolling. */
 #s-scoring.fm-host {
   padding:0 !important;
-  overflow:hidden !important;
+  overflow:hidden; /* intentionally no !important — JS sets overflowY:auto when MOVE mode is active */
 }
 
 .fm-header {
