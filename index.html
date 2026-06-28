@@ -1089,9 +1089,12 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
   height:100%;
   min-height:0;
 }
-/* When s-scoring hosts FM, strip its padding so panel fills the full area */
+/* When s-scoring hosts FM, strip its padding so panel fills the full area.
+   overflow:hidden kills scroll (prevents pin-drag interference) and clips
+   any non-FM content that would otherwise be reachable by scrolling. */
 #s-scoring.fm-host {
   padding:0 !important;
+  overflow:hidden !important;
 }
 
 .fm-header {
@@ -3069,7 +3072,7 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
 
         <!-- QA row -->
         <!-- Move Frames bar in FM — flex child, sits above QA row, expands upward -->
-        <div id="fm-mfb-overlay" style="display:none"></div>
+        <div id="fm-mfb-overlay" style="display:none;border:none;background:none"></div>
         <div id="fm-qa-anchor"></div>
 
       </div>
