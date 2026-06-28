@@ -18716,6 +18716,10 @@ function toggleMoveFramesMode() {
     document.querySelectorAll('.sc-wrap').forEach(el => {
       el.style.display = MOVE.active ? '' : 'none';
     });
+    // Temporarily unlock scroll on #s-scoring so the scorecard + move-frames
+    // bar are reachable. Re-lock to overflow:hidden when MOVE exits.
+    var scoringEl = document.getElementById('s-scoring');
+    if (scoringEl) scoringEl.style.overflowY = MOVE.active ? 'auto' : 'hidden';
   }
 
   if (MOVE.active) {
