@@ -9186,10 +9186,12 @@ function fmChipApplyDock(corner, animate) {
   if (!chip) return;
   chip.style.transition = animate ? 'top 0.15s ease, left 0.15s ease, right 0.15s ease, bottom 0.15s ease' : 'none';
   chip.style.top = chip.style.left = chip.style.right = chip.style.bottom = 'auto';
-  // Only BL (0) and BR (1) allowed — bottom corners only, away from pin triangle top
-  var gap = '6px';
-  if (corner === 0 || corner === 2) { chip.style.bottom = gap; chip.style.left = gap; }  // BL
-  else { chip.style.bottom = gap; chip.style.right = gap; }                               // BR
+  // Only BL (0) and BR (1) allowed — bottom corners only.
+  // bottom:62px lifts the chip clear of the QA row (Confirm/Strike) directly below the anchor.
+  var bottomGap = '62px';
+  var sideGap   = '6px';
+  if (corner === 0 || corner === 2) { chip.style.bottom = bottomGap; chip.style.left = sideGap; }  // BL
+  else { chip.style.bottom = bottomGap; chip.style.right = sideGap; }                               // BR
 }
 
 function fmChipTouchStart(e) {
@@ -9312,9 +9314,11 @@ function fmSpareChipApplyDock(corner, animate) {
   chip.style.top = chip.style.left = chip.style.right = chip.style.bottom = 'auto';
   // Bottom corners only — mirrors primary chip. Default BR (1) so chips naturally
   // sit on opposite sides: primary BL, spare BR.
-  var gap = '6px';
-  if (corner === 0) { chip.style.bottom = gap; chip.style.left = gap; }  // BL
-  else              { chip.style.bottom = gap; chip.style.right = gap; } // BR
+  // bottom:62px lifts the chip clear of the QA row directly below the anchor.
+  var bottomGap = '62px';
+  var sideGap   = '6px';
+  if (corner === 0) { chip.style.bottom = bottomGap; chip.style.left = sideGap; }  // BL
+  else              { chip.style.bottom = bottomGap; chip.style.right = sideGap; } // BR
 }
 
 function fmSpareChipTouchStart(e) {
