@@ -3139,11 +3139,20 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
             <div style="display:flex;align-items:center;gap:4px;margin-top:1px">
               <span id="fm-att-badge" style="font-size:9px;font-weight:800;color:var(--teal)">A1</span>
               <span id="fm-mode-pill" class="att-nav-modepill FRESH">LEAVE</span>
+              <span id="fm-notes-dot" onclick="openAttemptNotesModal()" title="Attempt Notes"
+                style="width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+                cursor:pointer;flex-shrink:0;-webkit-tap-highlight-color:transparent;transition:all 0.15s">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                  stroke-linecap="round" stroke-linejoin="round" style="color:var(--t3)">
+                  <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+                  <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                </svg>
+              </span>
             </div>
           </div>
           <div class="fm-mini-strip" id="fm-mini-strip"></div>
-          <div class="fm-header-right">
-            <div class="fm-score-label">SCORE</div>
+          <div class="fm-header-right" onclick="fmScoreCycleAdvance()" style="cursor:pointer;-webkit-tap-highlight-color:transparent">
+            <div class="fm-score-label" id="fm-score-label">SCORE</div>
             <div class="fm-score-val" id="fm-score-val">&#x2014;</div>
           </div>
         </div>
@@ -9076,6 +9085,162 @@ function nextBalls(frames, fromIdx, count, noTap=false) {
 /* =============================================================
    FINISH GAME
    ============================================================= */
+/* =============================================================
+   SOLO PACE / MAX SCORE PROJECTIONS
+   Ported from the group projected score engine (grpProjectedTotal).
+   Uses live attempt data from the current solo game.
+   paceScore: remaining frames each score 20 (spare pace)
+   maxScore:  remaining frames each score 30 (all strikes)
+   ============================================================= */
+function soloPaceNthFutureBall(afterFrame, n) {
+  var frames = gameFrames().sort(function(a,b){return a.FrameNumber-b.FrameNumber;});
+  var remaining = n;
+  for (var fi = 0; fi < frames.length; fi++) {
+    var fr = frames[fi];
+    if (fr.FrameNumber <= afterFrame) continue;
+    var atts = frameAttempts(fr.FrameID);
+    var v1 = (atts.find(function(a){return a.Attempt===1;}) || {}).Pinfall;
+    var v2 = (atts.find(function(a){return a.Attempt===2;}) || {}).Pinfall;
+    var v3 = (atts.find(function(a){return a.Attempt===3;}) || {}).Pinfall;
+    if (v1 === null || v1 === undefined) {
+      remaining--; if (remaining === 0) return 10;
+      remaining--; if (remaining === 0) return 0;
+      continue;
+    }
+    remaining--; if (remaining === 0) return v1;
+    if (fr.FrameNumber < 10) {
+      if (v1 === 10) continue; // strike — no att2 in this frame
+      var b2 = (v2 !== null && v2 !== undefined) ? v2 : Math.max(0, 10 - v1);
+      remaining--; if (remaining === 0) return b2;
+    } else {
+      var b2f10 = (v2 !== null && v2 !== undefined) ? v2 : (v1 === 10 ? 0 : Math.max(0, 10 - v1));
+      remaining--; if (remaining === 0) return b2f10;
+      if (v1 === 10 || (v1 + (v2 || 0)) === 10) {
+        var b3 = (v3 !== null && v3 !== undefined) ? v3 : 10;
+        remaining--; if (remaining === 0) return b3;
+      }
+    }
+  }
+  return 0;
+}
+
+function soloProjectedFrameScore(fr, isMax) {
+  var atts = frameAttempts(fr.FrameID);
+  var v1 = (atts.find(function(a){return a.Attempt===1;}) || {}).Pinfall;
+  var v2 = (atts.find(function(a){return a.Attempt===2;}) || {}).Pinfall;
+  var v3 = (atts.find(function(a){return a.Attempt===3;}) || {}).Pinfall;
+  var fn = fr.FrameNumber;
+  var a1 = v1 || 0, a2 = v2 || 0;
+
+  // If frame is fully scored, use real value
+  if (fr.RunningTotal !== null && fr.RunningTotal !== undefined) {
+    var frames = gameFrames().sort(function(a,b){return a.FrameNumber-b.FrameNumber;});
+    var prev = 0;
+    for (var i = 0; i < frames.length; i++) {
+      if (frames[i].FrameNumber === fn - 1 && frames[i].RunningTotal !== null) prev = frames[i].RunningTotal;
+    }
+    return fr.RunningTotal - prev;
+  }
+
+  if (fn === 10) {
+    if (isMax) {
+      if (v1 === null || v1 === undefined) return 30;
+      if (a1 === 10) return 30;
+      if (v2 === null || v2 === undefined) return 20;
+      if (a1 + a2 === 10) return 20;
+      return a1 + a2;
+    } else {
+      if (v1 === null || v1 === undefined) return 20;
+      if (a1 === 10) { return (v2 !== null && v2 !== undefined && a2 === 10) ? 30 : 20; }
+      if (v2 === null || v2 === undefined) return 20;
+      if (a1 + a2 === 10) return 20;
+      return a1 + a2;
+    }
+  }
+  // Frames 1-9
+  if (isMax) {
+    if (v1 === null || v1 === undefined) return 30;
+    if (a1 === 10) return 30;
+    if (v2 === null || v2 === undefined) return 20;
+    if (a1 + a2 === 10) return 20;
+    return a1 + a2;
+  } else {
+    if (v1 === null || v1 === undefined) return 20;
+    if (a1 === 10) {
+      var b1 = soloPaceNthFutureBall(fn, 1);
+      var b2 = soloPaceNthFutureBall(fn, 2);
+      return 10 + b1 + b2;
+    }
+    if (v2 === null || v2 === undefined) return 20;
+    if (a1 + a2 === 10) return 10 + soloPaceNthFutureBall(fn, 1);
+    return a1 + a2;
+  }
+}
+
+function calcSoloProjectedTotal(isMax) {
+  calculateScores(); // ensure RunningTotal is current
+  var frames = gameFrames().sort(function(a,b){return a.FrameNumber-b.FrameNumber;});
+  if (!frames.length) return null;
+  var total = 0;
+  for (var i = 0; i < frames.length; i++) {
+    total += soloProjectedFrameScore(frames[i], isMax);
+  }
+  return Math.min(isMax ? 300 : 290, total);
+}
+
+function calcPaceScore() { return calcSoloProjectedTotal(false); }
+function calcMaxScore()  { return calcSoloProjectedTotal(true); }
+
+/* =============================================================
+   FM SCORE DISPLAY — cycles SCORE / PACE / MAX every 3s
+   Tap to advance immediately.
+   ============================================================= */
+var _fmScoreCycleIdx  = 0;  // 0=score, 1=pace, 2=max
+var _fmScoreCycleTimer = null;
+var _fmScoreModes = ['SCORE','PACE','MAX'];
+
+function fmScoreCycleStart() {
+  fmScoreCycleStop();
+  fmScoreCycleRender();
+  _fmScoreCycleTimer = setInterval(function() {
+    _fmScoreCycleIdx = (_fmScoreCycleIdx + 1) % _fmScoreModes.length;
+    fmScoreCycleRender();
+  }, 3000);
+}
+
+function fmScoreCycleStop() {
+  if (_fmScoreCycleTimer) { clearInterval(_fmScoreCycleTimer); _fmScoreCycleTimer = null; }
+}
+
+function fmScoreCycleAdvance() {
+  // Tap: jump immediately to next, reset timer
+  _fmScoreCycleIdx = (_fmScoreCycleIdx + 1) % _fmScoreModes.length;
+  fmScoreCycleStart();
+}
+
+function fmScoreCycleRender() {
+  var labelEl = document.getElementById('fm-score-label');
+  var valEl   = document.getElementById('fm-score-val');
+  if (!valEl) return;
+  var mode = _fmScoreModes[_fmScoreCycleIdx];
+  var val;
+  if (mode === 'SCORE') {
+    var ctxScore = document.getElementById('ctx-score');
+    val = ctxScore ? ctxScore.textContent : '—';
+    if (valEl) valEl.style.color = 'var(--teal)';
+  } else if (mode === 'PACE') {
+    var p = calcPaceScore();
+    val = (p !== null) ? p : '—';
+    if (valEl) valEl.style.color = 'var(--gold)';
+  } else {
+    var m = calcMaxScore();
+    val = (m !== null) ? m : '—';
+    if (valEl) valEl.style.color = 'var(--purple)';
+  }
+  if (labelEl) labelEl.textContent = mode;
+  valEl.textContent = val;
+}
+
 function finishGame() {
   calculateScores();
   const frames = gameFrames();
@@ -9397,6 +9562,8 @@ function enterFocusMode() {
   fmChipInit();
   fmSpareChipInit();
   fmRenderActiveBallChip();
+  _fmScoreCycleIdx = 0;
+  fmScoreCycleStart();
   renderFocusModePanel();
 }
 
@@ -9430,6 +9597,7 @@ function exitFocusMode() {
   if (panel) { panel.classList.remove('fm-active'); panel.style.display = 'none'; }
   var scoringScreen = document.getElementById('s-scoring');
   if (scoringScreen) { scoringScreen.classList.remove('fm-host'); scoringScreen.scrollTop = 0; }
+  fmScoreCycleStop();
   // Restore normal QA row layout
   var qaRowRestore = document.getElementById('qa-row');
   if (qaRowRestore) qaRowRestore.classList.remove('fm-active-qa');
@@ -9620,7 +9788,7 @@ function fmChipApplyDock(corner, animate) {
   chip.style.top = chip.style.left = chip.style.right = chip.style.bottom = 'auto';
   // Only BL (0) and BR (1) allowed — bottom corners only.
   // bottom:62px lifts the chip clear of the QA row (Confirm/Strike) directly below the anchor.
-  var bottomGap = '62px';
+  var bottomGap = '10px';
   var sideGap   = '6px';
   if (corner === 0 || corner === 2) { chip.style.bottom = bottomGap; chip.style.left = sideGap; }  // BL
   else { chip.style.bottom = bottomGap; chip.style.right = sideGap; }                               // BR
@@ -9747,7 +9915,7 @@ function fmSpareChipApplyDock(corner, animate) {
   // Bottom corners only — mirrors primary chip. Default BR (1) so chips naturally
   // sit on opposite sides: primary BL, spare BR.
   // bottom:62px lifts the chip clear of the QA row directly below the anchor.
-  var bottomGap = '62px';
+  var bottomGap = '10px';
   var sideGap   = '6px';
   if (corner === 0) { chip.style.bottom = bottomGap; chip.style.left = sideGap; }  // BL
   else              { chip.style.bottom = bottomGap; chip.style.right = sideGap; } // BR
@@ -9948,8 +10116,8 @@ function renderFocusModePanel() {
     modePillEl.textContent = mode;
     modePillEl.className = 'att-nav-modepill ' + mode;
   }
-  var ctxScore = document.getElementById('ctx-score');
-  if (scoreEl) scoreEl.textContent = ctxScore ? ctxScore.textContent : '\u2014';
+  // Score display is managed by fmScoreCycleRender() (SCORE/PACE/MAX cycle)
+  fmScoreCycleRender();
 
   var series  = db.series.find(function(s) { return s.SeriesID === G.seriesID; });
   var beerLog = (series && series.beerLog) ? series.beerLog : [];
@@ -18558,7 +18726,15 @@ function updateNotesIconState() {
   if (clearBtn) {
     const hasData = !!(att && att.Pinfall !== null);
     clearBtn.classList.toggle('has-data', hasData);
+    // Sync FM header notes dot
+  var fmDot = document.getElementById('fm-notes-dot');
+  if (fmDot) {
+    fmDot.style.background = hasNote ? 'rgba(255,215,0,0.15)' : 'transparent';
+    fmDot.style.border = hasNote ? '1px solid rgba(255,215,0,0.5)' : 'none';
+    var dotSvg = fmDot.querySelector('svg');
+    if (dotSvg) dotSvg.style.color = hasNote ? 'var(--gold)' : 'var(--t3)';
   }
+}
 }
 
 /* =============================================================
