@@ -1038,6 +1038,109 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
    MOVE FRAMES — select/shift correction tool (Item 2, v30.6)
    ============================================================ */
 #hdr-move-btn.active { color:var(--gold); background:rgba(255,215,0,0.12); }
+#hdr-practice-btn.active { color:var(--purple); background:rgba(157,78,221,0.12); }
+
+/* ── Shot Detail Prompt ─────────────────────────────────────────
+   Post-confirm bottom sheet. Slides up after advanceState() fires.
+   Lives at the bottom of #focus-mode-panel (FM) or as a fixed
+   overlay in standard scoring mode.                              */
+#shot-detail-prompt {
+  position:absolute; left:0; right:0; bottom:0;
+  background:var(--bg2);
+  border-top:1px solid var(--border1);
+  border-radius:14px 14px 0 0;
+  padding:10px 14px 14px;
+  z-index:30;
+  transform:translateY(100%);
+  transition:transform 0.18s ease;
+  box-shadow:0 -4px 24px rgba(0,0,0,0.4);
+}
+#shot-detail-prompt.sdp-open { transform:translateY(0); }
+.sdp-header {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:10px;
+}
+.sdp-title {
+  font-size:11px; font-weight:800; letter-spacing:0.6px;
+  color:var(--purple); text-transform:uppercase;
+}
+.sdp-dismiss {
+  font-size:18px; color:var(--t3); cursor:pointer; line-height:1;
+  padding:0 2px;
+  -webkit-tap-highlight-color:transparent;
+}
+/* Segmented control row */
+.sdp-row {
+  display:flex; align-items:center; gap:8px; margin-bottom:8px;
+}
+.sdp-lbl {
+  font-size:10px; font-weight:800; color:var(--t3);
+  letter-spacing:0.5px; text-transform:uppercase;
+  width:46px; flex-shrink:0;
+}
+.sdp-seg {
+  display:flex; gap:3px; flex:1;
+}
+.sdp-seg-btn {
+  flex:1; padding:6px 4px;
+  background:var(--bg3); border:1px solid var(--border2);
+  border-radius:7px; color:var(--t2);
+  font-size:11px; font-weight:700;
+  cursor:pointer; -webkit-tap-highlight-color:transparent;
+  transition:all 0.1s; text-align:center;
+  white-space:nowrap;
+}
+.sdp-seg-btn.sel {
+  background:rgba(157,78,221,0.18);
+  border-color:var(--purple);
+  color:var(--purple);
+}
+.sdp-seg-btn.sel.teal {
+  background:rgba(0,217,217,0.15);
+  border-color:var(--teal);
+  color:var(--teal);
+}
+/* Miss board picker — hidden until L or R is tapped */
+.sdp-miss-boards {
+  display:none; gap:3px; flex-wrap:wrap; margin-top:4px; margin-left:54px;
+}
+.sdp-miss-boards.visible { display:flex; }
+.sdp-board-btn {
+  padding:4px 8px; font-size:11px; font-weight:700;
+  background:var(--bg3); border:1px solid var(--border2);
+  border-radius:6px; color:var(--t2); cursor:pointer;
+  -webkit-tap-highlight-color:transparent; transition:all 0.1s;
+}
+.sdp-board-btn.sel {
+  background:rgba(232,93,76,0.18); border-color:var(--red); color:var(--red);
+}
+/* Footer actions */
+.sdp-footer {
+  display:flex; align-items:center; gap:8px; margin-top:10px;
+  padding-top:10px; border-top:1px solid var(--border1);
+}
+.sdp-save-btn {
+  flex:1; padding:10px; border-radius:10px; border:none;
+  background:rgba(157,78,221,0.22); color:var(--purple);
+  font-size:13px; font-weight:800; cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+  transition:opacity 0.1s;
+}
+.sdp-skip-btn {
+  padding:10px 14px; border-radius:10px;
+  background:none; border:1px solid var(--border2);
+  color:var(--t3); font-size:12px; font-weight:700;
+  cursor:pointer; -webkit-tap-highlight-color:transparent;
+}
+/* Save-alignment footer line (spare conversion only) */
+.sdp-align-save {
+  display:none; margin-top:8px; padding:8px 10px;
+  background:rgba(0,217,217,0.08); border:1px solid rgba(0,217,217,0.2);
+  border-radius:8px; font-size:11px; color:var(--teal);
+  cursor:pointer; -webkit-tap-highlight-color:transparent;
+  text-align:center; font-weight:700;
+}
+.sdp-align-save.visible { display:block; }
 
 .sc-frame.move-mode { cursor:pointer; }
 .sc-frame.move-sel {
@@ -1289,6 +1392,15 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
 #fm-pin-anchor .pin-row { gap:14px; }
 #fm-pin-anchor .pin-btn { width:68px; height:68px; font-size:20px; }
 #fm-pin-anchor .num-pad { padding:0 14px; } /* display managed entirely by applyNumericModeUI() inline style */
+
+/* Focus Mode QA row — only Spare / is shown; primary, secondary (Miss), and Confirm hidden */
+.fm-active-qa #qa-primary        { display:none !important; }
+.fm-active-qa #qa-secondary      { display:none !important; }
+.fm-active-qa #btn-confirm       { display:none !important; }
+.fm-active-qa #qa-spare          { flex:1; opacity:1 !important;
+  background:linear-gradient(135deg,#006868,var(--teal));
+  color:#0A0D14; box-shadow:var(--glow-teal); }
+.fm-active-qa #qa-spare:disabled { opacity:0.28 !important; box-shadow:none; }
 
 /* ── Side strip Prev/Next ───────────────────────────────────── */
 .fm-side-strip {
@@ -2781,6 +2893,11 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
           <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/>
         </svg>
       </div>
+      <div class="hdr-icon-btn" id="hdr-practice-btn" onclick="togglePracticeMode()" title="Practice Mode — log shot detail" style="display:none">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/>
+        </svg>
+      </div>
       <div class="hdr-icon-btn" id="hdr-focus-btn" onclick="toggleFocusMode()" title="Focus Mode (one frame at a time)" style="display:none">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
@@ -3090,6 +3207,80 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
         <!-- Move Frames bar in FM — flex child, sits above QA row, expands upward -->
         <div id="fm-mfb-overlay" style="display:none;border:none;background:none"></div>
         <div id="fm-qa-anchor"></div>
+
+        <!-- Shot Detail Prompt — Practice Mode post-confirm sheet -->
+        <div id="shot-detail-prompt">
+          <div class="sdp-header">
+            <span class="sdp-title" id="sdp-title">Shot Detail</span>
+            <span class="sdp-dismiss" onclick="sdDismiss()">&#x2715;</span>
+          </div>
+          <!-- Marker row -->
+          <div class="sdp-row" id="sdp-row-marker">
+            <span class="sdp-lbl">Marker</span>
+            <div class="sdp-seg">
+              <div class="sdp-seg-btn" id="sdp-marker-dots"    onclick="sdSetField('marker','dots')">Dots</div>
+              <div class="sdp-seg-btn" id="sdp-marker-arrows"  onclick="sdSetField('marker','arrows')">Arrows</div>
+              <div class="sdp-seg-btn" id="sdp-marker-downlane" onclick="sdSetField('marker','downlane')">Downlane</div>
+              <div class="sdp-seg-btn" id="sdp-marker-pins"   onclick="sdSetField('marker','pins')">Pins</div>
+            </div>
+          </div>
+          <!-- Speed + Revs row -->
+          <div class="sdp-row" id="sdp-row-speed-revs">
+            <span class="sdp-lbl">Speed</span>
+            <div class="sdp-seg" style="flex:0.6">
+              <div class="sdp-seg-btn" id="sdp-speed-S" onclick="sdSetField('speed','S')">S</div>
+              <div class="sdp-seg-btn" id="sdp-speed-M" onclick="sdSetField('speed','M')">M</div>
+              <div class="sdp-seg-btn" id="sdp-speed-F" onclick="sdSetField('speed','F')">F</div>
+            </div>
+            <span class="sdp-lbl" style="width:36px;text-align:right">Revs</span>
+            <div class="sdp-seg" style="flex:0.6">
+              <div class="sdp-seg-btn" id="sdp-revs-L" onclick="sdSetField('revs','L')">L</div>
+              <div class="sdp-seg-btn" id="sdp-revs-M" onclick="sdSetField('revs','M')">M</div>
+              <div class="sdp-seg-btn" id="sdp-revs-H" onclick="sdSetField('revs','H')">H</div>
+            </div>
+          </div>
+          <!-- Entry row — FRESH attempts only, hidden on spare -->
+          <div class="sdp-row" id="sdp-row-entry" style="display:none">
+            <span class="sdp-lbl">Entry</span>
+            <div class="sdp-seg">
+              <div class="sdp-seg-btn" id="sdp-entry-high"      onclick="sdSetField('entry','high')">High</div>
+              <div class="sdp-seg-btn" id="sdp-entry-light"     onclick="sdSetField('entry','light')">Light</div>
+              <div class="sdp-seg-btn" id="sdp-entry-flush"     onclick="sdSetField('entry','flush')">Flush</div>
+              <div class="sdp-seg-btn" id="sdp-entry-crossover" onclick="sdSetField('entry','crossover')">Cross</div>
+            </div>
+          </div>
+          <!-- Miss row — all attempts -->
+          <div class="sdp-row" id="sdp-row-miss">
+            <span class="sdp-lbl">Miss</span>
+            <div class="sdp-seg">
+              <div class="sdp-seg-btn sel teal" id="sdp-miss-none" onclick="sdSetField('miss',null)">&#x2713; On</div>
+              <div class="sdp-seg-btn" id="sdp-miss-L" onclick="sdSetField('miss','L')">Left</div>
+              <div class="sdp-seg-btn" id="sdp-miss-R" onclick="sdSetField('miss','R')">Right</div>
+            </div>
+          </div>
+          <!-- Board count row — visible when L or R selected -->
+          <div class="sdp-miss-boards" id="sdp-miss-boards">
+            <div class="sdp-board-btn" onclick="sdSetBoards(1)">1</div>
+            <div class="sdp-board-btn" onclick="sdSetBoards(2)">2</div>
+            <div class="sdp-board-btn" onclick="sdSetBoards(3)">3</div>
+            <div class="sdp-board-btn" onclick="sdSetBoards(4)">4</div>
+            <div class="sdp-board-btn" onclick="sdSetBoards(5)">5</div>
+            <div class="sdp-board-btn" onclick="sdSetBoards(6)">6</div>
+            <div class="sdp-board-btn" onclick="sdSetBoards(7)">7</div>
+            <div class="sdp-board-btn" onclick="sdSetBoards(8)">8</div>
+            <div class="sdp-board-btn" onclick="sdSetBoards(9)">9</div>
+            <div class="sdp-board-btn" onclick="sdSetBoards(10)">10+</div>
+          </div>
+          <!-- Save alignment shortcut — spare conversion only -->
+          <div class="sdp-align-save" id="sdp-align-save" onclick="sdSaveAlignment()">
+            &#x2605; Save as default setup for this spare
+          </div>
+          <!-- Footer -->
+          <div class="sdp-footer">
+            <button class="sdp-save-btn" onclick="sdSave()">Save Detail</button>
+            <button class="sdp-skip-btn" onclick="sdSkip()">Skip</button>
+          </div>
+        </div>
 
       </div>
 
@@ -4046,6 +4237,8 @@ async function navTo(screenId, opts={}) {
   // Hide delete-game icon unless we're on the scoring screen
   const _delBtn = document.getElementById('hdr-delete-game-btn');
   if (_delBtn) _delBtn.style.display = (screenId === 's-scoring') ? 'flex' : 'none';
+  const _practiceBtn = document.getElementById('hdr-practice-btn');
+  if (_practiceBtn) _practiceBtn.style.display = (screenId === 's-scoring') ? 'flex' : 'none';
 
   // Screen-specific render
   try {
@@ -7638,7 +7831,16 @@ function createAndStartGame() {
 function blankAttempt(id, fid, fn, gn, gid, an) {
   const a = { AttemptID:id, FrameID:fid, FrameNumber:fn, GameNumber:gn, GameID:gid, Attempt:an,
     Pinfall:null, LeaveID:null, BallID:null, BSK_Progressive:null, AttemptNotes:'',
-    StartingBoard:null, TargetBoard:null };
+    StartingBoard:null, TargetBoard:null,
+    // Practice Mode shot detail fields (Phase 1 — all nullable, written only by shot detail panel)
+    FocalTarget:null,       // 'dots'|'arrows'|'downlane'|'pins'
+    ShotSpeed:null,         // 'S'|'M'|'F'
+    ShotRevs:null,          // 'L'|'M'|'H'
+    PocketEntry:null,       // 'high'|'light'|'flush'|'crossover' — FRESH attempts only
+    MissDirection:null,     // 'L'|'R'|null (null = on target / made it)
+    MissBoards:null,        // int 1-39, paired with MissDirection
+    ShotDetailLogged:false  // true once post-confirm prompt has been actioned for this attempt
+  };
   for (let p=1;p<=10;p++) {
     a[`Pin${p}`]=null; a[`PinStart${p}`]=null; a[`PinDelta${p}`]=null;
   }
@@ -8150,6 +8352,9 @@ function confirmAttempt() {
     G.numericPinfall = null;
     G.knocked = new Set();
     G.leave   = new Set();
+    var _sdNumFresh = (G.attempt === 1); // capture before advanceState mutates G
+    var _sdNumFrame = G.frame;
+    var _sdNumAtt   = G.attempt;
     advanceState();
 
     renderScorecard('sc-grid', false);
@@ -8157,6 +8362,17 @@ function confirmAttempt() {
     updatePinfallDisplay();
     updateScoringContext();
     haptic('success');
+    // Practice Mode: open shot detail prompt for the attempt just scored
+    (function() {
+      var _f = getFrame(_sdNumFrame);
+      var _a = _f ? frameAttempts(_f.FrameID).find(function(a){return a.Attempt===_sdNumAtt;}) : null;
+      var _spare = _a && _a.Pinfall !== null && _sdNumAtt > 1 && _a.Pinfall > 0 &&
+        (function(){
+          var _prev = _f ? frameAttempts(_f.FrameID).find(function(a){return a.Attempt===_sdNumAtt-1;}) : null;
+          return _prev && (_prev.Pinfall + _a.Pinfall) >= 10;
+        }());
+      openShotDetailPrompt(_sdNumFrame, _sdNumAtt, _sdNumFresh, !!_spare, _a ? _a.AttemptID : null);
+    }());
     return;
   }
   // ── END NUMERIC MODE PATH ────────────────────────────────────────
@@ -8272,6 +8488,9 @@ function confirmAttempt() {
   // clearDownstreamAttempts() already nulled subsequent attempts,
   // so advanceState() will correctly move to att2 (or next frame if
   // this was a strike/spare complete), just like a fresh entry.
+  var _sdFresh = isFreshAttempt(); // capture mode before state mutates
+  var _sdFrame = G.frame;
+  var _sdAtt   = G.attempt;
   G.knocked = new Set();
   G.leave = new Set();
   advanceState();
@@ -8282,6 +8501,17 @@ function confirmAttempt() {
   updatePinfallDisplay();
   updateScoringContext();
   haptic('success');
+  // Practice Mode: open shot detail prompt for the attempt just scored
+  (function() {
+    var _f = getFrame(_sdFrame);
+    var _a = _f ? frameAttempts(_f.FrameID).find(function(a){return a.Attempt===_sdAtt;}) : null;
+    var _spare = _a && _a.Pinfall !== null && _sdAtt > 1 &&
+      (function(){
+        var _prev = _f ? frameAttempts(_f.FrameID).find(function(a){return a.Attempt===_sdAtt-1;}) : null;
+        return _prev && (_prev.Pinfall + _a.Pinfall) >= 10;
+      }());
+    openShotDetailPrompt(_sdFrame, _sdAtt, _sdFresh, !!_spare, _a ? _a.AttemptID : null);
+  }());
 }
 
 /* Called when user confirms they want to edit a frame in a completed game */
@@ -8886,6 +9116,11 @@ function renderScoringScreen() {
   const delBtn = document.getElementById('hdr-delete-game-btn');
   if (delBtn) delBtn.style.display = 'flex';
   // Focus Mode icon also only shows on scoring screen
+  const practiceBtn = document.getElementById('hdr-practice-btn');
+  if (practiceBtn) {
+    practiceBtn.style.display = 'flex';
+    practiceBtn.classList.toggle('active', !!getPrefs().practiceMode);
+  }
   const focusBtn = document.getElementById('hdr-focus-btn');
   if (focusBtn) {
     focusBtn.style.display = 'flex';
@@ -8930,6 +9165,196 @@ function toggleFocusMode() {
   haptic('light');
 }
 
+/* =============================================================
+   PRACTICE MODE — shot detail logging (Phase 2)
+   Toggle via hdr-practice-btn (header icon, scoring screen only).
+   Persisted in bowlingdb_prefs.practiceMode.
+   When disabled, zero UI is shown — no prompts, no banners.
+   ============================================================= */
+
+function togglePracticeMode() {
+  var on = !getPrefs().practiceMode;
+  savePrefs({ practiceMode: on });
+  var btn = document.getElementById('hdr-practice-btn');
+  if (btn) btn.classList.toggle('active', on);
+  haptic && haptic('light');
+  toast(on ? 'Practice Mode on — shot detail will be logged' : 'Practice Mode off');
+}
+
+/* ── Shot Detail Prompt state ──────────────────────────────── */
+var _sdp = {
+  frame: null,      // frame number the prompt is for
+  attempt: null,    // attempt number the prompt is for
+  attID: null,      // AttemptID so we can write back
+  isFresh: false,   // was this a fresh-rack delivery? (gates Entry row)
+  isSpareConv: false, // was a spare converted? (gates align-save offer)
+  // current selections
+  marker: null, speed: null, revs: null,
+  entry: null, miss: null, boards: null
+};
+
+function openShotDetailPrompt(scoredFrame, scoredAtt, isFresh, isSpareConv, attID) {
+  if (!getPrefs().practiceMode) return;
+  if (getPrefs().shotDetailPaused) return;
+
+  // Find the attempt — bail if already logged and user chose "never ask again"
+  var frame = getFrame(scoredFrame);
+  if (!frame) return;
+  var att = frameAttempts(frame.FrameID).find(function(a) { return a.Attempt === scoredAtt; });
+  if (!att || att.ShotDetailLogged) return;
+
+  // Pre-fill from any existing values (re-edit scenario)
+  _sdp.frame       = scoredFrame;
+  _sdp.attempt     = scoredAtt;
+  _sdp.attID       = att.AttemptID;
+  _sdp.isFresh     = isFresh;
+  _sdp.isSpareConv = isSpareConv;
+  _sdp.marker  = att.FocalTarget    || getPrefs().defaultFocalTarget || 'arrows';
+  _sdp.speed   = att.ShotSpeed      || null;
+  _sdp.revs    = att.ShotRevs       || null;
+  _sdp.entry   = att.PocketEntry    || null;
+  _sdp.miss    = att.MissDirection  || null;
+  _sdp.boards  = att.MissBoards     || null;
+
+  // Update title
+  var titleEl = document.getElementById('sdp-title');
+  if (titleEl) {
+    var leaveLabel = '';
+    if (att.LeaveID && db.leaves && db.leaves.length) {
+      var lv = db.leaves.find(function(l) { return l.LeaveID === att.LeaveID; });
+      if (lv && lv.LeaveName) leaveLabel = ' — ' + lv.LeaveName;
+    }
+    titleEl.textContent = 'F' + scoredFrame + ' Att' + scoredAtt + leaveLabel;
+  }
+
+  // Entry row: only on fresh-rack deliveries
+  var entryRow = document.getElementById('sdp-row-entry');
+  if (entryRow) entryRow.style.display = isFresh ? '' : 'none';
+
+  // Spare alignment save offer
+  var alignSave = document.getElementById('sdp-align-save');
+  if (alignSave) alignSave.classList.toggle('visible', !!(isSpareConv && att.LeaveID));
+
+  sdRenderSelections();
+
+  var prompt = document.getElementById('shot-detail-prompt');
+  if (prompt) {
+    // Needs to be in the DOM of focus-mode-panel when FM is active,
+    // or appended to s-scoring when in standard mode
+    prompt.classList.add('sdp-open');
+  }
+}
+
+function sdRenderSelections() {
+  // Marker
+  ['dots','arrows','downlane','pins'].forEach(function(v) {
+    var el = document.getElementById('sdp-marker-' + v);
+    if (el) el.classList.toggle('sel', _sdp.marker === v);
+  });
+  // Speed
+  ['S','M','F'].forEach(function(v) {
+    var el = document.getElementById('sdp-speed-' + v);
+    if (el) { el.classList.toggle('sel', _sdp.speed === v); el.classList.toggle('teal', false); }
+  });
+  // Revs
+  ['L','M','H'].forEach(function(v) {
+    var el = document.getElementById('sdp-revs-' + v);
+    if (el) { el.classList.toggle('sel', _sdp.revs === v); el.classList.toggle('teal', false); }
+  });
+  // Entry
+  ['high','light','flush','crossover'].forEach(function(v) {
+    var el = document.getElementById('sdp-entry-' + v);
+    if (el) el.classList.toggle('sel', _sdp.entry === v);
+  });
+  // Miss direction
+  var missNone = document.getElementById('sdp-miss-none');
+  var missL    = document.getElementById('sdp-miss-L');
+  var missR    = document.getElementById('sdp-miss-R');
+  if (missNone) { missNone.classList.toggle('sel', _sdp.miss === null); missNone.classList.toggle('teal', _sdp.miss === null); }
+  if (missL)    { missL.classList.toggle('sel', _sdp.miss === 'L'); missL.classList.toggle('teal', false); }
+  if (missR)    { missR.classList.toggle('sel', _sdp.miss === 'R'); missR.classList.toggle('teal', false); }
+  // Miss boards
+  var boardsEl = document.getElementById('sdp-miss-boards');
+  if (boardsEl) {
+    boardsEl.classList.toggle('visible', _sdp.miss !== null);
+    boardsEl.querySelectorAll('.sdp-board-btn').forEach(function(btn, i) {
+      var v = i + 1; // 1–10 (10 = "10+")
+      btn.classList.toggle('sel', _sdp.boards === v);
+    });
+  }
+}
+
+function sdSetField(field, value) {
+  if (field === 'marker') _sdp.marker = value;
+  else if (field === 'speed')  _sdp.speed  = value;
+  else if (field === 'revs')   _sdp.revs   = value;
+  else if (field === 'entry')  _sdp.entry  = value;
+  else if (field === 'miss') {
+    _sdp.miss   = value;
+    if (value === null) _sdp.boards = null; // clear boards when "on target" selected
+  }
+  sdRenderSelections();
+}
+
+function sdSetBoards(n) {
+  _sdp.boards = n;
+  sdRenderSelections();
+}
+
+function sdSave() {
+  var frame = getFrame(_sdp.frame);
+  if (!frame) { sdDismiss(); return; }
+  var att = frameAttempts(frame.FrameID).find(function(a) { return a.Attempt === _sdp.attempt; });
+  if (!att) { sdDismiss(); return; }
+
+  att.FocalTarget      = _sdp.marker  || null;
+  att.ShotSpeed        = _sdp.speed   || null;
+  att.ShotRevs         = _sdp.revs    || null;
+  att.PocketEntry      = _sdp.isFresh ? (_sdp.entry || null) : null;
+  att.MissDirection    = _sdp.miss    || null;
+  att.MissBoards       = (_sdp.miss && _sdp.boards) ? _sdp.boards : null;
+  att.ShotDetailLogged = true;
+  saveAll();
+  sdDismiss();
+  haptic && haptic('light');
+}
+
+function sdSkip() {
+  // Mark as logged so prompt won't reappear for this attempt
+  var frame = getFrame(_sdp.frame);
+  if (frame) {
+    var att = frameAttempts(frame.FrameID).find(function(a) { return a.Attempt === _sdp.attempt; });
+    if (att) { att.ShotDetailLogged = true; saveAll(); }
+  }
+  sdDismiss();
+}
+
+function sdDismiss() {
+  var prompt = document.getElementById('shot-detail-prompt');
+  if (prompt) prompt.classList.remove('sdp-open');
+}
+
+function sdSaveAlignment() {
+  // Save current wheel values + marker as the spare alignment for this leave
+  var frame = getFrame(_sdp.frame);
+  if (!frame) return;
+  var att = frameAttempts(frame.FrameID).find(function(a) { return a.Attempt === _sdp.attempt; });
+  if (!att || !att.LeaveID) return;
+  saveSpareAlignment(att.LeaveID, {
+    sb: att.StartingBoard || null,
+    tb: att.TargetBoard   || null,
+    focalTarget: _sdp.marker || null,
+    ballID: att.BallID || null,
+    notes: ''
+  });
+  var alignEl = document.getElementById('sdp-align-save');
+  if (alignEl) {
+    alignEl.textContent = '✓ Setup saved for this spare';
+    alignEl.style.background = 'rgba(0,217,217,0.12)';
+  }
+  haptic && haptic('success');
+}
+
 function enterFocusMode() {
   var panel    = document.getElementById('focus-mode-panel');
   var pinAnchor = document.getElementById('fm-pin-anchor');
@@ -8945,6 +9370,10 @@ function enterFocusMode() {
   if (numPad)   pinAnchor.appendChild(numPad);
   if (qaRow)    qaAnchor.appendChild(qaRow);
   if (ballBar && ballAnchor) ballAnchor.appendChild(ballBar);
+
+  // In FM, hide Confirm and promote Spare to its slot via class on qa-row
+  var qaRowFM = document.getElementById('qa-row');
+  if (qaRowFM) qaRowFM.classList.add('fm-active-qa');
 
   // Hide elements that remain in normal flow but must not show in FM
   var toHide = ['att-nav','board-row','ctx-leave','f10-ind','pf-display','move-frames-bar-anchor','scoring-game-nav'];
@@ -9001,6 +9430,9 @@ function exitFocusMode() {
   if (panel) { panel.classList.remove('fm-active'); panel.style.display = 'none'; }
   var scoringScreen = document.getElementById('s-scoring');
   if (scoringScreen) { scoringScreen.classList.remove('fm-host'); scoringScreen.scrollTop = 0; }
+  // Restore normal QA row layout
+  var qaRowRestore = document.getElementById('qa-row');
+  if (qaRowRestore) qaRowRestore.classList.remove('fm-active-qa');
 
   window.removeEventListener('resize', setFMSizingVars);
   window.removeEventListener('orientationchange', setFMSizingVars);
@@ -9433,20 +9865,42 @@ function fmCollapseBallStrip() {
 function fmHandlePrev() {
   fmCollapseBallStrip();
   if (G.attempt > 1) {
+    // Go back one attempt within this frame
     jumpToPosition(G.frame, G.attempt - 1);
   } else {
+    // att1: go to previous frame. Land on att2 if that frame had one (non-strike).
     if (G.frame <= 1) return;
-    jumpToPosition(G.frame - 1, 1);
+    var prevFrameNum = G.frame - 1;
+    var prevFrame = getFrame(prevFrameNum);
+    var prevAtts = prevFrame ? frameAttempts(prevFrame.FrameID) : [];
+    var prevA2 = prevAtts.find(function(a) { return a.Attempt === 2; });
+    // Land on att2 if it exists and has data; otherwise att1
+    var landAtt = (prevA2 && prevA2.Pinfall !== null) ? 2 : 1;
+    jumpToPosition(prevFrameNum, landAtt);
   }
 }
 
 function fmHandleNext() {
   fmCollapseBallStrip();
   if (fmIsFrameComplete()) {
-    if (G.frame >= 10) return;
+    // Current frame is fully scored.
+    if (G.frame >= 10) return; // end of game
     jumpToPosition(G.frame + 1, 1);
   } else {
-    confirmAttempt();
+    // Frame not complete yet.
+    // If sitting on att1 of a frame that has an existing att2 (re-edit scenario),
+    // next should move into att2 rather than confirming (which would re-score).
+    var frame = getFrame(G.frame);
+    var atts  = frame ? frameAttempts(frame.FrameID) : [];
+    var a1    = atts.find(function(a) { return a.Attempt === 1; });
+    var a2    = atts.find(function(a) { return a.Attempt === 2; });
+    if (G.attempt === 1 && a1 && a1.Pinfall !== null && a2 && a2.Pinfall !== null) {
+      // att1 already scored, att2 already scored but frame not marked complete —
+      // shouldn't normally happen, but navigate forward safely
+      jumpToPosition(G.frame, 2);
+    } else {
+      confirmAttempt();
+    }
   }
 }
 
@@ -9454,17 +9908,22 @@ function fmIsFrameComplete() {
   var frame = getFrame(G.frame);
   if (!frame) return false;
   var atts = frameAttempts(frame.FrameID);
+  var noTapOn = !!(db.games.find(function(g) { return g.GameID === G.gameID; }) || {}).NoTap;
   if (G.frame <= 9) {
     var a1 = atts.find(function(a) { return a.Attempt === 1; });
     if (!a1 || a1.Pinfall === null) return false;
-    if (a1.Pinfall === 10) return true;
+    // Strike OR NoTap 9 = frame complete with one ball
+    if (a1.Pinfall === 10 || (noTapOn && a1.Pinfall >= 9)) return true;
     var a2 = atts.find(function(a) { return a.Attempt === 2; });
     return !!(a2 && a2.Pinfall !== null);
   } else {
     var a1 = atts.find(function(a) { return a.Attempt === 1; });
     var a2 = atts.find(function(a) { return a.Attempt === 2; });
     if (!a1 || a1.Pinfall === null || !a2 || a2.Pinfall === null) return false;
-    var needs3 = (a1.Pinfall === 10) || (a1.Pinfall + a2.Pinfall === 10);
+    // Frame 10 needs 3 balls if att1 or att2 was a strike/NT9, or att1+att2 = spare
+    var att1StrikeOrNT = a1.Pinfall === 10 || (noTapOn && a1.Pinfall >= 9);
+    var att2StrikeOrNT = a2.Pinfall === 10 || (noTapOn && a2.Pinfall >= 9);
+    var needs3 = att1StrikeOrNT || att2StrikeOrNT || (a1.Pinfall + a2.Pinfall >= 10);
     if (!needs3) return true;
     var a3 = atts.find(function(a) { return a.Attempt === 3; });
     return !!(a3 && a3.Pinfall !== null);
@@ -9780,11 +10239,11 @@ function updateQuickButtons(mode) {
       secondaryBtn.disabled = false;
       secondaryBtn.style.opacity = '1';
     }
-    // Spare not valid on attempt 1
+    // Spare not valid on attempt 1 — dim in standard mode; FM CSS overrides visibility
     spareBtn.style.opacity = '0.28';
     spareBtn.disabled = true;
   } else {
-    // SPARE mode
+    // SPARE mode — enable #qa-spare (it is the primary action in FM)
     primaryBtn.textContent = 'Spare /';
     primaryBtn.className = 'qa-btn qa-spare';
     primaryBtn.disabled = false;
@@ -9793,8 +10252,9 @@ function updateQuickButtons(mode) {
     secondaryBtn.className = 'qa-btn qa-miss';
     secondaryBtn.disabled = false;
     secondaryBtn.style.opacity = '1';
-    spareBtn.style.opacity = '0';
-    spareBtn.disabled = true;
+    // #qa-spare is active and functional in SPARE mode
+    spareBtn.style.opacity = '1';
+    spareBtn.disabled = false;
   }
 }
 
@@ -15385,6 +15845,49 @@ function savePrefs(patch) {
   } catch(e) { console.warn('savePrefs:', e); }
 }
 
+/* ── Spare Alignment Library ─────────────────────────────────────────────────
+   Per-leave preferred alignment for spare shooting. Stored in localStorage
+   only (never IDB). Each record is the user's curated "what worked" reference
+   for a specific leave (identified by LeaveID from db.leaves[]).
+
+   Schema per record:
+     { leaveID, sb, tb, focalTarget, ballID, notes, updatedAt }
+
+   The alignment banner in Focus Mode reads this table to show reference values
+   during att2. It NEVER auto-writes to the drum wheels — display only.        */
+
+const SPARE_ALIGN_KEY = 'bowlingdb_spare_alignments';
+
+function getSpareAlignments() {
+  try { return JSON.parse(localStorage.getItem(SPARE_ALIGN_KEY) || '[]'); }
+  catch(e) { return []; }
+}
+
+function getSpareAlignment(leaveID) {
+  return getSpareAlignments().find(function(r) { return r.leaveID === leaveID; }) || null;
+}
+
+function saveSpareAlignment(leaveID, patch) {
+  // patch: { sb, tb, focalTarget, ballID, notes } — any subset
+  try {
+    var all = getSpareAlignments();
+    var idx = all.findIndex(function(r) { return r.leaveID === leaveID; });
+    var existing = idx >= 0 ? all[idx] : { leaveID: leaveID, sb: null, tb: null,
+      focalTarget: null, ballID: null, notes: '' };
+    var updated = Object.assign({}, existing, patch, { updatedAt: new Date().toISOString() });
+    if (idx >= 0) all[idx] = updated; else all.push(updated);
+    localStorage.setItem(SPARE_ALIGN_KEY, JSON.stringify(all));
+    return updated;
+  } catch(e) { console.warn('saveSpareAlignment:', e); return null; }
+}
+
+function deleteSpareAlignment(leaveID) {
+  try {
+    var all = getSpareAlignments().filter(function(r) { return r.leaveID !== leaveID; });
+    localStorage.setItem(SPARE_ALIGN_KEY, JSON.stringify(all));
+  } catch(e) { console.warn('deleteSpareAlignment:', e); }
+}
+
 /* ── AI model selection — editable via Settings, no code edit needed ──
    "Fast" tier: quick/cheap tasks (ball info fetch, debrief, DevKit AI tools)
    "Deep" tier: richer reasoning (AI Chat, DevKit IndexedDB diagnostics)
@@ -16631,6 +17134,14 @@ function normaliseImportedAttempts(attempts) {
     }
     // Safety: if Pinfall ended up NaN, reset to null so computeRunningTotals skips it
     if (out.Pinfall !== null && isNaN(out.Pinfall)) out.Pinfall = null;
+    // Practice Mode fields: null-coalesce so imported Access records never error on absence
+    if (out.FocalTarget     === undefined) out.FocalTarget     = null;
+    if (out.ShotSpeed       === undefined) out.ShotSpeed       = null;
+    if (out.ShotRevs        === undefined) out.ShotRevs        = null;
+    if (out.PocketEntry     === undefined) out.PocketEntry     = null;
+    if (out.MissDirection   === undefined) out.MissDirection   = null;
+    if (out.MissBoards      === undefined) out.MissBoards      = null;
+    if (out.ShotDetailLogged=== undefined) out.ShotDetailLogged= false;
 
     // Reconstruct BSK_Progressive from PinDelta fields if missing or malformed.
     // The group form stored 'BBBBBBBBBB' (strike) or 'KKKK...' (spare) which are
@@ -17651,6 +18162,63 @@ function openSettingsModal() {
           </div>`;
         }).join('')}
       </div>
+    </div>
+
+    <!-- ── Practice Mode ───────────────────────────────────── -->
+    <div class="settings-section">
+      <div class="settings-section-hdr">Practice Mode
+        <span class="settings-section-hint">Log shot detail during scoring for alignment and execution analysis</span>
+      </div>
+      ${(() => {
+        const on = !!getPrefs().practiceMode;
+        const prefs = getPrefs();
+        return `
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:${on?'14px':'0'}">
+            <span style="font-size:13px;color:var(--t1)">Enable Practice Mode</span>
+            <div class="toggle-switch ${on?'on':''}" onclick="togglePracticeMode();openSettingsModal()"></div>
+          </div>
+          ${on ? `
+          <div style="font-size:11px;color:var(--t3);margin-bottom:12px;line-height:1.5">
+            After each delivery, a quick panel lets you log marker, speed, revs, entry, and miss data.
+            Tap the <span style="color:var(--purple);font-weight:700">&#x25A6;</span> icon in the scoring header to toggle on the fly.
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            ${[
+              ['defaultFocalTarget','Default Marker','arrows',['dots','arrows','downlane','pins']],
+            ].map(([key,label,def,opts])=>`
+              <div>
+                <label class="flabel" style="font-size:11px;margin-bottom:4px;display:block">${label}</label>
+                <div style="display:flex;gap:4px">
+                  ${opts.map(o=>`<button onclick="savePrefs({${key}:'${o}'});openSettingsModal()"
+                    style="flex:1;padding:6px 4px;border-radius:7px;border:1px solid ${prefs[key]===o?'var(--purple)':'var(--border2)'};
+                    background:${prefs[key]===o?'rgba(157,78,221,0.18)':'var(--bg3)'};
+                    color:${prefs[key]===o?'var(--purple)':'var(--t2)'};font-size:11px;font-weight:700;cursor:pointer">
+                    ${o.charAt(0).toUpperCase()+o.slice(1)}
+                  </button>`).join('')}
+                </div>
+              </div>`).join('')}
+            <div style="border-top:1px solid var(--border1);padding-top:10px;display:flex;flex-direction:column;gap:6px">
+              <div style="font-size:11px;color:var(--t3);margin-bottom:4px">Enable / disable individual fields in the prompt:</div>
+              ${[
+                ['shotSpeedEnabled','Speed (S/M/F)'],
+                ['shotRevsEnabled','Revs (L/M/H)'],
+                ['pocketEntryEnabled','Pocket Entry (fresh rack only)'],
+                ['missEnabled','Miss direction &amp; boards'],
+                ['spareAlignBannerEnabled','Spare alignment banner'],
+              ].map(([key,label])=>{
+                const isOn = prefs[key] !== false;
+                return `<div style="display:flex;align-items:center;justify-content:space-between">
+                  <span style="font-size:12px;color:var(--t2)">${label}</span>
+                  <div class="toggle-switch ${isOn?'on':''}" style="width:36px;height:22px"
+                    onclick="savePrefs({${key}:${!isOn}});openSettingsModal()">
+                  </div>
+                </div>`;
+              }).join('')}
+            </div>
+          </div>
+          ` : ''}
+        `;
+      })()}
     </div>
 
     <!-- ── Developer Tools ───────────────────────────────────── -->
