@@ -1173,6 +1173,16 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
   text-align:center;
 }
 
+/* Spare ball chip — mirrors active chip but uses purple accent */
+.fm-spare-chip .fm-chip-img {
+  border-color:var(--purple);
+}
+.fm-spare-chip-label {
+  font-size:7px; font-weight:900; letter-spacing:0.8px;
+  color:var(--purple); text-transform:uppercase;
+  line-height:1;
+}
+
 /* Ball row: centered wheels only (chip is floating) */
 .fm-ball-row-collapsed {
   justify-content:center; gap:16px;
@@ -3061,6 +3071,12 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
           <div class="fm-float-chip" id="fm-float-chip">
             <img class="fm-chip-img" id="fm-chip-img" src="" alt="">
             <span class="fm-chip-name" id="fm-chip-name"></span>
+          </div>
+          <!-- Spare ball chip: shows lastBallAtt2; tap opens ball strip; long-press to drag -->
+          <div class="fm-float-chip fm-spare-chip" id="fm-spare-chip">
+            <img class="fm-chip-img fm-spare-chip-img" id="fm-spare-chip-img" src="" alt="">
+            <span class="fm-chip-name fm-spare-chip-name" id="fm-spare-chip-name"></span>
+            <span class="fm-spare-chip-label">SPARE</span>
           </div>
           <div class="fm-side-strip prev" id="fm-prev-strip" onclick="fmHandlePrev()">
             <svg width="10" height="18" viewBox="0 0 10 18" fill="none"><path d="M8.5 1L1 9l7.5 8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -8950,6 +8966,7 @@ function enterFocusMode() {
 
   fmInitWheels();
   fmChipInit();
+  fmSpareChipInit();
   fmRenderActiveBallChip();
   renderFocusModePanel();
 }
@@ -8983,7 +9000,7 @@ function exitFocusMode() {
   document.querySelectorAll('.sc-wrap').forEach(function(el) { el.style.display = ''; });
   if (panel) { panel.classList.remove('fm-active'); panel.style.display = 'none'; }
   var scoringScreen = document.getElementById('s-scoring');
-  if (scoringScreen) scoringScreen.classList.remove('fm-host');
+  if (scoringScreen) { scoringScreen.classList.remove('fm-host'); scoringScreen.scrollTop = 0; }
 
   window.removeEventListener('resize', setFMSizingVars);
   window.removeEventListener('orientationchange', setFMSizingVars);
@@ -9171,8 +9188,8 @@ function fmChipApplyDock(corner, animate) {
   chip.style.top = chip.style.left = chip.style.right = chip.style.bottom = 'auto';
   // Only BL (0) and BR (1) allowed — bottom corners only, away from pin triangle top
   var gap = '6px';
-  if (corner === 0 || corner === 2) { chip.style.bottom = gap; chip.style.left = '50px'; }  // BL
-  else { chip.style.bottom = gap; chip.style.right = '50px'; }                               // BR
+  if (corner === 0 || corner === 2) { chip.style.bottom = gap; chip.style.left = gap; }  // BL
+  else { chip.style.bottom = gap; chip.style.right = gap; }                               // BR
 }
 
 function fmChipTouchStart(e) {
@@ -9203,7 +9220,7 @@ function fmChipTouchMove(e) {
   var ty = e.touches[0].clientY - rect.top;
   // Move chip center to touch position, clamped within anchor
   var cw = chip.offsetWidth, ch = chip.offsetHeight;
-  var x = Math.max(50, Math.min(tx - cw / 2, rect.width - cw - 50));
+  var x = Math.max(6, Math.min(tx - cw / 2, rect.width - cw - 6));
   var y = Math.max(0,  Math.min(ty - ch / 2, rect.height - ch));
   chip.style.top = 'auto'; chip.style.bottom = 'auto';
   chip.style.left = 'auto'; chip.style.right = 'auto';
@@ -9222,8 +9239,8 @@ function fmChipTouchEnd(e) {
   chip.style.opacity = '0.72';
 
   if (!wasDragging) {
-    // Tap: expand ball strip
-    fmToggleBallStrip();
+    // Tap: expand ball strip for primary ball selection
+    fmOpenBallStripForPrimary();
     return;
   }
 
@@ -9265,6 +9282,131 @@ function fmRenderActiveBallChip() {
   }
   var numBtn = document.getElementById('fm-num-btn');
   if (numBtn) numBtn.classList.toggle('on', !!G.numericMode);
+  fmRenderSpareChip();
+}
+
+/* ── Spare ball chip ─────────────────────────────────────────
+   Shows the ball assigned to att2 (spare attempts).
+   Docks to BR by default (opposite of active chip which defaults BL).
+   Long-press to drag, tap to open ball strip.
+   Dock stored in localStorage as fm_spare_chip_dock (0=BL, 1=BR).       */
+var FM_SPARE_CHIP_DOCK = 1; // default BR
+var _fmSpareChipDragState = null;
+
+function fmSpareChipInit() {
+  var chip = document.getElementById('fm-spare-chip');
+  if (!chip) return;
+  var stored = parseInt(localStorage.getItem('fm_spare_chip_dock') || '1', 10);
+  FM_SPARE_CHIP_DOCK = (stored === 0) ? 0 : 1;
+  fmSpareChipApplyDock(FM_SPARE_CHIP_DOCK, false);
+
+  chip.addEventListener('touchstart', fmSpareChipTouchStart, { passive: false });
+  chip.addEventListener('touchmove',  fmSpareChipTouchMove,  { passive: false });
+  chip.addEventListener('touchend',   fmSpareChipTouchEnd,   { passive: false });
+}
+
+function fmSpareChipApplyDock(corner, animate) {
+  var chip = document.getElementById('fm-spare-chip');
+  if (!chip) return;
+  chip.style.transition = animate ? 'top 0.15s ease, left 0.15s ease, right 0.15s ease, bottom 0.15s ease' : 'none';
+  chip.style.top = chip.style.left = chip.style.right = chip.style.bottom = 'auto';
+  // Bottom corners only — mirrors primary chip. Default BR (1) so chips naturally
+  // sit on opposite sides: primary BL, spare BR.
+  var gap = '6px';
+  if (corner === 0) { chip.style.bottom = gap; chip.style.left = gap; }  // BL
+  else              { chip.style.bottom = gap; chip.style.right = gap; } // BR
+}
+
+function fmSpareChipTouchStart(e) {
+  var chip = document.getElementById('fm-spare-chip');
+  _fmSpareChipDragState = {
+    startX: e.touches[0].clientX,
+    startY: e.touches[0].clientY,
+    dragging: false,
+    longPressTimer: setTimeout(function() {
+      if (_fmSpareChipDragState) {
+        _fmSpareChipDragState.dragging = true;
+        chip.style.opacity = '1';
+        chip.style.transition = 'none';
+        haptic && haptic('light');
+      }
+    }, 300)
+  };
+}
+
+function fmSpareChipTouchMove(e) {
+  if (!_fmSpareChipDragState || !_fmSpareChipDragState.dragging) return;
+  e.preventDefault();
+  var chip = document.getElementById('fm-spare-chip');
+  var anchor = document.getElementById('fm-pin-anchor');
+  if (!chip || !anchor) return;
+  var rect = anchor.getBoundingClientRect();
+  var tx = e.touches[0].clientX - rect.left;
+  var ty = e.touches[0].clientY - rect.top;
+  var cw = chip.offsetWidth, ch = chip.offsetHeight;
+  var x = Math.max(6, Math.min(tx - cw / 2, rect.width - cw - 6));
+  var y = Math.max(0,  Math.min(ty - ch / 2, rect.height - ch));
+  chip.style.top = 'auto'; chip.style.bottom = 'auto';
+  chip.style.left = 'auto'; chip.style.right = 'auto';
+  chip.style.top  = y + 'px';
+  chip.style.left = x + 'px';
+}
+
+function fmSpareChipTouchEnd(e) {
+  if (!_fmSpareChipDragState) return;
+  clearTimeout(_fmSpareChipDragState.longPressTimer);
+  var wasDragging = _fmSpareChipDragState.dragging;
+  _fmSpareChipDragState = null;
+
+  var chip = document.getElementById('fm-spare-chip');
+  if (!chip) return;
+  chip.style.opacity = '0.72';
+
+  if (!wasDragging) {
+    // Tap: open ball strip in spare-ball mode so the next selection sets lastBallAtt2
+    fmOpenBallStripForSpare();
+    return;
+  }
+
+  // Snap to nearest bottom corner (BL=0 or BR=1) — mirrors primary chip snap
+  var anchor = document.getElementById('fm-pin-anchor');
+  var rect = anchor.getBoundingClientRect();
+  var chipRect = chip.getBoundingClientRect();
+  var cx = chipRect.left - rect.left + chipRect.width / 2;
+  var corner = (cx < rect.width / 2) ? 0 : 1;
+  FM_SPARE_CHIP_DOCK = corner;
+  localStorage.setItem('fm_spare_chip_dock', String(corner));
+  fmSpareChipApplyDock(corner, true);
+}
+
+function fmRenderSpareChip() {
+  var img  = document.getElementById('fm-spare-chip-img');
+  var name = document.getElementById('fm-spare-chip-name');
+  if (!img || !name) return;
+  var ballID = G.lastBallAtt2;
+  var ball   = ballID ? (db.balls || []).find(function(b) { return b.BallID === ballID; }) : null;
+  if (ball) {
+    var src = getBallImgSrc(ball.BallID, 'cover') || '';
+    img.src = src;
+    img.onerror = function() { this.style.display = 'none'; };
+    img.style.display = src ? '' : 'none';
+    name.textContent = ball.BallName || '';
+  } else {
+    img.src = '';
+    img.style.display = 'none';
+    name.textContent = '\u2014';
+  }
+}
+
+/* Open ball strip flagging that the next selection should assign lastBallAtt2 */
+var _fmBallStripMode = 'primary'; // 'primary' | 'spare'
+function fmOpenBallStripForSpare() {
+  _fmBallStripMode = 'spare';
+  fmExpandBallStrip();
+}
+function fmOpenBallStripForPrimary() {
+  _fmBallStripMode = 'primary';
+  fmExpandBallStrip();
 }
 
 /* ── Expanded ball strip ─────────────────────────────────────── */
@@ -15492,6 +15634,16 @@ function selectBall(id) {
   // When called from group scoring screen, route to group ball selection instead
   if (getCurrentScreen() === 's-group') {
     grpSelectBall(id);
+    return;
+  }
+  // Spare ball strip mode: tapping a ball from the spare chip only assigns lastBallAtt2
+  // Does NOT change the current active ball. Reset mode and close strip.
+  if (getPrefs().focusMode && _fmBallStripMode === 'spare') {
+    G.lastBallAtt2 = id;
+    _fmBallStripMode = 'primary';
+    fmCollapseBallStrip();
+    fmRenderSpareChip();
+    renderBallBar();
     return;
   }
   // Att2 (spare attempt, frames 1-9): selecting a ball only updates lastBallAtt2,
