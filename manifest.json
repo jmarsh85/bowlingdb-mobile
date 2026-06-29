@@ -1,0 +1,19 @@
+{
+  "name": "BowlingDB",
+  "short_name": "BowlingDB",
+  "description": "Track, Analyze, and Improve your bowling game",
+  "start_url": "/bowlingdb-mobile/BowlingDB_PWA_v30_15.html",
+  "scope": "/bowlingdb-mobile/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#111111",
+  "theme_color": "#4a1a8a",
+  "icons": [
+    {
+      "src": "apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any apple-touch-icon"
+    }
+  ]
+}
