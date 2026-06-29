@@ -8345,8 +8345,12 @@ function confirmAttempt() {
     att.NumericEntry     = true;
 
     if (G.ballID) {
-      if (G.attempt === 1) G.lastBallAtt1 = G.ballID;
-      else if (G.attempt === 2) G.lastBallAtt2 = G.ballID;
+      if (G.attempt === 1) {
+        G.lastBallAtt1 = G.ballID;
+      } else if (G.attempt === 2) {
+        var _isAltSlotNum = G.altMode && (G.ballID === G.altBall1 || G.ballID === G.altBall2);
+        if (!_isAltSlotNum) G.lastBallAtt2 = G.ballID;
+      }
     }
 
     // Synthesise G.knocked so updateFrameFlags / advanceState work correctly
@@ -8474,10 +8478,17 @@ function confirmAttempt() {
   att.BallID = G.ballID;
   att.BSK_Progressive = buildBSK();
 
-  // Track last-used ball per attempt number for auto-selection
+  // Track last-used ball per attempt number for auto-selection.
+  // On att2, only update lastBallAtt2 if the ball used was NOT an alt slot —
+  // using an alt ball on att2 is a one-off override and must not corrupt the
+  // spare ball default (which drives auto-selection on all future att2s).
   if (G.ballID) {
-    if (G.attempt === 1) G.lastBallAtt1 = G.ballID;
-    else if (G.attempt === 2) G.lastBallAtt2 = G.ballID;
+    if (G.attempt === 1) {
+      G.lastBallAtt1 = G.ballID;
+    } else if (G.attempt === 2) {
+      var _isAltSlotPin = G.altMode && (G.ballID === G.altBall1 || G.ballID === G.altBall2);
+      if (!_isAltSlotPin) G.lastBallAtt2 = G.ballID;
+    }
   }
 
   // Auto-detect LeaveID after Att1 (if not a strike and leaves table is populated)
@@ -8803,9 +8814,9 @@ function updateFrameFlags(frame) {
    Called by advanceState() after frame/attempt is updated. */
 function autoSelectBall() {
   if (G.attempt === 1) {
-    if (G.altMode && G.altBall1 && G.altBall2 && G.frame < 10) {
-      // Alternating mode applies only to frames 1-9 (lane alternation between frames).
-      // Frame 10 is one lane position held for the whole frame — no alternation.
+    if (G.altMode && G.altBall1 && G.altBall2) {
+      // Alt applies to att1 of ALL frames including F10. Within F10, att2/att3
+      // fresh racks use lastBallAtt1 (handled in their own paths below).
       const offset = (G.frame - (G.altStartFrame || 1));
       const newBall = (offset % 2 === 0) ? G.altBall1 : G.altBall2;
       if (db.balls.find(b => b.BallID === newBall && b.Active !== false)) {
@@ -10160,8 +10171,9 @@ function renderFocusModePanel() {
 
   var altPillEl = document.getElementById('fm-alt-pill');
   if (altPillEl) {
-    if (G.altMode && G.altBall1 && G.altBall2) {
-      // Parity must match autoSelectBall(): even offset from altStartFrame = Ball 1
+    if (G.altMode && G.altBall1 && G.altBall2 && G.attempt === 1) {
+      // Parity must match autoSelectBall(): even offset from altStartFrame = Ball 1.
+      // Shown on att1 of all frames including F10. Hidden on att2/att3.
       var altOffset = G.frame - (G.altStartFrame || 1);
       var isBall1 = (altOffset % 2 === 0);
       altPillEl.style.display = 'inline-flex';
@@ -10568,10 +10580,13 @@ function jumpToPosition(frameNum, attNum) {
   if (targetAtt && targetAtt.Pinfall !== null) {
     loadAttemptForEditing(targetAtt, fr);
   } else {
-    // Fresh entry position — clear selections
+    // Fresh entry position — clear selections and auto-select ball
     G.knocked = new Set();
     G.leave = new Set();
     G.numericPinfall = null; // reset numeric selection for fresh attempt
+    // autoSelectBall() ensures alt-mode parity and spare-ball defaults are applied
+    // when navigating to a fresh position via Prev/Next strips, not just on confirm.
+    autoSelectBall();
   }
 
   renderScorecard('sc-grid', false);
@@ -16324,15 +16339,15 @@ function selectBall(id) {
     renderBallBar();
     return;
   }
-  // Frame 10 (all attempts) and spare/fill attempts (att2+ any frame):
-  // ball selection only updates G.ballID / lastBallAtt1 or lastBallAtt2 as appropriate.
-  // Alt slots (altBall1/altBall2/altStartFrame) are NEVER touched — frame 10 is one
-  // lane position, not subject to lane alternation, and spare attempts never affect alt.
-  if (G.altMode && (G.frame === 10 || G.attempt > 1)) {
+  // Spare/fill attempts (att2+ in any frame, including F10 att2/att3):
+  // Set G.ballID for this delivery. Never touch alt slots.
+  // Only update lastBallAtt2 if the ball chosen is NOT an alt slot — picking
+  // altBall1/altBall2 on att2 is a one-off override and must not corrupt the
+  // spare ball default that auto-loads on all future att2s.
+  if (G.altMode && G.attempt > 1) {
     G.ballID = id;
-    if (G.attempt === 1) {
-      G.lastBallAtt1 = id; // F10 att1: remember for att2/att3 fresh-rack ball selection
-    } else {
+    var isAltSlot = (id === G.altBall1 || id === G.altBall2);
+    if (!isAltSlot) {
       G.lastBallAtt2 = id;
     }
     renderBallBar();
