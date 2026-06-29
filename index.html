@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="BowlingDB">
-<title>BowlingDB v22</title>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<title>BowlingDB v22</title>
 <style>
 /* ============================================================
    DESIGN TOKENS
@@ -23133,6 +23133,4 @@ function grpPaceNthFutureBall(bi, afterFrame, n) {
         continue;
       } else {
         // Non-strike: use actual A2 or infer spare completion
-        const b2 = v2 !== null ? v2 : Math.max(0, Math.min(10, 10 - v1));
-        remaining--;
-        if (remaining === 0) ret
+        const b2 = v2 !== null ? v2 : Math.max(0, Math.min(10, 10 -
