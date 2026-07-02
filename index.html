@@ -1410,11 +1410,27 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
   border-radius:12px;
   overflow:hidden;
   max-height:0;
+  display:flex; flex-direction:column;
   transition:max-height 0.15s ease;
   z-index:20;
 }
-.fm-ball-expanded.open { max-height:100px; }
-#fm-ball-anchor { padding:6px 8px; }
+.fm-ball-expanded.open { max-height:112px; }
+#fm-ball-anchor { padding:6px 8px; flex:1; min-height:0; }
+/* Manual close handle — always present at the bottom of the drawer
+   regardless of ball-chip content, so there's a reliable, dedicated way
+   to collapse the strip beyond re-tapping a ball or navigating away. */
+.fm-ball-drawer-handle {
+  flex-shrink:0;
+  height:16px;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer;
+  border-top:1px solid rgba(255,255,255,0.05);
+}
+.fm-ball-drawer-handle::after {
+  content:'';
+  width:32px; height:4px; border-radius:2px;
+  background:rgba(255,255,255,0.25);
+}
 
 /* ── Pin anchor — flex:1 to fill remaining height ──────────── */
 #fm-pin-anchor {
@@ -3202,6 +3218,7 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
           <!-- Expanded strip overlays upward -->
           <div class="fm-ball-expanded" id="fm-ball-expanded">
             <div id="fm-ball-anchor"></div>
+            <div class="fm-ball-drawer-handle" onclick="fmCollapseBallStrip()" title="Close ball list"></div>
           </div>
 
           <!-- SB wheel -->
@@ -16407,7 +16424,7 @@ function selectBall(id) {
       G.lastBallAtt2 = id;
     }
     renderBallBar();
-    if (getPrefs().focusMode) { renderFocusModePanel(); fmCollapseBallStrip(); }
+    if (getPrefs().focusMode) renderFocusModePanel();
     return;
   }
   if (G.altMode) {
@@ -16441,11 +16458,13 @@ function selectBall(id) {
   renderBallBar();
   if (getPrefs().focusMode) {
     renderFocusModePanel();
-    // Collapse the expanded ball strip after a completed selection — mirrors
-    // the spare-ball-strip branch above. Skip this while Alt Mode still has
-    // an open slot (ball 1 chosen, waiting on ball 2) so that two-tap
-    // sequence isn't interrupted by the strip closing after the first tap.
-    if (!(G.altMode && (!G.altBall1 || !G.altBall2))) fmCollapseBallStrip();
+    // Collapse the expanded ball strip after a completed non-alt selection —
+    // mirrors the spare-ball-strip branch above. Alt Mode is exempted
+    // entirely: auto-closing here (even only after both slots were filled)
+    // was found to disrupt the alt-mode selection flow, since it hid the
+    // BALL 1 / BALL 2 slot labels right when the user wants to confirm them.
+    // A manual close is available via the drawer handle instead.
+    if (!G.altMode) fmCollapseBallStrip();
   }
   if (document.getElementById('modal-overlay')?.style.display !== 'none') closeModal();
 }
