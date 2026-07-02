@@ -6,7 +6,6 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="BowlingDB">
-<link rel="manifest" href="manifest.json">
 <title>BowlingDB v22</title>
 <style>
 /* ============================================================
@@ -113,6 +112,7 @@ body {
   border-bottom:1px solid rgba(255,255,255,0.05);
   z-index:20;
   min-height:calc(var(--safe-t) + 50px);
+  position:relative;
 }
 #hdr-back {
   width:34px; height:34px;
@@ -144,6 +144,24 @@ body {
   margin-left: 2px;
 }
 #hdr-title .brand { color:var(--teal); }
+
+/* ── Expanded title popover — shows full (untruncated) header title on
+   tap, since #hdr-title itself truncates long names with an ellipsis.
+   Auto-dismisses after a few seconds or on the next tap elsewhere. ──── */
+#hdr-title-popover {
+  position:absolute; top:100%; left:16px;
+  max-width:calc(100% - 32px);
+  margin-top:6px;
+  background:var(--bg4); border:1px solid var(--border2);
+  border-radius:12px; padding:9px 14px;
+  font-size:14px; font-weight:700; color:var(--t1);
+  white-space:normal; word-break:break-word;
+  box-shadow:0 6px 20px rgba(0,0,0,0.4);
+  opacity:0; pointer-events:none; transform:translateY(-6px);
+  transition:opacity 0.18s ease, transform 0.18s ease;
+  z-index:25;
+}
+#hdr-title-popover.show { opacity:1; transform:translateY(0); pointer-events:auto; }
 #hdr-right { display:flex; align-items:center; gap:8px; flex-shrink:0; }
 .hdr-icon-btn {
   width:34px; height:34px;
@@ -1212,12 +1230,19 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
 .fm-score-label { font-size:9px; font-weight:700; color:var(--t3); letter-spacing:1px; text-transform:uppercase; }
 .fm-score-val   { font-size:24px; font-weight:900; color:var(--teal); }
 
-/* Mini frame-history strip: current-2, current-1, current — simple #/X/— notation,
-   reuses attBoxHTML() symbol logic so it always matches the main scorecard's rules */
-.fm-mini-strip { display:flex; align-items:center; gap:5px; flex:1; justify-content:center; min-width:0; }
+/* Mini frame-history strip: all 10 frames, horizontally scrollable so any
+   frame can be scrolled to and tapped — simple #/X/— notation, reuses
+   attBoxHTML() symbol logic so it always matches the main scorecard's rules */
+.fm-mini-strip {
+  display:flex; align-items:center; gap:4px; flex:1; justify-content:flex-start; min-width:0;
+  overflow-x:auto; overflow-y:hidden; -webkit-overflow-scrolling:touch; scroll-behavior:smooth;
+  scrollbar-width:none;
+}
+.fm-mini-strip::-webkit-scrollbar { display:none; }
 .fm-mini-cell {
   display:flex; flex-direction:column; align-items:center; gap:2px;
-  min-width:30px; padding:3px 4px; border-radius:7px; cursor:pointer;
+  min-width:26px; padding:3px 3px; border-radius:7px; cursor:pointer;
+  flex-shrink:0;
 }
 .fm-mini-cell.cur { background:rgba(0,217,217,0.10); border:1px solid rgba(0,217,217,0.3); }
 .fm-mini-fn { font-size:8px; font-weight:700; color:var(--t3); letter-spacing:0.3px; }
@@ -1270,6 +1295,14 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
   width:76px; height:76px; border-radius:50%;
   border:2px solid var(--teal);
   object-fit:cover; background:var(--bg3);
+  /* Let taps pass through to the chip container instead of being captured by
+     the <img> itself — prevents iOS's native long-press/drag-image handling
+     from ever swallowing a tap, so the whole chip (image included) reliably
+     opens the ball strip, same as tapping the name/label text does. */
+  pointer-events:none;
+  -webkit-touch-callout:none;
+  -webkit-user-drag:none;
+  -webkit-user-select:none;
 }
 .fm-chip-name {
   font-size:9px; font-weight:700; color:var(--t3);
@@ -2886,7 +2919,8 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
         <path d="M9.5 1.5L1.5 9.5L9.5 17.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </div>
-    <div id="hdr-title" onclick="dkHeaderTap()"><span class="brand">Bowling</span>DB</div>
+    <div id="hdr-title" onclick="hdrTitleTap()"><span class="brand">Bowling</span>DB</div>
+    <div id="hdr-title-popover"></div>
     <span id="hdr-build-ref">v30 · 2026-06-07</span>
     <div id="hdr-right">
       <div class="hdr-icon-btn" id="hdr-delete-game-btn" onclick="confirmDeleteGame(G.gameID)" title="Delete Game" style="display:none">
@@ -9211,6 +9245,7 @@ function calcMaxScore()  { return calcSoloProjectedTotal(true); }
 var _fmScoreCycleIdx  = 0;  // 0=score, 1=pace, 2=max
 var _fmScoreCycleTimer = null;
 var _fmScoreModes = ['SCORE','PACE','MAX'];
+var _fmMiniStripLastFrame = null; // gates auto-scroll-into-view so it only fires on actual frame change
 
 function fmScoreCycleStart() {
   fmScoreCycleStop();
@@ -9534,6 +9569,7 @@ function sdSaveAlignment() {
 }
 
 function enterFocusMode() {
+  toastDismiss(); // manual clear — entering FM doesn't go through navTo()'s toast cleanup
   var panel    = document.getElementById('focus-mode-panel');
   var pinAnchor = document.getElementById('fm-pin-anchor');
   var qaAnchor  = document.getElementById('fm-qa-anchor');
@@ -9577,10 +9613,12 @@ function enterFocusMode() {
   fmRenderActiveBallChip();
   _fmScoreCycleIdx = 0;
   fmScoreCycleStart();
+  _fmMiniStripLastFrame = null; // force scroll-into-view on this render since strip DOM was just reattached
   renderFocusModePanel();
 }
 
 function exitFocusMode() {
+  toastDismiss(); // manual clear — exiting FM doesn't go through navTo()'s toast cleanup
   var panel    = document.getElementById('focus-mode-panel');
   var pinStage = document.getElementById('pin-stage');
   var numPad   = document.getElementById('num-pad');
@@ -10136,7 +10174,8 @@ function renderFocusModePanel() {
   var beerLog = (series && series.beerLog) ? series.beerLog : [];
   var miniEl  = document.getElementById('fm-mini-strip');
   if (miniEl) {
-    var wantFrames = [G.frame - 2, G.frame - 1, G.frame].filter(function(n) { return n >= 1 && n <= 10; });
+    var wantFrames = [];
+    for (var _fn = 1; _fn <= 10; _fn++) wantFrames.push(_fn);
     miniEl.innerHTML = wantFrames.map(function(fn) {
       var fr = getFrame(fn);
       var isCur = fn === G.frame;
@@ -10168,6 +10207,22 @@ function renderFocusModePanel() {
         '<div class="fm-mini-fn">F' + fn + beerSpan + lockSpan + '</div>' +
         '<div class="fm-mini-atts">' + attsHTML + '</div></div>';
     }).join('');
+    if (_fmMiniStripLastFrame !== G.frame) {
+      _fmMiniStripLastFrame = G.frame;
+      var curCell = miniEl.querySelector('.fm-mini-cell.cur');
+      // Scroll only the mini-strip's own scrollLeft — scrollIntoView() was
+      // walking up to ancestor scroll containers (incl. the scoring screen
+      // itself, which uses overflow:hidden to clip rather than to prevent
+      // programmatic scrolling) and shifting the whole panel on Next/Prev.
+      // Anchor the current frame to the right edge (with a small breathing-
+      // room pad) rather than centering it, so the strip shows the run of
+      // most-recent frames leading up to it within the visible area.
+      if (curCell) {
+        var pad = 8;
+        var target = curCell.offsetLeft + curCell.offsetWidth - miniEl.clientWidth + pad;
+        miniEl.scrollLeft = Math.max(0, target);
+      }
+    }
   }
 
   var altPillEl = document.getElementById('fm-alt-pill');
@@ -16352,7 +16407,7 @@ function selectBall(id) {
       G.lastBallAtt2 = id;
     }
     renderBallBar();
-    if (getPrefs().focusMode) renderFocusModePanel();
+    if (getPrefs().focusMode) { renderFocusModePanel(); fmCollapseBallStrip(); }
     return;
   }
   if (G.altMode) {
@@ -16384,7 +16439,14 @@ function selectBall(id) {
     G.ballID = id;
   }
   renderBallBar();
-  if (getPrefs().focusMode) renderFocusModePanel();
+  if (getPrefs().focusMode) {
+    renderFocusModePanel();
+    // Collapse the expanded ball strip after a completed selection — mirrors
+    // the spare-ball-strip branch above. Skip this while Alt Mode still has
+    // an open slot (ball 1 chosen, waiting on ball 2) so that two-tap
+    // sequence isn't interrupted by the strip closing after the first tap.
+    if (!(G.altMode && (!G.altBall1 || !G.altBall2))) fmCollapseBallStrip();
+  }
   if (document.getElementById('modal-overlay')?.style.display !== 'none') closeModal();
 }
 
@@ -19193,6 +19255,8 @@ function haptic(type) {
    TOAST
    ============================================================= */
 let toastTimer;
+let toastShownAt = 0;
+let toastDurationMs = 2500;
 function toast(msg, duration=2500) {
   const t = document.getElementById('toast');
   const m = document.getElementById('toast-msg');
@@ -19201,12 +19265,25 @@ function toast(msg, duration=2500) {
   t.classList.remove('show');
   void t.offsetWidth;
   t.classList.add('show');
+  toastShownAt = Date.now();
+  toastDurationMs = duration;
   toastTimer = setTimeout(()=>t.classList.remove('show'), duration);
 }
 function toastDismiss() {
   clearTimeout(toastTimer);
-  document.getElementById('toast').classList.remove('show');
+  toastShownAt = 0;
+  const t = document.getElementById('toast');
+  if (t) t.classList.remove('show');
 }
+/* Safety net: iOS Safari suspends/throttles setTimeout while the PWA is
+   backgrounded (app switch, lock screen, etc.), so a toast's scheduled
+   auto-dismiss can fail to fire and it's left stuck on screen. On resume,
+   manually clear it if it has already outlived its intended duration. */
+document.addEventListener('visibilitychange', function() {
+  if (document.visibilityState === 'visible' && toastShownAt && (Date.now() - toastShownAt) >= toastDurationMs) {
+    toastDismiss();
+  }
+});
 
 /* ─── Beer Frame Modal (#58) ────────────────────────────────── */
 function openBeerFrameModal(frameNum) {
@@ -26426,6 +26503,38 @@ function dkHeaderTap() {
     dkSetVisible(!_dk.visible);
   }
 }
+
+/* ── Header title tap — DevKit triple-tap counter (above) plus an
+   expanded-title popover for when #hdr-title is truncated (long league/
+   game names get an ellipsis at that width). Auto-dismisses after 3s or
+   on the next tap anywhere else (see the document click listener below). */
+var _hdrTitlePopoverTimer = null;
+function hdrTitleTap() {
+  dkHeaderTap();
+  showHdrTitlePopover();
+}
+function showHdrTitlePopover() {
+  var titleEl = document.getElementById('hdr-title');
+  var pop = document.getElementById('hdr-title-popover');
+  if (!titleEl || !pop) return;
+  if (titleEl.scrollWidth <= titleEl.clientWidth) return; // not truncated — nothing to expand
+  pop.textContent = titleEl.textContent;
+  pop.classList.add('show');
+  clearTimeout(_hdrTitlePopoverTimer);
+  _hdrTitlePopoverTimer = setTimeout(function(){ pop.classList.remove('show'); }, 3000);
+}
+function hideHdrTitlePopover() {
+  clearTimeout(_hdrTitlePopoverTimer);
+  var pop = document.getElementById('hdr-title-popover');
+  if (pop) pop.classList.remove('show');
+}
+document.addEventListener('click', function(e) {
+  var pop = document.getElementById('hdr-title-popover');
+  if (!pop || !pop.classList.contains('show')) return;
+  var titleEl = document.getElementById('hdr-title');
+  if (titleEl && titleEl.contains(e.target)) return; // title's own tap handler manages re-open
+  hideHdrTitlePopover();
+});
 
 /* ── Visibility (bug button + badge) ─────────────────────── */
 function dkSetVisible(on) {
