@@ -1400,6 +1400,74 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
 .fm-alt-pill.ball1 { background:rgba(255,255,255,0.10); color:#FFFFFF; border:1px solid rgba(255,255,255,0.25); }
 .fm-alt-pill.ball2 { background:rgba(255,215,0,0.12); color:var(--gold); border:1px solid rgba(255,215,0,0.3); }
 
+/* ── Lane Reference Bar ─────────────────────────────────────── */
+.fm-lane-ref {
+  display:flex; align-items:center; justify-content:center;
+  gap:6px; padding:0 10px 3px;
+}
+.fm-ref-chip {
+  display:flex; align-items:center; gap:5px;
+  padding:3px 8px 3px 6px; border-radius:8px;
+  border:1px solid var(--border2); background:var(--bg3);
+  cursor:pointer; -webkit-tap-highlight-color:transparent;
+  transition:border-color 0.15s, background 0.15s;
+  flex:1; min-width:0; max-width:160px;
+}
+.fm-ref-chip.active {
+  border-color:rgba(0,217,217,0.5); background:rgba(0,217,217,0.07);
+}
+.fm-ref-chip.editing {
+  border-color:var(--gold); background:rgba(255,215,0,0.08);
+}
+.fm-ref-parity {
+  font-size:8px; font-weight:900; letter-spacing:0.8px;
+  text-transform:uppercase; color:var(--t3); flex-shrink:0;
+}
+.fm-ref-chip.active .fm-ref-parity { color:var(--teal); }
+.fm-ref-chip.editing .fm-ref-parity { color:var(--gold); }
+.fm-ref-vals {
+  display:flex; align-items:center; gap:4px; flex:1; min-width:0;
+}
+.fm-ref-val-item {
+  display:flex; align-items:baseline; gap:2px;
+}
+.fm-ref-val-lbl {
+  font-size:7px; font-weight:800; color:var(--t3); letter-spacing:0.4px;
+}
+.fm-ref-val-num {
+  font-size:12px; font-weight:900; color:var(--t2);
+  letter-spacing:-0.3px;
+}
+.fm-ref-chip.active .fm-ref-val-num { color:var(--teal); }
+.fm-ref-chip.editing .fm-ref-val-num { color:var(--gold); }
+.fm-ref-sep { font-size:8px; color:var(--border2); }
+.fm-ref-override-btn {
+  font-size:11px; color:var(--t3); padding:3px 5px;
+  background:none; border:1px solid var(--border2); border-radius:6px;
+  cursor:pointer; -webkit-tap-highlight-color:transparent;
+  flex-shrink:0; line-height:1;
+  transition:border-color 0.15s, color 0.15s;
+}
+.fm-ref-override-btn.on {
+  border-color:var(--sedona); color:var(--sedona);
+}
+/* Ref-edit mode: label above drums */
+.fm-ref-edit-label {
+  font-size:9px; font-weight:900; color:var(--gold); letter-spacing:0.6px;
+  text-align:center; padding:2px 0; display:none;
+  text-transform:uppercase;
+}
+.fm-ref-edit-label.visible { display:block; }
+/* Confirm ref button — replaces the ½ buttons area during ref edit */
+.fm-ref-confirm-btn {
+  display:none; padding:3px 9px; border-radius:7px;
+  border:1px solid var(--gold); background:rgba(255,215,0,0.1);
+  color:var(--gold); font-size:9px; font-weight:900; letter-spacing:0.4px;
+  cursor:pointer; -webkit-tap-highlight-color:transparent;
+  white-space:nowrap;
+}
+.fm-ref-confirm-btn.visible { display:block; }
+
 /* Expanded ball strip — slides up from above collapsed row */
 .fm-ball-expanded {
   position:absolute;
@@ -3213,6 +3281,13 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
           <span id="fm-beer-text">&#x1F37A;</span>
         </div>
 
+        <!-- Lane Reference Bar: odd/even board reference chips -->
+        <div class="fm-lane-ref" id="fm-lane-ref">
+          <!-- populated by fmRenderLaneRef() -->
+        </div>
+        <!-- Ref-edit mode label (above drums) -->
+        <div class="fm-ref-edit-label" id="fm-ref-edit-label"></div>
+
         <!-- Collapsed ball row: SB/TB wheels | NT + ALT (chip is floating, lives in pin anchor) -->
         <div class="fm-ball-row-collapsed" id="fm-ball-row-collapsed">
           <!-- Expanded strip overlays upward -->
@@ -3240,6 +3315,7 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
             <button class="fm-nt-btn" id="fm-nt-btn" onclick="toggleNoTap()">NT</button>
             <button class="fm-num-btn" id="fm-num-btn" onclick="fmToggleNumeric()">NUM</button>
             <div class="fm-alt-pill" id="fm-alt-pill" style="display:none"></div>
+            <button class="fm-ref-confirm-btn" id="fm-ref-confirm-btn" onclick="fmRefEditConfirm()">✓ SET</button>
           </div>
         </div>
 
@@ -4205,6 +4281,7 @@ const G = {
   lanePair: null,
   oddLane: null,
   evenLane: null,
+  laneRefOverride: false, // true = user suppressed auto lane-parity detection
   // NoTap
   noTap: false,
   scoreDisplay: 'standard', // 'standard' or 'notap'
@@ -9446,6 +9523,19 @@ function openShotDetailPrompt(scoredFrame, scoredAtt, isFresh, isSpareConv, attI
   _sdp.miss    = att.MissDirection  || null;
   _sdp.boards  = att.MissBoards     || null;
 
+  // Lane ref auto-population: if attempt has no SB/TB yet, seed from locked reference
+  if (att.StartingBoard == null) {
+    var _sdpParity = currentLaneParity();
+    if (_sdpParity) {
+      var _sdpRef = getLaneRef();
+      var _sdpR = _sdpRef[_sdpParity];
+      att.StartingBoard = _sdpR.sb != null ? (_sdpR.sbHalf ? _sdpR.sb + 0.5 : _sdpR.sb) : null;
+      att.TargetBoard   = _sdpR.tb != null ? (_sdpR.tbHalf ? _sdpR.tb + 0.5 : _sdpR.tb) : null;
+      // Persist immediately so sdSave() picks up the pre-populated values
+      if (att.StartingBoard != null || att.TargetBoard != null) saveAll();
+    }
+  }
+
   // Update title
   var titleEl = document.getElementById('sdp-title');
   if (titleEl) {
@@ -9819,15 +9909,211 @@ function fmLoadBoardData() {
   if (!sbDrum || !tbDrum) return;
   var prefs = getPrefs();
 
+  // Lane ref pre-population: if attempt has no board data yet, seed from lane ref
+  var refSb = null, refTb = null, refSbHalf = false, refTbHalf = false;
+  if (!att || att.StartingBoard == null) {
+    var _parity = currentLaneParity();
+    if (_parity) {
+      var _ref = getLaneRef();
+      refSb = _ref[_parity].sb;
+      refTb = _ref[_parity].tb;
+      refSbHalf = !!_ref[_parity].sbHalf;
+      refTbHalf = !!_ref[_parity].tbHalf;
+    }
+  }
+
   var sbVal = (att && att.StartingBoard != null) ? att.StartingBoard
-              : (G.lastSB != null ? G.lastSB : (prefs.defaultSB != null ? prefs.defaultSB : 17));
+              : (refSb != null ? (refSbHalf ? refSb + 0.5 : refSb)
+              : (G.lastSB != null ? G.lastSB : (prefs.defaultSB != null ? prefs.defaultSB : 17)));
   var tbVal = (att && att.TargetBoard != null) ? att.TargetBoard
-              : (G.lastTB != null ? G.lastTB : (prefs.defaultTB != null ? prefs.defaultTB : 10));
+              : (refTb != null ? (refTbHalf ? refTb + 0.5 : refTb)
+              : (G.lastTB != null ? G.lastTB : (prefs.defaultTB != null ? prefs.defaultTB : 10)));
 
   fmScrollWheelTo(sbDrum, sbVal);
   fmScrollWheelTo(tbDrum, tbVal);
   fmSetHalfToggle('sb', sbVal % 1 >= 0.5);
   fmSetHalfToggle('tb', tbVal % 1 >= 0.5);
+}
+
+/* =============================================================
+   LANE REFERENCE — odd/even board markers
+   ============================================================= */
+
+var _fmRefEditParity = null; // 'odd' | 'even' | null — currently being edited
+var _fmRefEditPrevSb = null; // saved drum values before entering ref-edit
+var _fmRefEditPrevTb = null;
+var _fmRefEditPrevSbHalf = false;
+var _fmRefEditPrevTbHalf = false;
+
+var LANE_REF_KEY = 'bowlingdb_lane_ref';
+var LANE_REF_OVERRIDE_KEY = 'bowlingdb_lane_ref_override';
+
+function getLaneRef() {
+  var def = { sb: 17, tb: 10, sbHalf: false, tbHalf: false };
+  try {
+    var raw = localStorage.getItem(LANE_REF_KEY);
+    var parsed = raw ? JSON.parse(raw) : {};
+    return {
+      odd:  Object.assign({}, def, parsed.odd  || {}),
+      even: Object.assign({}, def, parsed.even || {})
+    };
+  } catch(e) { return { odd: Object.assign({}, def), even: Object.assign({}, def) }; }
+}
+
+function saveLaneRef(obj) {
+  try { localStorage.setItem(LANE_REF_KEY, JSON.stringify(obj)); } catch(e) {}
+}
+
+function currentLaneParity() {
+  // Returns 'odd' | 'even' | null
+  if (G.laneRefOverride) return null; // user has manually overridden
+  if (!G.laneStart || !G.lanePair) return null;
+  var parts = G.lanePair.split(/[,\-]/);
+  if (parts.length < 2) return null;
+  var startIsOdd = (G.laneStart % 2 === 1);
+  // G1, G3, G5... on starting lane; G2, G4, G6... on alternate lane
+  var gameOnStart = (G.gameNum % 2 === 1);
+  var onOdd = gameOnStart ? startIsOdd : !startIsOdd;
+  return onOdd ? 'odd' : 'even';
+}
+
+function fmRenderLaneRef() {
+  var el = document.getElementById('fm-lane-ref');
+  if (!el) return;
+  var ref = getLaneRef();
+  var activeParity = currentLaneParity(); // null when overridden or no lane pair
+  var override = !!G.laneRefOverride;
+
+  function formatVal(v, half) {
+    var base = (v != null) ? v : '—';
+    return half ? base + '½' : base;
+  }
+
+  function chipHTML(parity) {
+    var isActive = (activeParity === parity);
+    var isEditing = (_fmRefEditParity === parity);
+    var cls = 'fm-ref-chip' + (isActive ? ' active' : '') + (isEditing ? ' editing' : '');
+    var r = ref[parity];
+    var sbStr = formatVal(r.sb, r.sbHalf);
+    var tbStr = formatVal(r.tb, r.tbHalf);
+    var label = parity === 'odd' ? 'ODD' : 'EVEN';
+    return '<div class="' + cls + '" id="fm-ref-chip-' + parity + '" onclick="fmRefEditStart(\'' + parity + '\')">' +
+      '<span class="fm-ref-parity">' + label + '</span>' +
+      '<div class="fm-ref-vals">' +
+        '<div class="fm-ref-val-item">' +
+          '<span class="fm-ref-val-lbl">SB</span>' +
+          '<span class="fm-ref-val-num">' + sbStr + '</span>' +
+        '</div>' +
+        '<span class="fm-ref-sep">·</span>' +
+        '<div class="fm-ref-val-item">' +
+          '<span class="fm-ref-val-lbl">TB</span>' +
+          '<span class="fm-ref-val-num">' + tbStr + '</span>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }
+
+  // Override button: ⊘ when auto-detecting, ⟳ when overridden
+  var overrideCls = 'fm-ref-override-btn' + (override ? ' on' : '');
+  var overrideIcon = override ? '&#x27F3;' : '&#x2298;';
+  var overrideTip = override ? 'Restore auto lane' : 'Override lane parity';
+
+  el.innerHTML =
+    chipHTML('odd') +
+    chipHTML('even') +
+    '<button class="' + overrideCls + '" id="fm-ref-override-btn" ' +
+      'onclick="fmToggleLaneRefOverride()" title="' + overrideTip + '">' +
+      overrideIcon + '</button>';
+}
+
+function fmRefEditStart(parity) {
+  if (_fmRefEditParity === parity) {
+    // Tapping the same chip again cancels
+    fmRefEditCancel();
+    return;
+  }
+  // If already editing another parity, cancel it first
+  if (_fmRefEditParity) fmRefEditCancel();
+
+  _fmRefEditParity = parity;
+
+  // Save current drum state so we can restore on cancel
+  var sbDrum = document.getElementById('fm-sb-drum');
+  var tbDrum = document.getElementById('fm-tb-drum');
+  var sbHalfBtn = document.getElementById('fm-sb-half');
+  var tbHalfBtn = document.getElementById('fm-tb-half');
+  _fmRefEditPrevSb = fmGetWheelValue('fm-sb-drum');
+  _fmRefEditPrevTb = fmGetWheelValue('fm-tb-drum');
+  _fmRefEditPrevSbHalf = sbHalfBtn ? sbHalfBtn.classList.contains('on') : false;
+  _fmRefEditPrevTbHalf = tbHalfBtn ? tbHalfBtn.classList.contains('on') : false;
+
+  // Load this parity's ref values into the drums
+  var ref = getLaneRef();
+  var r = ref[parity];
+  if (sbDrum) fmScrollWheelTo(sbDrum, r.sb != null ? r.sb : 17);
+  if (tbDrum) fmScrollWheelTo(tbDrum, r.tb != null ? r.tb : 10);
+  fmSetHalfToggle('sb', !!r.sbHalf);
+  fmSetHalfToggle('tb', !!r.tbHalf);
+
+  // Show edit label + confirm button
+  var editLabel = document.getElementById('fm-ref-edit-label');
+  var confirmBtn = document.getElementById('fm-ref-confirm-btn');
+  if (editLabel) {
+    editLabel.textContent = 'Setting ' + parity.toUpperCase() + ' reference';
+    editLabel.classList.add('visible');
+  }
+  if (confirmBtn) confirmBtn.classList.add('visible');
+
+  // Re-render chips to show editing highlight
+  fmRenderLaneRef();
+}
+
+function fmRefEditConfirm() {
+  if (!_fmRefEditParity) return;
+  var parity = _fmRefEditParity;
+  var sbBase = fmGetWheelValue('fm-sb-drum');
+  var tbBase = fmGetWheelValue('fm-tb-drum');
+  var sbHalfBtn = document.getElementById('fm-sb-half');
+  var tbHalfBtn = document.getElementById('fm-tb-half');
+  var sbHalf = sbHalfBtn ? sbHalfBtn.classList.contains('on') : false;
+  var tbHalf = tbHalfBtn ? tbHalfBtn.classList.contains('on') : false;
+
+  var ref = getLaneRef();
+  ref[parity] = { sb: sbBase, tb: tbBase, sbHalf: sbHalf, tbHalf: tbHalf };
+  saveLaneRef(ref);
+
+  _fmRefEditParity = null;
+  fmRefEditRestoreUI();
+  // Reload the drums with the current attempt's data
+  fmLoadBoardData();
+  fmRenderLaneRef();
+  haptic && haptic('light');
+}
+
+function fmRefEditCancel() {
+  if (!_fmRefEditParity) return;
+  _fmRefEditParity = null;
+  // Restore drums to pre-edit values
+  var sbDrum = document.getElementById('fm-sb-drum');
+  var tbDrum = document.getElementById('fm-tb-drum');
+  if (sbDrum && _fmRefEditPrevSb != null) fmScrollWheelTo(sbDrum, _fmRefEditPrevSb);
+  if (tbDrum && _fmRefEditPrevTb != null) fmScrollWheelTo(tbDrum, _fmRefEditPrevTb);
+  fmSetHalfToggle('sb', _fmRefEditPrevSbHalf);
+  fmSetHalfToggle('tb', _fmRefEditPrevTbHalf);
+  fmRefEditRestoreUI();
+  fmRenderLaneRef();
+}
+
+function fmRefEditRestoreUI() {
+  var editLabel = document.getElementById('fm-ref-edit-label');
+  var confirmBtn = document.getElementById('fm-ref-confirm-btn');
+  if (editLabel) editLabel.classList.remove('visible');
+  if (confirmBtn) confirmBtn.classList.remove('visible');
+}
+
+function fmToggleLaneRefOverride() {
+  G.laneRefOverride = !G.laneRefOverride;
+  fmRenderLaneRef();
 }
 
 /* ── Floating ball chip — 4-corner dock within #fm-pin-anchor ──
@@ -10186,6 +10472,7 @@ function renderFocusModePanel() {
   }
   // Score display is managed by fmScoreCycleRender() (SCORE/PACE/MAX cycle)
   fmScoreCycleRender();
+  fmRenderLaneRef();
 
   var series  = db.series.find(function(s) { return s.SeriesID === G.seriesID; });
   var beerLog = (series && series.beerLog) ? series.beerLog : [];
@@ -14751,6 +15038,7 @@ function saveSeries(id) {
     db.series.push(newSeriesObj);
     G.seriesID = newId; G.laneStart = laneStart; G.lanePair = lanePair;
     G.oddLane = Math.min(oddLane,evenLane); G.evenLane = Math.max(oddLane,evenLane);
+    G.laneRefOverride = false; // reset override for new series
     saveAll(); closeModal();
     createAndStartGame();
   }
@@ -18647,6 +18935,30 @@ function openSettingsModal() {
     </div>
 
 
+    <!-- ── Bowler Profile ──────────────────────────────────── -->
+    <div class="settings-section">
+      <div class="settings-section-hdr">Bowler Profile
+        <span class="settings-section-hint">Used for AI debrief coaching and entry angle analysis</span>
+      </div>
+      ${(() => {
+        const hand = getPrefs().handedness || 'right';
+        return `
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <span style="font-size:13px;color:var(--t1)">Dominant Hand</span>
+            <div style="display:flex;gap:6px">
+              <button onclick="savePrefs({handedness:'right'});openSettingsModal()"
+                style="padding:4px 14px;border-radius:7px;border:1px solid ${hand==='right'?'var(--teal)':'var(--border2)'};background:${hand==='right'?'rgba(0,217,217,0.1)':'none'};color:${hand==='right'?'var(--teal)':'var(--t3)'};font-size:12px;font-weight:700;cursor:pointer">
+                Right
+              </button>
+              <button onclick="savePrefs({handedness:'left'});openSettingsModal()"
+                style="padding:4px 14px;border-radius:7px;border:1px solid ${hand==='left'?'var(--teal)':'var(--border2)'};background:${hand==='left'?'rgba(0,217,217,0.1)':'none'};color:${hand==='left'?'var(--teal)':'var(--t3)'};font-size:12px;font-weight:700;cursor:pointer">
+                Left
+              </button>
+            </div>
+          </div>`;
+      })()}
+    </div>
+
     <!-- ── AI Integration ────────────────────────────────── -->
     <div class="settings-section">
       <div class="settings-section-hdr">AI Integration
@@ -18671,20 +18983,31 @@ function openSettingsModal() {
       })()}
       <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border1)">
         <div style="font-size:11px;color:var(--t3);margin-bottom:8px">
-          AI model — override anytime a new version ships, no code edit needed
+          AI model — select the model for each tier; defaults shown when not overridden
         </div>
         ${['fast','deep'].map(tier => {
           const override = localStorage.getItem('bowlingdb_ai_model_' + tier);
           const label = tier === 'fast' ? 'Fast (ball info, debrief, DevKit tools)' : 'Deep (AI Chat, diagnostics)';
+          const models = tier === 'fast'
+            ? [
+                { id: 'claude-haiku-4-5-20251001', label: 'Claude Haiku 4.5 (default)' }
+              ]
+            : [
+                { id: 'claude-sonnet-4-6', label: 'Claude Sonnet 4.6 (default)' },
+                { id: 'claude-opus-4-6',   label: 'Claude Opus 4.6' },
+                { id: 'claude-opus-4-7',   label: 'Claude Opus 4.7' },
+                { id: 'claude-opus-4-8',   label: 'Claude Opus 4.8' }
+              ];
+          const current = override || AI_MODEL_DEFAULTS[tier];
           return `
           <div style="margin-bottom:10px">
             <label class="flabel" style="font-size:11px">${label}</label>
-            <div style="display:flex;gap:6px">
-              <input id="ai-model-${tier}-input" type="text" class="finput"
-                style="flex:1;font-size:12px;font-family:monospace;box-sizing:border-box"
-                placeholder="${AI_MODEL_DEFAULTS[tier]}" value="${override || ''}"
-                autocomplete="off" autocorrect="off" spellcheck="false">
-              <button class="btn btn-ghost btn-sm" style="flex-shrink:0;padding:0 12px" onclick="saveAIModel('${tier}')">Save</button>
+            <div style="display:flex;gap:6px;align-items:center">
+              <select id="ai-model-${tier}-input" class="finput"
+                style="flex:1;font-size:12px;box-sizing:border-box"
+                onchange="saveAIModel('${tier}')">
+                ${models.map(m => `<option value="${m.id}"${current===m.id?' selected':''}>${m.label}</option>`).join('')}
+              </select>
               ${override ? `<button class="btn btn-ghost btn-sm" style="flex-shrink:0;padding:0 10px;color:var(--t3)" onclick="resetAIModel('${tier}')" title="Reset to default">↺</button>` : ''}
             </div>
           </div>`;
@@ -25720,6 +26043,277 @@ async function _seriesCallAI(prompt) {
   return (data.content || []).map(c => c.text || '').join('').trim();
 }
 
+/* =============================================================
+   PHASE 1 — POCKET ENTRY ANGLE DETECTION
+   Classifies first-ball pocket hits (pin 1 knocked, pinfall < 10)
+   by leave configuration into angle categories.
+   ============================================================= */
+
+const POCKET_ANGLE_TABLE = {
+  right: {
+    '10':        { angle:'high', signal:'Ringing 10 — too much entry angle, ball drove behind headpin' },
+    '6-10':      { angle:'high', signal:'Baby split — sharp angle or early hook, 6-pin kicked off deck' },
+    '3-6-10':    { angle:'high', signal:'Bucket right — ball overdriven to the right of pocket' },
+    '4':         { angle:'high', signal:'High 4 — hit headpin too high, 2-pin absorbed deflection' },
+    '4-7':       { angle:'high', signal:'4-7 split — over-hook, contact too high on headpin' },
+    '2':         { angle:'high', signal:'Extreme high hit — significant over-hook into headpin' },
+    '2-4-7':     { angle:'high', signal:'High-left cluster — ball hooking very early' },
+    '2-4':       { angle:'high', signal:'High hit, 2-4 — ball came in steep and high' },
+    '9':         { angle:'low',  signal:'Thin 9 — ball came in light, insufficient entry angle' },
+    '7':         { angle:'low',  signal:'Weak 7 — ball too straight, deflected off 3 instead of driving' },
+    '3':         { angle:'low',  signal:'Light 3 — ball skidded through face, insufficient hook' },
+    '3-9':       { angle:'low',  signal:'3-9 — thin through the face, ball came in light on right' },
+    '2-8':       { angle:'low',  signal:'2-8 — light hit, insufficient left drive off 5-pin' },
+    '6-9':       { angle:'low',  signal:'6-9 — ball came in very light right, minimal deflection' },
+    '8':         { angle:'flat', signal:'Flat 8 — ball lost energy/momentum before pin deck' },
+    '5':         { angle:'flat', signal:'Dead 5 — ball had no continuation or deflection drive' },
+    '4-6-7-10':  { angle:'flat', signal:'Big four — catastrophic energy loss at pin impact' },
+    '8-10':      { angle:'flat', signal:'8-10 split — drive failure, ball could not carry back row' },
+    '6':         { angle:'flat', signal:'Weak 6 — ball came in slightly light, lost rightward drive' },
+    '5-7':       { angle:'flat', signal:'5-7 split — flat hit, ball deflected straight instead of left' },
+    '5-10':      { angle:'flat', signal:'5-10 split — ball lost drive entirely through pin deck' },
+  },
+  left: {
+    // Mirrors right-hand table: 10<->7, 6<->4, 3<->2, 9<->8 where applicable
+    '7':         { angle:'high', signal:'Ringing 7 — too much entry angle, ball drove behind headpin' },
+    '4-7':       { angle:'high', signal:'Baby split — sharp angle or early hook, 4-pin kicked off deck' },
+    '2-4-7':     { angle:'high', signal:'Bucket left — ball overdriven to the left of pocket' },
+    '6':         { angle:'high', signal:'High 6 — hit headpin too high, 3-pin absorbed deflection' },
+    '6-10':      { angle:'high', signal:'6-10 split — over-hook, contact too high on headpin' },
+    '3':         { angle:'high', signal:'Extreme high hit — significant over-hook into headpin' },
+    '3-6-10':    { angle:'high', signal:'High-right cluster — ball hooking very early' },
+    '3-6':       { angle:'high', signal:'High hit, 3-6 — ball came in steep and high' },
+    '8':         { angle:'low',  signal:'Thin 8 — ball came in light, insufficient entry angle' },
+    '10':        { angle:'low',  signal:'Weak 10 — ball too straight, deflected off 2 instead of driving' },
+    '2':         { angle:'low',  signal:'Light 2 — ball skidded through face, insufficient hook' },
+    '2-8':       { angle:'low',  signal:'2-8 — thin through the face, ball came in light on left' },
+    '3-9':       { angle:'low',  signal:'3-9 — light hit, insufficient right drive off 5-pin' },
+    '4-8':       { angle:'low',  signal:'4-8 — ball came in very light left, minimal deflection' },
+    '9':         { angle:'flat', signal:'Flat 9 — ball lost energy/momentum before pin deck' },
+    '5':         { angle:'flat', signal:'Dead 5 — ball had no continuation or deflection drive' },
+    '4-6-7-10':  { angle:'flat', signal:'Big four — catastrophic energy loss at pin impact' },
+    '7-9':       { angle:'flat', signal:'7-9 split — drive failure, ball could not carry back row' },
+    '4':         { angle:'flat', signal:'Weak 4 — ball came in slightly light, lost leftward drive' },
+    '5-10':      { angle:'flat', signal:'5-10 split — flat hit, ball deflected straight instead of right' },
+    '4-9':       { angle:'flat', signal:'4-9 split — ball lost drive entirely through pin deck' },
+  }
+};
+
+/* Classify a single pocket-hit leave into an angle category.
+   leave = Set of standing pin numbers; pin 1 must NOT be in the set.
+   handedness = 'right' | 'left'
+   Returns { angle:'high'|'low'|'flat'|'unknown', signal:string } */
+function classifyPocketEntry(leave, handedness) {
+  if (!leave || leave.size === 0) return { angle:'unknown', signal:'' };
+  const key = [...leave].sort((a, b) => a - b).join('-');
+  const table = POCKET_ANGLE_TABLE[handedness] || POCKET_ANGLE_TABLE.right;
+
+  if (table[key]) return table[key];
+
+  // Fallback pattern rules for unlisted configurations
+  const isRH = (handedness !== 'left');
+  const cornerHigh = isRH ? 10 : 7;
+  const cornerLow  = isRH ? 7  : 10;
+  if (leave.has(cornerHigh) && leave.size === 1) return { angle:'high', signal:'Corner pin — high angle indicator' };
+  if (leave.has(cornerLow)  && leave.size === 1) return { angle:'low',  signal:'Corner pin — low/flat angle indicator' };
+  if (leave.has(8) || leave.has(5))              return { angle:'flat',  signal:'Back-row survival — energy/momentum concern' };
+  return { angle:'unknown', signal:'' };
+}
+
+/* Aggregate pocket entry angle across all non-strike att1s in a set of games.
+   Returns:
+   {
+     resolved: N,          // frames with classifiable pin data
+     total: N,             // total non-strike att1 frames (pocket hit: pin1 knocked)
+     highCount, lowCount, flatCount, unknownCount,
+     dominantAngle: 'high'|'low'|'flat'|'mixed'|null,
+     dominantSignal: string,
+     breakdown: [ { key, label, angle, signal, count } ]  // sorted by count desc
+   }
+*/
+function aggregatePocketAngles(gameIDs, handedness) {
+  const hand = handedness || 'right';
+  const gameSet = new Set(gameIDs);
+  const allFrames = db.frames.filter(f => gameSet.has(f.GameID));
+  const frameIDs = new Set(allFrames.map(f => f.FrameID));
+  const allAttempts = db.attempts.filter(a => frameIDs.has(a.FrameID));
+
+  // Reuse the same 3-method leave resolution from calculateAdvancedStats
+  function getLeaveSet(a1) {
+    const standing = new Set();
+    for (let p = 1; p <= 10; p++) {
+      if (a1['PinStart' + p] === 1 && a1['PinDelta' + p] !== 1) standing.add(p);
+    }
+    if (standing.size > 0) return standing;
+    if (a1.LeaveID && db.leaves && db.leaves.length) {
+      const lv = db.leaves.find(l => l.LeaveID === a1.LeaveID);
+      if (lv) { for (let p = 1; p <= 10; p++) { if (lv['Pin' + p]) standing.add(p); } }
+      if (standing.size > 0) return standing;
+    }
+    const anyKnocked = [1,2,3,4,5,6,7,8,9,10].some(p => a1['Pin' + p] === true);
+    if (anyKnocked) { for (let p = 1; p <= 10; p++) { if (!a1['Pin' + p]) standing.add(p); } }
+    return standing;
+  }
+
+  const counts = { high:0, low:0, flat:0, unknown:0 };
+  const leaveTally = {}; // key -> { angle, signal, count }
+  let total = 0;
+
+  // Frames 1-9: non-strike att1s where pin1 was knocked (pocket hit)
+  allFrames.filter(f => f.FrameNumber <= 9 && !f.Strike).forEach(f => {
+    const a1 = allAttempts.find(a => a.FrameID === f.FrameID && a.Attempt === 1);
+    if (!a1 || a1.Pinfall === null || a1.Pinfall === 0) return; // no pinfall or gutter
+    const leave = getLeaveSet(a1);
+    if (leave.has(1)) return; // headpin still standing — not a pocket hit
+    total++;
+    const result = classifyPocketEntry(leave, hand);
+    counts[result.angle]++;
+    const key = [...leave].sort((a,b) => a-b).join('-');
+    if (!leaveTally[key]) leaveTally[key] = { angle:result.angle, signal:result.signal, count:0 };
+    leaveTally[key].count++;
+  });
+
+  // Frame 10: att1 non-strike pocket hits; att2 after X if non-strike pocket hit
+  allFrames.filter(f => f.FrameNumber === 10).forEach(f => {
+    const a1 = allAttempts.find(a => a.FrameID === f.FrameID && a.Attempt === 1);
+    const a2 = allAttempts.find(a => a.FrameID === f.FrameID && a.Attempt === 2);
+    if (a1 && a1.Pinfall !== null && a1.Pinfall > 0 && a1.Pinfall < 10) {
+      const leave = getLeaveSet(a1);
+      if (!leave.has(1)) {
+        total++;
+        const result = classifyPocketEntry(leave, hand);
+        counts[result.angle]++;
+        const key = [...leave].sort((a,b) => a-b).join('-');
+        if (!leaveTally[key]) leaveTally[key] = { angle:result.angle, signal:result.signal, count:0 };
+        leaveTally[key].count++;
+      }
+    }
+    if (a1 && a1.Pinfall === 10 && a2 && a2.Pinfall !== null && a2.Pinfall > 0 && a2.Pinfall < 10) {
+      const leave = getLeaveSet(a2);
+      if (!leave.has(1)) {
+        total++;
+        const result = classifyPocketEntry(leave, hand);
+        counts[result.angle]++;
+        const key = [...leave].sort((a,b) => a-b).join('-');
+        if (!leaveTally[key]) leaveTally[key] = { angle:result.angle, signal:result.signal, count:0 };
+        leaveTally[key].count++;
+      }
+    }
+  });
+
+  const resolved = counts.high + counts.low + counts.flat;
+  const breakdown = Object.entries(leaveTally)
+    .map(([key, v]) => ({ key, label:key, angle:v.angle, signal:v.signal, count:v.count }))
+    .sort((a, b) => b.count - a.count);
+
+  // Dominant angle: majority vote among resolved only
+  let dominantAngle = null;
+  let dominantSignal = '';
+  if (resolved > 0) {
+    const maxCount = Math.max(counts.high, counts.low, counts.flat);
+    const maxAngle = counts.high === maxCount ? 'high'
+                   : counts.low  === maxCount ? 'low' : 'flat';
+    // Only declare dominant if it represents >40% of resolved frames
+    if (maxCount / resolved >= 0.40) {
+      dominantAngle = maxAngle;
+      // Use the most frequent leave's signal as the representative descriptor
+      const rep = breakdown.find(b => b.angle === dominantAngle);
+      dominantSignal = rep ? rep.signal : '';
+    } else {
+      dominantAngle = 'mixed';
+    }
+  }
+
+  return { resolved, total, highCount:counts.high, lowCount:counts.low,
+           flatCount:counts.flat, unknownCount:counts.unknown,
+           dominantAngle, dominantSignal, breakdown };
+}
+
+/* =============================================================
+   PHASE 2 — CROSS-LEAGUE BASELINE BUILDER
+   Computes rolling stats across all leagues, last N sessions.
+   ============================================================= */
+
+function buildCrossLeagueBaseline(excludeSeriesID, sessionCount) {
+  sessionCount = sessionCount || 10;
+
+  // Collect all series with scored games, excluding current, sorted newest-first
+  const eligibleSeries = db.series
+    .filter(s => s.SeriesID !== excludeSeriesID && s.DateBowled)
+    .sort((a, b) => new Date(b.DateBowled) - new Date(a.DateBowled));
+
+  const sessions = [];
+  for (let i = 0; i < eligibleSeries.length && sessions.length < sessionCount; i++) {
+    const s = eligibleSeries[i];
+    const games = db.games.filter(g => g.SeriesID === s.SeriesID && !g.NoTap && g.FinalScore > 0);
+    if (games.length === 0) continue;
+    sessions.push({ series: s, games });
+  }
+
+  if (sessions.length === 0) return null;
+
+  const handedness = getPrefs().handedness || 'right';
+  let totalPins = 0, totalGames = 0;
+  let totalStrikes = 0, totalFr = 0;
+  let totalSpares = 0, totalSpareOpps = 0;
+  let totalSplits = 0, totalSplitOpps = 0;
+  let totalSubEight = 0, totalNonStrikeAtt1 = 0;
+  const leaveAccum = {}; // key -> count (for top recurring leaves)
+  const angleAccum = { high:0, low:0, flat:0 };
+
+  sessions.forEach(({ games }) => {
+    const gameIDs = games.map(g => g.GameID);
+    const stats = calculateAdvancedStats(gameIDs);
+    games.forEach(g => { totalPins += g.FinalScore; totalGames++; });
+    totalStrikes   += stats.strikes;
+    totalFr        += stats.totalFr;
+    totalSpares    += stats.spares;
+    totalSpareOpps += stats.spareOpps;
+    totalSplits    += stats.splitOpp;
+    totalSplitOpps += stats.spareOpps; // splits are a subset of spare opps
+
+    // Sub-8 and pocket angle from raw attempts
+    const frameSet = new Set(db.frames.filter(f => gameIDs.includes(f.GameID)).map(f => f.FrameID));
+    const atts = db.attempts.filter(a => frameSet.has(a.FrameID));
+    const frames19 = db.frames.filter(f => gameIDs.includes(f.GameID) && f.FrameNumber <= 9 && !f.Strike);
+    frames19.forEach(f => {
+      const a1 = atts.find(a => a.FrameID === f.FrameID && a.Attempt === 1);
+      if (!a1 || a1.Pinfall === null) return;
+      totalNonStrikeAtt1++;
+      if (a1.Pinfall < 8) totalSubEight++;
+    });
+
+    // Pocket angles from this session
+    const angles = aggregatePocketAngles(gameIDs, handedness);
+    angleAccum.high += angles.highCount;
+    angleAccum.low  += angles.lowCount;
+    angleAccum.flat += angles.flatCount;
+    angles.breakdown.forEach(b => {
+      leaveAccum[b.key] = (leaveAccum[b.key] || 0) + b.count;
+    });
+  });
+
+  const topLeaves = Object.entries(leaveAccum)
+    .map(([key, count]) => {
+      const table = POCKET_ANGLE_TABLE[handedness] || POCKET_ANGLE_TABLE.right;
+      const entry = table[key];
+      return { key, label: entry ? entry.signal.split(' — ')[0] : key, count };
+    })
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 5);
+
+  return {
+    sessionCount: sessions.length,
+    avgBaseline:        totalGames ? Math.floor(totalPins / totalGames) : null,
+    strikeRateBaseline: totalFr    ? totalStrikes / totalFr             : null,
+    spareRateBaseline:  totalSpareOpps ? totalSpares / totalSpareOpps   : null,
+    splitRateBaseline:  totalSpareOpps ? totalSplits / totalSpareOpps   : null,
+    subEightRateBaseline: totalNonStrikeAtt1 ? totalSubEight / totalNonStrikeAtt1 : null,
+    topLeaves,
+    angleBaseline: { high: angleAccum.high, low: angleAccum.low, flat: angleAccum.flat }
+  };
+}
+
 /* Build a compact context object for the AI debrief prompt. */
 function buildSeriesDebriefContext(seriesID) {
   const s       = db.series.find(x => x.SeriesID === seriesID);
@@ -25731,15 +26325,17 @@ function buildSeriesDebriefContext(seriesID) {
 
   if (!stdGames.length) return null;
 
+  const handedness = getPrefs().handedness || 'right';
   const scores   = stdGames.map(g => g.FinalScore);
   const total    = scores.reduce((a, b) => a + b, 0);
   const avg      = Math.floor(total / scores.length);
-  const stats    = calculateAdvancedStats(stdGames.map(g => g.GameID));
-  const streaks  = calculateStrikeStreaks(stdGames.map(g => g.GameID));
+  const gameIDs  = stdGames.map(g => g.GameID);
+  const stats    = calculateAdvancedStats(gameIDs);
+  const streaks  = calculateStrikeStreaks(gameIDs);
   const cleanCt  = stdGames.filter(g => isGameClean(g.GameID)).length;
 
   // Ball(s) used — from att1 BallIDs across these games
-  const gameIDSet  = new Set(stdGames.map(g => g.GameID));
+  const gameIDSet  = new Set(gameIDs);
   const frameIDSet = new Set(db.frames.filter(f => gameIDSet.has(f.GameID)).map(f => f.FrameID));
   const att1BallIDs = [...new Set(
     db.attempts.filter(a => frameIDSet.has(a.FrameID) && a.Attempt === 1 && a.BallID)
@@ -25756,11 +26352,16 @@ function buildSeriesDebriefContext(seriesID) {
   if (primaryBallID) {
     const preps = (db.surfaceDetails || [])
       .filter(sd => sd.BallID === primaryBallID)
-      .sort((a, b) => new Date(b.PrepDate || 0) - new Date(a.PrepDate || 0));
+      .sort((a, b) => (b.Date || '').localeCompare(a.Date || '')); // newest-first by Date
     if (preps.length) {
-      const surf = db.surfaces.find(x => x.SurfaceID === preps[0].SurfaceID);
-      const grit = preps[0].GritSimple || surf?.GritActual || null;
-      surfaceNote = grit ? grit + 'g' : 'logged';
+      const sd   = preps[0];
+      const surf = db.surfaces.find(x => x.SurfaceID === sd.SurfaceID);
+      const grit = sd.GritSimple || surf?.GritActual || null;
+      const polished = !!sd.Polished;
+      surfaceNote = [
+        grit ? grit + 'g' : null,
+        polished ? 'Polished' : null
+      ].filter(Boolean).join(' ') || 'logged';
     }
   }
 
@@ -25780,15 +26381,63 @@ function buildSeriesDebriefContext(seriesID) {
     }
   }
 
+  // Cross-league rolling baseline (last 10 sessions)
+  const baseline = buildCrossLeagueBaseline(seriesID, 10);
+
+  // Pocket entry angle digest for this series
+  const pocketAngles = aggregatePocketAngles(gameIDs, handedness);
+
+  // Sub-8 first ball count for this series (non-strike att1s, frames 1-9)
+  const frames19NS = db.frames.filter(f => gameIDSet.has(f.GameID) && f.FrameNumber <= 9 && !f.Strike);
+  let subEightCount = 0, nonStrikeAtt1Count = 0;
+  frames19NS.forEach(f => {
+    const a1 = db.attempts.find(a => a.FrameID === f.FrameID && a.Attempt === 1);
+    if (!a1 || a1.Pinfall === null) return;
+    nonStrikeAtt1Count++;
+    if (a1.Pinfall < 8) subEightCount++;
+  });
+
+  // Top repeating leaves this series (all non-strike att1s, not just pocket hits)
+  const leaveFreq = {};
+  frames19NS.forEach(f => {
+    const a1 = db.attempts.find(a => a.FrameID === f.FrameID && a.Attempt === 1);
+    if (!a1 || a1.Pinfall === null || a1.Pinfall === 0) return;
+    if (a1.LeaveID) {
+      leaveFreq[a1.LeaveID] = (leaveFreq[a1.LeaveID] || 0) + 1;
+    }
+  });
+  const topLeaves = Object.entries(leaveFreq)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 4)
+    .map(([id, count]) => {
+      const lv = db.leaves ? db.leaves.find(l => l.LeaveID === parseInt(id)) : null;
+      return { name: lv ? lv.LeaveName : 'Leave #' + id, count };
+    });
+
   return {
     date:            s?.DateBowled || null,
     league:          league?.LeagueName || (s?.LeagueID === 0 ? 'Open Bowling' : null),
     center:          center?.CenterName || null,
+    handedness,
     scores,
     total,
     avg,
     cleanGames:      cleanCt,
     totalGames:      stdGames.length,
+    // Raw stat numbers for delta computation in prompt builder
+    strikes:         stats.strikes,
+    totalFr:         stats.totalFr,
+    spares:          stats.spares,
+    spareOpps:       stats.spareOpps,
+    opens:           stats.opens,
+    splitOpp:        stats.splitOpp,
+    splitConv:       stats.splitConv,
+    singleOpp:       stats.singleOpp,
+    singleConv:      stats.singleConv,
+    makeableOpp:     stats.makeableOpp,
+    makeableConv:    stats.makeableConv,
+    makeableProjDelta: stats.makeableProjDelta,
+    // Formatted for display
     strikePct:       stats.strikePct,
     sparePct:        stats.sparePct,
     xOnXPct:         stats.xOnXPct,
@@ -25796,33 +26445,145 @@ function buildSeriesDebriefContext(seriesID) {
     clutchPct:       stats.clutchPct,
     fillBallAvg:     stats.fillBallAvg,
     firstBallAvg:    stats.firstBallAvg,
-    opens:           stats.opens,
     maxStrikeStreak: streaks.maxStreak || 0,
     balls:           ballNames,
     surface:         surfaceNote,
-    seasonAvgBefore
+    seasonAvgBefore,
+    // Cross-league baseline
+    baseline,
+    // Pocket entry angle digest
+    pocketAngles,
+    subEightCount,
+    nonStrikeAtt1Count,
+    subEightRate: nonStrikeAtt1Count > 0 ? subEightCount / nonStrikeAtt1Count : null,
+    topLeaves
   };
 }
 
 /* Build the prompt string from context. */
 function _buildDebriefPrompt(ctx) {
-  const lines = [
-    `You are a bowling coach giving a concise post-series debrief. Be direct, specific, and encouraging. Use plain text only — no markdown, no bullet symbols, no asterisks. Use short paragraphs separated by blank lines.`,
-    ``,
-    `Series: ${ctx.scores.join(' / ')} | Total ${ctx.total} | Avg ${ctx.avg}${ctx.seasonAvgBefore != null ? ` (season avg going in: ${ctx.seasonAvgBefore})` : ''}`,
-    ctx.league  ? `League: ${ctx.league}` : '',
-    ctx.center  ? `Center: ${ctx.center}` : '',
-    ctx.date    ? `Date: ${ctx.date}` : '',
-    `Games: ${ctx.totalGames} | Clean: ${ctx.cleanGames}/${ctx.totalGames} | Opens: ${ctx.opens}`,
-    `Strike%: ${ctx.strikePct} | Spare%: ${ctx.sparePct} | X-on-X: ${ctx.xOnXPct} | BounceBack: ${ctx.bounceBackPct}`,
-    `Clutch (F10 strike): ${ctx.clutchPct} | Fill Ball Avg: ${ctx.fillBallAvg} | First Ball Avg: ${ctx.firstBallAvg}`,
-    `Max strike streak: ${ctx.maxStrikeStreak}`,
-    ctx.balls.length ? `Ball(s): ${ctx.balls.join(', ')}${ctx.surface ? ' | Surface: ' + ctx.surface : ''}` : '',
-    ``,
-    `Give a 3-paragraph debrief: (1) what went well this series, (2) the main thing to work on, (3) one specific focus for next time. Keep it under 150 words total.`
-  ].filter(l => l !== null);
+  const pct = (n, d) => d > 0 ? Math.round(n / d * 100) + '%' : '—';
+  const deltaStr = (val, base) => {
+    if (val == null || base == null) return '';
+    const d = Math.round((val - base) * 100);
+    return d > 0 ? ' (+' + d + '% vs baseline)' : d < 0 ? ' (' + d + '% vs baseline)' : ' (at baseline)';
+  };
 
-  return lines.join('\n');
+  const b = ctx.baseline;
+  const pa = ctx.pocketAngles;
+
+  // Build baseline block
+  const baselineLines = [];
+  if (b) {
+    baselineLines.push('ROLLING BASELINE (' + b.sessionCount + ' sessions, cross-league):');
+    baselineLines.push([
+      b.avgBaseline        != null ? 'Avg ' + b.avgBaseline                              : null,
+      b.strikeRateBaseline != null ? 'Strike ' + pct(b.strikeRateBaseline * 1, 1)        : null,
+      b.spareRateBaseline  != null ? 'Spare ' + Math.round(b.spareRateBaseline * 100) + '%' : null,
+      b.splitRateBaseline  != null ? 'Split rate ' + Math.round(b.splitRateBaseline * 100) + '%' : null,
+      b.subEightRateBaseline != null ? 'Sub-8 rate ' + Math.round(b.subEightRateBaseline * 100) + '%' : null,
+    ].filter(Boolean).join(' | '));
+    if (b.topLeaves && b.topLeaves.length) {
+      baselineLines.push('Recurring leaves: ' + b.topLeaves.map(l => l.label + ' x' + l.count).join(', '));
+    }
+  } else {
+    baselineLines.push('BASELINE: Insufficient history for rolling baseline.');
+  }
+
+  // Build pocket angle block
+  const angleLines = [];
+  if (pa && pa.resolved > 0) {
+    const resolvedNote = pa.resolved < pa.total
+      ? ' (' + pa.resolved + '/' + pa.total + ' pocket hits had resolvable pin data)'
+      : ' (' + pa.resolved + ' pocket hits)';
+    angleLines.push('Pocket entry angle' + resolvedNote + ':');
+    const parts = [];
+    if (pa.highCount)  parts.push('High/steep: ' + pa.highCount);
+    if (pa.lowCount)   parts.push('Low/light: '  + pa.lowCount);
+    if (pa.flatCount)  parts.push('Flat/dead: '  + pa.flatCount);
+    angleLines.push(parts.join(' | '));
+    if (pa.dominantAngle && pa.dominantAngle !== 'mixed' && pa.dominantAngle !== 'unknown') {
+      angleLines.push('Dominant: ' + pa.dominantAngle.toUpperCase() + ' — ' + pa.dominantSignal);
+    } else if (pa.dominantAngle === 'mixed') {
+      angleLines.push('No dominant angle pattern — inconsistent pocket contact this series.');
+    }
+    if (pa.breakdown && pa.breakdown.length) {
+      const top3 = pa.breakdown.slice(0, 3);
+      angleLines.push('Top leaves: ' + top3.map(b => b.key + ' x' + b.count).join(', '));
+    }
+  } else {
+    angleLines.push('Pocket entry angle: insufficient pin data to classify.');
+  }
+
+  // Series deltas vs baseline
+  const strikeRateSeries = ctx.totalFr > 0 ? ctx.strikes / ctx.totalFr : null;
+  const spareRateSeries  = ctx.spareOpps > 0 ? ctx.spares / ctx.spareOpps : null;
+  const splitRateSeries  = ctx.spareOpps > 0 ? ctx.splitOpp / ctx.spareOpps : null;
+  const subEightRateSeries = ctx.subEightRate;
+  const avgDelta = (b && b.avgBaseline != null) ? ctx.avg - b.avgBaseline : null;
+
+  const thisSeriesLines = [
+    'THIS SERIES:',
+    [
+      ctx.league ? 'League: ' + ctx.league : null,
+      ctx.center ? 'Center: ' + ctx.center : null,
+      ctx.date   ? 'Date: '   + ctx.date   : null,
+    ].filter(Boolean).join(' | '),
+    'Scores: ' + ctx.scores.join(' / ') + ' | Series ' + ctx.total + ' | Avg ' + ctx.avg +
+      (avgDelta != null ? ' (' + (avgDelta >= 0 ? '+' : '') + avgDelta + ' vs baseline)' : '') +
+      (ctx.seasonAvgBefore != null ? ' | League season avg: ' + ctx.seasonAvgBefore : ''),
+    'Strikes: ' + ctx.strikes + '/' + ctx.totalFr + ' (' + pct(ctx.strikes, ctx.totalFr) + ')' +
+      deltaStr(strikeRateSeries, b ? b.strikeRateBaseline : null),
+    'Spares: ' + ctx.spares + '/' + ctx.spareOpps + ' (' + pct(ctx.spares, ctx.spareOpps) + ')' +
+      deltaStr(spareRateSeries, b ? b.spareRateBaseline : null),
+    'Single-pin misses: ' + (ctx.singleOpp - ctx.singleConv) +
+      ' | Multi-pin misses: ' + (ctx.makeableOpp - ctx.singleOpp - (ctx.makeableConv - ctx.singleConv)) +
+      ' | Splits faced: ' + ctx.splitOpp + ' (made ' + ctx.splitConv + ')',
+    'Sub-8 first ball: ' + ctx.subEightCount + ' of ' + ctx.nonStrikeAtt1Count +
+      (ctx.subEightRate != null ? ' (' + Math.round(ctx.subEightRate * 100) + '%)' : '') +
+      deltaStr(subEightRateSeries, b ? b.subEightRateBaseline : null),
+    ctx.makeableProjDelta != null && ctx.makeableProjDelta > 0
+      ? 'Spare execution cost: ~' + ctx.makeableProjDelta + ' pins/game lost to makeable misses'
+      : null,
+    'X-on-X: ' + ctx.xOnXPct + ' | Bounce-back: ' + ctx.bounceBackPct + ' | Clutch (F10): ' + ctx.clutchPct,
+    'Max strike streak: ' + ctx.maxStrikeStreak + ' | Clean games: ' + ctx.cleanGames + '/' + ctx.totalGames,
+    ctx.topLeaves && ctx.topLeaves.length
+      ? 'Most frequent leaves: ' + ctx.topLeaves.map(l => l.name + ' x' + l.count).join(', ')
+      : null,
+    ctx.balls.length
+      ? 'Ball(s): ' + ctx.balls.join(', ') + (ctx.surface ? ' | Surface: ' + ctx.surface : '')
+      : null,
+  ].filter(Boolean);
+
+  const systemPrompt =
+    'You are an experienced competitive bowling coach. This bowler averages approximately ' +
+    (b && b.avgBaseline ? b.avgBaseline : ctx.avg) +
+    ' and competes in league. ' +
+    'Analyze the performance data and give direct, specific coaching feedback. ' +
+    'Do not offer general encouragement, do not explain basic bowling concepts, and do not give advice suited for beginners. ' +
+    'Identify patterns, name root causes, and give one actionable priority. ' +
+    'Use plain text only — no markdown, no bullet symbols, no asterisks. ' +
+    'Short paragraphs separated by blank lines. Under 220 words total.';
+
+  const taskPrompt =
+    'Write a coaching debrief in 4 short paragraphs:\n' +
+    '1. Score context vs. recent baseline — what the numbers mean for this bowler\n' +
+    '2. First-ball execution — interpret the pocket entry angle pattern and sub-8 rate; name specific leave patterns and what they indicate\n' +
+    '3. Spare execution — identify which misses matter most and their point cost\n' +
+    '4. One specific priority for next session — mechanical, positional, strategic, or equipment';
+
+  const dataBlock = [
+    ...baselineLines,
+    '',
+    ...thisSeriesLines,
+    '',
+    ...angleLines,
+    '',
+    taskPrompt
+  ].join('\n');
+
+  // Return as structured messages array: system + user
+  return { system: systemPrompt, user: dataBlock };
 }
 
 /* Open the debrief modal — shows loading state, calls AI, renders result. */
@@ -25851,8 +26612,29 @@ async function openSeriesDebriefModal(seriesID) {
   `);
 
   try {
-    const prompt = _buildDebriefPrompt(ctx);
-    const text   = await _seriesCallAI(prompt);
+    const promptObj = _buildDebriefPrompt(ctx);
+    // _buildDebriefPrompt now returns { system, user } for structured system prompt
+    const key = localStorage.getItem('bowlingdb_ai_key');
+    if (!key) throw new Error('No API key — add one in Settings');
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': key,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: getAIModelFast(),
+        max_tokens: 1024,
+        stream: false,
+        system: promptObj.system,
+        messages: [{ role: 'user', content: promptObj.user }]
+      })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message);
+    const text = (data.content || []).map(c => c.text || '').join('').trim();
 
     const bodyEl = document.getElementById('sdebrief-body');
     if (!bodyEl) return; // modal closed mid-flight
