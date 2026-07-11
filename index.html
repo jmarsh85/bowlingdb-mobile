@@ -3005,7 +3005,7 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
     </div>
     <div id="hdr-title" onclick="hdrTitleTap()"><span class="brand">Bowling</span>DB</div>
     <div id="hdr-title-popover"></div>
-    <span id="hdr-build-ref">v30 · 2026-06-07</span>
+    <span id="hdr-build-ref">v30 · 2026-07-11</span>
     <div id="hdr-right">
       <div class="hdr-icon-btn" id="hdr-delete-game-btn" onclick="confirmDeleteGame(G.gameID)" title="Delete Game" style="display:none">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -3267,6 +3267,17 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
                   <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
                 </svg>
               </span>
+              <span id="fm-clear-att-btn" onclick="clearCurrentAttempt()" title="Clear this attempt"
+                style="width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+                cursor:pointer;flex-shrink:0;-webkit-tap-highlight-color:transparent;transition:all 0.15s">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                  stroke-linecap="round" stroke-linejoin="round" style="color:var(--t3)">
+                  <polyline points="3 6 5 6 21 6"/>
+                  <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>
+                  <path d="M10 11v6"/><path d="M14 11v6"/>
+                  <path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/>
+                </svg>
+              </span>
             </div>
           </div>
           <div class="fm-mini-strip" id="fm-mini-strip"></div>
@@ -3384,6 +3395,15 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
               <div class="sdp-seg-btn" id="sdp-entry-light"     onclick="sdSetField('entry','light')">Light</div>
               <div class="sdp-seg-btn" id="sdp-entry-flush"     onclick="sdSetField('entry','flush')">Flush</div>
               <div class="sdp-seg-btn" id="sdp-entry-crossover" onclick="sdSetField('entry','crossover')">Cross</div>
+            </div>
+          </div>
+          <!-- Ball Roll row — FRESH attempts only, hidden on spare -->
+          <div class="sdp-row" id="sdp-row-ballroll" style="display:none">
+            <span class="sdp-lbl">Ball Roll</span>
+            <div class="sdp-seg">
+              <div class="sdp-seg-btn" id="sdp-ballroll-normal"     onclick="sdSetField('ballroll','normal')">Normal</div>
+              <div class="sdp-seg-btn" id="sdp-ballroll-rolled-out" onclick="sdSetField('ballroll','rolled-out')">Rolled Out</div>
+              <div class="sdp-seg-btn" id="sdp-ballroll-carried"    onclick="sdSetField('ballroll','carried')">Carried</div>
             </div>
           </div>
           <!-- Miss row — all attempts -->
@@ -3621,6 +3641,11 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
 
     <div id="s-stats" class="screen" data-title="Statistics">
       <div id="stats-content"></div>
+    </div>
+
+    <!-- LEAVES LIBRARY -->
+    <div id="s-leaves" class="screen" data-title="Leave Library">
+      <div id="leaves-content" style="padding:0 0 32px"></div>
     </div>
 
     <!-- ALL GAMES BROWSER -->
@@ -4396,6 +4421,7 @@ async function navTo(screenId, opts={}) {
       's-handicap-league': renderLeagueHandicap,
       's-handicap-tb':     renderTBHandicap,
       's-stats': renderStats,
+      's-leaves': renderLeavesScreen,
       's-games': renderGamesList,
       's-group': renderGroupScreen,
       's-tb-sessions': renderTBSessions,
@@ -6037,6 +6063,108 @@ function rosterHardDelete(bowlerID) {
   renderRosterModal();
 }
 
+/* ── Bowler Merge Tool ────────────────────────────────────────
+   mergeID  = the duplicate record being absorbed and deleted
+   keepID   = the canonical record that survives
+   All FKs in grp_sessions.bowlers[] are rewritten mergeID→keepID.
+   Handicap config keys for mergeID are copied to keepID (keep-wins
+   on conflict). IsMe flag transfers if mergeID was the ME record.
+   ──────────────────────────────────────────────────────────── */
+function openMergeBowlerModal(mergeID) {
+  const mergeBowler = rosterGetByID(mergeID);
+  if (!mergeBowler) return;
+  const others = (db.bowlers || []).filter(b => b.BowlerID !== mergeID);
+  if (!others.length) { toast('No other bowlers to merge into'); return; }
+  const opts = others.map(b =>
+    `<option value="${b.BowlerID}">${b.Name}${b.IsMe ? ' ★ ME' : ''}</option>`
+  ).join('');
+  swapModal(`
+    <div class="modal-title">Merge Bowler</div>
+    <div style="font-size:13px;color:var(--t2);margin-bottom:16px">
+      Absorb <strong style="color:var(--red)">${mergeBowler.Name}</strong> into another record.
+      All team-bowl slots and handicap data will be transferred.
+      <strong style="color:var(--red)">${mergeBowler.Name}</strong> will be permanently deleted.
+    </div>
+    <div class="fgroup">
+      <label class="flabel">Merge into</label>
+      <select class="finput" id="merge-keep-select">${opts}</select>
+    </div>
+    <button class="btn btn-danger" style="margin-bottom:8px"
+      onclick="rosterConfirmMerge(${mergeID})">Merge &amp; Delete ${mergeBowler.Name}</button>
+    <button class="btn btn-secondary" onclick="renderRosterModal()">Cancel</button>
+  `);
+}
+
+function rosterConfirmMerge(mergeID) {
+  const keepID = parseInt(document.getElementById('merge-keep-select')?.value, 10);
+  if (!keepID || keepID === mergeID) { toast('Select a different bowler'); return; }
+  const mergeBowler = rosterGetByID(mergeID);
+  const keepBowler  = rosterGetByID(keepID);
+  if (!mergeBowler || !keepBowler) return;
+  swapModal(`
+    <div class="modal-title">Confirm Merge</div>
+    <div style="font-size:13px;color:var(--t2);margin-bottom:20px">
+      Merge <strong style="color:var(--red)">${mergeBowler.Name}</strong>
+      → <strong style="color:var(--teal)">${keepBowler.Name}</strong>?<br><br>
+      This rewrites all team-bowl history and cannot be undone.
+    </div>
+    <button class="btn btn-danger" style="margin-bottom:8px"
+      onclick="rosterExecuteMerge(${mergeID},${keepID})">Confirm Merge</button>
+    <button class="btn btn-secondary" onclick="renderRosterModal()">Cancel</button>
+  `);
+}
+
+function rosterExecuteMerge(mergeID, keepID) {
+  const mergeBowler = rosterGetByID(mergeID);
+  const keepBowler  = rosterGetByID(keepID);
+  if (!mergeBowler || !keepBowler) { toast('Bowler not found'); return; }
+
+  // 1. Transfer IsMe if merge record was the ME bowler
+  if (mergeBowler.IsMe && !keepBowler.IsMe) {
+    rosterUpdateBowler(keepID, { IsMe: true });
+    // unmark any other IsMe to be safe
+    (db.bowlers || []).forEach(b => { if (b.BowlerID !== keepID) b.IsMe = false; });
+  }
+
+  // 2. Rewrite BowlerID in all grp_sessions bowler slots
+  try {
+    const sessions = JSON.parse(localStorage.getItem('grp_sessions') || '[]');
+    let dirty = false;
+    sessions.forEach(session => {
+      (session.bowlers || []).forEach(slot => {
+        if (slot.BowlerID === mergeID) {
+          slot.BowlerID = keepID;
+          slot.name     = keepBowler.Name;
+          slot.isMe     = !!keepBowler.IsMe;
+          dirty = true;
+        }
+      });
+    });
+    if (dirty) localStorage.setItem('grp_sessions', JSON.stringify(sessions));
+  } catch(e) { console.warn('rosterExecuteMerge: grp_sessions error', e); }
+
+  // 3. Transfer handicap config keys (keep-wins on conflict)
+  try {
+    const store = hdcpLoad();
+    Object.keys(store).forEach(k => {
+      if (k.includes(`_bowler_${mergeID}`)) {
+        const keepKey = k.replace(`_bowler_${mergeID}`, `_bowler_${keepID}`);
+        if (!store[keepKey]) store[keepKey] = store[k]; // keep-wins: don't overwrite
+        delete store[k];
+      }
+    });
+    hdcpSave(store);
+  } catch(e) { console.warn('rosterExecuteMerge: hdcp error', e); }
+
+  // 4. Delete the merge record from roster
+  db.bowlers = (db.bowlers || []).filter(b => b.BowlerID !== mergeID);
+  saveDB();
+
+  haptic('medium');
+  toast(`${mergeBowler.Name} merged into ${keepBowler.Name}`);
+  renderRosterModal();
+}
+
 function renderRosterModal() {
   const all = db.bowlers || [];
   const activeLeagues = db.leagues.filter(l => !l.Archived && !l._virtual);
@@ -6069,6 +6197,9 @@ function renderRosterModal() {
             onclick="openBowlerCalibration(${b.BowlerID})">Set Avg</button>` : ''}
           <button class="btn btn-secondary btn-sm" style="padding:5px 8px;font-size:11px"
             onclick="openEditBowlerModal(${b.BowlerID})">Edit</button>
+          ${!b.IsMe ? `<button class="btn btn-sm" style="padding:5px 8px;font-size:11px;
+            background:rgba(100,180,255,0.1);color:var(--teal);border:1px solid rgba(100,180,255,0.3)"
+            onclick="openMergeBowlerModal(${b.BowlerID})">Merge</button>` : ''}
           ${!b.IsMe ? `<button class="btn btn-sm" style="padding:5px 8px;font-size:11px;
             background:rgba(232,93,76,0.1);color:var(--red);border:1px solid rgba(232,93,76,0.3)"
             onclick="rosterConfirmDelete(${b.BowlerID},'${b.Name.replace(/'/g,"\\'")}')">Del</button>` : ''}
@@ -6960,6 +7091,7 @@ function renderLeagues() {
       </div>
       <div class="series-card-actions">
         <div class="sc-act-btn stats-btn" onclick="openLeagueStatsModal(${l.LeagueID})">📊 Stats</div>
+        ${(()=>{ const hasBeer = db.series.filter(s=>s.LeagueID===l.LeagueID).some(s=>(s.beerLog||[]).length>0) || grpLoadAll().some(sess=>sess.leagueID===l.LeagueID && sess.games.some(g=>g.beerFrames?.length)); return hasBeer ? `<div class="sc-act-btn" onclick="openLeagueBeerModal(${l.LeagueID});event.stopPropagation()" style="color:var(--gold);border-color:rgba(255,215,0,0.3)">🍺</div>` : ''; })()}
         <div class="sc-act-btn" onclick="openLeagueHandicap(${l.LeagueID});event.stopPropagation()" style="color:var(--gold);border-color:rgba(255,215,0,0.3)">H</div>
         <div class="sc-act-btn edit" onclick="openEditLeagueModal(${l.LeagueID})">⋯</div>
         <div class="sc-act-btn" onclick="toggleArchiveLeague(${l.LeagueID})">${l.Archived?'Unarchive':'Archive'}</div>
@@ -7303,7 +7435,7 @@ function renderSeriesList() {
                 const first = n => n ? n.split(' ')[0] : '';
                 const winnerBadge = displayWinner
                   ? `<span class="pill pill-gold" style="font-size:10px;margin-left:4px">🏆 ${first(displayWinner)}</span>` : '';
-                return `<span class="pill pill-gold" style="font-size:10px">🍺 ×${bl.length}</span>${winnerBadge}`;
+                return `<span class="pill pill-gold" style="font-size:10px;cursor:pointer" onclick="openSeriesBeerModal(${s.SeriesID});event.stopPropagation()" title="Beer frame summary">🍺 ×${bl.length}</span>${winnerBadge}`;
               })()}
             </div>
           </div>
@@ -7398,6 +7530,8 @@ async function deleteSeries(seriesID) {
   await idbDeleteKeys('frames',   frameIDs);
   await idbDeleteKeys('games',    gameIDs);
   await idbDeleteKeys('series',   [seriesID]);
+  // Purge cached AI debriefs for this series — no orphaned localStorage keys
+  try { localStorage.removeItem('debrief_' + seriesID); } catch(e) {}
   await saveAll(); closeModal(); renderSeriesList();
   toast('Series deleted');
 }
@@ -7975,6 +8109,9 @@ function blankAttempt(id, fid, fn, gn, gid, an) {
     ShotSpeed:null,         // 'S'|'M'|'F'
     ShotRevs:null,          // 'L'|'M'|'H'
     PocketEntry:null,       // 'high'|'light'|'flush'|'crossover' — FRESH attempts only
+    PocketEntrySource:null, // 'auto'|'prompted'|'user' — write tier; user > prompted > auto
+    BallRoll:null,          // 'normal'|'rolled-out'|'carried' — ball energy/condition at impact
+    BallRollSource:null,    // 'auto'|'prompted'|'user' — write tier for BallRoll
     MissDirection:null,     // 'L'|'R'|null (null = on target / made it)
     MissBoards:null,        // int 1-39, paired with MissDirection
     ShotDetailLogged:false  // true once post-confirm prompt has been actioned for this attempt
@@ -8627,6 +8764,13 @@ function confirmAttempt() {
     att.LeaveID = detectLeaveID(standing);
   }
 
+  // Auto-write pocket entry classification (frames 1-9, att1, non-strike)
+  if (G.frame <= 9 && G.attempt === 1 && pinfall < 10) {
+    const standingSet = new Set();
+    for (let p=1;p<=10;p++) { if (!G.knocked.has(p)) standingSet.add(p); }
+    autoWritePocketEntry(att, standingSet);
+  }
+
   // Update frame flags
   updateFrameFlags(frame);
   calculateScores();
@@ -8921,6 +9065,124 @@ function detectLeaveID(standingMap) {
   return null;
 }
 
+/* =============================================================
+   POCKET ENTRY AUTO-WRITE
+   Called from confirmAttempt() after att1 commit, frames 1-9, non-strike.
+   Silently writes PocketEntry + PocketEntrySource:'auto' using the
+   POCKET_ANGLE_TABLE classifier. Never overwrites 'prompted' or 'user' data.
+   Special cases:
+     - 10-pin leave  → fires openTenPinPrompt() instead (unless disabled)
+     - 8-10 split    → assumes flat: PocketEntry:'light', BallRoll:'rolled-out'
+   ============================================================= */
+function autoWritePocketEntry(att, standing) {
+  // Never overwrite user or prompted data
+  if (att.PocketEntrySource === 'user' || att.PocketEntrySource === 'prompted') return;
+
+  const standingArr = Array.from(standing);
+  const is10Pin  = standingArr.length === 1 && standingArr[0] === 10;
+  const is810    = standingArr.length === 2 && standing.has(8) && standing.has(10);
+
+  if (is10Pin) {
+    // Fire disambiguation prompt if enabled; otherwise assume flat
+    if (getPrefs().tenPinPrompt !== false) {
+      openTenPinPrompt(att);
+    } else {
+      att.PocketEntry       = 'light';
+      att.PocketEntrySource = 'auto';
+      att.BallRoll          = 'rolled-out';
+      att.BallRollSource    = 'auto';
+      saveAll();
+    }
+    return;
+  }
+
+  if (is810) {
+    att.PocketEntry       = 'light';
+    att.PocketEntrySource = 'auto';
+    att.BallRoll          = 'rolled-out';
+    att.BallRollSource    = 'auto';
+    saveAll();
+    return;
+  }
+
+  // General case: classify via POCKET_ANGLE_TABLE
+  const hand = getPrefs().handedness || 'right';
+  const result = classifyPocketEntry(standing, hand);
+  if (result && result.angle && result.angle !== 'unknown') {
+    // Map engine vocab (high/low/flat) → SDP vocab (high/light/flush)
+    const angleMap = { high:'high', low:'light', flat:'flush' };
+    const mapped = angleMap[result.angle] || result.angle;
+    att.PocketEntry       = mapped;
+    att.PocketEntrySource = 'auto';
+    saveAll();
+  }
+}
+
+/* 10-pin disambiguation prompt — fires after att1 confirm when leave is 10-pin */
+function openTenPinPrompt(att) {
+  var _attID = att.AttemptID;
+  var html = '<div style="text-align:center;padding:4px 0 8px">'
+    + '<div style="font-size:15px;font-weight:700;color:var(--t1);margin-bottom:4px">10-Pin Leave</div>'
+    + '<div style="font-size:12px;color:var(--t3);margin-bottom:16px">How did the 6-pin go?</div>'
+    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">'
+    + '<button onclick="resolveTenPin(' + "'" + _attID + "','ringing')" + '"'
+    + ' style="padding:14px 8px;border-radius:10px;border:1.5px solid var(--purple);'
+    + 'background:rgba(157,78,221,0.12);color:var(--t1);font-size:13px;font-weight:700;cursor:pointer">'
+    + '<div style="font-size:20px;margin-bottom:4px">&#x21BA;</div>Ringing'
+    + '<div style="font-size:10px;color:var(--t3);margin-top:3px;font-weight:400">Flew over the 10</div>'
+    + '</button>'
+    + '<button onclick="resolveTenPin(' + "'" + _attID + "','flat')" + '"'
+    + ' style="padding:14px 8px;border-radius:10px;border:1.5px solid var(--border2);'
+    + 'background:var(--bg3);color:var(--t1);font-size:13px;font-weight:700;cursor:pointer">'
+    + '<div style="font-size:20px;margin-bottom:4px">&#x2192;</div>Flat'
+    + '<div style="font-size:10px;color:var(--t3);margin-top:3px;font-weight:400">Laid into the gutter</div>'
+    + '</button>'
+    + '</div>'
+    + '<div style="display:flex;justify-content:center;gap:16px">'
+    + '<span onclick="resolveTenPin(' + "'" + _attID + "',null)" + '"'
+    + ' style="font-size:12px;color:var(--t3);cursor:pointer;padding:4px 8px">Skip</span>'
+    + '<span onpointerdown="startTenPinSilence(this,' + "'" + _attID + "')" + '" ontouchstart="return false"'
+    + ' style="font-size:12px;color:var(--t3);cursor:pointer;padding:4px 8px">Silence</span>'
+    + '</div>'
+    + '</div>';
+  openModal(html);
+}
+
+function resolveTenPin(attID, result) {
+  closeModal();
+  var att = db.attempts.find(function(a){ return a.AttemptID === attID; });
+  if (!att) return;
+  if (result === 'ringing') {
+    att.PocketEntry       = 'high';
+    att.PocketEntrySource = 'prompted';
+    att.BallRoll          = 'normal';
+    att.BallRollSource    = 'prompted';
+  } else if (result === 'flat') {
+    att.PocketEntry       = 'light';
+    att.PocketEntrySource = 'prompted';
+    att.BallRoll          = 'rolled-out';
+    att.BallRollSource    = 'prompted';
+  } else {
+    // Skip — assume flat, auto tier
+    att.PocketEntry       = 'light';
+    att.PocketEntrySource = 'auto';
+    att.BallRoll          = 'rolled-out';
+    att.BallRollSource    = 'auto';
+  }
+  saveAll();
+}
+
+function startTenPinSilence(el, attID) {
+  // Long-press: 700ms hold to permanently disable the prompt
+  var timer = setTimeout(function() {
+    savePrefs({ tenPinPrompt: false });
+    toast('10-pin prompt silenced — re-enable in Settings');
+    resolveTenPin(attID, null); // assume flat, auto tier
+  }, 700);
+  el.addEventListener('pointerup',   function(){ clearTimeout(timer); }, { once:true });
+  el.addEventListener('pointerleave',function(){ clearTimeout(timer); }, { once:true });
+}
+
 function updateFrameFlags(frame) {
   const atts = frameAttempts(frame.FrameID);
   const a1 = atts.find(a=>a.Attempt===1);
@@ -8969,8 +9231,11 @@ function autoSelectBall() {
       // Frames 1-9: always a spare attempt → use lastBallAtt2 (never alt slots)
       if (G.lastBallAtt2 && db.balls.find(b => b.BallID === G.lastBallAtt2)) {
         G.ballID = G.lastBallAtt2;
+      } else if (prefs.defaultSpareBallID && db.balls.find(b => b.BallID === prefs.defaultSpareBallID && b.Active !== false)) {
+        // Fall back to global spare ball default when no lastBallAtt2 in session yet
+        G.ballID = prefs.defaultSpareBallID;
       }
-      // If no lastBallAtt2 yet, keep current ball (don't reset to alt slot)
+      // If neither, keep current ball (don't reset to alt slot)
     }
   } else if (G.attempt === 3 && G.frame === 10) {
     // F10 att3: check if rack is fresh
@@ -9151,10 +9416,33 @@ function calculateScores() {
         fr.FrameScore = p1 + p2;
       }
     } else {
-      // Frame 10: direct sum
-      let sum = p1;
-      if (p2!==null) sum += p2;
-      if (p3!==null) sum += p3;
+      // Frame 10: direct sum — but only mark complete (non-null FrameScore/RunningTotal)
+      // when all required balls have been thrown. This prevents the projection engine
+      // from treating a partial F10 as "fully resolved" and collapsing PACE/MAX to
+      // the current running score.
+      //
+      // F10 is complete when:
+      //   - Open ball (p1+p2 < 10, p2 not null) → 2 balls, no fill
+      //   - Spare or any strike → 3 balls required (p3 not null)
+      const f10p1Strike = (p1 === 10);
+      const f10p2NotNull = (p2 !== null && p2 !== undefined);
+      const f10p3NotNull = (p3 !== null && p3 !== undefined);
+      const f10Spare = f10p2NotNull && !f10p1Strike && (p1 + p2 >= 10);
+      const f10NeedsThird = f10p1Strike || f10Spare;
+      const f10Complete = f10p2NotNull && (!f10NeedsThird || f10p3NotNull);
+
+      if (!f10Complete) {
+        // Frame is in progress — set FrameScore to partial so scorecard renders,
+        // but leave RunningTotal null so the projection baseline stays at F9 or earlier.
+        let partialSum = p1;
+        if (f10p2NotNull) partialSum += p2;
+        fr.FrameScore = partialSum;  // partial — scorecard can show it
+        fr.RunningTotal = null;      // NOT complete — keeps projection working
+        continue;                    // do not update running total
+      }
+
+      let sum = p1 + p2;
+      if (f10p3NotNull) sum += p3;
       fr.FrameScore = sum;
     }
 
@@ -9227,111 +9515,133 @@ function nextBalls(frames, fromIdx, count, noTap=false) {
    FINISH GAME
    ============================================================= */
 /* =============================================================
-   SOLO PACE / MAX SCORE PROJECTIONS
-   Ported from the group projected score engine (grpProjectedTotal).
-   Uses live attempt data from the current solo game.
-   paceScore: remaining frames each score 20 (spare pace)
-   maxScore:  remaining frames each score 30 (all strikes)
+   SOLO PACE / MAX SCORE PROJECTIONS  (v30.27)
+
+   Formula:
+     result = baseline + unresolvedProjection + f10contribution
+
+   baseline           = highest confirmed RunningTotal (existing scorer,
+                        no changes — bonus chains already resolved here)
+   unresolvedProjection = frames 1-9 with null RunningTotal:
+                          • strike: 10 + real-or-projected bonus balls
+                          • spare:  10 + real-or-projected next ball
+                          • unstarted/mid: flat 20 (pace) or 30 (max)
+   f10contribution    = real balls entered + projection for missing balls
+
+   No simulation, no re-scoring. Uses fr.Strike, fr.Spare, and
+   frameAttempts() that the existing engine already populates.
    ============================================================= */
-function soloPaceNthFutureBall(afterFrame, n) {
-  var frames = gameFrames().sort(function(a,b){return a.FrameNumber-b.FrameNumber;});
-  var remaining = n;
-  for (var fi = 0; fi < frames.length; fi++) {
-    var fr = frames[fi];
-    if (fr.FrameNumber <= afterFrame) continue;
-    var atts = frameAttempts(fr.FrameID);
-    var v1 = (atts.find(function(a){return a.Attempt===1;}) || {}).Pinfall;
-    var v2 = (atts.find(function(a){return a.Attempt===2;}) || {}).Pinfall;
-    var v3 = (atts.find(function(a){return a.Attempt===3;}) || {}).Pinfall;
-    if (v1 === null || v1 === undefined) {
-      remaining--; if (remaining === 0) return 10;
-      remaining--; if (remaining === 0) return 0;
-      continue;
-    }
-    remaining--; if (remaining === 0) return v1;
-    if (fr.FrameNumber < 10) {
-      if (v1 === 10) continue; // strike — no att2 in this frame
-      var b2 = (v2 !== null && v2 !== undefined) ? v2 : Math.max(0, 10 - v1);
-      remaining--; if (remaining === 0) return b2;
+
+function calcPaceScore() { return _calcProjected(false); }
+function calcMaxScore()  { return _calcProjected(true);  }
+
+function _calcProjected(isMax) {
+  calculateScores();
+
+  var frames = gameFrames().sort(function(a,b){ return a.FrameNumber - b.FrameNumber; });
+  if (!frames.length) return null;
+
+  // ── 1. Baseline: highest confirmed RunningTotal ───────────────────
+  var baseline = 0;
+  for (var i = 0; i < frames.length; i++) {
+    var rt = frames[i].RunningTotal;
+    if (rt !== null && rt !== undefined && rt > baseline) baseline = rt;
+  }
+
+  // ── 2. Unresolved frames 1-9 ─────────────────────────────────────
+  // For strike/spare frames whose bonus balls are partially known,
+  // use real values where available rather than flat 30/20.
+  var unresolvedProjection = 0;
+  for (var i = 0; i < frames.length; i++) {
+    var fr = frames[i];
+    if (fr.FrameNumber > 9) continue;
+    if (fr.RunningTotal !== null && fr.RunningTotal !== undefined) continue;
+
+    if (fr.Strike) {
+      // Need 2 bonus balls from subsequent frames
+      var bonusBalls = [];
+      for (var j = i + 1; j < frames.length && bonusBalls.length < 2; j++) {
+        var nextAtts = frameAttempts(frames[j].FrameID)
+          .sort(function(a,b){ return a.Attempt - b.Attempt; });
+        for (var k = 0; k < nextAtts.length && bonusBalls.length < 2; k++) {
+          var p = nextAtts[k].Pinfall;
+          if (p === null || p === undefined) break;
+          bonusBalls.push(p);
+          // Strike frame in 1-9: only 1 ball counts toward bonus then move to next frame
+          if (frames[j].FrameNumber < 10 && p === 10) break;
+        }
+      }
+      var b0 = bonusBalls.length > 0 ? bonusBalls[0] : 10; // project 10 if unknown
+      var b1 = bonusBalls.length > 1 ? bonusBalls[1] : 10;
+      unresolvedProjection += 10 + b0 + b1;
+
+    } else if (fr.Spare) {
+      // Need 1 bonus ball from next frame
+      var nextBall = null;
+      if (i + 1 < frames.length) {
+        var nextAtts3 = frameAttempts(frames[i+1].FrameID)
+          .sort(function(a,b){ return a.Attempt - b.Attempt; });
+        if (nextAtts3.length && nextAtts3[0].Pinfall !== null && nextAtts3[0].Pinfall !== undefined) {
+          nextBall = nextAtts3[0].Pinfall;
+        }
+      }
+      unresolvedProjection += 10 + (nextBall !== null ? nextBall : 10);
+
     } else {
-      var b2f10 = (v2 !== null && v2 !== undefined) ? v2 : (v1 === 10 ? 0 : Math.max(0, 10 - v1));
-      remaining--; if (remaining === 0) return b2f10;
-      if (v1 === 10 || (v1 + (v2 || 0)) === 10) {
-        var b3 = (v3 !== null && v3 !== undefined) ? v3 : 10;
-        remaining--; if (remaining === 0) return b3;
+      // Not yet started or mid-frame (open A1 entered, A2 pending)
+      unresolvedProjection += isMax ? 30 : 20;
+    }
+  }
+
+  // ── 3. F10 contribution ───────────────────────────────────────────
+  var f10 = 0;
+  var f10frame = null;
+  for (var i = 0; i < frames.length; i++) {
+    if (frames[i].FrameNumber === 10) { f10frame = frames[i]; break; }
+  }
+
+  if (f10frame && (f10frame.RunningTotal === null || f10frame.RunningTotal === undefined)) {
+    var atts = frameAttempts(f10frame.FrameID);
+    var a1 = atts.find(function(a){ return a.Attempt === 1; });
+    var a2 = atts.find(function(a){ return a.Attempt === 2; });
+    var a3 = atts.find(function(a){ return a.Attempt === 3; });
+    var v1 = (a1 && a1.Pinfall !== null && a1.Pinfall !== undefined) ? a1.Pinfall : null;
+    var v2 = (a2 && a2.Pinfall !== null && a2.Pinfall !== undefined) ? a2.Pinfall : null;
+    var v3 = (a3 && a3.Pinfall !== null && a3.Pinfall !== undefined) ? a3.Pinfall : null;
+
+    if (v1 === null) {
+      f10 = isMax ? 30 : 20;
+    } else if (v1 === 10) {
+      f10 = 10;
+      if (v2 === null) {
+        // X + project: pace A2=10 A3=0 → 20 total; max A2=10 A3=10 → 30
+        f10 += 10 + (isMax ? 10 : 0);
+      } else if (v2 === 10) {
+        f10 += 10;
+        f10 += (v3 !== null) ? v3 : (isMax ? 10 : 0);
+      } else {
+        // X + non-X: spare fill
+        f10 += v2;
+        f10 += (v3 !== null) ? v3 : (10 - v2);
+      }
+    } else {
+      // Non-strike A1
+      f10 = v1;
+      if (v2 === null) {
+        f10 += (10 - v1) + 10;  // assume spare + fill = 20 always
+      } else {
+        f10 += v2;
+        if (v1 + v2 >= 10) {
+          f10 += (v3 !== null) ? v3 : 10; // spare fill
+        }
+        // open: no A3, f10 = v1+v2
       }
     }
   }
-  return 0;
+  // F10 complete: already in baseline, f10 stays 0
+
+  return Math.min(300, baseline + unresolvedProjection + f10);
 }
-
-function soloProjectedFrameScore(fr, isMax) {
-  var atts = frameAttempts(fr.FrameID);
-  var v1 = (atts.find(function(a){return a.Attempt===1;}) || {}).Pinfall;
-  var v2 = (atts.find(function(a){return a.Attempt===2;}) || {}).Pinfall;
-  var v3 = (atts.find(function(a){return a.Attempt===3;}) || {}).Pinfall;
-  var fn = fr.FrameNumber;
-  var a1 = v1 || 0, a2 = v2 || 0;
-
-  // If frame is fully scored, use real value
-  if (fr.RunningTotal !== null && fr.RunningTotal !== undefined) {
-    var frames = gameFrames().sort(function(a,b){return a.FrameNumber-b.FrameNumber;});
-    var prev = 0;
-    for (var i = 0; i < frames.length; i++) {
-      if (frames[i].FrameNumber === fn - 1 && frames[i].RunningTotal !== null) prev = frames[i].RunningTotal;
-    }
-    return fr.RunningTotal - prev;
-  }
-
-  if (fn === 10) {
-    if (isMax) {
-      if (v1 === null || v1 === undefined) return 30;
-      if (a1 === 10) return 30;
-      if (v2 === null || v2 === undefined) return 20;
-      if (a1 + a2 === 10) return 20;
-      return a1 + a2;
-    } else {
-      if (v1 === null || v1 === undefined) return 20;
-      if (a1 === 10) { return (v2 !== null && v2 !== undefined && a2 === 10) ? 30 : 20; }
-      if (v2 === null || v2 === undefined) return 20;
-      if (a1 + a2 === 10) return 20;
-      return a1 + a2;
-    }
-  }
-  // Frames 1-9
-  if (isMax) {
-    if (v1 === null || v1 === undefined) return 30;
-    if (a1 === 10) return 30;
-    if (v2 === null || v2 === undefined) return 20;
-    if (a1 + a2 === 10) return 20;
-    return a1 + a2;
-  } else {
-    if (v1 === null || v1 === undefined) return 20;
-    if (a1 === 10) {
-      var b1 = soloPaceNthFutureBall(fn, 1);
-      var b2 = soloPaceNthFutureBall(fn, 2);
-      return 10 + b1 + b2;
-    }
-    if (v2 === null || v2 === undefined) return 20;
-    if (a1 + a2 === 10) return 10 + soloPaceNthFutureBall(fn, 1);
-    return a1 + a2;
-  }
-}
-
-function calcSoloProjectedTotal(isMax) {
-  calculateScores(); // ensure RunningTotal is current
-  var frames = gameFrames().sort(function(a,b){return a.FrameNumber-b.FrameNumber;});
-  if (!frames.length) return null;
-  var total = 0;
-  for (var i = 0; i < frames.length; i++) {
-    total += soloProjectedFrameScore(frames[i], isMax);
-  }
-  return Math.min(isMax ? 300 : 290, total);
-}
-
-function calcPaceScore() { return calcSoloProjectedTotal(false); }
-function calcMaxScore()  { return calcSoloProjectedTotal(true); }
-
 /* =============================================================
    FM SCORE DISPLAY — cycles SCORE / PACE / MAX every 3s
    Tap to advance immediately.
@@ -9520,6 +9830,7 @@ function openShotDetailPrompt(scoredFrame, scoredAtt, isFresh, isSpareConv, attI
   _sdp.speed   = att.ShotSpeed      || null;
   _sdp.revs    = att.ShotRevs       || null;
   _sdp.entry   = att.PocketEntry    || null;
+  _sdp.ballroll= att.BallRoll       || null;
   _sdp.miss    = att.MissDirection  || null;
   _sdp.boards  = att.MissBoards     || null;
 
@@ -9547,9 +9858,11 @@ function openShotDetailPrompt(scoredFrame, scoredAtt, isFresh, isSpareConv, attI
     titleEl.textContent = 'F' + scoredFrame + ' Att' + scoredAtt + leaveLabel;
   }
 
-  // Entry row: only on fresh-rack deliveries
+  // Entry + Ball Roll rows: only on fresh-rack deliveries
   var entryRow = document.getElementById('sdp-row-entry');
   if (entryRow) entryRow.style.display = isFresh ? '' : 'none';
+  var ballRollRow = document.getElementById('sdp-row-ballroll');
+  if (ballRollRow) ballRollRow.style.display = isFresh ? '' : 'none';
 
   // Spare alignment save offer
   var alignSave = document.getElementById('sdp-align-save');
@@ -9586,6 +9899,11 @@ function sdRenderSelections() {
     var el = document.getElementById('sdp-entry-' + v);
     if (el) el.classList.toggle('sel', _sdp.entry === v);
   });
+  // Ball Roll
+  ['normal','rolled-out','carried'].forEach(function(v) {
+    var el = document.getElementById('sdp-ballroll-' + v);
+    if (el) el.classList.toggle('sel', _sdp.ballroll === v);
+  });
   // Miss direction
   var missNone = document.getElementById('sdp-miss-none');
   var missL    = document.getElementById('sdp-miss-L');
@@ -9608,7 +9926,8 @@ function sdSetField(field, value) {
   if (field === 'marker') _sdp.marker = value;
   else if (field === 'speed')  _sdp.speed  = value;
   else if (field === 'revs')   _sdp.revs   = value;
-  else if (field === 'entry')  _sdp.entry  = value;
+  else if (field === 'entry')    _sdp.entry    = value;
+  else if (field === 'ballroll') _sdp.ballroll = value;
   else if (field === 'miss') {
     _sdp.miss   = value;
     if (value === null) _sdp.boards = null; // clear boards when "on target" selected
@@ -9631,6 +9950,9 @@ function sdSave() {
   att.ShotSpeed        = _sdp.speed   || null;
   att.ShotRevs         = _sdp.revs    || null;
   att.PocketEntry      = _sdp.isFresh ? (_sdp.entry || null) : null;
+  att.PocketEntrySource= _sdp.isFresh && _sdp.entry ? 'user' : (att.PocketEntrySource || null);
+  att.BallRoll         = _sdp.isFresh ? (_sdp.ballroll || null) : null;
+  att.BallRollSource   = _sdp.isFresh && _sdp.ballroll ? 'user' : (att.BallRollSource || null);
   att.MissDirection    = _sdp.miss    || null;
   att.MissBoards       = (_sdp.miss && _sdp.boards) ? _sdp.boards : null;
   att.ShotDetailLogged = true;
@@ -10037,15 +10359,27 @@ function fmRefEditStart(parity) {
 
   _fmRefEditParity = parity;
 
-  // Save current drum state so we can restore on cancel
+  // Save the CURRENT ATTEMPT'S board values for cancel-restore (not drum position,
+  // which may not have snapped yet due to iOS async scroll-snap timing).
   var sbDrum = document.getElementById('fm-sb-drum');
   var tbDrum = document.getElementById('fm-tb-drum');
   var sbHalfBtn = document.getElementById('fm-sb-half');
   var tbHalfBtn = document.getElementById('fm-tb-half');
-  _fmRefEditPrevSb = fmGetWheelValue('fm-sb-drum');
-  _fmRefEditPrevTb = fmGetWheelValue('fm-tb-drum');
-  _fmRefEditPrevSbHalf = sbHalfBtn ? sbHalfBtn.classList.contains('on') : false;
-  _fmRefEditPrevTbHalf = tbHalfBtn ? tbHalfBtn.classList.contains('on') : false;
+  // Read restore values from the live attempt data, not the drum scroll position
+  var _restoreFrame = getFrame(G.frame);
+  var _restoreAtt = _restoreFrame ? frameAttempts(_restoreFrame.FrameID).find(function(a){return a.Attempt===G.attempt;}) : null;
+  var _parity2 = currentLaneParity();
+  var _ref2 = getLaneRef();
+  var _sbRestore = (_restoreAtt && _restoreAtt.StartingBoard != null) ? _restoreAtt.StartingBoard
+    : (_parity2 && _ref2[_parity2].sb != null ? (_ref2[_parity2].sbHalf ? _ref2[_parity2].sb + 0.5 : _ref2[_parity2].sb)
+    : (G.lastSB != null ? G.lastSB : (prefs.defaultSB != null ? prefs.defaultSB : 17)));
+  var _tbRestore = (_restoreAtt && _restoreAtt.TargetBoard != null) ? _restoreAtt.TargetBoard
+    : (_parity2 && _ref2[_parity2].tb != null ? (_ref2[_parity2].tbHalf ? _ref2[_parity2].tb + 0.5 : _ref2[_parity2].tb)
+    : (G.lastTB != null ? G.lastTB : (prefs.defaultTB != null ? prefs.defaultTB : 10)));
+  _fmRefEditPrevSb = Math.floor(_sbRestore);
+  _fmRefEditPrevTb = Math.floor(_tbRestore);
+  _fmRefEditPrevSbHalf = _sbRestore % 1 >= 0.5;
+  _fmRefEditPrevTbHalf = _tbRestore % 1 >= 0.5;
 
   // Load this parity's ref values into the drums
   var ref = getLaneRef();
@@ -10084,7 +10418,10 @@ function fmRefEditConfirm() {
 
   _fmRefEditParity = null;
   fmRefEditRestoreUI();
-  // Reload the drums with the current attempt's data
+  // Restore drums to the current attempt's board data, NOT the ref we just saved.
+  // fmLoadBoardData() seeds from attempt first, then ref if attempt has no data.
+  // This prevents the ref values from overwriting an in-progress attempt's drums
+  // and causing a one-off increment next time the ref chip is opened for edit.
   fmLoadBoardData();
   fmRenderLaneRef();
   haptic && haptic('light');
@@ -10683,8 +11020,15 @@ function updateScoringContext() {
   if (useNoTap) calculateNoTapScores(frames);
   const latest = [...frames].filter(f=>(useNoTap?f.NoTapRunningTotal:f.RunningTotal)!=null)
     .sort((a,b)=>b.FrameNumber-a.FrameNumber)[0];
+  // While F10 is in progress its RunningTotal is null (so projections work correctly),
+  // but FrameScore holds the partial ball sum already thrown. Add that to the baseline
+  // so SCORE displays "confirmed so far + F10 balls in bank" rather than just F9's total.
+  const f10Frame = frames.find(f=>f.FrameNumber===10);
+  const f10Partial = (f10Frame && f10Frame.RunningTotal==null && f10Frame.FrameScore!=null)
+    ? f10Frame.FrameScore : 0;
+  const latestRT = (useNoTap ? latest?.NoTapRunningTotal : latest?.RunningTotal) ?? 0;
   const scoreEl = document.getElementById('ctx-score');
-  if (scoreEl) scoreEl.textContent = (useNoTap ? latest?.NoTapRunningTotal : latest?.RunningTotal) ?? '—';
+  if (scoreEl) scoreEl.textContent = latestRT > 0 ? (latestRT + f10Partial) : (latestRT || '—');
 
   // Show leave name if Att2+ and att1 had a detected LeaveID
   const leaveEl = document.getElementById('ctx-leave');
@@ -11839,8 +12183,18 @@ function renderGameComplete() {
   // ── Leave summary (replaces frame-by-frame detail) ─────────────────────────
   if (detailEl) {
     detailEl.style.display = 'block';
+    const series = db.series.find(s=>s.SeriesID===G.seriesID);
+    const gameBeerLog = (series?.beerLog||[]).filter(e=>e.game===G.gameNum);
+    const tbSession = grpLoadAll().find(sess=>sess.leagueID===series?.LeagueID && sess.date===series?.DateBowled);
+    const tbGameBeer = tbSession ? (tbSession.games[G.gameNum-1]?.beerFrames||[]) : [];
+    const hasBeer = gameBeerLog.length > 0 || tbGameBeer.length > 0;
+    const beerBtn = hasBeer
+      ? `<div style="margin-top:10px"><button class="btn btn-secondary" style="font-size:13px;color:var(--gold);border-color:rgba(255,215,0,0.3);width:100%"
+           onclick="openGameBeerModal(${G.seriesID},${G.gameNum})">🍺 Beer Frame Summary</button></div>`
+      : '';
     detailEl.innerHTML = renderGameLeaveSummaryHTML(G.gameID, frames)
-      + buildBallUsageHTML([G.gameID]);
+      + buildBallUsageHTML([G.gameID])
+      + beerBtn;
   }
 
   // ── Next game button ───────────────────────────────────────────────────────
@@ -13022,6 +13376,8 @@ function _statsTabSpares(games, hasFrames) {
     <div class="stat-card" style="margin-bottom:16px">
       <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:0.8px;text-transform:uppercase;margin-bottom:10px">Leaves</div>
       ${buildTopLeavesHTML(gameIDs)}
+      <button class="btn btn-ghost" style="width:100%;margin-top:12px;font-size:13px"
+        onclick="navTo('s-leaves')">View All Leaves ▶</button>
     </div>`;
 
   return metricsHTML + leavesHTML;
@@ -13675,6 +14031,409 @@ function buildTopLeavesHTML(filterGames) {
 function setLeavesFilter(filterGames) {
   var el = document.getElementById('stats-leaves-content');
   if (el) el.innerHTML = buildTopLeavesHTML(filterGames);
+}
+
+/* =============================================================
+   LEAVES LIBRARY SCREEN  (s-leaves)
+   Full leave history with conversion stats, angle data, and
+   alignment links. Entry: View All Leaves link from Stats screen.
+   ============================================================= */
+
+var _leavesFilter   = 'all'; // 'all' | 100 | 50 | 30
+var _leavesSort     = 'freq'; // 'freq' | 'conv' | 'name'
+var _leavesAlignMap = [];    // [lvID, ...] indexed by row — avoids inline string quoting
+
+function renderLeavesScreen() {
+  var el = document.getElementById('leaves-content');
+  if (!el) return;
+  el.innerHTML = _buildLeavesScreenHTML();
+}
+
+function _buildLeavesScreenHTML() {
+  // ── Resolve game pool ──────────────────────────────────────────────
+  var allStdGames = db.games
+    .filter(function(g) { return g.FinalScore != null && !g.NoTap; })
+    .sort(function(a, b) {
+      var sa = db.series.find(function(s) { return s.SeriesID === a.SeriesID; });
+      var sb = db.series.find(function(s) { return s.SeriesID === b.SeriesID; });
+      return new Date(sb ? sb.DateBowled : 0) - new Date(sa ? sa.DateBowled : 0);
+    });
+
+  var gamePool;
+  if (_leavesFilter === 'all') {
+    gamePool = allStdGames;
+  } else {
+    gamePool = allStdGames.slice(0, parseInt(_leavesFilter, 10));
+  }
+  var gameIDSet = new Set(gamePool.map(function(g) { return g.GameID; }));
+
+  // ── Standing pin helper (3-method chain) ──────────────────────────
+  function getStandingPins(a1) {
+    var hasPinStart = false;
+    for (var p = 1; p <= 10; p++) { if (a1['PinStart' + p] === 1) { hasPinStart = true; break; } }
+    if (hasPinStart) {
+      var s = new Set();
+      for (var p = 1; p <= 10; p++) {
+        if (a1['PinStart' + p] === 1 && a1['PinDelta' + p] !== 1) s.add(p);
+      }
+      return s;
+    }
+    if (a1.LeaveID && db.leaves.length) {
+      var lv = db.leaves.find(function(l) { return l.LeaveID === a1.LeaveID; });
+      if (lv) {
+        var s = new Set();
+        for (var p = 1; p <= 10; p++) { if (lv['Pin' + p]) s.add(p); }
+        if (s.size > 0) return s;
+      }
+    }
+    var anyK = [1,2,3,4,5,6,7,8,9,10].some(function(p) { return a1['Pin' + p] === true; });
+    if (anyK) {
+      var s = new Set();
+      for (var p = 1; p <= 10; p++) { if (!a1['Pin' + p]) s.add(p); }
+      return s;
+    }
+    return new Set();
+  }
+
+  // ── Leave record resolver ──────────────────────────────────────────
+  function findLeave(standingSet, leaveID) {
+    if (leaveID && db.leaves.length) {
+      var lv = db.leaves.find(function(l) { return l.LeaveID === leaveID; });
+      if (lv) return lv;
+    }
+    if (db.leaves.length) {
+      var found = db.leaves.find(function(x) {
+        for (var p = 1; p <= 10; p++) {
+          if (!!(x['Pin' + p]) !== standingSet.has(p)) return false;
+        }
+        return true;
+      });
+      if (found) return found;
+    }
+    // Synthetic
+    var adj = {1:[2,3,5],2:[1,4,5,8],3:[1,5,6,9],4:[2,7,8],5:[1,2,3,8,9],
+                6:[3,9,10],7:[4],8:[2,4,5],9:[3,5,6],10:[6]};
+    var vis = {}, pns = {}, cl = 0;
+    standingSet.forEach(function(p) { pns[p] = true; });
+    for (var p = 2; p <= 10; p++) {
+      if (pns[p] && !vis[p]) {
+        cl++;
+        var st = [p];
+        while (st.length) {
+          var n = st.pop();
+          if (vis[n]) continue;
+          vis[n] = true;
+          (adj[n] || []).forEach(function(a) { if (pns[a] && !vis[a]) st.push(a); });
+        }
+      }
+    }
+    var isSplit = !standingSet.has(1) && standingSet.size >= 2 && cl > 1;
+    var pa = {};
+    for (var p = 1; p <= 10; p++) pa['Pin' + p] = standingSet.has(p);
+    var sp = Array.from(standingSet).sort(function(a, b) { return a - b; });
+    var nm = standingSet.size === 1 ? sp[0] + '-pin' : sp.join('-');
+    var sid = leaveID != null ? 'L' + leaveID : 'P' + sp.join('_');
+    return Object.assign({ LeaveID: sid, DisplayName: nm, LeaveType: isSplit ? 'Split' : 'Standard' }, pa);
+  }
+
+  // ── Tally all leaves ──────────────────────────────────────────────
+  var leaveMap = {};
+  var frames19 = db.frames.filter(function(f) {
+    return f.FrameNumber <= 9 && gameIDSet.has(f.GameID);
+  });
+
+  frames19.forEach(function(fr) {
+    var atts = db.attempts
+      .filter(function(a) { return a.FrameID === fr.FrameID; })
+      .sort(function(a, b) { return a.Attempt - b.Attempt; });
+    var a1 = atts.find(function(a) { return a.Attempt === 1; });
+    var a2 = atts.find(function(a) { return a.Attempt === 2; });
+    if (!a1 || a1.Pinfall === null || a1.Pinfall === 10) return;
+
+    var standing = getStandingPins(a1);
+    if (standing.size === 0) return;
+
+    var lv = findLeave(standing, a1.LeaveID);
+    if (!lv) return;
+
+    var lvID = lv.LeaveID;
+    if (!leaveMap[lvID]) {
+      leaveMap[lvID] = { leave: lv, opps: 0, conv: 0, angles: [], ballRolls: [] };
+    }
+    leaveMap[lvID].opps++;
+    if (a2 && a2.Pinfall !== null && fr.Spare) leaveMap[lvID].conv++;
+
+    // Angle and ball roll data — prefer user > prompted > auto
+    if (a1.PocketEntry && a1.PocketEntrySource) {
+      leaveMap[lvID].angles.push({
+        val: a1.PocketEntry,
+        src: a1.PocketEntrySource
+      });
+    }
+    if (a1.BallRoll && a1.BallRollSource) {
+      leaveMap[lvID].ballRolls.push({
+        val: a1.BallRoll,
+        src: a1.BallRollSource
+      });
+    }
+  });
+
+  // ── Majority-vote angle per leave ─────────────────────────────────
+  // Prefer user > prompted > auto readings when voting
+  var SRC_WEIGHT = { user: 3, prompted: 2, auto: 1 };
+  function majorityAngle(angles) {
+    if (!angles || !angles.length) return null;
+    var counts = {};
+    angles.forEach(function(a) {
+      var w = SRC_WEIGHT[a.src] || 1;
+      counts[a.val] = (counts[a.val] || 0) + w;
+    });
+    var best = null, bestW = 0;
+    Object.keys(counts).forEach(function(k) {
+      if (counts[k] > bestW) { bestW = counts[k]; best = k; }
+    });
+    // Label as OBSERVED if any non-auto reading exists
+    var hasNonAuto = angles.some(function(a) { return a.src !== 'auto'; });
+    return { angle: best, isObserved: hasNonAuto };
+  }
+
+  var ANGLE_LABEL = { high: 'High', light: 'Light', flush: 'Flush', crossover: 'X-Over' };
+  var ANGLE_COLOR = { high: 'var(--teal)', light: '#B08DD9', flush: 'var(--gold)', crossover: 'var(--sedona)' };
+
+  // ── Sort ──────────────────────────────────────────────────────────
+  var allLeaves = Object.values(leaveMap);
+  if (_leavesSort === 'freq') {
+    allLeaves.sort(function(a, b) { return b.opps - a.opps; });
+  } else if (_leavesSort === 'conv') {
+    allLeaves.sort(function(a, b) {
+      var pA = a.opps ? a.conv / a.opps : 0;
+      var pB = b.opps ? b.conv / b.opps : 0;
+      return pB - pA;
+    });
+  } else {
+    allLeaves.sort(function(a, b) {
+      var nA = (a.leave.DisplayName || '').toLowerCase();
+      var nB = (b.leave.DisplayName || '').toLowerCase();
+      return nA < nB ? -1 : nA > nB ? 1 : 0;
+    });
+  }
+
+  // ── Filter tabs ───────────────────────────────────────────────────
+  function filterBtn(label, val) {
+    var active = (_leavesFilter === val) ? 'background:var(--teal);color:#000;border-color:var(--teal);' : '';
+    return '<button class="btn btn-ghost" style="font-size:12px;padding:5px 12px;' + active + '"'
+      + ' onclick="setLeavesScreenFilter(this)" data-lf="' + val + '">' + label + '</button>';
+  }
+  function sortBtn(label, val) {
+    var active = (_leavesSort === val) ? 'color:var(--teal);border-bottom:2px solid var(--teal);' : 'color:var(--t3);border-bottom:2px solid transparent;';
+    return '<button style="background:none;border:none;border-bottom:2px solid;padding:4px 2px;font-size:12px;font-weight:700;cursor:pointer;' + active + '"'
+      + ' onclick="setLeavesScreenSort(this)" data-ls="' + val + '">' + label + '</button>';
+  }
+
+  var filterBar = '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:4px">'
+    + filterBtn('All', 'all') + filterBtn('Last 100', '100')
+    + filterBtn('Last 50', '50') + filterBtn('Last 30', '30')
+    + '</div>';
+
+  var sortBar = '<div style="display:flex;gap:14px;align-items:center;margin-bottom:12px">'
+    + '<span style="font-size:11px;color:var(--t3);font-weight:700">Sort:</span>'
+    + sortBtn('Freq', 'freq') + sortBtn('Conv%', 'conv') + sortBtn('Name', 'name')
+    + '</div>';
+
+  var meta = '<div style="font-size:11px;color:var(--t3);margin-bottom:10px">'
+    + gamePool.length + ' game' + (gamePool.length !== 1 ? 's' : '')
+    + ' · standard only · frames 1–9 first ball'
+    + (allLeaves.length ? ' · ' + allLeaves.length + ' leaves' : '')
+    + '</div>';
+
+  // ── Empty state ───────────────────────────────────────────────────
+  if (!allLeaves.length) {
+    var emptyMsg = db.leaves.length === 0
+      ? 'Leave library not loaded. Import reference data to enable tracking.'
+      : 'No leave data for this range. Leave detection requires per-pin attempt tracking.';
+    return '<div style="padding:16px">'
+      + filterBar + sortBar + meta
+      + '<div style="color:var(--t3);font-size:13px;text-align:center;padding:40px 0;line-height:1.6">' + emptyMsg + '</div>'
+      + '</div>';
+  }
+
+  // ── Build rows ────────────────────────────────────────────────────
+  var alignments = getSpareAlignments();
+
+  _leavesAlignMap = [];
+  var rows = allLeaves.map(function(e) {
+    var lv   = e.leave;
+    var pct  = e.opps ? Math.round(e.conv / e.opps * 100) : 0;
+    var lvID = lv.LeaveID;
+    var _alignIdx = _leavesAlignMap.length;
+    _leavesAlignMap.push(lvID);
+    var isSplit = lv.LeaveType === 'Split';
+    var barColor = isSplit ? 'var(--sedona)' : '#B08DD9';
+
+    // Pin diagram
+    var bsk = '';
+    for (var p = 1; p <= 10; p++) bsk += (lv['Pin' + p] ? 'S' : 'B');
+    var pinHtml = '';
+    try { pinHtml = leavePinHTML(bsk); } catch(err) {}
+
+    // Badges
+    var splitBadge = isSplit
+      ? '<span style="font-size:9px;background:rgba(220,80,60,0.18);color:var(--sedona);'
+        + 'border-radius:3px;padding:1px 4px;font-weight:700;margin-left:4px">SPLIT</span>'
+      : '';
+
+    // Angle data
+    var angleData = majorityAngle(e.angles);
+    var angleBadge = '';
+    if (angleData && angleData.angle) {
+      var aLabel = ANGLE_LABEL[angleData.angle] || angleData.angle;
+      var aColor = ANGLE_COLOR[angleData.angle] || 'var(--t2)';
+      var aQual  = angleData.isObserved ? 'OBSERVED' : 'CLASSIFIED';
+      var aQColor = angleData.isObserved ? 'var(--teal)' : 'var(--t3)';
+      angleBadge = '<span style="font-size:9px;color:' + aColor
+        + ';font-weight:700;margin-left:6px">' + aLabel + '</span>'
+        + '<span style="font-size:9px;color:' + aQColor
+        + ';margin-left:3px">(' + aQual + ')</span>';
+    }
+
+    // Spare alignment indicator
+    var hasAlign = alignments.some(function(a) { return a.leaveID === lvID; });
+    var alignLabel = hasAlign ? '⊕ Setup' : '+ Setup';
+    var alignColor = hasAlign ? 'var(--teal)' : 'var(--t3)';
+    var alignPart = '<span style="font-size:10px;color:' + alignColor + ';margin-left:6px;cursor:pointer" '
+      + 'onclick="openLeaveAlignModal(_leavesAlignMap[' + _alignIdx + '])">' + alignLabel + '</span>';
+
+    return '<div style="display:grid;grid-template-columns:44px 1fr 44px;gap:8px;'
+      + 'align-items:center;padding:10px 0;border-bottom:1px solid var(--border1)">'
+      // Pin diagram
+      + '<div style="display:flex;justify-content:center;transform:scale(0.75);transform-origin:center">' + pinHtml + '</div>'
+      // Name + stats
+      + '<div style="min-width:0">'
+        + '<div style="font-size:13px;font-weight:700;color:var(--t1);display:flex;align-items:center;flex-wrap:wrap;margin-bottom:3px">'
+          + (lv.DisplayName || lv.ShortName || 'Leave') + splitBadge + angleBadge
+        + '</div>'
+        + '<div style="position:relative;height:5px;border-radius:3px;background:rgba(255,255,255,0.06);overflow:hidden;margin-bottom:4px">'
+          + '<div style="height:100%;width:' + pct + '%;background:' + barColor + ';border-radius:3px"></div>'
+        + '</div>'
+        + '<div style="font-size:11px;color:var(--t3)">'
+          + e.opps + ' opp' + (e.opps !== 1 ? 's' : '') + ' · ' + e.conv + '/' + e.opps
+          + alignPart
+        + '</div>'
+      + '</div>'
+      // Pct
+      + '<div style="text-align:right;font-size:17px;font-weight:800;color:' + barColor + '">' + pct + '%</div>'
+      + '</div>';
+  }).join('');
+
+  return '<div style="padding:16px">'
+    + filterBar + sortBar + meta
+    + '<div id="leaves-list">' + rows + '</div>'
+    + '</div>';
+}
+
+/* ── Standalone leave alignment edit modal ───────────────────────────
+   Opens from Leaves Screen "Setup" / "⊕ Setup" tap.
+   Reads/writes via saveSpareAlignment(). No SDP dependency. */
+var _leaveAlignCurrent = null; // module-level — avoids inline onclick param quoting
+function openLeaveAlignModal(leaveID) {
+  _leaveAlignCurrent = leaveID;
+  var lv = typeof leaveID === 'number'
+    ? db.leaves.find(function(l) { return l.LeaveID === leaveID; })
+    : null;
+  var name = lv ? (lv.DisplayName || lv.ShortName || 'Leave') : ('Leave ' + leaveID);
+  var align = getSpareAlignment(leaveID) || {};
+
+  // Ball picker options
+  var ballOpts = db.balls.filter(function(b) { return b.Active !== false; })
+    .map(function(b) {
+      var sel = (align.ballID === b.BallID) ? ' selected' : '';
+      return '<option value="' + b.BallID + '"' + sel + '>' + b.BallName + '</option>';
+    }).join('');
+  var noBall = (!align.ballID) ? ' selected' : '';
+
+  openModal('<div class="modal-title">' + name + ' Alignment</div>'
+    + '<div style="font-size:12px;color:var(--t3);margin-bottom:16px">Spare setup for this leave</div>'
+
+    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">'
+      + '<div>'
+        + '<div style="font-size:10px;font-weight:700;color:var(--t3);margin-bottom:4px">START BOARD (SB)</div>'
+        + '<input id="la-sb" type="number" min="1" max="40" step="0.5"'
+        + ' value="' + (align.sb != null ? align.sb : '') + '"'
+        + ' placeholder="e.g. 15"'
+        + ' style="width:100%;padding:8px;border-radius:8px;border:1px solid var(--border2);'
+        + 'background:var(--bg3);color:var(--t1);font-size:15px;font-weight:700;box-sizing:border-box">'
+      + '</div>'
+      + '<div>'
+        + '<div style="font-size:10px;font-weight:700;color:var(--t3);margin-bottom:4px">TARGET BOARD (TB)</div>'
+        + '<input id="la-tb" type="number" min="1" max="40" step="0.5"'
+        + ' value="' + (align.tb != null ? align.tb : '') + '"'
+        + ' placeholder="e.g. 8"'
+        + ' style="width:100%;padding:8px;border-radius:8px;border:1px solid var(--border2);'
+        + 'background:var(--bg3);color:var(--t1);font-size:15px;font-weight:700;box-sizing:border-box">'
+      + '</div>'
+    + '</div>'
+
+    + '<div style="margin-bottom:12px">'
+      + '<div style="font-size:10px;font-weight:700;color:var(--t3);margin-bottom:4px">BALL (OPTIONAL)</div>'
+      + '<select id="la-ball" style="width:100%;padding:8px;border-radius:8px;border:1px solid var(--border2);'
+        + 'background:var(--bg3);color:var(--t1);font-size:14px;box-sizing:border-box">'
+        + '<option value=""' + noBall + '>— No specific ball —</option>'
+        + ballOpts
+      + '</select>'
+    + '</div>'
+
+    + '<div style="margin-bottom:16px">'
+      + '<div style="font-size:10px;font-weight:700;color:var(--t3);margin-bottom:4px">NOTES</div>'
+      + '<textarea id="la-notes" rows="2" placeholder="e.g. Play direct, 5-board move left"'
+        + ' style="width:100%;padding:8px;border-radius:8px;border:1px solid var(--border2);'
+        + 'background:var(--bg3);color:var(--t1);font-size:13px;resize:none;box-sizing:border-box">'
+        + (align.notes || '') + '</textarea>'
+    + '</div>'
+
+    + '<div style="display:flex;gap:8px">'
+      + (align.leaveID != null
+          ? '<button class="btn btn-ghost" style="color:var(--red);flex:0 0 auto" '
+            + 'onclick="_leaveAlignDelete()">Delete</button>'
+          : '')
+      + '<button class="btn btn-secondary" style="flex:1" onclick="closeModal()">Cancel</button>'
+      + '<button class="btn btn-primary" style="flex:1" '
+        + 'onclick="_leaveAlignSave()">Save</button>'
+    + '</div>'
+  );
+}
+
+function _leaveAlignSave() {
+  var leaveID = _leaveAlignCurrent;
+  if (leaveID == null) return;
+  var sb    = parseFloat(document.getElementById('la-sb')?.value) || null;
+  var tb    = parseFloat(document.getElementById('la-tb')?.value) || null;
+  var ballID = parseInt(document.getElementById('la-ball')?.value) || null;
+  var notes = (document.getElementById('la-notes')?.value || '').trim();
+  saveSpareAlignment(leaveID, { sb: sb, tb: tb, ballID: ballID, notes: notes });
+  closeModal();
+  renderLeavesScreen();
+  toast('Alignment saved');
+  haptic && haptic('success');
+}
+
+function _leaveAlignDelete() {
+  var leaveID = _leaveAlignCurrent;
+  if (leaveID == null) return;
+  deleteSpareAlignment(leaveID);
+  closeModal();
+  renderLeavesScreen();
+  toast('Alignment removed');
+  haptic && haptic('light');
+}
+
+function setLeavesScreenFilter(btn) {
+  _leavesFilter = btn.getAttribute('data-lf') || 'all';
+  renderLeavesScreen();
+}
+
+function setLeavesScreenSort(btn) {
+  _leavesSort = btn.getAttribute('data-ls') || 'freq';
+  renderLeavesScreen();
 }
 
 
@@ -15092,6 +15851,341 @@ function openSeriesStatsModal(seriesID) {
     </div>` : ''}
     ${ntSeriesGames.length ? renderNoTapStatsSectionHTML(ntSeriesGames) : ''}
     ${buildBallUsageHTML(stdGames.map(g=>g.GameID))}
+    <button class="btn btn-secondary" onclick="closeModal()" style="margin-top:16px">Close</button>
+  `);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   BEER FRAME SUMMARY MODALS
+   Three depths: League → Series → Game
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Shared: resolve IsMe bowler name ── */
+function _beerMeName() {
+  const me = (db.bowlers||[]).find(b=>b.IsMe);
+  return me?.Name || 'Me';
+}
+
+/* ── Shared: build a per-bowler tally from a solo beerLog[] ──
+   Returns { [name]: { g1:N, g2:N, ... , total:N } }
+   gameKeys = ['g1','g2','g3'] matching order of games array    */
+function _beerTallyFromLog(beerLog, games) {
+  const meName = _beerMeName();
+  const tally = {};
+  beerLog.forEach(e => {
+    const bowler = e.bowlerName || meName;
+    if (!tally[bowler]) tally[bowler] = { total: 0 };
+    const key = `g${e.game}`;
+    tally[bowler][key] = (tally[bowler][key]||0) + 1;
+    tally[bowler].total++;
+  });
+  return tally;
+}
+
+/* ── Shared: build a per-bowler tally from a TB session ──
+   Returns same shape as _beerTallyFromLog                      */
+function _beerTallyFromTB(session) {
+  const tally = {};
+  session.games.forEach((g, gi) => {
+    if (!g.beerCounts) return;
+    const gameKey = `g${gi+1}`;
+    Object.entries(g.beerCounts).forEach(([bi, ct]) => {
+      if (!ct) return;
+      const b = session.bowlers[+bi];
+      if (!b) return;
+      const name = _beerDisplayName(b, session.bowlers);
+      if (!tally[name]) tally[name] = { total: 0 };
+      tally[name][gameKey] = (tally[name][gameKey]||0) + ct;
+      tally[name].total += ct;
+    });
+  });
+  return tally;
+}
+
+/* ── Shared: render a tally table as HTML ──
+   gameNums = [1,2,3] — column headers                          */
+function _beerTallyHTML(tally, gameNums) {
+  const rows = Object.entries(tally)
+    .sort((a,b) => b[1].total - a[1].total);
+  if (!rows.length) return '<div style="color:var(--t3);font-size:13px;text-align:center;padding:8px">No beer frames recorded</div>';
+  const colW = `${Math.floor(60/gameNums.length)}%`;
+  const gameHeaders = gameNums.map(n=>`<th style="width:${colW};text-align:center;padding:4px 2px;font-size:11px;color:var(--t3)">G${n}</th>`).join('');
+  const rowsHTML = rows.map(([name, counts], i) => {
+    const medal = i===0 && counts.total>0 ? '🍺 ' : '';
+    const gameCells = gameNums.map(n => {
+      const ct = counts[`g${n}`]||0;
+      return `<td style="text-align:center;padding:4px 2px;font-size:13px;color:${ct?'var(--gold)':'var(--t3)'}">${ct||'—'}</td>`;
+    }).join('');
+    return `<tr>
+      <td style="padding:4px 6px 4px 0;font-size:13px;font-weight:600;color:var(--t1)">${medal}${name}</td>
+      ${gameCells}
+      <td style="text-align:center;padding:4px 2px;font-size:14px;font-weight:800;color:var(--gold)">${counts.total}</td>
+    </tr>`;
+  }).join('');
+  return `<table style="width:100%;border-collapse:collapse;margin-top:6px">
+    <thead><tr>
+      <th style="text-align:left;padding:4px 6px 4px 0;font-size:11px;color:var(--t3)">Bowler</th>
+      ${gameHeaders}
+      <th style="text-align:center;padding:4px 2px;font-size:11px;color:var(--t3)">Tot</th>
+    </tr></thead>
+    <tbody>${rowsHTML}</tbody>
+  </table>`;
+}
+
+/* ── League-scoped beer aggregate ────────────────────────────── */
+function _beerAggregateLeague(leagueID) {
+  const leagueSeries = db.series.filter(s=>s.LeagueID===leagueID);
+  const tbSessions   = grpLoadAll().filter(s=>s.leagueID===leagueID && s.games.some(g=>g.complete));
+  const tbDateSet    = new Set(tbSessions.map(s=>s.date));
+  const meName       = _beerMeName();
+
+  // bowlerMap: name → { totalFrames, bestGame, bestSeries, bestGameDate, bestSeriesDate }
+  const bowlerMap = {};
+  let bestGameRecord   = { count:0, name:'—', date:'—' };
+  let bestSeriesRecord = { count:0, name:'—', date:'—' };
+
+  function trackBowler(name, gameCt, seriesCt, date) {
+    if (!bowlerMap[name]) bowlerMap[name] = { totalFrames:0, bestGame:0, bestSeries:0, bestGameDate:'', bestSeriesDate:'' };
+    const b = bowlerMap[name];
+    b.totalFrames += gameCt;
+    if (gameCt > b.bestGame)   { b.bestGame = gameCt; b.bestGameDate = date; }
+    if (seriesCt > b.bestSeries) { b.bestSeries = seriesCt; b.bestSeriesDate = date; }
+    if (gameCt > bestGameRecord.count)   bestGameRecord   = { count:gameCt,   name, date };
+    if (seriesCt > bestSeriesRecord.count) bestSeriesRecord = { count:seriesCt, name, date };
+  }
+
+  // TB sessions (authoritative on date overlap)
+  tbSessions.forEach(session => {
+    const date = session.date || '?';
+    // Per-bowler series total across games
+    const seriesTotals = {};
+    session.bowlers.forEach((_,bi) => { seriesTotals[bi] = 0; });
+
+    session.games.forEach(g => {
+      if (!g.complete || !g.beerCounts) return;
+      Object.entries(g.beerCounts).forEach(([bi, ct]) => {
+        if (!ct) return;
+        const b = session.bowlers[+bi];
+        if (!b) return;
+        const name = _beerDisplayName(b, session.bowlers);
+        seriesTotals[bi] = (seriesTotals[bi]||0) + ct;
+        trackBowler(name, ct, 0, date); // game-level tracking; series total patched below
+      });
+    });
+
+    // Patch in best-series comparisons after full session is tallied
+    Object.entries(seriesTotals).forEach(([bi, total]) => {
+      if (!total) return;
+      const b = session.bowlers[+bi];
+      if (!b) return;
+      const name = _beerDisplayName(b, session.bowlers);
+      if (!bowlerMap[name]) bowlerMap[name] = { totalFrames:0, bestGame:0, bestSeries:0, bestGameDate:'', bestSeriesDate:'' };
+      if (total > bowlerMap[name].bestSeries) { bowlerMap[name].bestSeries = total; bowlerMap[name].bestSeriesDate = date; }
+      if (total > bestSeriesRecord.count) bestSeriesRecord = { count:total, name, date };
+    });
+  });
+
+  // Solo series (skip dates covered by TB)
+  leagueSeries.forEach(s => {
+    const bl = s.beerLog||[];
+    if (!bl.length) return;
+    if (tbDateSet.has(s.DateBowled)) return;
+    const date = s.DateBowled || '?';
+    const games = db.games.filter(g=>g.SeriesID===s.SeriesID).sort((a,b)=>a.GameNumber-b.GameNumber);
+    const numGames = games.length;
+
+    // Tally per-bowler per-game
+    const perGame = {}; // name → { [gameNum]: count }
+    bl.forEach(e => {
+      const name = e.bowlerName || meName;
+      if (!perGame[name]) perGame[name] = {};
+      perGame[name][e.game] = (perGame[name][e.game]||0) + 1;
+    });
+
+    Object.entries(perGame).forEach(([name, gameCounts]) => {
+      const seriesTotal = Object.values(gameCounts).reduce((a,b)=>a+b,0);
+      const bestGame    = Math.max(...Object.values(gameCounts));
+      trackBowler(name, 0, seriesTotal, date); // totalFrames patched per-game below
+      // Patch totalFrames and bestGame per game entry
+      Object.values(gameCounts).forEach(ct => {
+        if (!bowlerMap[name]) bowlerMap[name] = { totalFrames:0, bestGame:0, bestSeries:0, bestGameDate:'', bestSeriesDate:'' };
+        bowlerMap[name].totalFrames += ct;
+        if (ct > bowlerMap[name].bestGame) { bowlerMap[name].bestGame = ct; bowlerMap[name].bestGameDate = date; }
+        if (ct > bestGameRecord.count) bestGameRecord = { count:ct, name, date };
+      });
+    });
+  });
+
+  const leaderboard = Object.entries(bowlerMap)
+    .map(([name, b]) => ({ name, ...b }))
+    .sort((a,b) => b.totalFrames - a.totalFrames);
+
+  const totalFrames = leaderboard.reduce((sum,b)=>sum+b.totalFrames,0);
+  return { leaderboard, totalFrames, bestGameRecord, bestSeriesRecord };
+}
+
+/* ── 1. LEAGUE beer summary ──────────────────────────────────── */
+function openLeagueBeerModal(leagueID) {
+  const league = db.leagues.find(l=>l.LeagueID===leagueID);
+  const { leaderboard, totalFrames, bestGameRecord, bestSeriesRecord } = _beerAggregateLeague(leagueID);
+
+  if (!totalFrames) {
+    openModal(`
+      <div class="modal-title">🍺 Beer Frames</div>
+      <div style="font-size:12px;color:var(--t3);margin-bottom:12px">${league?.LeagueName||''}</div>
+      <div style="color:var(--t3);font-size:13px;text-align:center;padding:16px">No beer frames recorded for this league</div>
+      <button class="btn btn-secondary" onclick="closeModal()" style="margin-top:16px">Close</button>
+    `);
+    return;
+  }
+
+  // ── Records tiles
+  function _fmtBeerDate(d) {
+    if (!d || d==='?') return '';
+    try { return new Date(d+'T12:00:00').toLocaleDateString('en-US',{month:'numeric',day:'numeric',year:'2-digit'}); }
+    catch(e) { return d; }
+  }
+  const recordTile = (label, emoji, record) => `
+    <div style="flex:1;min-width:0;background:rgba(255,215,0,0.07);border:1px solid rgba(255,215,0,0.18);
+      border-radius:10px;padding:10px 10px 8px;text-align:center">
+      <div style="font-size:18px;font-weight:900;color:var(--gold)">${record.count} ${emoji}</div>
+      <div style="font-size:11px;font-weight:700;color:var(--t1);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${record.name}</div>
+      <div style="font-size:10px;color:var(--t3);margin-top:1px">${label}${record.date && record.date!=='?' ? ' · '+_fmtBeerDate(record.date) : ''}</div>
+    </div>`;
+
+  // All-time total record (leader)
+  const allTimeLeader = leaderboard[0] || { name:'—', totalFrames:0 };
+  const allTimeTile = `
+    <div style="flex:1;min-width:0;background:rgba(255,215,0,0.07);border:1px solid rgba(255,215,0,0.18);
+      border-radius:10px;padding:10px 10px 8px;text-align:center">
+      <div style="font-size:18px;font-weight:900;color:var(--gold)">${allTimeLeader.totalFrames} 🍺</div>
+      <div style="font-size:11px;font-weight:700;color:var(--t1);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${allTimeLeader.name}</div>
+      <div style="font-size:10px;color:var(--t3);margin-top:1px">All-Time Total</div>
+    </div>`;
+
+  // ── Per-bowler highlights
+  const highlightRows = leaderboard.map((b, i) => {
+    const medal = i===0?'🥇':i===1?'🥈':i===2?'🥉':`${i+1}.`;
+    return `<div style="display:flex;align-items:center;justify-content:space-between;
+        padding:8px 0;border-bottom:1px solid var(--border1)">
+      <span style="font-size:13px;font-weight:600;color:var(--t1);flex:1;min-width:0;
+        overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${medal} ${b.name}</span>
+      <div style="display:flex;gap:12px;flex-shrink:0;margin-left:8px">
+        <div style="text-align:center">
+          <div style="font-size:14px;font-weight:800;color:var(--gold)">${b.bestGame}</div>
+          <div style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:0.4px">Best G</div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-size:14px;font-weight:800;color:var(--gold)">${b.bestSeries}</div>
+          <div style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:0.4px">Best S</div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-size:14px;font-weight:800;color:var(--t2)">${b.totalFrames}</div>
+          <div style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:0.4px">Total</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  openModal(`
+    <div class="modal-title">🍺 Beer Frames</div>
+    <div style="font-size:12px;color:var(--t3);margin-bottom:14px">${league?.LeagueName||''} · ${totalFrames} total frames</div>
+
+    <div style="font-size:10px;font-weight:700;color:var(--t3);letter-spacing:0.6px;text-transform:uppercase;margin-bottom:8px">Records</div>
+    <div style="display:flex;gap:8px;margin-bottom:16px">
+      ${recordTile('Best Game', '🎳', bestGameRecord)}
+      ${recordTile('Best Series', '📋', bestSeriesRecord)}
+      ${allTimeTile}
+    </div>
+
+    <div style="font-size:10px;font-weight:700;color:var(--t3);letter-spacing:0.6px;text-transform:uppercase;margin-bottom:4px">Per Bowler</div>
+    <div style="display:flex;justify-content:flex-end;gap:12px;padding:0 0 4px;margin-bottom:2px">
+      <span style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:0.4px;width:36px;text-align:center">Best G</span>
+      <span style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:0.4px;width:36px;text-align:center">Best S</span>
+      <span style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:0.4px;width:36px;text-align:center">Total</span>
+    </div>
+    ${highlightRows}
+    <button class="btn btn-secondary" onclick="closeModal()" style="margin-top:16px">Close</button>
+  `);
+}
+
+/* ── 2. SERIES beer summary ──────────────────────────────────── */
+function openSeriesBeerModal(seriesID) {
+  const s = db.series.find(x=>x.SeriesID===seriesID);
+  if (!s) return;
+  const games = db.games.filter(g=>g.SeriesID===seriesID).sort((a,b)=>a.GameNumber-b.GameNumber);
+  const gameNums = games.map(g=>g.GameNumber);
+  const d = s.DateBowled ? fmtDate(s.DateBowled,{month:'short',day:'numeric',year:'numeric'}) : '';
+
+  // Prefer TB session for this series date + league (authoritative)
+  const tbSessions = grpLoadAll().filter(sess=>sess.leagueID===s.LeagueID && sess.date===s.DateBowled);
+  let tally, source;
+  if (tbSessions.length) {
+    tally = _beerTallyFromTB(tbSessions[0]);
+    source = 'Team Bowl';
+  } else {
+    tally = _beerTallyFromLog(s.beerLog||[], games);
+    source = 'Solo';
+  }
+
+  const winner = s.beerSeriesWinner;
+  const winnerBadge = winner
+    ? `<div style="margin-top:10px;padding:8px 12px;background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.2);border-radius:8px;font-size:13px">
+        🏆 <strong style="color:var(--gold)">${winner}</strong> owes a round
+      </div>` : '';
+
+  openModal(`
+    <div class="modal-title">🍺 Series Beer Frames</div>
+    <div style="font-size:12px;color:var(--t3);margin-bottom:14px">${d}${source==='Team Bowl'?' · Team Bowl':''}</div>
+    ${_beerTallyHTML(tally, gameNums)}
+    ${winnerBadge}
+    <button class="btn btn-secondary" onclick="closeModal()" style="margin-top:16px">Close</button>
+  `);
+}
+
+/* ── 3. GAME beer summary ────────────────────────────────────── */
+function openGameBeerModal(seriesID, gameNum) {
+  const s = db.series.find(x=>x.SeriesID===seriesID);
+  const game = db.games.find(g=>g.SeriesID===seriesID && g.GameNumber===gameNum);
+  if (!s || !game) return;
+  const d = s.DateBowled ? fmtDate(s.DateBowled,{month:'short',day:'numeric',year:'numeric'}) : '';
+  const meName = _beerMeName();
+
+  // Prefer TB session
+  const tbSessions = grpLoadAll().filter(sess=>sess.leagueID===s.LeagueID && sess.date===s.DateBowled);
+  let entries = []; // { frame, bowlerName }
+
+  if (tbSessions.length) {
+    const session = tbSessions[0];
+    const tbGame = session.games[gameNum-1];
+    if (tbGame) {
+      const beerFrames = tbGame.beerFrames||[];
+      const beerBuyers = tbGame.beerBuyers||{};
+      beerFrames.forEach(fn => {
+        const bi = beerBuyers[fn];
+        const b = bi!=null ? session.bowlers[bi] : null;
+        const name = b ? _beerDisplayName(b, session.bowlers) : '?';
+        entries.push({ frame: fn, bowlerName: name });
+      });
+    }
+  } else {
+    const bl = (s.beerLog||[]).filter(e=>e.game===gameNum);
+    bl.forEach(e => entries.push({ frame: e.frame, bowlerName: e.bowlerName||meName }));
+  }
+
+  entries.sort((a,b)=>a.frame-b.frame);
+
+  const frameRows = entries.length
+    ? entries.map(e=>`<div class="stat-row">
+        <span style="color:var(--t3)">Frame ${e.frame}</span>
+        <span style="font-size:13px;font-weight:600">${e.bowlerName} 🍺</span>
+      </div>`).join('')
+    : '<div style="color:var(--t3);font-size:13px;text-align:center;padding:8px">No beer frames this game</div>';
+
+  openModal(`
+    <div class="modal-title">🍺 Game ${gameNum} Beer Frames</div>
+    <div style="font-size:12px;color:var(--t3);margin-bottom:14px">${d}</div>
+    ${frameRows}
     <button class="btn btn-secondary" onclick="closeModal()" style="margin-top:16px">Close</button>
   `);
 }
@@ -16712,6 +17806,30 @@ function clearAIKey() {
   openSettingsModal();
 }
 
+/* Coaching profile — Settings save path (Phase 5). Preserves DERIVED fields
+   (knownWeaknesses/knownStrengths/lastBuilt/gamesInSample/baselineAvg/active)
+   by loading, mutating only the user-owned field, and writing back — never
+   calls rebuildCoachingProfile() here (that's a full baseline scan, wasted
+   work on a text blur; see plan §2.3). */
+function saveCoachNotesField(field, value) {
+  const p = loadCoachingProfile() || {
+    knownWeaknesses: [], knownStrengths: [], targetAvg: null,
+    noiseGate: COACH_NOISE_GATE_DEFAULT, coachNotes: '',
+    lastBuilt: null, gamesInSample: 0, baselineAvg: null, active: false
+  };
+  let v = value;
+  if (field === 'coachNotes') v = String(value || '').trim().slice(0, 500);
+  p[field] = v;
+  try { localStorage.setItem(COACH_PROFILE_KEY, JSON.stringify(p)); } catch(e) {}
+  openSettingsModal();
+}
+
+function saveCoachTargetAvg(rawValue) {
+  const n = parseInt(rawValue, 10);
+  const valid = !isNaN(n) && n >= 0 && n <= 300;
+  saveCoachNotesField('targetAvg', valid ? n : null);
+}
+
 /* Force-reload from network, bypassing any cached copy of the page.
    No service worker is registered, so the iOS standalone PWA can hold onto
    a stale fetch of index.html across launches — this gives a reliable way
@@ -17955,6 +19073,9 @@ function normaliseImportedAttempts(attempts) {
     if (out.ShotSpeed       === undefined) out.ShotSpeed       = null;
     if (out.ShotRevs        === undefined) out.ShotRevs        = null;
     if (out.PocketEntry     === undefined) out.PocketEntry     = null;
+    if (out.PocketEntrySource=== undefined) out.PocketEntrySource= null;
+    if (out.BallRoll        === undefined) out.BallRoll        = null;
+    if (out.BallRollSource  === undefined) out.BallRollSource  = null;
     if (out.MissDirection   === undefined) out.MissDirection   = null;
     if (out.MissBoards      === undefined) out.MissBoards      = null;
     if (out.ShotDetailLogged=== undefined) out.ShotDetailLogged= false;
@@ -18902,6 +20023,18 @@ function openSettingsModal() {
       </select>
     </div>
 
+    <!-- ── Default Spare Ball ───────────────────────────────── -->
+    <div class="settings-section">
+      <div class="settings-section-hdr">Default Spare Ball
+        <span class="settings-section-hint">Auto-selects on att2 when no previous spare ball in session</span>
+      </div>
+      <select class="finput" style="width:100%;margin-top:4px"
+        onchange="savePrefs({defaultSpareBallID:this.value?parseInt(this.value):null})">
+        <option value="">— None (keep current ball) —</option>
+        ${db.balls.filter(b=>b.Active!==false).map(b=>`<option value="${b.BallID}"${getPrefs().defaultSpareBallID===b.BallID?' selected':''}>${b.BallName}</option>`).join('')}
+      </select>
+    </div>
+
     <!-- ── Balls / Centers / Patterns → Dev Mode ──────────── -->
     <div class="settings-section">
       <div class="settings-section-hdr">Reference Tables
@@ -19013,6 +20146,37 @@ function openSettingsModal() {
           </div>`;
         }).join('')}
       </div>
+      <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border1)">
+        <label class="flabel" style="font-size:11px">Coach Notes
+          <span class="settings-section-hint" style="display:block;text-transform:none;letter-spacing:normal;font-weight:400;margin-top:2px">Free-text focus areas — injected into every debrief (e.g. "working on release timing")</span>
+        </label>
+        ${(() => {
+          const _p = loadCoachingProfile();
+          const _notes = (_p && _p.coachNotes) ? _p.coachNotes : '';
+          const _esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+          return `<textarea id="coach-notes-input" class="finput" maxlength="500" rows="3"
+            style="font-size:13px;margin-bottom:10px;resize:vertical"
+            placeholder="e.g. working on release timing"
+            onblur="saveCoachNotesField('coachNotes', this.value)">${_esc(_notes)}</textarea>`;
+        })()}
+        <label class="flabel" style="font-size:11px">Target Average</label>
+        ${(() => {
+          const _p = loadCoachingProfile();
+          const _target = (_p && _p.targetAvg != null) ? _p.targetAvg : '';
+          return `<input id="coach-target-avg" type="number" class="finput" min="0" max="300" inputmode="numeric"
+            style="font-size:13px;margin-bottom:10px"
+            value="${_target}"
+            onchange="saveCoachTargetAvg(this.value)">`;
+        })()}
+        <div id="coach-profile-status" style="font-size:11px;color:var(--t3)">
+          ${(() => {
+            const _p = loadCoachingProfile();
+            if (!_p) return 'Profile builds after your first debrief';
+            if (_p.active) return 'Profile active · ' + _p.gamesInSample + ' games in sample';
+            return 'Profile inactive · ' + _p.gamesInSample + '/' + _p.noiseGate + ' games (noise gate)';
+          })()}
+        </div>
+      </div>
     </div>
 
     <!-- ── Practice Mode ───────────────────────────────────── -->
@@ -19056,11 +20220,12 @@ function openSettingsModal() {
                 ['pocketEntryEnabled','Pocket Entry (fresh rack only)'],
                 ['missEnabled','Miss direction &amp; boards'],
                 ['spareAlignBannerEnabled','Spare alignment banner'],
+                ['tenPinPrompt','10-pin disambiguation prompt'],
               ].map(([key,label])=>{
                 const isOn = prefs[key] !== false;
                 return `<div style="display:flex;align-items:center;justify-content:space-between">
                   <span style="font-size:12px;color:var(--t2)">${label}</span>
-                  <div class="toggle-switch ${isOn?'on':''}" style="width:36px;height:22px"
+                  <div class="toggle-switch ${isOn?'on':''}"
                     onclick="savePrefs({${key}:${!isOn}});openSettingsModal()">
                   </div>
                 </div>`;
@@ -20305,19 +21470,18 @@ function toggleMoveFramesMode() {
   const btn = document.getElementById('hdr-move-btn');
   if (btn) btn.classList.toggle('active', MOVE.active);
 
-  // Focus Mode normally hides .sc-wrap (enterFocusMode) and shows only the
-  // abbreviated current-2/-1/current mini-strip — too narrow a window to
-  // select an arbitrary contiguous frame range. While Move Frames select
-  // mode is active, force the full scorecard visible regardless of Focus
-  // Mode state; restore Focus Mode's hidden-scorecard state on exit.
+  // Unlock scroll on #s-scoring so scorecard + move-frames bar are reachable
+  // in both normal and Focus Mode. Clearing the inline style lets .fm-host
+  // CSS (overflow:hidden) reassert naturally when MOVE exits.
+  var scoringEl = document.getElementById('s-scoring');
+  if (scoringEl) scoringEl.style.overflowY = MOVE.active ? 'auto' : '';
+
+  // Focus Mode: force full scorecard visible while MOVE is active,
+  // restore hidden state on exit.
   if (getPrefs().focusMode) {
     document.querySelectorAll('.sc-wrap').forEach(el => {
       el.style.display = MOVE.active ? '' : 'none';
     });
-    // Temporarily unlock scroll on #s-scoring so the scorecard + move-frames
-    // bar are reachable. Re-lock to overflow:hidden when MOVE exits.
-    var scoringEl = document.getElementById('s-scoring');
-    if (scoringEl) scoringEl.style.overflowY = MOVE.active ? 'auto' : 'hidden';
   }
 
   if (MOVE.active) {
@@ -26257,6 +27421,7 @@ function buildCrossLeagueBaseline(excludeSeriesID, sessionCount) {
   let totalStrikes = 0, totalFr = 0;
   let totalSpares = 0, totalSpareOpps = 0;
   let totalSplits = 0, totalSplitOpps = 0;
+  let totalSingleOpp = 0, totalSingleConv = 0;
   let totalSubEight = 0, totalNonStrikeAtt1 = 0;
   const leaveAccum = {}; // key -> count (for top recurring leaves)
   const angleAccum = { high:0, low:0, flat:0 };
@@ -26271,6 +27436,8 @@ function buildCrossLeagueBaseline(excludeSeriesID, sessionCount) {
     totalSpareOpps += stats.spareOpps;
     totalSplits    += stats.splitOpp;
     totalSplitOpps += stats.spareOpps; // splits are a subset of spare opps
+    totalSingleOpp += stats.singleOpp || 0;
+    totalSingleConv+= stats.singleConv || 0;
 
     // Sub-8 and pocket angle from raw attempts
     const frameSet = new Set(db.frames.filter(f => gameIDs.includes(f.GameID)).map(f => f.FrameID));
@@ -26304,6 +27471,8 @@ function buildCrossLeagueBaseline(excludeSeriesID, sessionCount) {
 
   return {
     sessionCount: sessions.length,
+    gamesInSample: totalGames,
+    singleRateBaseline: totalSingleOpp ? totalSingleConv / totalSingleOpp : null,
     avgBaseline:        totalGames ? Math.floor(totalPins / totalGames) : null,
     strikeRateBaseline: totalFr    ? totalStrikes / totalFr             : null,
     spareRateBaseline:  totalSpareOpps ? totalSpares / totalSpareOpps   : null,
@@ -26312,6 +27481,140 @@ function buildCrossLeagueBaseline(excludeSeriesID, sessionCount) {
     topLeaves,
     angleBaseline: { high: angleAccum.high, low: angleAccum.low, flat: angleAccum.flat }
   };
+}
+
+/* ════════════════════════════════════════════════════════════════
+   AI COACHING PROFILE — Phase 4 (v30.29)
+   Persisted to localStorage. Dual-source derivation:
+     (a) deterministic rules off buildCrossLeagueBaseline() stats
+     (b) tally of [PRIORITY] topics across recent saved debriefs —
+         a topic flagged in >=2 of the last 3 gets coach-flagged
+   Noise gate: profile stays inactive below 12 games in sample.
+   Rebuild is lazy — called at the start of every debrief generation.
+   targetAvg + coachNotes are user-owned (Phase 5) and always preserved.
+   ════════════════════════════════════════════════════════════════ */
+const COACH_PROFILE_KEY = 'bowlingdb_coaching_profile';
+const COACH_NOISE_GATE_DEFAULT = 12; // games
+
+function loadCoachingProfile() {
+  try { return JSON.parse(localStorage.getItem(COACH_PROFILE_KEY) || 'null'); }
+  catch(e) { return null; }
+}
+
+/* Keyword topic map for classifying [PRIORITY] paragraphs from saved debriefs. */
+const _COACH_TOPIC_MAP = [
+  { topic: 'single-pin conversion', re: /single[- ]pin|ten[- ]pin|10[- ]pin|7[- ]pin|corner pin/i },
+  { topic: 'spare conversion',      re: /spare/i },
+  { topic: 'first-ball accuracy',   re: /first ball|targeting|target line|accuracy|sub-?8/i },
+  { topic: 'release consistency',   re: /release|hand position|axis rotation|rev rate/i },
+  { topic: 'ball speed',            re: /ball speed|speed control/i },
+  { topic: 'timing',                re: /timing/i },
+  { topic: 'entry angle',           re: /entry angle|angle of entry/i },
+  { topic: 'lane play / adjustment',re: /lane play|move (left|right)|transition|adjust/i },
+  { topic: 'equipment / surface',   re: /surface|ball change|equipment|coverstock/i }
+];
+
+/* Extract the [PRIORITY] section from a raw debrief text, or null. */
+function _coachExtractPriority(text) {
+  const m = /\[PRIORITY\]\s*([\s\S]*?)(?=\[(?:CONTEXT|FIRSTBALL|SPARES)\]|$)/.exec(text || '');
+  if (m) return m[1].trim();
+  // Fallback: last blank-line paragraph (positional, matches render fallback)
+  const paras = (text || '').split(/\n\s*\n/).map(p => p.trim()).filter(Boolean);
+  return paras.length === 4 ? paras[3] : null;
+}
+
+/* Gather the 3 most recent saved debrief entries across all series. */
+function _coachRecentDebriefs() {
+  const entries = [];
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (!k || !/^debrief_\d+$/.test(k)) continue;
+      const arr = JSON.parse(localStorage.getItem(k) || '[]');
+      if (Array.isArray(arr)) arr.forEach(e => { if (e && e.text) entries.push(e); });
+    }
+  } catch(e) { /* non-fatal */ }
+  return entries.sort((a, b) => (b.ts || 0) - (a.ts || 0)).slice(0, 3);
+}
+
+/* Rebuild the coaching profile from rolling stats + saved debrief priorities.
+   Preserves user-set fields (targetAvg, coachNotes, noiseGate override).
+   excludeSeriesID (Phase 6, §3.6): excludes the series currently being
+   debriefed from the baseline so the profile reflects form *entering* this
+   series rather than partially reflecting the series it's about to weight.
+   Defaults to -1 (exclude nothing) when called without an argument. */
+function rebuildCoachingProfile(excludeSeriesID) {
+  if (excludeSeriesID === undefined) excludeSeriesID = -1;
+  const prev = loadCoachingProfile() || {};
+  const noiseGate = (typeof prev.noiseGate === 'number' && prev.noiseGate > 0)
+    ? prev.noiseGate : COACH_NOISE_GATE_DEFAULT;
+
+  const b = buildCrossLeagueBaseline(excludeSeriesID, 10);
+  const gamesInSample = b ? b.gamesInSample : 0;
+
+  const profile = {
+    knownWeaknesses: [],
+    knownStrengths:  [],
+    targetAvg:  (prev.targetAvg != null) ? prev.targetAvg : null,
+    noiseGate:  noiseGate,
+    coachNotes: prev.coachNotes || '',
+    lastBuilt:  new Date().toISOString(),
+    gamesInSample: gamesInSample,
+    baselineAvg: b ? b.avgBaseline : null,
+    active: gamesInSample >= noiseGate
+  };
+
+  if (profile.active && b) {
+    const W = profile.knownWeaknesses, S = profile.knownStrengths;
+    // (a) Deterministic stat rules
+    if (b.singleRateBaseline != null) {
+      if (b.singleRateBaseline < 0.80) W.push('single-pin conversion (' + Math.round(b.singleRateBaseline * 100) + '%)');
+      else if (b.singleRateBaseline >= 0.90) S.push('single-pin conversion (' + Math.round(b.singleRateBaseline * 100) + '%)');
+    }
+    if (b.spareRateBaseline != null) {
+      if (b.spareRateBaseline < 0.60) W.push('overall spare conversion (' + Math.round(b.spareRateBaseline * 100) + '%)');
+      else if (b.spareRateBaseline >= 0.75) S.push('overall spare conversion (' + Math.round(b.spareRateBaseline * 100) + '%)');
+    }
+    if (b.subEightRateBaseline != null) {
+      if (b.subEightRateBaseline > 0.25) W.push('first-ball accuracy (sub-8 rate ' + Math.round(b.subEightRateBaseline * 100) + '%)');
+      else if (b.subEightRateBaseline < 0.10) S.push('first-ball accuracy (sub-8 rate ' + Math.round(b.subEightRateBaseline * 100) + '%)');
+    }
+    if (b.splitRateBaseline != null && b.splitRateBaseline > 0.15) {
+      W.push('split frequency (' + Math.round(b.splitRateBaseline * 100) + '% of spare opps)');
+    }
+    if (b.strikeRateBaseline != null) {
+      if (b.strikeRateBaseline >= 0.50) S.push('strike generation (' + Math.round(b.strikeRateBaseline * 100) + '%)');
+      else if (b.strikeRateBaseline < 0.30) W.push('strike generation (' + Math.round(b.strikeRateBaseline * 100) + '%)');
+    }
+    (b.topLeaves || []).forEach(l => {
+      if (l.count >= 5) W.push('recurring leave: ' + l.label + ' (x' + l.count + ')');
+    });
+    const ab = b.angleBaseline || { high:0, low:0, flat:0 };
+    const angleTotal = ab.high + ab.low + ab.flat;
+    if (angleTotal >= 10 && ab.flat === Math.max(ab.high, ab.low, ab.flat) && ab.flat / angleTotal > 0.40) {
+      W.push('flat/dead entry angle (' + Math.round(ab.flat / angleTotal * 100) + '% of pocket hits)');
+    }
+
+    // (b) Coach-flagged topics from recent debrief priorities
+    const recent = _coachRecentDebriefs();
+    const tally = {};
+    recent.forEach(e => {
+      const pri = _coachExtractPriority(e.text);
+      if (!pri) return;
+      const hit = new Set();
+      _COACH_TOPIC_MAP.forEach(t => { if (t.re.test(pri)) hit.add(t.topic); });
+      hit.forEach(topic => { tally[topic] = (tally[topic] || 0) + 1; });
+    });
+    Object.entries(tally).forEach(([topic, count]) => {
+      if (count >= 2) {
+        const flagged = 'coach-flagged: ' + topic;
+        if (!W.some(w => w.includes(topic))) W.push(flagged);
+      }
+    });
+  }
+
+  try { localStorage.setItem(COACH_PROFILE_KEY, JSON.stringify(profile)); } catch(e) {}
+  return profile;
 }
 
 /* Build a compact context object for the AI debrief prompt. */
@@ -26555,6 +27858,38 @@ function _buildDebriefPrompt(ctx) {
       : null,
   ].filter(Boolean);
 
+  // ── AI Coaching Profile injection — Phase 5 (notes/target) + Phase 6 (micro-weights) ──
+  const _prof = loadCoachingProfile();
+  let _profTail = '';
+  if (_prof && _prof.coachNotes && _prof.coachNotes.trim()) {
+    _profTail += ' The bowler\'s own coach notes — address these directly if the data is relevant: "' +
+      _prof.coachNotes.trim().slice(0, 500).replace(/["\n\r]/g, ' ') + '".';
+  }
+  if (_prof && _prof.targetAvg != null) {
+    _profTail += ' The bowler\'s stated target average is ' + _prof.targetAvg + '.';
+  }
+
+  // Phase 6 §3.3 — feedback-loop guard: only stat-derived weaknesses drive
+  // section weighting. coach-flagged: entries never do, even though they
+  // still ride into the user-prompt PROFILE block below as context.
+  let _weightedSections = [];
+  let _statWeak = [];
+  if (_prof && _prof.active && Array.isArray(_prof.knownWeaknesses)) {
+    _statWeak = _prof.knownWeaknesses.filter(w => !w.startsWith('coach-flagged:'));
+    const sectionSet = new Set();
+    _statWeak.forEach(w => {
+      if (/single-pin|spare|split/.test(w)) sectionSet.add('[SPARES]');
+      if (/first-ball|sub-8|recurring leave|entry angle/.test(w)) sectionSet.add('[FIRSTBALL]');
+      if (/strike generation/.test(w)) sectionSet.add('[FIRSTBALL]');
+    });
+    _weightedSections = Array.from(sectionSet);
+    if (_statWeak.length && _weightedSections.length) {
+      _profTail += ' Known focus areas from this bowler\'s rolling profile: ' + _statWeak.join(', ') + '. ' +
+        'Give the ' + _weightedSections.join(' and ') + ' paragraph(s) roughly double depth; compress [CONTEXT] to 1-2 sentences to stay under the word limit.' +
+        (_weightedSections.length > 1 ? ' Split the extra depth between them.' : '');
+    }
+  }
+
   const systemPrompt =
     'You are an experienced competitive bowling coach. This bowler averages approximately ' +
     (b && b.avgBaseline ? b.avgBaseline : ctx.avg) +
@@ -26562,15 +27897,27 @@ function _buildDebriefPrompt(ctx) {
     'Analyze the performance data and give direct, specific coaching feedback. ' +
     'Do not offer general encouragement, do not explain basic bowling concepts, and do not give advice suited for beginners. ' +
     'Identify patterns, name root causes, and give one actionable priority. ' +
-    'Use plain text only — no markdown, no bullet symbols, no asterisks. ' +
-    'Short paragraphs separated by blank lines. Under 220 words total.';
+    'Format: exactly 4 paragraphs separated by blank lines, in this order. Begin each paragraph with its marker as the very first characters: [CONTEXT] then [FIRSTBALL] then [SPARES] then [PRIORITY]. ' +
+    'Wrap only the most important stats in double asterisks like **187** — at most 2-3 per paragraph. ' +
+    'No other markdown, no bullet symbols, no headers. Under 220 words total.' +
+    _profTail;
 
   const taskPrompt =
-    'Write a coaching debrief in 4 short paragraphs:\n' +
-    '1. Score context vs. recent baseline — what the numbers mean for this bowler\n' +
-    '2. First-ball execution — interpret the pocket entry angle pattern and sub-8 rate; name specific leave patterns and what they indicate\n' +
-    '3. Spare execution — identify which misses matter most and their point cost\n' +
-    '4. One specific priority for next session — mechanical, positional, strategic, or equipment';
+    'Write a coaching debrief in 4 short paragraphs, each opening with its marker:\n' +
+    '[CONTEXT] Score context vs. recent baseline — what the numbers mean for this bowler\n' +
+    '[FIRSTBALL] First-ball execution — interpret the pocket entry angle pattern and sub-8 rate; name specific leave patterns and what they indicate\n' +
+    '[SPARES] Spare execution — identify which misses matter most and their point cost\n' +
+    '[PRIORITY] One specific priority for next session — mechanical, positional, strategic, or equipment';
+
+  // Phase 6 §3.5 — full profile (weaknesses incl. coach-flagged + strengths)
+  // rides in the user prompt as context; only the *weighting instruction*
+  // above is restricted to stat-derived items.
+  const profileLines = [];
+  if (_prof && _prof.active) {
+    profileLines.push('PROFILE (rolling, ' + _prof.gamesInSample + ' games):');
+    profileLines.push('Weaknesses: ' + (_prof.knownWeaknesses.length ? _prof.knownWeaknesses.join(', ') : 'none flagged'));
+    profileLines.push('Strengths: ' + (_prof.knownStrengths.length ? _prof.knownStrengths.join(', ') : 'none flagged'));
+  }
 
   const dataBlock = [
     ...baselineLines,
@@ -26578,6 +27925,7 @@ function _buildDebriefPrompt(ctx) {
     ...thisSeriesLines,
     '',
     ...angleLines,
+    ...(profileLines.length ? ['', ...profileLines] : []),
     '',
     taskPrompt
   ].join('\n');
@@ -26586,36 +27934,92 @@ function _buildDebriefPrompt(ctx) {
   return { system: systemPrompt, user: dataBlock };
 }
 
-/* Open the debrief modal — shows loading state, calls AI, renders result. */
-async function openSeriesDebriefModal(seriesID) {
-  if (!localStorage.getItem('bowlingdb_ai_key')) {
-    toast('Add an AI key in Settings first');
-    return;
+/* ── Debrief cache (v30.29) — localStorage key debrief_<seriesID>,
+   newest-first array [{ts, model, text}], silently capped at 3. ── */
+const DEBRIEF_CACHE_MAX = 3;
+function _debriefKey(seriesID) { return 'debrief_' + seriesID; }
+function _debriefLoad(seriesID) {
+  try {
+    const arr = JSON.parse(localStorage.getItem(_debriefKey(seriesID)) || '[]');
+    return Array.isArray(arr) ? arr : [];
+  } catch(e) { return []; }
+}
+function _debriefSave(seriesID, entry) {
+  try {
+    const arr = _debriefLoad(seriesID);
+    arr.unshift(entry);
+    localStorage.setItem(_debriefKey(seriesID), JSON.stringify(arr.slice(0, DEBRIEF_CACHE_MAX)));
+  } catch(e) { /* quota — non-fatal, debrief still displayed */ }
+}
+
+/* Render debrief text → labeled sections. Primary path: parse the four
+   [MARKER] tags emitted by the AI. Fallback: split on blank lines and
+   apply the labels positionally. **stat** → <b>stat</b>. HTML-escaped first. */
+const _DEBRIEF_SECTIONS = [
+  { tag: 'CONTEXT',   label: 'Score Context' },
+  { tag: 'FIRSTBALL', label: 'First Ball' },
+  { tag: 'SPARES',    label: 'Spare Game' },
+  { tag: 'PRIORITY',  label: 'Next Session Priority' }
+];
+function _debriefRenderHTML(text) {
+  const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const fmt = s => {
+    let out = esc(s).replace(/\*\*([^*\n]+)\*\*/g, '<b style="color:var(--t1)">$1</b>');
+    return out.replace(/\*/g, ''); // strip stray unpaired asterisks
+  };
+  const secHdr = label =>
+    `<div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--teal);margin:14px 0 4px">${label}</div>`;
+
+  // Primary: marker parse — require all 4 tags present, in any order of confidence
+  const found = [];
+  const re = /\[(CONTEXT|FIRSTBALL|SPARES|PRIORITY)\]\s*([\s\S]*?)(?=\[(?:CONTEXT|FIRSTBALL|SPARES|PRIORITY)\]|$)/g;
+  let m;
+  while ((m = re.exec(text)) !== null) {
+    found.push({ tag: m[1], body: m[2].trim() });
+  }
+  if (found.length >= 3) { // tolerate one missing/merged section
+    return found.map(f => {
+      const sec = _DEBRIEF_SECTIONS.find(s => s.tag === f.tag);
+      return secHdr(sec ? sec.label : f.tag) +
+        `<p style="margin:0">${fmt(f.body).replace(/\n+/g, ' ')}</p>`;
+    }).join('');
   }
 
-  const ctx = buildSeriesDebriefContext(seriesID);
-  if (!ctx) { toast('No scored games in this series'); return; }
+  // Fallback: positional labels on blank-line paragraphs
+  const paras = text.split(/\n\s*\n/).map(p => p.trim()).filter(Boolean);
+  return paras.map((p, i) => {
+    const label = _DEBRIEF_SECTIONS[i] ? _DEBRIEF_SECTIONS[i].label : null;
+    return (label ? secHdr(label) : '') +
+      `<p style="margin:0${label ? '' : ' 0 12px'}">${fmt(p).replace(/\n+/g, ' ')}</p>`;
+  }).join('');
+}
 
-  // Show loading state immediately
-  openModal(`
-    <div class="modal-handle"></div>
-    <div class="modal-title">🤖 Series Debrief</div>
-    <div id="sdebrief-body" style="color:var(--t2);font-size:14px;line-height:1.7;min-height:80px">
-      <div style="color:var(--t3);font-size:13px;text-align:center;padding:24px 0">
-        Analyzing your series…
-      </div>
-    </div>
-    <div style="margin-top:6px;font-size:11px;color:var(--t3);text-align:center" id="sdebrief-meta">
-      ${ctx.scores.join(' · ')} &nbsp;|&nbsp; Total ${ctx.total} &nbsp;|&nbsp; Avg ${ctx.avg}
-    </div>
-    <button class="btn btn-secondary" onclick="closeModal()" style="margin-top:16px">Close</button>
-  `);
+function _debriefMetaLine(entry) {
+  const d = new Date(entry.ts);
+  const ds = d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) +
+             ' ' + d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+  return `Generated ${ds}${entry.model ? ' · ' + entry.model : ''}`;
+}
 
+/* Generate a fresh debrief via API, save to cache, render into the open modal.
+   isRegen=true keeps the current body visible on failure (toast only). */
+async function _debriefGenerate(seriesID, ctx, isRegen) {
+  const bodyEl  = document.getElementById('sdebrief-body');
+  const genEl   = document.getElementById('sdebrief-gen');
+  const btnEl   = document.getElementById('sdebrief-regen');
+  if (btnEl) { btnEl.disabled = true; btnEl.textContent = 'Regenerating…'; }
+  if (!isRegen && bodyEl) {
+    bodyEl.innerHTML = `<div style="color:var(--t3);font-size:13px;text-align:center;padding:24px 0">Analyzing your series…</div>`;
+  }
   try {
+    // Lazy rebuild of the coaching profile — runs on every generation (Phase 4).
+    // Phase 6 (§3.6): exclude this series from the baseline it's about to weight against.
+    try { rebuildCoachingProfile(seriesID); } catch(e) { /* profile is best-effort */ }
+
     const promptObj = _buildDebriefPrompt(ctx);
-    // _buildDebriefPrompt now returns { system, user } for structured system prompt
     const key = localStorage.getItem('bowlingdb_ai_key');
     if (!key) throw new Error('No API key — add one in Settings');
+    const model = getAIModelFast();
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -26625,7 +28029,7 @@ async function openSeriesDebriefModal(seriesID) {
         'anthropic-dangerous-direct-browser-access': 'true'
       },
       body: JSON.stringify({
-        model: getAIModelFast(),
+        model: model,
         max_tokens: 1024,
         stream: false,
         system: promptObj.system,
@@ -26635,20 +28039,69 @@ async function openSeriesDebriefModal(seriesID) {
     const data = await res.json();
     if (data.error) throw new Error(data.error.message);
     const text = (data.content || []).map(c => c.text || '').join('').trim();
+    if (!text) throw new Error('Empty response');
 
-    const bodyEl = document.getElementById('sdebrief-body');
-    if (!bodyEl) return; // modal closed mid-flight
+    const entry = { ts: Date.now(), model: model, text: text };
+    _debriefSave(seriesID, entry);
 
-    // Render paragraphs — split on blank lines
-    const paras = text.split(/\n\s*\n/).map(p => p.trim()).filter(Boolean);
-    bodyEl.innerHTML = paras.map(p =>
-      `<p style="margin:0 0 12px">${p.replace(/\n/g, ' ')}</p>`
-    ).join('');
+    const bodyNow = document.getElementById('sdebrief-body');
+    if (!bodyNow) return; // modal closed mid-flight
+    bodyNow.innerHTML = _debriefRenderHTML(text);
+    const genNow = document.getElementById('sdebrief-gen');
+    if (genNow) genNow.textContent = _debriefMetaLine(entry);
   } catch(err) {
-    const bodyEl = document.getElementById('sdebrief-body');
-    if (bodyEl) {
-      bodyEl.innerHTML = `<div style="color:var(--red);font-size:13px">Debrief failed: ${err.message}</div>`;
+    if (isRegen) {
+      toast('Regenerate failed: ' + err.message);
+    } else {
+      const bodyNow = document.getElementById('sdebrief-body');
+      if (bodyNow) bodyNow.innerHTML =
+        `<div style="color:var(--red);font-size:13px">Debrief failed: ${err.message}</div>`;
     }
+  } finally {
+    const btnNow = document.getElementById('sdebrief-regen');
+    if (btnNow) { btnNow.disabled = false; btnNow.textContent = '↻ Regenerate'; }
+  }
+}
+
+function regenerateSeriesDebrief(seriesID) {
+  const ctx = buildSeriesDebriefContext(seriesID);
+  if (!ctx) { toast('No scored games in this series'); return; }
+  _debriefGenerate(seriesID, ctx, true);
+}
+
+/* Open the debrief modal — cache-first: latest saved debrief renders instantly
+   with zero API calls. Regenerate is the only token spend. */
+async function openSeriesDebriefModal(seriesID) {
+  if (!localStorage.getItem('bowlingdb_ai_key')) {
+    toast('Add an AI key in Settings first');
+    return;
+  }
+
+  const ctx = buildSeriesDebriefContext(seriesID);
+  if (!ctx) { toast('No scored games in this series'); return; }
+
+  const cached = _debriefLoad(seriesID);
+  const latest = cached[0] || null;
+
+  openModal(`
+    <div class="modal-handle"></div>
+    <div class="modal-title">🤖 Series Debrief</div>
+    <div id="sdebrief-body" style="color:var(--t2);font-size:14px;line-height:1.7;min-height:80px">
+      ${latest ? _debriefRenderHTML(latest.text) : ''}
+    </div>
+    <div style="margin-top:10px;font-size:11px;color:var(--t3);text-align:center" id="sdebrief-gen">
+      ${latest ? _debriefMetaLine(latest) : ''}
+    </div>
+    <div style="margin-top:4px;font-size:11px;color:var(--t3);text-align:center" id="sdebrief-meta">
+      ${ctx.scores.join(' · ')} &nbsp;|&nbsp; Total ${ctx.total} &nbsp;|&nbsp; Avg ${ctx.avg}
+    </div>
+    <button class="btn btn-secondary" id="sdebrief-regen" onclick="regenerateSeriesDebrief(${seriesID})" style="margin-top:14px">↻ Regenerate</button>
+    <button class="btn btn-secondary" onclick="closeModal()" style="margin-top:8px">Close</button>
+  `);
+
+  if (!latest) {
+    // No cache — first generation happens automatically
+    _debriefGenerate(seriesID, ctx, false);
   }
 }
 
@@ -27225,7 +28678,9 @@ MANDATORY INVARIANTS:
 - No JS objects in onclick attributes — primitives only
 - stream:false required for all Anthropic API calls (iOS Safari PWA standalone)
 - isGameClean() for clean-game checks, never check F10.IsStrike directly
-- Delete sequence: attempts → frames → games → series
+- Delete sequence: attempts → frames → games → series (+ purge debrief_<seriesID> localStorage cache)
+- Debrief cache: debrief_<seriesID> = [{ts,model,text}] newest-first, cap 3, cache-first modal
+- Coaching profile: bowlingdb_coaching_profile — lazy rebuild on debrief generation, 12-game noise gate, targetAvg/coachNotes user-owned
 - Always traverse full League→Series→Games→Frames→Attempts relationship chain
 - node --check after every change; Python content.replace(old,new,1) for JS template literal edits
 
