@@ -855,7 +855,7 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
 .sc-scroll { overflow-x:auto; -webkit-overflow-scrolling:touch; }
 .sc-grid {
   display:grid;
-  grid-template-columns:repeat(9,38px) 76px;
+  grid-template-columns:repeat(9,38px) 114px;
   gap:1px;
   background:var(--border1);
   min-width:fit-content;
@@ -893,7 +893,10 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
   padding:5px 2px; gap:1.5px;
   height:52px; box-sizing:border-box; overflow:hidden;
 }
-.sc-bsk.f10 { flex-direction:row; justify-content:space-evenly; align-items:center; padding:3px 2px; gap:1px; height:52px; box-sizing:border-box; overflow:hidden; }
+.sc-bsk.f10 { flex-direction:row; justify-content:space-evenly; align-items:center; padding:3px 2px; gap:2px; height:52px; box-sizing:border-box; overflow:hidden; }
+/* F10 is now 3 slots wide (114px) — render its triangles full-size in the main
+   scorecard. The mini strip keeps its own .mini-sc-grid .bsk-tri.tiny scaling. */
+.sc-grid .bsk-tri.tiny { transform:none; }
 .bsk-tri { display:flex; flex-direction:column; align-items:center; gap:1.5px; }
 .bsk-tri.tiny { transform:scale(0.78); transform-origin:center; }
 .bsk-row-m { display:flex; gap:1.5px; }
@@ -1297,6 +1300,9 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
   cursor:pointer; -webkit-tap-highlight-color:transparent;
   opacity:0.72;
   touch-action:none;
+  /* Tap-slop: enlarge the hit box ~12px on every side without moving the
+     visual — stops edge taps falling through to the side strips / pins */
+  padding:12px; margin:-12px;
 }
 .fm-chip-img {
   width:76px; height:76px; border-radius:50%;
@@ -1597,6 +1603,9 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
 .pf-big.leave-mode { color:var(--gold); }
 .pf-big.spare-mode { color:var(--purple); }
 .qa-row { display:flex; gap:8px; margin-bottom:9px; }
+/* Normal (non-FM) mode: FM-style full-width primary action bar on its own row */
+#s-scoring:not(.fm-host) #qa-row { flex-wrap:wrap; }
+#s-scoring:not(.fm-host) #btn-confirm { flex:1 1 100%; height:46px; font-size:15px; }
 .qa-btn {
   flex:1; padding:13px 8px;
   border-radius:13px; border:none;
@@ -3502,6 +3511,35 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
         Tap pins that are <strong>still standing</strong> after your shot
       </div>
 
+      <!-- Board tracking + NoTap toggle on same row -->
+      <div class="board-row" id="board-row">
+        <div class="board-field">
+          <span class="board-lbl">SB</span>
+          <input class="board-input" id="board-sb" type="number" min="1" max="39" placeholder="—"
+            onchange="saveBoardData()" inputmode="numeric">
+        </div>
+        <div class="board-sep"></div>
+        <div class="board-field">
+          <span class="board-lbl">TB</span>
+          <input class="board-input" id="board-tb" type="number" min="1" max="39" placeholder="—"
+            onchange="saveBoardData()" inputmode="numeric">
+        </div>
+        <div style="margin-left:auto;display:flex;align-items:center;gap:6px;padding-left:10px;border-left:1px solid var(--border1)">
+          <button class="num-mode-toggle" id="num-mode-toggle" onclick="toggleNumericMode()" title="Toggle Numeric Input Mode"># NUM</button>
+          <span style="font-size:10px;font-weight:700;color:var(--t3)" id="notap-label">NoTap</span>
+          <div class="toggle-switch" id="notap-toggle" onclick="toggleNoTap()" style="cursor:pointer" title="Toggle NoTap Mode"></div>
+        </div>
+      </div>
+
+      <!-- Stage region — FM-style: side strips flank the pin area for
+           prev/next navigation with merged score-or-advance logic -->
+      <div id="nm-stage-wrap" style="position:relative">
+      <div class="fm-side-strip prev" id="nm-prev-strip" onclick="fmHandlePrev()">
+        <svg width="10" height="18" viewBox="0 0 10 18" fill="none"><path d="M8.5 1L1 9l7.5 8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="fm-side-strip next" id="nm-next-strip" onclick="fmHandleNext()">
+        <svg width="10" height="18" viewBox="0 0 10 18" fill="none"><path d="M1.5 1L9 9l-7.5 8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
       <!-- Pin Triangle — compact, directly under scorecard/ball/nav -->
       <span id="fm-anchor-pinstage" style="display:none"></span>
       <div class="pin-stage" id="pin-stage">
@@ -3531,26 +3569,6 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
       <!-- Leave name display (auto-detected after Att1) -->
       <div id="ctx-leave" style="text-align:center;font-size:11px;color:var(--teal);min-height:14px;margin:2px 0 4px;font-weight:600;letter-spacing:0.5px"></div>
 
-      <!-- Board tracking + NoTap toggle on same row -->
-      <div class="board-row" id="board-row">
-        <div class="board-field">
-          <span class="board-lbl">SB</span>
-          <input class="board-input" id="board-sb" type="number" min="1" max="39" placeholder="—"
-            onchange="saveBoardData()" inputmode="numeric">
-        </div>
-        <div class="board-sep"></div>
-        <div class="board-field">
-          <span class="board-lbl">TB</span>
-          <input class="board-input" id="board-tb" type="number" min="1" max="39" placeholder="—"
-            onchange="saveBoardData()" inputmode="numeric">
-        </div>
-        <div style="margin-left:auto;display:flex;align-items:center;gap:6px;padding-left:10px;border-left:1px solid var(--border1)">
-          <button class="num-mode-toggle" id="num-mode-toggle" onclick="toggleNumericMode()" title="Toggle Numeric Input Mode"># NUM</button>
-          <span style="font-size:10px;font-weight:700;color:var(--t3)" id="notap-label">NoTap</span>
-          <div class="toggle-switch" id="notap-toggle" onclick="toggleNoTap()" style="cursor:pointer" title="Toggle NoTap Mode"></div>
-        </div>
-      </div>
-
       <!-- Numeric input pad — shown instead of pin triangle in numeric mode -->
       <span id="fm-anchor-numpad" style="display:none"></span>
       <div class="num-pad" id="num-pad" style="display:none">
@@ -3564,6 +3582,7 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
         <button class="num-pad-btn" id="npb8" onclick="tapNumericPin(8)">8</button>
         <button class="num-pad-btn" id="npb9" onclick="tapNumericPin(9)">9</button>
       </div>
+      </div><!-- /nm-stage-wrap -->
 
       <!-- Single action row: quick actions + confirm together -->
       <span id="fm-anchor-qarow" style="display:none"></span>
@@ -3571,7 +3590,7 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
         <button class="qa-btn qa-strike" id="qa-primary" onclick="quickPrimary()">Strike ✕</button>
         <button class="qa-btn qa-spare" id="qa-spare" onclick="quickSpare()">Spare /</button>
         <button class="qa-btn qa-miss" id="qa-secondary" onclick="quickSecondary()">Miss —</button>
-        <button class="qa-btn" id="btn-confirm" onclick="confirmAttempt()"
+        <button class="qa-btn" id="btn-confirm" onclick="fmHandleNext()"
           style="background:linear-gradient(135deg,#00B8B8,var(--teal));color:#000;box-shadow:var(--glow-teal);flex:1.4">Confirm →</button>
       </div>
 
@@ -7979,7 +7998,7 @@ function selectFrameBSKStatic(fr, atts) {
   const a1 = atts.find(a=>a.Attempt===1);
   const a2 = atts.find(a=>a.Attempt===2);
   if (!a1 || a1.Pinfall===null) return null;
-  if (fr.Strike) return a1.BSK_Progressive ? 'KKKKKKKKKK' : null; // Strike: force all-K display
+  if (fr.Strike) return a1.BSK_Progressive ? 'BBBBBBBBBB' : null; // Strike: force outline-only display
   if (a2?.Pinfall!=null) return a2.BSK_Progressive; // Open/spare: show att2's BSK
   return a1.BSK_Progressive;                        // Only att1 recorded yet
 }
@@ -10029,7 +10048,7 @@ function enterFocusMode() {
   if (qaRowFM) qaRowFM.classList.add('fm-active-qa');
 
   // Hide elements that remain in normal flow but must not show in FM
-  var toHide = ['att-nav','board-row','ctx-leave','f10-ind','pf-display','move-frames-bar-anchor','scoring-game-nav'];
+  var toHide = ['att-nav','board-row','ctx-leave','f10-ind','pf-display','move-frames-bar-anchor','scoring-game-nav','nm-prev-strip','nm-next-strip'];
   toHide.forEach(function(id) {
     var el = document.getElementById(id);
     if (el) { el.dataset.fmHidden = el.style.display || ''; el.style.display = 'none'; }
@@ -10074,7 +10093,7 @@ function exitFocusMode() {
   if (ballBar && ballAnchorSentinel) ballAnchorSentinel.insertAdjacentElement('afterend', ballBar);
 
   // Restore hidden elements
-  var toRestore = ['att-nav','board-row','ctx-leave','f10-ind','pf-display','move-frames-bar-anchor','scoring-game-nav'];
+  var toRestore = ['att-nav','board-row','ctx-leave','f10-ind','pf-display','move-frames-bar-anchor','scoring-game-nav','nm-prev-strip','nm-next-strip'];
   toRestore.forEach(function(id) {
     var el = document.getElementById(id);
     if (el && el.dataset.fmHidden !== undefined) {
@@ -10563,6 +10582,17 @@ function fmChipTouchEnd(e) {
 }
 
 /* ── Active ball chip render ─────────────────────────────────── */
+/* Placeholder bowling-ball graphic for chips whose ball has no image set (or
+   no ball assigned yet) — keeps the tap target visible and obvious. */
+var FM_BALL_PLACEHOLDER = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 76 76">' +
+  '<circle cx="38" cy="38" r="35" fill="#191024" stroke="#9D4EDD" stroke-width="2.5"/>' +
+  '<circle cx="29" cy="25" r="4.5" fill="#9D4EDD" opacity="0.9"/>' +
+  '<circle cx="44" cy="21" r="4.5" fill="#9D4EDD" opacity="0.9"/>' +
+  '<circle cx="45" cy="35" r="4.5" fill="#9D4EDD" opacity="0.9"/>' +
+  '<path d="M13 55 A35 35 0 0 0 63 55" stroke="#9D4EDD" stroke-width="1.5" fill="none" opacity="0.35"/>' +
+  '</svg>');
+
 function fmRenderActiveBallChip() {
   var img  = document.getElementById('fm-chip-img');
   var name = document.getElementById('fm-chip-name');
@@ -10570,12 +10600,13 @@ function fmRenderActiveBallChip() {
   var ball = (db.balls || []).find(function(b) { return b.BallID === G.ballID; });
   if (ball) {
     var src = getBallImgSrc(ball.BallID, 'cover') || '';
-    img.src = src;
-    img.onerror = function() { this.style.display = 'none'; };
-    img.style.display = src ? '' : 'none';
+    img.src = src || FM_BALL_PLACEHOLDER;
+    img.onerror = function() { this.src = FM_BALL_PLACEHOLDER; };
+    img.style.display = '';
     name.textContent = ball.BallName || '';
   } else {
-    img.src = '';
+    img.src = FM_BALL_PLACEHOLDER;
+    img.style.display = '';
     name.textContent = '\u2014';
   }
   var ntBtn = document.getElementById('fm-nt-btn');
@@ -10692,13 +10723,13 @@ function fmRenderSpareChip() {
   var ball   = ballID ? (db.balls || []).find(function(b) { return b.BallID === ballID; }) : null;
   if (ball) {
     var src = getBallImgSrc(ball.BallID, 'cover') || '';
-    img.src = src;
-    img.onerror = function() { this.style.display = 'none'; };
-    img.style.display = src ? '' : 'none';
+    img.src = src || FM_BALL_PLACEHOLDER;
+    img.onerror = function() { this.src = FM_BALL_PLACEHOLDER; };
+    img.style.display = '';
     name.textContent = ball.BallName || '';
   } else {
-    img.src = '';
-    img.style.display = 'none';
+    img.src = FM_BALL_PLACEHOLDER;
+    img.style.display = '';
     name.textContent = '\u2014';
   }
 }
@@ -10993,6 +11024,14 @@ function updateScoringContext() {
 
   // Prev/next nav button states
   updateNavButtons();
+
+  // Merged-action label: primary button confirms input, or advances when the
+  // current frame is already fully scored (mirrors FM side-strip semantics)
+  var _cbtn = document.getElementById('btn-confirm');
+  if (_cbtn) {
+    var _frameDone = fmIsFrameComplete();
+    _cbtn.innerHTML = (_frameDone && G.frame < 10) ? 'Next Frame \u2192' : 'Confirm \u2192';
+  }
 
   // Show game + lane + date in header
   const game = db.games.find(g=>g.GameID===G.gameID);
@@ -11509,10 +11548,11 @@ function updatePinfallDisplay() {
    Returns an array of BSK strings for committed/recorded slots only.
    Pass atts = frameAttempts(f10.FrameID).
 ============================================================= */
-/* Force a strike ball's triangle to render all-K (filled) even when the stored
-   BSK is the malformed all-B import/quick-entry format. Null-gated so numeric
+/* Force a strike ball's triangle to render all-B (outline-only) regardless of
+   the stored string. Outline distinguishes strikes from gutter-spare combos,
+   whose att2 BSK is legitimately all-K (filled). Null-gated so numeric
    entries (no BSK) still render nothing. */
-function _bskAllK(bsk) { return bsk ? 'KKKKKKKKKK' : bsk; }
+function _bskStrikeTri(bsk) { return bsk ? 'BBBBBBBBBB' : bsk; }
 
 function getF10BSKSlots(atts, _unused) {
   const a1 = atts.find(a => a.Attempt === 1);
@@ -11535,18 +11575,18 @@ function getF10BSKSlots(atts, _unused) {
     // X__ family
     if (p2 === null) {
       // Only att1 recorded: one slot = att1 BSK (strike ball → force all-K)
-      return [_bskAllK(a1.BSK_Progressive)].filter(Boolean);
+      return [_bskStrikeTri(a1.BSK_Progressive)].filter(Boolean);
     }
     if (att2Strike) {
       // XX_ family (XXX or XX#): slot1=att1, slot2=att2, slot3=att3 (if recorded)
       // Att1/att2 are strike balls → force all-K; att3 forced only if itself a strike.
-      const slots = [_bskAllK(a1.BSK_Progressive), _bskAllK(a2.BSK_Progressive)];
+      const slots = [_bskStrikeTri(a1.BSK_Progressive), _bskStrikeTri(a2.BSK_Progressive)];
       const att3Strike = p3 === 10 || (noTapGame && p3 === 9);
-      if (p3 !== null && a3?.BSK_Progressive) slots.push(att3Strike ? _bskAllK(a3.BSK_Progressive) : a3.BSK_Progressive);
+      if (p3 !== null && a3?.BSK_Progressive) slots.push(att3Strike ? _bskStrikeTri(a3.BSK_Progressive) : a3.BSK_Progressive);
       return slots.filter(Boolean);
     } else {
       // X## or X#/: slot1=att1, slot2=att3 (att2 skipped — intermediate)
-      const slots = [_bskAllK(a1.BSK_Progressive)];
+      const slots = [_bskStrikeTri(a1.BSK_Progressive)];
       if (p3 !== null && a3?.BSK_Progressive) slots.push(a3.BSK_Progressive);
       return slots.filter(Boolean);
     }
@@ -11562,7 +11602,7 @@ function getF10BSKSlots(atts, _unused) {
       // Att3 after a spare is a fresh rack → force all-K only if it was a strike.
       const slots = [a2.BSK_Progressive];
       const att3StrikeSp = p3 === 10 || (noTapGame && p3 === 9);
-      if (p3 !== null && a3?.BSK_Progressive) slots.push(att3StrikeSp ? _bskAllK(a3.BSK_Progressive) : a3.BSK_Progressive);
+      if (p3 !== null && a3?.BSK_Progressive) slots.push(att3StrikeSp ? _bskStrikeTri(a3.BSK_Progressive) : a3.BSK_Progressive);
       return slots.filter(Boolean);
     } else {
       // ## (open frame): single slot = att2 (composite view)
@@ -11783,10 +11823,10 @@ function selectFrameBSK(fr, atts, isCur, isComplete) {
   if (!a1 || a1.Pinfall === null) return null; // Nothing recorded yet
 
   if (fr.Strike) {
-    // Strike: force all-K display regardless of stored string — imported/quick-entry
-    // strikes can carry the malformed all-B format which renders as dim outlines.
+    // Strike: force all-B (outline-only) display regardless of stored string —
+    // keeps strikes visually distinct from gutter-spare combos (all-K filled).
     // Numeric strike has no BSK_Progressive — show nothing (unchanged).
-    return a1.BSK_Progressive ? 'KKKKKKKKKK' : null;
+    return a1.BSK_Progressive ? 'BBBBBBBBBB' : null;
   }
 
   if (a2 && a2.Pinfall !== null && a2.BSK_Progressive) {
