@@ -889,10 +889,11 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
 /* Mini BSK triangle */
 .sc-bsk {
   display:flex; flex-direction:column; align-items:center;
+  justify-content:flex-start;
   padding:5px 2px; gap:1.5px;
-  min-height:40px;
+  height:52px; box-sizing:border-box; overflow:hidden;
 }
-.sc-bsk.f10 { flex-direction:row; justify-content:space-evenly; align-items:center; padding:3px 2px; gap:1px; min-height:40px; }
+.sc-bsk.f10 { flex-direction:row; justify-content:space-evenly; align-items:center; padding:3px 2px; gap:1px; height:52px; box-sizing:border-box; overflow:hidden; }
 .bsk-tri { display:flex; flex-direction:column; align-items:center; gap:1.5px; }
 .bsk-tri.tiny { transform:scale(0.78); transform-origin:center; }
 .bsk-row-m { display:flex; gap:1.5px; }
@@ -930,13 +931,19 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
   box-shadow:0 0 0 1px var(--purple), 0 0 5px rgba(157,78,221,0.4);
   opacity:1;
 }
+@keyframes scDotPop {
+  0% { transform:scale(0.4); opacity:0.2; }
+  60% { transform:scale(1.25); }
+  100% { transform:scale(1); opacity:1; }
+}
+.sc-frame.cur .dot.K { animation:scDotPop 0.25s ease; }
 
 /* Attempt boxes */
 .sc-atts {
   display:flex; justify-content:center; align-items:center;
   gap:2px; padding:4px 2px;
   border-top:1px solid var(--border1);
-  min-height:24px;
+  height:26px; box-sizing:border-box;
 }
 .att {
   width:17px; height:17px;
@@ -962,7 +969,7 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
   font-size:13px; font-weight:800; color:var(--t1);
   border-top:1px solid var(--border1);
   background:var(--bg0);
-  min-height:22px;
+  height:28px; box-sizing:border-box;
 }
 .sc-tot.pend { color:rgba(0,217,217,0.4); font-size:9px; letter-spacing:0.5px; }
 
@@ -1741,7 +1748,7 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
 /* ── Per-attempt ball thumbnails in scorecard ─────────────── */
 .sc-balls {
   display:flex; justify-content:center; align-items:center;
-  gap:2px; padding:2px 2px 3px; min-height:22px;
+  gap:2px; padding:2px 2px 3px; height:24px; box-sizing:border-box;
 }
 .sc-ball-dot {
   width:18px; height:18px; border-radius:50%; flex-shrink:0;
@@ -1810,8 +1817,10 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
 .mini-sc-grid .sc-fn {
   font-size:8px; padding:3px 1px;
 }
-.mini-sc-grid .sc-bsk { min-height:30px; padding:3px 1px; }
-.mini-sc-grid .sc-bsk.f10 { min-height:30px; padding:2px 1px; }
+.mini-sc-grid .sc-bsk { height:auto; min-height:30px; padding:3px 1px; }
+.mini-sc-grid .sc-bsk.f10 { height:auto; min-height:30px; padding:2px 1px; }
+.mini-sc-grid .sc-atts { height:auto; min-height:16px; }
+.mini-sc-grid .sc-beer { height:auto; min-height:0; }
 .mini-sc-grid .bsk-tri.tiny { transform:scale(0.7); }
 .mini-sc-grid .sc-atts { padding:1px; gap:1px; }
 .mini-sc-grid .att {
@@ -1821,6 +1830,7 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
 .mini-sc-grid .sc-balls { min-height:0; padding:1px 2px; gap:2px; display:none; } /* hide ball dots in mini */
 .mini-sc-grid .sc-tot {
   font-size:11px; font-weight:800; padding:3px 1px;
+  height:auto; min-height:22px;
 }
 
 /* ============================================================
@@ -1946,7 +1956,7 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
 .sc-beer {
   text-align:center; font-size:8px; line-height:1;
   padding-bottom:3px; color:var(--gold);
-  min-height:12px;
+  height:13px; box-sizing:border-box;
 }
 .beer-bowler-chip {
   padding:7px 14px; border-radius:20px;
@@ -7969,7 +7979,7 @@ function selectFrameBSKStatic(fr, atts) {
   const a1 = atts.find(a=>a.Attempt===1);
   const a2 = atts.find(a=>a.Attempt===2);
   if (!a1 || a1.Pinfall===null) return null;
-  if (fr.Strike) return a1.BSK_Progressive;         // Strike: show att1's BSK (all K)
+  if (fr.Strike) return a1.BSK_Progressive ? 'KKKKKKKKKK' : null; // Strike: force all-K display
   if (a2?.Pinfall!=null) return a2.BSK_Progressive; // Open/spare: show att2's BSK
   return a1.BSK_Progressive;                        // Only att1 recorded yet
 }
@@ -11499,6 +11509,11 @@ function updatePinfallDisplay() {
    Returns an array of BSK strings for committed/recorded slots only.
    Pass atts = frameAttempts(f10.FrameID).
 ============================================================= */
+/* Force a strike ball's triangle to render all-K (filled) even when the stored
+   BSK is the malformed all-B import/quick-entry format. Null-gated so numeric
+   entries (no BSK) still render nothing. */
+function _bskAllK(bsk) { return bsk ? 'KKKKKKKKKK' : bsk; }
+
 function getF10BSKSlots(atts, _unused) {
   const a1 = atts.find(a => a.Attempt === 1);
   const a2 = atts.find(a => a.Attempt === 2);
@@ -11519,17 +11534,19 @@ function getF10BSKSlots(atts, _unused) {
   if (att1Strike) {
     // X__ family
     if (p2 === null) {
-      // Only att1 recorded: one slot = att1 BSK
-      return [a1.BSK_Progressive].filter(Boolean);
+      // Only att1 recorded: one slot = att1 BSK (strike ball → force all-K)
+      return [_bskAllK(a1.BSK_Progressive)].filter(Boolean);
     }
     if (att2Strike) {
       // XX_ family (XXX or XX#): slot1=att1, slot2=att2, slot3=att3 (if recorded)
-      const slots = [a1.BSK_Progressive, a2.BSK_Progressive];
-      if (p3 !== null && a3?.BSK_Progressive) slots.push(a3.BSK_Progressive);
+      // Att1/att2 are strike balls → force all-K; att3 forced only if itself a strike.
+      const slots = [_bskAllK(a1.BSK_Progressive), _bskAllK(a2.BSK_Progressive)];
+      const att3Strike = p3 === 10 || (noTapGame && p3 === 9);
+      if (p3 !== null && a3?.BSK_Progressive) slots.push(att3Strike ? _bskAllK(a3.BSK_Progressive) : a3.BSK_Progressive);
       return slots.filter(Boolean);
     } else {
       // X## or X#/: slot1=att1, slot2=att3 (att2 skipped — intermediate)
-      const slots = [a1.BSK_Progressive];
+      const slots = [_bskAllK(a1.BSK_Progressive)];
       if (p3 !== null && a3?.BSK_Progressive) slots.push(a3.BSK_Progressive);
       return slots.filter(Boolean);
     }
@@ -11542,8 +11559,10 @@ function getF10BSKSlots(atts, _unused) {
     }
     if (att1A2Spare) {
       // #/_ family: slot1=att2 (the spare conversion), slot2=att3 (if recorded)
+      // Att3 after a spare is a fresh rack → force all-K only if it was a strike.
       const slots = [a2.BSK_Progressive];
-      if (p3 !== null && a3?.BSK_Progressive) slots.push(a3.BSK_Progressive);
+      const att3StrikeSp = p3 === 10 || (noTapGame && p3 === 9);
+      if (p3 !== null && a3?.BSK_Progressive) slots.push(att3StrikeSp ? _bskAllK(a3.BSK_Progressive) : a3.BSK_Progressive);
       return slots.filter(Boolean);
     } else {
       // ## (open frame): single slot = att2 (composite view)
@@ -11764,9 +11783,10 @@ function selectFrameBSK(fr, atts, isCur, isComplete) {
   if (!a1 || a1.Pinfall === null) return null; // Nothing recorded yet
 
   if (fr.Strike) {
-    // Strike: show Att1 BSK — all K (KKKKKKKKKK)
-    // Numeric strike has no BSK_Progressive — show nothing
-    return a1.BSK_Progressive || null;
+    // Strike: force all-K display regardless of stored string — imported/quick-entry
+    // strikes can carry the malformed all-B format which renders as dim outlines.
+    // Numeric strike has no BSK_Progressive — show nothing (unchanged).
+    return a1.BSK_Progressive ? 'KKKKKKKKKK' : null;
   }
 
   if (a2 && a2.Pinfall !== null && a2.BSK_Progressive) {
