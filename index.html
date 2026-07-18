@@ -12,6 +12,15 @@
    DESIGN TOKENS
    ============================================================ */
 :root {
+  /* Tells Safari/Chrome to render native form-control chrome (date/time
+     pickers, spin buttons) using dark-appropriate colors. Without this,
+     an empty or filled <input type="date"> renders its internal text
+     using LIGHT-scheme defaults - dark-on-dark against this theme,
+     effectively invisible even though the field is present and working.
+     Global on purpose: affects every native date input in the app
+     (this one included the pre-existing series ms-date field), not
+     just the two added in v30.41. (v30.42) */
+  color-scheme: dark;
   /* ── Backgrounds: neutral dark slate ── */
   --bg0: #0E0F11;
   --bg1: #141517;
@@ -221,6 +230,16 @@ body {
    message log, fixed input bar. Overrides the base .screen's whole-page
    scroll (ID specificity beats the .screen class rule). */
 #s-ai-chat { display:flex; flex-direction:column; overflow-y:hidden; }
+
+/* Performance screen is full-bleed by design — its sections manage their own
+   horizontal padding (matching the perf_v4 mockup), and it has horizontal
+   scroll rows (benchmark cards, season chips) that must scroll within the
+   viewport rather than being clipped by the base .screen's 14px side padding.
+   Zero the side padding here (ID specificity beats the .screen class) so the
+   content spans edge-to-edge and the scrollers are bounded by the real screen
+   width. Top/bottom padding kept at 0 since the header supplies its own. */
+#s-performance { padding-left:0; padding-right:0; padding-top:0; }
+#s-performance #perf-content { width:100%; overflow-x:clip; }
 
 /* ============================================================
    BOTTOM NAV
@@ -2787,6 +2806,19 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
   z-index:1001; display:none; pointer-events:none;
   font-family:monospace;
 }
+/* Live screen-name overlay — shows dkmScreenKey()'s current mapped area
+   whenever DevKit devMode is on (independent of whether the full panel is
+   open). Sits just below the version badge, same translucent-pill language,
+   slightly more subdued since it's supplementary rather than primary. */
+#dk-screen-label {
+  position:fixed; top:calc(var(--safe-t) + 30px); right:10px;
+  font-size:9px; font-weight:700; letter-spacing:0.06em;
+  color:var(--t2); background:rgba(157,78,221,0.08);
+  border:1px solid rgba(157,78,221,0.22);
+  border-radius:6px; padding:3px 7px;
+  z-index:1001; display:none; pointer-events:none;
+  font-family:monospace;
+}
 #dk-toggle {
   position:fixed; bottom:calc(var(--safe-b) + 72px); left:14px;
   width:42px; height:42px; border-radius:21px;
@@ -3009,7 +3041,18 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
   outline:none; font-family:inherit; box-sizing:border-box;
 }
 #dk-pane-map { display:flex; flex-direction:column; height:100%; overflow:hidden; }
+#dk-pane-idb { display:flex; flex-direction:column; height:100%; overflow:hidden; }
 #dkm-scroll-body { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+.dk-idb-row { border-bottom:1px solid var(--border1); padding:7px 0; cursor:pointer; }
+.dk-idb-row:active { background:var(--bg3); }
+.dk-idb-row-head { display:flex; gap:8px; align-items:baseline; flex-wrap:wrap; }
+.dk-idb-badge { font-size:9px; font-weight:700; padding:1px 6px; border-radius:6px; white-space:nowrap; }
+.dk-idb-badge-auto     { background:rgba(102,102,102,0.2); color:var(--t3); }
+.dk-idb-badge-prompted { background:rgba(245,166,35,0.15);  color:var(--gold); }
+.dk-idb-badge-user     { background:rgba(0,217,217,0.15);   color:var(--teal); }
+.dk-idb-badge-null     { background:rgba(50,50,80,0.4);     color:var(--t3); }
+.dk-idb-expand { font-size:10px; color:var(--t2); margin-top:5px; background:var(--bg2); border-radius:6px; padding:6px 8px; line-height:1.7; white-space:pre-wrap; word-break:break-all; display:none; }
+.dk-idb-expand.open { display:block; }
 </style>
 </head>
 <body>
@@ -3024,7 +3067,7 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
     </div>
     <div id="hdr-title" onclick="hdrTitleTap()"><span class="brand">Bowling</span>DB</div>
     <div id="hdr-title-popover"></div>
-    <span id="hdr-build-ref">v30 · 2026-07-11</span>
+    <span id="hdr-build-ref">v30.54 · 2026-07-17</span>
     <div id="hdr-right">
       <div class="hdr-icon-btn" id="hdr-delete-game-btn" onclick="confirmDeleteGame(G.gameID)" title="Delete Game" style="display:none">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -3504,6 +3547,11 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
             <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/>
           </svg>
         </div>
+        <div class="notes-icon-btn" id="sdp-reopen-btn" onclick="sdOpenManual()" title="Shot Detail" style="margin-left:4px;display:none">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="0.5" fill="currentColor"/>
+          </svg>
+        </div>
       </div>
 
       <!-- Mode instruction banner -->
@@ -3672,6 +3720,11 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
       <div id="stats-content"></div>
     </div>
 
+    <!-- PERFORMANCE SCREEN (v30.48, Phase D) -->
+    <div id="s-performance" class="screen" data-title="Performance">
+      <div id="perf-content"></div>
+    </div>
+
     <!-- LEAVES LIBRARY -->
     <div id="s-leaves" class="screen" data-title="Leave Library">
       <div id="leaves-content" style="padding:0 0 32px"></div>
@@ -3762,6 +3815,7 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
 
   <!-- ── DEVKIT OVERLAY ─────────────────────────────────────── -->
   <div id="dk-version">DEV v22</div>
+  <div id="dk-screen-label"></div>
   <div id="dk-toggle" onclick="dkTogglePanel()" title="DevKit"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <radialGradient id="ball-grad" cx="38%" cy="35%" r="60%">
@@ -3820,6 +3874,7 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
       <div class="dk-tab dk-active" onclick="dkTab('entries')">Entries</div>
       <div class="dk-tab" onclick="dkTab('map');if(!_dk.mapLoaded){dkmInit();_dk.mapLoaded=true;}dkmStep('quicklog');">Log Item</div>
       <div class="dk-tab" onclick="dkTab('state')">State</div>
+      <div class="dk-tab" onclick="dkTab('idb')">Data</div>
     </div>
     <!-- Body -->
     <div id="dk-body">
@@ -3914,6 +3969,66 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
         </div>
       </div>
       <!-- STATE TAB -->
+      <!-- DATA INSPECTOR PANE -->
+      <div id="dk-pane-idb" style="display:none;flex-direction:column;height:100%">
+        <!-- Row 1: Table selector + scope + refresh -->
+        <div style="display:flex;gap:6px;padding:8px 14px 6px;border-bottom:1px solid var(--border1);flex-shrink:0;align-items:center">
+          <select id="dk-idb-table" onchange="dkIdbRender()"
+            style="flex:2;padding:5px 6px;background:var(--bg3);color:var(--t1);border:1px solid var(--border2);border-radius:8px;font-size:11px">
+            <optgroup label="── Reference (localStorage) ──">
+              <option value="ls:balls">balls</option>
+              <option value="ls:bowlers">bowlers</option>
+              <option value="ls:leagues">leagues</option>
+              <option value="ls:centers">centers</option>
+              <option value="ls:patterns">patterns</option>
+              <option value="ls:leaves">leaves</option>
+              <option value="ls:surfaces">surfaces</option>
+              <option value="ls:surfaceDetails">surfaceDetails</option>
+              <option value="ls:seasons">seasons</option>
+              <option value="ls:lineages">lineages</option>
+            </optgroup>
+            <optgroup label="── Scoring (IDB) ──">
+              <option value="idb:attempts">attempts</option>
+              <option value="idb:frames">frames</option>
+              <option value="idb:games">games</option>
+              <option value="idb:series">series</option>
+            </optgroup>
+            <optgroup label="── App State ──">
+              <option value="ls:openSessions">openSessions</option>
+              <option value="ls:tournaments">tournaments</option>
+              <option value="ls:customPins">customPins</option>
+              <option value="ls:spare_alignments">spare_alignments</option>
+              <option value="ls:prefs">prefs</option>
+              <option value="ls:handicap">handicap</option>
+              <option value="ls:lane_ref">lane_ref</option>
+              <option value="ls:coaching_profile">coaching_profile</option>
+            </optgroup>
+            <optgroup label="── Assets ──">
+              <option value="idb:ballImages">ballImages (count only)</option>
+            </optgroup>
+          </select>
+          <select id="dk-idb-scope" onchange="dkIdbRender()"
+            style="flex:1;padding:5px 6px;background:var(--bg3);color:var(--t1);border:1px solid var(--border2);border-radius:8px;font-size:11px">
+            <option value="current">Current</option>
+            <option value="all">All</option>
+          </select>
+          <button onclick="dkIdbRender()" style="padding:5px 9px;background:var(--bg3);color:var(--teal);border:1px solid rgba(0,217,217,0.3);border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;flex-shrink:0">↻</button>
+          <button onclick="dkIdbExport()" style="padding:5px 9px;background:var(--bg3);color:var(--purple);border:1px solid rgba(157,78,221,0.3);border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;flex-shrink:0">⬇</button>
+        </div>
+        <!-- Row 2: Pinned field chips (attempts only) -->
+        <div id="dk-idb-field-row" style="display:none;gap:4px;padding:5px 14px;border-bottom:1px solid var(--border1);overflow-x:auto;scrollbar-width:none;flex-shrink:0;align-items:center">
+          <span style="font-size:10px;color:var(--t3);white-space:nowrap">Pin:</span>
+          <div class="dk-filter-chip sel" id="dk-idb-pin-pocket" onclick="dkIdbTogglePin('pocket')" style="font-size:10px;padding:2px 7px">Entry</div>
+          <div class="dk-filter-chip sel" id="dk-idb-pin-pesrc"  onclick="dkIdbTogglePin('pesrc')"  style="font-size:10px;padding:2px 7px">PE Src</div>
+          <div class="dk-filter-chip sel" id="dk-idb-pin-broll"  onclick="dkIdbTogglePin('broll')"  style="font-size:10px;padding:2px 7px">BallRoll</div>
+          <div class="dk-filter-chip sel" id="dk-idb-pin-brsrc"  onclick="dkIdbTogglePin('brsrc')"  style="font-size:10px;padding:2px 7px">BR Src</div>
+          <div class="dk-filter-chip sel" id="dk-idb-pin-leave"  onclick="dkIdbTogglePin('leave')"  style="font-size:10px;padding:2px 7px">Leave</div>
+        </div>
+        <!-- Results body -->
+        <div id="dk-idb-body" style="flex:1;overflow-y:auto;padding:8px 14px 14px;font-family:monospace;font-size:11px">
+          <div style="color:var(--t3);text-align:center;padding:20px">Tap ↻ to load</div>
+        </div>
+      </div>
       <div id="dk-pane-state" style="display:none">
         <pre id="dk-state"></pre>
         <div id="dk-purge-panel" style="padding:8px 4px 4px">
@@ -3923,6 +4038,9 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
           </div>
           <button onclick="dkPurgeOrphans()" style="width:100%;padding:9px;background:#c0392b;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-bottom:6px">Purge Orphan IDB Records</button>
           <button onclick="dkNukeOpenPhantoms()" style="width:100%;padding:9px;background:#8b0000;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer">NUCLEAR: Clear Phantom Open Bowling</button>
+          <button onclick="dkSeasonDryRun()" style="width:100%;padding:9px;background:#2c3e94;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px">Season Dry Run (read-only)</button>
+          <button onclick="dkLineageDryRun()" style="width:100%;padding:9px;background:#4a2c94;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px">Lineage Dry Run (read-only)</button>
+          <button onclick="dkEnsureLineagesRun()" style="width:100%;padding:9px;background:#b8641f;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px">Ensure Lineages (writes!)</button>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px">
             <button onclick="dkApplyAIFix()" style="padding:9px 4px;background:#2d6a4f;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer">Apply AI Fix</button>
             <button onclick="dkCopyResult()" style="padding:9px 4px;background:#444;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer">Copy Result</button>
@@ -4137,6 +4255,7 @@ function saveDB() {
       centers: db.centers, leagues: db.leagues, balls: db.balls,
       patterns: db.patterns, leaves: db.leaves, surfaces: db.surfaces,
       surfaceDetails: db.surfaceDetails, openSessions: db.openSessions,
+      seasons: db.seasons || [], lineages: db.lineages || [],
       tournaments: db.tournaments, customPins: db.customPins, ids: db.ids,
       bowlers: db.bowlers || [],
       _scoringCounts: {
@@ -4200,6 +4319,12 @@ function buildFreshDB() {
     leaves: [],
     surfaces: [],
     surfaceDetails: [],
+    // Seasons — USBC season-year halves. Reference data (localStorage), NOT IDB:
+    // IDB_STORES is scoring-only (series/games/frames/attempts).
+    seasons: [],
+    // Lineages — recurring-league groupings (v30.46). { LineageID, LineageKey,
+    // DisplayName }. Populated by ensureLineages(); league.LineageID points here.
+    lineages: [],
     series: [], games: [], frames: [], attempts: [],
     // Roster — named bowlers for TB sessions and handicap tracking
     bowlers: [
@@ -4207,7 +4332,7 @@ function buildFreshDB() {
     ],
     // ID counters — start above 200 to avoid collision with existing Access records.
     // Editable via Settings → ID Seeds so you can sync with your real database.
-    ids: { series:201, game:201, frame:1001, attempt:5001, center:3, league:3, ball:4, tournament:1, openSession:1, pattern:1, leave:1, surface:1, surfaceDetail:1, bowler:2 }
+    ids: { series:201, game:201, frame:1001, attempt:5001, center:3, league:3, ball:4, tournament:1, openSession:1, pattern:1, leave:1, surface:1, surfaceDetail:1, bowler:2, lineage:1 }
   };
 }
 
@@ -4219,6 +4344,8 @@ function migrateDB(data) {
   if (!data.leaves) data.leaves = [];
   if (!data.surfaces) data.surfaces = [];
   if (!data.surfaceDetails) data.surfaceDetails = [];
+  if (!data.seasons) data.seasons = [];
+  if (!data.lineages) data.lineages = [];
   if (!data.ids.center) data.ids.center = Math.max(0,...(data.centers||[]).map(c=>c.CenterID))+1;
   if (!data.ids.league) data.ids.league = Math.max(0,...(data.leagues||[]).map(l=>l.LeagueID))+1;
   if (!data.ids.ball) data.ids.ball = Math.max(0,...(data.balls||[]).map(b=>b.BallID))+1;
@@ -4239,6 +4366,8 @@ function migrateDB(data) {
   if (!data.ids.leave) data.ids.leave = Math.max(0,...(data.leaves||[]).map(l=>l.LeaveID),0)+1;
   if (!data.ids.surface) data.ids.surface = Math.max(0,...(data.surfaces||[]).map(s=>s.SurfaceID),0)+1;
   if (!data.ids.surfaceDetail) data.ids.surfaceDetail = Math.max(0,...(data.surfaceDetails||[]).map(s=>s.SurfacedDetailID),0)+1;
+  if (!data.ids.season) data.ids.season = Math.max(0,...(data.seasons||[]).map(s=>s.SeasonID),0)+1;
+  if (!data.ids.lineage) data.ids.lineage = Math.max(0,...(data.lineages||[]).map(x=>x.LineageID),0)+1;
   if (!data.customPins) data.customPins = { B:null, S:null, K:null, KR:null, KT:null };
   if (data.customPins && !('KR' in data.customPins)) data.customPins.KR = null;
   if (data.customPins && !('KT' in data.customPins)) data.customPins.KT = null;
@@ -4269,16 +4398,51 @@ function migrateDB(data) {
     if (b.CoreImagePath===undefined)   b.CoreImagePath = null;
     if (b.SpecsURL===undefined)        b.SpecsURL = null;
   });
+  // ── Pandas NaT sanitiser ────────────────────────────────────
+  // xlsx_to_pwa_json.py serialised pandas' Not-a-Time as the literal
+  // string 'NaT' rather than null. Harmless until something reads those
+  // date fields; season derivation does. Idempotent — cleans in place on
+  // every load, so installed data self-heals without a re-import.
+  // Known contamination: leagues.StartDate/EndDate, balls.DateReleased,
+  // surfaceDetails.DateSurfaced. Generic walk so future fields are covered.
+  ['leagues','balls','surfaceDetails','centers','patterns','leaves','surfaces','bowlers']
+    .forEach(tbl => (data[tbl]||[]).forEach(rec => {
+      Object.keys(rec).forEach(k => {
+        const v = rec[k];
+        if (typeof v === 'string' && (v === 'NaT' || v === 'nan' || v === 'NaN')) rec[k] = null;
+      });
+    }));
+
   // Ensure league fields exist
   (data.leagues||[]).forEach(l => {
     if (l.DayOfBowling===undefined) l.DayOfBowling = '';
     if (l.Weeks===undefined) l.Weeks = 0;
     if (l.WeeklyDues===undefined) l.WeeklyDues = 0;
     if (l.DefaultBallID===undefined) l.DefaultBallID = null;
+    // Spare ball, per-league (v30.43) - mirrors DefaultBallID exactly.
+    if (l.DefaultSpareBallID===undefined) l.DefaultSpareBallID = null;
     if (l.Handicap===undefined) l.Handicap = false;
     if (l.Sport===undefined) l.Sport = false;
     if (l.Notes===undefined) l.Notes = '';
     if (l.Archived===undefined) l.Archived = false;
+    // ── Season support fields (v30.38) ──
+    // StartDate/EndDate already exist on Access-imported leagues but were
+    // never read by the app and are absent from the league form. Optional.
+    if (l.StartDate===undefined)    l.StartDate = null;
+    if (l.EndDate===undefined)      l.EndDate = null;
+    // Sanctioned: null = unknown (not yet backfilled). Deliberately NOT false —
+    // unknown and not-sanctioned are different states. Pure attribute; does not
+    // drive season assignment (majority of calendar days governs that).
+    if (l.Sanctioned===undefined)   l.Sanctioned = null;
+    // SeasonID + source tier: 'auto' (derived) | 'prompted' | 'user' (override wins)
+    if (l.SeasonID===undefined)     l.SeasonID = null;
+    if (l.SeasonSource===undefined) l.SeasonSource = null;
+    // ── Lineage support fields (v30.46) ──
+    // LineageID + source tier: 'auto' (Tier 1/2a computed) | 'user' (override,
+    // never recomputed). No 'prompted' tier — Tier 2b slot-match candidates are
+    // advisory only and are never auto-written; resolving one IS the user tier.
+    if (l.LineageID===undefined)     l.LineageID = null;
+    if (l.LineageSource===undefined) l.LineageSource = null;
   });
   // Patch ImagePath from known lookup if still null (covers pre-import localStorage records)
   const KNOWN_BALL_IMAGES = {
@@ -4378,7 +4542,7 @@ const LOCK_BUFFER = 1;
    ============================================================= */
 const ROOT_SCREENS = ['s-home','s-leagues','s-open','s-tournaments','s-stats','s-tb-sessions','s-notap','s-ai-chat'];
 
-const SCORING_SCREENS = new Set(['s-series','s-tournament-series','s-game-select','s-scoring','s-game-complete','s-stats','s-games','s-handicap-tb','s-handicap-league','s-tb-sessions']);
+const SCORING_SCREENS = new Set(['s-series','s-tournament-series','s-game-select','s-scoring','s-game-complete','s-stats','s-games','s-handicap-tb','s-handicap-league','s-tb-sessions','s-performance']);
 
 async function navTo(screenId, opts={}) {
   toastDismiss(); // clear any stuck toast on navigation
@@ -4450,6 +4614,7 @@ async function navTo(screenId, opts={}) {
       's-handicap-league': renderLeagueHandicap,
       's-handicap-tb':     renderTBHandicap,
       's-stats': renderStats,
+      's-performance': renderPerformanceScreen,
       's-leaves': renderLeavesScreen,
       's-games': renderGamesList,
       's-group': renderGroupScreen,
@@ -4462,6 +4627,7 @@ async function navTo(screenId, opts={}) {
     console.error('navTo render error:', e);
     alert('Render error: ' + e.message + '\n\nScreen: ' + screenId);
   }
+  dkUpdateScreenLabel();
 }
 
 function getCurrentScreen() {
@@ -7174,10 +7340,35 @@ function toggleShowArchived() {
   renderLeagues();
 }
 
-function toggleArchiveLeague(id) {
+/* ── Archive-time date backfill (v30.41) ────────────────────
+   Per spec: an unset EndDate is deliberately left alone while a league
+   is active (a projected/observed span already covers it for season
+   derivation via getLeagueSpan's fallback chain) - it is only ever
+   PERSISTED at archive time, from the league's own real series dates.
+   Never overwrites a value the bowler entered manually. Async because
+   s-leagues is not in SCORING_SCREENS - db.series may not be loaded
+   yet if this is the first thing touched this session. */
+async function toggleArchiveLeague(id) {
   const l = db.leagues.find(x=>x.LeagueID===id);
   if (!l) return;
-  l.Archived = !l.Archived;
+  const archiving = !l.Archived;
+  l.Archived = archiving;
+
+  if (archiving && (!l.StartDate || !l.EndDate)) {
+    await loadScoringData();
+    const dates = db.series
+      .filter(s => s.LeagueID === l.LeagueID && s.DateBowled)
+      .map(s => s.DateBowled).sort();
+    if (dates.length) {
+      let backfilled = false;
+      if (!l.StartDate) { l.StartDate = dates[0]; backfilled = true; }
+      if (!l.EndDate)   { l.EndDate   = dates[dates.length - 1]; backfilled = true; }
+      // Dates changed under it - let the season re-derive next time it's
+      // touched, unless the bowler already locked it in manually.
+      if (backfilled && l.SeasonSource !== 'user') { l.SeasonID = null; l.SeasonSource = null; }
+    }
+  }
+
   saveDB(); renderLeagues();
   toast(l.Archived ? 'League archived' : 'League restored');
 }
@@ -8570,6 +8761,7 @@ function quickSpare()  {
    ============================================================= */
 function confirmAttempt() {
   cancelUndo();
+  _pendingTenPinAttID = null; // clear any stale deferred 10-pin prompt
 
   // ── NUMERIC MODE PATH ────────────────────────────────────────────
   if (G.numericMode) {
@@ -9095,6 +9287,35 @@ function detectLeaveID(standingMap) {
 }
 
 /* =============================================================
+   SHARED LEAVE-NAME RESOLUTION — single source of truth
+   db.leaves.DisplayName is the ONLY canonical name source, everywhere.
+   Never derive a name from POCKET_ANGLE_TABLE's "signal" text — that field
+   is diagnostic commentary about ball reaction, not a name, and conflating
+   the two is what caused a leave to surface under the wrong bowling term.
+   Falls back to the honest numeric pin-list (matches the Leaves Screen's
+   own synthetic-naming convention) when no db.leaves record matches.
+   ============================================================= */
+var SRC_WEIGHT = { user: 3, prompted: 2, auto: 1 };
+
+function resolveLeaveDisplayName(standingSet, leaveID) {
+  if (leaveID != null && db.leaves && db.leaves.length) {
+    var lv = db.leaves.find(function(l) { return l.LeaveID === leaveID; });
+    if (lv && lv.DisplayName) return lv.DisplayName;
+  }
+  if (db.leaves && db.leaves.length) {
+    var found = db.leaves.find(function(x) {
+      for (var p = 1; p <= 10; p++) {
+        if (!!(x['Pin' + p]) !== standingSet.has(p)) return false;
+      }
+      return true;
+    });
+    if (found && found.DisplayName) return found.DisplayName;
+  }
+  var sp = Array.from(standingSet).sort(function(a, b) { return a - b; });
+  return sp.length === 1 ? (sp[0] + '-pin') : sp.join('-');
+}
+
+/* =============================================================
    POCKET ENTRY AUTO-WRITE
    Called from confirmAttempt() after att1 commit, frames 1-9, non-strike.
    Silently writes PocketEntry + PocketEntrySource:'auto' using the
@@ -9112,9 +9333,14 @@ function autoWritePocketEntry(att, standing) {
   const is810    = standingArr.length === 2 && standing.has(8) && standing.has(10);
 
   if (is10Pin) {
-    // Fire disambiguation prompt if enabled; otherwise assume flat
-    if (getPrefs().tenPinPrompt !== false) {
-      openTenPinPrompt(att);
+    // Fire disambiguation prompt if enabled (and not series-skipped);
+    // otherwise assume flat
+    if (getPrefs().tenPinPrompt !== false && _tenPinSkipSeriesID !== G.seriesID) {
+      // SDP-first sequencing: if the Shot Detail Prompt is about to show for
+      // this attempt, defer the 10-pin prompt until the SDP is resolved.
+      var _sdpWillShow = getPrefs().practiceMode && !getPrefs().shotDetailPaused && !att.ShotDetailLogged;
+      if (_sdpWillShow) { _pendingTenPinAttID = att.AttemptID; }
+      else { openTenPinPrompt(att); }
     } else {
       att.PocketEntry       = 'light';
       att.PocketEntrySource = 'auto';
@@ -9147,7 +9373,15 @@ function autoWritePocketEntry(att, standing) {
   }
 }
 
-/* 10-pin disambiguation prompt — fires after att1 confirm when leave is 10-pin */
+/* 10-pin disambiguation prompt — fires after att1 confirm when leave is 10-pin.
+   _pendingTenPinAttID: when the SDP will show for the same attempt, the prompt
+   is deferred until the SDP is saved/dismissed (no modal collision).
+   _tenPinSkipSeriesID: tapping Skip silences the prompt for the rest of the
+   current series; re-enabled automatically on a new series or by switching the
+   Settings toggle off→on. */
+var _pendingTenPinAttID = null;
+var _tenPinSkipSeriesID = null;
+
 function openTenPinPrompt(att) {
   var _attID = att.AttemptID;
   var html = '<div style="text-align:center;padding:4px 0 8px">'
@@ -9192,11 +9426,19 @@ function resolveTenPin(attID, result) {
     att.BallRoll          = 'rolled-out';
     att.BallRollSource    = 'prompted';
   } else {
-    // Skip — assume flat, auto tier
-    att.PocketEntry       = 'light';
-    att.PocketEntrySource = 'auto';
-    att.BallRoll          = 'rolled-out';
-    att.BallRollSource    = 'auto';
+    // Skip — silence the prompt for the remainder of this series, and assume
+    // flat at auto tier WITHOUT clobbering user/prompted data already written
+    // (e.g. values just saved via the SDP).
+    _tenPinSkipSeriesID = G.seriesID;
+    if (getPrefs().tenPinPrompt !== false) toast('10-pin prompt off for this series');
+    if (att.PocketEntrySource !== 'user' && att.PocketEntrySource !== 'prompted') {
+      att.PocketEntry       = 'light';
+      att.PocketEntrySource = 'auto';
+    }
+    if (att.BallRollSource !== 'user' && att.BallRollSource !== 'prompted') {
+      att.BallRoll          = 'rolled-out';
+      att.BallRollSource    = 'auto';
+    }
   }
   saveAll();
 }
@@ -9258,13 +9500,19 @@ function autoSelectBall() {
       if (targetBall && db.balls.find(b => b.BallID === targetBall)) G.ballID = targetBall;
     } else {
       // Frames 1-9: always a spare attempt → use lastBallAtt2 (never alt slots)
+      // Fallback chain (v30.43): session lastBallAtt2 → league DefaultSpareBallID →
+      // global prefs.defaultSpareBallID → keep current. Mirrors the existing
+      // fresh-ball chain's shape (league DefaultBallID → prefs.defaultBallID → MRU).
+      const _leagueSpareBall = db.leagues.find(l => l.LeagueID === G.leagueID)?.DefaultSpareBallID;
       if (G.lastBallAtt2 && db.balls.find(b => b.BallID === G.lastBallAtt2)) {
         G.ballID = G.lastBallAtt2;
+      } else if (_leagueSpareBall && db.balls.find(b => b.BallID === _leagueSpareBall && b.Active !== false)) {
+        G.ballID = _leagueSpareBall;
       } else if (prefs.defaultSpareBallID && db.balls.find(b => b.BallID === prefs.defaultSpareBallID && b.Active !== false)) {
         // Fall back to global spare ball default when no lastBallAtt2 in session yet
         G.ballID = prefs.defaultSpareBallID;
       }
-      // If neither, keep current ball (don't reset to alt slot)
+      // If none of the above, keep current ball (don't reset to alt slot)
     }
   } else if (G.attempt === 3 && G.frame === 10) {
     // F10 att3: check if rack is fresh
@@ -9839,15 +10087,17 @@ var _sdp = {
   entry: null, miss: null, boards: null
 };
 
-function openShotDetailPrompt(scoredFrame, scoredAtt, isFresh, isSpareConv, attID) {
+function openShotDetailPrompt(scoredFrame, scoredAtt, isFresh, isSpareConv, attID, force) {
   if (!getPrefs().practiceMode) return;
-  if (getPrefs().shotDetailPaused) return;
+  if (getPrefs().shotDetailPaused && !force) return;
 
-  // Find the attempt — bail if already logged and user chose "never ask again"
+  // Find the attempt — bail if already logged and user chose "never ask again".
+  // force=true (manual ⌘ reopen from the att-nav) bypasses the logged/paused
+  // gates so a recorded attempt's detail can be reviewed or edited (BR-06).
   var frame = getFrame(scoredFrame);
   if (!frame) return;
   var att = frameAttempts(frame.FrameID).find(function(a) { return a.Attempt === scoredAtt; });
-  if (!att || att.ShotDetailLogged) return;
+  if (!att || (att.ShotDetailLogged && !force)) return;
 
   // Pre-fill from any existing values (re-edit scenario)
   _sdp.frame       = scoredFrame;
@@ -9855,11 +10105,13 @@ function openShotDetailPrompt(scoredFrame, scoredAtt, isFresh, isSpareConv, attI
   _sdp.attID       = att.AttemptID;
   _sdp.isFresh     = isFresh;
   _sdp.isSpareConv = isSpareConv;
+  // Defaults (7/13 feedback): Arrows / Speed M / Revs M / Flush / Normal /
+  // On-target — saved values or auto-classified entry still take precedence.
   _sdp.marker  = att.FocalTarget    || getPrefs().defaultFocalTarget || 'arrows';
-  _sdp.speed   = att.ShotSpeed      || null;
-  _sdp.revs    = att.ShotRevs       || null;
-  _sdp.entry   = att.PocketEntry    || null;
-  _sdp.ballroll= att.BallRoll       || null;
+  _sdp.speed   = att.ShotSpeed      || 'M';
+  _sdp.revs    = att.ShotRevs       || 'M';
+  _sdp.entry   = att.PocketEntry    || (isFresh ? 'flush' : null);
+  _sdp.ballroll= att.BallRoll       || (isFresh ? 'normal' : null);
   _sdp.miss    = att.MissDirection  || null;
   _sdp.boards  = att.MissBoards     || null;
 
@@ -10000,9 +10252,35 @@ function sdSkip() {
   sdDismiss();
 }
 
+/* Manual SDP trigger — target icon in the att-nav (Practice Mode only).
+   Opens the Shot Detail Prompt for the CURRENT frame/attempt even if it was
+   already logged, enabling re-edit and BR-06-style pre-population testing. */
+function sdOpenManual() {
+  if (!getPrefs().practiceMode) { toast('Enable Practice Mode in Settings'); return; }
+  var frame = getFrame(G.frame);
+  var att = frame ? frameAttempts(frame.FrameID).find(function(a) { return a.Attempt === G.attempt; }) : null;
+  if (!att || att.Pinfall === null) { toast('Score this attempt first'); return; }
+  // Fresh rack = no pins already down when this ball was thrown
+  var isFresh = true;
+  for (var p = 1; p <= 10; p++) { if (att['PinStart' + p] === 1) { isFresh = false; break; } }
+  var isSpareConv = false;
+  if (G.attempt > 1 && !isFresh) {
+    var prev = frameAttempts(frame.FrameID).find(function(a) { return a.Attempt === G.attempt - 1; });
+    isSpareConv = !!(prev && prev.Pinfall !== null && (prev.Pinfall + att.Pinfall) >= 10);
+  }
+  openShotDetailPrompt(G.frame, G.attempt, isFresh, isSpareConv, att.AttemptID, true);
+}
+
 function sdDismiss() {
   var prompt = document.getElementById('shot-detail-prompt');
   if (prompt) prompt.classList.remove('sdp-open');
+  // Deferred 10-pin prompt fires once the SDP is resolved (saved or dismissed)
+  if (_pendingTenPinAttID != null) {
+    var _pid = _pendingTenPinAttID;
+    _pendingTenPinAttID = null;
+    var _patt = db.attempts.find(function(a) { return a.AttemptID === _pid; });
+    if (_patt) openTenPinPrompt(_patt);
+  }
 }
 
 function sdSaveAlignment() {
@@ -10249,6 +10527,20 @@ function fmSaveBoardData() {
   att.StartingBoard = (prefs.sbEnabled !== false && sbBase != null) ? (sbHalf ? sbBase + 0.5 : sbBase) : null;
   att.TargetBoard   = (prefs.tbEnabled !== false && tbBase != null) ? (tbHalf ? tbBase + 0.5 : tbBase) : null;
   saveAll();
+
+  // A manual bottom-row edit on the FRESH-RACK attempt (att1) is a live
+  // "this is my line today" correction — it updates BOTH lane references,
+  // not just the current throw. Explicit per-lane values still go through the
+  // ODD/EVEN (Lane N) chip edit flow (fmRefEditConfirm), which this must not
+  // fight with — skipped while that flow is active. Spare attempts (att2+)
+  // are leave-specific, not lane-specific, so they never touch lane refs here
+  // (see spare-alignment sourcing in fmLoadBoardData instead).
+  if (G.attempt === 1 && !_fmRefEditParity) {
+    var _bothRef = getLaneRef();
+    _bothRef.odd  = { sb: sbBase, tb: tbBase, sbHalf: sbHalf, tbHalf: tbHalf };
+    _bothRef.even = { sb: sbBase, tb: tbBase, sbHalf: sbHalf, tbHalf: tbHalf };
+    saveLaneRef(_bothRef);
+  }
 }
 
 function fmLoadBoardData() {
@@ -10260,25 +10552,45 @@ function fmLoadBoardData() {
   if (!sbDrum || !tbDrum) return;
   var prefs = getPrefs();
 
-  // Lane ref pre-population: if attempt has no board data yet, seed from lane ref
+  // Pre-population source depends on WHAT this attempt is:
+  //   att1 (fresh rack) — lane reference. Where the pins sit is a function
+  //     of the physical lane, not the leave, so this stays lane-based.
+  //   att2+ (spare attempt) — per-leave saved alignment (spare_alignments),
+  //     keyed by the LeaveID detected on att1. Spare line-up is leave-specific
+  //     ("I stand differently for a 10-pin than a 7-pin"), not lane-specific,
+  //     so it must NOT inherit the lane reference at all.
   var refSb = null, refTb = null, refSbHalf = false, refTbHalf = false;
   if (!att || att.StartingBoard == null) {
-    var _parity = currentLaneParity();
-    if (_parity) {
-      var _ref = getLaneRef();
-      refSb = _ref[_parity].sb;
-      refTb = _ref[_parity].tb;
-      refSbHalf = !!_ref[_parity].sbHalf;
-      refTbHalf = !!_ref[_parity].tbHalf;
+    if (G.attempt === 1) {
+      var _parity = currentLaneParity();
+      if (_parity) {
+        var _ref = getLaneRef();
+        refSb = _ref[_parity].sb;
+        refTb = _ref[_parity].tb;
+        refSbHalf = !!_ref[_parity].sbHalf;
+        refTbHalf = !!_ref[_parity].tbHalf;
+      }
+    } else {
+      var _a1 = frameAttempts(frame.FrameID).find(function(a) { return a.Attempt === 1; });
+      var _leaveID = _a1 ? _a1.LeaveID : null;
+      if (_leaveID != null) {
+        var _align = getSpareAlignment(_leaveID);
+        if (_align) {
+          refSb = _align.sb;
+          refTb = _align.tb;
+          refSbHalf = false; // spare_alignments stores sb/tb as plain numbers, no half-board flag
+          refTbHalf = false;
+        }
+      }
     }
   }
 
   var sbVal = (att && att.StartingBoard != null) ? att.StartingBoard
               : (refSb != null ? (refSbHalf ? refSb + 0.5 : refSb)
-              : (G.lastSB != null ? G.lastSB : (prefs.defaultSB != null ? prefs.defaultSB : 17)));
+              : (G.attempt === 1 && G.lastSB != null ? G.lastSB : (prefs.defaultSB != null ? prefs.defaultSB : 17)));
   var tbVal = (att && att.TargetBoard != null) ? att.TargetBoard
               : (refTb != null ? (refTbHalf ? refTb + 0.5 : refTb)
-              : (G.lastTB != null ? G.lastTB : (prefs.defaultTB != null ? prefs.defaultTB : 10)));
+              : (G.attempt === 1 && G.lastTB != null ? G.lastTB : (prefs.defaultTB != null ? prefs.defaultTB : 10)));
 
   fmScrollWheelTo(sbDrum, sbVal);
   fmScrollWheelTo(tbDrum, tbVal);
@@ -10322,9 +10634,18 @@ function currentLaneParity() {
   var parts = G.lanePair.split(/[,\-]/);
   if (parts.length < 2) return null;
   var startIsOdd = (G.laneStart % 2 === 1);
-  // G1, G3, G5... on starting lane; G2, G4, G6... on alternate lane
+  // Game-level: which lane does THIS GAME open on (i.e. its frame-1 lane)?
+  // G1, G3, G5... open on the pair's starting lane; G2, G4, G6... open on the
+  // alternate — unchanged from the original game-level-only logic.
   var gameOnStart = (G.gameNum % 2 === 1);
-  var onOdd = gameOnStart ? startIsOdd : !startIsOdd;
+  var gameStartIsOdd = gameOnStart ? startIsOdd : !startIsOdd;
+  // Frame-level: standard league play alternates lanes EVERY FRAME, not just
+  // every game. Odd frames (1,3,5,7,9) stay on the game's opening lane; even
+  // frames (2,4,6,8,10) sit on the alternate. Frame 10 stays on one lane for
+  // all of its balls (up to 3) — you don't switch lanes mid-frame, so this
+  // intentionally keys off G.frame only, never G.attempt.
+  var frameOnStart = ((G.frame || 1) % 2 === 1);
+  var onOdd = frameOnStart ? gameStartIsOdd : !gameStartIsOdd;
   return onOdd ? 'odd' : 'even';
 }
 
@@ -10347,7 +10668,17 @@ function fmRenderLaneRef() {
     var r = ref[parity];
     var sbStr = formatVal(r.sb, r.sbHalf);
     var tbStr = formatVal(r.tb, r.tbHalf);
-    var label = parity === 'odd' ? 'ODD' : 'EVEN';
+    // Lane-number labels when a lane pair is configured; abstract parity as fallback
+    var _laneNumLabel = (function() {
+      if (!G.lanePair) return null;
+      var parts = G.lanePair.split(/[,-]/).map(function(x){return parseInt(x,10);}).filter(function(n){return !isNaN(n);});
+      if (parts.length < 2) return null;
+      var oddLane  = parts.find(function(n){return n % 2 === 1;});
+      var evenLane = parts.find(function(n){return n % 2 === 0;});
+      var n = (parity === 'odd') ? oddLane : evenLane;
+      return (n != null) ? ('LANE ' + n) : null;
+    })();
+    var label = _laneNumLabel || (parity === 'odd' ? 'ODD' : 'EVEN');
     return '<div class="' + cls + '" id="fm-ref-chip-' + parity + '" onclick="fmRefEditStart(\'' + parity + '\')">' +
       '<span class="fm-ref-parity">' + label + '</span>' +
       '<div class="fm-ref-vals">' +
@@ -10378,6 +10709,7 @@ function fmRenderLaneRef() {
 }
 
 function fmRefEditStart(parity) {
+  var prefs = getPrefs(); // was missing — root cause of the TB-disabled crash on first-ever ref set
   if (_fmRefEditParity === parity) {
     // Tapping the same chip again cancels
     fmRefEditCancel();
@@ -10433,6 +10765,13 @@ function fmRefEditStart(parity) {
 
 function fmRefEditConfirm() {
   if (!_fmRefEditParity) return;
+  // Settle guard: iOS scroll-snap can still be mid-animation for a beat after
+  // the finger lifts. Reading scrollTop synchronously on tap risked an
+  // off-by-one row. Force a reflow read first so we get the settled value.
+  var _sbSettle = document.getElementById('fm-sb-drum');
+  var _tbSettle = document.getElementById('fm-tb-drum');
+  if (_sbSettle) void _sbSettle.offsetHeight;
+  if (_tbSettle) void _tbSettle.offsetHeight;
   var parity = _fmRefEditParity;
   var sbBase = fmGetWheelValue('fm-sb-drum');
   var tbBase = fmGetWheelValue('fm-tb-drum');
@@ -11032,6 +11371,10 @@ function updateScoringContext() {
     var _frameDone = fmIsFrameComplete();
     _cbtn.innerHTML = (_frameDone && G.frame < 10) ? 'Next Frame \u2192' : 'Confirm \u2192';
   }
+
+  // Manual Shot Detail reopen icon — Practice Mode only
+  var _sdpBtn = document.getElementById('sdp-reopen-btn');
+  if (_sdpBtn) _sdpBtn.style.display = getPrefs().practiceMode ? '' : 'none';
 
   // Show game + lane + date in header
   const game = db.games.find(g=>g.GameID===G.gameID);
@@ -12603,6 +12946,364 @@ function deriveSeasons(games) {
   return [...seen].sort((a, b) => b.localeCompare(a)); // most recent first
 }
 
+/* =============================================================
+   SEASON ENGINE (v30.38)
+   -------------------------------------------------------------
+   Season YEAR ("25-26") = Aug 1 Y -> Jul 31 Y+1. Derived by the
+   pre-existing getSeriesSeason() above, reused verbatim so the new
+   engine can never disagree with the live season:{label} stats scope
+   or _statsTrendDelta's prior-season decrement.
+
+   Season HALF is a SUB-ATTRIBUTE inside that year (USBC):
+     Winter = Aug 1  -> Mar 14   (first half of the season year)
+     Summer = Mar 15 -> Jul 31   (second half of the season year)
+   NB: this is inverted from calendar-year intuition, where summer comes
+   first. Never render "1st/2nd half" in UI - always Winter/Summer.
+
+   ASSIGNMENT RULE: majority of calendar days across the league's span
+   wins, full stop. A league that is mostly summer IS a summer league,
+   even when it bleeds into the fall it carries into. Sanctioned is a
+   pure attribute and deliberately takes no part in this.
+
+   Assignment lives on the LEAGUE, not per-series: a league spanning the
+   Aug 1 boundary (e.g. the 36-week Vegas league, Jun -> Feb) would
+   otherwise shatter its own series across two season years.
+   ============================================================= */
+
+/* Half of the season year that a date falls in. */
+function seasonHalfOf(dateStr) {
+  const d = localDate(dateStr);
+  if (!d || isNaN(d)) return null;
+  const md = (d.getMonth() + 1) * 100 + d.getDate();   // Mar 15 -> 315
+  return (md >= 315 && md <= 731) ? 'Summer' : 'Winter';
+}
+
+/* Bucket key for a date: "Winter|25-26" */
+function seasonBucketOf(dateStr) {
+  const yr = getSeriesSeason(dateStr);
+  const hf = seasonHalfOf(dateStr);
+  return (yr && hf) ? (hf + '|' + yr) : null;
+}
+
+/* Display label. Winter spans two calendar years -> "Winter 25-26".
+   Summer sits entirely inside the LATER one -> "Summer 2026". */
+function seasonLabel(seasonYear, seasonType) {
+  if (!seasonYear || !seasonType) return '';
+  if (seasonType === 'Winter') return 'Winter ' + seasonYear;
+  const endYY = parseInt(seasonYear.split('-')[1], 10);
+  return 'Summer 20' + String(endYY).padStart(2, '0');
+}
+
+/* Canonical date bounds of a (year, half) pair. */
+function seasonBounds(seasonYear, seasonType) {
+  const [aYY, bYY] = seasonYear.split('-');
+  const y1 = 2000 + parseInt(aYY, 10), y2 = 2000 + parseInt(bYY, 10);
+  return seasonType === 'Winter'
+    ? { start: `${y1}-08-01`, end: `${y2}-03-14` }
+    : { start: `${y2}-03-15`, end: `${y2}-07-31` };
+}
+
+/* ── League span resolution ─────────────────────────────────
+   Fallback chain, same shape as the leave-detection chain.
+   Returns { start, end, method } or null.
+
+   Active leagues resolve via the PROJECTED span (2/3), never via
+   series-to-date: measuring games bowled so far would let an
+   in-progress league flip season underneath you (the Vegas league
+   reads 100% Summer in July, Winter by December). A projected span
+   is stable from day one. Actuals are only consulted when there is
+   no projection to be had, and re-checked at archive.
+   ──────────────────────────────────────────────────────────── */
+function getLeagueSpan(league) {
+  if (!league) return null;
+  const seriesDates = () => db.series
+    .filter(s => s.LeagueID === league.LeagueID && s.DateBowled)
+    .map(s => s.DateBowled).sort();
+
+  // 1. Explicit start + end (manual entry, or derived at archive)
+  if (league.StartDate && league.EndDate)
+    return { start: league.StartDate, end: league.EndDate, method: 'dates' };
+
+  // 2. Start + Weeks -> projected end
+  if (league.StartDate && league.Weeks > 0) {
+    const d = localDate(league.StartDate);
+    d.setDate(d.getDate() + (league.Weeks * 7) - 1);
+    const iso = d.toISOString().split('T')[0];
+    return { start: league.StartDate, end: iso, method: 'projected' };
+  }
+
+  // 3. Observed series span
+  const sd = seriesDates();
+  if (sd.length) {
+    const start = league.StartDate || sd[0];
+    return { start, end: sd[sd.length - 1], method: 'observed' };
+  }
+
+  // 4. Start only, nothing else to bound it
+  if (league.StartDate)
+    return { start: league.StartDate, end: league.StartDate, method: 'start-only' };
+
+  return null;
+}
+
+/* ── Season derivation for one league ───────────────────────
+   Returns { seasonYear, seasonType, label, source, span, buckets,
+             dayCount, sharePct, tie, reason }
+   source: 'user'     -> caller's override, untouched
+           'auto'     -> unambiguous majority
+           'prompted' -> exact tie, or no usable span; needs a pick
+   ──────────────────────────────────────────────────────────── */
+/* ── Name-based season inference (v30.39) ────────────────────
+   Scope, exactly as specified: only the literal words Winter/Fall/
+   Summer are a signal (Fall is a Winter-half synonym). "Spring" is
+   deliberately NOT matched - real Spring leagues straddle the
+   Winter/Summer boundary with no univocal mapping, and the cosmetic
+   mismatch (a Spring league landing in the Winter bucket) was
+   explicitly called out as not a real concern. If both a Winter-type
+   word and "summer" appear, or no year token can be resolved, the
+   name is ambiguous and this returns null - falls through to the
+   calendar-days majority untouched. */
+function inferSeasonFromName(name) {
+  if (!name) return null;
+  const winterWord = /\bwinter\b/i.test(name);
+  const fallWord    = /\bfall\b/i.test(name);
+  const winterHit   = winterWord || fallWord;
+  const summerHit   = /\bsummer\b/i.test(name);
+
+  const pair = name.match(/\b(\d{2})-(\d{2})\b/);
+  const validPair = pair && (parseInt(pair[2],10) === (parseInt(pair[1],10)+1)%100);
+
+  if (winterHit === summerHit) {
+    // No explicit Winter/Fall/Summer word (or both - ambiguous either way).
+    // Fall back to a bare "YY-YY" hyphen year-range (e.g. "23-24"): this is
+    // diagnostic on its own, because it is OUR OWN Winter-label convention -
+    // seasonLabel() only ever renders a two-year hyphen pair for Winter;
+    // Summer always renders as a single year ("Summer 2024"). A league name
+    // carrying that literal pattern is therefore an implicit Winter signal
+    // even with no season word (e.g. "Valentine Funtime 23-24").
+    if (!winterHit && !summerHit && validPair) {
+      const seasonYear = pair[1] + '-' + pair[2];
+      return { seasonType: 'Winter', seasonYear, label: seasonLabel(seasonYear, 'Winter'),
+               matched: pair[0] + ' (bare year-range)' };
+    }
+    return null;
+  }
+
+  const seasonType = winterHit ? 'Winter' : 'Summer';
+  const matched = name.match(/\b(winter|fall|summer)\b/i)[0];
+  const single = name.match(/\b(20\d{2})\b/);
+  let seasonYear = null;
+  if (validPair) {
+    seasonYear = pair[1] + '-' + pair[2];
+  } else if (single) {
+    // "Fall YYYY" is unambiguous - fall always opens a season, so the
+    // year IS the start year. "Winter YYYY" is NOT unambiguous - it is
+    // used both for the winter that starts that Aug and the winter that
+    // is ending that same spring. Only resolve a bare "Winter YYYY" when
+    // a hyphen pair disambiguates it; "Fall YYYY" and "Summer YYYY" are
+    // each safe with a single year.
+    if (winterWord && !fallWord) return null;
+    const yy = parseInt(single[1],10) % 100;
+    // Fall YYYY -> that calendar year starts the Winter (Aug 1).
+    // Summer YYYY -> that calendar year is the SECOND year of the pair
+    // (matches seasonLabel's Summer convention: "Summer 2023" <-> "22-23").
+    seasonYear = seasonType === 'Winter'
+      ? String(yy).padStart(2,'0') + '-' + String((yy+1)%100).padStart(2,'0')
+      : String((yy-1+100)%100).padStart(2,'0') + '-' + String(yy).padStart(2,'0');
+  }
+  if (!seasonYear) return null;   // word present but no resolvable year - skip
+
+  return { seasonType, seasonYear, label: seasonLabel(seasonYear, seasonType), matched };
+}
+
+function deriveLeagueSeason(league) {
+  if (!league) return null;
+
+  // A user override is authoritative and is never recomputed.
+  if (league.SeasonSource === 'user' && league.SeasonID) {
+    const s = (db.seasons || []).find(x => x.SeasonID === league.SeasonID);
+    if (s) return { seasonYear: s.SeasonYear, seasonType: s.SeasonType,
+                    label: s.Label, source: 'user', span: null, buckets: {},
+                    dayCount: 0, sharePct: null, tie: false, reason: 'user override' };
+  }
+
+  const nameSig = inferSeasonFromName(league.LeagueName);
+  const span = getLeagueSpan(league);
+
+  if (!span) {
+    // No calendar data at all - name is the only signal available.
+    if (nameSig) return { seasonYear: nameSig.seasonYear, seasonType: nameSig.seasonType,
+                          label: nameSig.label, source: 'auto', span: null, buckets: {},
+                          dayCount: 0, sharePct: null, tie: false,
+                          reason: `name-only: matched "${nameSig.matched}" (no span data)` };
+    return { seasonYear: null, seasonType: null, label: '',
+            source: 'prompted', span: null, buckets: {}, dayCount: 0,
+            sharePct: null, tie: false, reason: 'no usable span, no name signal' };
+  }
+
+  // Walk calendar days, tally per (half|year) bucket.
+  const buckets = {};
+  const d = localDate(span.start), end = localDate(span.end);
+  if (!d || !end || isNaN(d) || isNaN(end) || end < d) {
+    if (nameSig) return { seasonYear: nameSig.seasonYear, seasonType: nameSig.seasonType,
+                          label: nameSig.label, source: 'auto', span, buckets: {},
+                          dayCount: 0, sharePct: null, tie: false,
+                          reason: `name-only: matched "${nameSig.matched}" (span invalid)` };
+    return { seasonYear: null, seasonType: null, label: '', source: 'prompted',
+             span, buckets: {}, dayCount: 0, sharePct: null, tie: false,
+             reason: 'invalid span, no name signal' };
+  }
+
+  let n = 0;
+  while (d <= end && n < 4000) {   // guard against runaway spans
+    const iso = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    const b = seasonBucketOf(iso);
+    if (b) buckets[b] = (buckets[b] || 0) + 1;
+    d.setDate(d.getDate() + 1);
+    n++;
+  }
+
+  const keys = Object.keys(buckets);
+  if (!keys.length) {
+    if (nameSig) return { seasonYear: nameSig.seasonYear, seasonType: nameSig.seasonType,
+                          label: nameSig.label, source: 'auto', span, buckets,
+                          dayCount: 0, sharePct: null, tie: false,
+                          reason: `name-only: matched "${nameSig.matched}" (no buckets)` };
+    return { seasonYear: null, seasonType: null, label: '',
+             source: 'prompted', span, buckets, dayCount: 0,
+             sharePct: null, tie: false, reason: 'no buckets, no name signal' };
+  }
+
+  const sorted = keys.sort((a, b) => buckets[b] - buckets[a]);
+  const win = sorted[0];
+  const tie = sorted.length > 1 && buckets[sorted[1]] === buckets[win];
+  const [seasonType, seasonYear] = win.split('|');
+  const total = keys.reduce((s, k) => s + buckets[k], 0);
+  const sharePct = Math.round(100 * buckets[win] / total);
+  const calLabel = seasonLabel(seasonYear, seasonType);
+
+  // Name present and calendar majority agree -> corroborated, still auto.
+  if (nameSig && nameSig.label === calLabel) {
+    return { seasonYear, seasonType, label: calLabel, source: 'auto',
+             span, buckets, dayCount: total, sharePct, tie: false,
+             reason: `name "${nameSig.matched}" agrees with calendar majority ${sharePct}%` };
+  }
+
+  // Name present but CONTRADICTS the calendar majority -> a literal season
+  // word disagreeing with the computed span is a real anomaly (mislabeled
+  // league, or a genuine edge case). Don't silently pick either one -
+  // surface it, same as an exact tie.
+  if (nameSig && nameSig.label !== calLabel) {
+    return { seasonYear: nameSig.seasonYear, seasonType: nameSig.seasonType,
+             label: nameSig.label, source: 'prompted',
+             span, buckets, dayCount: total, sharePct, tie: false,
+             reason: `name/calendar conflict: name says "${nameSig.label}" ` +
+                     `(matched "${nameSig.matched}"), calendar says "${calLabel}" (${sharePct}%)` };
+  }
+
+  // No name signal - calendar majority alone, as before.
+  return {
+    seasonYear, seasonType, label: calLabel,
+    source: tie ? 'prompted' : 'auto',
+    span, buckets, dayCount: total, sharePct, tie,
+    reason: tie ? 'exact tie between buckets' : `majority ${sharePct}% of ${total}d via ${span.method}`
+  };
+}
+
+/* Find-or-create the seasons record for a (year, half) pair. */
+function ensureSeason(seasonYear, seasonType) {
+  if (!seasonYear || !seasonType) return null;
+  if (!db.seasons) db.seasons = [];
+  let s = db.seasons.find(x => x.SeasonYear === seasonYear && x.SeasonType === seasonType);
+  if (s) return s;
+  const b = seasonBounds(seasonYear, seasonType);
+  const today = azToday();
+  s = {
+    SeasonID: db.ids.season++,
+    SeasonYear: seasonYear,
+    SeasonType: seasonType,
+    Label: seasonLabel(seasonYear, seasonType),
+    StartDate: b.start,
+    EndDate: b.end,
+    IsActive: today >= b.start && today <= b.end
+  };
+  db.seasons.push(s);
+  return s;
+}
+
+/* Season record for a league (the function the Performance handoff named).
+   Assigns + persists on first call if not already tagged. */
+function getLeagueSeason(leagueID) {
+  const l = db.leagues.find(x => x.LeagueID === leagueID);
+  if (!l) return null;
+  if (l.SeasonID) {
+    const s = (db.seasons || []).find(x => x.SeasonID === l.SeasonID);
+    if (s) return s;
+  }
+  const d = deriveLeagueSeason(l);
+  if (!d || !d.seasonYear) return null;
+  const s = ensureSeason(d.seasonYear, d.seasonType);
+  l.SeasonID = s.SeasonID;
+  l.SeasonSource = d.source;
+  return s;
+}
+
+/* Season for a series: inherit from its league, else fall back to the
+   date-derived year (open bowl / tournaments have no league to inherit). */
+function getSeriesSeasonID(series) {
+  if (!series) return null;
+  if (series.LeagueID > 0 && !series.TournamentID) {
+    const s = getLeagueSeason(series.LeagueID);
+    if (s) return s.SeasonID;
+  }
+  const yr = getSeriesSeason(series.DateBowled);
+  if (!yr) return null;
+  const hf = seasonHalfOf(series.DateBowled);
+  const s = ensureSeason(yr, hf);
+  return s ? s.SeasonID : null;
+}
+
+/* ── League lineage key (v30.44) ─────────────────────────────
+   Normalizes a league name into a "lineage" grouping key so that
+   recurring leagues whose names carry a year/season-year token
+   ("NFL League 2024/2025" vs "NFL League 2025-2026") group as one
+   lineage across seasons. Pure function, nothing persisted - the
+   only consumer today is the DevKit Lineage Dry Run.
+
+   Rules, per explicit design decisions:
+   - Season WORDS survive (Fall/Spring/Winter/Summer stay in the
+     key): "Virtue Fun Fall" and "Virtue Fun Spring" are SEPARATE
+     lineages that share a brand - confirmed, not merged.
+   - Stripped: 4-digit year pairs with any separator or a space
+     ("2024/2025", "2025-2026", "2025 2026"), mixed 4/2 forms
+     ("2025/26"), consecutive 2-digit pairs ("23-24" - same
+     consecutive-year check inferSeasonFromName uses, so "24-7"
+     style tokens are left alone), lone 4-digit years ("2022"),
+     and apostrophe-year shorthands ("'25").
+   - NOT stripped: bare 2-digit numbers ("Route 66" must survive).
+   - Lowercased, separators orphaned by stripping removed,
+     whitespace collapsed. */
+function leagueLineageKey(name) {
+  if (!name) return '';
+  let k = String(name).toLowerCase();
+  // 4-digit pair, any of - / – or whitespace between: 2024/2025, 2025-2026, 2025 2026
+  k = k.replace(/\b(19|20)\d{2}\s*[-\/\u2013]\s*(19|20)\d{2}\b/g, ' ');
+  k = k.replace(/\b(19|20)\d{2}\s+(19|20)\d{2}\b/g, ' ');
+  // mixed 4/2 form: 2025/26, 2025-26
+  k = k.replace(/\b(19|20)\d{2}\s*[-\/\u2013]\s*\d{2}\b/g, ' ');
+  // consecutive 2-digit pair: 23-24 (only when second = first+1 mod 100)
+  k = k.replace(/\b(\d{2})[-\/](\d{2})\b/g, function(m, a, b) {
+    return (parseInt(b, 10) === (parseInt(a, 10) + 1) % 100) ? ' ' : m;
+  });
+  // lone 4-digit year
+  k = k.replace(/\b(19|20)\d{2}\b/g, ' ');
+  // apostrophe-year: '25  /  \u2019 25
+  k = k.replace(/['\u2019]\s?\d{2}\b/g, ' ');
+  // separators left dangling by a strip ("League -" / "- League")
+  k = k.replace(/\s[-\/\u2013](?=\s|$)/g, ' ').replace(/^[-\/\u2013]\s/, '');
+  return k.replace(/\s+/g, ' ').trim();
+}
+
 /* ── Scope state ─────────────────────────────────────────────
    Persisted in localStorage as bowlingdb_stats_scope.
    context: 'all' | 'league:{id}' | 'center:{id}'
@@ -12845,6 +13546,902 @@ function _statsComputeCore(games) {
 
   const cleanGames = games.filter(g => isGameClean(g.GameID)).length;
   return { scores, gameCount, avg, high, low, totalPins, highSeriesTotal, highSeriesID, cleanGames };
+}
+
+/* ============================================================
+   PERFORMANCE SCREEN (s-performance) — v30.48, Phase D shell
+   Picker = lineages (+ standalone leagues). Chips = SeasonYear,
+   spanning both Winter/Summer halves, sourced from the real
+   season engine (getSeriesSeasonID/getLeagueSeason) — this is
+   that engine's first live caller outside the DevKit dry run.
+
+   Deferred to later versions, per the reconciled build outline:
+   sparkline trend chart (placeholder shown), Leave conversion
+   3-column table (placeholder shown), Compare Leagues/Compare
+   Centers modes (visible, disabled, toast on tap).
+
+   Reuses rather than duplicates: calculateAdvancedStats(),
+   getCanonicalLast10WksGames(), getAllTimeLeagueGames(),
+   _statsComputeCore(). Scope persisted separately from Stats
+   (bowlingdb_perf_scope) so the two screens never fight over
+   each other's saved context.
+   ============================================================ */
+
+const PERF_SCOPE_KEY = 'bowlingdb_perf_scope';
+function _perfLoadScope() {
+  try { return JSON.parse(localStorage.getItem(PERF_SCOPE_KEY) || '{}'); } catch(e) { return {}; }
+}
+function _perfSaveScope(sc) {
+  try { localStorage.setItem(PERF_SCOPE_KEY, JSON.stringify(sc)); } catch(e) {}
+}
+function _perfGetScope() {
+  const sc = _perfLoadScope();
+  if (!sc.pickType)      sc.pickType = null;   // 'lineage' | 'league'
+  if (sc.pickID === undefined) sc.pickID = null;
+  if (!sc.seasonYear)    sc.seasonYear = null;
+  if (!sc.mode)          sc.mode = 'sv';
+  if (!sc.cmpSlots)      sc.cmpSlots = [null, null, null];
+  if (!sc.ctrSlots)      sc.ctrSlots = [null, null, null];
+  if (!sc.cmpBaseline)   sc.cmpBaseline = 'season';
+  if (!sc.tab)           sc.tab = 'ta';
+  return sc;
+}
+
+/* ── Picker options: every lineage (grouped, DisplayName) plus every
+   standalone league not in any lineage — a lineage of one. Only
+   leagues/lineages with at least one countable game show up, sorted
+   by most-recently-bowled first. ──────────────────────────────── */
+function _perfPickOptions() {
+  const realLeagues = (db.leagues || []).filter(l => !l._virtual && l.LeagueID > 0);
+  const inLineage = new Set(realLeagues.filter(l => l.LineageID != null).map(l => l.LeagueID));
+  const stdSIDs = new Set(db.series.filter(s => s.LeagueID > 0 && !s.TournamentID).map(s => s.SeriesID));
+  // Count from the SAME canonical pool the screen body uses (getAllTimeLeagueGames),
+  // so a league can never show in the picker with a count the header then contradicts.
+  const _atlPool = getAllTimeLeagueGames();
+  function countGames(sids) {
+    return _atlPool.filter(g => sids.has(g.SeriesID)).length;
+  }
+  function latestDate(sids) {
+    return db.series.filter(s => sids.has(s.SeriesID))
+      .reduce((mx, s) => (s.DateBowled || '') > mx ? (s.DateBowled || '') : mx, '');
+  }
+
+  const opts = [];
+  (db.lineages || []).forEach(ln => {
+    const members = realLeagues.filter(l => l.LineageID === ln.LineageID);
+    if (!members.length) return;
+    const memberIDs = new Set(members.map(l => l.LeagueID));
+    const sids = new Set([...stdSIDs].filter(sid => {
+      const s = db.series.find(x => x.SeriesID === sid);
+      return s && memberIDs.has(s.LeagueID);
+    }));
+    const gameCount = countGames(sids);
+    if (!gameCount) return;
+    const center = db.centers.find(c => c.CenterID === members[0].CenterID);
+    opts.push({ type: 'lineage', id: ln.LineageID, name: ln.DisplayName,
+      centerName: center ? center.CenterName : '', gameCount,
+      lastDate: latestDate(sids), leagueCount: members.length });
+  });
+  realLeagues.filter(l => !inLineage.has(l.LeagueID)).forEach(l => {
+    const sids = new Set([...stdSIDs].filter(sid => {
+      const s = db.series.find(x => x.SeriesID === sid);
+      return s && s.LeagueID === l.LeagueID;
+    }));
+    const gameCount = countGames(sids);
+    if (!gameCount) return;
+    const center = db.centers.find(c => c.CenterID === l.CenterID);
+    opts.push({ type: 'league', id: l.LeagueID, name: l.LeagueName,
+      centerName: center ? center.CenterName : '', gameCount,
+      lastDate: latestDate(sids), leagueCount: 1 });
+  });
+  return opts.sort((a, b) => (b.lastDate || '').localeCompare(a.lastDate || ''));
+}
+
+/* v30.53 ROOT-CAUSE FIX: this function was reading pick.pickType/pick.pickID,
+   but the single-league render passed it the picker OPTION object whose fields
+   are named type/id — both reads came back undefined, so it silently returned
+   an empty Set for EVERY league, emptying the entire single view (0 games, no
+   chips, all-dash benchmarks) while compare mode — which passed the correct
+   shape — worked. Normalize both shapes here so a call-site mismatch can never
+   silently empty the screen again. */
+function _perfLeagueIDSet(pick) {
+  const pType = pick ? (pick.pickType !== undefined ? pick.pickType : pick.type) : null;
+  const pID   = pick ? (pick.pickID   !== undefined ? pick.pickID   : pick.id)   : null;
+  if (pID == null) return new Set();
+  if (pType === 'lineage') {
+    return new Set((db.leagues || []).filter(l => l.LineageID === pID).map(l => l.LeagueID));
+  }
+  return new Set([pID]);
+}
+
+/* Today's real SeasonYear, via the same engine used for leagues — reuses
+   getSeriesSeasonID()'s date-only fallback path with a synthetic series. */
+function _perfTodaySeasonYear() {
+  const sid = getSeriesSeasonID({ DateBowled: azToday(), LeagueID: 0, TournamentID: null });
+  const rec = sid ? (db.seasons || []).find(x => x.SeasonID === sid) : null;
+  return rec ? rec.SeasonYear : null;
+}
+
+/* SeasonYears present among a league-ID set's series, most recent first.
+   Calls getSeriesSeasonID() per series — this WRITES (persists season
+   tags) on first touch, same idempotent engine validated in the DevKit
+   dry run. Caller batches the resulting saveDB(). */
+function _perfSeasonYearsFor(leagueIDSet) {
+  if (!leagueIDSet.size) return [];
+  const series = db.series.filter(s => leagueIDSet.has(s.LeagueID) && !s.TournamentID);
+  const byYear = {};
+  series.forEach(s => {
+    const sid = getSeriesSeasonID(s);
+    const rec = sid ? (db.seasons || []).find(x => x.SeasonID === sid) : null;
+    if (!rec) return;
+    byYear[rec.SeasonYear] = (byYear[rec.SeasonYear] || 0) + 1;
+  });
+  return Object.keys(byYear).sort((a, b) => b.localeCompare(a)).map(y => ({ seasonYear: y, count: byYear[y] }));
+}
+
+/* Thin wrapper (per the Phase D outline) — multi-league scoping that
+   _statsFilterGames' single-context can't do, layered on top of the
+   existing zero-arg game pools rather than duplicating their logic. */
+function _perfScopeGames(games, leagueIDSet) {
+  if (!leagueIDSet || !leagueIDSet.size) return [];
+  const sids = new Set(db.series.filter(s => leagueIDSet.has(s.LeagueID)).map(s => s.SeriesID));
+  return games.filter(g => sids.has(g.SeriesID));
+}
+function _perfScopeGamesBySeasonYear(games, leagueIDSet, seasonYear) {
+  const scoped = _perfScopeGames(games, leagueIDSet);
+  if (!seasonYear) return scoped;
+  return scoped.filter(g => {
+    const s = db.series.find(x => x.SeriesID === g.SeriesID);
+    if (!s) return false;
+    const sid = getSeriesSeasonID(s);
+    const rec = sid ? (db.seasons || []).find(x => x.SeasonID === sid) : null;
+    return rec && rec.SeasonYear === seasonYear;
+  });
+}
+
+function _perfFmtAvg(games) {
+  const scores = (games || []).map(g => g.FinalScore).filter(s => s != null && s > 0);
+  if (!scores.length) return null;
+  const raw = scores.reduce((a, b) => a + b, 0) / scores.length;
+  const floor = Math.floor(raw);
+  return { raw, floor, dec: (raw - floor).toFixed(1).slice(1), count: scores.length };
+}
+function _perfDelta(curFloor, refFloor) {
+  if (curFloor == null || refFloor == null) return { text: '—', cls: 'flat' };
+  const d = curFloor - refFloor;
+  if (Math.abs(d) < 1) return { text: '—', cls: 'flat' };
+  return { text: (d > 0 ? '+' : '') + d, cls: d > 0 ? 'up' : 'dn' };
+}
+function _perfPctNum(str) { const n = parseFloat(str); return isNaN(n) ? null : n; }
+function _perfPPDelta(cur, ref) {
+  if (cur == null || ref == null) return { text: '—', cls: 'flat' };
+  const d = Math.round(cur - ref);
+  if (d === 0) return { text: '— ATL', cls: 'flat' };
+  return { text: (d > 0 ? '+' : '') + d + '% ATL', cls: d > 0 ? 'up' : 'dn' };
+}
+function _perfDeltaColor(cls) {
+  return cls === 'up' ? 'var(--teal)' : cls === 'dn' ? 'var(--red)' : 'var(--t3)';
+}
+
+/* ── Entry card, injected at the top of the Stats screen ────── */
+function _perfEntryCardHTML() {
+  return `<div onclick="navTo('s-performance')" style="margin:14px 14px 0;padding:14px 16px;border-radius:14px;
+    background:linear-gradient(135deg, rgba(0,217,217,0.10), rgba(157,78,221,0.10));
+    border:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;cursor:pointer">
+    <div>
+      <div style="font-size:14px;font-weight:700;color:var(--t1)">Performance ✦</div>
+      <div style="font-size:11px;color:var(--t2);margin-top:2px">Trends, projections &amp; season comparisons</div>
+    </div>
+    <span style="color:var(--teal);font-size:18px">›</span>
+  </div>`;
+}
+
+/* ── League/Lineage picker modal (reuses openModal, not a bespoke sheet) */
+function perfOpenPicker() {
+  const opts = _perfPickOptions();
+  if (!opts.length) { toast('No league data yet'); return; }
+  const html = `
+    <div class="modal-title">Select League</div>
+    <div style="max-height:60vh;overflow-y:auto">
+      ${opts.map(o => `
+        <div onclick="perfPickOption('${o.type}',${o.id})"
+          style="display:flex;align-items:center;justify-content:space-between;padding:13px 16px;
+          border-bottom:1px solid var(--border1);cursor:pointer">
+          <div>
+            <div style="font-size:15px;font-weight:600;color:var(--t1)">${o.name}${
+              o.leagueCount > 1 ? ` <span style="color:var(--t3);font-weight:500;font-size:11px">(${o.leagueCount} seasons)</span>` : ''
+            }</div>
+            <div style="font-size:11px;color:var(--t3);margin-top:2px">${o.centerName}${o.centerName ? ' · ' : ''}${o.gameCount} games</div>
+          </div>
+        </div>`).join('')}
+    </div>
+    <button class="btn btn-secondary" style="width:100%;margin-top:10px" onclick="closeModal()">Cancel</button>
+  `;
+  openModal(html);
+}
+function perfPickOption(type, id) {
+  const sc = _perfGetScope();
+  sc.pickType = type; sc.pickID = id; sc.seasonYear = null;
+  _perfSaveScope(sc);
+  closeModal();
+  renderPerformanceScreen();
+}
+function perfSetSeasonChip(year) {
+  const sc = _perfGetScope();
+  sc.seasonYear = year; _perfSaveScope(sc);
+  renderPerformanceScreen();
+}
+function perfSetTab(tab) {
+  const sc = _perfGetScope();
+  sc.tab = tab; _perfSaveScope(sc);
+  renderPerformanceScreen();
+}
+function perfSetMode(mode) {
+  const sc = _perfGetScope();
+  sc.mode = mode; _perfSaveScope(sc);
+  renderPerformanceScreen();
+}
+function perfSetBaseline(bl) {
+  const sc = _perfGetScope();
+  sc.cmpBaseline = bl; _perfSaveScope(sc);
+  renderPerformanceScreen();
+}
+
+/* ── Small shared row renderer (Averages/Spares/Strikes panes) ── */
+function _perfSrow(lbl, valStr, deltaObj, barPct, barColor) {
+  return `<div style="display:flex;align-items:center;padding:10px 14px;border-bottom:1px solid var(--border1)">
+    <div style="flex:1;font-size:13px;font-weight:600;color:var(--t2)">${lbl}</div>
+    <div style="width:68px;margin:0 10px"><div style="height:4px;background:var(--bg3);border-radius:2px;overflow:hidden">
+      <div style="height:100%;border-radius:2px;width:${Math.max(0,Math.min(100,barPct||0))}%;background:${barColor}"></div>
+    </div></div>
+    <div style="font-size:15px;font-weight:800;color:var(--t1);min-width:40px;text-align:right">${valStr}</div>
+    <div style="font-size:10px;font-weight:700;min-width:54px;text-align:right;color:${_perfDeltaColor(deltaObj.cls)}">${deltaObj.text}</div>
+  </div>`;
+}
+function _perfProjRow(lbl, val, deltaVal, color, barPct) {
+  const valStr = val == null ? '—' : String(val);
+  const deltaStr = deltaVal == null ? 'base' : ((deltaVal > 0 ? '+' : '') + deltaVal);
+  return `<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+    <div style="width:8px;height:8px;border-radius:50%;flex-shrink:0;background:${color}"></div>
+    <div style="flex:1;font-size:12px;font-weight:600;color:var(--t2)">${lbl}</div>
+    <div style="width:110px;flex-shrink:0"><div style="height:6px;background:var(--bg3);border-radius:3px;overflow:hidden">
+      <div style="height:100%;border-radius:3px;width:${Math.max(0,Math.min(100,barPct||0))}%;background:${color}"></div>
+    </div></div>
+    <div style="font-size:14px;font-weight:800;min-width:38px;text-align:right;color:${color}">${valStr}</div>
+    <div style="font-size:10px;font-weight:700;min-width:32px;text-align:right;color:${deltaVal?color:'var(--t3)'}">${deltaStr}</div>
+  </div>`;
+}
+
+/* ── Per-leave conversion breakdown (v30.50) ─────────────────
+   Returns a map keyed by a stable leave signature -> { label,
+   category, opps, conv }. Reuses the exact same getLeaveFromAtt()
+   / isSplitLeave() / resolveLeaveDisplayName() chain the Stats
+   screen and AI spare summary use, so these numbers can never
+   disagree with the rest of the app. Category is for section
+   grouping only (Singles / Multi / Splits). */
+function _perfLeaveBreakdown(games) {
+  const gameIDs = new Set(games.map(g => g.GameID));
+  const frames = db.frames.filter(f => gameIDs.has(f.GameID));
+  const map = {};
+  frames.forEach(f => {
+    const atts = frameAttempts(f.FrameID);
+    const a1 = atts.find(a => a.Attempt === 1);
+    if (!a1 || a1.Pinfall == null || a1.Pinfall === 10) return; // strike / no data → no spare opp
+    const leave = getLeaveFromAtt(a1);
+    if (!leave.size) return;
+    const a2 = atts.find(a => a.Attempt === 2);
+    const converted = !!(a2 && a2.Pinfall != null && (a1.Pinfall + a2.Pinfall) === 10);
+    const sortedPins = Array.from(leave).sort((x, y) => x - y);
+    const sig = sortedPins.join('-');
+    if (!map[sig]) {
+      const split = isSplitLeave(leave);
+      map[sig] = {
+        label: resolveLeaveDisplayName(leave, a1.LeaveID),
+        category: split ? 'split' : (leave.size === 1 ? 'single' : 'multi'),
+        opps: 0, conv: 0
+      };
+    }
+    map[sig].opps++; if (converted) map[sig].conv++;
+  });
+  return map;
+}
+
+/* ── 3-column leave conversion table (League / 10W / ATL) ────
+   Same leave breakdown computed against three game-ID scopes,
+   assembled into one table. League scope drives which rows show
+   (the leaves you actually leave in this scope); the other two
+   columns look up the same signature. Rows sorted within each
+   category by League opportunity count (most-frequent first).
+   Minimum opportunity threshold avoids one-off noise. */
+function _perfLeaveTable3Col(leagueGames, tenWkGames, atlGames) {
+  const L = _perfLeaveBreakdown(leagueGames);
+  const T = _perfLeaveBreakdown(tenWkGames);
+  const A = _perfLeaveBreakdown(atlGames);
+  const MIN_OPP = 2;
+  const sigs = Object.keys(L).filter(sig => L[sig].opps >= MIN_OPP);
+  if (!sigs.length) {
+    return `<div style="background:var(--bg2);border:1px solid var(--border1);border-radius:14px;padding:20px 14px;text-align:center">
+      <div style="font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Leave conversion</div>
+      <div style="font-size:12px;color:var(--t3)">Not enough pin-level data in this scope yet</div>
+    </div>`;
+  }
+  const catOrder = { single: 0, multi: 1, split: 2 };
+  const catLabel = { single: 'Singles', multi: 'Multi-pin', split: 'Splits' };
+  sigs.sort((a, b) => {
+    const ca = catOrder[L[a].category], cb = catOrder[L[b].category];
+    if (ca !== cb) return ca - cb;
+    return L[b].opps - L[a].opps;
+  });
+  const pctOf = (m, sig) => (m[sig] && m[sig].opps) ? Math.round(m[sig].conv / m[sig].opps * 100) : null;
+  const fmtCol = (v, isLeague) => v == null
+    ? `<div style="width:34px;text-align:right;font-size:11px;font-weight:700;color:var(--t3)">—</div>`
+    : `<div style="width:34px;text-align:right;font-size:11px;font-weight:700;color:${isLeague ? (v >= 70 ? 'var(--teal)' : v >= 40 ? 'var(--gold)' : 'var(--red)') : 'var(--t2)'}">${v}%</div>`;
+
+  let rows = '';
+  let lastCat = null;
+  sigs.forEach(sig => {
+    const cat = L[sig].category;
+    if (cat !== lastCat) {
+      rows += `<div style="padding:6px 14px 2px;font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid var(--border1)">${catLabel[cat]}</div>`;
+      lastCat = cat;
+    }
+    const lPct = pctOf(L, sig);
+    const barColor = cat === 'split' ? 'var(--red)' : cat === 'multi' ? 'var(--gold)' : 'var(--teal)';
+    rows += `<div style="display:flex;align-items:center;gap:6px;padding:9px 14px;border-bottom:1px solid var(--border1)">
+      <div style="width:56px;flex-shrink:0;font-size:12px;font-weight:700;color:var(--t1)">${L[sig].label}</div>
+      <div style="flex:1;height:5px;background:var(--bg3);border-radius:3px;overflow:hidden">
+        <div style="height:100%;border-radius:3px;width:${lPct || 0}%;background:${barColor}"></div>
+      </div>
+      <div style="display:flex;gap:4px;flex-shrink:0">
+        ${fmtCol(lPct, true)}${fmtCol(pctOf(T, sig), false)}${fmtCol(pctOf(A, sig), false)}
+      </div>
+    </div>`;
+  });
+
+  return `<div style="background:var(--bg2);border:1px solid var(--border1);border-radius:14px;overflow:hidden">
+    <div style="padding:11px 14px 9px;border-bottom:1px solid var(--border1);display:flex;align-items:center;justify-content:space-between">
+      <div style="font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.6px">Leave conversion</div>
+      <div onclick="navTo('s-leaves')" style="font-size:11px;color:var(--teal);font-weight:700;cursor:pointer">All leaves ›</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:6px;padding:6px 14px 4px;border-bottom:1px solid var(--border1)">
+      <div style="width:56px;flex-shrink:0;font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.4px">Leave</div>
+      <div style="flex:1"></div>
+      <div style="display:flex;gap:4px;flex-shrink:0">
+        <div style="width:34px;text-align:right;font-size:8px;font-weight:700;color:var(--t3);text-transform:uppercase">Leag</div>
+        <div style="width:34px;text-align:right;font-size:8px;font-weight:700;color:var(--t3);text-transform:uppercase">10W</div>
+        <div style="width:34px;text-align:right;font-size:8px;font-weight:700;color:var(--t3);text-transform:uppercase">ATL</div>
+      </div>
+    </div>
+    ${rows}
+  </div>`;
+}
+
+/* ── Compare orchestration (v30.51) ──────────────────────────
+   No new stat math — each slot resolves to a league-ID set, its
+   games come from the existing zero-arg pools, and the SAME
+   calculateAdvancedStats()/_perfFmtAvg() run once per slot. The
+   baseline chip picks WHICH period each slot is measured over. */
+function _perfBaselineGames(leagueIDSet, baseline) {
+  if (baseline === 'last10') {
+    return _perfScopeGames(getCanonicalLast10WksGames(), leagueIDSet);
+  }
+  if (baseline === 'season') {
+    const ty = _perfTodaySeasonYear();
+    return ty ? _perfScopeGamesBySeasonYear(getAllTimeLeagueGames(), leagueIDSet, ty) : [];
+  }
+  return _perfScopeGames(getAllTimeLeagueGames(), leagueIDSet);
+}
+function _perfCenterLeagueSet(centerID) {
+  return new Set((db.leagues || []).filter(l => !l._virtual && l.LeagueID > 0 && l.CenterID === centerID).map(l => l.LeagueID));
+}
+function perfOpenSlotPicker(slotIdx, kind) {
+  if (kind === 'league') {
+    const opts = _perfPickOptions();
+    if (!opts.length) { toast('No league data yet'); return; }
+    const html = `
+      <div class="modal-title">Slot ${'ABC'[slotIdx]} · Select League</div>
+      <div style="max-height:60vh;overflow-y:auto">
+        <div onclick="perfClearSlot(${slotIdx},'league')" style="padding:13px 16px;border-bottom:1px solid var(--border1);cursor:pointer;color:var(--t3);font-size:14px">— Clear slot —</div>
+        ${opts.map(o => `<div onclick="perfSetSlot(${slotIdx},'league','${o.type}',${o.id})"
+          style="display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:1px solid var(--border1);cursor:pointer">
+          <div><div style="font-size:15px;font-weight:600;color:var(--t1)">${o.name}</div>
+          <div style="font-size:11px;color:var(--t3);margin-top:2px">${o.centerName}${o.centerName ? ' · ' : ''}${o.gameCount} games</div></div>
+        </div>`).join('')}
+      </div>
+      <button class="btn btn-secondary" style="width:100%;margin-top:10px" onclick="closeModal()">Cancel</button>`;
+    openModal(html);
+  } else {
+    const _openIDs = openBowlSeriesIDs();
+    const centersWithGames = (db.centers || []).filter(c => {
+      const set = _perfCenterLeagueSet(c.CenterID);
+      const sids = new Set(db.series.filter(s => set.has(s.LeagueID)).map(s => s.SeriesID));
+      return db.games.some(g => sids.has(g.SeriesID) && g.FinalScore > 0 && !g.IsTeammate && !g.NoTap && !_openIDs.has(g.SeriesID));
+    });
+    if (!centersWithGames.length) { toast('No center data yet'); return; }
+    const html = `
+      <div class="modal-title">Slot ${'ABC'[slotIdx]} · Select Center</div>
+      <div style="max-height:60vh;overflow-y:auto">
+        <div onclick="perfClearSlot(${slotIdx},'center')" style="padding:13px 16px;border-bottom:1px solid var(--border1);cursor:pointer;color:var(--t3);font-size:14px">— Clear slot —</div>
+        ${centersWithGames.map(c => `<div onclick="perfSetSlot(${slotIdx},'center',null,${c.CenterID})"
+          style="padding:13px 16px;border-bottom:1px solid var(--border1);cursor:pointer">
+          <div style="font-size:15px;font-weight:600;color:var(--t1)">${c.CenterName}</div>
+        </div>`).join('')}
+      </div>
+      <button class="btn btn-secondary" style="width:100%;margin-top:10px" onclick="closeModal()">Cancel</button>`;
+    openModal(html);
+  }
+}
+function perfSetSlot(slotIdx, kind, type, id) {
+  const sc = _perfGetScope();
+  if (kind === 'league') sc.cmpSlots[slotIdx] = { type, id };
+  else sc.ctrSlots[slotIdx] = id;
+  _perfSaveScope(sc); closeModal(); renderPerformanceScreen();
+}
+function perfClearSlot(slotIdx, kind) {
+  const sc = _perfGetScope();
+  if (kind === 'league') sc.cmpSlots[slotIdx] = null;
+  else sc.ctrSlots[slotIdx] = null;
+  _perfSaveScope(sc); closeModal(); renderPerformanceScreen();
+}
+function _perfRenderCompare(sc, kind) {
+  const SLOT_COLORS = ['var(--teal)', 'var(--gold)', 'var(--purple)'];
+  const baselines = [
+    { k: 'last10', l: 'Last 10 Wks' }, { k: 'season', l: 'Current Season' }, { k: 'all', l: 'All Time' }
+  ];
+  const resolved = [];
+  if (kind === 'league') {
+    const opts = _perfPickOptions();
+    sc.cmpSlots.forEach((slot, i) => {
+      if (!slot) { resolved.push(null); return; }
+      const o = opts.find(x => x.type === slot.type && x.id === slot.id);
+      if (!o) { resolved.push(null); return; }
+      resolved.push({ letter: 'ABC'[i], color: SLOT_COLORS[i], name: o.name,
+        sub: `${o.centerName}${o.centerName ? ' · ' : ''}${o.gameCount} games`,
+        leagueIDSet: _perfLeagueIDSet({ pickType: slot.type, pickID: slot.id }) });
+    });
+  } else {
+    sc.ctrSlots.forEach((cid, i) => {
+      if (cid == null) { resolved.push(null); return; }
+      const c = db.centers.find(x => x.CenterID === cid);
+      if (!c) { resolved.push(null); return; }
+      const set = _perfCenterLeagueSet(cid);
+      resolved.push({ letter: 'ABC'[i], color: SLOT_COLORS[i], name: c.CenterName,
+        sub: `${set.size} league${set.size === 1 ? '' : 's'}`, leagueIDSet: set });
+    });
+  }
+  const active = resolved.filter(Boolean);
+  const addLabel = kind === 'league' ? 'Add league…' : 'Add center…';
+  const slotRows = [0, 1, 2].map(i => {
+    const r = resolved[i];
+    const letter = 'ABC'[i], color = SLOT_COLORS[i];
+    if (r) {
+      return `<div style="display:flex;align-items:center;gap:8px">
+        <div style="font-size:11px;font-weight:800;width:18px;text-align:center;color:${color}">${letter}</div>
+        <div onclick="perfOpenSlotPicker(${i},'${kind}')" style="flex:1;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;cursor:pointer">
+          <div><div style="font-size:13px;font-weight:700;color:var(--t1)">${r.name}</div><div style="font-size:10px;color:var(--t3);margin-top:1px">${r.sub}</div></div>
+          <span style="color:var(--t3)">›</span>
+        </div></div>`;
+    }
+    return `<div style="display:flex;align-items:center;gap:8px">
+      <div style="font-size:11px;font-weight:800;width:18px;text-align:center;color:var(--t3)">${letter}</div>
+      <div onclick="perfOpenSlotPicker(${i},'${kind}')" style="flex:1;background:var(--bg2);border:1px dashed var(--border2);border-radius:10px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;opacity:.55">
+        <div style="font-size:13px;font-weight:700;color:var(--t3)">${addLabel}</div><span style="color:var(--t3)">+</span>
+      </div></div>`;
+  }).join('');
+  const baselineChips = baselines.map(b => {
+    const on = sc.cmpBaseline === b.k;
+    return `<div onclick="perfSetBaseline('${b.k}')" style="padding:5px 11px;border-radius:20px;font-size:11px;font-weight:700;
+      border:1px solid ${on ? 'var(--purple)' : 'var(--border2)'};background:${on ? 'rgba(157,78,221,0.12)' : 'var(--bg3)'};
+      color:${on ? 'var(--purple)' : 'var(--t3)'};cursor:pointer">${b.l}</div>`;
+  }).join('');
+  const baselineHTML = `<div style="background:var(--bg2);border:1px solid var(--border1);border-radius:10px;padding:12px 14px">
+    <div style="font-size:9px;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:8px">Baseline period</div>
+    <div style="display:flex;gap:5px;flex-wrap:wrap">${baselineChips}</div>
+  </div>`;
+  if (active.length < 2) {
+    return `<div style="padding:12px 16px 90px;display:flex;flex-direction:column;gap:10px">
+      ${slotRows}${baselineHTML}
+      <div style="background:var(--bg2);border:1px solid var(--border1);border-radius:14px;padding:24px 14px;text-align:center;color:var(--t3);font-size:13px">
+        Pick at least two ${kind === 'league' ? 'leagues' : 'centers'} to compare.
+      </div>
+    </div>`;
+  }
+  const slotData = active.map(r => {
+    const games = _perfBaselineGames(r.leagueIDSet, sc.cmpBaseline);
+    const avg = _perfFmtAvg(games);
+    const stats = calculateAdvancedStats(games.map(g => g.GameID));
+    return Object.assign({}, r, { games, avg, stats });
+  });
+  const avgVals = slotData.map(s => s.avg ? s.avg.floor : null).filter(v => v != null);
+  const baseRef = avgVals.length ? Math.round(avgVals.reduce((a, b) => a + b, 0) / avgVals.length) : null;
+  const avgCards = slotData.map(s => {
+    const d = _perfDelta(s.avg ? s.avg.floor : null, baseRef);
+    return `<div style="flex:1;background:var(--bg2);border:1px solid var(--border1);border-radius:10px;padding:12px">
+      <div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;color:${s.color}">${s.letter} · ${s.name.length > 12 ? s.name.slice(0, 11) + '…' : s.name}</div>
+      <div style="font-size:28px;font-weight:900;letter-spacing:-1.5px;color:var(--t1);line-height:1">${s.avg ? s.avg.floor : '—'}</div>
+      <div style="font-size:11px;font-weight:700;margin-top:4px;color:${_perfDeltaColor(d.cls)}">${d.text === '—' ? 'at base' : d.text + ' vs base'}</div>
+    </div>`;
+  }).join('');
+  const avgCardsHTML = `<div style="display:flex;gap:8px">${avgCards}</div>`;
+  const A = slotData[0], B = slotData[1];
+  const numPct = s => { const n = parseFloat(s); return isNaN(n) ? 0 : n; };
+  function h2hRow(label, aStr, bStr, aNum, bNum) {
+    const total = (aNum || 0) + (bNum || 0);
+    const aw = total ? Math.round((aNum || 0) / total * 100) : 50;
+    return `<div style="margin-bottom:9px">
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--t3);margin-bottom:4px">
+        <span>${label}</span><span style="color:var(--t1);font-weight:700">${aStr} vs ${bStr}</span></div>
+      <div style="height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;display:flex">
+        <div style="background:var(--teal);width:${aw}%"></div><div style="background:var(--gold);width:${100 - aw}%"></div>
+      </div></div>`;
+  }
+  const h2hHTML = `<div style="background:var(--bg2);border:1px solid var(--border1);border-radius:10px;padding:12px 14px">
+    <div style="font-size:9px;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">Head to head · A vs B</div>
+    ${h2hRow('Avg', A.avg ? A.avg.floor : '—', B.avg ? B.avg.floor : '—', A.avg ? A.avg.floor : 0, B.avg ? B.avg.floor : 0)}
+    ${h2hRow('Spare %', A.stats.sparePct.split(' ')[0], B.stats.sparePct.split(' ')[0], numPct(A.stats.sparePct), numPct(B.stats.sparePct))}
+    ${h2hRow('Strike %', A.stats.strikePct.split(' ')[0], B.stats.strikePct.split(' ')[0], numPct(A.stats.strikePct), numPct(B.stats.strikePct))}
+    ${h2hRow('Clean %', A.stats.cleanPct + '%', B.stats.cleanPct + '%', A.stats.cleanPct, B.stats.cleanPct)}
+    ${h2hRow('BounceBack', A.stats.bounceBackPct.split(' ')[0], B.stats.bounceBackPct.split(' ')[0], numPct(A.stats.bounceBackPct), numPct(B.stats.bounceBackPct))}
+  </div>`;
+  return `<div style="padding:12px 16px 90px;display:flex;flex-direction:column;gap:10px">
+    ${slotRows}${baselineHTML}${avgCardsHTML}${h2hHTML}
+  </div>`;
+}
+
+/* Minimal header for the empty-scope state — just the tappable league
+   name so the user can switch to a scope that has data. */
+function headerHTML_forEmpty(pick) {
+  return `<div style="background:linear-gradient(170deg,var(--bg2) 0%,var(--bg1) 60%);padding:16px;border-bottom:1px solid var(--border1)">
+    <div onclick="perfOpenPicker()" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between">
+      <div style="min-width:0;overflow:hidden">
+        <div style="font-size:16px;font-weight:800;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${pick.name}</div>
+        <div style="font-size:11px;color:var(--t3);margin-top:2px">${pick.centerName || ''}</div>
+      </div>
+      <span style="color:var(--teal);font-size:18px;flex-shrink:0;margin-left:8px">›</span>
+    </div>
+  </div>`;
+}
+
+/* ── MAIN render ─────────────────────────────────────────────*/
+function renderPerformanceScreen() {
+  const el = document.getElementById('perf-content');
+  if (!el) return;
+  try { _renderPerformanceInner(el); } catch(e) {
+    console.error('renderPerformanceScreen error:', e);
+    el.innerHTML = `<div style="padding:24px 16px;color:var(--t3);font-size:13px">
+      <div style="color:var(--gold);font-weight:700;margin-bottom:8px">Performance render error</div>
+      <div style="font-family:monospace;font-size:11px;word-break:break-all">${e.message||String(e)}</div>
+    </div>`;
+  }
+}
+
+function _renderPerformanceInner(el) {
+  const sc = _perfGetScope();
+
+  // ── Lineage bootstrap (v30.54) ──
+  // On a fresh install/origin the lineages table is empty until Ensure
+  // Lineages runs (DevKit or a league save). Performance's whole picker model
+  // is lineage-first, so bootstrap it here — same idempotent engine, same
+  // result the Lineage Dry Run already validated. Without this, every league
+  // lists standalone and season chips collapse to a single year.
+  if ((db.lineages || []).length === 0 && (db.leagues || []).length > 0) {
+    try { ensureLineages(); } catch(e) { console.error('lineage bootstrap:', e); }
+  }
+
+  let pickOpts = _perfPickOptions();
+
+  if (sc.pickID == null && pickOpts.length) {
+    // Default to the option with the MOST games, not the most-recently-dated
+    // one — a brand-new league (recent start, nothing bowled yet) should never
+    // be the landing scope, or the whole screen reads as empty dashes.
+    const byGames = pickOpts.slice().sort((a, b) => b.gameCount - a.gameCount);
+    sc.pickType = byGames[0].type; sc.pickID = byGames[0].id;
+  }
+  let pick = pickOpts.find(o => o.type === sc.pickType && o.id === sc.pickID) || null;
+
+  // ── Pick upgrade (v30.54) ──
+  // A saved scope may point at an individual league from before its lineage
+  // existed (stale 'league' pick), which collapses the season chips to that
+  // one league's single year and makes Season/All-Time benchmarks degenerate
+  // duplicates of This League. If the picked league belongs to a lineage that
+  // is available in the picker, upgrade the pick to the lineage — the chips
+  // then span every season of the recurring league (23-24, 24-25, 25-26...)
+  // and tapping a chip filters across them, per the design intent.
+  if (!pick && sc.pickType === 'league' && sc.pickID != null) {
+    const lg = (db.leagues || []).find(l => l.LeagueID === sc.pickID);
+    if (lg && lg.LineageID != null) {
+      pick = pickOpts.find(o => o.type === 'lineage' && o.id === lg.LineageID) || null;
+    }
+  }
+  if (pick && pick.type === 'league') {
+    const lg = (db.leagues || []).find(l => l.LeagueID === pick.id);
+    if (lg && lg.LineageID != null) {
+      const lnOpt = pickOpts.find(o => o.type === 'lineage' && o.id === lg.LineageID);
+      if (lnOpt) pick = lnOpt;
+    }
+  }
+  if (!pick) pick = pickOpts[0] || null;
+
+  if (!pick) {
+    el.innerHTML = `<div style="padding:60px 24px;text-align:center;color:var(--t3)">
+      <div style="font-size:15px;font-weight:700;color:var(--t2);margin-bottom:6px">No league data yet</div>
+      <div style="font-size:13px">Bowl a few series in a league to see performance trends here.</div>
+    </div>`;
+    return;
+  }
+  sc.pickType = pick.type; sc.pickID = pick.id;
+
+  const leagueIDSet = _perfLeagueIDSet({ pickType: pick.type, pickID: pick.id });
+
+  // First live caller of the season engine outside the DevKit dry run —
+  // may persist new season tags on first touch. Idempotent; batch-saved
+  // once below rather than on every individual series lookup.
+  const seasonYears = _perfSeasonYearsFor(leagueIDSet);
+  const todayYear = _perfTodaySeasonYear();
+  if (!sc.seasonYear || !seasonYears.some(sy => sy.seasonYear === sc.seasonYear)) {
+    sc.seasonYear = seasonYears.some(sy => sy.seasonYear === todayYear)
+      ? todayYear : (seasonYears[0] ? seasonYears[0].seasonYear : null);
+  }
+  _perfSaveScope(sc);
+  saveDB();
+
+  // ── Game pools (reused zero-arg scopes) ──
+  const allTimePool = getAllTimeLeagueGames();
+  const tenWkPool = getCanonicalLast10WksGames();
+  const thisScopeGames = _perfScopeGamesBySeasonYear(allTimePool, leagueIDSet, sc.seasonYear);
+  const tenWkGames = _perfScopeGames(tenWkPool, leagueIDSet);
+  const seasonPinGames = todayYear ? _perfScopeGamesBySeasonYear(allTimePool, leagueIDSet, todayYear) : [];
+  const allTimeGames = _perfScopeGames(allTimePool, leagueIDSet);
+
+  // If the SELECTED scope has no scored games at all (e.g. a league that's set
+  // up but not yet bowled, or whose series are undated/in-progress), show a
+  // friendly empty state rather than a full screen of dashes. The picker is
+  // still reachable so the user can switch to a scope with data.
+  if (!allTimeGames.length) {
+    el.innerHTML = headerHTML_forEmpty(pick) +
+      `<div style="padding:50px 24px 90px;text-align:center;color:var(--t3)">
+        <div style="font-size:15px;font-weight:700;color:var(--t2);margin-bottom:6px">No scored games in this scope yet</div>
+        <div style="font-size:13px;line-height:1.5">${pick.name} doesn't have any completed games recorded yet. Tap the name above to pick a different league, or bowl a series to see stats here.</div>
+      </div>`;
+    return;
+  }
+
+  const thisAvg = _perfFmtAvg(thisScopeGames);
+  const tenWkAvg = _perfFmtAvg(tenWkGames);
+  const seasonAvg = _perfFmtAvg(seasonPinGames);
+  const allTimeAvg = _perfFmtAvg(allTimeGames);
+
+  const stats = calculateAdvancedStats(thisScopeGames.map(g => g.GameID));
+  const atlStats = calculateAdvancedStats(allTimeGames.map(g => g.GameID));
+  const core = _statsComputeCore(thisScopeGames);
+  const atlCore = _statsComputeCore(allTimeGames);
+
+  // ── Header / hero ──
+  const ringPct = thisAvg ? Math.min(100, Math.round(thisAvg.floor / 220 * 100)) : 0;
+  const ringDash = (ringPct / 100 * 276).toFixed(0);
+  const ringHTML = `
+    <div style="position:relative;width:108px;height:108px;flex-shrink:0">
+      <svg viewBox="0 0 108 108" style="width:108px;height:108px;transform:rotate(-90deg)">
+        <circle cx="54" cy="54" r="44" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="9"/>
+        <circle cx="54" cy="54" r="44" fill="none" stroke="url(#perf-rg)" stroke-width="9"
+          stroke-dasharray="${ringDash} 276" stroke-linecap="round"/>
+        <defs><linearGradient id="perf-rg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="var(--teal)"/><stop offset="100%" stop-color="var(--purple)"/>
+        </linearGradient></defs>
+      </svg>
+      <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px">
+        <div style="display:flex;align-items:baseline">
+          <span style="font-size:30px;font-weight:900;letter-spacing:-1.5px;color:var(--t1);line-height:1">${thisAvg ? thisAvg.floor : '—'}</span>
+          ${thisAvg ? `<span style="font-size:13px;font-weight:700;color:rgba(0,217,217,0.65);margin-left:1px">${thisAvg.dec}</span>` : ''}
+        </div>
+        <div style="font-size:8px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.6px;margin-top:2px">avg</div>
+      </div>
+    </div>`;
+
+  const gameCountLabel = `${thisScopeGames.length} game${thisScopeGames.length === 1 ? '' : 's'}`;
+  const chipsHTML = seasonYears.map(sy => {
+    const on = sy.seasonYear === sc.seasonYear;
+    return `<div onclick="perfSetSeasonChip('${sy.seasonYear}')"
+      style="flex-shrink:0;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:700;
+      border:1px solid ${on ? 'var(--teal)' : 'var(--border2)'};
+      background:${on ? 'rgba(0,217,217,0.1)' : 'var(--bg3)'};
+      color:${on ? 'var(--teal)' : 'var(--t3)'};cursor:pointer;white-space:nowrap">
+      ${sy.seasonYear}${sy.seasonYear === todayYear ? ' 🔄' : ''}</div>`;
+  }).join('');
+
+  const deltaItems = [
+    { lbl: '10 Wks', d: _perfDelta(thisAvg && thisAvg.floor, tenWkAvg && tenWkAvg.floor) },
+    { lbl: 'Season', d: _perfDelta(thisAvg && thisAvg.floor, seasonAvg && seasonAvg.floor) },
+    { lbl: 'All Time', d: _perfDelta(thisAvg && thisAvg.floor, allTimeAvg && allTimeAvg.floor) }
+  ].map(x => `<div style="flex:1;background:rgba(255,255,255,0.04);border:1px solid var(--border1);border-radius:8px;
+      padding:6px 8px;display:flex;flex-direction:column;align-items:center;gap:1px">
+      <div style="font-size:13px;font-weight:800;color:${_perfDeltaColor(x.d.cls)}">${x.d.text}</div>
+      <div style="font-size:8px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.4px">${x.lbl}</div>
+    </div>`).join('');
+
+  const headerHTML = `
+    <div style="background:linear-gradient(170deg,var(--bg2) 0%,var(--bg1) 60%);padding:16px 16px 16px;border-bottom:1px solid var(--border1)">
+      <div style="display:flex;align-items:center;gap:16px">
+        ${ringHTML}
+        <div style="flex:1;display:flex;flex-direction:column;gap:10px;min-width:0">
+          <div onclick="perfOpenPicker()" style="cursor:pointer;min-width:0;overflow:hidden">
+            <div style="font-size:15px;font-weight:700;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${pick.name} <span style="color:var(--teal)">›</span></div>
+            <div style="font-size:11px;color:var(--t3);margin-top:1px">${pick.centerName}${pick.centerName ? ' · ' : ''}${gameCountLabel}</div>
+          </div>
+          <div style="display:flex;gap:5px;overflow-x:auto;scrollbar-width:none">${chipsHTML || '<span style="font-size:10px;color:var(--t3)">No dated series yet</span>'}</div>
+          <div style="display:flex;gap:6px">${deltaItems}</div>
+        </div>
+      </div>
+    </div>`;
+
+  function modeChip(mode, label) {
+    const on = sc.mode === mode;
+    return `<div onclick="perfSetMode('${mode}')" style="flex:1;text-align:center;padding:7px 4px;border-radius:20px;font-size:11px;font-weight:700;
+      border:1px solid ${on ? 'var(--teal)' : 'var(--border2)'};background:${on ? 'rgba(0,217,217,0.14)' : 'var(--bg2)'};
+      color:${on ? 'var(--teal)' : 'var(--t3)'};cursor:pointer">${label}</div>`;
+  }
+  const modeBarHTML = `
+    <div style="display:flex;gap:6px;padding:10px 16px;border-bottom:1px solid var(--border1);background:var(--bg1)">
+      ${modeChip('sv', 'Single League')}${modeChip('cmp', 'Compare Leagues')}${modeChip('ctr', 'Compare Centers')}
+    </div>`;
+
+  // ── Compare modes short-circuit the single-view body ──
+  if (sc.mode === 'cmp' || sc.mode === 'ctr') {
+    el.innerHTML = headerHTML + modeBarHTML + _perfRenderCompare(sc, sc.mode === 'cmp' ? 'league' : 'center');
+    return;
+  }
+
+  function benchCard(lbl, avgObj, deltaObj, active, gamesInWindow) {
+    // Empty window → say WHY ('no games') instead of a bare dash. A window
+    // whose delta is flat because it contains the same games as the current
+    // scope (single-season league where Season == All Time == This League)
+    // reads 'same scope' so it doesn't look like missing data.
+    let subText, subColor;
+    if (active) { subText = 'current'; subColor = 'var(--t3)'; }
+    else if (!avgObj) { subText = gamesInWindow === 0 ? 'no games' : '—'; subColor = 'var(--t3)'; }
+    else if (deltaObj.cls === 'flat') { subText = 'same as scope'; subColor = 'var(--t3)'; }
+    else { subText = deltaObj.text; subColor = _perfDeltaColor(deltaObj.cls); }
+    return `<div style="flex-shrink:0;width:96px;background:${active ? 'rgba(0,217,217,0.08)' : 'var(--bg2)'};
+      border:1px solid ${active ? 'var(--teal)' : 'var(--border1)'};border-radius:10px;padding:10px 11px">
+      <div style="font-size:8px;font-weight:700;color:${active ? 'var(--teal)' : 'var(--t3)'};text-transform:uppercase;letter-spacing:0.5px;margin-bottom:5px">${lbl}</div>
+      <div style="font-size:20px;font-weight:800;letter-spacing:-0.5px;color:${active ? 'var(--teal)' : 'var(--t1)'}">${avgObj ? avgObj.floor : '—'}</div>
+      <div style="font-size:9px;font-weight:700;margin-top:3px;color:${subColor}">${subText}</div>
+    </div>`;
+  }
+  const benchHTML = `<div style="display:flex;gap:8px;padding:12px 16px;overflow-x:auto;scrollbar-width:none">
+    ${benchCard('This League', thisAvg, null, true, thisScopeGames.length)}
+    ${benchCard('10 Weeks', tenWkAvg, _perfDelta(thisAvg && thisAvg.floor, tenWkAvg && tenWkAvg.floor), false, tenWkGames.length)}
+    ${benchCard('Season', seasonAvg, _perfDelta(thisAvg && thisAvg.floor, seasonAvg && seasonAvg.floor), false, seasonPinGames.length)}
+    ${benchCard('All Time', allTimeAvg, _perfDelta(thisAvg && thisAvg.floor, allTimeAvg && allTimeAvg.floor), false, allTimeGames.length)}
+  </div>`;
+
+  const tabDefs = [{ k: 'ta', l: 'Averages' }, { k: 'tb', l: 'Spares' }, { k: 'tc', l: 'Strikes' }];
+  const tabBarHTML = `<div style="display:flex;margin:0 16px;background:var(--bg2);border-radius:10px;padding:3px;gap:2px">
+    ${tabDefs.map(t => `<div onclick="perfSetTab('${t.k}')" style="flex:1;text-align:center;padding:7px 4px;border-radius:8px;
+      font-size:12px;font-weight:600;cursor:pointer;color:${sc.tab === t.k ? 'var(--t1)' : 'var(--t3)'};
+      background:${sc.tab === t.k ? 'var(--bg4)' : 'transparent'}">${t.l}</div>`).join('')}
+  </div>`;
+
+  // ── Averages pane ──
+  // ── Real avg-trend sparkline (v30.49) — per-series average of the
+  //    current scope, adapted from the Stats screen's seriesTrendPts
+  //    pattern. Uses per-game average (matches the ring metric) rather
+  //    than series totals. Reuses buildStatsSparkline() verbatim; no new
+  //    charting code. ──────────────────────────────────────────────
+  const trendSeriesIDs = [...new Set(thisScopeGames.map(g => g.SeriesID))];
+  const perfTrendPts = trendSeriesIDs
+    .map(sid => {
+      const sg = thisScopeGames.filter(g => g.SeriesID === sid);
+      const s = db.series.find(x => x.SeriesID === sid);
+      const scores = sg.map(g => g.FinalScore).filter(v => v != null && v > 0);
+      if (!scores.length) return null;
+      const avg = scores.reduce((a, b) => a + b, 0) / scores.length;
+      return { date: s ? (s.DateBowled || '') : '', score: Math.round(avg) };
+    })
+    .filter(p => p && p.date)
+    .sort((a, b) => a.date.localeCompare(b.date))
+    .slice(-24);
+
+  const sparklineHTML = perfTrendPts.length >= 2
+    ? `<div style="background:var(--bg2);border:1px solid var(--border1);border-radius:14px;overflow:hidden">
+        <div style="padding:11px 14px 4px;display:flex;align-items:center;justify-content:space-between">
+          <div style="font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.5px">Avg trend · ${sc.seasonYear || 'this scope'} <span style="font-weight:400">(${perfTrendPts.length} series)</span></div>
+          <div style="font-size:12px;font-weight:800;color:var(--teal)">${thisAvg ? thisAvg.floor + thisAvg.dec : '—'} now</div>
+        </div>
+        <div style="padding:4px 8px 10px">${buildStatsSparkline(perfTrendPts, 'var(--teal)', 'perfAvgTrend')}</div>
+      </div>`
+    : `<div style="background:var(--bg2);border:1px solid var(--border1);border-radius:14px;padding:22px 14px;text-align:center">
+        <div style="font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Avg trend</div>
+        <div style="font-size:12px;color:var(--t3)">Need at least 2 dated series in this scope to show a trend</div>
+      </div>`;
+
+  const gpsDefault = (db.leagues.find(l => leagueIDSet.has(l.LeagueID)) || {}).GamesPerSeries || 3;
+  const highlightsHTML = `<div style="background:var(--bg2);border:1px solid var(--border1);border-radius:14px;overflow:hidden">
+    <div style="padding:11px 14px 9px;border-bottom:1px solid var(--border1)"><div style="font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.6px">Highlights · ${sc.seasonYear || 'this scope'}</div></div>
+    ${_perfSrow('Hi Game', core.high != null ? core.high : '—', _perfDelta(core.high, atlCore.high), core.high != null ? Math.min(100, Math.round(core.high / 300 * 100)) : 0, 'var(--teal)')}
+    ${_perfSrow('Hi Series', core.highSeriesTotal != null ? core.highSeriesTotal : '—', _perfDelta(core.highSeriesTotal, atlCore.highSeriesTotal), core.highSeriesTotal != null ? Math.min(100, Math.round(core.highSeriesTotal / (300 * gpsDefault) * 100)) : 0, 'var(--teal)')}
+    ${_perfSrow('Clean %', stats.cleanPct + '%', _perfPPDelta(stats.cleanPct, atlStats.cleanPct), stats.cleanPct || 0, 'var(--teal)')}
+    ${_perfSrow('Games', core.gameCount, { text: sc.seasonYear || 'scope', cls: 'flat' }, 0, 'var(--teal)')}
+  </div>`;
+
+  const hasProj = stats.actualProjAvg != null;
+  const potentialHTML = !hasProj ? `<div style="background:var(--bg2);border:1px solid var(--border1);border-radius:14px;padding:20px 14px;text-align:center;color:var(--t3);font-size:12px">Not enough pin-level data in this scope for spare projections.</div>` : `
+    <div style="background:var(--bg2);border:1px solid var(--border1);border-radius:14px;overflow:hidden">
+      <div style="padding:11px 14px 9px;border-bottom:1px solid var(--border1);display:flex;align-items:center;justify-content:space-between">
+        <div style="font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.6px">Potential avg</div>
+        <div style="font-size:10px;color:var(--t3);font-weight:500">pins left on table</div>
+      </div>
+      <div style="padding:14px">
+        ${_perfProjRow('Actual avg', stats.actualProjAvg, null, 'var(--teal)', 82)}
+        ${_perfProjRow('+ All singles', stats.singleProjAvg, stats.singleProjDelta, 'var(--gold)', 88)}
+        ${_perfProjRow('+ All makeable', stats.makeableProjAvg, stats.makeableProjDelta, 'var(--purple)', 95)}
+        <div style="display:flex;gap:6px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border1)">
+          <div style="flex:1;background:var(--bg3);border-radius:8px;padding:8px 10px;text-align:center">
+            <div style="font-size:16px;font-weight:800;color:var(--gold)">${stats.singleProjDelta != null ? '+' + stats.singleProjDelta : '—'}</div>
+            <div style="font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.4px">Single pin gap</div>
+          </div>
+          <div style="flex:1;background:var(--bg3);border-radius:8px;padding:8px 10px;text-align:center">
+            <div style="font-size:16px;font-weight:800;color:var(--purple)">${(stats.makeableProjDelta != null && stats.singleProjDelta != null) ? '+' + (stats.makeableProjDelta - stats.singleProjDelta) : '—'}</div>
+            <div style="font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.4px">Multi-pin gap</div>
+          </div>
+          <div style="flex:1;background:var(--bg3);border-radius:8px;padding:8px 10px;text-align:center">
+            <div style="font-size:16px;font-weight:800;color:var(--t1)">${stats.makeableProjDelta != null ? '+' + stats.makeableProjDelta : '—'}</div>
+            <div style="font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.4px">Total ceiling</div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+
+  const paneAveragesHTML = `<div id="perf-ta" style="display:${sc.tab === 'ta' ? 'flex' : 'none'};flex-direction:column;gap:10px">
+    ${sparklineHTML}${highlightsHTML}${potentialHTML}
+  </div>`;
+
+  // ── Spares pane ──
+  const sparesHTML = `<div style="background:var(--bg2);border:1px solid var(--border1);border-radius:14px;overflow:hidden">
+    <div style="padding:11px 14px 9px;border-bottom:1px solid var(--border1)"><div style="font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.6px">Spare rates</div></div>
+    ${_perfSrow('Overall', stats.sparePct.split(' ')[0], _perfPPDelta(_perfPctNum(stats.sparePct), _perfPctNum(atlStats.sparePct)), _perfPctNum(stats.sparePct) || 0, 'var(--teal)')}
+    ${_perfSrow('Single Pin', stats.singlePct.split(' ')[0], _perfPPDelta(_perfPctNum(stats.singlePct), _perfPctNum(atlStats.singlePct)), _perfPctNum(stats.singlePct) || 0, 'var(--teal)')}
+    ${_perfSrow('Multi-pin', stats.multiPct.split(' ')[0], _perfPPDelta(_perfPctNum(stats.multiPct), _perfPctNum(atlStats.multiPct)), _perfPctNum(stats.multiPct) || 0, 'var(--gold)')}
+    ${_perfSrow('Splits', stats.splitPct.split(' ')[0], _perfPPDelta(_perfPctNum(stats.splitPct), _perfPctNum(atlStats.splitPct)), _perfPctNum(stats.splitPct) || 0, 'var(--red)')}
+  </div>`;
+  const leaveTableHTML = _perfLeaveTable3Col(thisScopeGames, tenWkGames, allTimeGames);
+  const paneSparesHTML = `<div id="perf-tb" style="display:${sc.tab === 'tb' ? 'flex' : 'none'};flex-direction:column;gap:10px">
+    ${sparesHTML}${leaveTableHTML}
+  </div>`;
+
+  // ── Strikes pane ──
+  const strikesHTML = `<div style="background:var(--bg2);border:1px solid var(--border1);border-radius:14px;overflow:hidden">
+    <div style="padding:11px 14px 9px;border-bottom:1px solid var(--border1)"><div style="font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.6px">Strike metrics</div></div>
+    ${_perfSrow('Strike %', stats.strikePct.split(' ')[0], _perfPPDelta(_perfPctNum(stats.strikePct), _perfPctNum(atlStats.strikePct)), _perfPctNum(stats.strikePct) || 0, 'var(--teal)')}
+    ${_perfSrow('X-on-X', stats.xOnXPct.split(' ')[0], _perfPPDelta(_perfPctNum(stats.xOnXPct), _perfPctNum(atlStats.xOnXPct)), _perfPctNum(stats.xOnXPct) || 0, 'var(--teal)')}
+    ${_perfSrow('BounceBack', stats.bounceBackPct.split(' ')[0], _perfPPDelta(_perfPctNum(stats.bounceBackPct), _perfPctNum(atlStats.bounceBackPct)), _perfPctNum(stats.bounceBackPct) || 0, 'var(--red)')}
+    ${_perfSrow('Clutch', stats.clutchPct.split(' ')[0], _perfPPDelta(_perfPctNum(stats.clutchPct), _perfPctNum(atlStats.clutchPct)), _perfPctNum(stats.clutchPct) || 0, 'var(--gold)')}
+  </div>`;
+
+  const insights = [];
+  const bbCur = _perfPctNum(stats.bounceBackPct), bbAtl = _perfPctNum(atlStats.bounceBackPct);
+  if (bbCur != null && bbAtl != null && bbCur <= bbAtl - 5) {
+    insights.push({ tone: 'warn', tag: '⚠ Focus area',
+      body: `BounceBack is ${Math.round(bbAtl - bbCur)}% below all-time in this scope — recovering after opens less often than usual.` });
+  }
+  const skCur = _perfPctNum(stats.strikePct), skAtl = _perfPctNum(atlStats.strikePct);
+  if (skCur != null && skAtl != null && skCur >= skAtl + 3) {
+    insights.push({ tone: 'good', tag: '✓ Strength',
+      body: `Strike rate is ${Math.round(skCur - skAtl)}% above all-time in this scope.` });
+  }
+  const insightsHTML = insights.map(i => `<div style="border-radius:14px;padding:12px 14px;
+    background:${i.tone === 'warn' ? 'rgba(232,93,76,0.08)' : 'rgba(0,217,217,0.08)'};
+    border:1px solid ${i.tone === 'warn' ? 'rgba(232,93,76,0.2)' : 'rgba(0,217,217,0.2)'}">
+    <div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:0.6px;margin-bottom:5px;color:${i.tone === 'warn' ? 'var(--red)' : 'var(--teal)'}">${i.tag}</div>
+    <div style="font-size:13px;color:var(--t2);line-height:1.5">${i.body}</div>
+  </div>`).join('');
+
+  const paneStrikesHTML = `<div id="perf-tc" style="display:${sc.tab === 'tc' ? 'flex' : 'none'};flex-direction:column;gap:10px">
+    ${strikesHTML}${insightsHTML}
+  </div>`;
+
+  el.innerHTML = headerHTML + modeBarHTML + benchHTML + tabBarHTML +
+    `<div style="padding:10px 16px 90px">${paneAveragesHTML}${paneSparesHTML}${paneStrikesHTML}</div>`;
 }
 
 /* ── MAIN renderStats ───────────────────────────────────────*/
@@ -13118,7 +14715,7 @@ function _renderStatsInner(el) {
     tabContent = _statsTabBalls(scopedGames, sc);
   }
 
-  el.innerHTML = scopeBarHTML + heroHTML + tabBarHTML +
+  el.innerHTML = _perfEntryCardHTML() + scopeBarHTML + heroHTML + tabBarHTML +
     `<div style="padding:14px;padding-bottom:80px">${tabContent}</div>`;
 }
 
@@ -14239,8 +15836,9 @@ function _buildLeavesScreenHTML() {
   });
 
   // ── Majority-vote angle per leave ─────────────────────────────────
-  // Prefer user > prompted > auto readings when voting
-  var SRC_WEIGHT = { user: 3, prompted: 2, auto: 1 };
+  // Prefer user > prompted > auto readings when voting — SRC_WEIGHT is
+  // global (defined near resolveLeaveDisplayName) so this and the debrief's
+  // angle aggregation share one weight table instead of drifting apart.
   function majorityAngle(angles) {
     if (!angles || !angles.length) return null;
     var counts = {};
@@ -15574,6 +17172,7 @@ function openLeagueModal(id) {
   const isEdit = !!l;
   const cOpts = db.centers.map(c=>`<option value="${c.CenterID}"${l?.CenterID===c.CenterID?' selected':''}>${c.CenterName}</option>`).join('');
   const bOpts = `<option value="">— None —</option>` + sortedBalls(l?.DefaultBallID).map(b=>`<option value="${b.BallID}"${l?.DefaultBallID===b.BallID?' selected':''}>${b.BallName}</option>`).join('');
+  const spareBOpts = `<option value="">— None (use global default) —</option>` + sortedBalls(l?.DefaultSpareBallID).map(b=>`<option value="${b.BallID}"${l?.DefaultSpareBallID===b.BallID?' selected':''}>${b.BallName}</option>`).join('');
   const days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
   const dayOpts = `<option value="">— Any —</option>` + days.map(d=>`<option${l?.DayOfBowling===d?' selected':''}>${d}</option>`).join('');
   const gpsOpts = [2,3,4,5,6].map(n=>`<option value="${n}"${(l?.GamesPerSeries||3)===n?' selected':''}>${n}</option>`).join('');
@@ -15598,6 +17197,9 @@ function openLeagueModal(id) {
     </div>
     <div class="fgroup"><label class="flabel">Default Ball</label>
       <select class="finput" id="ml-ball">${bOpts}</select></div>
+    <div class="fgroup"><label class="flabel">Default Spare Ball <span style="opacity:.6;font-weight:400">(optional)</span></label>
+      <select class="finput" id="ml-spareball">${spareBOpts}</select>
+      <div style="font-size:11px;color:var(--t2);margin-top:3px">Falls back to the global Default Spare Ball (Settings) when not set here.</div></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0 4px">
       <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
         <input type="checkbox" id="ml-handicap" style="width:16px;height:16px;accent-color:var(--teal)" ${l?.Handicap?'checked':''}>
@@ -15608,6 +17210,32 @@ function openLeagueModal(id) {
         <span class="flabel" style="margin:0">Sport Bowling</span>
       </label>
     </div>
+    <!-- ── Season support fields (v30.41) — all optional ── -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="fgroup"><label class="flabel">Start Date <span style="opacity:.6;font-weight:400">(optional)</span></label>
+        <input class="finput" id="ml-startdate" type="date" value="${l?.StartDate||''}"></div>
+      <div class="fgroup"><label class="flabel">End Date <span style="opacity:.6;font-weight:400">(optional)</span></label>
+        <input class="finput" id="ml-enddate" type="date" value="${l?.EndDate||''}">
+        <div style="font-size:11px;color:var(--t2);margin-top:3px">Leave blank — filled in automatically when the league is archived, from your actual series dates.</div></div>
+    </div>
+    <div class="fgroup"><label class="flabel">Sanctioned</label>
+      <select class="finput" id="ml-sanctioned"><option value="" ${l?.Sanctioned==null?'selected':''}>— Unknown —</option><option value="1" ${l?.Sanctioned===true?'selected':''}>Sanctioned</option><option value="0" ${l?.Sanctioned===false?'selected':''}>Not Sanctioned</option></select></div>
+    <!-- ── Lineage (v30.46) — recurring-league grouping, optional ──
+         Blank = auto-managed (ensureLineages() recomputes on every save,
+         same as SeasonID). Picking a value here — including explicitly
+         picking blank away from a prior value — locks LineageSource:'user'
+         and is never recomputed automatically again. -->
+    <div class="fgroup"><label class="flabel">Lineage <span style="opacity:.6;font-weight:400">(recurring league grouping)</span></label>
+      <select class="finput" id="ml-lineage" data-prior="${l?.LineageID??''}">
+        <option value="">— Auto (recomputes on save) —</option>
+        ${(db.lineages||[]).slice().sort((a,b)=>a.DisplayName.localeCompare(b.DisplayName)).map(ln=>`<option value="${ln.LineageID}"${l?.LineageID===ln.LineageID?' selected':''}>${ln.DisplayName}</option>`).join('')}
+      </select>
+      <div style="font-size:11px;color:var(--t2);margin-top:3px">${
+        !l ? 'Leave as Auto — most recurring leagues (same name pattern, or same day/center) group themselves automatically.'
+        : l.LineageSource==='user' ? 'Manually set — will not be recomputed automatically.'
+        : l.LineageSource==='auto' ? 'Auto-detected from name and/or schedule.'
+        : 'Not currently grouped with any other league.'
+      }</div></div>
     <div class="fgroup"><label class="flabel">Notes</label>
       <input class="finput" id="ml-notes" type="text" placeholder="Optional notes" value="${l?.Notes||''}"></div>
     <button class="btn btn-primary" onclick="saveLeague(${id||'null'})">${isEdit?'Save Changes':'Create League'}</button>
@@ -15627,22 +17255,56 @@ function saveLeague(id) {
   const dues = parseFloat(document.getElementById('ml-dues').value)||0;
   const ballRaw = document.getElementById('ml-ball').value;
   const ballID = ballRaw ? parseInt(ballRaw) : null;
+  const spareBallRaw = document.getElementById('ml-spareball').value;
+  const spareBallID = spareBallRaw ? parseInt(spareBallRaw) : null;
   const teamName = document.getElementById('ml-teamname').value.trim();
   const notes = document.getElementById('ml-notes').value.trim();
   const handicap = document.getElementById('ml-handicap').checked;
   const sport = document.getElementById('ml-sport').checked;
+  const startDate = document.getElementById('ml-startdate').value || null;
+  const endDate = document.getElementById('ml-enddate').value || null;
+  const sancRaw = document.getElementById('ml-sanctioned').value;
+  const sanctioned = sancRaw === '' ? null : (sancRaw === '1');
+  // Lineage: compare against the value the dropdown showed when the modal
+  // opened (data-prior). Only a REAL change counts as a deliberate user
+  // override - submitting the form with the field untouched must never
+  // silently lock a league that ensureLineages() would otherwise keep
+  // auto-managing (same care taken with the SeasonID-on-dates-change logic
+  // just below).
+  const lineageSel = document.getElementById('ml-lineage');
+  const lineageRaw = lineageSel.value;
+  const lineagePrior = lineageSel.dataset.prior || '';
+  const lineageChanged = lineageRaw !== lineagePrior;
 
   if (id) {
     const l = db.leagues.find(x=>x.LeagueID===id);
-    if (l) { l.LeagueName=name; l.TeamName=teamName; l.CenterID=cid; l.GamesPerSeries=gps; l.DayOfBowling=day;
-      l.Weeks=weeks; l.WeeklyDues=dues; l.DefaultBallID=ballID; l.Notes=notes;
-      l.Handicap=handicap; l.Sport=sport; }
+    if (l) {
+      l.LeagueName=name; l.TeamName=teamName; l.CenterID=cid; l.GamesPerSeries=gps; l.DayOfBowling=day;
+      l.Weeks=weeks; l.WeeklyDues=dues; l.DefaultBallID=ballID; l.DefaultSpareBallID=spareBallID; l.Notes=notes;
+      l.Handicap=handicap; l.Sport=sport;
+      // A manual date/sanctioned edit is a deliberate correction - if the league
+      // already had an auto-derived season tag, let it recompute against the
+      // new dates next time it's touched rather than keeping a stale tag.
+      const datesChanged = l.StartDate !== startDate || l.EndDate !== endDate;
+      l.StartDate = startDate; l.EndDate = endDate; l.Sanctioned = sanctioned;
+      if (datesChanged && l.SeasonSource !== 'user') { l.SeasonID = null; l.SeasonSource = null; }
+      if (lineageChanged) {
+        l.LineageID = lineageRaw ? parseInt(lineageRaw) : null;
+        l.LineageSource = 'user';
+      }
+    }
+    ensureLineages();
     saveDB(); closeModal(); renderLeagues(); toast('League updated!');
   } else {
     const newId = db.ids.league++;
-    db.leagues.push({ LeagueID:newId, LeagueName:name, TeamName:teamName, CenterID:cid, GamesPerSeries:gps,
-      DayOfBowling:day, Weeks:weeks, WeeklyDues:dues, DefaultBallID:ballID, Notes:notes,
-      Active:true, Handicap:handicap, Sport:sport, Archived:false });
+    const newLeague = { LeagueID:newId, LeagueName:name, TeamName:teamName, CenterID:cid, GamesPerSeries:gps,
+      DayOfBowling:day, Weeks:weeks, WeeklyDues:dues, DefaultBallID:ballID, DefaultSpareBallID:spareBallID, Notes:notes,
+      Active:true, Handicap:handicap, Sport:sport, Archived:false,
+      StartDate:startDate, EndDate:endDate, Sanctioned:sanctioned, SeasonID:null, SeasonSource:null,
+      LineageID:null, LineageSource:null };
+    if (lineageChanged && lineageRaw) { newLeague.LineageID = parseInt(lineageRaw); newLeague.LineageSource = 'user'; }
+    db.leagues.push(newLeague);
+    ensureLineages();
     saveDB(); closeModal(); renderLeagues(); toast('League created!');
   }
 }
@@ -15685,9 +17347,10 @@ function openSeriesModal(id) {
   openModal(`
     <div class="modal-title">${isEdit?'Edit Series':'New Series'}</div>
     <div class="fgroup"><label class="flabel">Date</label>
-      <input class="finput" id="ms-date" type="date" value="${s?.DateBowled||today}"></div>
+      <input class="finput" id="ms-date" type="date" value="${s?.DateBowled||today}" onchange="msDateRangeCheck()">
+      <div id="ms-date-warn" style="display:none;font-size:11px;color:var(--gold);margin-top:4px"></div></div>
     <div class="fgroup"><label class="flabel">League</label>
-      <select class="finput" id="ms-league">${lOpts}</select></div>
+      <select class="finput" id="ms-league" onchange="msDateRangeCheck()">${lOpts}</select></div>
     <div class="fgroup"><label class="flabel">Center</label>
       <select class="finput" id="ms-center">${cOpts}</select></div>
     <div class="fgroup"><label class="flabel">Primary Ball</label>
@@ -15716,7 +17379,30 @@ function openSeriesModal(id) {
     const _leagueID = parseInt(document.getElementById('ms-league')?.value) || G.leagueID;
     const _seriesDate = document.getElementById('ms-date')?.value || azToday();
     renderSeriesHdcpSection(_leagueID, _seriesDate, isEdit ? s : null);
+    msDateRangeCheck();
   }, 350);
+}
+
+/* ── Soft out-of-range warning (v30.41) ──────────────────────
+   Purely informational - never blocks saveSeries(). Live-checks the
+   chosen date against the selected league's StartDate/EndDate (only
+   when both are set; most leagues won't have them yet, and that's
+   fine - this quietly does nothing until they do). */
+function msDateRangeCheck() {
+  const dateEl = document.getElementById('ms-date');
+  const leagueEl = document.getElementById('ms-league');
+  const warnEl = document.getElementById('ms-date-warn');
+  if (!dateEl || !leagueEl || !warnEl) return;
+  const date = dateEl.value;
+  const leagueID = parseInt(leagueEl.value);
+  const l = db.leagues.find(x => x.LeagueID === leagueID);
+  if (!date || !l || !l.StartDate || !l.EndDate) { warnEl.style.display = 'none'; return; }
+  if (date < l.StartDate || date > l.EndDate) {
+    warnEl.textContent = `⚠ Outside "${l.LeagueName}"'s dates (${l.StartDate} to ${l.EndDate}) — you can still save`;
+    warnEl.style.display = 'block';
+  } else {
+    warnEl.style.display = 'none';
+  }
 }
 
 /* Lane auto-fill: when user types in one lane, compute the partner.
@@ -17782,6 +19468,10 @@ function savePrefs(patch) {
     const prefs = { ...getPrefs(), ...patch };
     localStorage.setItem('bowlingdb_prefs', JSON.stringify(prefs));
   } catch(e) { console.warn('savePrefs:', e); }
+  // Re-enabling the 10-pin prompt also clears any per-series Skip silence
+  if (patch && patch.tenPinPrompt === true && typeof _tenPinSkipSeriesID !== 'undefined') {
+    _tenPinSkipSeriesID = null;
+  }
 }
 
 /* ── Spare Alignment Library ─────────────────────────────────────────────────
@@ -18622,6 +20312,8 @@ function buildExportDoc() {
     leaves: db.leaves,
     surfaces: db.surfaces,
     surfaceDetails: db.surfaceDetails,
+    seasons: db.seasons || [],
+    lineages: db.lineages || [],
     // Scoring data (league + TB transferred, no open bowl orphans)
     series: exportSeries,
     games: exportGames,
@@ -18751,6 +20443,8 @@ function openImportStrategyModal(parsed) {
     parsed.leaves?.length         ? `${parsed.leaves.length} leaves`             : null,
     parsed.surfaces?.length       ? `${parsed.surfaces.length} surfaces`         : null,
     parsed.surfaceDetails?.length ? `${parsed.surfaceDetails.length} prep logs`  : null,
+    parsed.seasons?.length        ? `${parsed.seasons.length} seasons`           : null,
+    parsed.lineages?.length       ? `${parsed.lineages.length} lineages`         : null,
     parsed.series?.length         ? `${parsed.series.length} series`             : null,
     parsed.games?.length          ? `${parsed.games.length} games`               : null,
     parsed.frames?.length         ? `${parsed.frames.length} frames`             : null,
@@ -18925,7 +20619,8 @@ async function confirmImport() {
     await loadScoringData();
     const refTables = {
       centers:'CenterID', leagues:'LeagueID', balls:'BallID',
-      patterns:'PatternID', leaves:'LeaveID', surfaces:'SurfaceID', surfaceDetails:'SurfacedDetailID'
+      patterns:'PatternID', leaves:'LeaveID', surfaces:'SurfaceID', surfaceDetails:'SurfacedDetailID',
+      seasons:'SeasonID', lineages:'LineageID'
     };
     const scoringTables = {
       series:'SeriesID', games:'GameID', frames:'FrameID', attempts:'AttemptID'
@@ -19002,6 +20697,8 @@ async function confirmImport() {
     db.leaves         = parsed.leaves         || db.leaves;
     db.surfaces       = parsed.surfaces       || db.surfaces;
     db.surfaceDetails = parsed.surfaceDetails || db.surfaceDetails;
+    db.seasons        = parsed.seasons        || db.seasons;
+    db.lineages       = parsed.lineages        || db.lineages;
     // Merge bowlers by BowlerID in ref-only mode too
     if (parsed.bowlers?.length) {
       const refBowlerIDs = new Set((db.bowlers||[]).map(b=>b.BowlerID));
@@ -27276,7 +28973,7 @@ async function _seriesCallAI(prompt) {
 const POCKET_ANGLE_TABLE = {
   right: {
     '10':        { angle:'high', signal:'Ringing 10 — too much entry angle, ball drove behind headpin' },
-    '6-10':      { angle:'high', signal:'Baby split — sharp angle or early hook, 6-pin kicked off deck' },
+    '6-10':      { angle:'high', signal:'6-10 split — sharp angle or early hook, 6-pin kicked off deck' },
     '3-6-10':    { angle:'high', signal:'Bucket right — ball overdriven to the right of pocket' },
     '4':         { angle:'high', signal:'High 4 — hit headpin too high, 2-pin absorbed deflection' },
     '4-7':       { angle:'high', signal:'4-7 split — over-hook, contact too high on headpin' },
@@ -27300,7 +28997,7 @@ const POCKET_ANGLE_TABLE = {
   left: {
     // Mirrors right-hand table: 10<->7, 6<->4, 3<->2, 9<->8 where applicable
     '7':         { angle:'high', signal:'Ringing 7 — too much entry angle, ball drove behind headpin' },
-    '4-7':       { angle:'high', signal:'Baby split — sharp angle or early hook, 4-pin kicked off deck' },
+    '4-7':       { angle:'high', signal:'4-7 split — sharp angle or early hook, 4-pin kicked off deck' },
     '2-4-7':     { angle:'high', signal:'Bucket left — ball overdriven to the left of pocket' },
     '6':         { angle:'high', signal:'High 6 — hit headpin too high, 3-pin absorbed deflection' },
     '6-10':      { angle:'high', signal:'6-10 split — over-hook, contact too high on headpin' },
@@ -27379,9 +29076,56 @@ function aggregatePocketAngles(gameIDs, handedness) {
     return standing;
   }
 
+  // Resolve one attempt's angle vote. Prefers the attempt's OWN recorded
+  // PocketEntry (weighted by source tier: user > prompted > auto) over
+  // re-deriving from the pin pattern — this is the actual fix for the
+  // ringing/flat mismatch. The old version never looked at PocketEntry at
+  // all, so a manually-corrected 10-pin (Flat, prompted) still got silently
+  // re-classified as Ringing from the table on every debrief.
+  // Only 'high' and 'light' map cleanly onto this table's high/low/flat
+  // scale; 'flush'/'crossover' don't have an unambiguous match here, so
+  // those attempts fall through to the geometric classifier unchanged
+  // (same behavior as before this fix for those two values).
+  // The geometric signal text is still used for descriptive commentary when
+  // it agrees with the resolved angle; if the trusted source overrides the
+  // table's own guess, a generic angle-only phrase is used instead so the
+  // debrief never states a mechanism that contradicts the angle it just gave.
+  var GENERIC_ANGLE_SIGNAL = {
+    high: 'Ball driving in high/steep, per your own logged reading',
+    low:  'Ball coming in light/thin, per your own logged reading'
+  };
+  function resolveAngleVote(att, leave) {
+    const geom = classifyPocketEntry(leave, hand);
+    const angleMap = { high:'high', light:'low' };
+    if (att.PocketEntry && att.PocketEntrySource && angleMap[att.PocketEntry]) {
+      const angle  = angleMap[att.PocketEntry];
+      const weight = SRC_WEIGHT[att.PocketEntrySource] || 1;
+      const signal = (angle === geom.angle) ? geom.signal : (GENERIC_ANGLE_SIGNAL[angle] || geom.signal);
+      return { angle, weight, signal };
+    }
+    return { angle: geom.angle, weight: 1, signal: geom.signal };
+  }
+
   const counts = { high:0, low:0, flat:0, unknown:0 };
-  const leaveTally = {}; // key -> { angle, signal, count }
+  const leaveTally = {}; // key -> { angle, signal, count, leave, _w }
   let total = 0;
+
+  function tally(att, leave) {
+    total++;
+    const vote = resolveAngleVote(att, leave);
+    counts[vote.angle] = (counts[vote.angle] || 0) + vote.weight;
+    const key = [...leave].sort((a,b) => a-b).join('-');
+    if (!leaveTally[key]) leaveTally[key] = { angle:vote.angle, signal:vote.signal, count:0, leave, _w:0 };
+    leaveTally[key].count++;
+    // Keep the highest-weighted vote as this leave's representative angle —
+    // a later 'prompted'/'user' correction should win over an earlier 'auto'
+    // guess of the same leave, not just whichever occurred first.
+    if (vote.weight >= leaveTally[key]._w) {
+      leaveTally[key].angle  = vote.angle;
+      leaveTally[key].signal = vote.signal;
+      leaveTally[key]._w     = vote.weight;
+    }
+  }
 
   // Frames 1-9: non-strike att1s where pin1 was knocked (pocket hit)
   allFrames.filter(f => f.FrameNumber <= 9 && !f.Strike).forEach(f => {
@@ -27389,45 +29133,28 @@ function aggregatePocketAngles(gameIDs, handedness) {
     if (!a1 || a1.Pinfall === null || a1.Pinfall === 0) return; // no pinfall or gutter
     const leave = getLeaveSet(a1);
     if (leave.has(1)) return; // headpin still standing — not a pocket hit
-    total++;
-    const result = classifyPocketEntry(leave, hand);
-    counts[result.angle]++;
-    const key = [...leave].sort((a,b) => a-b).join('-');
-    if (!leaveTally[key]) leaveTally[key] = { angle:result.angle, signal:result.signal, count:0 };
-    leaveTally[key].count++;
+    tally(a1, leave);
   });
 
-  // Frame 10: att1 non-strike pocket hits; att2 after X if non-strike pocket hit
+  // Frame 10: att1 non-strike pocket hits; att2 after X if non-strike pocket hit.
+  // Note: auto-write never touches F10, so F10 attempts always fall through
+  // to the geometric classifier here — unchanged from before this fix.
   allFrames.filter(f => f.FrameNumber === 10).forEach(f => {
     const a1 = allAttempts.find(a => a.FrameID === f.FrameID && a.Attempt === 1);
     const a2 = allAttempts.find(a => a.FrameID === f.FrameID && a.Attempt === 2);
     if (a1 && a1.Pinfall !== null && a1.Pinfall > 0 && a1.Pinfall < 10) {
       const leave = getLeaveSet(a1);
-      if (!leave.has(1)) {
-        total++;
-        const result = classifyPocketEntry(leave, hand);
-        counts[result.angle]++;
-        const key = [...leave].sort((a,b) => a-b).join('-');
-        if (!leaveTally[key]) leaveTally[key] = { angle:result.angle, signal:result.signal, count:0 };
-        leaveTally[key].count++;
-      }
+      if (!leave.has(1)) tally(a1, leave);
     }
     if (a1 && a1.Pinfall === 10 && a2 && a2.Pinfall !== null && a2.Pinfall > 0 && a2.Pinfall < 10) {
       const leave = getLeaveSet(a2);
-      if (!leave.has(1)) {
-        total++;
-        const result = classifyPocketEntry(leave, hand);
-        counts[result.angle]++;
-        const key = [...leave].sort((a,b) => a-b).join('-');
-        if (!leaveTally[key]) leaveTally[key] = { angle:result.angle, signal:result.signal, count:0 };
-        leaveTally[key].count++;
-      }
+      if (!leave.has(1)) tally(a2, leave);
     }
   });
 
   const resolved = counts.high + counts.low + counts.flat;
   const breakdown = Object.entries(leaveTally)
-    .map(([key, v]) => ({ key, label:key, angle:v.angle, signal:v.signal, count:v.count }))
+    .map(([key, v]) => ({ key, label:resolveLeaveDisplayName(v.leave, null), angle:v.angle, signal:v.signal, count:v.count }))
     .sort((a, b) => b.count - a.count);
 
   // Dominant angle: majority vote among resolved only
@@ -27522,9 +29249,11 @@ function buildCrossLeagueBaseline(excludeSeriesID, sessionCount) {
 
   const topLeaves = Object.entries(leaveAccum)
     .map(([key, count]) => {
-      const table = POCKET_ANGLE_TABLE[handedness] || POCKET_ANGLE_TABLE.right;
-      const entry = table[key];
-      return { key, label: entry ? entry.signal.split(' — ')[0] : key, count };
+      // Name comes from db.leaves.DisplayName via the shared resolver —
+      // never from POCKET_ANGLE_TABLE's signal text (diagnostic commentary,
+      // not a name; this is what mislabeled 6-10 as "Baby split").
+      const pinSet = new Set(key.split('-').map(Number));
+      return { key, label: resolveLeaveDisplayName(pinSet, null), count };
     })
     .sort((a, b) => b.count - a.count)
     .slice(0, 5);
@@ -29111,9 +30840,20 @@ function dkSetVisible(on) {
   _dk.visible = on;
   var btn   = document.getElementById('dk-toggle');
   var badge = document.getElementById('dk-version');
+  var scLbl = document.getElementById('dk-screen-label');
   if (btn)   btn.style.display   = on ? 'flex' : 'none';
   if (badge) badge.style.display = on ? 'block' : 'none';
+  if (scLbl) scLbl.style.display = on ? 'block' : 'none';
+  if (on) dkUpdateScreenLabel(); // populate immediately, don't wait for the next nav
   if (!on && _dk.panelOpen) dkTogglePanel();
+}
+
+/* Keeps #dk-screen-label in sync with dkmScreenKey(). Cheap no-op when
+   devMode is off or the element isn't in the DOM yet. */
+function dkUpdateScreenLabel() {
+  if (!_dk.visible) return;
+  var el = document.getElementById('dk-screen-label');
+  if (el) el.textContent = dkmScreenKey();
 }
 
 /* ── Panel open / close ──────────────────────────────────── */
@@ -29147,7 +30887,8 @@ function dkTab(name) {
     var fn = tab.getAttribute('onclick') || '';
     var active = (name==='entries' && fn.includes("'entries'")) ||
                  (name==='map'     && fn.includes("'map'"))     ||
-                 (name==='state'   && fn.includes("'state'"));
+                 (name==='state'   && fn.includes("'state'"))   ||
+                 (name==='idb'     && fn.includes("'idb'"));
     tab.classList.toggle('dk-active', active);
   });
   if (name === 'map') {
@@ -29158,9 +30899,14 @@ function dkTab(name) {
 }
 
 function dkRenderTab(name) {
+  ['entries','map','state','idb'].forEach(function(t) {
+    var pane = document.getElementById('dk-pane-'+t);
+    if (pane) pane.style.display = (t === name) ? (t==='idb'?'flex':'block') : 'none';
+  });
   if (name === 'entries') dkRenderEntries();
   if (name === 'state')   { dkRenderState(); var pp=document.getElementById('dk-purge-panel'); if(pp) pp.style.display='block'; }
   if (name !== 'state')   { var pp=document.getElementById('dk-purge-panel'); if(pp) pp.style.display='none'; }
+  if (name === 'idb')     dkIdbRender();
 }
 
 /* ── Category selector ───────────────────────────────────── */
@@ -29221,6 +30967,322 @@ function _entryHTML(e) {
     '<div class="dk-entry-msg">'+_escHtml(e.msg)+'</div>'+
     refHtml+scrHtml+mapHtml+snapHtml+statusRow+
   '</div>';
+}
+
+/* =============================================================
+   DEVKIT — DATA INSPECTOR TAB
+   Covers both localStorage reference tables and IDB scoring tables.
+   ============================================================= */
+var _dkIdb = {
+  pins: { pocket:true, pesrc:true, broll:true, brsrc:true, leave:true }
+};
+
+/* ── localStorage table definitions ─────────────────────────── */
+var DK_LS_TABLES = {
+  balls:          { key: null,  src: 'db' },   // from db.balls
+  bowlers:        { key: null,  src: 'db' },
+  leagues:        { key: null,  src: 'db' },
+  centers:        { key: null,  src: 'db' },
+  patterns:       { key: null,  src: 'db' },
+  leaves:         { key: null,  src: 'db' },
+  surfaces:       { key: null,  src: 'db' },
+  surfaceDetails: { key: null,  src: 'db' },
+  seasons:        { key: null,  src: 'db' },
+  lineages:       { key: null,  src: 'db' },
+  openSessions:   { key: null,  src: 'db' },
+  tournaments:    { key: null,  src: 'db' },
+  customPins:     { key: null,  src: 'db' },
+  spare_alignments: { key: 'bowlingdb_spare_alignments', src: 'ls' },
+  prefs:          { key: 'bowlingdb_prefs',    src: 'ls' },
+  handicap:       { key: 'bowlingdb_handicap', src: 'ls' },
+  lane_ref:       { key: 'bowlingdb_lane_ref', src: 'ls' },
+  coaching_profile: { key: 'bowlingdb_coaching_profile', src: 'ls' },
+};
+
+function dkIdbGetRecords(tableName) {
+  // IDB scoring tables — already in memory
+  if (['series','games','frames','attempts'].indexOf(tableName) !== -1) {
+    return Promise.resolve({ type:'idb', records: db[tableName] ? db[tableName].slice() : [] });
+  }
+  // ballImages — count only via IDB
+  if (tableName === 'ballImages') {
+    return idbCount('ballImages').then(function(n){ return { type:'count', count:n }; })
+      .catch(function(){ return { type:'count', count:'?' }; });
+  }
+  // localStorage via db object
+  var def = DK_LS_TABLES[tableName];
+  if (!def) return Promise.resolve({ type:'ls', records: [] });
+  var records;
+  if (def.src === 'db') {
+    records = db[tableName] ? db[tableName].slice() : [];
+  } else {
+    try { records = JSON.parse(localStorage.getItem(def.key) || 'null') || []; }
+    catch(e) { records = []; }
+    // Some keys are objects, not arrays — wrap for display
+    if (!Array.isArray(records)) records = [records];
+  }
+  return Promise.resolve({ type:'ls', records: records });
+}
+
+function dkIdbTogglePin(key) {
+  _dkIdb.pins[key] = !_dkIdb.pins[key];
+  var el = document.getElementById('dk-idb-pin-' + key);
+  if (el) el.classList.toggle('sel', _dkIdb.pins[key]);
+  dkIdbRender();
+}
+
+function dkIdbRender() {
+  var tableEl  = document.getElementById('dk-idb-table');
+  var scopeEl  = document.getElementById('dk-idb-scope');
+  var bodyEl   = document.getElementById('dk-idb-body');
+  var fieldRow = document.getElementById('dk-idb-field-row');
+  if (!bodyEl) return;
+
+  var tableVal  = tableEl ? tableEl.value : 'idb:attempts';
+  var scope     = scopeEl ? scopeEl.value : 'all';
+  var parts     = tableVal.split(':');
+  var tableName = parts[1] || parts[0];
+
+  // Pin field row only for attempts
+  if (fieldRow) fieldRow.style.display = (tableName === 'attempts') ? 'flex' : 'none';
+
+  bodyEl.innerHTML = '<div style="color:var(--t3);text-align:center;padding:20px">Loading\u2026</div>';
+
+  dkIdbGetRecords(tableName).then(function(result) {
+    // Count-only case
+    if (result.type === 'count') {
+      bodyEl.innerHTML = '<div style="text-align:center;padding:24px">' +
+        '<div style="font-size:32px;color:var(--teal);font-weight:700">' + result.count + '</div>' +
+        '<div style="color:var(--t3);margin-top:4px">ball image records</div>' +
+        '<div style="font-size:10px;color:var(--t3);margin-top:8px">Binary data — not shown inline</div></div>';
+      return;
+    }
+
+    var records = result.records;
+
+    // Scope filter for IDB scoring tables
+    if (scope === 'current' && G.gameID) {
+      if (tableName === 'attempts') {
+        var fids = new Set((db.frames||[]).filter(function(f){ return f.GameID===G.gameID; }).map(function(f){ return f.FrameID; }));
+        records = records.filter(function(a){ return fids.has(a.FrameID); });
+      } else if (tableName === 'frames') {
+        records = records.filter(function(f){ return f.GameID===G.gameID; });
+      } else if (tableName === 'games') {
+        records = records.filter(function(g){ return g.GameID===G.gameID; });
+      }
+    }
+
+    // Sort scoring tables
+    if (tableName === 'attempts') {
+      records = records.slice().sort(function(a,b){
+        if (a.FrameNumber!==b.FrameNumber) return (a.FrameNumber||0)-(b.FrameNumber||0);
+        return (a.Attempt||0)-(b.Attempt||0);
+      });
+    } else if (tableName === 'frames') {
+      records = records.slice().sort(function(a,b){ return (a.FrameNumber||0)-(b.FrameNumber||0); });
+    }
+
+    if (!records.length) {
+      bodyEl.innerHTML = '<div style="color:var(--t3);text-align:center;padding:20px">No records</div>';
+      return;
+    }
+
+    var pins = _dkIdb.pins;
+
+    function srcBadge(src) {
+      if (!src) return '<span class="dk-idb-badge dk-idb-badge-null">null</span>';
+      var cls = {'auto':'dk-idb-badge-auto','prompted':'dk-idb-badge-prompted','user':'dk-idb-badge-user'}[src] || 'dk-idb-badge-null';
+      return '<span class="dk-idb-badge ' + cls + '">' + src + '</span>';
+    }
+
+    function valSpan(val) {
+      if (val === null || val === undefined) return '<span style="color:var(--t3)">null</span>';
+      return '<span style="color:var(--teal)">' + _escHtml(String(val)) + '</span>';
+    }
+
+    function buildChildHTML(rec) {
+      var children = [], childLabel = '';
+      if (tableName === 'frames') {
+        children = (db.attempts||[]).filter(function(a){ return a.FrameID===rec.FrameID; })
+          .sort(function(a,b){ return (a.Attempt||0)-(b.Attempt||0); });
+        childLabel = 'Attempts';
+      } else if (tableName === 'games') {
+        children = (db.frames||[]).filter(function(f){ return f.GameID===rec.GameID; })
+          .sort(function(a,b){ return (a.FrameNumber||0)-(b.FrameNumber||0); });
+        childLabel = 'Frames';
+      } else if (tableName === 'series') {
+        children = (db.games||[]).filter(function(g){ return g.SeriesID===rec.SeriesID; });
+        childLabel = 'Games';
+      } else if (tableName === 'balls') {
+        children = (db.surfaces||[]).filter(function(s){ return s.BallID===rec.BallID; });
+        childLabel = 'Surface Records';
+      } else if (tableName === 'leagues') {
+        children = (db.series||[]).filter(function(s){ return s.LeagueID===rec.LeagueID; });
+        childLabel = 'Series';
+      }
+      if (!children.length) return '';
+      var rows = children.map(function(c) {
+        var keys = Object.keys(c);
+        var title = '';
+        if (tableName==='frames')  title = 'Att ' + (c.Attempt||'?') + ' · pf:' + (c.Pinfall!==null&&c.Pinfall!==undefined?c.Pinfall:'—') + (c.PocketEntry?' · '+c.PocketEntry:'') + (c.PocketEntrySource?' ['+c.PocketEntrySource+']':'') + (c.BallRoll?' · roll:'+c.BallRoll:'');
+        else if (tableName==='games')   title = 'F'+(c.FrameNumber||'?')+' · '+(c.Score!==null&&c.Score!==undefined?c.Score:'—')+(c.IsStrike?' ✕':c.IsSpare?' /':'');
+        else if (tableName==='series')  title = 'G'+(c.GameNumber||'?')+(c.FinalScore!==null&&c.FinalScore!==undefined?' · '+c.FinalScore:'');
+        else if (tableName==='balls')   title = (c.PrepDate||c.Date||'') + ' · ' + (c.Grit||'') + (c.Polished?' Polished':'');
+        else if (tableName==='leagues') title = 'S'+(c.SeriesID||'?')+' · '+(c.Date||'');
+        else { title = _escHtml(String(c[keys[0]]||'')); }
+        return '<div style="padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:10px;color:var(--t2)">' + _escHtml(title) + '</div>';
+      }).join('');
+      return '<div style="margin-top:8px;background:rgba(0,0,0,0.3);border-radius:6px;padding:6px 8px">' +
+        '<div style="font-size:9px;color:var(--t3);font-weight:700;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px">' +
+          childLabel + ' (' + children.length + ')</div>' + rows + '</div>';
+    }
+
+    function rowSummary(rec) {
+      var head = [], badges = [];
+      if (tableName === 'attempts') {
+        head.push('<span style="color:var(--purple);font-weight:700">F'+(rec.FrameNumber||'?')+' A'+(rec.Attempt||'?')+'</span>');
+        head.push('<span style="color:var(--t2);margin-left:6px">pf:'+(rec.Pinfall!==null?rec.Pinfall:'—')+'</span>');
+        if (pins.leave)  badges.push('<span style="color:var(--t3)">leave:</span>'+valSpan(rec.LeaveID));
+        if (pins.pocket) badges.push('<span style="color:var(--t3)">entry:</span>'+valSpan(rec.PocketEntry));
+        if (pins.pesrc)  badges.push(srcBadge(rec.PocketEntrySource));
+        if (pins.broll)  badges.push('<span style="color:var(--t3)">roll:</span>'+valSpan(rec.BallRoll));
+        if (pins.brsrc)  badges.push(srcBadge(rec.BallRollSource));
+      } else if (tableName === 'frames') {
+        head.push('<span style="color:var(--purple);font-weight:700">F'+(rec.FrameNumber||'?')+'</span>');
+        head.push('<span style="color:var(--t2);margin-left:6px">score:'+(rec.Score!==null&&rec.Score!==undefined?rec.Score:'—')+'</span>');
+        if (rec.IsStrike) badges.push('<span class="dk-idb-badge dk-idb-badge-user">Strike</span>');
+        else if (rec.IsSpare) badges.push('<span class="dk-idb-badge dk-idb-badge-prompted">Spare</span>');
+        badges.push('<span style="color:var(--t3)">rt:</span>'+valSpan(rec.RunningTotal));
+      } else if (tableName === 'games') {
+        head.push('<span style="color:var(--purple);font-weight:700">G'+(rec.GameNumber||'?')+'</span>');
+        head.push('<span style="color:var(--t2);margin-left:6px">'+(rec.FinalScore!==null&&rec.FinalScore!==undefined?rec.FinalScore:'in progress')+'</span>');
+        badges.push('<span style="color:var(--t3)">ID:</span>'+valSpan(rec.GameID));
+      } else if (tableName === 'series') {
+        head.push('<span style="color:var(--purple);font-weight:700">S'+(rec.SeriesID||'?')+'</span>');
+        head.push('<span style="color:var(--t2);margin-left:6px">'+_escHtml(String(rec.Date||rec.SeriesDate||''))+'</span>');
+        badges.push('<span style="color:var(--t3)">league:</span>'+valSpan(rec.LeagueID));
+      } else if (tableName === 'balls') {
+        head.push('<span style="color:var(--purple);font-weight:700">'+_escHtml(String(rec.BallName||rec.Name||rec.BallID||'?'))+'</span>');
+        badges.push('<span style="color:var(--t3)">ID:</span>'+valSpan(rec.BallID));
+        badges.push(valSpan(rec.Brand));
+      } else if (tableName === 'bowlers') {
+        head.push('<span style="color:var(--purple);font-weight:700">'+_escHtml(String(rec.Name||rec.BowlerName||'?'))+'</span>');
+        if (rec.IsMe) badges.push('<span class="dk-idb-badge dk-idb-badge-user">ME</span>');
+        badges.push('<span style="color:var(--t3)">avg:</span>'+valSpan(rec.Average||rec.Avg));
+      } else if (tableName === 'leagues') {
+        head.push('<span style="color:var(--purple);font-weight:700">'+_escHtml(String(rec.LeagueName||rec.Name||'?'))+'</span>');
+        badges.push('<span style="color:var(--t3)">center:</span>'+valSpan(rec.CenterID));
+        badges.push('<span style="color:var(--t3)">hdcp:</span>'+valSpan(rec.Handicap));
+      } else if (tableName === 'centers') {
+        head.push('<span style="color:var(--purple);font-weight:700">'+_escHtml(String(rec.CenterName||rec.Name||'?'))+'</span>');
+        badges.push(valSpan(rec.City));
+      } else if (tableName === 'leaves') {
+        head.push('<span style="color:var(--purple);font-weight:700">'+_escHtml(String(rec.DisplayName||rec.LeaveID||'?'))+'</span>');
+        badges.push('<span style="color:var(--t3)">ID:</span>'+valSpan(rec.LeaveID));
+        badges.push(valSpan(rec.PinCount));
+      } else if (tableName === 'patterns') {
+        head.push('<span style="color:var(--purple);font-weight:700">'+_escHtml(String(rec.PatternName||rec.Name||'?'))+'</span>');
+        badges.push('<span style="color:var(--t3)">length:</span>'+valSpan(rec.Length));
+      } else if (tableName === 'spare_alignments') {
+        var _saLeaf = (db.leaves||[]).find(function(l){return l.LeaveID===rec.leaveID;});
+        head.push('<span style="color:var(--purple);font-weight:700">'+_escHtml(String((_saLeaf&&_saLeaf.DisplayName)||rec.leaveID||'?'))+'</span>');
+        badges.push('<span style="color:var(--t3)">ID:</span>'+valSpan(rec.leaveID));
+        badges.push('<span style="color:var(--t3)">sb:</span>'+valSpan(rec.sb));
+        badges.push('<span style="color:var(--t3)">tb:</span>'+valSpan(rec.tb));
+      } else {
+        // Generic fallback
+        var keys = Object.keys(rec);
+        head.push('<span style="color:var(--purple);font-weight:700">'+_escHtml(String(rec[keys[0]]||''))+'</span>');
+        keys.slice(1,4).forEach(function(k){ badges.push('<span style="color:var(--t3)">'+_escHtml(k)+':</span>'+valSpan(rec[k])); });
+      }
+      return { head:head, badges:badges };
+    }
+
+    var html = '';
+    records.forEach(function(rec, idx) {
+      var s = rowSummary(rec);
+      var expandID = 'dk-idb-exp-' + idx;
+      var childHTML = buildChildHTML(rec);
+      var fullJSON = JSON.stringify(rec, null, 2);
+      html += '<div class="dk-idb-row" onclick="dkIdbToggleExpand(\'' + expandID + '\')">' +
+        '<div class="dk-idb-row-head">' + s.head.join('') + '</div>' +
+        (s.badges.length ? '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:3px">' + s.badges.join('') + '</div>' : '') +
+        '<div class="dk-idb-expand" id="' + expandID + '">' +
+          childHTML +
+          '<div style="margin-top:8px;font-size:9px;color:var(--t3);font-weight:700;text-transform:uppercase;letter-spacing:0.5px">Full Record</div>' +
+          '<div style="margin-top:4px;background:rgba(0,0,0,0.3);border-radius:6px;padding:6px 8px;white-space:pre-wrap;word-break:break-all">' + _escHtml(fullJSON) + '</div>' +
+          '<div style="margin-top:6px">' +
+            '<span onclick="event.stopPropagation();dkIdbCopyRecord(\'' + expandID + '\')" ' +
+              'style="color:var(--teal);cursor:pointer;font-size:10px;margin-right:12px">⧉ Copy JSON</span>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    });
+
+    html += '<div style="color:var(--t3);font-size:10px;text-align:center;padding:10px">' +
+      records.length + ' record' + (records.length===1?'':'s') + '</div>';
+    bodyEl.innerHTML = html;
+  });
+}
+
+function dkIdbToggleExpand(id) {
+  var el = document.getElementById(id);
+  if (el) el.classList.toggle('open');
+}
+
+function dkIdbCopyRecord(expandID) {
+  var el = document.getElementById(expandID);
+  if (!el) return;
+  // Grab text from the Full Record pre-block only
+  var pre = el.querySelector('div[style*="pre-wrap"]');
+  var text = pre ? pre.textContent : el.textContent.replace('\u29C7 Copy JSON','').trim();
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(function(){ toast('Copied'); });
+  } else {
+    var ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    toast('Copied');
+  }
+}
+
+function dkIdbExport() {
+  var tableEl = document.getElementById('dk-idb-table');
+  var scopeEl = document.getElementById('dk-idb-scope');
+  var tableVal  = tableEl ? tableEl.value : 'idb:attempts';
+  var parts     = tableVal.split(':');
+  var tableName = parts[1] || parts[0];
+  var scope     = scopeEl ? scopeEl.value : 'all';
+
+  dkIdbGetRecords(tableName).then(function(result) {
+    if (result.type === 'count') { toast('ballImages: binary data, export not supported'); return; }
+    var records = result.records;
+
+    // Apply scope filter
+    if (scope === 'current' && G.gameID) {
+      if (tableName === 'attempts') {
+        var fids = new Set((db.frames||[]).filter(function(f){ return f.GameID===G.gameID; }).map(function(f){ return f.FrameID; }));
+        records = records.filter(function(a){ return fids.has(a.FrameID); });
+      } else if (tableName === 'frames') {
+        records = records.filter(function(f){ return f.GameID===G.gameID; });
+      } else if (tableName === 'games') {
+        records = records.filter(function(g){ return g.GameID===G.gameID; });
+      }
+    }
+
+    if (!records.length) { toast('No records to export'); return; }
+
+    var ts = new Date().toISOString().slice(0,16).replace('T','_').replace(':','-');
+    var filename = 'bowlingdb_' + tableName + '_' + scope + '_' + ts + '.json';
+    var blob = new Blob([JSON.stringify(records, null, 2)], { type:'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    toast('Exported ' + records.length + ' records → ' + filename);
+  });
 }
 
 function dkRenderEntries() {
@@ -29668,6 +31730,528 @@ function idbGetAllDirect(storeName) {
 }
 
 /* Dump raw IDB counts and series list to the result panel */
+/* ═════════════════════════════════════════════════════════════
+   SEASON DRY RUN (v30.38) — READ-ONLY
+   Validates the season engine against real IDB data before any
+   consumer is wired to it. Calls deriveLeagueSeason() (pure) and
+   NEVER getLeagueSeason() (which assigns + persists). A mutation
+   guard at the end proves nothing was written.
+
+   The offline preseed harness could only test 23/27 leagues: it has
+   reference tables but no series, so chain step 3 (observed span)
+   never fired. That is the gap this closes.
+
+   The real test is the last column: the span-derived season vs the
+   season the ACTUAL SERIES DATES vote for. If those two ever
+   disagree, the span logic is wrong and the engine is not trusted.
+   ═══════════════════════════════════════════════════════════ */
+async function dkSeasonDryRun() {
+  var result = document.getElementById('dk-purge-result');
+  if (result) result.textContent = 'Loading scoring data...';
+  try {
+    await loadScoringData();   // chain step 3 needs db.series populated
+
+    // ── Mutation guard: snapshot before ──
+    var before = {
+      seasons: (db.seasons||[]).length,
+      nextID:  db.ids.season,
+      tags:    JSON.stringify((db.leagues||[]).map(function(l){
+                 return [l.LeagueID, l.SeasonID, l.SeasonSource]; }))
+    };
+
+    var out = [];
+    out.push('SEASON DRY RUN - read-only, no writes');
+    out.push('Leagues: ' + (db.leagues||[]).length +
+             '   Series loaded: ' + (db.series||[]).length);
+    out.push('Rule: majority of calendar days wins. Sanctioned is not an input.');
+    out.push('');
+
+    var pad = function(s,n){ s = (s==null?'':String(s)); return s.length>n ? s.slice(0,n) : s+' '.repeat(n-s.length); };
+    out.push(pad('ID',4)+pad('League',24)+pad('Method',11)+pad('Derived',16)+
+             pad('Shr',5)+pad('Src',9)+pad('SeriesVote',20)+'Agree');
+    out.push('-'.repeat(94));
+
+    var nAuto=0, nPrompt=0, nObserved=0, nThin=0, nDisagree=0, nThinDisagree=0, nNoSeries=0, nNamed=0;
+    var disagreements = [], thinDisagreements = [];
+
+    (db.leagues||[]).filter(function(l){ return !l._virtual && l.LeagueID > 0; })
+      .sort(function(a,b){ return String(a.StartDate||'zz').localeCompare(String(b.StartDate||'zz')); })
+      .forEach(function(l) {
+        var d = deriveLeagueSeason(l);
+        if (!d) return;
+        if (d.source==='auto') nAuto++; else nPrompt++;
+        if (d.span && d.span.method==='observed') nObserved++;
+        if (d.sharePct != null && d.sharePct < 60) nThin++;
+        if (d.reason && d.reason.indexOf('name') !== -1) nNamed++;
+
+        // ── Independent check: what do the real series dates vote for? ──
+        // Sample-size gated: a league with only a handful of series recorded
+        // against a much longer expected schedule (Weeks) is an incomplete
+        // sample, not reliable ground truth. Disagreeing with an incomplete
+        // sample does not mean the span/majority computation is wrong - it
+        // means there isn't enough observed data yet to check it against.
+        // Threshold: fewer than half of expected series recorded, or fewer
+        // than 8 in hand when Weeks is unknown.
+        var sDates = (db.series||[])
+          .filter(function(s){ return s.LeagueID === l.LeagueID && s.DateBowled; })
+          .map(function(s){ return s.DateBowled; });
+        var vote = '(no series)', agree = '-';
+        if (!sDates.length) { nNoSeries++; }
+        else {
+          var expected = l.Weeks > 0 ? l.Weeks : null;
+          var thinSample = expected ? (sDates.length < expected * 0.5) : (sDates.length < 8);
+          var b = {};
+          sDates.forEach(function(ds){
+            var k = seasonBucketOf(ds);
+            if (k) b[k] = (b[k]||0)+1;
+          });
+          var ks = Object.keys(b).sort(function(x,y){ return b[y]-b[x]; });
+          if (ks.length) {
+            var parts = ks[0].split('|');
+            vote = seasonLabel(parts[1], parts[0]) + ' (' + b[ks[0]] + '/' + sDates.length +
+                   (expected ? ' of ' + expected + 'wk' : '') + ')';
+            var match = (d.label === seasonLabel(parts[1], parts[0]));
+            agree = match ? 'yes' : (thinSample ? 'thin' : 'NO');
+            if (!match) {
+              var detail = '  L' + l.LeagueID + ' ' + l.LeagueName +
+                '\n    span says : ' + d.label + '  (' + d.reason + ')' +
+                '\n    series say: ' + vote +
+                '\n    span used : ' + (d.span ? d.span.start+' -> '+d.span.end+' ['+d.span.method+']' : 'none');
+              if (thinSample) {
+                nThinDisagree++;
+                thinDisagreements.push(detail +
+                  '\n    -> only ' + sDates.length + ' series recorded' +
+                  (expected ? ' of ' + expected + ' expected weeks' : '') +
+                  ' - too small a sample to trust over the span. Informational only.');
+              } else {
+                nDisagree++;
+                disagreements.push(detail);
+              }
+            }
+          }
+        }
+
+        out.push(pad(l.LeagueID,4) + pad(l.LeagueName,24) +
+                 pad(d.span?d.span.method:'-',11) +
+                 pad(d.label||'(unassigned)',16) +
+                 pad(d.sharePct!=null?d.sharePct+'%':'-',5) +
+                 pad(d.source,9) + pad(vote,20) + agree);
+      });
+
+    out.push('-'.repeat(94));
+    out.push('');
+    out.push('SUMMARY');
+    out.push('  auto: ' + nAuto + '   prompted: ' + nPrompt + '   (name-signal involved: ' + nNamed + ')');
+    out.push('  resolved via observed-series span: ' + nObserved);
+    out.push('  thin margin <60%: ' + nThin);
+    out.push('  no series yet: ' + nNoSeries);
+    out.push('  span-vs-series DISAGREEMENTS (full-sample): ' + nDisagree +
+             (nDisagree ? '   <-- ENGINE NOT TRUSTED' : '   <-- engine agrees with reality on every full sample'));
+    out.push('  span-vs-series disagreements (thin sample, informational): ' + nThinDisagree);
+
+    if (disagreements.length) {
+      out.push('');
+      out.push('DISAGREEMENT DETAIL (full sample - takes these seriously)');
+      disagreements.forEach(function(x){ out.push(x); });
+    }
+    if (thinDisagreements.length) {
+      out.push('');
+      out.push('THIN-SAMPLE DETAIL (informational - not a trust failure)');
+      thinDisagreements.forEach(function(x){ out.push(x); });
+    }
+
+    // ── Mutation guard: snapshot after ──
+    var after = {
+      seasons: (db.seasons||[]).length,
+      nextID:  db.ids.season,
+      tags:    JSON.stringify((db.leagues||[]).map(function(l){
+                 return [l.LeagueID, l.SeasonID, l.SeasonSource]; }))
+    };
+    var clean = (before.seasons===after.seasons && before.nextID===after.nextID &&
+                 before.tags===after.tags);
+    out.push('');
+    out.push('MUTATION CHECK  (dry run must write nothing)');
+    out.push('  db.seasons:    ' + before.seasons + ' -> ' + after.seasons);
+    out.push('  ids.season:    ' + before.nextID  + ' -> ' + after.nextID);
+    out.push('  league tags:   ' + (before.tags===after.tags ? 'unchanged' : 'CHANGED'));
+    out.push('  ' + (clean ? 'PASS - no writes' : 'FAIL - dry run mutated state'));
+
+    if (result) result.textContent = out.join('\n');
+    toast('Season dry run complete' + (nDisagree ? ' - ' + nDisagree + ' disagreement(s)' : ' - clean'));
+  } catch(e) {
+    if (result) result.textContent = 'Season dry run failed:\n' + (e && e.message ? e.message : e) + '\n' + (e && e.stack ? e.stack : '');
+  }
+}
+
+/* ── Lineage Dry Run (v30.44, read-only) ─────────────────────
+   Same discipline as the Season Dry Run: calls only pure /
+   read-only functions (leagueLineageKey, deriveLeagueSeason),
+   snapshots state before and after, and prints a PASS/FAIL
+   mutation-guard line. Nothing here writes a LineageID - that
+   is a later version, gated on this report looking right on
+   real names first. */
+/* ── Lineage grouping core (v30.46) ───────────────────────────
+   Pure, read-only. Shared by the DevKit Lineage Dry Run AND the
+   real persisting ensureLineages() - same function, same output,
+   so what you validate in the dry run is EXACTLY what gets
+   written. Never call this from anywhere that also writes state.
+
+   Leagues with LineageSource==='user' are a locked override: they
+   never participate in auto-grouping (Tier 1 key match or Tier 2a
+   prefix+slot corroboration) and are returned separately in
+   userLocked, untouched by anything downstream. */
+function computeLineageGroups(leagues) {
+  var userLocked = leagues.filter(function(l) { return l.LineageSource === 'user'; });
+  var autoPool   = leagues.filter(function(l) { return l.LineageSource !== 'user'; });
+
+  // ── Tier 1: exact name-key groups (leagueLineageKey) ──
+  var groups = {};
+  autoPool.forEach(function(l) {
+    var k = leagueLineageKey(l.LeagueName);
+    (groups[k] = groups[k] || []).push(l);
+  });
+  var keys = Object.keys(groups).sort();
+
+  // ── Union-Find over name-keys, seeded one node per Tier-1 group ──
+  var parent = {};
+  keys.forEach(function(k) { parent[k] = k; });
+  function find(k) { while (parent[k] !== k) { k = parent[k]; } return k; }
+  function union(a, b) { var ra = find(a), rb = find(b); if (ra !== rb) parent[ra] = rb; }
+
+  // ── Prefix relationships between distinct keys ──
+  var prefixPairs = [];
+  for (var i = 0; i < keys.length; i++) {
+    for (var j = 0; j < keys.length; j++) {
+      if (i === j) continue;
+      var a = keys[i].split(' '), b = keys[j].split(' ');
+      if (a.length && a.length < b.length &&
+          b.slice(0, a.length).join(' ') === keys[i]) {
+        prefixPairs.push([keys[i], keys[j]]);
+      }
+    }
+  }
+
+  // ── Tier 2a: prefix + Center/Day corroboration -> auto-promote ──
+  function slotOf(l) { return l.DayOfBowling ? (l.CenterID + '|' + l.DayOfBowling) : null; }
+  var promoted = [], stillReview = [];
+  prefixPairs.forEach(function(p) {
+    var A = groups[p[0]], B = groups[p[1]], hit = null;
+    for (var x = 0; x < A.length && !hit; x++) {
+      var sx = slotOf(A[x]);
+      if (!sx) continue;
+      for (var y = 0; y < B.length; y++) {
+        if (slotOf(B[y]) === sx) { hit = { a: A[x], b: B[y], slot: sx }; break; }
+      }
+    }
+    if (hit) { union(p[0], p[1]); promoted.push({ pair: p, hit: hit }); }
+    else stillReview.push(p);
+  });
+
+  // ── Rebuild final groups from union-find roots. Display label = the
+  // shortest of the original keys merged into that root. ──
+  var finalGroups = {}, rootKeys = {};
+  keys.forEach(function(k) {
+    var r = find(k);
+    finalGroups[r] = (finalGroups[r] || []).concat(groups[k]);
+    (rootKeys[r] = rootKeys[r] || []).push(k);
+  });
+  var label = {};
+  Object.keys(rootKeys).forEach(function(r) {
+    label[r] = rootKeys[r].slice().sort(function(a, b) { return a.length - b.length; })[0];
+  });
+  var finalKeys = Object.keys(finalGroups).sort(function(a, b) {
+    return label[a].localeCompare(label[b]);
+  });
+  var multi = finalKeys.filter(function(k) { return finalGroups[k].length > 1; });
+  var single = finalKeys.filter(function(k) { return finalGroups[k].length === 1; });
+
+  // ── Tier 2b: slot-match candidates. Advisory only - never merged here. ──
+  var STOPWORDS = { league:1, vegas:1, day:1, night:1, the:1, and:1, presented:1,
+    by:1, classic:1, challenge:1, sport:1, fun:1, of:1, in:1, on:1, at:1, for:1,
+    with:1, ii:1, iii:1, iv:1 };
+  function sigWords(name) {
+    var out = {};
+    (String(name || '').toLowerCase().match(/[a-z0-9]+(?:'s)?/g) || []).forEach(function(w) {
+      w = w.replace(/'s$/, '');
+      if (w.length >= 4 && !STOPWORDS[w]) out[w] = 1;
+    });
+    return out;
+  }
+  function sessionWord(name) {
+    var n = String(name || '');
+    if (/\bfall\b/i.test(n))   return 'fall';
+    if (/\bwinter\b/i.test(n)) return 'winter';
+    if (/\bspring\b/i.test(n)) return 'spring';
+    if (/\bsummer\b/i.test(n)) return 'summer';
+    return null;
+  }
+  var slotCandidates = [], seenSC = {};
+  single.forEach(function(k) {
+    var l1 = finalGroups[k][0], s1 = slotOf(l1);
+    if (!s1) return;
+    var w1 = sigWords(l1.LeagueName), sw1 = sessionWord(l1.LeagueName);
+    finalKeys.forEach(function(k2) {
+      if (k2 === k) return;
+      finalGroups[k2].forEach(function(l2) {
+        if (slotOf(l2) !== s1) return;
+        var sw2 = sessionWord(l2.LeagueName);
+        if (sw1 && sw2 && sw1 !== sw2) return;   // conflicting season words -> suppress
+        var w2 = sigWords(l2.LeagueName);
+        var shared = Object.keys(w1).filter(function(w) { return w2[w]; });
+        if (!shared.length) return;
+        var sig = l1.LeagueID + '~' + k2;
+        if (seenSC[sig]) return;
+        seenSC[sig] = true;
+        slotCandidates.push({ l1: l1, l2: l2, k2: k2, shared: shared, slot: s1 });
+      });
+    });
+  });
+
+  return {
+    userLocked: userLocked, groups: groups, keys: keys, finalGroups: finalGroups,
+    label: label, finalKeys: finalKeys, multi: multi, single: single,
+    promoted: promoted, stillReview: stillReview, slotCandidates: slotCandidates
+  };
+}
+
+/* ── Lineage display-name casing (v30.47) ────────────────────
+   A lineage's LineageKey (from leagueLineageKey) is already
+   year-free by construction - deriving DisplayName FROM that key,
+   rather than from any one member's raw LeagueName, guarantees the
+   lineage's own label never carries a year, regardless of which
+   real league instances happen to belong to it. Small exceptions
+   list so acronyms/roman numerals title-case correctly; extend as
+   new patterns show up in real data (same tunable-list convention
+   as the Tier 2b STOPWORDS). */
+var LINEAGE_CASE_EXCEPTIONS = { nfl:'NFL', usbc:'USBC', ii:'II', iii:'III', iv:'IV', vi:'VI', vii:'VII' };
+function titleCaseLineageLabel(label) {
+  return String(label || '').split(' ').map(function(w) {
+    if (!w) return w;
+    var exc = LINEAGE_CASE_EXCEPTIONS[w.toLowerCase()];
+    if (exc) return exc;
+    return w.charAt(0).toUpperCase() + w.slice(1);
+  }).join(' ');
+}
+
+/* ── Persist lineage groupings (v30.46, WRITES) ──────────────
+   Calls computeLineageGroups() - the identical function the
+   read-only dry run uses - so nothing is written that the dry
+   run didn't already show you. Only Tier 1 + Tier 2a groups are
+   ever auto-assigned; Tier 2b slot-match candidates are never
+   auto-merged (resolving one means picking it on the League form,
+   which sets LineageSource:'user').
+
+   Idempotent: finds-or-creates a lineages record by LineageKey and
+   reuses its ID on every re-run, and clears a stale 'auto' tag on
+   any league whose current group has shrunk to a singleton (auto
+   always reflects the CURRENT computation, never sticky - same
+   philosophy as the season engine's 'auto' tags). Leagues locked
+   'user' are never touched, in either direction. Does not call
+   saveDB() - the caller persists, same convention as
+   getLeagueSeason(). */
+function ensureLineages() {
+  if (!db.lineages) db.lineages = [];
+  var leagues = (db.leagues || []).filter(function(l) { return !l._virtual && l.LeagueID > 0; });
+  var g = computeLineageGroups(leagues);
+
+  var touched = 0, renamed = 0;
+  g.multi.forEach(function(k) {
+    var key = g.label[k];
+    var displayName = titleCaseLineageLabel(key);
+    var rec = db.lineages.find(function(x) { return x.LineageKey === key; });
+    if (!rec) {
+      rec = { LineageID: db.ids.lineage++, LineageKey: key, DisplayName: displayName };
+      db.lineages.push(rec);
+    } else if (rec.DisplayName !== displayName) {
+      // No rename UI exists yet, so DisplayName has no user-authored state to
+      // protect - always keep it in sync with the canonical derivation. If a
+      // manual rename feature is added later, THAT is the point to gate this
+      // on a DisplayNameSource flag the way LineageSource already gates
+      // LineageID; not needed before that feature exists.
+      rec.DisplayName = displayName;
+      renamed++;
+    }
+    g.finalGroups[k].forEach(function(l) {
+      if (l.LineageID !== rec.LineageID || l.LineageSource !== 'auto') touched++;
+      l.LineageID = rec.LineageID;
+      l.LineageSource = 'auto';
+    });
+  });
+
+  // A non-user league left as a true singleton this run may be carrying a
+  // stale 'auto' tag from a prior run where it belonged to a bigger group
+  // (e.g. a name/day edit broke the match). Clear it back to unassigned.
+  g.single.forEach(function(k) {
+    var l = g.finalGroups[k][0];
+    if (l.LineageSource === 'auto' && l.LineageID !== null) {
+      l.LineageID = null; l.LineageSource = null; touched++;
+    }
+  });
+
+  return { groupsWritten: g.multi.length, leaguesTouched: touched,
+           displayNamesFixed: renamed, slotCandidates: g.slotCandidates.length };
+}
+
+/* ── Ensure Lineages — DevKit on-demand run (v30.46, WRITES) ── */
+async function dkEnsureLineagesRun() {
+  var result = document.getElementById('dk-purge-result');
+  if (result) result.textContent = 'Running...';
+  try {
+    await loadScoringData();
+    var r = ensureLineages();
+    saveDB();
+    var msg = [];
+    msg.push('ENSURE LINEAGES - writes applied');
+    msg.push('');
+    msg.push('  lineage groups written: ' + r.groupsWritten);
+    msg.push('  leagues touched (assigned/cleared): ' + r.leaguesTouched);
+    msg.push('  display names corrected (year-free rename): ' + r.displayNamesFixed);
+    msg.push('  slot match candidates still needing a manual pick: ' + r.slotCandidates);
+    msg.push('');
+    msg.push('Run the read-only Lineage Dry Run to review the result, or check');
+    msg.push('individual League forms - each shows its current Lineage assignment.');
+    if (result) result.textContent = msg.join('\n');
+    toast('Lineages updated - ' + r.leaguesTouched + ' league(s) touched');
+  } catch(e) {
+    if (result) result.textContent = 'Ensure Lineages failed:\n' + (e && e.message ? e.message : e) + '\n' + (e && e.stack ? e.stack : '');
+  }
+}
+
+/* ── Lineage Dry Run (v30.44-46, read-only) ──────────────────
+   Same discipline as the Season Dry Run: calls only pure /
+   read-only functions, snapshots state before and after, and
+   prints a PASS/FAIL mutation-guard line. Thin wrapper around
+   computeLineageGroups() - the exact same function ensureLineages()
+   uses to write, so this report is a true preview. */
+async function dkLineageDryRun() {
+  var result = document.getElementById('dk-purge-result');
+  if (result) result.textContent = 'Loading scoring data...';
+  try {
+    await loadScoringData();
+
+    var snap = function() {
+      return JSON.stringify({
+        seasons: (db.seasons || []).length,
+        nextID:  db.ids.season,
+        tags:    (db.leagues || []).map(function(l) {
+                   return [l.LeagueID, l.SeasonID, l.SeasonSource, l.LineageID, l.LineageSource]; })
+      });
+    };
+    var before = snap();
+
+    var leagues = (db.leagues || []).filter(function(l) {
+      return !l._virtual && l.LeagueID > 0;
+    });
+    var g = computeLineageGroups(leagues);
+
+    var out = [];
+    out.push('LINEAGE DRY RUN - read-only, no writes  (v30.46: reads persisted state)');
+    out.push('Leagues: ' + leagues.length + '   Name keys: ' + g.keys.length +
+             '   Proposed lineages (2+ members): ' + g.multi.length +
+             '   Singletons: ' + g.single.length +
+             '   User-locked: ' + g.userLocked.length);
+    out.push('Tier 1: exact name-key match. Tier 2a: prefix + Center/Day corroboration (auto-promoted).');
+    out.push('Tier 2b: Center/Day + shared word, no key/prefix relation (human review only). Season words always separate sessions.');
+    out.push('');
+
+    var seasonOf = function(l) {
+      var d = deriveLeagueSeason(l);
+      return d && d.label ? d.label : '(unassigned)';
+    };
+
+    var nSameSeason = 0;
+    out.push('PROPOSED LINEAGES (grouped, 2+ members)');
+    out.push('-'.repeat(70));
+    if (!g.multi.length) out.push('  (none)');
+    g.multi.forEach(function(k) {
+      // A promoted pair belongs to this printed group if either of its
+      // corroborating members ended up as a member of this final group
+      // (robust regardless of which original key the union-find kept as root).
+      var promo = g.promoted.filter(function(p) {
+        return g.finalGroups[k].indexOf(p.hit.a) !== -1 || g.finalGroups[k].indexOf(p.hit.b) !== -1;
+      });
+      var already = db.lineages.find(function(x) { return x.LineageKey === g.label[k]; });
+      out.push('"' + g.label[k] + '"' + (promo.length ? '   [merged via prefix + slot match]' : '') +
+               (already ? '   [persisted: LineageID ' + already.LineageID + ']' : '   [not yet persisted]'));
+      var seen = {};
+      g.finalGroups[k].sort(function(a, b) { return a.LeagueID - b.LeagueID; }).forEach(function(l) {
+        var s = seasonOf(l);
+        var dup = seen[s] ? '   << SAME SEASON as L' + seen[s] + ' - check!' : '';
+        if (seen[s]) nSameSeason++;
+        seen[s] = seen[s] || l.LeagueID;
+        var tag = l.LineageSource ? ('   [' + l.LineageSource + ']') : '';
+        out.push('   L' + l.LeagueID + '  ' + l.LeagueName + '   [' + s + ']' + tag + dup);
+      });
+      promo.forEach(function(p) {
+        out.push('   -> promoted: "' + p.pair[0] + '" + "' + p.pair[1] + '" share Center ' +
+                 p.hit.slot.split('|')[0] + ' / ' + p.hit.slot.split('|')[1] +
+                 ' (L' + p.hit.a.LeagueID + ', L' + p.hit.b.LeagueID + ')');
+      });
+      out.push('');
+    });
+
+    out.push('SLOT MATCH CANDIDATES (Center + Day + shared word, name key/prefix did not link these - human review)');
+    out.push('-'.repeat(70));
+    if (!g.slotCandidates.length) out.push('  (none)');
+    g.slotCandidates.forEach(function(c) {
+      out.push('  L' + c.l1.LeagueID + ' "' + c.l1.LeagueName + '"   ~   L' + c.l2.LeagueID +
+               ' "' + c.l2.LeagueName + '"   [Center ' + c.slot.split('|')[0] + ' / ' +
+               c.slot.split('|')[1] + ', shared word: ' + c.shared.join(', ') + ']' +
+               '   -> resolve on the League form if these should merge');
+    });
+    out.push('');
+
+    out.push('REVIEW CANDIDATES (prefix match, no Center/Day corroboration - possible same lineage)');
+    out.push('-'.repeat(70));
+    if (!g.stillReview.length) out.push('  (none)');
+    g.stillReview.forEach(function(p) {
+      var ids = function(k) { return g.groups[k].map(function(l) { return 'L' + l.LeagueID; }).join(','); };
+      out.push('  "' + p[0] + '" (' + ids(p[0]) + ')   ~   "' + p[1] + '" (' + ids(p[1]) + ')');
+    });
+    out.push('');
+
+    out.push('USER-LOCKED (manual override on the League form - unaffected by auto-grouping)');
+    out.push('-'.repeat(70));
+    if (!g.userLocked.length) out.push('  (none)');
+    g.userLocked.forEach(function(l) {
+      var ln = db.lineages.find(function(x) { return x.LineageID === l.LineageID; });
+      out.push('  L' + l.LeagueID + '  ' + l.LeagueName + '   -> ' +
+               (ln ? '"' + ln.DisplayName + '" (LineageID ' + ln.LineageID + ')' : 'standalone (explicitly no lineage)'));
+    });
+    out.push('');
+
+    out.push('SINGLETONS (no grouping proposed)');
+    out.push('-'.repeat(70));
+    g.single.forEach(function(k) {
+      var l = g.finalGroups[k][0];
+      out.push('  L' + l.LeagueID + '  ' + l.LeagueName + '   ->  "' + k + '"');
+    });
+    out.push('');
+
+    out.push('SUMMARY');
+    out.push('  proposed lineages: ' + g.multi.length +
+             '   leagues covered by them: ' + g.multi.reduce(function(s, k) { return s + g.finalGroups[k].length; }, 0) +
+             '   (of which promoted via prefix+slot: ' + g.promoted.length + ')');
+    out.push('  slot match candidates (human review): ' + g.slotCandidates.length);
+    out.push('  singletons: ' + g.single.length);
+    out.push('  user-locked leagues: ' + g.userLocked.length);
+    out.push('  prefix review candidates (no slot corroboration): ' + g.stillReview.length);
+    out.push('  same-season collisions inside a group: ' + nSameSeason +
+             (nSameSeason ? '   <-- inspect: over-merge or true duplicate leagues' : ''));
+
+    var after = snap();
+    out.push('');
+    out.push('MUTATION CHECK  (dry run must write nothing)');
+    out.push('  ' + (before === after ? 'PASS - no writes' : 'FAIL - dry run mutated state'));
+
+    if (result) result.textContent = out.join('\n');
+    toast('Lineage dry run complete - ' + g.multi.length + ' lineage(s), ' + g.slotCandidates.length + ' slot candidate(s)');
+  } catch(e) {
+    if (result) result.textContent = 'Lineage dry run failed:\n' + (e && e.message ? e.message : e) + '\n' + (e && e.stack ? e.stack : '');
+  }
+}
+
+
 async function dkIDBDump() {
   var result = document.getElementById('dk-purge-result');
   if (result) result.textContent = 'Reading raw IDB...';
