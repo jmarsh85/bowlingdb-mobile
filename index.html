@@ -1366,7 +1366,7 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
 .fm-wheel-lbl {
   font-size:9px; font-weight:800; color:var(--t3);
   letter-spacing:0.6px; text-transform:uppercase;
-  cursor:pointer; -webkit-tap-highlight-color:transparent;
+  -webkit-tap-highlight-color:transparent;
   user-select:none; flex-shrink:0;
 }
 /* Half-board toggle — compact pill inline with number */
@@ -3067,7 +3067,7 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
     </div>
     <div id="hdr-title" onclick="hdrTitleTap()"><span class="brand">Bowling</span>DB</div>
     <div id="hdr-title-popover"></div>
-    <span id="hdr-build-ref">v30.54 · 2026-07-17</span>
+    <span id="hdr-build-ref">v30.57 · 2026-07-17</span>
     <div id="hdr-right">
       <div class="hdr-icon-btn" id="hdr-delete-game-btn" onclick="confirmDeleteGame(G.gameID)" title="Delete Game" style="display:none">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -3371,14 +3371,14 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
 
           <!-- SB wheel -->
           <div class="fm-wheel-wrap" id="fm-sb-wrap">
-            <div class="fm-wheel-lbl" id="fm-sb-lbl" onclick="fmToggleWheel('sb')">SB</div>
+            <div class="fm-wheel-lbl" id="fm-sb-lbl">SB</div>
             <div class="fm-wheel-drum" id="fm-sb-drum"></div>
             <button class="fm-half-btn" id="fm-sb-half" onclick="fmToggleHalf('sb')">&#xBD;</button>
           </div>
 
           <!-- TB wheel -->
           <div class="fm-wheel-wrap" id="fm-tb-wrap">
-            <div class="fm-wheel-lbl" id="fm-tb-lbl" onclick="fmToggleWheel('tb')">TB</div>
+            <div class="fm-wheel-lbl" id="fm-tb-lbl">TB</div>
             <div class="fm-wheel-drum" id="fm-tb-drum"></div>
             <button class="fm-half-btn" id="fm-tb-half" onclick="fmToggleHalf('tb')">&#xBD;</button>
           </div>
@@ -10437,10 +10437,13 @@ function fmInitWheels() {
   fmSetHalfToggle('sb', sbHalf);
   fmSetHalfToggle('tb', tbHalf);
 
+  // SB/TB are always enabled (v30.56 — the tap-to-disable label toggle was
+  // removed; it greyed out a field with no obvious way back). Never apply the
+  // .disabled class here.
   var sbWrap = document.getElementById('fm-sb-wrap');
   var tbWrap = document.getElementById('fm-tb-wrap');
-  if (sbWrap) sbWrap.classList.toggle('disabled', prefs.sbEnabled === false);
-  if (tbWrap) tbWrap.classList.toggle('disabled', prefs.tbEnabled === false);
+  if (sbWrap) sbWrap.classList.remove('disabled');
+  if (tbWrap) tbWrap.classList.remove('disabled');
 
   // Remove old listeners before adding (re-entry safe)
   var sbNew = sbDrum.cloneNode(true);
@@ -10476,13 +10479,23 @@ function fmScrollWheelTo(drum, value) {
   var intVal = Math.floor(value);
   var idx = FM_WHEEL_VALUES.indexOf(intVal);
   if (idx < 0) idx = 0;
-  drum.scrollTop = idx * 36;
+  // The drum has an 18px leading .fm-wheel-pad (half a row) so the first/last
+  // items can center in the 36px viewport. The resting scrollTop that centers
+  // item `idx` is therefore idx*36 + FM_WHEEL_PAD, not idx*36. Writing the
+  // bare idx*36 previously left the browser's scroll-snap to nudge it into
+  // place — which it did visually, but fmGetWheelValue then read back the
+  // padded position and rounded UP a whole value (the +1 lane-ref bug).
+  drum.scrollTop = idx * 36 + FM_WHEEL_PAD;
 }
+
+var FM_WHEEL_PAD = 18; // must match .fm-wheel-pad height in CSS
 
 function fmGetWheelValue(drumId) {
   var drum = document.getElementById(drumId);
   if (!drum) return null;
-  var idx = Math.round(drum.scrollTop / 36);
+  // Subtract the leading pad before indexing so a centered item maps back to
+  // its own value, not the next one up.
+  var idx = Math.round((drum.scrollTop - FM_WHEEL_PAD) / 36);
   idx = Math.max(0, Math.min(idx, FM_WHEEL_VALUES.length - 1));
   return FM_WHEEL_VALUES[idx];
 }
@@ -10503,13 +10516,9 @@ function fmOnWheelScroll(type) {
 }
 
 function fmToggleWheel(type) {
-  var prefs = getPrefs();
-  var key = (type === 'sb') ? 'sbEnabled' : 'tbEnabled';
-  var patch = {};
-  patch[key] = (prefs[key] === false) ? true : false;
-  savePrefs(patch);
-  var wrap = document.getElementById('fm-' + type + '-wrap');
-  if (wrap) wrap.classList.toggle('disabled', patch[key] === false);
+  // No-op (v30.56). The SB/TB enable/disable toggle was removed — both board
+  // fields are always active. Kept as a harmless stub so any stale caller
+  // (e.g. an old cached onclick) can't throw.
 }
 
 function fmSaveBoardData() {
@@ -10524,22 +10533,33 @@ function fmSaveBoardData() {
   var tbHalfBtn = document.getElementById('fm-tb-half');
   var sbHalf = sbHalfBtn && sbHalfBtn.classList.contains('on');
   var tbHalf = tbHalfBtn && tbHalfBtn.classList.contains('on');
-  att.StartingBoard = (prefs.sbEnabled !== false && sbBase != null) ? (sbHalf ? sbBase + 0.5 : sbBase) : null;
-  att.TargetBoard   = (prefs.tbEnabled !== false && tbBase != null) ? (tbHalf ? tbBase + 0.5 : tbBase) : null;
+  // SB/TB always enabled (v30.56) — save whenever a value is present.
+  att.StartingBoard = (sbBase != null) ? (sbHalf ? sbBase + 0.5 : sbBase) : null;
+  att.TargetBoard   = (tbBase != null) ? (tbHalf ? tbBase + 0.5 : tbBase) : null;
   saveAll();
 
   // A manual bottom-row edit on the FRESH-RACK attempt (att1) is a live
-  // "this is my line today" correction — it updates BOTH lane references,
-  // not just the current throw. Explicit per-lane values still go through the
-  // ODD/EVEN (Lane N) chip edit flow (fmRefEditConfirm), which this must not
-  // fight with — skipped while that flow is active. Spare attempts (att2+)
-  // are leave-specific, not lane-specific, so they never touch lane refs here
-  // (see spare-alignment sourcing in fmLoadBoardData instead).
-  if (G.attempt === 1 && !_fmRefEditParity) {
-    var _bothRef = getLaneRef();
-    _bothRef.odd  = { sb: sbBase, tb: tbBase, sbHalf: sbHalf, tbHalf: tbHalf };
-    _bothRef.even = { sb: sbBase, tb: tbBase, sbHalf: sbHalf, tbHalf: tbHalf };
-    saveLaneRef(_bothRef);
+  // "this is my line today" correction — for the LANE YOU ARE PHYSICALLY ON
+  // right now, and only that lane. (v30.57 fix: this previously wrote the
+  // same value to BOTH odd and even refs regardless of which one was active,
+  // which silently overwrote the other lane's saved line on every edit —
+  // e.g. dialing in Lane 22 on an even frame would clobber Lane 21's value
+  // the next time an odd frame reloaded it. That defeated the entire point
+  // of tracking the two lanes separately, which exists because the two
+  // lanes in a pair often genuinely need different lines.) Explicit
+  // per-lane values still go through the ODD/EVEN (Lane N) chip edit flow
+  // (fmRefEditConfirm), which this must not fight with — skipped while that
+  // flow is active. Also skipped when the active parity can't be determined
+  // (no lane pair configured, or a manual override is in effect) — in that
+  // case we genuinely don't know which lane this edit belongs to, so we
+  // don't guess. Spare attempts (att2+) are leave-specific, not
+  // lane-specific, so they never touch lane refs here (see spare-alignment
+  // sourcing in fmLoadBoardData instead).
+  var _liveParity = currentLaneParity();
+  if (G.attempt === 1 && !_fmRefEditParity && _liveParity) {
+    var _liveRef = getLaneRef();
+    _liveRef[_liveParity] = { sb: sbBase, tb: tbBase, sbHalf: sbHalf, tbHalf: tbHalf };
+    saveLaneRef(_liveRef);
   }
 }
 
@@ -11054,11 +11074,32 @@ function fmSpareChipTouchEnd(e) {
   fmSpareChipApplyDock(corner, true);
 }
 
+/* Resolve which ball the spare chip should DISPLAY. Mirrors the att2
+   auto-select fallback chain (session lastBallAtt2 -> league DefaultSpareBallID
+   -> global prefs.defaultSpareBallID) so the chip is pre-loaded at game launch
+   like the fresh-ball chip, instead of an empty placeholder until the first
+   spare is thrown. Display-only: never sets lastBallAtt2. */
+function fmResolveSpareChipBallID() {
+  if (G.lastBallAtt2 && (db.balls || []).find(function(b) { return b.BallID === G.lastBallAtt2; })) {
+    return G.lastBallAtt2;
+  }
+  var lg = (db.leagues || []).find(function(l) { return l.LeagueID === G.leagueID; });
+  var leagueSpare = lg ? lg.DefaultSpareBallID : null;
+  if (leagueSpare && (db.balls || []).find(function(b) { return b.BallID === leagueSpare && b.Active !== false; })) {
+    return leagueSpare;
+  }
+  var prefs = getPrefs();
+  if (prefs.defaultSpareBallID && (db.balls || []).find(function(b) { return b.BallID === prefs.defaultSpareBallID && b.Active !== false; })) {
+    return prefs.defaultSpareBallID;
+  }
+  return null;
+}
+
 function fmRenderSpareChip() {
   var img  = document.getElementById('fm-spare-chip-img');
   var name = document.getElementById('fm-spare-chip-name');
   if (!img || !name) return;
-  var ballID = G.lastBallAtt2;
+  var ballID = fmResolveSpareChipBallID();
   var ball   = ballID ? (db.balls || []).find(function(b) { return b.BallID === ballID; }) : null;
   if (ball) {
     var src = getBallImgSrc(ball.BallID, 'cover') || '';
@@ -23809,6 +23850,17 @@ function resetTheme() {
 }
 
 document.addEventListener('DOMContentLoaded', async ()=>{
+  // One-time cleanup (v30.56): the SB/TB enable/disable toggle was removed, so
+  // strip any lingering sbEnabled/tbEnabled flags from prefs. Harmless if
+  // absent; keeps backups/exports from carrying dead keys forward. The flags
+  // are already inert (nothing reads them), so this is hygiene, not a fix.
+  (function() {
+    var p = getPrefs();
+    if (p.sbEnabled !== undefined || p.tbEnabled !== undefined) {
+      delete p.sbEnabled; delete p.tbEnabled;
+      try { localStorage.setItem('bowlingdb_prefs', JSON.stringify(p)); } catch(e) {}
+    }
+  })();
   // Restore G + GRP cursor state from last session (must run before any render)
   restoreGState();
   // If G.ballID wasn't restored, seed from prefs/MRU
