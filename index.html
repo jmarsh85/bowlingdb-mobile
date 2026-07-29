@@ -28388,10 +28388,12 @@ function _bdetRender() {
                autocapitalize="off" spellcheck="false">
         <img id="bdet-img-preview-el" class="bdet-img-preview" alt="">
         <div class="bdet-img-btn-row">
-          <button class="bdet-img-btn confirm" onclick="_bdetImgSave()">Save</button>
+          <button class="bdet-img-btn confirm" onclick="document.getElementById('bdet-img-file').click()">📷 Choose Photo</button>
+          <button class="bdet-img-btn confirm" onclick="_bdetImgSave()">Save URL</button>
           <button class="bdet-img-btn cancel"  onclick="_bdetCloseImgSlot()">Cancel</button>
           <button class="bdet-img-btn clear"   onclick="_bdetImgClear()">Clear</button>
         </div>
+        <input id="bdet-img-file" type="file" accept="image/*" style="display:none" onchange="_bdetImgFileChosen(event)">
       </div>
       <!-- Action buttons -->
       <div id="bdet-hero-actions">
@@ -28574,6 +28576,42 @@ async function _bdetImgSave() {
     // CORS blocked — use URL directly
     _bdetSetSlotImage(slot, url);
   }
+
+  _bdetCloseImgSlot();
+  toast(slot === 'cover' ? 'Cover image saved' : 'Core image saved');
+}
+
+/* Choose Photo — reads a device image file directly as a Blob, bypassing
+   network entirely. Use this when the source site blocks automated
+   fetches (CORS, hotlink protection, or an interactive bot challenge
+   like Cloudflare Turnstile) that no fetch() or proxy can get past.   */
+async function _bdetImgFileChosen(event) {
+  const file = event.target.files && event.target.files[0];
+  event.target.value = ''; // allow re-selecting the same file later
+  const slot = _bdet.imgSlot;
+  if (!file || !slot) return;
+
+  const blob = await removeWhiteBackground(file).catch(() => file);
+
+  if (_bdet.isNew) {
+    window._bdetPendingImgs = window._bdetPendingImgs || {};
+    window._bdetPendingImgs[slot] = blob; // Blob, not a URL string — commit step detects this
+    const blobURL = URL.createObjectURL(blob);
+    _bdetBlobURLs[slot] = blobURL;
+    _bdetSetSlotImage(slot, blobURL);
+    _bdetCloseImgSlot();
+    toast(slot === 'cover' ? 'Cover image saved' : 'Core image saved');
+    return;
+  }
+
+  const rec = _bdet.imgRecord ? { ..._bdet.imgRecord } : { BallID: Number(_bdet.ballID), coverBlob: null, coreBlob: null };
+  if (slot === 'cover') rec.coverBlob = blob; else rec.coreBlob = blob;
+  _bdet.imgRecord = rec;
+  await idbSaveBallImages(rec);
+  _ballImgCacheSet(Number(_bdet.ballID), slot, blob);
+  const blobURL = URL.createObjectURL(blob);
+  _bdetBlobURLs[slot] = blobURL;
+  _bdetSetSlotImage(slot, blobURL);
 
   _bdetCloseImgSlot();
   toast(slot === 'cover' ? 'Cover image saved' : 'Core image saved');
@@ -30646,13 +30684,19 @@ async function _bdetSave() {
       const rec = { BallID: id, coverBlob: null, coreBlob: null };
       for (const slot of ['cover','core']) {
         if (pending[slot]) {
-          try {
-            const blob = await urlToBlob(pending[slot]);
-            if (slot === 'cover') { rec.coverBlob = blob; newBall.ImagePath = pending[slot]; }
-            else { rec.coreBlob = blob; newBall.CoreImagePath = pending[slot]; }
-          } catch(e) {
-            if (slot === 'cover') newBall.ImagePath = pending[slot];
-            else newBall.CoreImagePath = pending[slot];
+          if (pending[slot] instanceof Blob) {
+            // Chosen directly from device photos — already a blob, no fetch needed
+            if (slot === 'cover') rec.coverBlob = pending[slot];
+            else rec.coreBlob = pending[slot];
+          } else {
+            try {
+              const blob = await urlToBlob(pending[slot]);
+              if (slot === 'cover') { rec.coverBlob = blob; newBall.ImagePath = pending[slot]; }
+              else { rec.coreBlob = blob; newBall.CoreImagePath = pending[slot]; }
+            } catch(e) {
+              if (slot === 'cover') newBall.ImagePath = pending[slot];
+              else newBall.CoreImagePath = pending[slot];
+            }
           }
         }
       }
