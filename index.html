@@ -1543,14 +1543,13 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
 #fm-pin-anchor .pin-btn { width:68px; height:68px; font-size:20px; }
 #fm-pin-anchor .num-pad { padding:0 14px; } /* display managed entirely by applyNumericModeUI() inline style */
 
-/* Focus Mode QA row — only Spare / is shown; primary, secondary (Miss), and Confirm hidden */
+/* Focus Mode QA row — primary, secondary, and Confirm hidden. The side
+   next-attempt arrow (fmHandleNext) is the spare-confirm trigger in SPARE
+   mode; qa-spare is repurposed as the minimal Miss/confirm-tapped button. */
 .fm-active-qa #qa-primary        { display:none !important; }
 .fm-active-qa #qa-secondary      { display:none !important; }
 .fm-active-qa #btn-confirm       { display:none !important; }
-.fm-active-qa #qa-spare          { flex:1; opacity:1 !important;
-  background:linear-gradient(135deg,#006868,var(--teal));
-  color:#0A0D14; box-shadow:var(--glow-teal); }
-.fm-active-qa #qa-spare:disabled { opacity:0.28 !important; box-shadow:none; }
+.fm-active-qa #qa-spare          { flex:1; }
 
 /* ── Side strip Prev/Next ───────────────────────────────────── */
 .fm-side-strip {
@@ -3636,7 +3635,7 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
       <span id="fm-anchor-qarow" style="display:none"></span>
       <div class="qa-row" id="qa-row" style="margin-bottom:7px">
         <button class="qa-btn qa-strike" id="qa-primary" onclick="quickPrimary()">Strike ✕</button>
-        <button class="qa-btn qa-spare" id="qa-spare" onclick="quickSpare()">Spare /</button>
+        <button class="qa-btn qa-miss" id="qa-spare" onclick="confirmAttempt()">Miss —</button>
         <button class="qa-btn qa-miss" id="qa-secondary" onclick="quickSecondary()">Miss —</button>
         <button class="qa-btn" id="btn-confirm" onclick="fmHandleNext()"
           style="background:linear-gradient(135deg,#00B8B8,var(--teal));color:#000;box-shadow:var(--glow-teal);flex:1.4">Confirm →</button>
@@ -9441,6 +9440,13 @@ function resolveTenPin(attID, result) {
     }
   }
   saveAll();
+  // Belt-and-suspenders resync: confirmAttempt() already advanced G and
+  // rendered before this prompt was interactable, but force a fresh render
+  // here too so the visible attempt can never lag behind G's real state.
+  renderScorecard('sc-grid', false);
+  updatePinDisplay();
+  updatePinfallDisplay();
+  updateScoringContext();
 }
 
 function startTenPinSilence(el, attID) {
@@ -11178,6 +11184,11 @@ function fmHandleNext() {
       // att1 already scored, att2 already scored but frame not marked complete —
       // shouldn't normally happen, but navigate forward safely
       jumpToPosition(G.frame, 2);
+    } else if (getAttemptMode() === 'SPARE') {
+      // Spare shortcut — the arrow always records a full spare (all pins
+      // still standing get converted), regardless of what's tapped. Misses
+      // and partial pinfall go through the separate Miss button instead.
+      quickSpare();
     } else {
       confirmAttempt();
     }
@@ -11559,11 +11570,11 @@ function updateQuickButtons(mode) {
       secondaryBtn.disabled = false;
       secondaryBtn.style.opacity = '1';
     }
-    // Spare not valid on attempt 1 — dim in standard mode; FM CSS overrides visibility
+    // Miss button not valid on attempt 1 — dim in standard mode; FM CSS overrides visibility
     spareBtn.style.opacity = '0.28';
     spareBtn.disabled = true;
   } else {
-    // SPARE mode — enable #qa-spare (it is the primary action in FM)
+    // SPARE mode — enable #qa-spare (now the minimal Miss/confirm-tapped button in FM)
     primaryBtn.textContent = 'Spare /';
     primaryBtn.className = 'qa-btn qa-spare';
     primaryBtn.disabled = false;
@@ -11572,7 +11583,7 @@ function updateQuickButtons(mode) {
     secondaryBtn.className = 'qa-btn qa-miss';
     secondaryBtn.disabled = false;
     secondaryBtn.style.opacity = '1';
-    // #qa-spare is active and functional in SPARE mode
+    // #qa-spare (Miss button) is active and functional in SPARE mode
     spareBtn.style.opacity = '1';
     spareBtn.disabled = false;
   }
@@ -18464,7 +18475,11 @@ function calculateAdvancedStats(gameIDs) {
   let splitOpp = 0, splitConv = 0;
   let hasPinData = false;
 
-  // Frames 1-9 non-strikes + all F10 spare attempts (case A: non-X att1; case B: X then non-X att2)
+  // Frames 1-9 non-strikes, plus Frame 10's genuine spare opportunity only.
+  // F10 case A (non-strike att1 → att1+att2) is a real leave-conversion
+  // attempt, identical in kind to frames 1-9, so it's included. F10 case B
+  // (strike att1 → att2/att3) is excluded — those are fill balls thrown
+  // after the frame's outcome is already locked in, not a leave attempt.
   const spareOpsList2 = frames19.filter(f => !f.Strike).map(f => ({
     a1: allAttempts.find(a => a.FrameID === f.FrameID && a.Attempt === 1),
     converted: f.Spare
@@ -18472,15 +18487,9 @@ function calculateAdvancedStats(gameIDs) {
   f10Frames.forEach(f10 => {
     const a1 = allAttempts.find(a => a.FrameID === f10.FrameID && a.Attempt === 1);
     const a2 = allAttempts.find(a => a.FrameID === f10.FrameID && a.Attempt === 2);
-    const a3 = allAttempts.find(a => a.FrameID === f10.FrameID && a.Attempt === 3);
-    if (!a1 || a1.Pinfall === null) return;
-    if (a1.Pinfall !== 10) {
-      if (!a2 || a2.Pinfall === null) return;
-      spareOpsList2.push({ a1, converted: (a1.Pinfall + a2.Pinfall) >= 10 });
-    } else if (a2 && a2.Pinfall !== null && a2.Pinfall !== 10) {
-      if (!a3 || a3.Pinfall === null) return;
-      spareOpsList2.push({ a1: a2, converted: (a2.Pinfall + a3.Pinfall) >= 10 });
-    }
+    if (!a1 || a1.Pinfall === null || a1.Pinfall === 10) return; // strike att1 → rest is fill balls
+    if (!a2 || a2.Pinfall === null) return;
+    spareOpsList2.push({ a1, converted: (a1.Pinfall + a2.Pinfall) >= 10 });
   });
 
   spareOpsList2.forEach(({ a1, converted }) => {
