@@ -1943,7 +1943,8 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
 .modal-bg {
   position:fixed; inset:0;
   background:rgba(0,0,0,0.75);
-  z-index:100;
+  z-index:1010; /* above every DevKit layer (max 1005) so modals opened from
+                   inside DevKit are visible, not hidden underneath it */
   display:none; align-items:flex-end;
   opacity:0; pointer-events:none;
   transition:opacity 0.25s;
@@ -4039,6 +4040,12 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
           <button onclick="dkNukeOpenPhantoms()" style="width:100%;padding:9px;background:#8b0000;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer">NUCLEAR: Clear Phantom Open Bowling</button>
           <button onclick="dkSeasonDryRun()" style="width:100%;padding:9px;background:#2c3e94;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px">Season Dry Run (read-only)</button>
           <button onclick="dkLineageDryRun()" style="width:100%;padding:9px;background:#4a2c94;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px">Lineage Dry Run (read-only)</button>
+          <button onclick="dkStreakDryRun()" style="width:100%;padding:9px;background:#1e6b52;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px">Streak Dry Run (read-only)</button>
+          <button onclick="dkStreakDryRunDetail()" style="width:100%;padding:9px;background:#1a4d3a;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px">Streak Detail — League 129 (read-only)</button>
+          <button onclick="dkStreakRollingDryRun()" style="width:100%;padding:9px;background:#164a52;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px">Rolling Avg Streak — League 129 (read-only)</button>
+          <button onclick="dkStreakRollingDryRun('lineage', 1)" style="width:100%;padding:9px;background:#164a52;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px">Rolling Avg Streak — Lineage 1 (read-only)</button>
+          <button onclick="dkStreakRollingDryRun('global')" style="width:100%;padding:9px;background:#164a52;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px">Rolling Avg Streak — GLOBAL (read-only)</button>
+          <button onclick="dkPreviewCompareStreaks()" style="width:100%;padding:9px;background:#4a3a1e;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px">Preview: Compare Streaks Tab</button>
           <button onclick="dkEnsureLineagesRun()" style="width:100%;padding:9px;background:#b8641f;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px">Ensure Lineages (writes!)</button>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px">
             <button onclick="dkApplyAIFix()" style="padding:9px 4px;background:#2d6a4f;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer">Apply AI Fix</button>
@@ -13600,17 +13607,128 @@ function _statsComputeCore(games) {
   return { scores, gameCount, avg, high, low, totalPins, highSeriesTotal, highSeriesID, cleanGames };
 }
 
+/* =============================================================
+   STREAK ENGINE (Section 3, July 2026 Performance handoff)
+   NOT YET WIRED INTO ANY UI — standalone only, per explicit
+   deferral: "hold implementation until it can be validated
+   against multiple real ranges and inputs." Validate via
+   DevKit's Streak Dry Run (dkStreakDryRun) before any screen
+   depends on this.
+
+   One generic per-threshold engine, swappable comparator + target-
+   getter — NOT two separate Tier 1 / Tier 2 implementations:
+     Tier 2 (floor streaks):  comparator = avg >= target, target fixed
+                               per floor (200, 210, 220...), open-ended
+                               both directions, current + max retained.
+     Tier 1 (bucket streak):  comparator = bucket(avg) === target,
+                               target RESETS to the new bucket whenever
+                               the streak breaks — consecutive series in
+                               the same 10-pt bracket, breaks on movement
+                               either direction.
+
+   Unit = one series = one data point (reuses the seriesAvgMap
+   per-series-average logic from renderSeriesList — see
+   _streakSeriesAvgs() below — rather than duplicating it).
+   No gap handling: the chronological array IS the timeline; a
+   series either exists in it or it doesn't.
+   ============================================================= */
+function _streakBucketOf(avg) { return Math.floor(avg / 10) * 10; }
+
+function _streakCompute(avgs, comparatorFn, getTarget) {
+  // avgs: chronological array of numbers, oldest first
+  // comparatorFn(avg, target) -> does this series extend the streak?
+  // getTarget(avg) -> target established when a NEW streak starts here
+  //
+  // Bug fixed here: a freshly-derived target only trivially matches its own
+  // avg for Tier 1 (bucket target is derived FROM the avg). For Tier 2 the
+  // target is a fixed floor, so a series can fail to clear it entirely —
+  // that must reset current to 0, not assume 1. So after (re)deriving the
+  // target, we still explicitly re-check the comparator before counting.
+  let current = 0, max = 0, target = null;
+  avgs.forEach(avg => {
+    if (target === null || !comparatorFn(avg, target)) {
+      target = getTarget(avg);
+      current = 0;
+    }
+    current = comparatorFn(avg, target) ? current + 1 : 0;
+    if (current > max) max = current;
+  });
+  return { current, max };
+}
+
+// Tier 2 — one independent, open-ended streak per fixed 10-pt floor.
+function computeFloorStreaks(avgs, floors) {
+  const out = {};
+  floors.forEach(floor => {
+    out[floor] = _streakCompute(avgs, (avg, t) => avg >= t, () => floor);
+  });
+  return out;
+}
+
+// Tier 1 — exact-bucket streak: consecutive series in the same bracket.
+function computeBucketStreak(avgs) {
+  return _streakCompute(avgs, (avg, t) => _streakBucketOf(avg) === t, avg => _streakBucketOf(avg));
+}
+
+// Chronological per-series average list — same filter/shape as
+// seriesAvgMap in renderSeriesList (exclude teammate games, require a
+// FinalScore), restructured as a flat array instead of a delta-map.
+// seriesList: array of db.series records already scoped to league/global.
+function _streakSeriesAvgs(seriesList) {
+  return seriesList
+    .slice()
+    .sort((a, b) => (a.DateBowled || '').localeCompare(b.DateBowled || ''))
+    .map(s => {
+      const scores = db.games
+        .filter(g => g.SeriesID === s.SeriesID && !g.IsTeammate && g.FinalScore != null)
+        .map(g => g.FinalScore);
+      if (!scores.length) return null;
+      return { seriesID: s.SeriesID, date: s.DateBowled, avg: scores.reduce((a,b)=>a+b,0) / scores.length };
+    })
+    .filter(Boolean);
+}
+
+// Rolling (cumulative) average across an arbitrary chronological series
+// list — "what the average reads as of this series," continuous across
+// every series in the given list (no reset at league/season boundaries
+// within it — a lineage's rolling avg runs unbroken across all its
+// seasons, GLOBAL's runs unbroken across your whole bowling history).
+// Math.floor per the app's established convention (never Math.round).
+// Same output shape as _streakSeriesAvgs() ({seriesID, date, avg}), so it
+// plugs into the same streak engine with zero changes there.
+function _streakRollingScopeAvgs(seriesList) {
+  const sorted = seriesList.slice().sort((a, b) => (a.DateBowled || '').localeCompare(b.DateBowled || ''));
+  let totalPins = 0, totalGames = 0;
+  const out = [];
+  sorted.forEach(s => {
+    const scores = db.games
+      .filter(g => g.SeriesID === s.SeriesID && !g.IsTeammate && g.FinalScore != null)
+      .map(g => g.FinalScore);
+    if (!scores.length) return;
+    scores.forEach(sc => { totalPins += sc; totalGames++; });
+    out.push({ seriesID: s.SeriesID, date: s.DateBowled, avg: Math.floor(totalPins / totalGames), totalGames });
+  });
+  return out;
+}
+
+// Thin wrapper — one league's rolling average, via the generic function.
+function _streakRollingLeagueAvgs(leagueID) {
+  return _streakRollingScopeAvgs((db.series || []).filter(s => s.LeagueID === leagueID));
+}
+
+
 /* ============================================================
-   PERFORMANCE SCREEN (s-performance) — v30.48, Phase D shell
+   PERFORMANCE SCREEN (s-performance) — Phase D shell, complete
    Picker = lineages (+ standalone leagues). Chips = SeasonYear,
    spanning both Winter/Summer halves, sourced from the real
    season engine (getSeriesSeasonID/getLeagueSeason) — this is
    that engine's first live caller outside the DevKit dry run.
 
-   Deferred to later versions, per the reconciled build outline:
-   sparkline trend chart (placeholder shown), Leave conversion
-   3-column table (placeholder shown), Compare Leagues/Compare
-   Centers modes (visible, disabled, toast on tap).
+   All Phase D pieces from the reconciled build outline are live:
+   sparkline trend chart (buildStatsSparkline), Leave conversion
+   3-column table (_perfLeaveBreakdown/_perfLeaveTable3Col), and
+   Compare Leagues/Compare Centers (_perfRenderCompare, real slot
+   pickers + baseline-period chips, not a toast stub).
 
    Reuses rather than duplicates: calculateAdvancedStats(),
    getCanonicalLast10WksGames(), getAllTimeLeagueGames(),
@@ -13636,6 +13754,8 @@ function _perfGetScope() {
   if (!sc.ctrSlots)      sc.ctrSlots = [null, null, null];
   if (!sc.cmpBaseline)   sc.cmpBaseline = 'season';
   if (!sc.tab)           sc.tab = 'ta';
+  if (!sc.cmpTab)        sc.cmpTab = 'stats';      // 'stats' | 'streaks' — Compare Leagues sub-tab only
+  if (!sc.streakMode)    sc.streakMode = 'summary'; // 'summary' | 'rolling'
   return sc;
 }
 
@@ -13826,6 +13946,11 @@ function perfSetSeasonChip(year) {
 function perfSetTab(tab) {
   const sc = _perfGetScope();
   sc.tab = tab; _perfSaveScope(sc);
+  renderPerformanceScreen();
+}
+function perfSetCmpTab(tab) {
+  const sc = _perfGetScope();
+  sc.cmpTab = tab; _perfSaveScope(sc);
   renderPerformanceScreen();
 }
 function perfSetMode(mode) {
@@ -14035,11 +14160,161 @@ function perfClearSlot(slotIdx, kind) {
   else sc.ctrSlots[slotIdx] = null;
   _perfSaveScope(sc); closeModal(); renderPerformanceScreen();
 }
-function _perfRenderCompare(sc, kind) {
+/* ── Compare mode: Streaks tab (SKETCH — preview only via DevKit,
+   not wired into the live pill tabs yet). Same house style as
+   _perfRenderCompare: inline styles, same CSS vars, h2hRow-style bars.
+   League/lineage slots only — deliberately never called with
+   kind==='center'; a center has no natural rolling-average meaning the
+   way a league/lineage does (see prior discussion), and this function
+   doesn't attempt one. A vs B only for the floor comparison, matching
+   _perfRenderCompare's own A/B-only h2h section even when a C slot is
+   filled — same established convention, not a new one.
+   dataMode: 'summary' (per-series avg streaks, headline = historical MAX —
+   "best ever") | 'rolling' (cumulative via _streakRollingScopeAvgs,
+   headline = current/live). Both already validated via DevKit dry runs
+   earlier this session — this function adds no new streak math, only
+   rendering. */
+function _perfRenderCompareStreaks(sc, dataMode, setModeFn) {
+  dataMode = dataMode || 'summary';
+  setModeFn = setModeFn || 'perfSetStreakMode';
+  const resolved = _perfCmpResolveSlots(sc, 'league');
+  const active = resolved.filter(Boolean);
+  const slotRows = _perfCmpSlotRowsHTML(resolved, 'league');
+
+  const modeToggleHTML = `<div style="display:flex;gap:6px">
+    ${['summary','rolling'].map(m => `<div onclick="${setModeFn}('${m}')" style="flex:1;text-align:center;padding:6px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;
+      border:1px solid ${dataMode===m?'var(--teal)':'var(--border2)'};background:${dataMode===m?'rgba(0,217,217,0.12)':'var(--bg3)'};color:${dataMode===m?'var(--teal)':'var(--t3)'}">
+      ${m==='summary'?'League Summary':'Rolling Avg'}</div>`).join('')}
+  </div>`;
+
+  if (active.length < 2) {
+    return `<div style="padding:12px 16px 90px;display:flex;flex-direction:column;gap:10px">${slotRows}${modeToggleHTML}
+      <div style="background:var(--bg2);border:1px solid var(--border1);border-radius:14px;padding:24px 14px;text-align:center;color:var(--t3);font-size:13px">
+        Pick at least two leagues to compare.</div></div>`;
+  }
+
+  const slotData = active.map(r => {
+    const seriesList = (db.series || []).filter(s => r.leagueIDSet.has(s.LeagueID));
+    const avgs = dataMode === 'rolling' ? _streakRollingScopeAvgs(seriesList) : _streakSeriesAvgs(seriesList);
+    const vals = avgs.map(a => a.avg);
+    const bucket = computeBucketStreak(vals);
+    const currentAvg = vals.length ? vals[vals.length - 1] : 0;
+    const relFloor = Math.floor(currentAvg / 10) * 10;
+    let allFloors = [];
+    if (vals.length) {
+      const lo = Math.floor(Math.min(...vals) / 10) * 10, hi = Math.floor(Math.max(...vals) / 10) * 10;
+      for (let f = lo; f <= hi; f += 10) allFloors.push(f);
+    }
+    // Relevance filter per spec: only floors at or above the scope's
+    // current average — a 208 average bowler doesn't care about 190s.
+    // Summary mode shows the FULL historical range instead — it's a
+    // collective best-ever picture, not a live snapshot, so filtering by
+    // one recent (possibly fluke) series average would misrepresent it.
+    const relevantFloors = dataMode === 'rolling' ? allFloors.filter(f => f >= relFloor) : allFloors;
+    const floorStreaks = computeFloorStreaks(vals, relevantFloors);
+    return Object.assign({}, r, { bucket, relevantFloors, floorStreaks });
+  });
+
+  const tier1CardsHTML = `<div style="display:flex;gap:8px">${slotData.map(s => `
+    <div style="flex:1;background:var(--bg2);border:1px solid var(--border1);border-radius:10px;padding:12px">
+      <div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;color:${s.color}">${s.letter} · ${s.name.length > 12 ? s.name.slice(0, 11) + '…' : s.name}</div>
+      <div style="font-size:28px;font-weight:900;letter-spacing:-1.5px;color:var(--t1);line-height:1">${dataMode==='rolling' ? s.bucket.current : s.bucket.max}</div>
+      <div style="font-size:11px;font-weight:700;margin-top:4px;color:var(--t3)">${dataMode==='rolling' ? 'current bucket streak · best '+s.bucket.max : 'best bucket streak ever · current '+s.bucket.current}</div>
+    </div>`).join('')}</div>`;
+
+  const A = slotData[0], B = slotData[1];
+  const unionFloors = Array.from(new Set([...A.relevantFloors, ...B.relevantFloors])).sort((x, y) => x - y);
+  const FLOOR_BAR_MAX_H = 64;
+  const floorMetricKey = dataMode === 'rolling' ? 'current' : 'max';
+  const maxFloorVal = Math.max(1, ...unionFloors.flatMap(f => [
+    A.floorStreaks[f] ? A.floorStreaks[f][floorMetricKey] : 0,
+    B.floorStreaks[f] ? B.floorStreaks[f][floorMetricKey] : 0
+  ]));
+  const floorRowsHTML = unionFloors.length ? `<div style="background:var(--bg2);border:1px solid var(--border1);border-radius:10px;padding:12px 14px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <div style="font-size:9px;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:0.5px">Floor streaks (${dataMode==='rolling'?'current':'best ever'}) · A vs B — relevant floors only</div>
+      <div style="display:flex;gap:8px;font-size:9px;font-weight:700;flex-shrink:0">
+        <span style="color:var(--teal)">■ A</span><span style="color:var(--gold)">■ B</span>
+      </div>
+    </div>
+    <div style="display:flex;gap:14px;overflow-x:auto;padding-bottom:2px">
+      ${unionFloors.map(f => {
+        const aC = A.floorStreaks[f] ? A.floorStreaks[f][floorMetricKey] : 0;
+        const bC = B.floorStreaks[f] ? B.floorStreaks[f][floorMetricKey] : 0;
+        const aH = aC ? Math.max(4, Math.round(aC / maxFloorVal * FLOOR_BAR_MAX_H)) : 0;
+        const bH = bC ? Math.max(4, Math.round(bC / maxFloorVal * FLOOR_BAR_MAX_H)) : 0;
+        return `<div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex:0 0 auto">
+          <div style="font-size:9px;font-weight:700;color:var(--t3)">${aC}·${bC}</div>
+          <div style="display:flex;align-items:flex-end;gap:3px;height:${FLOOR_BAR_MAX_H}px">
+            <div style="width:16px;border-radius:3px 3px 0 0;background:var(--teal);height:${aH}px"></div>
+            <div style="width:16px;border-radius:3px 3px 0 0;background:var(--gold);height:${bH}px"></div>
+          </div>
+          <div style="font-size:10px;font-weight:700;color:var(--t1)">${f}s</div>
+        </div>`;
+      }).join('')}
+    </div>
+  </div>` : `<div style="background:var(--bg2);border:1px solid var(--border1);border-radius:10px;padding:16px;text-align:center;color:var(--t3);font-size:12px">
+    No floors at or above both scopes' current average yet.</div>`;
+
+  return `<div style="padding:12px 16px 90px;display:flex;flex-direction:column;gap:10px">
+    ${slotRows}${modeToggleHTML}${tier1CardsHTML}${floorRowsHTML}
+  </div>`;
+}
+
+/* DevKit-only preview — renders the sketch above with real data (the two
+   most recently-bowled leagues/lineages) inside a modal so it can be
+   reviewed visually before any pill-tab/navigation wiring happens.
+   dkSetStreakPreviewMode() re-renders in place so the League Summary /
+   Rolling Avg toggle is actually interactive in the preview, not just
+   decorative. Kept separate from the live perfSetStreakMode() below so
+   the preview's throwaway sc and the real persisted scope never contend
+   over the same state. Note: the shared slot rows in this preview open
+   the real slot picker (perfOpenSlotPicker), which edits the LIVE
+   Compare Leagues scope, not this preview's fixed two-recent-league sc —
+   expected for a dev tool, just don't be surprised if tapping a slot
+   here closes the modal and updates your real picks in the background. */
+var _dkStreaksPreview = { mode: 'summary' };
+async function dkPreviewCompareStreaks() {
+  try {
+    await loadScoringData();
+    var _pOpts = _perfPickOptions();
+    if (_pOpts.length < 2) throw new Error('Need at least 2 comparable leagues/lineages in _perfPickOptions() to preview.');
+    var sc = { cmpSlots: [
+      { type: _pOpts[0].type, id: _pOpts[0].id },
+      { type: _pOpts[1].type, id: _pOpts[1].id },
+      null
+    ] };
+    window._dkStreaksPreviewSc = sc;
+    openModal('<div class="modal-title">Compare Streaks — Preview (' + _pOpts[0].name + ' vs ' + _pOpts[1].name + ')</div>' +
+      '<div id="dk-streaks-preview">' + _perfRenderCompareStreaks(sc, _dkStreaksPreview.mode, 'dkSetStreakPreviewMode') + '</div>' +
+      '<button class="btn" style="width:100%;margin-top:10px" onclick="closeModal()">Close</button>');
+  } catch(e) {
+    openModal('<div class="modal-title">Compare Streaks — Preview failed</div>' +
+      '<pre style="white-space:pre-wrap;font-size:11px;color:var(--red)">' +
+      (e && e.message ? e.message : e) + '\n' + (e && e.stack ? e.stack : '') + '</pre>' +
+      '<button class="btn" style="width:100%;margin-top:10px" onclick="closeModal()">Close</button>');
+  }
+}
+function dkSetStreakPreviewMode(m) {
+  _dkStreaksPreview.mode = m;
+  var el = document.getElementById('dk-streaks-preview');
+  if (el && window._dkStreaksPreviewSc) el.innerHTML = _perfRenderCompareStreaks(window._dkStreaksPreviewSc, m, 'dkSetStreakPreviewMode');
+}
+
+// Live screen — updates the real persisted Performance scope and
+// re-renders the actual screen. Distinct from dkSetStreakPreviewMode()
+// above (DevKit-only, operates on a throwaway sc object).
+function perfSetStreakMode(m) {
+  const sc = _perfGetScope();
+  sc.streakMode = m; _perfSaveScope(sc);
+  renderPerformanceScreen();
+}
+
+// Shared slot resolution — used by both _perfRenderCompare (Stats tab)
+// and _perfRenderCompareStreaks (Streaks tab), so both Compare Leagues
+// sub-tabs read the exact same A/B/C picks with zero drift between them.
+function _perfCmpResolveSlots(sc, kind) {
   const SLOT_COLORS = ['var(--teal)', 'var(--gold)', 'var(--purple)'];
-  const baselines = [
-    { k: 'last10', l: 'Last 10 Wks' }, { k: 'season', l: 'Current Season' }, { k: 'all', l: 'All Time' }
-  ];
   const resolved = [];
   if (kind === 'league') {
     const opts = _perfPickOptions();
@@ -14061,9 +14336,16 @@ function _perfRenderCompare(sc, kind) {
         sub: `${set.size} league${set.size === 1 ? '' : 's'}`, leagueIDSet: set });
     });
   }
-  const active = resolved.filter(Boolean);
+  return resolved;
+}
+
+// Shared slot-picker markup (A/B/C rows) — pure render from an already-
+// resolved slots array, so the Stats and Streaks tabs stay visually
+// identical with one source of truth instead of two hand-synced copies.
+function _perfCmpSlotRowsHTML(resolved, kind) {
+  const SLOT_COLORS = ['var(--teal)', 'var(--gold)', 'var(--purple)'];
   const addLabel = kind === 'league' ? 'Add league…' : 'Add center…';
-  const slotRows = [0, 1, 2].map(i => {
+  return [0, 1, 2].map(i => {
     const r = resolved[i];
     const letter = 'ABC'[i], color = SLOT_COLORS[i];
     if (r) {
@@ -14080,6 +14362,15 @@ function _perfRenderCompare(sc, kind) {
         <div style="font-size:13px;font-weight:700;color:var(--t3)">${addLabel}</div><span style="color:var(--t3)">+</span>
       </div></div>`;
   }).join('');
+}
+
+function _perfRenderCompare(sc, kind) {
+  const baselines = [
+    { k: 'last10', l: 'Last 10 Wks' }, { k: 'season', l: 'Current Season' }, { k: 'all', l: 'All Time' }
+  ];
+  const resolved = _perfCmpResolveSlots(sc, kind);
+  const active = resolved.filter(Boolean);
+  const slotRows = _perfCmpSlotRowsHTML(resolved, kind);
   const baselineChips = baselines.map(b => {
     const on = sc.cmpBaseline === b.k;
     return `<div onclick="perfSetBaseline('${b.k}')" style="padding:5px 11px;border-radius:20px;font-size:11px;font-weight:700;
@@ -14339,7 +14630,19 @@ function _renderPerformanceInner(el) {
 
   // ── Compare modes short-circuit the single-view body ──
   if (sc.mode === 'cmp' || sc.mode === 'ctr') {
-    el.innerHTML = headerHTML + modeBarHTML + _perfRenderCompare(sc, sc.mode === 'cmp' ? 'league' : 'center');
+    // Streaks sub-tab is league/lineage-only — a center has no natural
+    // rolling-average meaning the way a league/lineage does, so this pill
+    // bar simply never renders under Compare Centers (hidden, not disabled).
+    const cmpTabBarHTML = sc.mode === 'cmp' ? `
+      <div style="display:flex;margin:10px 16px 0;background:var(--bg2);border-radius:10px;padding:3px;gap:2px">
+        ${[{k:'stats',l:'Stats'},{k:'streaks',l:'Streaks'}].map(t => `<div onclick="perfSetCmpTab('${t.k}')" style="flex:1;text-align:center;padding:7px 4px;border-radius:8px;
+          font-size:12px;font-weight:600;cursor:pointer;color:${sc.cmpTab === t.k ? 'var(--t1)' : 'var(--t3)'};
+          background:${sc.cmpTab === t.k ? 'var(--bg4)' : 'transparent'}">${t.l}</div>`).join('')}
+      </div>` : '';
+    const cmpBodyHTML = (sc.mode === 'cmp' && sc.cmpTab === 'streaks')
+      ? _perfRenderCompareStreaks(sc, sc.streakMode)
+      : _perfRenderCompare(sc, sc.mode === 'cmp' ? 'league' : 'center');
+    el.innerHTML = headerHTML + modeBarHTML + cmpTabBarHTML + cmpBodyHTML;
     return;
   }
 
@@ -32370,6 +32673,413 @@ async function dkLineageDryRun() {
   }
 }
 
+/* ── Streak Dry Run (read-only) ──────────────────────────────
+   Validates computeFloorStreaks()/computeBucketStreak() (Section 3
+   of the July 2026 Performance handoff) against real per-series
+   average data before either tier is ever wired into a screen.
+   Per-league AND global, computed in parallel — never a toggle,
+   matching the spec. Floors are derived from the observed avg
+   range (not hardcoded) so this validates correctly against any
+   bowler's real data. Shows ALL floors unfiltered — the "only
+   show brackets at or above current avg" relevance rule is a
+   presentation-layer concern for the eventual UI, not something
+   the dry run should hide while you're checking correctness. */
+async function dkStreakDryRun() {
+  var result = document.getElementById('dk-purge-result');
+  if (result) result.textContent = 'Loading scoring data...';
+  try {
+    await loadScoringData();
+
+    var before = JSON.stringify({
+      series: (db.series || []).length,
+      games:  (db.games  || []).length
+    });
+
+    var out = [];
+    out.push('STREAK DRY RUN - read-only, no writes');
+    out.push('One generic engine (comparator + target-getter), Tier 1 = bucket, Tier 2 = floor.');
+    out.push('Count columns mirror the standard stats periods (10W/Season/ATL), scoped');
+    out.push('the same way at every tier below.');
+    out.push('');
+    out.push('Two comparison columns, not one — they answer different questions:');
+    out.push('  Global Max  = best run in your FULL cross-league timeline, interleaved by');
+    out.push('                date. An off night in an unrelated league can break this even');
+    out.push('                if it never touched the scope being reported.');
+    out.push('  BestLg Max  = the best any SINGLE league has ever done at this floor, on');
+    out.push('                its own nights only. A lineage or league CAN legitimately beat');
+    out.push('                Global Max (no other-league interruptions in its own run) but');
+    out.push('                can never beat BestLg Max by more than tying it.');
+    out.push('');
+
+    var pad = function(s,n){ s = (s==null?'':String(s)); return s.length>n ? s.slice(0,n) : s+' '.repeat(n-s.length); };
+
+    // Reuse the existing canonical Last-10-Weeks rule rather than
+    // reimplementing the week-key logic here.
+    var last10SeriesIDs = new Set(getCanonicalLast10WksGames().map(function(g){ return g.SeriesID; }));
+
+    function floorsFor(avgs) {
+      if (!avgs.length) return [];
+      var lo = Math.floor(Math.min.apply(null, avgs.map(function(a){return a.avg;})) / 10) * 10;
+      var hi = Math.floor(Math.max.apply(null, avgs.map(function(a){return a.avg;})) / 10) * 10;
+      var floors = [];
+      for (var f = lo; f <= hi; f += 10) floors.push(f);
+      return floors;
+    }
+
+    // Total series clearing a floor, independent of streak breaks — a
+    // separate data point from current/max streak (e.g. "how many series
+    // have I ever been 220+" vs "longest run of consecutive 220+ series").
+    function floorCount(avgs, floor) {
+      return avgs.filter(function(a){ return a >= floor; }).length;
+    }
+
+    // Populated below, before any LINEAGE/LEAGUE row is printed.
+    var globalFloorStreaks = null;
+    var leagueMaxByFloor = null;
+
+    function report(label, avgs, compareMode) {
+      out.push(label + '  (' + avgs.length + ' series)');
+      if (!avgs.length) { out.push('  no series with scored games in this scope'); out.push(''); return; }
+      var bucket = computeBucketStreak(avgs.map(function(a){return a.avg;}));
+      out.push('  Tier 1 (exact bucket ' + _streakBucketOf(avgs[avgs.length-1].avg) + 's): current ' +
+               bucket.current + '   max ' + bucket.max);
+      var floors = floorsFor(avgs);
+      var rawAvgs = avgs.map(function(a){return a.avg;});
+      var floorStreaks = computeFloorStreaks(rawAvgs, floors);
+
+      // Period-scoped avg lists for the Count columns. Season = the SAME
+      // season engine the Performance screen uses (getSeriesSeasonID /
+      // db.seasons — lineage-aware, respects Winter/Summer halves), not a
+      // raw calendar year. Uses the most recent series IN THIS SCOPE to
+      // pick which season is "current" here.
+      var mostRecentSeries = db.series.find(function(s){ return s.SeriesID === avgs[avgs.length-1].seriesID; });
+      var currentSeasonID = mostRecentSeries ? getSeriesSeasonID(mostRecentSeries) : null;
+      var seasonRec = (db.seasons || []).find(function(s){ return s.SeasonID === currentSeasonID; });
+      var seasonLabel = seasonRec ? seasonRec.Label : '?';
+      var seasonSeriesIDs = new Set(
+        db.series.filter(function(s){ return currentSeasonID != null && getSeriesSeasonID(s) === currentSeasonID; })
+          .map(function(s){ return s.SeriesID; })
+      );
+      var tenWkVals  = avgs.filter(function(a){ return last10SeriesIDs.has(a.seriesID); }).map(function(a){ return a.avg; });
+      var seasonVals = avgs.filter(function(a){ return seasonSeriesIDs.has(a.seriesID); }).map(function(a){ return a.avg; });
+
+      out.push('  Tier 2 (per-floor, all observed floors — relevance filter applied only in UI):');
+      out.push('  Count columns: 10W = last 10 wks, Season = ' + (seasonLabel || '?') + ', ATL = all-time');
+      var hdr = '  ' + pad('Floor',7) + pad('Current',9) + pad('Max',6) + pad('10W',5) + pad('Season',8) + pad('ATL',6);
+      if (compareMode) hdr += pad('GlobalMx',10) + 'BestLgMx';
+      out.push(hdr);
+      floors.slice().reverse().forEach(function(f) {
+        var st = floorStreaks[f];
+        var line = '  ' + pad(f + 's', 7) + pad(st.current, 9) + pad(st.max, 6) +
+                 pad(floorCount(tenWkVals, f), 5) + pad(floorCount(seasonVals, f), 8) + pad(floorCount(rawAvgs, f), 6);
+        if (compareMode) {
+          var g = globalFloorStreaks ? globalFloorStreaks[f] : null;
+          var bl = leagueMaxByFloor ? leagueMaxByFloor[f] : null;
+          var beatsGlobal = g && st.max >= g.max;
+          var beatsBestLg = bl != null && st.max >= bl;
+          line += pad(g ? g.max : '?', 10) + (bl != null ? bl : '?');
+          if (beatsGlobal || beatsBestLg) {
+            var tags = [];
+            if (beatsGlobal) tags.push('global');
+            if (beatsBestLg) tags.push('league');
+            line += '  <- PB (' + tags.join('+') + ')';
+          }
+        }
+        out.push(line);
+      });
+      out.push('');
+    }
+
+    // GLOBAL — all leagues combined; the true all-time baseline
+    var allSeries = (db.series || []).filter(function(s){ return !s._virtual; });
+    var globalAvgs = _streakSeriesAvgs(allSeries);
+    report('GLOBAL', globalAvgs);
+    var globalFloors = floorsFor(globalAvgs);
+    globalFloorStreaks = computeFloorStreaks(globalAvgs.map(function(a){return a.avg;}), globalFloors);
+
+    // Pre-pass: best single-league max per floor, across ALL individual
+    // leagues — computed once, up front, so LINEAGE rows (printed before
+    // the per-league section below) can already compare against it.
+    leagueMaxByFloor = {};
+    (db.leagues || []).filter(function(l){ return !l._virtual && l.LeagueID > 0; }).forEach(function(l) {
+      var leagueSeries = (db.series || []).filter(function(s){ return s.LeagueID === l.LeagueID; });
+      if (!leagueSeries.length) return;
+      var lAvgObjs = _streakSeriesAvgs(leagueSeries);
+      if (!lAvgObjs.length) return;
+      var lFloors = floorsFor(lAvgObjs);
+      var lStreaks = computeFloorStreaks(lAvgObjs.map(function(a){return a.avg;}), lFloors);
+      lFloors.forEach(function(f) {
+        var m = lStreaks[f].max;
+        if (leagueMaxByFloor[f] == null || m > leagueMaxByFloor[f]) leagueMaxByFloor[f] = m;
+      });
+    });
+
+    // LINEAGE — reuses the REAL, authoritative lineage engine
+    // (ensureLineages() / l.LineageID / db.lineages), the exact same one
+    // the Lineage Dry Run and Performance screen already rely on. This
+    // includes Tier 2a promotions (e.g. "NFL League" merging with "NFL
+    // League Presented by Rx Cleaning Solutions" via Center/Day
+    // corroboration) that a raw name-key match alone would miss —
+    // confirmed missing L8 from "nfl league" and dropping "Short & Sweet
+    // II" entirely before this fix. ensureLineages() is idempotent/safe
+    // to call here, same lazy-init pattern as getSeriesSeasonID().
+    ensureLineages();
+    var lineageGroups = {}; // LineageID -> array of league objects
+    (db.leagues || []).filter(function(l){ return !l._virtual && l.LeagueID > 0 && l.LineageID != null; }).forEach(function(l) {
+      if (!lineageGroups[l.LineageID]) lineageGroups[l.LineageID] = [];
+      lineageGroups[l.LineageID].push(l);
+    });
+    var lineageIDs = Object.keys(lineageGroups).map(Number).sort(function(a,b){return a-b;});
+    if (lineageIDs.length) {
+      out.push('=== LINEAGES (persisted LineageID via ensureLineages() — same engine as the Lineage Dry Run) ===');
+      out.push('');
+      lineageIDs.forEach(function(lid) {
+        var leagues = lineageGroups[lid];
+        var leagueIDSet = new Set(leagues.map(function(l){ return l.LeagueID; }));
+        var lineageSeries = (db.series || []).filter(function(s){ return leagueIDSet.has(s.LeagueID); });
+        if (!lineageSeries.length) return;
+        var rec = (db.lineages || []).find(function(x){ return x.LineageID === lid; });
+        var displayName = rec ? rec.DisplayName : ('LineageID ' + lid);
+        var names = leagues.map(function(l){ return l.LeagueID; }).sort(function(a,b){return a-b;}).join(', ');
+        report('LINEAGE "' + displayName + '"  (leagues: ' + names + ')', _streakSeriesAvgs(lineageSeries), true);
+      });
+    }
+
+    // Per-league
+    out.push('=== INDIVIDUAL LEAGUES ===');
+    out.push('');
+    (db.leagues || []).filter(function(l){ return !l._virtual && l.LeagueID > 0; })
+      .sort(function(a,b){ return (a.LeagueName||'').localeCompare(b.LeagueName||''); })
+      .forEach(function(l) {
+        var leagueSeries = (db.series || []).filter(function(s){ return s.LeagueID === l.LeagueID; });
+        if (!leagueSeries.length) return;
+        report('LEAGUE ' + l.LeagueID + ' - ' + l.LeagueName, _streakSeriesAvgs(leagueSeries), true);
+      });
+
+    var after = JSON.stringify({
+      series: (db.series || []).length,
+      games:  (db.games  || []).length
+    });
+    out.push('MUTATION CHECK  (series/games — the actual scoring data — must be untouched)');
+    out.push('  ' + (before === after ? 'PASS - no writes to series/games' : 'FAIL - dry run mutated scoring data'));
+    out.push('  Note: getSeriesSeasonID() and ensureLineages() may lazily tag');
+    out.push('  league.SeasonID / league.LineageID on first call, same idempotent');
+    out.push('  behavior the Performance screen and Lineage Dry Run already rely on —');
+    out.push('  not tracked above since it is expected, not scoring-data corruption.');
+
+    if (result) result.textContent = out.join('\n');
+    toast('Streak dry run complete');
+  } catch(e) {
+    if (result) result.textContent = 'Streak dry run failed:\n' + (e && e.message ? e.message : e) + '\n' + (e && e.stack ? e.stack : '');
+  }
+}
+
+/* ── Streak Dry Run Detail (read-only) ───────────────────────
+   Per-series trace for one league — shows the actual game scores,
+   series total/avg, bucket, and the running streak count at EACH
+   point in the timeline (not just the final current/max), so the
+   summary numbers from the main dry run can be checked step by
+   step against real series instead of taken on faith. Defaults to
+   league 129 (Foxes and Hounds Summer Trios 2026, current league)
+   per request; pass a different LeagueID to check another league. */
+async function dkStreakDryRunDetail(leagueID) {
+  leagueID = leagueID || 129;
+  var result = document.getElementById('dk-purge-result');
+  if (result) result.textContent = 'Loading scoring data...';
+  try {
+    await loadScoringData();
+
+    var l = (db.leagues || []).find(function(x){ return x.LeagueID === leagueID; });
+    var out = [];
+    out.push('STREAK DRY RUN DETAIL - League ' + leagueID + (l ? ' - ' + l.LeagueName : ' (not found)'));
+    out.push('Per-series trace: game scores, series total/avg, bucket, running streak per floor.');
+    out.push('');
+
+    var leagueSeries = (db.series || []).filter(function(s){ return s.LeagueID === leagueID; });
+    var avgs = _streakSeriesAvgs(leagueSeries);
+
+    if (!avgs.length) {
+      out.push('No series with scored games in this league.');
+      if (result) result.textContent = out.join('\n');
+      return;
+    }
+
+    var lo = Math.floor(Math.min.apply(null, avgs.map(function(a){return a.avg;})) / 10) * 10;
+    var hi = Math.floor(Math.max.apply(null, avgs.map(function(a){return a.avg;})) / 10) * 10;
+    var floors = [];
+    for (var f = lo; f <= hi; f += 10) floors.push(f);
+
+    // Running counters — mirrors _streakCompute's logic exactly, one step
+    // at a time, so each series' printed number is the engine's real
+    // intermediate state, not a re-derivation.
+    var floorCurrent = {}, floorMax = {}; floors.forEach(function(fl){ floorCurrent[fl] = 0; floorMax[fl] = 0; });
+    var bucketCurrent = 0, bucketMax = 0, bucketTarget = null;
+
+    avgs.forEach(function(a, i) {
+      var games = db.games.filter(function(g){ return g.SeriesID === a.seriesID && !g.IsTeammate && g.FinalScore != null; })
+        .sort(function(x,y){ return (x.GameNumber||0) - (y.GameNumber||0); });
+      var scores = games.map(function(g){ return g.FinalScore; });
+      var total  = scores.reduce(function(x,y){ return x+y; }, 0);
+      var bucket = _streakBucketOf(a.avg);
+
+      if (bucketTarget !== null && bucket === bucketTarget) { bucketCurrent++; }
+      else { bucketCurrent = 1; bucketTarget = bucket; }
+      if (bucketCurrent > bucketMax) bucketMax = bucketCurrent;
+
+      var floorLines = [];
+      floors.forEach(function(fl) {
+        if (a.avg >= fl) {
+          floorCurrent[fl]++;
+          if (floorCurrent[fl] > floorMax[fl]) floorMax[fl] = floorCurrent[fl];
+          floorLines.push(fl + 's:' + floorCurrent[fl]);
+        } else {
+          floorCurrent[fl] = 0;
+        }
+      });
+
+      out.push('#' + (i+1) + '  ' + (a.date || '?') + '  SeriesID ' + a.seriesID);
+      out.push('   Games: [' + scores.join(', ') + ']   Total: ' + total + '   Avg: ' + a.avg.toFixed(2));
+      out.push('   Bucket: ' + bucket + 's   Tier 1 streak now: ' + bucketCurrent);
+      out.push('   Active Tier 2 streaks: ' + (floorLines.length ? floorLines.join('   ') : '(none — below lowest floor)'));
+      out.push('');
+    });
+
+    var last10SeriesIDs = new Set(getCanonicalLast10WksGames().map(function(g){ return g.SeriesID; }));
+    var mostRecentSeries = db.series.find(function(s){ return s.SeriesID === avgs[avgs.length-1].seriesID; });
+    var currentSeasonID = mostRecentSeries ? getSeriesSeasonID(mostRecentSeries) : null;
+    var seasonRec = (db.seasons || []).find(function(s){ return s.SeasonID === currentSeasonID; });
+    var seasonLabel = seasonRec ? seasonRec.Label : '?';
+    var seasonSeriesIDs = new Set(
+      db.series.filter(function(s){ return currentSeasonID != null && getSeriesSeasonID(s) === currentSeasonID; })
+        .map(function(s){ return s.SeriesID; })
+    );
+
+    out.push('FINAL — Tier 1: current ' + bucketCurrent + '   max ' + bucketMax);
+    out.push('FINAL — Tier 2 max / count per floor (count columns: 10W = last 10 wks, Season = ' +
+             (seasonLabel || '?') + ', ATL = all-time):');
+    out.push('  ' + floors.slice().reverse().map(function(fl){
+      var tenWk  = avgs.filter(function(a){ return last10SeriesIDs.has(a.seriesID) && a.avg >= fl; }).length;
+      var season = avgs.filter(function(a){ return seasonSeriesIDs.has(a.seriesID) && a.avg >= fl; }).length;
+      var atl    = avgs.filter(function(a){ return a.avg >= fl; }).length;
+      return fl + 's: max ' + floorMax[fl] + ', 10W ' + tenWk + ', Season ' + season + ', ATL ' + atl;
+    }).join('\n  '));
+    out.push('');
+    out.push('Cross-check these against the summary numbers from the main Streak Dry Run for this league.');
+
+    if (result) result.textContent = out.join('\n');
+    toast('Streak detail dry run complete — league ' + leagueID);
+  } catch(e) {
+    if (result) result.textContent = 'Streak detail dry run failed:\n' + (e && e.message ? e.message : e) + '\n' + (e && e.stack ? e.stack : '');
+  }
+}
+
+/* ── Rolling Average Streak Dry Run (read-only) ──────────────
+   Validates _streakRollingScopeAvgs() feeding the SAME streak engine —
+   "how many series running does my cumulative average stay above
+   200/210/220 before crossing", not the per-series-average streaks above.
+   Per-series trace shows both numbers side by side (that series' own
+   average vs the resulting cumulative average) so a jump/drop in the
+   cumulative number can be sanity-checked against the actual game that
+   caused it.
+
+   scope: 'league' (default) | 'lineage' | 'global'. id: LeagueID or
+   LineageID depending on scope (ignored for global). Rolling average is
+   CONTINUOUS across the scope — no reset at league/season boundaries
+   within a lineage, no reset ever within global — same philosophy as the
+   existing LINEAGE/GLOBAL tiers for per-series streaks. */
+async function dkStreakRollingDryRun(scope, id) {
+  scope = scope || 'league';
+  var result = document.getElementById('dk-purge-result');
+  if (result) result.textContent = 'Loading scoring data...';
+  try {
+    await loadScoringData();
+
+    var label, seriesList;
+    if (scope === 'global') {
+      label = 'GLOBAL';
+      seriesList = (db.series || []).filter(function(s){ return !s._virtual; });
+    } else if (scope === 'lineage') {
+      ensureLineages();
+      id = id || 1;
+      var lrec = (db.lineages || []).find(function(x){ return x.LineageID === id; });
+      var memberIDs = new Set((db.leagues || []).filter(function(l){ return l.LineageID === id; }).map(function(l){ return l.LeagueID; }));
+      label = 'LINEAGE "' + (lrec ? lrec.DisplayName : ('LineageID ' + id)) + '"  (leagues: ' +
+              Array.from(memberIDs).sort(function(a,b){return a-b;}).join(', ') + ')';
+      seriesList = (db.series || []).filter(function(s){ return memberIDs.has(s.LeagueID); });
+    } else {
+      scope = 'league';
+      id = id || 129;
+      var l = (db.leagues || []).find(function(x){ return x.LeagueID === id; });
+      label = 'LEAGUE ' + id + (l ? ' - ' + l.LeagueName : ' (not found)');
+      seriesList = (db.series || []).filter(function(s){ return s.LeagueID === id; });
+    }
+
+    var out = [];
+    out.push('ROLLING AVERAGE STREAK DRY RUN - ' + label);
+    out.push('Cumulative average per series (standings-sheet number), continuous across the');
+    out.push('whole scope — same engine as the per-series-average streaks, different input.');
+    out.push('');
+
+    var rolling = _streakRollingScopeAvgs(seriesList);
+    var seriesAvgs = _streakSeriesAvgs(seriesList);
+
+    if (!rolling.length) {
+      out.push('No series with scored games in this scope.');
+      if (result) result.textContent = out.join('\n');
+      return;
+    }
+
+    var lo = Math.floor(Math.min.apply(null, rolling.map(function(a){return a.avg;})) / 10) * 10;
+    var hi = Math.floor(Math.max.apply(null, rolling.map(function(a){return a.avg;})) / 10) * 10;
+    var floors = [];
+    for (var f = lo; f <= hi; f += 10) floors.push(f);
+
+    var floorCurrent = {}, floorMax = {}; floors.forEach(function(fl){ floorCurrent[fl] = 0; floorMax[fl] = 0; });
+    var bucketCurrent = 0, bucketMax = 0, bucketTarget = null;
+
+    rolling.forEach(function(r, i) {
+      var ownNight = seriesAvgs[i]; // same index — both built from the same chronological series list
+      var bucket = _streakBucketOf(r.avg);
+
+      if (bucketTarget !== null && bucket === bucketTarget) { bucketCurrent++; }
+      else { bucketCurrent = 1; bucketTarget = bucket; }
+      if (bucketCurrent > bucketMax) bucketMax = bucketCurrent;
+
+      var floorLines = [];
+      floors.forEach(function(fl) {
+        if (r.avg >= fl) {
+          floorCurrent[fl]++;
+          if (floorCurrent[fl] > floorMax[fl]) floorMax[fl] = floorCurrent[fl];
+          floorLines.push(fl + 's:' + floorCurrent[fl]);
+        } else {
+          floorCurrent[fl] = 0;
+        }
+      });
+
+      out.push('#' + (i+1) + '  ' + (r.date || '?') + '  SeriesID ' + r.seriesID);
+      out.push('   This series avg: ' + (ownNight ? ownNight.avg.toFixed(2) : '?') +
+               '   ->   Rolling avg after: ' + r.avg + '  (' + r.totalGames + ' games total)');
+      out.push('   Bucket: ' + bucket + 's   Tier 1 streak now: ' + bucketCurrent);
+      out.push('   Active Tier 2 streaks: ' + (floorLines.length ? floorLines.join('   ') : '(none — below lowest floor)'));
+      out.push('');
+    });
+
+    out.push('FINAL — Tier 1: current ' + bucketCurrent + '   max ' + bucketMax);
+    out.push('FINAL — Tier 2 max per floor:');
+    out.push('  ' + floors.slice().reverse().map(function(fl){ return fl + 's: max ' + floorMax[fl]; }).join('\n  '));
+    out.push('');
+    out.push('Sanity check: does each rolling-avg jump/drop match the actual "This series');
+    out.push('avg" shown above it? A big series should pull the rolling avg up, a poor one');
+    out.push('down — by an amount that shrinks as totalGames grows, same as a real');
+    out.push('standings sheet.');
+
+    if (result) result.textContent = out.join('\n');
+    toast('Rolling average dry run complete — ' + scope);
+  } catch(e) {
+    if (result) result.textContent = 'Rolling average dry run failed:\n' + (e && e.message ? e.message : e) + '\n' + (e && e.stack ? e.stack : '');
+  }
+}
+
 
 async function dkIDBDump() {
   var result = document.getElementById('dk-purge-result');
@@ -32640,6 +33350,60 @@ async function dkApplyAIFix() {
 }
 
 /* ── Export ───────────────────────────────────────────────── */
+/* ── Shared export display: visible, selectable text + real Save As ──
+   Replaces navigator.share()-based export (dkExport/dkmExport used to
+   push a raw JSON string through iOS's native share sheet, which didn't
+   copy/paste cleanly and had no reliable Save As). Shows the payload in
+   a plain readonly textarea (tap to select-all, explicit Copy button)
+   and a Save File button using the same Blob + <a download> pattern
+   dkIdbExport() already uses correctly. */
+function dkShowExportText(title, text, filenameBase) {
+  var esc = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  var html =
+    '<div class="modal-title">' + title + '</div>' +
+    '<textarea id="dk-export-text" readonly onclick="this.select()" ' +
+      'style="width:100%;height:320px;font-family:monospace;font-size:11px;' +
+      'background:#0A0D14;color:#c9d1d9;border:1px solid #2a2f3a;border-radius:8px;' +
+      'padding:10px;box-sizing:border-box;">' + esc + '</textarea>' +
+    '<div style="display:flex;gap:8px;margin-top:10px;">' +
+      '<button class="btn btn-primary" style="flex:1" onclick="dkExportCopy()">Copy</button>' +
+      '<button class="btn btn-secondary" style="flex:1" onclick="dkExportSaveFile(\'' + filenameBase + '\')">Save File</button>' +
+      '<button class="btn" style="flex:1" onclick="closeModal()">Close</button>' +
+    '</div>';
+  openModal(html);
+  var ta = document.getElementById('dk-export-text');
+  if (ta) ta.select();
+}
+
+function dkExportCopy() {
+  var ta = document.getElementById('dk-export-text');
+  if (!ta) return;
+  ta.select();
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(ta.value)
+      .then(function(){ toast('Copied ✓'); })
+      .catch(function(){ toast('Copy failed — text is selected, use manual copy'); });
+  } else {
+    try { document.execCommand('copy'); toast('Copied ✓'); }
+    catch(e) { toast('Copy failed — text is selected, use manual copy'); }
+  }
+}
+
+function dkExportSaveFile(filenameBase) {
+  var ta = document.getElementById('dk-export-text');
+  if (!ta) return;
+  var ts = new Date().toISOString().slice(0,16).replace('T','_').replace(':','-');
+  var filename = filenameBase + '_' + ts + '.json';
+  var blob = new Blob([ta.value], { type:'application/json' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  toast('Saved ' + filename);
+}
+
 function dkExport() {
   var payload = JSON.stringify({
     _devkit:     true,
@@ -32648,21 +33412,7 @@ function dkExport() {
     entries:     dkLoadLog(),
     mapEdits:    (function(){ try{ return JSON.parse(localStorage.getItem(DKM_MAP_KEY)||'[]'); }catch(e){return[];} })()
   }, null, 2);
-  // Collapse panel before sharing so iOS share sheet has a clear screen
-  var panel = document.getElementById('dk-panel');
-  if (panel) { panel.classList.remove('dk-open'); _dk.panelOpen = false; }
-  setTimeout(function() {
-    if (navigator.share) {
-      navigator.share({title:'BowlingDB DevLog Export', text:payload}).catch(function(){
-        navigator.clipboard && navigator.clipboard.writeText(payload)
-          .then(function(){ toast('DevLog copied'); });
-      });
-    } else {
-      navigator.clipboard && navigator.clipboard.writeText(payload)
-        .then(function(){ toast('DevLog copied'); })
-        .catch(function(){ toast('Copy failed'); });
-    }
-  }, 200);
+  dkShowExportText('DevLog Export', payload, 'bowlingdb_devlog');
 }
 
 /* ── Self-regenerating code map ──────────────────────────── */
@@ -33311,8 +34061,7 @@ function dkmExport() {
     return {id:r.id,form:r.form,object:r.object,type:r.type,status:r.status,
             priority:r.priority,current:r.current,desired:r.desired,notes:r.notes};
   }), null, 2);
-  if (navigator.share) { navigator.share({title:'BowlingDB Interaction Map',text:out}).catch(function(){}); return; }
-  navigator.clipboard&&navigator.clipboard.writeText(out).then(function(){ toast('Map JSON copied ✓'); }).catch(function(){ toast('Copy failed'); });
+  dkShowExportText('Interaction Map Export', out, 'bowlingdb_interaction_map');
 }
 
 /* ── Bubble category selector ────────────────────────────── */
