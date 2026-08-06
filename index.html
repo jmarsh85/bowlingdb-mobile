@@ -2946,9 +2946,9 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
 .dk-badge-note { background:rgba(255,215,0,0.12);  color:var(--gold); }
 .dk-entry-ts   { font-size:10px; color:var(--t3); flex:1; }
 .dk-entry-del  { font-size:16px; color:var(--t3); cursor:pointer; line-height:1; padding:0 2px; }
-.dk-entry-msg  { font-size:12px; color:var(--t1); line-height:1.45; }
-.dk-entry-ref  { font-size:10px; color:var(--teal); font-family:monospace; margin-top:3px; }
-.dk-entry-scr  { font-size:10px; color:var(--t3); margin-top:2px; }
+.dk-entry-msg  { font-size:12px; color:var(--t1); line-height:1.45; user-select:text; -webkit-user-select:text; }
+.dk-entry-ref  { font-size:10px; color:var(--teal); font-family:monospace; margin-top:3px; user-select:text; -webkit-user-select:text; }
+.dk-entry-scr  { font-size:10px; color:var(--t3); margin-top:2px; user-select:text; -webkit-user-select:text; }
 /* ── State tab ── */
 #dk-state {
   font-family:monospace; font-size:11px; color:var(--t2);
@@ -3742,6 +3742,12 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
       <div id="games-list"></div>
     </div>
 
+    <!-- LEAGUE REPORT -->
+    <div id="s-league-report" class="screen" data-title="League Report">
+      <div class="sec-header"><span class="sec-title">League Report</span></div>
+      <div id="league-report-table"></div>
+    </div>
+
   </div><!-- /screens -->
 
   <!-- BOTTOM NAV -->
@@ -4045,6 +4051,8 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
           <button onclick="dkStreakRollingDryRun()" style="width:100%;padding:9px;background:#164a52;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px">Rolling Avg Streak — League 129 (read-only)</button>
           <button onclick="dkStreakRollingDryRun('lineage', 1)" style="width:100%;padding:9px;background:#164a52;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px">Rolling Avg Streak — Lineage 1 (read-only)</button>
           <button onclick="dkStreakRollingDryRun('global')" style="width:100%;padding:9px;background:#164a52;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px">Rolling Avg Streak — GLOBAL (read-only)</button>
+          <button onclick="dkBestSeriesStreakDryRun('lineage', 1)" style="width:100%;padding:9px;background:#7a4a1e;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px">Best Streak — Lineage 1 (read-only)</button>
+          <button onclick="dkBestSeriesStreakDryRun('calendar')" style="width:100%;padding:9px;background:#7a4a1e;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px">Best Streak — Calendar/Global (read-only)</button>
           <button onclick="dkPreviewCompareStreaks()" style="width:100%;padding:9px;background:#4a3a1e;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px">Preview: Compare Streaks Tab</button>
           <button onclick="dkEnsureLineagesRun()" style="width:100%;padding:9px;background:#b8641f;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px">Ensure Lineages (writes!)</button>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px">
@@ -4548,7 +4556,7 @@ const LOCK_BUFFER = 1;
    ============================================================= */
 const ROOT_SCREENS = ['s-home','s-leagues','s-open','s-tournaments','s-stats','s-tb-sessions','s-notap','s-ai-chat'];
 
-const SCORING_SCREENS = new Set(['s-series','s-tournament-series','s-game-select','s-scoring','s-game-complete','s-stats','s-games','s-handicap-tb','s-handicap-league','s-tb-sessions','s-performance']);
+const SCORING_SCREENS = new Set(['s-series','s-tournament-series','s-game-select','s-scoring','s-game-complete','s-stats','s-games','s-league-report','s-handicap-tb','s-handicap-league','s-tb-sessions','s-performance']);
 
 async function navTo(screenId, opts={}) {
   toastDismiss(); // clear any stuck toast on navigation
@@ -4623,6 +4631,7 @@ async function navTo(screenId, opts={}) {
       's-performance': renderPerformanceScreen,
       's-leaves': renderLeavesScreen,
       's-games': renderGamesList,
+      's-league-report': renderLeagueReport,
       's-group': renderGroupScreen,
       's-tb-sessions': renderTBSessions,
       's-tb-games': renderTBGames,
@@ -13670,6 +13679,27 @@ function computeBucketStreak(avgs) {
   return _streakCompute(avgs, (avg, t) => _streakBucketOf(avg) === t, avg => _streakBucketOf(avg));
 }
 
+// League Report column: "highest score-streak bracket" — walks a
+// chronological value list (game scores OR per-series averages) and
+// returns the HIGHEST-value 10-pt bucket that had a consecutive run of
+// length > 1, plus that run's length. Distinct from computeBucketStreak
+// above, which only returns the max RUN LENGTH regardless of which
+// bucket produced it — this needs the bucket's VALUE, and specifically
+// the highest qualifying one, so a single new small walker was needed.
+function _streakHighestQualifyingBucket(vals) {
+  if (!vals || !vals.length) return null;
+  let best = null, i = 0;
+  while (i < vals.length) {
+    const bucket = _streakBucketOf(vals[i]);
+    let j = i;
+    while (j < vals.length && _streakBucketOf(vals[j]) === bucket) j++;
+    const length = j - i;
+    if (length > 1 && (!best || bucket > best.bucket)) best = { bucket, length };
+    i = j;
+  }
+  return best;
+}
+
 // Chronological per-series average list — same filter/shape as
 // seriesAvgMap in renderSeriesList (exclude teammate games, require a
 // FinalScore), restructured as a flat array instead of a delta-map.
@@ -13714,6 +13744,234 @@ function _streakRollingScopeAvgs(seriesList) {
 // Thin wrapper — one league's rolling average, via the generic function.
 function _streakRollingLeagueAvgs(leagueID) {
   return _streakRollingScopeAvgs((db.series || []).filter(s => s.LeagueID === leagueID));
+}
+
+
+/* ============================================================
+   BEST SERIES STREAK ENGINE (v30.90, dry-run stage — not wired)
+   Two independent variants, per the design Q&A:
+
+   A) Per-lineage: x consecutive SERIES ENTRIES within one lineage
+      (or standalone league with no lineage), sorted chronologically.
+      Bye weeks just aren't in the series list, so they're skipped —
+      no calendar-gap detection needed, a straight sliding window
+      over recorded entries. Uses lineage (not raw league) scope so
+      a season boundary inside one recurring league doesn't
+      artificially reset the streak, consistent with how Compare
+      Streaks/League Report already scope things. Ranked by
+      cumulative pins (games/week is ~constant within one lineage,
+      so pins and weighted-avg orderings normally agree).
+
+   B) Calendar: x consecutive CALENDAR WEEKS, pooling every league's
+      series that fall in that week (most relevant when >1 league
+      overlaps, e.g. same center different nights). A week's value
+      is sum(pins)/sum(games) — weighted by actual game count, not
+      an average of each league's own average — so a 2-league week
+      counts proportionally more than a 1-league week instead of
+      being diluted or double-counted. Ranked by that weighted avg,
+      NOT cumulative pins (changed v30.90) — the v30.89 real-data
+      dry run showed raw pins just surfaces whichever season had the
+      most concurrent leagues (more games = bigger total regardless
+      of quality), not an actual hot stretch. Pins/games both still
+      carried on the result for context.
+
+   Both variants: exclude NoTap, teammate games, and open-bowl
+   sessions — same stdGames pool used by Milestones/All-Time Highs.
+   Ties broken by most-recent qualifying window (>= comparison while
+   iterating chronologically forward).
+
+   NOT YET WIRED to any UI. Validate via DevKit → Best Streak Dry Run
+   against real data first (see dkBestSeriesStreakDryRun below).
+   ============================================================ */
+
+// Games counted toward a Best Series Streak window — mirrors the
+// stdGames filter used by openAllTimeHighsModal/openHighsByVenueModal.
+function _bssQualifyingGames(seriesID, openIDs) {
+  return db.games.filter(g =>
+    g.SeriesID === seriesID && g.FinalScore != null && g.FinalScore > 0 &&
+    !g.IsTeammate && !g.NoTap && !openIDs.has(g.SeriesID)
+  );
+}
+
+// Sunday-of-week key for calendar bucketing (plain calendar week,
+// not ISO week-number, to sidestep year-boundary edge cases).
+function _bssWeekStart(dateStr) {
+  if (!dateStr) return null;
+  const d = new Date(dateStr + 'T12:00:00');
+  d.setDate(d.getDate() - d.getDay());
+  return d.toISOString().split('T')[0];
+}
+
+// Variant A — per-lineage sliding window over series entries.
+// seriesList: db.series records already scoped to one lineage/league.
+// Returns { 5: bestWindowOrNull, 6: ..., ..., 10: ... }.
+function _bssPerLeagueWindows(seriesList, minWeeks = 5, maxWeeks = 10) {
+  const openIDs = openBowlSeriesIDs();
+  const sorted = seriesList.slice().sort((a, b) => (a.DateBowled || '').localeCompare(b.DateBowled || ''));
+  const entries = sorted.map(s => {
+    const g = _bssQualifyingGames(s.SeriesID, openIDs);
+    return g.length ? {
+      seriesID: s.SeriesID, date: s.DateBowled,
+      pins: g.reduce((a, x) => a + x.FinalScore, 0), games: g.length
+    } : null;
+  }).filter(Boolean);
+
+  function windowStats(slice) {
+    const pins = slice.reduce((a, e) => a + e.pins, 0);
+    const gamesCt = slice.reduce((a, e) => a + e.games, 0);
+    return {
+      pins, games: gamesCt, avg: gamesCt ? pins / gamesCt : 0,
+      startDate: slice[0].date, endDate: slice[slice.length - 1].date,
+      seriesIDs: slice.map(e => e.seriesID)
+    };
+  }
+
+  const results = {};
+  for (let x = minWeeks; x <= maxWeeks; x++) {
+    let best = null;
+    for (let i = 0; i + x <= entries.length; i++) {
+      const w = windowStats(entries.slice(i, i + x));
+      if (!best || w.pins >= best.pins) best = w;
+    }
+    // Current = the most recent x qualifying entries — "where you stand
+    // right now" vs. the all-time record above. Always <= best.avg since
+    // it's one of the candidates the best-search already scanned.
+    const current = entries.length >= x ? windowStats(entries.slice(entries.length - x)) : null;
+    results[x] = { best, current };
+  }
+  return results;
+}
+
+// Variant B — calendar-week sliding window, pooling all leagues.
+// seriesList: db.series records already scoped (e.g. all real series,
+// or a same-center subset — dry run defaults to all leagues global).
+function _bssCalendarWindows(seriesList, minWeeks = 5, maxWeeks = 10) {
+  const openIDs = openBowlSeriesIDs();
+  const weekMap = {};
+  seriesList.forEach(s => {
+    const g = _bssQualifyingGames(s.SeriesID, openIDs);
+    if (!g.length) return;
+    const wk = _bssWeekStart(s.DateBowled);
+    if (!wk) return;
+    if (!weekMap[wk]) weekMap[wk] = { weekStart: wk, pins: 0, games: 0, seriesIDs: [], leagueIDs: new Set() };
+    weekMap[wk].pins += g.reduce((a, x) => a + x.FinalScore, 0);
+    weekMap[wk].games += g.length;
+    weekMap[wk].seriesIDs.push(s.SeriesID);
+    weekMap[wk].leagueIDs.add(s.LeagueID);
+  });
+  const weeks = Object.values(weekMap).sort((a, b) => a.weekStart.localeCompare(b.weekStart));
+
+  function windowStats(slice) {
+    const pins = slice.reduce((a, w) => a + w.pins, 0);
+    const gamesCt = slice.reduce((a, w) => a + w.games, 0);
+    return {
+      pins, games: gamesCt, avg: gamesCt ? pins / gamesCt : 0,
+      startWeek: slice[0].weekStart, endWeek: slice[slice.length - 1].weekStart,
+      multiLeagueWeeks: slice.filter(w => w.leagueIDs.size > 1).length,
+      weeks: slice
+    };
+  }
+
+  const results = {};
+  for (let x = minWeeks; x <= maxWeeks; x++) {
+    let best = null;
+    for (let i = 0; i + x <= weeks.length; i++) {
+      const w = windowStats(weeks.slice(i, i + x));
+      // Ranked by weighted avg (pins/games), not raw pins — raw pins was
+      // found (real-data dry run, v30.89) to bias toward weeks with more
+      // concurrent leagues rather than actual hot stretches, since a
+      // 3-league week always outscores a 1-league week on totals alone
+      // regardless of how well either was actually bowled.
+      if (!best || w.avg >= best.avg) best = w;
+    }
+    const current = weeks.length >= x ? windowStats(weeks.slice(weeks.length - x)) : null;
+    results[x] = { best, current };
+  }
+  return results;
+}
+
+// Dispatcher — scope: 'lineage' (id = LineageID) | 'league' (id = LeagueID,
+// standalone/no-lineage case) | 'calendar' (id ignored, all leagues global).
+function calculateBestSeriesStreak(scope, id, minWeeks = 5, maxWeeks = 10) {
+  if (scope === 'calendar') {
+    const seriesList = (db.series || []).filter(s => !s._virtual);
+    return { scope, variant: 'calendar', windows: _bssCalendarWindows(seriesList, minWeeks, maxWeeks) };
+  }
+  if (scope === 'lineage') {
+    const memberIDs = new Set((db.leagues || []).filter(l => l.LineageID === id).map(l => l.LeagueID));
+    const seriesList = (db.series || []).filter(s => memberIDs.has(s.LeagueID));
+    return { scope, variant: 'perLeague', id, windows: _bssPerLeagueWindows(seriesList, minWeeks, maxWeeks) };
+  }
+  const seriesList = (db.series || []).filter(s => s.LeagueID === id);
+  return { scope: 'league', variant: 'perLeague', id, windows: _bssPerLeagueWindows(seriesList, minWeeks, maxWeeks) };
+}
+
+/* ── Best Series Streaks modal (v30.91) — wires the engine above to the
+   Milestones card. Window-size pills (5-10) select which size is shown;
+   each row is current trailing stretch vs. that scope's all-time record,
+   sorted by current avg so the currently-hottest league/lineage floats
+   to the top. Calendar/Global stays in its own section per the "track
+   both separately" design decision — the numbers make it easy to see
+   which is currently more impressive without merging the data. ── */
+let _bssModalX = 8;
+function openBestSeriesStreaksModal(selectedX) {
+  _bssModalX = selectedX || _bssModalX || 8;
+  const x = _bssModalX;
+
+  const calRes = calculateBestSeriesStreak('calendar', null);
+  const opts = _perfPickOptions();
+  const perLeagueResults = opts.map(o => ({ opt: o, res: calculateBestSeriesStreak(o.type, o.id) }));
+
+  function fmtRow(label, entry, isCalendar) {
+    const w = entry ? entry.windows[x] : null;
+    if (!w || !w.current) {
+      return `<div style="padding:6px 0;border-bottom:1px solid var(--border1)">
+        <div style="font-weight:700;font-size:13px;color:var(--t2)">${label}</div>
+        <div style="font-size:11px;color:var(--t3)">Not enough data for a ${x}-week window yet</div>
+      </div>`;
+    }
+    const cur = w.current, best = w.best;
+    const pct = best && best.avg ? Math.round(cur.avg / best.avg * 100) : 0;
+    const atRecord = best && cur.avg >= best.avg - 0.001;
+    const bestSpan = isCalendar ? (best.startWeek + ' → ' + best.endWeek) : (best.startDate + ' → ' + best.endDate);
+    return `<div style="padding:8px 0;border-bottom:1px solid var(--border1)">
+      <div style="display:flex;justify-content:space-between;align-items:baseline">
+        <span style="font-weight:700;font-size:13px">${label}</span>
+        <span style="font-size:10px;font-weight:700;color:${atRecord ? 'var(--gold)' : 'var(--t3)'}">${atRecord ? '🏆 AT RECORD' : pct + '% of record'}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:3px;font-size:12px">
+        <span style="color:var(--t2)">Current <b style="color:var(--teal)">${cur.avg.toFixed(1)}</b> avg (${cur.games}g)</span>
+        <span style="color:var(--t2)">Record <b style="color:var(--gold)">${best.avg.toFixed(1)}</b> avg</span>
+      </div>
+      <div style="font-size:10px;color:var(--t3);margin-top:2px">Record set ${bestSpan}</div>
+    </div>`;
+  }
+
+  const calRow = fmtRow('🌐 Calendar (all leagues, weighted)', calRes, true);
+  const leagueRows = perLeagueResults
+    .slice()
+    .sort((a, b) => {
+      const av = a.res.windows[x] && a.res.windows[x].current ? a.res.windows[x].current.avg : -1;
+      const bv = b.res.windows[x] && b.res.windows[x].current ? b.res.windows[x].current.avg : -1;
+      return bv - av;
+    })
+    .map(pl => fmtRow(pl.opt.name, pl.res, false))
+    .join('');
+
+  const pillsHTML = [5,6,7,8,9,10].map(n => `
+    <button onclick="openBestSeriesStreaksModal(${n})" style="flex:1;padding:7px 0;border-radius:8px;border:none;font-size:12px;font-weight:700;cursor:pointer;background:${n===x?'var(--teal)':'var(--bg3)'};color:${n===x?'#04211f':'var(--t2)'}">${n}w</button>
+  `).join('');
+
+  swapModal(`
+    <div class="modal-title">🔥 Best Series Streaks</div>
+    <div style="font-size:11px;color:var(--t3);margin-bottom:10px">Ranked by weighted avg (pins ÷ games) — current stretch vs. all-time record</div>
+    <div style="display:flex;gap:4px;margin-bottom:14px">${pillsHTML}</div>
+    <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:0.06em;margin-bottom:6px">GLOBAL</div>
+    <div class="stat-card" style="padding:10px 14px;margin-bottom:12px">${calRow}</div>
+    <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:0.06em;margin-bottom:6px">BY LEAGUE / LINEAGE — sorted by current avg</div>
+    <div class="stat-card" style="padding:10px 14px;margin-bottom:12px">${leagueRows || '<div style="color:var(--t3);font-size:12px">No data</div>'}</div>
+    <button class="btn btn-secondary" style="width:100%" onclick="closeModal()">Close</button>
+  `);
 }
 
 
@@ -15141,15 +15399,41 @@ function _statsTabOverview(games, core, allStdGames, sc, hasFrames) {
   const ms250 = games.filter(g=>g.FinalScore>=250).length;
   const ms275 = games.filter(g=>g.FinalScore>=275).length;
   const ms300 = games.filter(g=>g.FinalScore>=300).length;
+  // Series milestones (v30.88) — same in-scope games pool as the game milestones above
+  const msSeriesTotals = {};
+  games.forEach(g => { msSeriesTotals[g.SeriesID] = (msSeriesTotals[g.SeriesID]||0) + g.FinalScore; });
+  const msSeriesVals = Object.values(msSeriesTotals);
+  const ms675 = msSeriesVals.filter(t=>t>=675).length;
+  const ms750 = msSeriesVals.filter(t=>t>=750).length;
+  const ms800 = msSeriesVals.filter(t=>t>=800).length;
   const milestonesHTML = `
     <div class="stat-card" style="margin-bottom:16px">
       <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:0.8px;text-transform:uppercase;margin-bottom:10px">Milestones</div>
+      <div style="font-size:10px;font-weight:700;color:var(--t3);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:6px">Series</div>
+      <div style="display:flex;justify-content:space-around;text-align:center;margin-bottom:12px">
+        ${[{lbl:'675+',val:ms675,col:'var(--teal)'},{lbl:'750+',val:ms750,col:'var(--gold)'},{lbl:'800+',val:ms800,col:'var(--purple)'}].map(m=>`
+        <div>
+          <div style="font-size:20px;font-weight:900;color:${m.val>0?m.col:'var(--t3)'}">${m.val}</div>
+          <div style="font-size:10px;color:var(--t3);margin-top:2px">${m.lbl}</div>
+        </div>`).join('')}
+      </div>
+      <div style="font-size:10px;font-weight:700;color:var(--t3);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:6px">Games</div>
       <div style="display:flex;justify-content:space-around;text-align:center">
         ${[{lbl:'200+',val:ms200,col:'var(--t2)'},{lbl:'225+',val:ms225,col:'var(--teal)'},{lbl:'250+',val:ms250,col:'var(--gold)'},{lbl:'275+',val:ms275,col:'var(--purple)'},{lbl:'300',val:ms300,col:'var(--gold)'}].map(m=>`
         <div>
           <div style="font-size:${m.lbl==='300'?'26px':'20px'};font-weight:900;color:${m.val>0?m.col:'var(--t3)'}${m.lbl==='300'&&m.val>0?';text-shadow:0 0 12px var(--gold)':''}">${m.val}</div>
           <div style="font-size:10px;color:var(--t3);margin-top:2px">${m.lbl}</div>
         </div>`).join('')}
+      </div>
+      <div style="display:flex;gap:8px;margin-top:14px">
+        <button class="btn btn-ghost" style="flex:1;font-size:12px;padding:8px"
+          onclick="openAllTimeHighsModal()">🏆 All-Time Highs &amp; Streaks</button>
+        <button class="btn btn-ghost" style="flex:1;font-size:12px;padding:8px"
+          onclick="openHighsByVenueModal()">🎳 By Center / League</button>
+      </div>
+      <div style="margin-top:8px">
+        <button class="btn btn-ghost" style="width:100%;font-size:12px;padding:8px"
+          onclick="openBestSeriesStreaksModal()">🔥 Best Series Streaks</button>
       </div>
     </div>`;
 
@@ -15189,6 +15473,9 @@ function _statsTabOverview(games, core, allStdGames, sc, hasFrames) {
       ${projRowsHTML}
       <div style="margin-top:10px">
         <button class="btn btn-ghost" style="width:100%;font-size:13px" onclick="navTo('s-games')">🎳 Browse All Games</button>
+      </div>
+      <div style="margin-top:6px">
+        <button class="btn btn-ghost" style="width:100%;font-size:13px" onclick="navTo('s-league-report')">📊 League Report</button>
       </div>
     </div>`;
 
@@ -16683,55 +16970,90 @@ function renderGamesList() {
     </div>
 
     <!-- Game list -->
-    ${filtered.map(g => {
-      const date = g.series?.DateBowled ? fmtDate(g.series.DateBowled, {month:'short', day:'numeric', year:'2-digit'}) : '—';
-      const leagueName = g.league?.LeagueName || 'Open';
-      const centerName = g.center?.CenterName || '';
-      const gameNum = g.GameNumber || '';
-      
-      // Get frame stats for this game
-      const gFrames = db.frames.filter(f => f.GameID === g.GameID);
-      const strikes = gFrames.filter(f => f.Strike).length;
-      const spares = gFrames.filter(f => f.Spare).length;
-      const opens = gFrames.filter(f => !f.Strike && !f.Spare).length;
-      const hasFrameData = gFrames.length > 0;
+    ${(() => {
+      // Per-game card — unchanged from before, just pulled into a
+      // reusable closure so it can render both standalone and inside a
+      // series-group wrapper below.
+      function renderGameCard(g) {
+        const date = g.series?.DateBowled ? fmtDate(g.series.DateBowled, {month:'short', day:'numeric', year:'2-digit'}) : '—';
+        const leagueName = g.league?.LeagueName || 'Open';
+        const centerName = g.center?.CenterName || '';
+        const gameNum = g.GameNumber || '';
 
-      // Primary ball: att1 of frame 1
-      const gFrameIDs = new Set(gFrames.map(f => f.FrameID));
-      const gAtts = db.attempts.filter(a => gFrameIDs.has(a.FrameID) && a.Attempt === 1 && a.BallID);
-      const primaryBallID = gAtts[0]?.BallID || null;
-      const primaryBall = primaryBallID ? db.balls.find(b => b.BallID === primaryBallID) : null;
-      
-      // Score color based on performance
-      let scoreColor = 'var(--t1)';
-      if (g.FinalScore >= 250) scoreColor = 'var(--gold)';
-      else if (g.FinalScore >= 200) scoreColor = 'var(--green)';
-      else if (g.FinalScore < 150) scoreColor = 'rgba(157,78,221,0.7)';
-      
-      const _obScore = g.FinalScore != null ? (g.FinalScore/300).toFixed(4) : '0';
-      return `
-        <div class="list-row" data-gscore="${_obScore}" style="--gscore:${_obScore};padding:12px 14px" onclick="openGameFromList(${g.GameID}, ${g.SeriesID})">
-          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
-            <div style="flex:1;min-width:0">
-              <div style="font-size:15px;font-weight:600;color:var(--t1)">${date}${gameNum ? ' · G'+gameNum : ''}</div>
-              <div style="font-size:12px;color:var(--t3);margin-top:2px">${leagueName}${centerName ? ' @ '+centerName : ''} ${(()=>{const lp=g.LanePair||g.series?.LanePair; const ls=g.LaneStart&&g.LaneStart!==0?g.LaneStart:null; const lpClean=lp&&lp!=='null'?lp:null; return lpClean ? '&middot; Ln&nbsp;'+formatLanePairWithStart(lpClean, ls) : ls ? '&middot; Ln&nbsp;'+ls : '';})()}</div>
-              ${hasFrameData ? `<div style="font-size:11px;color:var(--t3);margin-top:4px">
-                <span style="color:var(--gold)">X${strikes}</span> ·
-                <span style="color:var(--teal)">/${spares}</span> ·
-                <span style="color:var(--teal)">○${opens}</span>
-                ${primaryBall ? `<span style="color:var(--t3)"> · ${primaryBall.BallName.split(' ').slice(0,2).join(' ')}</span>` : ''}
-              </div>` : ''}
-            </div>
-            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
-              <div style="font-size:26px;font-weight:800;color:${scoreColor};line-height:1">${g.FinalScore}</div>
-              ${primaryBall ? `<img src="${getBallImgSrc(primaryBall.BallID,'cover')||''}" alt="${primaryBall.BallName}"
-                style="width:28px;height:28px;border-radius:50%;object-fit:cover${getBallImgSrc(primaryBall.BallID,'cover')?'':';display:none'}"
-                onerror="this.style.display='none'">` : ''}
+        const gFrames = db.frames.filter(f => f.GameID === g.GameID);
+        const strikes = gFrames.filter(f => f.Strike).length;
+        const spares = gFrames.filter(f => f.Spare).length;
+        const opens = gFrames.filter(f => !f.Strike && !f.Spare).length;
+        const hasFrameData = gFrames.length > 0;
+
+        const gFrameIDs = new Set(gFrames.map(f => f.FrameID));
+        const gAtts = db.attempts.filter(a => gFrameIDs.has(a.FrameID) && a.Attempt === 1 && a.BallID);
+        const primaryBallID = gAtts[0]?.BallID || null;
+        const primaryBall = primaryBallID ? db.balls.find(b => b.BallID === primaryBallID) : null;
+
+        let scoreColor = 'var(--t1)';
+        if (g.FinalScore >= 250) scoreColor = 'var(--gold)';
+        else if (g.FinalScore >= 200) scoreColor = 'var(--green)';
+        else if (g.FinalScore < 150) scoreColor = 'rgba(157,78,221,0.7)';
+
+        const _obScore = g.FinalScore != null ? (g.FinalScore/300).toFixed(4) : '0';
+        return `
+          <div class="list-row" data-gscore="${_obScore}" style="--gscore:${_obScore};padding:12px 14px" onclick="openGameFromList(${g.GameID}, ${g.SeriesID})">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+              <div style="flex:1;min-width:0">
+                <div style="font-size:15px;font-weight:600;color:var(--t1)">${date}${gameNum ? ' · G'+gameNum : ''}</div>
+                <div style="font-size:12px;color:var(--t3);margin-top:2px">${leagueName}${centerName ? ' @ '+centerName : ''} ${(()=>{const lp=g.LanePair||g.series?.LanePair; const ls=g.LaneStart&&g.LaneStart!==0?g.LaneStart:null; const lpClean=lp&&lp!=='null'?lp:null; return lpClean ? '&middot; Ln&nbsp;'+formatLanePairWithStart(lpClean, ls) : ls ? '&middot; Ln&nbsp;'+ls : '';})()}</div>
+                ${hasFrameData ? `<div style="font-size:11px;color:var(--t3);margin-top:4px">
+                  <span style="color:var(--gold)">X${strikes}</span> ·
+                  <span style="color:var(--teal)">/${spares}</span> ·
+                  <span style="color:var(--teal)">○${opens}</span>
+                  ${primaryBall ? `<span style="color:var(--t3)"> · ${primaryBall.BallName.split(' ').slice(0,2).join(' ')}</span>` : ''}
+                </div>` : ''}
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
+                <div style="font-size:26px;font-weight:800;color:${scoreColor};line-height:1">${g.FinalScore}</div>
+                ${primaryBall ? `<img src="${getBallImgSrc(primaryBall.BallID,'cover')||''}" alt="${primaryBall.BallName}"
+                  style="width:28px;height:28px;border-radius:50%;object-fit:cover${getBallImgSrc(primaryBall.BallID,'cover')?'':';display:none'}"
+                  onerror="this.style.display='none'">` : ''}
+              </div>
             </div>
           </div>
-        </div>
-      `;
-    }).join('')}
+        `;
+      }
+
+      // Group consecutive filtered games that share a SeriesID — this
+      // stays meaningful under date/league sort (a series' games are
+      // adjacent) and degrades gracefully under score sort (a series
+      // rarely lands adjacent by chance there, so groups mostly fall
+      // back to size 1, same as the old ungrouped rendering).
+      const groups = [];
+      filtered.forEach(g => {
+        const last = groups[groups.length - 1];
+        if (last && last[0].SeriesID === g.SeriesID) last.push(g);
+        else groups.push([g]);
+      });
+
+      return groups.map(group => {
+        const seriesID = group[0].SeriesID;
+        // True series total — ALL games in this series (same eligibility
+        // rules as the main list), not just however many are visible in
+        // the current filtered subset.
+        const seriesGamesAll = db.games.filter(x =>
+          x.SeriesID === seriesID && x.FinalScore != null && x.FinalScore > 0 && !x.IsTeammate && !x.NoTap);
+        const seriesTotal = seriesGamesAll.reduce((s, x) => s + x.FinalScore, 0);
+        const shownNote = group.length < seriesGamesAll.length
+          ? `${group.length} of ${seriesGamesAll.length} shown` : `${seriesGamesAll.length}-game series`;
+        const cardsHTML = group.map(g => renderGameCard(g)).join('<div style="height:1px;background:var(--border1);margin:0 2px"></div>');
+        return `
+          <div style="margin-bottom:12px">
+            <div style="display:flex;align-items:baseline;justify-content:space-between;padding:0 4px 6px">
+              <div style="font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.5px">${shownNote}</div>
+              <div style="font-size:13px;font-weight:800;color:var(--teal)">Series Total ${seriesTotal}</div>
+            </div>
+            <div style="border:1px solid var(--border1);border-radius:14px;overflow:hidden">${cardsHTML}</div>
+          </div>`;
+      }).join('');
+    })()}
   `;
 }
 
@@ -16773,6 +17095,356 @@ function stepDateBack() {
   // dateTo stays pinned; if never set, default to today
   if (!f.dateTo) f.dateTo = azToday();
   renderGamesList();
+}
+
+/* =============================================================
+   LEAGUE REPORT  (s-league-report)
+   Standalone sortable/filterable summary table, one row per league
+   (raw — no lineage merging). Reuses already-validated engines:
+   calculateAdvancedStats, calculateStrikeStreaks, _streakSeriesAvgs,
+   _streakHighestQualifyingBucket. Only genuinely new logic here is the
+   10-pin-specific conversion tally and the most-used-ball tally, since
+   neither existed as a standalone per-league figure before.
+   ============================================================= */
+
+// One row of the League Report. Returns null if the league has zero
+// standard (non-teammate, non-NoTap, valid-score) games.
+function _leagueReportComputeRow(league) {
+  const leagueSeries = db.series.filter(s => s.LeagueID === league.LeagueID);
+  const seriesIDSet = new Set(leagueSeries.map(s => s.SeriesID));
+  const games = db.games.filter(g =>
+    seriesIDSet.has(g.SeriesID) && g.FinalScore != null && g.FinalScore > 0 && !g.IsTeammate && !g.NoTap);
+  if (!games.length) return null;
+  const gameIDs = games.map(g => g.GameID);
+
+  const advStats = calculateAdvancedStats(gameIDs);
+  const strikeStreaks = calculateStrikeStreaks(gameIDs);
+
+  // Clean series: every game in the series is clean (isGameClean).
+  const seriesWithGames = leagueSeries.filter(s =>
+    games.some(g => g.SeriesID === s.SeriesID));
+  const cleanSeriesCount = seriesWithGames.filter(s => {
+    const sGames = games.filter(g => g.SeriesID === s.SeriesID);
+    return sGames.length > 0 && sGames.every(g => isGameClean(g.GameID));
+  }).length;
+
+  // Per-series totals (for high/low series + 600/700 counts + series-level bucket streak)
+  const seriesTotals = seriesWithGames.map(s => {
+    const sGames = games.filter(g => g.SeriesID === s.SeriesID);
+    return { seriesID: s.SeriesID, date: s.DateBowled, total: sGames.reduce((a,g)=>a+g.FinalScore,0) };
+  }).sort((a,b) => (a.date||'').localeCompare(b.date||''));
+  const seriesTotalVals = seriesTotals.map(s => s.total);
+  const highSeries = seriesTotalVals.length ? Math.max(...seriesTotalVals) : null;
+  const lowSeries  = seriesTotalVals.length ? Math.min(...seriesTotalVals) : null;
+  const count600Series = seriesTotalVals.filter(t => t > 600).length;
+  const count700Series = seriesTotalVals.filter(t => t >= 700).length;
+
+  // Score-streak brackets — Games version uses raw chronological game
+  // scores; Series version uses per-series averages (matches the
+  // "220 avg for 3 consecutive weeks" framing from the spec directly).
+  const gamesChron = games.slice().sort((a,b) => {
+    const sa = db.series.find(s => s.SeriesID === a.SeriesID), sb = db.series.find(s => s.SeriesID === b.SeriesID);
+    return (sa?.DateBowled||'').localeCompare(sb?.DateBowled||'') || (a.GameNumber||0) - (b.GameNumber||0);
+  });
+  const gameScoreVals = gamesChron.map(g => g.FinalScore);
+  const seriesAvgVals = _streakSeriesAvgs(leagueSeries).map(a => a.avg);
+  const gameBracket = _streakHighestQualifyingBucket(gameScoreVals);
+  const seriesBracket = _streakHighestQualifyingBucket(seriesAvgVals);
+
+  // 10-pin-specific conversion rate — narrower than advStats.singlePct
+  // (which covers ALL single-pin leaves 1–10), since the 10-pin is
+  // specifically called out as the dominant single-pin leave.
+  let tenPinOpp = 0, tenPinConv = 0;
+  const gameIDSet = new Set(gameIDs);
+  const frameIDsForLeague = new Set(db.frames.filter(f => gameIDSet.has(f.GameID)).map(f => f.FrameID));
+  db.frames.filter(f => f.FrameNumber <= 9 && gameIDSet.has(f.GameID)).forEach(fr => {
+    const atts = db.attempts.filter(a => a.FrameID === fr.FrameID).sort((a,b) => a.Attempt - b.Attempt);
+    const a1 = atts.find(a => a.Attempt === 1), a2 = atts.find(a => a.Attempt === 2);
+    if (!a1 || a1.Pinfall === null || a1.Pinfall === 10) return;
+    let standing = new Set();
+    const hasPinStart = [1,2,3,4,5,6,7,8,9,10].some(p => a1[`PinStart${p}`] === 1);
+    if (hasPinStart) {
+      for (let p = 1; p <= 10; p++) if (a1[`PinStart${p}`] === 1 && a1[`PinDelta${p}`] !== 1) standing.add(p);
+    } else if (a1.LeaveID && db.leaves.length) {
+      const lv = db.leaves.find(l => l.LeaveID === a1.LeaveID);
+      if (lv) for (let p = 1; p <= 10; p++) if (lv[`Pin${p}`]) standing.add(p);
+    }
+    if (standing.size === 1 && standing.has(10)) {
+      tenPinOpp++;
+      if (a2 && a2.Pinfall !== null && fr.Spare) tenPinConv++;
+    }
+  });
+  const tenPinPct = tenPinOpp ? `${Math.round(tenPinConv/tenPinOpp*100)}% (${tenPinConv}/${tenPinOpp})` : '—';
+
+  // Most-used ball
+  const ballUsage = {};
+  db.attempts.filter(a => a.Attempt === 1 && a.BallID && frameIDsForLeague.has(a.FrameID)).forEach(a => {
+    ballUsage[a.BallID] = (ballUsage[a.BallID] || 0) + 1;
+  });
+  let topBallID = null, topBallCt = 0;
+  Object.entries(ballUsage).forEach(([bid, ct]) => { if (ct > topBallCt) { topBallCt = ct; topBallID = bid; } });
+  const topBall = topBallID ? db.balls.find(b => b.BallID == topBallID) : null;
+
+  const scores = games.map(g => g.FinalScore);
+
+  return {
+    league,
+    cleanGames: advStats.cleanGames,
+    gameCount: games.length,
+    cleanSeries: cleanSeriesCount,
+    seriesCount: seriesWithGames.length,
+    strikeCount: advStats.strikes,
+    strikesPerGame: games.length ? (advStats.strikes / games.length).toFixed(2) : '—',
+    longestStrikeStreak: strikeStreaks.maxStreak || 0,
+    firstBallAvg: advStats.firstBallAvg,
+    sparePct: advStats.sparePct,
+    tenPinPct,
+    splitPct: advStats.splitPct,
+    splitsPerGame: games.length ? (advStats.splitOpp / games.length).toFixed(2) : '—',
+    highGame: Math.max(...scores),
+    lowGame: Math.min(...scores),
+    highSeries, lowSeries,
+    count250Games: scores.filter(s => s >= 250).length,
+    count600Series, count700Series,
+    gameBracketVal: gameBracket ? gameBracket.bucket : null,
+    gameBracketLen: gameBracket ? gameBracket.length : null,
+    seriesBracketVal: seriesBracket ? seriesBracket.bucket : null,
+    seriesBracketLen: seriesBracket ? seriesBracket.length : null,
+    topBallName: topBall ? topBall.BallName : '—',
+    topBallCt
+  };
+}
+
+const LEAGUE_REPORT_COLUMNS = [
+  { key: 'league',        label: 'League',        sortVal: r => r.league.LeagueName || '',            fmt: r => r.league.LeagueName || '—', numeric: false },
+  { key: 'cleanGames',    label: 'Clean Gm',       sortVal: r => r.cleanGames,                          fmt: r => `${r.cleanGames}/${r.gameCount}` },
+  { key: 'cleanSeries',   label: 'Clean Sr',       sortVal: r => r.cleanSeries,                         fmt: r => `${r.cleanSeries}/${r.seriesCount}` },
+  { key: 'strikeCount',   label: 'Strikes',        sortVal: r => r.strikeCount,                         fmt: r => r.strikeCount },
+  { key: 'longestStrikeStreak', label: 'Best X-Streak', sortVal: r => r.longestStrikeStreak,            fmt: r => r.longestStrikeStreak },
+  { key: 'strikesPerGame', label: 'X/Gm',          sortVal: r => parseFloat(r.strikesPerGame) || 0,     fmt: r => r.strikesPerGame },
+  { key: 'firstBallAvg',  label: '1st Ball Avg',   sortVal: r => parseFloat(r.firstBallAvg) || 0,       fmt: r => r.firstBallAvg },
+  { key: 'sparePct',      label: 'Spare Conv',     sortVal: r => parseFloat(r.sparePct) || 0,           fmt: r => r.sparePct },
+  { key: 'tenPinPct',     label: '10-Pin Conv',    sortVal: r => parseFloat(r.tenPinPct) || 0,          fmt: r => r.tenPinPct },
+  { key: 'splitPct',      label: 'Split %',        sortVal: r => parseFloat(r.splitPct) || 0,           fmt: r => r.splitPct },
+  { key: 'splitsPerGame', label: 'Splits/Gm',      sortVal: r => parseFloat(r.splitsPerGame) || 0,      fmt: r => r.splitsPerGame },
+  { key: 'highGame',      label: 'Hi Gm',          sortVal: r => r.highGame,                            fmt: r => r.highGame },
+  { key: 'lowGame',       label: 'Lo Gm',          sortVal: r => r.lowGame,                             fmt: r => r.lowGame },
+  { key: 'highSeries',    label: 'Hi Sr',          sortVal: r => r.highSeries ?? -1,                    fmt: r => r.highSeries ?? '—' },
+  { key: 'lowSeries',     label: 'Lo Sr',          sortVal: r => r.lowSeries ?? -1,                     fmt: r => r.lowSeries ?? '—' },
+  { key: 'count250Games', label: '250+ Gm',        sortVal: r => r.count250Games,                       fmt: r => r.count250Games },
+  { key: 'count600Series', label: '>600 Sr',       sortVal: r => r.count600Series,                      fmt: r => r.count600Series },
+  { key: 'count700Series', label: '700+ Sr',       sortVal: r => r.count700Series,                      fmt: r => r.count700Series },
+  { key: 'gameBracketVal', label: 'Gm Streak Bkt', sortVal: r => r.gameBracketVal ?? -1,                fmt: r => r.gameBracketVal != null ? `${r.gameBracketVal}s ×${r.gameBracketLen}` : '—' },
+  { key: 'seriesBracketVal', label: 'Sr Streak Bkt', sortVal: r => r.seriesBracketVal ?? -1,            fmt: r => r.seriesBracketVal != null ? `${r.seriesBracketVal}s ×${r.seriesBracketLen}` : '—' },
+  { key: 'topBall',       label: 'Top Ball',       sortVal: r => r.topBallCt,                           fmt: r => r.topBallCt ? `${r.topBallName} (${r.topBallCt})` : '—', numeric: false }
+];
+
+// Column order + expanded-width state persist under the existing
+// bowlingdb_prefs key (via getPrefs/savePrefs) rather than a new
+// localStorage key — that key already round-trips through
+// buildExportDoc()/confirmImport(), so these preferences survive
+// backups automatically with zero extra import/export wiring.
+function _leagueReportOrderedColumns() {
+  const saved = getPrefs().leagueReportCols?.order;
+  if (!saved || !saved.length) return LEAGUE_REPORT_COLUMNS.slice();
+  const byKey = {};
+  LEAGUE_REPORT_COLUMNS.forEach(c => { byKey[c.key] = c; });
+  const ordered = saved.map(k => byKey[k]).filter(Boolean);
+  const missing = LEAGUE_REPORT_COLUMNS.filter(c => !saved.includes(c.key)); // forward-compat: newly-added columns land at the end
+  return [...ordered, ...missing];
+}
+function _leagueReportExpandedSet() {
+  return new Set(getPrefs().leagueReportCols?.expanded || []);
+}
+function toggleLeagueReportColExpand(key) {
+  const cur = getPrefs().leagueReportCols || {};
+  const expandedSet = _leagueReportExpandedSet();
+  expandedSet.has(key) ? expandedSet.delete(key) : expandedSet.add(key);
+  savePrefs({ leagueReportCols: { ...cur, expanded: Array.from(expandedSet) } });
+  renderLeagueReport();
+}
+function resetLeagueReportColOrder() {
+  const cur = getPrefs().leagueReportCols || {};
+  savePrefs({ leagueReportCols: { ...cur, order: null } });
+  window._leagueReportMove = null;
+  renderLeagueReport();
+}
+
+/* ── Move mode: long-press a header to select, tap others to add/remove,
+   then tap a target column to move the whole selection in front of it. ──
+   Two phases live in window._leagueReportMove: { phase: 'select'|'target', selected: Set }. */
+let _lrPressTimer = null, _lrPressFired = false;
+function lrHeaderPressStart(key) {
+  _lrPressFired = false;
+  clearTimeout(_lrPressTimer);
+  _lrPressTimer = setTimeout(() => { _lrPressFired = true; lrEnterMoveMode(key); }, 500);
+}
+function lrHeaderPressEnd(key) {
+  clearTimeout(_lrPressTimer);
+  if (_lrPressFired) { _lrPressFired = false; return; } // long-press already handled this touch
+  lrHeaderTap(key);
+}
+function lrHeaderPressCancel() { clearTimeout(_lrPressTimer); }
+
+function lrHeaderTap(key) {
+  const mv = window._leagueReportMove;
+  if (!mv) { setLeagueReportSort(key); return; }
+  if (mv.phase === 'select') {
+    mv.selected.has(key) ? mv.selected.delete(key) : mv.selected.add(key);
+    if (mv.selected.size === 0) window._leagueReportMove = null; // deselecting the last one exits move mode
+    renderLeagueReport();
+    return;
+  }
+  lrApplyMove(key); // phase === 'target'
+}
+function lrEnterMoveMode(key) {
+  window._leagueReportMove = { phase: 'select', selected: new Set([key]) };
+  renderLeagueReport();
+}
+function lrStartTargetPick() {
+  const mv = window._leagueReportMove;
+  if (!mv || !mv.selected.size) return;
+  mv.phase = 'target';
+  renderLeagueReport();
+}
+function lrBackToSelect() {
+  const mv = window._leagueReportMove;
+  if (mv) mv.phase = 'select';
+  renderLeagueReport();
+}
+function lrCancelMove() { window._leagueReportMove = null; renderLeagueReport(); }
+function lrApplyMove(targetKey) {
+  const mv = window._leagueReportMove;
+  if (!mv) return;
+  if (mv.selected.has(targetKey)) { toast('Pick a column outside the selection'); return; }
+  const cols = _leagueReportOrderedColumns();
+  const selectedCols = cols.filter(c => mv.selected.has(c.key)); // preserves current relative order
+  const remaining = cols.filter(c => !mv.selected.has(c.key));
+  const targetIdx = remaining.findIndex(c => c.key === targetKey);
+  if (targetIdx < 0) return;
+  remaining.splice(targetIdx, 0, ...selectedCols);
+  const cur = getPrefs().leagueReportCols || {};
+  savePrefs({ leagueReportCols: { ...cur, order: remaining.map(c => c.key) } });
+  window._leagueReportMove = null;
+  renderLeagueReport();
+}
+function lrMoveToEnd() {
+  const mv = window._leagueReportMove;
+  if (!mv || !mv.selected.size) return;
+  const cols = _leagueReportOrderedColumns();
+  const selectedCols = cols.filter(c => mv.selected.has(c.key));
+  const remaining = cols.filter(c => !mv.selected.has(c.key));
+  const cur = getPrefs().leagueReportCols || {};
+  savePrefs({ leagueReportCols: { ...cur, order: [...remaining, ...selectedCols].map(c => c.key) } });
+  window._leagueReportMove = null;
+  renderLeagueReport();
+}
+
+function renderLeagueReport() {
+  const el = document.getElementById('league-report-table');
+  if (!el) return;
+
+  // Preserve horizontal scroll position across re-renders — innerHTML
+  // replacement destroys and recreates the scroll container, which was
+  // silently resetting scrollLeft to 0 on every select/deselect tap.
+  const prevScroller = el.querySelector('.lr-scroll');
+  const prevScrollLeft = prevScroller ? prevScroller.scrollLeft : 0;
+
+  if (!window._leagueReportSort) window._leagueReportSort = { key: 'league', dir: 'asc' };
+  const sortState = window._leagueReportSort;
+  const columns = _leagueReportOrderedColumns();
+  const expandedSet = _leagueReportExpandedSet();
+  const colWidth = c => expandedSet.has(c.key) ? 172 : 96;
+  const mv = window._leagueReportMove;
+
+  const rows = db.leagues
+    .map(lg => _leagueReportComputeRow(lg))
+    .filter(Boolean);
+
+  if (!rows.length) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">📊</div><div class="empty-label">No league data yet</div></div>`;
+    return;
+  }
+
+  const col = LEAGUE_REPORT_COLUMNS.find(c => c.key === sortState.key) || LEAGUE_REPORT_COLUMNS[0];
+  rows.sort((a, b) => {
+    const va = col.sortVal(a), vb = col.sortVal(b);
+    let cmp;
+    if (typeof va === 'string' || typeof vb === 'string') cmp = String(va).localeCompare(String(vb));
+    else cmp = va - vb;
+    return sortState.dir === 'desc' ? -cmp : cmp;
+  });
+
+  const totalWidth = columns.reduce((s, c) => s + colWidth(c), 0);
+
+  const moveModeHTML = mv ? `
+    <div style="background:var(--bg2);border:1px solid var(--teal);border-radius:10px;padding:10px 12px;margin-bottom:8px;display:flex;flex-direction:column;gap:8px;box-sizing:border-box">
+      <div style="font-size:12px;font-weight:700;color:var(--t1)">
+        ${mv.phase === 'select'
+          ? `${mv.selected.size} column${mv.selected.size===1?'':'s'} selected — tap more to add/remove`
+          : `Tap the column to move the selection before`}
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        ${mv.phase === 'select' ? `
+          <button class="btn" style="flex:1 1 0;min-width:0;font-size:12px;padding:8px 4px" onclick="lrStartTargetPick()">Move Before</button>
+          <button class="btn btn-ghost" style="flex:1 1 0;min-width:0;font-size:12px;padding:8px 4px" onclick="lrMoveToEnd()">Move to End</button>
+        ` : `
+          <button class="btn btn-ghost" style="flex:1 1 0;min-width:0;font-size:12px;padding:8px 4px" onclick="lrBackToSelect()">← Back to Selecting</button>
+        `}
+      </div>
+      <button class="btn btn-ghost" style="width:100%;box-sizing:border-box;font-size:12px;padding:8px" onclick="lrCancelMove()">Cancel</button>
+    </div>` : '';
+
+  const headerHTML = columns.map(c => {
+    const isActive = c.key === sortState.key;
+    const isExpanded = expandedSet.has(c.key);
+    const arrow = isActive ? (sortState.dir === 'desc' ? ' ▾' : ' ▴') : '';
+    const isSelected = mv && mv.selected.has(c.key);
+    const isTargetPhase = mv && mv.phase === 'target';
+    const cellBg = isSelected ? 'rgba(0,217,217,0.18)' : 'transparent';
+    const cellBorder = isSelected ? '2px solid var(--teal)' : (isTargetPhase ? '2px dashed var(--border2)' : `2px solid ${isActive?'var(--teal)':'var(--border1)'}`);
+    return `<div
+      ontouchstart="lrHeaderPressStart('${c.key}')" ontouchend="lrHeaderPressEnd('${c.key}')" ontouchmove="lrHeaderPressCancel()" ontouchcancel="lrHeaderPressCancel()"
+      onmousedown="lrHeaderPressStart('${c.key}')" onmouseup="lrHeaderPressEnd('${c.key}')" onmouseleave="lrHeaderPressCancel()"
+      style="flex:0 0 auto;width:${colWidth(c)}px;padding:8px 6px;border-bottom:${cellBorder};background:${cellBg};display:flex;align-items:flex-start;justify-content:space-between;gap:4px;border-radius:4px 4px 0 0;user-select:none;-webkit-user-select:none;cursor:pointer">
+      <span style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:0.4px;color:${isSelected?'var(--teal)':isActive&&!mv?'var(--teal)':'var(--t3)'};white-space:${isExpanded?'normal':'nowrap'}">${c.label}${!mv?arrow:''}</span>
+      ${!mv ? `<span onclick="event.stopPropagation();toggleLeagueReportColExpand('${c.key}')"
+        ontouchstart="event.stopPropagation()" ontouchend="event.stopPropagation()"
+        onmousedown="event.stopPropagation()" onmouseup="event.stopPropagation()"
+        style="font-size:10px;color:${isExpanded?'var(--teal)':'var(--t3)'};cursor:pointer;flex-shrink:0;padding:1px 3px" title="${isExpanded?'Collapse':'Expand'} column">${isExpanded?'⤡':'⤢'}</span>` : ''}
+    </div>`;
+  }).join('');
+
+  const rowsHTML = rows.map((r, i) => `
+    <div style="display:flex;background:${i % 2 ? 'var(--bg2)' : 'transparent'}">
+      ${columns.map(c => {
+        const isExpanded = expandedSet.has(c.key);
+        const isSelected = mv && mv.selected.has(c.key);
+        return `<div style="flex:0 0 auto;width:${colWidth(c)}px;padding:8px 6px;font-size:12px;font-weight:600;color:var(--t1);white-space:${isExpanded?'normal':'nowrap'};overflow:hidden;text-overflow:${isExpanded?'clip':'ellipsis'};background:${isSelected?'rgba(0,217,217,0.08)':'transparent'}">${c.fmt(r)}</div>`;
+      }).join('')}
+    </div>`).join('');
+
+  el.innerHTML = `
+    ${moveModeHTML}
+    <div class="lr-scroll" style="overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--border1);border-radius:12px">
+      <div style="min-width:${totalWidth}px">
+        <div style="display:flex;position:sticky;top:0;background:var(--bg1);z-index:2">${headerHTML}</div>
+        ${rowsHTML}
+      </div>
+    </div>
+    <div style="font-size:11px;color:var(--t3);margin-top:8px;text-align:center">Tap a header to sort · tap ⤢ to expand · press &amp; hold to reorder · <span onclick="resetLeagueReportColOrder()" style="color:var(--teal);cursor:pointer">reset order</span> · ${rows.length} leagues</div>
+  `;
+
+  const newScroller = el.querySelector('.lr-scroll');
+  if (newScroller) newScroller.scrollLeft = prevScrollLeft;
+}
+
+function setLeagueReportSort(key) {
+  const s = window._leagueReportSort || { key: 'league', dir: 'asc' };
+  if (s.key === key) s.dir = s.dir === 'asc' ? 'desc' : 'asc';
+  else { s.key = key; s.dir = key === 'league' ? 'asc' : 'desc'; } // numeric columns default to biggest-first
+  window._leagueReportSort = s;
+  renderLeagueReport();
 }
 
 function openGameFromList(gameID, seriesID) {
@@ -19252,11 +19924,13 @@ function openStrikeStreaksModal(gameIDs) {
   `);
 }
 
-/* ── All-Time Highs & Streaks modal ──────────────────────────── */
+/* ── All-Time Highs & Streaks modal (wired to Milestones card, v30.88;
+   was previously defined but never called from anywhere) ─────── */
 function openAllTimeHighsModal() {
+  const _openIDs = openBowlSeriesIDs();
   const stdGames = db.games.filter(g =>
     g.FinalScore != null && g.FinalScore > 0 && !g.IsTeammate && !g.NoTap &&
-    !db.openSessions?.some(s => s.SessionID === g.SeriesID)
+    !_openIDs.has(g.SeriesID)
   );
   const stdSeries = {};
   stdGames.forEach(g => {
@@ -19448,9 +20122,10 @@ function openAllTimeHighsModal() {
 
 /* ── All-Time Highs by Center / League modal ─────────────────── */
 function openHighsByVenueModal() {
+  const _openIDs = openBowlSeriesIDs();
   const stdGames = db.games.filter(g =>
     g.FinalScore != null && g.FinalScore > 0 && !g.IsTeammate && !g.NoTap &&
-    !db.openSessions?.some(s => s.SessionID === g.SeriesID)
+    !_openIDs.has(g.SeriesID)
   );
 
   // Helper: top strike ball for a set of game IDs (by att1 ball used on strike frames)
@@ -31366,7 +32041,7 @@ function _entryHTML(e) {
       '</div>'
     : (e.mapRowId ? '<div style="font-size:10px;color:var(--t3);margin-top:4px">🗺 Map ref #'+e.mapRowId+' (deleted)</div>' : '');
   var snapHtml = (e.snap) ?
-    '<div style="font-size:10px;color:var(--t3);background:var(--bg2);border-radius:6px;padding:5px 8px;margin-top:5px;font-family:monospace;line-height:1.6">'+
+    '<div style="font-size:10px;color:var(--t3);background:var(--bg2);border-radius:6px;padding:5px 8px;margin-top:5px;font-family:monospace;line-height:1.6;user-select:text;-webkit-user-select:text">'+
       Object.keys(e.snap).map(function(k){ return '<span style="color:var(--t2)">'+k+':</span> '+JSON.stringify(e.snap[k]); }).join(' · ')+
     '</div>' : '';
   var statusRow =
@@ -31376,6 +32051,7 @@ function _entryHTML(e) {
       }).join('')+
       '<span style="flex:1"></span>'+
       (e.mapRowId?'<span style="color:var(--purple);font-size:12px;cursor:pointer;margin-right:10px" onclick="dkJumpToMapRow('+e.mapRowId+')">📋 View</span>':'')+
+      '<span style="color:var(--t2);font-size:12px;cursor:pointer;margin-right:10px" onclick="dkEditEntry('+e.id+')">✏️ Edit</span>'+
       '<span style="color:var(--purple);font-size:12px;cursor:pointer;margin-right:10px" onclick="dkAskAI('+e.id+')">🤖 Ask AI</span>'+
       '<span style="color:var(--red);font-size:12px;cursor:pointer" onclick="dkDeleteEntry('+e.id+')">✕</span>'+
     '</div>';
@@ -31870,11 +32546,22 @@ function dkClearResolved() {
 function dkEditEntry(id) {
   var log = dkLoadLog();
   var e   = log.find(function(x){ return x.id===id; });
-  if (!e) return;
-  var newMsg = prompt('Edit entry:', e.msg);
-  if (newMsg === null) return;
-  e.msg = newMsg.trim() || e.msg;
-  dkSaveLog(log);
+  if (e) {
+    var newMsg = prompt('Edit entry:', e.msg);
+    if (newMsg === null) return;
+    e.msg = newMsg.trim() || e.msg;
+    dkSaveLog(log);
+    dkRenderEntries();
+    toast('Entry updated');
+    return;
+  }
+  // DKM row — same id space, edits the row's description field instead
+  var row = (typeof DKM_ROWS !== 'undefined') ? DKM_ROWS.find(function(r){ return r.id===id; }) : null;
+  if (!row) { toast('Entry not found'); return; }
+  var newDesc = prompt('Edit entry:', row.desc || row.object || '');
+  if (newDesc === null) return;
+  row.desc = newDesc.trim() || row.desc;
+  dkmSaveEdits();
   dkRenderEntries();
   toast('Entry updated');
 }
@@ -33077,6 +33764,73 @@ async function dkStreakRollingDryRun(scope, id) {
     toast('Rolling average dry run complete — ' + scope);
   } catch(e) {
     if (result) result.textContent = 'Rolling average dry run failed:\n' + (e && e.message ? e.message : e) + '\n' + (e && e.stack ? e.stack : '');
+  }
+}
+
+
+/* ── Best Series Streak Dry Run (v30.90, read-only) ───────────
+   Same discipline as the other dry runs: calls only the pure
+   calculateBestSeriesStreak()/_bss*() functions above, writes
+   nothing. scope: 'lineage' (id=LineageID), 'league' (id=LeagueID,
+   standalone), or 'calendar' (id ignored, all leagues global). ── */
+async function dkBestSeriesStreakDryRun(scope, id) {
+  scope = scope || 'lineage';
+  var result = document.getElementById('dk-purge-result');
+  if (result) result.textContent = 'Loading scoring data...';
+  try {
+    var before = JSON.stringify(db.series || []) + JSON.stringify(db.games || []);
+    await loadScoringData();
+
+    var label;
+    if (scope === 'calendar') {
+      label = 'CALENDAR (all leagues, global)';
+    } else if (scope === 'lineage') {
+      ensureLineages();
+      id = id || 1;
+      var lrec = (db.lineages || []).find(function(x){ return x.LineageID === id; });
+      label = 'LINEAGE "' + (lrec ? lrec.DisplayName : ('LineageID ' + id)) + '"';
+    } else {
+      scope = 'league';
+      id = id || 129;
+      var l = (db.leagues || []).find(function(x){ return x.LeagueID === id; });
+      label = 'LEAGUE ' + id + (l ? ' - ' + l.LeagueName : ' (not found)');
+    }
+
+    var res = calculateBestSeriesStreak(scope, id, 5, 10);
+    var out = [];
+    out.push('BEST SERIES STREAK DRY RUN - ' + label);
+    out.push('Variant: ' + res.variant + '   (perLeague ranks by cumulative pins; calendar ranks by weighted avg pins/games, v30.90)');
+    out.push('');
+
+    for (var x = 5; x <= 10; x++) {
+      var entry = res.windows[x];
+      var w = entry ? entry.best : null;
+      var c = entry ? entry.current : null;
+      out.push('── ' + x + '-WEEK WINDOW ──');
+      if (!w) { out.push('  No qualifying window (not enough series/weeks yet).'); out.push(''); continue; }
+      out.push('  RECORD  pins ' + w.pins + '   games ' + w.games + '   avg ' + w.avg.toFixed(2));
+      if (res.variant === 'calendar') {
+        out.push('          span ' + w.startWeek + '  ->  ' + w.endWeek + '   multi-league weeks: ' + w.multiLeagueWeeks + '/' + x);
+      } else {
+        out.push('          span ' + w.startDate + '  ->  ' + w.endDate + '   series: ' + w.seriesIDs.join(', '));
+      }
+      if (c) {
+        var pct = w.avg ? Math.round(c.avg / w.avg * 100) : 0;
+        out.push('  CURRENT pins ' + c.pins + '   games ' + c.games + '   avg ' + c.avg.toFixed(2) + '   (' + pct + '% of record' + (pct >= 100 ? ' — AT RECORD' : '') + ')');
+      } else {
+        out.push('  CURRENT (not enough recent data for a full ' + x + '-window yet)');
+      }
+      out.push('');
+    }
+
+    var after = JSON.stringify(db.series || []) + JSON.stringify(db.games || []);
+    out.push('MUTATION CHECK  (dry run must write nothing)');
+    out.push('  ' + (before === after ? 'PASS - no writes' : 'FAIL - dry run mutated state'));
+
+    if (result) result.textContent = out.join('\n');
+    toast('Best streak dry run complete — ' + scope);
+  } catch(e) {
+    if (result) result.textContent = 'Best streak dry run failed:\n' + (e && e.message ? e.message : e) + '\n' + (e && e.stack ? e.stack : '');
   }
 }
 
