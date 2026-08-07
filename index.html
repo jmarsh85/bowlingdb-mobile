@@ -17187,6 +17187,9 @@ function _leagueReportComputeRow(league) {
 
   const scores = games.map(g => g.FinalScore);
 
+  // Most recent series date (item 1 of the v30.92 League Report request)
+  const lastDate = seriesTotals.length ? seriesTotals[seriesTotals.length - 1].date : null;
+
   return {
     league,
     cleanGames: advStats.cleanGames,
@@ -17211,12 +17214,14 @@ function _leagueReportComputeRow(league) {
     seriesBracketVal: seriesBracket ? seriesBracket.bucket : null,
     seriesBracketLen: seriesBracket ? seriesBracket.length : null,
     topBallName: topBall ? topBall.BallName : '—',
-    topBallCt
+    topBallCt,
+    lastDate
   };
 }
 
 const LEAGUE_REPORT_COLUMNS = [
   { key: 'league',        label: 'League',        sortVal: r => r.league.LeagueName || '',            fmt: r => r.league.LeagueName || '—', numeric: false },
+  { key: 'lastDate',      label: 'Last Series',    sortVal: r => r.lastDate || '',                      fmt: r => r.lastDate ? new Date(r.lastDate+'T12:00:00').toLocaleDateString('en-US',{month:'numeric',day:'numeric',year:'2-digit'}) : '—', numeric: false },
   { key: 'cleanGames',    label: 'Clean Gm',       sortVal: r => r.cleanGames,                          fmt: r => `${r.cleanGames}/${r.gameCount}` },
   { key: 'cleanSeries',   label: 'Clean Sr',       sortVal: r => r.cleanSeries,                         fmt: r => `${r.cleanSeries}/${r.seriesCount}` },
   { key: 'strikeCount',   label: 'Strikes',        sortVal: r => r.strikeCount,                         fmt: r => r.strikeCount },
@@ -17267,6 +17272,79 @@ function resetLeagueReportColOrder() {
   const cur = getPrefs().leagueReportCols || {};
   savePrefs({ leagueReportCols: { ...cur, order: null } });
   window._leagueReportMove = null;
+  renderLeagueReport();
+}
+
+// Row visibility (item 3) and header renaming (item 4) — v30.92.
+// Both persist under the same leagueReportCols prefs object as
+// order/expanded, so they round-trip through backup export/import
+// with zero extra wiring, same as the rest of the report's state.
+function _leagueReportHiddenLeagues() {
+  return new Set(getPrefs().leagueReportCols?.hiddenLeagues || []);
+}
+function toggleLeagueReportLeagueVisibility(leagueID) {
+  const cur = getPrefs().leagueReportCols || {};
+  const hidden = _leagueReportHiddenLeagues();
+  hidden.has(leagueID) ? hidden.delete(leagueID) : hidden.add(leagueID);
+  savePrefs({ leagueReportCols: { ...cur, hiddenLeagues: Array.from(hidden) } });
+}
+function _leagueReportCustomLabels() {
+  return getPrefs().leagueReportCols?.customLabels || {};
+}
+function _leagueReportColLabel(c) {
+  const custom = _leagueReportCustomLabels();
+  return (custom[c.key] && custom[c.key].trim()) || c.label;
+}
+
+function openLeagueReportManageLeaguesModal() {
+  const hidden = _leagueReportHiddenLeagues();
+  const allLeagues = db.leagues.slice().sort((a, b) => (a.LeagueName || '').localeCompare(b.LeagueName || ''));
+  const rowsHTML = allLeagues.map(lg => {
+    const isHidden = hidden.has(lg.LeagueID);
+    return `<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 4px;border-bottom:1px solid var(--border1)">
+      <span style="font-size:13px;color:${isHidden ? 'var(--t3)' : 'var(--t1)'}">${lg.LeagueName || 'League ' + lg.LeagueID}</span>
+      <button onclick="toggleLeagueReportLeagueVisibility(${lg.LeagueID});openLeagueReportManageLeaguesModal()"
+        style="padding:7px 16px;border-radius:20px;border:none;font-size:12px;font-weight:700;cursor:pointer;background:${isHidden ? 'var(--bg3)' : 'var(--teal)'};color:${isHidden ? 'var(--t3)' : '#04211f'}">${isHidden ? 'Hidden' : 'Visible'}</button>
+    </div>`;
+  }).join('');
+  swapModal(`
+    <div class="modal-title">Manage Leagues</div>
+    <div style="font-size:11px;color:var(--t3);margin-bottom:10px">Tap to toggle visibility in League Report only — doesn't affect other screens or your data.</div>
+    <div class="stat-card" style="padding:4px 10px;margin-bottom:12px;max-height:60vh;overflow-y:auto">${rowsHTML || '<div style="padding:12px 0;color:var(--t3);font-size:12px">No leagues</div>'}</div>
+    <button class="btn btn-ghost" style="width:100%;margin-bottom:8px"
+      onclick="savePrefs({leagueReportCols:{...(getPrefs().leagueReportCols||{}),hiddenLeagues:[]}});openLeagueReportManageLeaguesModal()">Show All</button>
+    <button class="btn btn-secondary" style="width:100%" onclick="closeModal();renderLeagueReport()">Done</button>
+  `);
+}
+
+function openLeagueReportEditHeadersModal() {
+  const custom = _leagueReportCustomLabels();
+  const rowsHTML = LEAGUE_REPORT_COLUMNS.map(c => `
+    <div style="padding:8px 4px;border-bottom:1px solid var(--border1)">
+      <div style="font-size:10px;color:var(--t3);margin-bottom:4px">${c.label} <span style="opacity:0.6">(default)</span></div>
+      <input type="text" id="lrhdr-${c.key}" value="${(custom[c.key] || '').replace(/"/g, '&quot;')}" placeholder="${c.label}"
+        style="width:100%;box-sizing:border-box;padding:8px;border-radius:8px;border:1px solid var(--border1);background:var(--bg2);color:var(--t1);font-size:13px">
+    </div>`).join('');
+  swapModal(`
+    <div class="modal-title">Edit Column Headers</div>
+    <div style="font-size:11px;color:var(--t3);margin-bottom:10px">Leave a field blank to use the default label. Sorting and column order are unaffected — this only changes what's displayed.</div>
+    <div class="stat-card" style="padding:4px 10px;margin-bottom:12px;max-height:55vh;overflow-y:auto">${rowsHTML}</div>
+    <button class="btn" style="width:100%;margin-bottom:8px" onclick="saveLeagueReportHeaderEdits()">Save</button>
+    <button class="btn btn-ghost" style="width:100%;margin-bottom:8px"
+      onclick="savePrefs({leagueReportCols:{...(getPrefs().leagueReportCols||{}),customLabels:{}}});openLeagueReportEditHeadersModal()">Reset All to Default</button>
+    <button class="btn btn-secondary" style="width:100%" onclick="closeModal()">Cancel</button>
+  `);
+}
+function saveLeagueReportHeaderEdits() {
+  const cur = getPrefs().leagueReportCols || {};
+  const customLabels = {};
+  LEAGUE_REPORT_COLUMNS.forEach(c => {
+    const el = document.getElementById('lrhdr-' + c.key);
+    const val = el ? el.value.trim() : '';
+    if (val && val !== c.label) customLabels[c.key] = val;
+  });
+  savePrefs({ leagueReportCols: { ...cur, customLabels } });
+  closeModal();
   renderLeagueReport();
 }
 
@@ -17357,12 +17435,18 @@ function renderLeagueReport() {
   const colWidth = c => expandedSet.has(c.key) ? 172 : 96;
   const mv = window._leagueReportMove;
 
+  const hiddenLeagues = _leagueReportHiddenLeagues();
   const rows = db.leagues
+    .filter(lg => !hiddenLeagues.has(lg.LeagueID))
     .map(lg => _leagueReportComputeRow(lg))
     .filter(Boolean);
 
   if (!rows.length) {
-    el.innerHTML = `<div class="empty-state"><div class="empty-icon">📊</div><div class="empty-label">No league data yet</div></div>`;
+    const allHidden = hiddenLeagues.size > 0 && db.leagues.every(lg => hiddenLeagues.has(lg.LeagueID));
+    el.innerHTML = allHidden
+      ? `<div class="empty-state"><div class="empty-icon">👁</div><div class="empty-label">All leagues are hidden</div>
+          <button class="btn btn-ghost" style="margin-top:10px" onclick="openLeagueReportManageLeaguesModal()">Manage Leagues</button></div>`
+      : `<div class="empty-state"><div class="empty-icon">📊</div><div class="empty-label">No league data yet</div></div>`;
     return;
   }
 
@@ -17407,11 +17491,11 @@ function renderLeagueReport() {
       ontouchstart="lrHeaderPressStart('${c.key}')" ontouchend="lrHeaderPressEnd('${c.key}')" ontouchmove="lrHeaderPressCancel()" ontouchcancel="lrHeaderPressCancel()"
       onmousedown="lrHeaderPressStart('${c.key}')" onmouseup="lrHeaderPressEnd('${c.key}')" onmouseleave="lrHeaderPressCancel()"
       style="flex:0 0 auto;width:${colWidth(c)}px;padding:8px 6px;border-bottom:${cellBorder};background:${cellBg};display:flex;align-items:flex-start;justify-content:space-between;gap:4px;border-radius:4px 4px 0 0;user-select:none;-webkit-user-select:none;cursor:pointer">
-      <span style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:0.4px;color:${isSelected?'var(--teal)':isActive&&!mv?'var(--teal)':'var(--t3)'};white-space:${isExpanded?'normal':'nowrap'}">${c.label}${!mv?arrow:''}</span>
+      <span style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:0.4px;color:${isSelected?'var(--teal)':isActive&&!mv?'var(--teal)':'var(--t3)'};white-space:${isExpanded?'normal':'nowrap'}">${_leagueReportColLabel(c)}${!mv?arrow:''}</span>
       ${!mv ? `<span onclick="event.stopPropagation();toggleLeagueReportColExpand('${c.key}')"
         ontouchstart="event.stopPropagation()" ontouchend="event.stopPropagation()"
         onmousedown="event.stopPropagation()" onmouseup="event.stopPropagation()"
-        style="font-size:10px;color:${isExpanded?'var(--teal)':'var(--t3)'};cursor:pointer;flex-shrink:0;padding:1px 3px" title="${isExpanded?'Collapse':'Expand'} column">${isExpanded?'⤡':'⤢'}</span>` : ''}
+        style="font-size:16px;line-height:1;color:${isExpanded?'var(--teal)':'var(--t3)'};cursor:pointer;flex-shrink:0;padding:6px 8px;margin:-6px -6px 0 0;border-radius:8px;background:${isExpanded?'rgba(0,217,217,0.12)':'rgba(255,255,255,0.06)'}" title="${isExpanded?'Collapse':'Expand'} column">${isExpanded?'⤡':'⤢'}</span>` : ''}
     </div>`;
   }).join('');
 
@@ -17432,7 +17516,10 @@ function renderLeagueReport() {
         ${rowsHTML}
       </div>
     </div>
-    <div style="font-size:11px;color:var(--t3);margin-top:8px;text-align:center">Tap a header to sort · tap ⤢ to expand · press &amp; hold to reorder · <span onclick="resetLeagueReportColOrder()" style="color:var(--teal);cursor:pointer">reset order</span> · ${rows.length} leagues</div>
+    <div style="font-size:11px;color:var(--t3);margin-top:8px;text-align:center;line-height:1.8">
+      Tap a header to sort · tap ⤢ to expand · press &amp; hold to reorder · <span onclick="resetLeagueReportColOrder()" style="color:var(--teal);cursor:pointer">reset order</span><br>
+      <span onclick="openLeagueReportManageLeaguesModal()" style="color:var(--teal);cursor:pointer">Manage Leagues</span> · <span onclick="openLeagueReportEditHeadersModal()" style="color:var(--teal);cursor:pointer">Edit Headers</span> · ${rows.length}${hiddenLeagues.size ? ' shown (' + hiddenLeagues.size + ' hidden)' : ' leagues'}
+    </div>
   `;
 
   const newScroller = el.querySelector('.lr-scroll');
