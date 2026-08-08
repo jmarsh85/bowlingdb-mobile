@@ -13008,7 +13008,7 @@ function deriveSeasons(games) {
   const seen = new Set();
   games.forEach(g => {
     const s = db.series.find(x => x.SeriesID === g.SeriesID);
-    const season = getSeriesSeason(s?.DateBowled);
+    const season = s ? _seasonYearForSeries(s) : null;
     if (season) seen.add(season);
   });
   return [...seen].sort((a, b) => b.localeCompare(a)); // most recent first
@@ -13331,6 +13331,23 @@ function getSeriesSeasonID(series) {
   return s ? s.SeasonID : null;
 }
 
+/* SeasonYear ("26-27") for a series, via the league-derived Season
+   Engine above — NOT the raw per-series Aug-1 date cutoff. Fixes a
+   real bug (found v30.93): a league whose games straddle Aug 1 (e.g.
+   a summer trios league running into early August) was getting its
+   trailing series split into the NEXT season's Stats bucket, even
+   though getLeagueSeason() already correctly classifies the whole
+   league by majority-of-calendar-days. deriveSeasons(), the Stats
+   period filter, and _statsTrendDelta's prior-season lookup all now
+   go through this instead of calling getSeriesSeason(date) directly,
+   so a league's games can never be split across two season pills. */
+function _seasonYearForSeries(series) {
+  const sid = getSeriesSeasonID(series);
+  if (!sid) return null;
+  const rec = (db.seasons || []).find(x => x.SeasonID === sid);
+  return rec ? rec.SeasonYear : null;
+}
+
 /* ── League lineage key (v30.44) ─────────────────────────────
    Normalizes a league name into a "lineage" grouping key so that
    recurring leagues whose names carry a year/season-year token
@@ -13392,6 +13409,7 @@ function _statsGetScope() {
   const sc = _statsLoadScope();
   if (!sc.context)   sc.context   = 'all';
   if (!sc.period)    sc.period    = 'last10wks';
+  if (!Array.isArray(sc.periodSeasons)) sc.periodSeasons = []; // v30.95 — multi-select season stacking
   if (!sc.condition) sc.condition = 'any';
   if (!sc.activeTab) sc.activeTab = 'overview';
   if (!sc.tabOrder)  sc.tabOrder  = ['overview','strikes','spares','balls'];
@@ -13450,10 +13468,19 @@ function _statsFilterGames(allGames, sc) {
     const last10Weeks = new Set(allWeeks.slice(0, 10));
     const validSIDs = new Set(leagueSeriesWithDates.filter(s => last10Weeks.has(weekKey(s.DateBowled))).map(s => s.SeriesID));
     games = games.filter(g => validSIDs.has(g.SeriesID));
+  } else if (period === 'season') {
+    // v30.95 — multi-select: union of every selected season year
+    const labels = new Set(sc.periodSeasons || []);
+    const validSIDs = new Set(
+      db.series.filter(s => labels.has(_seasonYearForSeries(s))).map(s => s.SeriesID)
+    );
+    games = games.filter(g => validSIDs.has(g.SeriesID));
   } else if (period.startsWith('season:')) {
+    // Legacy single-season format — kept so a scope saved before v30.95
+    // (localStorage) still filters correctly until the user re-taps a pill.
     const label = period.slice(7);
     const validSIDs = new Set(
-      db.series.filter(s => getSeriesSeason(s.DateBowled) === label).map(s => s.SeriesID)
+      db.series.filter(s => _seasonYearForSeries(s) === label).map(s => s.SeriesID)
     );
     games = games.filter(g => validSIDs.has(g.SeriesID));
   } else if (period === 'custom') {
@@ -13489,6 +13516,11 @@ function _statsScopeLabel(sc) {
   const period = sc.period || 'all';
   if (period === 'last10wks') parts.push('Last 10 wks');
   else if (period === 'all') parts.push('All time');
+  else if (period === 'season') {
+    const sel = sc.periodSeasons || [];
+    if (sel.length === 1) parts.push(sel[0] + ' season');
+    else if (sel.length > 1) parts.push(sel.slice().sort((a,b)=>b.localeCompare(a)).join('+') + ' seasons');
+  }
   else if (period.startsWith('season:')) parts.push(period.slice(7) + ' season');
   else if (period === 'custom') {
     const f = sc.customFrom || ''; const t = sc.customTo || '';
@@ -13527,11 +13559,20 @@ function _statsTrendDelta(scopedGames, sc, allStdGames) {
     const priorWeeks = new Set(allWeeks.slice(10, 20));
     const priorSIDs = new Set(leagueSeriesWithDates.filter(s => priorWeeks.has(weekKey(s.DateBowled))).map(s => s.SeriesID));
     priorGames = allStdGames.filter(g => priorSIDs.has(g.SeriesID));
+  } else if (period === 'season' && (sc.periodSeasons || []).length === 1) {
+    // Multi-select stacking (v30.95): a single selected season still gets
+    // a clean "prior season" comparison. Two or more stacked seasons have
+    // no one well-defined "prior period" to compare against, so skip.
+    const label = sc.periodSeasons[0];
+    const [yA, yB] = label.split('-').map(s => parseInt(s.length === 2 ? '20' + s : s));
+    const priorLabel = `${String(yA - 1).slice(-2)}-${String(yB - 1).slice(-2)}`;
+    const priorSIDs = new Set(db.series.filter(s => _seasonYearForSeries(s) === priorLabel).map(s => s.SeriesID));
+    priorGames = allStdGames.filter(g => priorSIDs.has(g.SeriesID));
   } else if (period.startsWith('season:')) {
     const label = period.slice(7);
     const [yA, yB] = label.split('-').map(s => parseInt(s.length === 2 ? '20' + s : s));
     const priorLabel = `${String(yA - 1).slice(-2)}-${String(yB - 1).slice(-2)}`;
-    const priorSIDs = new Set(db.series.filter(s => getSeriesSeason(s.DateBowled) === priorLabel).map(s => s.SeriesID));
+    const priorSIDs = new Set(db.series.filter(s => _seasonYearForSeries(s) === priorLabel).map(s => s.SeriesID));
     priorGames = allStdGames.filter(g => priorSIDs.has(g.SeriesID));
   }
   if (!priorGames.length) return null;
@@ -14007,10 +14048,11 @@ function _perfGetScope() {
   if (!sc.pickType)      sc.pickType = null;   // 'lineage' | 'league'
   if (sc.pickID === undefined) sc.pickID = null;
   if (!sc.seasonYear)    sc.seasonYear = null;
+  if (!Array.isArray(sc.seasonYears)) sc.seasonYears = []; // v30.96 — multi-select stacking, replaces single seasonYear going forward
   if (!sc.mode)          sc.mode = 'sv';
   if (!sc.cmpSlots)      sc.cmpSlots = [null, null, null];
   if (!sc.ctrSlots)      sc.ctrSlots = [null, null, null];
-  if (!sc.cmpBaseline)   sc.cmpBaseline = 'season';
+  if (!sc.cmpDetailTab)  sc.cmpDetailTab = 'overview'; // 'overview'|'strikes'|'spares'|'balls'|'milestones' — v30.94, replaces the old time-window baseline picker
   if (!sc.tab)           sc.tab = 'ta';
   if (!sc.cmpTab)        sc.cmpTab = 'stats';      // 'stats' | 'streaks' — Compare Leagues sub-tab only
   if (!sc.streakMode)    sc.streakMode = 'summary'; // 'summary' | 'rolling'
@@ -14062,9 +14104,44 @@ function _perfPickOptions() {
     const center = db.centers.find(c => c.CenterID === l.CenterID);
     opts.push({ type: 'league', id: l.LeagueID, name: l.LeagueName,
       centerName: center ? center.CenterName : '', gameCount,
-      lastDate: latestDate(sids), leagueCount: 1 });
+      lastDate: latestDate(sids), leagueCount: 1, lineageID: null, lineageName: null });
   });
   return opts.sort((a, b) => (b.lastDate || '').localeCompare(a.lastDate || ''));
+}
+
+// v30.96 — expanded picker list for the Single League screen only:
+// every lineage roll-up PLUS each individual member league, so a
+// recurring league can be viewed either aggregated or as one specific
+// instance ("lineage bypass"). Deliberately NOT used by Compare
+// Leagues/Compare Centers or the Best Series Streak modal — those stay
+// on the plain lineage+standalone list so they don't get flooded with
+// every individual season of every recurring league.
+function _perfPickOptionsExpanded() {
+  const base = _perfPickOptions();
+  const realLeagues = (db.leagues || []).filter(l => !l._virtual && l.LeagueID > 0);
+  const stdSIDs = new Set(db.series.filter(s => s.LeagueID > 0 && !s.TournamentID).map(s => s.SeriesID));
+  const _atlPool = getAllTimeLeagueGames();
+  function countGames(sids) { return _atlPool.filter(g => sids.has(g.SeriesID)).length; }
+  function latestDate(sids) {
+    return db.series.filter(s => sids.has(s.SeriesID))
+      .reduce((mx, s) => (s.DateBowled || '') > mx ? (s.DateBowled || '') : mx, '');
+  }
+  const extra = [];
+  base.filter(o => o.type === 'lineage').forEach(ln => {
+    const members = realLeagues.filter(l => l.LineageID === ln.id);
+    members.forEach(l => {
+      const sids = new Set([...stdSIDs].filter(sid => {
+        const s = db.series.find(x => x.SeriesID === sid);
+        return s && s.LeagueID === l.LeagueID;
+      }));
+      const gameCount = countGames(sids);
+      if (!gameCount) return;
+      extra.push({ type: 'league', id: l.LeagueID, name: l.LeagueName,
+        centerName: ln.centerName, gameCount, lastDate: latestDate(sids),
+        leagueCount: 1, lineageID: ln.id, lineageName: ln.name });
+    });
+  });
+  return [...base, ...extra].sort((a, b) => (b.lastDate || '').localeCompare(a.lastDate || ''));
 }
 
 /* v30.53 ROOT-CAUSE FIX: this function was reading pick.pickType/pick.pickID,
@@ -14128,6 +14205,19 @@ function _perfScopeGamesBySeasonYear(games, leagueIDSet, seasonYear) {
     return rec && rec.SeasonYear === seasonYear;
   });
 }
+// Multi-select variant (v30.96) — union of every selected season year,
+// backing the stacked season chips on the Single League screen (same
+// stacking behavior as the Stats screen's period pills, v30.95).
+function _perfScopeGamesBySeasonYears(games, leagueIDSet, seasonYears) {
+  const scoped = _perfScopeGames(games, leagueIDSet);
+  if (!seasonYears || !seasonYears.length) return scoped;
+  const set = new Set(seasonYears);
+  return scoped.filter(g => {
+    const s = db.series.find(x => x.SeriesID === g.SeriesID);
+    if (!s) return false;
+    return set.has(_seasonYearForSeries(s));
+  });
+}
 
 function _perfFmtAvg(games) {
   const scores = (games || []).map(g => g.FinalScore).filter(s => s != null && s > 0);
@@ -14168,22 +14258,34 @@ function _perfEntryCardHTML() {
 
 /* ── League/Lineage picker modal (reuses openModal, not a bespoke sheet) */
 function perfOpenPicker() {
-  const opts = _perfPickOptions();
+  const opts = _perfPickOptionsExpanded();
   if (!opts.length) { toast('No league data yet'); return; }
+  // Group: lineage roll-ups first (each followed by its own individual
+  // member leagues, most recent first), then standalone leagues.
+  const lineages = opts.filter(o => o.type === 'lineage');
+  const standalone = opts.filter(o => o.type === 'league' && !o.lineageID);
+  function row(o, indent) {
+    return `<div onclick="perfPickOption('${o.type}',${o.id})"
+      style="display:flex;align-items:center;justify-content:space-between;padding:13px 16px 13px ${indent ? 32 : 16}px;
+      border-bottom:1px solid var(--border1);cursor:pointer">
+      <div>
+        <div style="font-size:${indent ? 13 : 15}px;font-weight:${indent ? 500 : 600};color:${indent ? 'var(--t2)' : 'var(--t1)'}">${o.name}${
+          o.leagueCount > 1 ? ` <span style="color:var(--t3);font-weight:500;font-size:11px">(${o.leagueCount} seasons)</span>` : ''
+        }</div>
+        <div style="font-size:11px;color:var(--t3);margin-top:2px">${o.centerName}${o.centerName ? ' · ' : ''}${o.gameCount} games</div>
+      </div>
+    </div>`;
+  }
+  const lineageRows = lineages.map(ln => {
+    const members = opts.filter(o => o.lineageID === ln.id).sort((a, b) => (b.lastDate || '').localeCompare(a.lastDate || ''));
+    return row(ln, false) + members.map(m => row(m, true)).join('');
+  }).join('');
+  const standaloneRows = standalone.map(o => row(o, false)).join('');
   const html = `
     <div class="modal-title">Select League</div>
+    <div style="font-size:11px;color:var(--t3);margin-bottom:6px">Pick a recurring league's roll-up, or one of its individual seasons directly</div>
     <div style="max-height:60vh;overflow-y:auto">
-      ${opts.map(o => `
-        <div onclick="perfPickOption('${o.type}',${o.id})"
-          style="display:flex;align-items:center;justify-content:space-between;padding:13px 16px;
-          border-bottom:1px solid var(--border1);cursor:pointer">
-          <div>
-            <div style="font-size:15px;font-weight:600;color:var(--t1)">${o.name}${
-              o.leagueCount > 1 ? ` <span style="color:var(--t3);font-weight:500;font-size:11px">(${o.leagueCount} seasons)</span>` : ''
-            }</div>
-            <div style="font-size:11px;color:var(--t3);margin-top:2px">${o.centerName}${o.centerName ? ' · ' : ''}${o.gameCount} games</div>
-          </div>
-        </div>`).join('')}
+      ${lineageRows}${standaloneRows}
     </div>
     <button class="btn btn-secondary" style="width:100%;margin-top:10px" onclick="closeModal()">Cancel</button>
   `;
@@ -14191,14 +14293,21 @@ function perfOpenPicker() {
 }
 function perfPickOption(type, id) {
   const sc = _perfGetScope();
-  sc.pickType = type; sc.pickID = id; sc.seasonYear = null;
+  sc.pickType = type; sc.pickID = id; sc.seasonYear = null; sc.seasonYears = [];
   _perfSaveScope(sc);
   closeModal();
   renderPerformanceScreen();
 }
-function perfSetSeasonChip(year) {
+// v30.96 — tap a season chip to add/remove it from the stacked selection
+// (same behavior as the Stats screen's period pills). Replaces the old
+// single-select perfSetSeasonChip.
+function perfToggleSeasonYear(year) {
   const sc = _perfGetScope();
-  sc.seasonYear = year; _perfSaveScope(sc);
+  const sel = Array.isArray(sc.seasonYears) ? sc.seasonYears.slice() : [];
+  const idx = sel.indexOf(year);
+  if (idx >= 0) sel.splice(idx, 1); else sel.push(year);
+  sc.seasonYears = sel;
+  _perfSaveScope(sc);
   renderPerformanceScreen();
 }
 function perfSetTab(tab) {
@@ -14216,9 +14325,9 @@ function perfSetMode(mode) {
   sc.mode = mode; _perfSaveScope(sc);
   renderPerformanceScreen();
 }
-function perfSetBaseline(bl) {
+function perfSetCmpDetailTab(tab) {
   const sc = _perfGetScope();
-  sc.cmpBaseline = bl; _perfSaveScope(sc);
+  sc.cmpDetailTab = tab; _perfSaveScope(sc);
   renderPerformanceScreen();
 }
 
@@ -14356,16 +14465,6 @@ function _perfLeaveTable3Col(leagueGames, tenWkGames, atlGames) {
    games come from the existing zero-arg pools, and the SAME
    calculateAdvancedStats()/_perfFmtAvg() run once per slot. The
    baseline chip picks WHICH period each slot is measured over. */
-function _perfBaselineGames(leagueIDSet, baseline) {
-  if (baseline === 'last10') {
-    return _perfScopeGames(getCanonicalLast10WksGames(), leagueIDSet);
-  }
-  if (baseline === 'season') {
-    const ty = _perfTodaySeasonYear();
-    return ty ? _perfScopeGamesBySeasonYear(getAllTimeLeagueGames(), leagueIDSet, ty) : [];
-  }
-  return _perfScopeGames(getAllTimeLeagueGames(), leagueIDSet);
-}
 function _perfCenterLeagueSet(centerID) {
   return new Set((db.leagues || []).filter(l => !l._virtual && l.LeagueID > 0 && l.CenterID === centerID).map(l => l.LeagueID));
 }
@@ -14622,70 +14721,245 @@ function _perfCmpSlotRowsHTML(resolved, kind) {
   }).join('');
 }
 
+/* ── Compare screen tabs (v30.94) — replaces the old Baseline Period
+   time-window picker (Last 10 Wks/Current Season/All Time), which
+   didn't make sense across leagues that ran in different calendar
+   spans. Each slot now always shows its own full history; baseline
+   is positional instead of time-based:
+     - 3 slots filled: B (middle) is baseline, A and C show deltas vs B
+     - 2 slots filled: the first (leftmost) filled slot is baseline
+   ── */
+const PERF_CMP_TABS = [
+  { key: 'overview',   label: 'Overview' },
+  { key: 'strikes',    label: 'Strikes' },
+  { key: 'spares',     label: 'Spares' },
+  { key: 'balls',      label: 'Balls' },
+  { key: 'milestones', label: 'Milestones' }
+];
+function _perfCmpBaseIdx(n) { return n >= 3 ? 1 : 0; }
+
+// Generic "one row of N delta cards" — every tab below is built from
+// this so 2-slot and 3-slot comparisons render identically instead of
+// needing separate 2-vs-3 layouts per metric.
+function _perfCmpMetricRow(title, slotData, baseIdx, getNum, fmt, opts) {
+  opts = opts || {};
+  const dp = opts.decimals != null ? opts.decimals : 1;
+  const suffix = opts.suffix || '';
+  const lowerIsBetter = !!opts.lowerIsBetter;
+  const baseV = getNum(slotData[baseIdx]);
+  const cards = slotData.map((s, i) => {
+    const isBase = i === baseIdx;
+    const v = getNum(s);
+    let deltaHTML, valColor = 'var(--t1)';
+    if (isBase) {
+      deltaHTML = `<div style="font-size:9px;font-weight:800;margin-top:4px;color:var(--purple);letter-spacing:0.4px">BASELINE</div>`;
+    } else if (v != null && baseV != null) {
+      const d = v - baseV;
+      const rd = Math.abs(d) < Math.pow(10, -dp) / 2 ? 0 : d;
+      // Favorability: higher is better by default; opts.lowerIsBetter flips
+      // it (e.g. split rate — fewer splits left is the good outcome).
+      const favorable = rd === 0 ? null : (lowerIsBetter ? rd < 0 : rd > 0);
+      const txt = rd === 0 ? 'even' : (rd > 0 ? '+' : '') + rd.toFixed(dp) + suffix;
+      const col = favorable === null ? 'var(--t3)' : favorable ? 'var(--teal)' : 'var(--red)';
+      valColor = col;
+      deltaHTML = `<div style="font-size:10px;font-weight:700;margin-top:4px;color:${col}">${txt} vs base${favorable === true ? ' ▲' : favorable === false ? ' ▼' : ''}</div>`;
+    } else {
+      deltaHTML = `<div style="font-size:10px;color:var(--t3);margin-top:4px">—</div>`;
+    }
+    // No border differential for baseline (was visually disruptive) — a
+    // faint purple background tint plus the BASELINE label is enough.
+    return `<div style="flex:1;background:${isBase ? 'rgba(157,78,221,0.07)' : 'var(--bg2)'};border:1px solid var(--border1);border-radius:10px;padding:10px 8px;text-align:center">
+      <div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:6px;color:${s.color}">${s.letter}</div>
+      <div style="font-size:17px;font-weight:900;color:${valColor}">${fmt(s)}</div>
+      ${deltaHTML}
+    </div>`;
+  }).join('');
+  return `<div style="margin-bottom:12px">
+    <div style="font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">${title}</div>
+    <div style="display:flex;gap:8px">${cards}</div>
+  </div>`;
+}
+const _perfPct = s => { const n = parseFloat(s); return isNaN(n) ? null : n; };
+
+function _perfCmpOverviewTab(slotData, baseIdx) {
+  return _perfCmpMetricRow('Average', slotData, baseIdx, s => s.avg ? s.avg.floor : null, s => s.avg ? s.avg.floor : '—', { decimals: 0 })
+    + _perfCmpMetricRow('Spare %', slotData, baseIdx, s => _perfPct(s.stats.sparePct), s => s.stats.sparePct.split(' ')[0], { suffix: '%' })
+    + _perfCmpMetricRow('Strike %', slotData, baseIdx, s => _perfPct(s.stats.strikePct), s => s.stats.strikePct.split(' ')[0], { suffix: '%' })
+    + _perfCmpMetricRow('Clean %', slotData, baseIdx, s => s.stats.cleanPct, s => s.stats.cleanPct + '%', { suffix: '%', decimals: 0 })
+    + _perfCmpMetricRow('BounceBack', slotData, baseIdx, s => _perfPct(s.stats.bounceBackPct), s => s.stats.bounceBackPct.split(' ')[0], { suffix: '%' });
+}
+
+function _perfCmpStrikesTab(slotData, baseIdx) {
+  const withStreaks = slotData.map(s => Object.assign({}, s, { streaks: calculateStrikeStreaks(s.games.map(g => g.GameID)) }));
+  return _perfCmpMetricRow('Strike %', slotData, baseIdx, s => _perfPct(s.stats.strikePct), s => s.stats.strikePct.split(' ')[0], { suffix: '%' })
+    + _perfCmpMetricRow('X on X (after strike)', slotData, baseIdx, s => _perfPct(s.stats.xOnXPct), s => s.stats.xOnXPct === '—' ? '—' : s.stats.xOnXPct.split(' ')[0], { suffix: '%' })
+    + _perfCmpMetricRow('Clutch (F10 att1)', slotData, baseIdx, s => _perfPct(s.stats.clutchPct), s => s.stats.clutchPct === '—' ? '—' : s.stats.clutchPct.split(' ')[0], { suffix: '%' })
+    + _perfCmpMetricRow('Longest Streak', withStreaks, baseIdx, s => s.streaks.maxStreak || 0, s => s.streaks.maxStreak || '—', { decimals: 0 });
+}
+
+function _perfCmpSparesTab(slotData, baseIdx) {
+  const metricsHTML = _perfCmpMetricRow('Spare %', slotData, baseIdx, s => _perfPct(s.stats.sparePct), s => s.stats.sparePct.split(' ')[0], { suffix: '%' })
+    + _perfCmpMetricRow('Makeable Spare %', slotData, baseIdx, s => _perfPct(s.stats.makeablePct), s => s.stats.makeablePct === '—' ? '—' : s.stats.makeablePct.split(' ')[0], { suffix: '%' })
+    + _perfCmpMetricRow('Split Conv %', slotData, baseIdx, s => _perfPct(s.stats.splitPct), s => s.stats.splitPct === '—' ? '—' : s.stats.splitPct.split(' ')[0], { suffix: '%' })
+    + _perfCmpMetricRow('Split Rate', slotData, baseIdx, s => s.stats.totalFr ? s.stats.splitOpp / s.stats.totalFr * 100 : null, s => s.stats.totalFr ? Math.round(s.stats.splitOpp / s.stats.totalFr * 100) + '%' : '—', { suffix: '%', lowerIsBetter: true });
+
+  // Shared leaves — intersection of leave types present in EVERY active
+  // slot's data (matched by LeaveID). Pin diagram sits as the visual
+  // divider between each league's conversion %, using the same
+  // leavePinHTML graphic already used in the Stats/Leaves screens,
+  // instead of a plain text leave name.
+  const tallies = slotData.map(s => _leaveTallyForGameIDs(new Set(s.games.map(g => g.GameID))));
+  const commonIDs = Object.keys(tallies[0] || {}).filter(id => tallies.every(t => t[id] && t[id].opps > 0));
+  const commonRows = commonIDs
+    .map(id => ({ id, leave: tallies[0][id].leave, per: tallies.map(t => t[id]) }))
+    .sort((a, b) => {
+      const totA = a.per.reduce((s, p) => s + p.opps, 0), totB = b.per.reduce((s, p) => s + p.opps, 0);
+      return totB - totA;
+    })
+    .slice(0, 10);
+
+  function pinBadge(leave) {
+    let bsk = '';
+    for (let p = 1; p <= 10; p++) bsk += (leave['Pin' + p] ? 'S' : 'B');
+    let html = '';
+    try { html = leavePinHTML(bsk); } catch (e) { html = ''; }
+    return `<div style="transform:scale(0.62);transform-origin:center;flex-shrink:0">${html}</div>`;
+  }
+
+  const leavesHTML = `<div class="stat-card" style="margin-top:4px">
+    <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:0.8px;text-transform:uppercase;margin-bottom:4px">Shared Leaves</div>
+    <div style="font-size:10px;color:var(--t3);margin-bottom:10px">Leave types common to all ${slotData.length} leagues · conversion % side by side</div>
+    ${commonRows.length ? commonRows.map(r => {
+      const pctCards = r.per.map((p, i) => {
+        const s = slotData[i];
+        const pct = p.opps ? Math.round(p.conv / p.opps * 100) : 0;
+        return `<div style="flex:1;text-align:center">
+          <div style="font-size:9px;font-weight:800;color:${s.color};margin-bottom:2px">${s.letter}</div>
+          <div style="font-size:17px;font-weight:800;color:var(--purple)">${pct}%</div>
+          <div style="font-size:9px;color:var(--t3)">${p.conv}/${p.opps}</div>
+        </div>`;
+      });
+      const midIdx = Math.floor(pctCards.length / 2);
+      const withDivider = pctCards.slice();
+      withDivider.splice(midIdx, 0, pinBadge(r.leave));
+      return `<div style="padding:9px 0;border-bottom:1px solid var(--border1)">
+        <div style="font-size:12px;font-weight:700;color:var(--t1);margin-bottom:6px;text-align:center">${r.leave.DisplayName || r.leave.ShortName || 'Leave'}</div>
+        <div style="display:flex;align-items:center;gap:10px">${withDivider.join('')}</div>
+      </div>`;
+    }).join('') : `<div style="color:var(--t3);font-size:12px;text-align:center;padding:16px 0">No leave types shared across all ${slotData.length} leagues yet</div>`}
+  </div>`;
+
+  return metricsHTML + leavesHTML;
+}
+
+function _perfCmpBallsTab(slotData, baseIdx) {
+  const slotBalls = slotData.map(s => {
+    const ballUsage = {};
+    s.games.forEach(g => {
+      const fr1 = db.frames.find(f => f.GameID === g.GameID && f.FrameNumber === 1);
+      const att1 = fr1 ? db.attempts.find(a => a.FrameID === fr1.FrameID && a.Attempt === 1) : null;
+      const bid = att1?.BallID || null;
+      if (!bid) return;
+      if (!ballUsage[bid]) ballUsage[bid] = { scores: [], games: 0 };
+      ballUsage[bid].games++;
+      if (g.FinalScore) ballUsage[bid].scores.push(g.FinalScore);
+    });
+    const top = Object.entries(ballUsage)
+      .map(([bid, u]) => ({ ball: db.balls.find(b => b.BallID === +bid), games: u.games,
+        avg: u.scores.length ? (u.scores.reduce((a, b) => a + b, 0) / u.scores.length).toFixed(1) : '—' }))
+      .filter(x => x.ball)
+      .sort((a, b) => b.games - a.games)
+      .slice(0, 5);
+    return Object.assign({}, s, { topBalls: top });
+  });
+
+  const cols = slotBalls.map(s => `
+    <div style="flex:1;min-width:0">
+      <div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px;color:${s.color}">${s.letter} · ${s.name.length > 14 ? s.name.slice(0, 13) + '…' : s.name}</div>
+      ${s.topBalls.length ? s.topBalls.map(b => `
+        <div style="padding:7px 0;border-bottom:1px solid var(--border1)">
+          <div style="font-size:12px;font-weight:700;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${b.ball.BallName}</div>
+          <div style="font-size:10px;color:var(--t3);margin-top:1px">${b.games}g · <span style="color:var(--teal);font-weight:700">${b.avg}</span> avg</div>
+        </div>`).join('') : `<div style="color:var(--t3);font-size:11px;padding:8px 0">No ball data</div>`}
+    </div>`).join('');
+
+  return `<div class="stat-card"><div style="display:flex;gap:14px">${cols}</div></div>`;
+}
+
+function _perfCmpMilestonesTab(slotData, baseIdx) {
+  const withMilestones = slotData.map(s => {
+    const scores = s.games.map(g => g.FinalScore);
+    const seriesTotals = {};
+    s.games.forEach(g => { seriesTotals[g.SeriesID] = (seriesTotals[g.SeriesID] || 0) + g.FinalScore; });
+    const sVals = Object.values(seriesTotals);
+    return Object.assign({}, s, {
+      ms200: scores.filter(v => v >= 200).length, ms225: scores.filter(v => v >= 225).length,
+      ms250: scores.filter(v => v >= 250).length, ms275: scores.filter(v => v >= 275).length,
+      ms300: scores.filter(v => v === 300).length,
+      ms675: sVals.filter(v => v >= 675).length, ms750: sVals.filter(v => v >= 750).length, ms800: sVals.filter(v => v >= 800).length
+    });
+  });
+  const row = (label, getV) => `<div style="display:flex;align-items:center;padding:7px 0;border-bottom:1px solid var(--border1)">
+    <div style="width:56px;font-size:11px;color:var(--t3)">${label}</div>
+    <div style="flex:1;display:flex;gap:8px">
+      ${withMilestones.map(s => `<div style="flex:1;text-align:center">
+        <span style="font-size:15px;font-weight:800;color:${getV(s) > 0 ? s.color : 'var(--t3)'}">${getV(s)}</span>
+      </div>`).join('')}
+    </div>
+  </div>`;
+  const letterHeader = `<div style="display:flex;align-items:center;padding:0 0 6px">
+    <div style="width:56px"></div>
+    <div style="flex:1;display:flex;gap:8px">${withMilestones.map(s => `<div style="flex:1;text-align:center;font-size:9px;font-weight:800;color:${s.color}">${s.letter}</div>`).join('')}</div>
+  </div>`;
+  return `<div class="stat-card" style="margin-bottom:12px">
+    <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:0.8px;text-transform:uppercase;margin-bottom:8px">Series</div>
+    ${letterHeader}${row('675+', s => s.ms675)}${row('750+', s => s.ms750)}${row('800+', s => s.ms800)}
+  </div>
+  <div class="stat-card">
+    <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:0.8px;text-transform:uppercase;margin-bottom:8px">Games</div>
+    ${letterHeader}${row('200+', s => s.ms200)}${row('225+', s => s.ms225)}${row('250+', s => s.ms250)}${row('275+', s => s.ms275)}${row('300', s => s.ms300)}
+  </div>`;
+}
+
 function _perfRenderCompare(sc, kind) {
-  const baselines = [
-    { k: 'last10', l: 'Last 10 Wks' }, { k: 'season', l: 'Current Season' }, { k: 'all', l: 'All Time' }
-  ];
   const resolved = _perfCmpResolveSlots(sc, kind);
   const active = resolved.filter(Boolean);
   const slotRows = _perfCmpSlotRowsHTML(resolved, kind);
-  const baselineChips = baselines.map(b => {
-    const on = sc.cmpBaseline === b.k;
-    return `<div onclick="perfSetBaseline('${b.k}')" style="padding:5px 11px;border-radius:20px;font-size:11px;font-weight:700;
-      border:1px solid ${on ? 'var(--purple)' : 'var(--border2)'};background:${on ? 'rgba(157,78,221,0.12)' : 'var(--bg3)'};
-      color:${on ? 'var(--purple)' : 'var(--t3)'};cursor:pointer">${b.l}</div>`;
-  }).join('');
-  const baselineHTML = `<div style="background:var(--bg2);border:1px solid var(--border1);border-radius:10px;padding:12px 14px">
-    <div style="font-size:9px;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:8px">Baseline period</div>
-    <div style="display:flex;gap:5px;flex-wrap:wrap">${baselineChips}</div>
-  </div>`;
   if (active.length < 2) {
     return `<div style="padding:12px 16px 90px;display:flex;flex-direction:column;gap:10px">
-      ${slotRows}${baselineHTML}
+      ${slotRows}
       <div style="background:var(--bg2);border:1px solid var(--border1);border-radius:14px;padding:24px 14px;text-align:center;color:var(--t3);font-size:13px">
         Pick at least two ${kind === 'league' ? 'leagues' : 'centers'} to compare.
       </div>
     </div>`;
   }
   const slotData = active.map(r => {
-    const games = _perfBaselineGames(r.leagueIDSet, sc.cmpBaseline);
+    const games = _perfScopeGames(getAllTimeLeagueGames(), r.leagueIDSet);
     const avg = _perfFmtAvg(games);
     const stats = calculateAdvancedStats(games.map(g => g.GameID));
     return Object.assign({}, r, { games, avg, stats });
   });
-  const avgVals = slotData.map(s => s.avg ? s.avg.floor : null).filter(v => v != null);
-  const baseRef = avgVals.length ? Math.round(avgVals.reduce((a, b) => a + b, 0) / avgVals.length) : null;
-  const avgCards = slotData.map(s => {
-    const d = _perfDelta(s.avg ? s.avg.floor : null, baseRef);
-    return `<div style="flex:1;background:var(--bg2);border:1px solid var(--border1);border-radius:10px;padding:12px">
-      <div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;color:${s.color}">${s.letter} · ${s.name.length > 12 ? s.name.slice(0, 11) + '…' : s.name}</div>
-      <div style="font-size:28px;font-weight:900;letter-spacing:-1.5px;color:var(--t1);line-height:1">${s.avg ? s.avg.floor : '—'}</div>
-      <div style="font-size:11px;font-weight:700;margin-top:4px;color:${_perfDeltaColor(d.cls)}">${d.text === '—' ? 'at base' : d.text + ' vs base'}</div>
-    </div>`;
-  }).join('');
-  const avgCardsHTML = `<div style="display:flex;gap:8px">${avgCards}</div>`;
-  const A = slotData[0], B = slotData[1];
-  const numPct = s => { const n = parseFloat(s); return isNaN(n) ? 0 : n; };
-  function h2hRow(label, aStr, bStr, aNum, bNum) {
-    const total = (aNum || 0) + (bNum || 0);
-    const aw = total ? Math.round((aNum || 0) / total * 100) : 50;
-    return `<div style="margin-bottom:9px">
-      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--t3);margin-bottom:4px">
-        <span>${label}</span><span style="color:var(--t1);font-weight:700">${aStr} vs ${bStr}</span></div>
-      <div style="height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;display:flex">
-        <div style="background:var(--teal);width:${aw}%"></div><div style="background:var(--gold);width:${100 - aw}%"></div>
-      </div></div>`;
-  }
-  const h2hHTML = `<div style="background:var(--bg2);border:1px solid var(--border1);border-radius:10px;padding:12px 14px">
-    <div style="font-size:9px;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">Head to head · A vs B</div>
-    ${h2hRow('Avg', A.avg ? A.avg.floor : '—', B.avg ? B.avg.floor : '—', A.avg ? A.avg.floor : 0, B.avg ? B.avg.floor : 0)}
-    ${h2hRow('Spare %', A.stats.sparePct.split(' ')[0], B.stats.sparePct.split(' ')[0], numPct(A.stats.sparePct), numPct(B.stats.sparePct))}
-    ${h2hRow('Strike %', A.stats.strikePct.split(' ')[0], B.stats.strikePct.split(' ')[0], numPct(A.stats.strikePct), numPct(B.stats.strikePct))}
-    ${h2hRow('Clean %', A.stats.cleanPct + '%', B.stats.cleanPct + '%', A.stats.cleanPct, B.stats.cleanPct)}
-    ${h2hRow('BounceBack', A.stats.bounceBackPct.split(' ')[0], B.stats.bounceBackPct.split(' ')[0], numPct(A.stats.bounceBackPct), numPct(B.stats.bounceBackPct))}
+  const baseIdx = _perfCmpBaseIdx(slotData.length);
+
+  const detailTab = sc.cmpDetailTab || 'overview';
+  const tabsHTML = `<div style="display:flex;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch">
+    ${PERF_CMP_TABS.map(t => `<button onclick="perfSetCmpDetailTab('${t.key}')" style="flex:0 0 auto;padding:7px 13px;border-radius:20px;border:none;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;
+      background:${detailTab === t.key ? 'var(--teal)' : 'var(--bg3)'};color:${detailTab === t.key ? '#04211f' : 'var(--t2)'}">${t.label}</button>`).join('')}
   </div>`;
+
+  let tabContentHTML;
+  if (detailTab === 'strikes') tabContentHTML = _perfCmpStrikesTab(slotData, baseIdx);
+  else if (detailTab === 'spares') tabContentHTML = _perfCmpSparesTab(slotData, baseIdx);
+  else if (detailTab === 'balls') tabContentHTML = _perfCmpBallsTab(slotData, baseIdx);
+  else if (detailTab === 'milestones') tabContentHTML = _perfCmpMilestonesTab(slotData, baseIdx);
+  else tabContentHTML = _perfCmpOverviewTab(slotData, baseIdx);
+
+  const baseNote = `<div style="font-size:10px;color:var(--t3);text-align:center">
+    <span style="color:var(--purple);font-weight:700">${slotData[baseIdx].letter}</span> is the baseline${slotData.length === 3 ? ' (middle slot)' : ''} — deltas below are vs. its full history
+  </div>`;
+
   return `<div style="padding:12px 16px 90px;display:flex;flex-direction:column;gap:10px">
-    ${slotRows}${baselineHTML}${avgCardsHTML}${h2hHTML}
+    ${slotRows}${baseNote}${tabsHTML}${tabContentHTML}
   </div>`;
 }
 
@@ -14729,38 +15003,19 @@ function _renderPerformanceInner(el) {
     try { ensureLineages(); } catch(e) { console.error('lineage bootstrap:', e); }
   }
 
-  let pickOpts = _perfPickOptions();
+  let pickOpts = _perfPickOptionsExpanded();
 
   if (sc.pickID == null && pickOpts.length) {
-    // Default to the option with the MOST games, not the most-recently-dated
-    // one — a brand-new league (recent start, nothing bowled yet) should never
-    // be the landing scope, or the whole screen reads as empty dashes.
-    const byGames = pickOpts.slice().sort((a, b) => b.gameCount - a.gameCount);
-    sc.pickType = byGames[0].type; sc.pickID = byGames[0].id;
+    // v30.96 — default to the most-recently-dated INDIVIDUAL league, not
+    // the lineage roll-up ("lineage bypass" default). Falls back to the
+    // full option pool only if no individual league has data, which
+    // shouldn't happen since every lineage has at least one member.
+    const individualLeagues = pickOpts.filter(o => o.type === 'league');
+    const pool = individualLeagues.length ? individualLeagues : pickOpts;
+    const byRecency = pool.slice().sort((a, b) => (b.lastDate || '').localeCompare(a.lastDate || ''));
+    sc.pickType = byRecency[0].type; sc.pickID = byRecency[0].id;
   }
   let pick = pickOpts.find(o => o.type === sc.pickType && o.id === sc.pickID) || null;
-
-  // ── Pick upgrade (v30.54) ──
-  // A saved scope may point at an individual league from before its lineage
-  // existed (stale 'league' pick), which collapses the season chips to that
-  // one league's single year and makes Season/All-Time benchmarks degenerate
-  // duplicates of This League. If the picked league belongs to a lineage that
-  // is available in the picker, upgrade the pick to the lineage — the chips
-  // then span every season of the recurring league (23-24, 24-25, 25-26...)
-  // and tapping a chip filters across them, per the design intent.
-  if (!pick && sc.pickType === 'league' && sc.pickID != null) {
-    const lg = (db.leagues || []).find(l => l.LeagueID === sc.pickID);
-    if (lg && lg.LineageID != null) {
-      pick = pickOpts.find(o => o.type === 'lineage' && o.id === lg.LineageID) || null;
-    }
-  }
-  if (pick && pick.type === 'league') {
-    const lg = (db.leagues || []).find(l => l.LeagueID === pick.id);
-    if (lg && lg.LineageID != null) {
-      const lnOpt = pickOpts.find(o => o.type === 'lineage' && o.id === lg.LineageID);
-      if (lnOpt) pick = lnOpt;
-    }
-  }
   if (!pick) pick = pickOpts[0] || null;
 
   if (!pick) {
@@ -14779,9 +15034,14 @@ function _renderPerformanceInner(el) {
   // once below rather than on every individual series lookup.
   const seasonYears = _perfSeasonYearsFor(leagueIDSet);
   const todayYear = _perfTodaySeasonYear();
-  if (!sc.seasonYear || !seasonYears.some(sy => sy.seasonYear === sc.seasonYear)) {
-    sc.seasonYear = seasonYears.some(sy => sy.seasonYear === todayYear)
+  // v30.96 — multi-select: keep only still-valid selections; if that
+  // leaves nothing selected, default to today's season (or the most
+  // recent available one) same as the old single-select default did.
+  sc.seasonYears = (sc.seasonYears || []).filter(y => seasonYears.some(sy => sy.seasonYear === y));
+  if (!sc.seasonYears.length) {
+    const def = seasonYears.some(sy => sy.seasonYear === todayYear)
       ? todayYear : (seasonYears[0] ? seasonYears[0].seasonYear : null);
+    sc.seasonYears = def ? [def] : [];
   }
   _perfSaveScope(sc);
   saveDB();
@@ -14789,9 +15049,8 @@ function _renderPerformanceInner(el) {
   // ── Game pools (reused zero-arg scopes) ──
   const allTimePool = getAllTimeLeagueGames();
   const tenWkPool = getCanonicalLast10WksGames();
-  const thisScopeGames = _perfScopeGamesBySeasonYear(allTimePool, leagueIDSet, sc.seasonYear);
+  const thisScopeGames = _perfScopeGamesBySeasonYears(allTimePool, leagueIDSet, sc.seasonYears);
   const tenWkGames = _perfScopeGames(tenWkPool, leagueIDSet);
-  const seasonPinGames = todayYear ? _perfScopeGamesBySeasonYear(allTimePool, leagueIDSet, todayYear) : [];
   const allTimeGames = _perfScopeGames(allTimePool, leagueIDSet);
 
   // If the SELECTED scope has no scored games at all (e.g. a league that's set
@@ -14808,9 +15067,6 @@ function _renderPerformanceInner(el) {
   }
 
   const thisAvg = _perfFmtAvg(thisScopeGames);
-  const tenWkAvg = _perfFmtAvg(tenWkGames);
-  const seasonAvg = _perfFmtAvg(seasonPinGames);
-  const allTimeAvg = _perfFmtAvg(allTimeGames);
 
   const stats = calculateAdvancedStats(thisScopeGames.map(g => g.GameID));
   const atlStats = calculateAdvancedStats(allTimeGames.map(g => g.GameID));
@@ -14840,23 +15096,39 @@ function _renderPerformanceInner(el) {
     </div>`;
 
   const gameCountLabel = `${thisScopeGames.length} game${thisScopeGames.length === 1 ? '' : 's'}`;
+  // v30.96 — multi-select: tap to add/remove, purple accent (matches the
+  // Stats screen's stacked period pills, v30.95) instead of teal single-select.
   const chipsHTML = seasonYears.map(sy => {
-    const on = sy.seasonYear === sc.seasonYear;
-    return `<div onclick="perfSetSeasonChip('${sy.seasonYear}')"
+    const on = (sc.seasonYears || []).includes(sy.seasonYear);
+    return `<div onclick="perfToggleSeasonYear('${sy.seasonYear}')"
       style="flex-shrink:0;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:700;
-      border:1px solid ${on ? 'var(--teal)' : 'var(--border2)'};
-      background:${on ? 'rgba(0,217,217,0.1)' : 'var(--bg3)'};
-      color:${on ? 'var(--teal)' : 'var(--t3)'};cursor:pointer;white-space:nowrap">
-      ${sy.seasonYear}${sy.seasonYear === todayYear ? ' 🔄' : ''}</div>`;
+      border:1px solid ${on ? 'var(--purple)' : 'var(--border2)'};
+      background:${on ? 'rgba(157,78,221,0.14)' : 'var(--bg3)'};
+      color:${on ? 'var(--purple)' : 'var(--t3)'};cursor:pointer;white-space:nowrap">
+      ${sy.seasonYear}${sy.seasonYear === todayYear ? ' 🔄' : ''}${on ? ' ✓' : ''}</div>`;
   }).join('');
+  const seasonYearsLabel = (sc.seasonYears || []).length
+    ? sc.seasonYears.slice().sort((a, b) => b.localeCompare(a)).join('+')
+    : 'this scope';
 
+  // v30.100 — compact header row now shows RAW current-scope values, not
+  // deltas vs all-time. Root cause of the "blank / all dashes" bug: when
+  // the selected scope IS the league's entire history (every season
+  // picked, or a league with only one season ever), thisScopeGames and
+  // allTimeGames are identical, so any delta is trivially 0 -> displayed
+  // as '—' (flat), which read as broken/missing data even though nothing
+  // was actually wrong. Raw values sidestep that entirely and are also
+  // just more directly useful per feedback than a comparison figure.
+  const cleanStr = stats.cleanPct != null && stats.cleanPct !== '—' ? stats.cleanPct + '%' : '—';
+  const fbaStr = stats.firstBallAvg && stats.firstBallAvg !== '—' ? stats.firstBallAvg : '—';
+  const xOnXStr = stats.xOnXPct && stats.xOnXPct !== '—' ? stats.xOnXPct.split(' ')[0] : '—';
   const deltaItems = [
-    { lbl: '10 Wks', d: _perfDelta(thisAvg && thisAvg.floor, tenWkAvg && tenWkAvg.floor) },
-    { lbl: 'Season', d: _perfDelta(thisAvg && thisAvg.floor, seasonAvg && seasonAvg.floor) },
-    { lbl: 'All Time', d: _perfDelta(thisAvg && thisAvg.floor, allTimeAvg && allTimeAvg.floor) }
+    { lbl: 'Clean %', text: cleanStr },
+    { lbl: '1st Ball', text: fbaStr },
+    { lbl: 'X on X', text: xOnXStr }
   ].map(x => `<div style="flex:1;background:rgba(255,255,255,0.04);border:1px solid var(--border1);border-radius:8px;
       padding:6px 8px;display:flex;flex-direction:column;align-items:center;gap:1px">
-      <div style="font-size:13px;font-weight:800;color:${_perfDeltaColor(x.d.cls)}">${x.d.text}</div>
+      <div style="font-size:13px;font-weight:800;color:var(--purple)">${x.text}</div>
       <div style="font-size:8px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.4px">${x.lbl}</div>
     </div>`).join('');
 
@@ -14921,11 +15193,33 @@ function _renderPerformanceInner(el) {
       <div style="font-size:9px;font-weight:700;margin-top:3px;color:${subColor}">${subText}</div>
     </div>`;
   }
-  const benchHTML = `<div style="display:flex;gap:8px;padding:12px 16px;overflow-x:auto;scrollbar-width:none">
+  function achCard(lbl, valStr, subStr, color) {
+    return `<div style="flex-shrink:0;width:96px;background:var(--bg2);border:1px solid var(--border1);border-radius:10px;padding:10px 11px">
+      <div style="font-size:8px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:5px">${lbl}</div>
+      <div style="font-size:20px;font-weight:800;letter-spacing:-0.5px;color:${color}">${valStr}</div>
+      <div style="font-size:9px;font-weight:700;margin-top:3px;color:var(--t3)">${subStr}</div>
+    </div>`;
+  }
+  // v30.97 — "Achievements": the old 10 Weeks/Season/All Time date-window
+  // cards are replaced with High Game/High Series/Strike% for the current
+  // scope (thisScopeGames — pick + whatever season(s) are stacked above).
+  // "This League" stays; it's the current-scope average, not a date window.
+  const achScores = thisScopeGames.map(g => g.FinalScore).filter(v => v != null);
+  const achHiGame = achScores.length ? Math.max(...achScores) : null;
+  const achSeriesTotals = {};
+  thisScopeGames.forEach(g => { achSeriesTotals[g.SeriesID] = (achSeriesTotals[g.SeriesID] || 0) + g.FinalScore; });
+  const achSeriesVals = Object.values(achSeriesTotals);
+  const achHiSeries = achSeriesVals.length ? Math.max(...achSeriesVals) : null;
+  const achStats = stats; // already computed above for thisScopeGames — avoid a duplicate calculateAdvancedStats() call
+  const achStrikeStr = achStats.strikePct !== '—' ? achStats.strikePct.split(' ')[0] : '—';
+  const achStrikeSub = achStats.strikePct !== '—' ? achStats.strikePct.split(' ').slice(1).join(' ') : 'no frame data';
+
+  const benchHTML = `<div style="padding:10px 16px 0"><div style="font-size:9px;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:0.6px">🏆 Achievements</div></div>
+  <div style="display:flex;gap:8px;padding:8px 16px 12px;overflow-x:auto;scrollbar-width:none">
     ${benchCard('This League', thisAvg, null, true, thisScopeGames.length)}
-    ${benchCard('10 Weeks', tenWkAvg, _perfDelta(thisAvg && thisAvg.floor, tenWkAvg && tenWkAvg.floor), false, tenWkGames.length)}
-    ${benchCard('Season', seasonAvg, _perfDelta(thisAvg && thisAvg.floor, seasonAvg && seasonAvg.floor), false, seasonPinGames.length)}
-    ${benchCard('All Time', allTimeAvg, _perfDelta(thisAvg && thisAvg.floor, allTimeAvg && allTimeAvg.floor), false, allTimeGames.length)}
+    ${achCard('High Game', achHiGame != null ? achHiGame : '—', 'best game', 'var(--gold)')}
+    ${achCard('High Series', achHiSeries != null ? achHiSeries : '—', 'best series', 'var(--teal)')}
+    ${achCard('Strike %', achStrikeStr, achStrikeSub || 'X per frame', 'var(--purple)')}
   </div>`;
 
   const tabDefs = [{ k: 'ta', l: 'Averages' }, { k: 'tb', l: 'Spares' }, { k: 'tc', l: 'Strikes' }];
@@ -14958,7 +15252,7 @@ function _renderPerformanceInner(el) {
   const sparklineHTML = perfTrendPts.length >= 2
     ? `<div style="background:var(--bg2);border:1px solid var(--border1);border-radius:14px;overflow:hidden">
         <div style="padding:11px 14px 4px;display:flex;align-items:center;justify-content:space-between">
-          <div style="font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.5px">Avg trend · ${sc.seasonYear || 'this scope'} <span style="font-weight:400">(${perfTrendPts.length} series)</span></div>
+          <div style="font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.5px">Avg trend · ${seasonYearsLabel} <span style="font-weight:400">(${perfTrendPts.length} series)</span></div>
           <div style="font-size:12px;font-weight:800;color:var(--teal)">${thisAvg ? thisAvg.floor + thisAvg.dec : '—'} now</div>
         </div>
         <div style="padding:4px 8px 10px">${buildStatsSparkline(perfTrendPts, 'var(--teal)', 'perfAvgTrend')}</div>
@@ -14970,11 +15264,11 @@ function _renderPerformanceInner(el) {
 
   const gpsDefault = (db.leagues.find(l => leagueIDSet.has(l.LeagueID)) || {}).GamesPerSeries || 3;
   const highlightsHTML = `<div style="background:var(--bg2);border:1px solid var(--border1);border-radius:14px;overflow:hidden">
-    <div style="padding:11px 14px 9px;border-bottom:1px solid var(--border1)"><div style="font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.6px">Highlights · ${sc.seasonYear || 'this scope'}</div></div>
+    <div style="padding:11px 14px 9px;border-bottom:1px solid var(--border1)"><div style="font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.6px">Highlights · ${seasonYearsLabel}</div></div>
     ${_perfSrow('Hi Game', core.high != null ? core.high : '—', _perfDelta(core.high, atlCore.high), core.high != null ? Math.min(100, Math.round(core.high / 300 * 100)) : 0, 'var(--teal)')}
     ${_perfSrow('Hi Series', core.highSeriesTotal != null ? core.highSeriesTotal : '—', _perfDelta(core.highSeriesTotal, atlCore.highSeriesTotal), core.highSeriesTotal != null ? Math.min(100, Math.round(core.highSeriesTotal / (300 * gpsDefault) * 100)) : 0, 'var(--teal)')}
     ${_perfSrow('Clean %', stats.cleanPct + '%', _perfPPDelta(stats.cleanPct, atlStats.cleanPct), stats.cleanPct || 0, 'var(--teal)')}
-    ${_perfSrow('Games', core.gameCount, { text: sc.seasonYear || 'scope', cls: 'flat' }, 0, 'var(--teal)')}
+    ${_perfSrow('Games', core.gameCount, { text: seasonYearsLabel, cls: 'flat' }, 0, 'var(--teal)')}
   </div>`;
 
   const hasProj = stats.actualProjAvg != null;
@@ -15102,12 +15396,15 @@ function _renderStatsInner(el) {
   });
 
   // ── Period options ────────────────────────────────────────
-  const periodOptions = [
+  // v30.95 — seasons split out as a separate multi-select group (stack
+  // multiple season years together); Last10Wks/All Time/Custom remain
+  // single-select modes, mutually exclusive with season stacking.
+  const periodModeOptions = [
     { val: 'last10wks', label: 'Last 10 Wks' },
     { val: 'all',       label: 'All Time' },
-    ...seasons.map(s => ({ val: `season:${s}`, label: s })),
     { val: 'custom',    label: 'Custom…' }
   ];
+  const periodOptions = [...periodModeOptions, ...seasons.map(s => ({ val: `season:${s}`, label: s }))];
 
   // ── Context options — scoped to what's present in current period ──
   // First apply period filter to determine what's actually in scope
@@ -15154,6 +15451,22 @@ function _renderStatsInner(el) {
       }).join('') + `</div>`;
   }
 
+  // Multi-select variant (v30.95) — season pills stack instead of
+  // replacing each other. Purple accent distinguishes "toggle to add/
+  // remove" from the teal single-select pills above.
+  function pillMulti(options, activeSet, fn) {
+    return `<div style="display:flex;gap:6px;flex-wrap:wrap">` +
+      options.map(o => {
+        const active = activeSet.has(o.val);
+        return `<button onclick="${fn}('${o.val}')"
+          style="padding:5px 12px;border-radius:20px;font-size:12px;font-weight:${active?700:500};
+          border:1px solid ${active?'var(--purple)':'var(--border)'};
+          background:${active?'rgba(157,78,221,0.14)':'var(--bg3)'};
+          color:${active?'var(--purple)':'var(--t2)'};cursor:pointer;white-space:nowrap;
+          -webkit-tap-highlight-color:transparent">${o.label}${active?' ✓':''}</button>`;
+      }).join('') + `</div>`;
+  }
+
   // ── Scope bar open/closed state ──────────────────────────
   const scopeOpen = sc.scopeOpen !== false;
 
@@ -15176,6 +15489,11 @@ function _renderStatsInner(el) {
       if (f) return `From ${f}`;
       if (t) return `To ${t}`;
       return 'Custom';
+    }
+    if (sc.period === 'season') {
+      const sel = (sc.periodSeasons || []).slice().sort((a,b) => b.localeCompare(a));
+      if (!sel.length) return 'All Time';
+      return sel.length === 1 ? sel[0] : sel.join('+');
     }
     return periodOptions.find(o => o.val === sc.period)?.label || 'Last 10 Wks';
   })();
@@ -15203,7 +15521,12 @@ function _renderStatsInner(el) {
     ? pill(leagueOptions, sc.context, '_statsSetContext', true) : '';
 
   // ── Period row ───────────────────────────────────────────
-  const periodBar = pill(periodOptions, sc.period, '_statsSetPeriod');
+  const periodModeBar = pill(periodModeOptions, sc.period === 'season' ? '' : sc.period, '_statsSetPeriod');
+  const seasonPillOptions = seasons.map(s => ({ val: s, label: s }));
+  const seasonMultiBar = seasonPillOptions.length
+    ? pillMulti(seasonPillOptions, new Set(sc.period === 'season' ? (sc.periodSeasons || []) : []), '_statsToggleSeasonPeriod')
+    : '';
+  const periodBar = periodModeBar + (seasonMultiBar ? `<div style="margin-top:6px">${seasonMultiBar}</div>` : '');
 
   // ── Condition row ────────────────────────────────────────
   const condBar = hasSport ? pill(
@@ -15800,7 +16123,19 @@ function _statsSetContext(val) {
   const sc = _statsGetScope(); sc.context = val; _statsSaveScope(sc); renderStats();
 }
 function _statsSetPeriod(val) {
-  const sc = _statsGetScope(); sc.period = val; _statsSaveScope(sc); renderStats();
+  const sc = _statsGetScope(); sc.period = val; sc.periodSeasons = []; _statsSaveScope(sc); renderStats();
+}
+// v30.95 — tap a season pill to add it to the stacked selection, tap an
+// already-active one again to remove it. Any selection switches period
+// mode to 'season'; clearing the last one falls back to All Time.
+function _statsToggleSeasonPeriod(label) {
+  const sc = _statsGetScope();
+  const sel = Array.isArray(sc.periodSeasons) ? sc.periodSeasons.slice() : [];
+  const idx = sel.indexOf(label);
+  if (idx >= 0) sel.splice(idx, 1); else sel.push(label);
+  sc.periodSeasons = sel;
+  sc.period = sel.length ? 'season' : 'all';
+  _statsSaveScope(sc); renderStats();
 }
 function _statsSetCondition(val) {
   const sc = _statsGetScope(); sc.condition = val; _statsSaveScope(sc); renderStats();
@@ -16189,20 +16524,11 @@ function buildModalLeavesHTML(gameIDs) {
   </div>`;
 }
 
-function buildTopLeavesHTML(filterGames) {
-  // Sync to the global stats filter when called from the stats screen (no arg passed)
-  var resolvedFilter = (filterGames !== undefined) ? filterGames : _statsGameFilter;
-  var allStdGames = db.games.filter(function(g){return g.FinalScore!=null&&!g.NoTap;})
-    .sort(function(a,b){
-      var sa=db.series.find(function(s){return s.SeriesID===a.SeriesID;});
-      var sb=db.series.find(function(s){return s.SeriesID===b.SeriesID;});
-      return new Date(sb?sb.DateBowled:0)-new Date(sa?sa.DateBowled:0);
-    });
-
-  var filterLabel = resolvedFilter;
-  var gamePool = typeof resolvedFilter==='number' ? allStdGames.slice(0,resolvedFilter) : allStdGames;
-  var gameIDSet = new Set(gamePool.map(function(g){return g.GameID;}));
-
+// Standalone leave tally (extracted from buildTopLeavesHTML, v30.94, so
+// the Compare screen's Spares tab can reuse the exact same pin-standing
+// detection and leave-record matching instead of duplicating it).
+// Returns { leaveID: {leave, opps, conv} } for frames 1-9, att1 only.
+function _leaveTallyForGameIDs(gameIDSet) {
   // Helper: derive standing pins from a1 attempt record.
   // Tries PinStart/PinDelta first (live-scored games), then LeaveID lookup,
   // then reverse-match via PinDelta alone if PinStart absent.
@@ -16277,7 +16603,24 @@ function buildTopLeavesHTML(filterGames) {
     leaveMap[lvID].opps++;
     if (a2 && a2.Pinfall!==null && fr.Spare) leaveMap[lvID].conv++;
   });
+  return leaveMap;
+}
 
+function buildTopLeavesHTML(filterGames) {
+  // Sync to the global stats filter when called from the stats screen (no arg passed)
+  var resolvedFilter = (filterGames !== undefined) ? filterGames : _statsGameFilter;
+  var allStdGames = db.games.filter(function(g){return g.FinalScore!=null&&!g.NoTap;})
+    .sort(function(a,b){
+      var sa=db.series.find(function(s){return s.SeriesID===a.SeriesID;});
+      var sb=db.series.find(function(s){return s.SeriesID===b.SeriesID;});
+      return new Date(sb?sb.DateBowled:0)-new Date(sa?sa.DateBowled:0);
+    });
+
+  var filterLabel = resolvedFilter;
+  var gamePool = typeof resolvedFilter==='number' ? allStdGames.slice(0,resolvedFilter) : allStdGames;
+  var gameIDSet = new Set(gamePool.map(function(g){return g.GameID;}));
+
+  var leaveMap = _leaveTallyForGameIDs(gameIDSet);
   var top10 = Object.values(leaveMap).sort(function(a,b){return b.opps-a.opps;}).slice(0,10);
 
 
