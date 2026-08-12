@@ -8409,6 +8409,24 @@ function openGame(gameID, gameNum) {
   G.noTap = game?.NoTap || false;
   G.scoreDisplay = 'standard';
 
+  // Populate the lane pair/starting lane from the series every time a game
+  // is opened. Previously this was only set on a handful of creation paths
+  // (new series, new NoTap session, new open-bowling session, tournament
+  // card tap) — opening an EXISTING regular league series' game via the
+  // normal game-select tap never set it, so currentLaneParity()/
+  // fmRenderLaneRef() had nothing to work with and silently fell back to
+  // generic Odd/Even labels with default SB/TB instead of the real saved
+  // per-lane reference. openGame() is the single choke point every "enter
+  // a game" path routes through, so fixing it here covers all of them.
+  const _series = game ? db.series.find(s=>s.SeriesID===game.SeriesID) : null;
+  if (_series?.LanePair) {
+    G.lanePair = _series.LanePair;
+    G.laneStart = _series.LaneStart || null;
+  } else {
+    G.lanePair = null;
+    G.laneStart = null;
+  }
+
   // Seed G.ballID from the most recently used ball in this game's attempts,
   // so the ball bar highlights the right ball and populates correctly.
   const gameAtts = db.attempts.filter(a => {
@@ -18969,28 +18987,40 @@ function openSeriesModal(id) {
   const cOpts = db.centers.map(c=>`<option value="${c.CenterID}"${(s?.CenterID||db.leagues.find(l=>l.LeagueID===G.leagueID)?.CenterID)===c.CenterID?' selected':''}>${c.CenterName}</option>`).join('');
   const lOpts = db.leagues.filter(l=>!l.Archived).map(l=>`<option value="${l.LeagueID}"${(s?.LeagueID||G.leagueID)===l.LeagueID?' selected':''}>${l.LeagueName}</option>`).join('');
 
-  const laneSection = isEdit ? `
-    <div class="fgroup"><label class="flabel">Lane Pair</label>
-      <input class="finput" id="ms-lanepair" type="text" placeholder="e.g. 15,16" value="${s?.LanePair||''}"></div>` : `
+  // Edit mode: pre-parse the stored LanePair so the odd/even split editor
+  // (same UI as New Series) can be reused instead of a raw text field.
+  // This is what lets an already-bowled series have its starting lane
+  // corrected after the fact — see confirmSeriesLaneRemap()/commitSeriesLaneRemap().
+  let _editLaneA = 15, _editLaneB = 16, _editStartOdd = true;
+  if (isEdit && s?.LanePair) {
+    const _p = String(s.LanePair).split(/[,-]/).map(Number).filter(n=>!isNaN(n));
+    if (_p.length >= 2) {
+      _editLaneA = Math.min(_p[0], _p[1]);
+      _editLaneB = Math.max(_p[0], _p[1]);
+      _editStartOdd = s.LaneStart != null ? (s.LaneStart === _editLaneA) : true;
+    }
+  }
+  const laneSection = `
     <div class="fgroup"><label class="flabel">Lane Pair</label>
       <div class="lane-pair-row">
         <input class="lane-num-input" id="ms-lane-odd"  type="number" min="1" max="99"
-          value="15"
+          value="${isEdit ? _editLaneA : 15}"
           onfocus="this.select()"
           oninput="seriesLaneInput('ms-lane-odd','ms-lane-even','odd')"
           onblur="autoFillLane('ms-lane-odd','ms-lane-even','odd');updateLanePreview()">
         <div class="lane-sep">,</div>
         <input class="lane-num-input" id="ms-lane-even" type="number" min="2" max="100"
-          value="16"
+          value="${isEdit ? _editLaneB : 16}"
           onfocus="this.select()"
           oninput="seriesLaneInput('ms-lane-even','ms-lane-odd','even')"
           onblur="autoFillLane('ms-lane-even','ms-lane-odd','even');updateLanePreview()">
       </div>
       <div class="odd-even-toggle">
-        <div class="oe-btn on" id="oe-odd" onclick="setStartLane('odd')">Start Odd Lane</div>
-        <div class="oe-btn" id="oe-even" onclick="setStartLane('even')">Start Even Lane</div>
+        <div class="oe-btn${(!isEdit||_editStartOdd)?' on':''}" id="oe-odd" onclick="setStartLane('odd')">Start Odd Lane</div>
+        <div class="oe-btn${(isEdit&&!_editStartOdd)?' on':''}" id="oe-even" onclick="setStartLane('even')">Start Even Lane</div>
       </div>
       <div class="lane-preview" id="lane-preview">Game 1: Lane 15 · Game 2: Lane 16 · Game 3: Lane 15</div>
+      ${isEdit ? `<div style="font-size:11px;color:var(--t3);margin-top:6px;line-height:1.5">Changing the lane pair or starting lane here will re-map which lane each game in this series shows as played — you'll be asked to confirm before it's applied.</div>` : ''}
     </div>`;
 
   openModal(`
@@ -19023,7 +19053,12 @@ function openSeriesModal(id) {
   `);
   setTimeout(()=>{
     document.getElementById('ms-date')?.focus();
-    if (!isEdit) { updateLanePreview(); window._seriesModalState = { startOdd:true, noTap:false }; }
+    if (!isEdit) {
+      window._seriesModalState = { startOdd:true, noTap:false };
+    } else {
+      window._seriesModalState = { startOdd:_editStartOdd, noTap:!!s?.NoTap };
+    }
+    updateLanePreview();
     // Render handicap section
     const _leagueID = parseInt(document.getElementById('ms-league')?.value) || G.leagueID;
     const _seriesDate = document.getElementById('ms-date')?.value || azToday();
@@ -19153,27 +19188,38 @@ function saveSeries(id) {
 
   if (id) {
     const s = db.series.find(x=>x.SeriesID===id);
-    if (s) {
-      s.DateBowled = date; s.CenterID = centerID;
-      s.BallID = ballID; s.Notes = notes;
-      // Tournament series: preserve LeagueID=-1 and TournamentID — never overwrite from dropdown
-      if (!(s.TournamentID)) {
-        s.LeagueID = leagueID;
-      }
-      const lp = document.getElementById('ms-lanepair');
-      if (lp) { s.LanePair = lp.value.trim() || s.LanePair; }
-      // Save handicap snapshot if section is present
-      const snap = readSeriesHdcpSection();
-      if (snap) s.handicapSnapshot = snap;
+    if (!s) { closeModal(); return; }
+
+    // Pull the (possibly-changed) lane pair / starting lane from the same
+    // odd/even editor used for New Series.
+    const oddLane  = parseInt(document.getElementById('ms-lane-odd')?.value)  || null;
+    const evenLane = parseInt(document.getElementById('ms-lane-even')?.value) || null;
+    const startOdd = document.getElementById('oe-odd')?.classList.contains('on') !== false;
+    let newLanePair = s.LanePair, newLaneStart = s.LaneStart;
+    if (oddLane && evenLane) {
+      const lo = Math.min(oddLane, evenLane), hi = Math.max(oddLane, evenLane);
+      newLanePair = `${lo},${hi}`;
+      newLaneStart = startOdd ? lo : hi;
     }
-    saveAll(); closeModal();
-    // Route back to the right list after edit
-    if (db.series.find(x=>x.SeriesID===id)?.TournamentID) {
-      renderTournamentSeriesList();
+
+    const laneChanged = (newLanePair !== s.LanePair) || (newLaneStart !== s.LaneStart);
+    const seriesGames = db.games.filter(g=>g.SeriesID===id).sort((a,b)=>a.GameNumber-b.GameNumber);
+    // Also self-heal if any existing game's lane is missing/out of sync with
+    // what the current series settings would produce, even when the user
+    // didn't touch the lane fields this time.
+    const staleGames = !laneChanged && seriesGames.some(g =>
+      g.LaneStart !== computeGameLaneForNumber(newLanePair, newLaneStart, g.GameNumber));
+
+    // Handicap snapshot fields live in the DOM too — must be read now,
+    // before any modal swap for the lane-remap confirmation.
+    const snap = readSeriesHdcpSection();
+    const rest = { date, centerID, ballID, notes, leagueID, snap };
+
+    if ((laneChanged || staleGames) && seriesGames.length) {
+      confirmSeriesLaneRemap(id, newLanePair, newLaneStart, rest);
     } else {
-      renderSeriesList();
+      applySeriesEdit(id, rest, newLanePair, newLaneStart);
     }
-    toast('Series updated!');
   } else {
     const oddLane = parseInt(document.getElementById('ms-lane-odd')?.value)||15;
     const evenLane = parseInt(document.getElementById('ms-lane-even')?.value)||(oddLane+1);
@@ -19196,6 +19242,95 @@ function saveSeries(id) {
     saveAll(); closeModal();
     createAndStartGame();
   }
+}
+
+/* =============================================================
+   SERIES LANE CORRECTION (edit-mode only)
+   ─────────────────────────────────────────────────────────────
+   A series only stores LanePair + LaneStart (the starting lane
+   number). Individual games snapshot a LaneStart of their own at
+   creation time (alternating off the series values), but neither
+   frames nor attempts store lane data at all — so correcting a
+   mis-assigned starting lane after the fact never needs a
+   frame/attempt-level rewrite, only a per-game LaneStart resync.
+   ============================================================= */
+function computeGameLaneForNumber(lanePair, laneStart, gameNum) {
+  if (!laneStart || !lanePair) return laneStart || null;
+  const parts = String(lanePair).split(/[,-]/).map(Number).filter(n=>!isNaN(n));
+  if (parts.length < 2) return laneStart;
+  const [laneA, laneB] = parts;
+  const altLane = (laneStart === laneA) ? laneB : laneA;
+  return (gameNum % 2 === 1) ? laneStart : altLane;
+}
+
+function applySeriesEdit(id, rest, newLanePair, newLaneStart) {
+  const s = db.series.find(x=>x.SeriesID===id);
+  if (!s) { closeModal(); return; }
+  s.DateBowled = rest.date; s.CenterID = rest.centerID;
+  s.BallID = rest.ballID; s.Notes = rest.notes;
+  // Tournament series: preserve LeagueID=-1 and TournamentID — never overwrite from dropdown
+  if (!(s.TournamentID)) { s.LeagueID = rest.leagueID; }
+  s.LanePair = newLanePair; s.LaneStart = newLaneStart;
+  if (rest.snap) s.handicapSnapshot = rest.snap;
+  saveAll(); closeModal();
+  if (db.series.find(x=>x.SeriesID===id)?.TournamentID) {
+    renderTournamentSeriesList();
+  } else {
+    renderSeriesList();
+  }
+  toast('Series updated!');
+}
+
+function confirmSeriesLaneRemap(id, newLanePair, newLaneStart, rest) {
+  const s = db.series.find(x=>x.SeriesID===id);
+  if (!s) return;
+  const games = db.games.filter(g=>g.SeriesID===id).sort((a,b)=>a.GameNumber-b.GameNumber);
+  const rows = games.map(g => {
+    const before = g.LaneStart || '—';
+    const after  = computeGameLaneForNumber(newLanePair, newLaneStart, g.GameNumber);
+    const changed = String(before) !== String(after);
+    return `<div class="stat-row"><span>Game ${g.GameNumber}</span>
+      <span class="sval" style="${changed?'color:var(--gold);font-weight:700':''}">
+        Ln ${before} ${changed?`&rarr; Ln ${after}`:'(no change)'}
+      </span></div>`;
+  }).join('');
+
+  window._pendingSeriesLaneEdit = { id, newLanePair, newLaneStart, rest };
+  openModal(`
+    <div class="modal-title">Confirm Lane Correction</div>
+    <p style="font-size:13px;color:var(--t2);line-height:1.6;margin-bottom:14px">
+      This will update the lane pair/starting lane for this series and re-map
+      which lane each game shows as played. No scores, frames, or attempts
+      are affected — only the lane label per game.
+    </p>
+    ${rows}
+    <button class="btn btn-primary" style="margin-top:14px" onclick="commitSeriesLaneRemap()">Confirm &amp; Save</button>
+    <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+  `);
+}
+
+function commitSeriesLaneRemap() {
+  const pending = window._pendingSeriesLaneEdit;
+  window._pendingSeriesLaneEdit = null;
+  if (!pending) { closeModal(); return; }
+  const { id, newLanePair, newLaneStart, rest } = pending;
+  const s = db.series.find(x=>x.SeriesID===id);
+  if (!s) { closeModal(); return; }
+  s.DateBowled = rest.date; s.CenterID = rest.centerID;
+  s.BallID = rest.ballID; s.Notes = rest.notes;
+  if (!(s.TournamentID)) { s.LeagueID = rest.leagueID; }
+  s.LanePair = newLanePair; s.LaneStart = newLaneStart;
+  if (rest.snap) s.handicapSnapshot = rest.snap;
+
+  const games = db.games.filter(g=>g.SeriesID===id);
+  games.forEach(g => {
+    g.LanePair = newLanePair;
+    g.LaneStart = computeGameLaneForNumber(newLanePair, newLaneStart, g.GameNumber);
+  });
+
+  saveAll(); closeModal();
+  if (s.TournamentID) { renderTournamentSeriesList(); } else { renderSeriesList(); }
+  toast(`Series updated — lane assignments remapped for ${games.length} game${games.length!==1?'s':''}`);
 }
 
 function openSeriesStatsModal(seriesID) {
