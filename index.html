@@ -1104,6 +1104,14 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
   box-shadow:0 -4px 24px rgba(0,0,0,0.4);
 }
 #shot-detail-prompt.sdp-open { transform:translateY(0); }
+/* Blocking backdrop for the combined 10-pin+SDP form only — see markup
+   comment. Sits just under the sheet's z-index so the sheet stays on top,
+   but above everything else, so the pin grid can't be tapped through it. */
+#sdp-backdrop {
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,0.01); z-index:29;
+}
+#sdp-backdrop.sdp-blocking-active { display:block; }
 .sdp-header {
   display:flex; align-items:center; justify-content:space-between;
   margin-bottom:10px;
@@ -2085,13 +2093,28 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
   background:rgba(0,217,217,0.12); color:var(--teal);
   border:1px solid rgba(0,217,217,0.3);
 }
+/* Attempt (A1/A2/A3) pill — same visual language as .att-nav-modepill,
+   sized as a real tap target (not just text) since it toggles attempts
+   via cycleAttemptBadge(). Teal fixed color (distinct from the mode
+   pill's per-state coloring) so the two pills read as different controls
+   sitting next to each other. */
+.att-pill {
+  display:inline-flex; align-items:center; justify-content:center;
+  padding:4px 12px; border-radius:20px;
+  font-size:11px; font-weight:800; letter-spacing:0.5px;
+  background:rgba(0,217,217,0.12); color:var(--teal);
+  border:1px solid rgba(0,217,217,0.35);
+  cursor:pointer; -webkit-tap-highlight-color:transparent;
+  transition:all 0.15s;
+}
+.att-pill:active { transform:scale(0.92); background:rgba(0,217,217,0.22); }
 .notes-icon-btn {
-  width:34px; height:34px;
+  width:36px; height:36px;
   border-radius:50%;
   background:var(--bg3);
   border:1.5px solid var(--border2);
   color:var(--t3);
-  font-size:17px;
+  font-size:18px;
   display:flex; align-items:center; justify-content:center;
   cursor:pointer;
   transition:all 0.15s;
@@ -3313,26 +3336,22 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
         <!-- FM Header -->
         <div class="fm-header">
           <div class="fm-header-left">
-            <div style="display:flex;align-items:baseline;gap:4px">
+            <div style="display:flex;align-items:center;gap:6px">
               <span class="fm-frame-label" id="fm-frame-num">1</span>
               <span class="fm-game-label" id="fm-game-badge">G1</span>
-            </div>
-            <div style="display:flex;align-items:center;gap:4px;margin-top:1px">
-              <span id="fm-att-badge" style="font-size:9px;font-weight:800;color:var(--teal)">A1</span>
-              <span id="fm-mode-pill" class="att-nav-modepill FRESH">LEAVE</span>
               <span id="fm-notes-dot" onclick="openAttemptNotesModal()" title="Attempt Notes"
-                style="width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+                style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;
                 cursor:pointer;flex-shrink:0;-webkit-tap-highlight-color:transparent;transition:all 0.15s">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
                   stroke-linecap="round" stroke-linejoin="round" style="color:var(--t3)">
                   <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
                   <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
                 </svg>
               </span>
               <span id="fm-clear-att-btn" onclick="clearCurrentAttempt()" title="Clear this attempt"
-                style="width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+                style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;
                 cursor:pointer;flex-shrink:0;-webkit-tap-highlight-color:transparent;transition:all 0.15s">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
                   stroke-linecap="round" stroke-linejoin="round" style="color:var(--t3)">
                   <polyline points="3 6 5 6 21 6"/>
                   <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>
@@ -3340,6 +3359,10 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
                   <path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/>
                 </svg>
               </span>
+            </div>
+            <div style="display:flex;align-items:center;gap:4px;margin-top:1px">
+              <span id="fm-att-badge" class="att-pill" onclick="cycleAttemptBadge()" title="Tap to cycle attempt">A1</span>
+              <span id="fm-mode-pill" class="att-nav-modepill FRESH">LEAVE</span>
             </div>
           </div>
           <div class="fm-mini-strip" id="fm-mini-strip"></div>
@@ -3419,6 +3442,14 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
         <div id="fm-qa-anchor"></div>
 
         <!-- Shot Detail Prompt — Practice Mode post-confirm sheet -->
+        <!-- Blocking backdrop — hidden/inert by default (the ordinary SDP is
+             a non-blocking sheet; the pin grid stays live underneath so a
+             lazy or skipped answer never holds up scoring). Only shown for
+             the combined 10-pin+SDP form (sdp-blocking-active, toggled by
+             openShotDetailPrompt()/sdCloseAndResume()), where the scoring
+             form is genuinely paused pending the ringing/flat decision and
+             taps on the pin grid underneath would otherwise corrupt it. -->
+        <div id="sdp-backdrop" onclick="return false" ontouchmove="return false"></div>
         <div id="shot-detail-prompt">
           <div class="sdp-header">
             <span class="sdp-title" id="sdp-title">Shot Detail</span>
@@ -3447,6 +3478,19 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
               <div class="sdp-seg-btn" id="sdp-revs-L" onclick="sdSetField('revs','L')">L</div>
               <div class="sdp-seg-btn" id="sdp-revs-M" onclick="sdSetField('revs','M')">M</div>
               <div class="sdp-seg-btn" id="sdp-revs-H" onclick="sdSetField('revs','H')">H</div>
+            </div>
+          </div>
+          <!-- 10-Pin ambiguity row — combined-form case only (a 10-pin leave
+               that also needs the SDP): asks Ringing/Flat right here so
+               there's one modal and one resolve point, instead of two
+               sequential prompts handing state to each other. Replaces the
+               separate Entry/Ball-Roll rows for this attempt since Ringing/
+               Flat sets both at once (same fields, more specific question). -->
+          <div class="sdp-row" id="sdp-row-tenpin" style="display:none">
+            <span class="sdp-lbl">10-Pin</span>
+            <div class="sdp-seg">
+              <div class="sdp-seg-btn" id="sdp-tenpin-ringing" onclick="sdSetField('tenpin','ringing')">Ringing</div>
+              <div class="sdp-seg-btn" id="sdp-tenpin-flat"    onclick="sdSetField('tenpin','flat')">Flat</div>
             </div>
           </div>
           <!-- Entry row — FRESH attempts only, hidden on spare -->
@@ -3531,24 +3575,24 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
           <svg width="9" height="16" viewBox="0 0 9 16" fill="none"><path d="M7.5 1L1 8l6.5 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
         <div class="att-nav-center">
-          <div class="att-nav-label">Frame <span id="nav-frame">1</span> · Attempt <span id="nav-att">1</span></div>
+          <div class="att-nav-label">Frame <span id="nav-frame">1</span> · <span onclick="cycleAttemptBadge()" title="Tap to cycle attempt" style="cursor:pointer;-webkit-tap-highlight-color:transparent">Attempt <span id="nav-att">1</span></span></div>
           <div id="nav-mode-pill" class="att-nav-modepill FRESH">LEAVE</div>
         </div>
         <div class="att-nav-btn" id="nav-next" onclick="navNextAttempt()" title="Next attempt">
           <svg width="9" height="16" viewBox="0 0 9 16" fill="none"><path d="M1.5 1L8 8l-6.5 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
         <div class="notes-icon-btn" id="notes-icon-btn" onclick="openAttemptNotesModal()" title="Attempt Notes" style="margin-left:6px">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
           </svg>
         </div>
         <div class="notes-icon-btn" id="clear-att-btn" onclick="clearCurrentAttempt()" title="Clear this attempt" style="margin-left:4px">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/>
           </svg>
         </div>
         <div class="notes-icon-btn" id="sdp-reopen-btn" onclick="sdOpenManual()" title="Shot Detail" style="margin-left:4px;display:none">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="0.5" fill="currentColor"/>
           </svg>
         </div>
@@ -4047,6 +4091,7 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
           <button onclick="dkSeasonDryRun()" style="width:100%;padding:9px;background:#2c3e94;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px">Season Dry Run (read-only)</button>
           <button onclick="dkLineageDryRun()" style="width:100%;padding:9px;background:#4a2c94;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px">Lineage Dry Run (read-only)</button>
           <button onclick="dkStreakDryRun()" style="width:100%;padding:9px;background:#1e6b52;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px">Streak Dry Run (read-only)</button>
+          <button onclick="dkLeaveDiagnosisDiffRun()" style="width:100%;padding:9px;background:#8a5a1e;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px">Leave Diagnosis Diff — old vs new (read-only)</button>
           <button onclick="dkStreakDryRunDetail()" style="width:100%;padding:9px;background:#1a4d3a;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px">Streak Detail — League 129 (read-only)</button>
           <button onclick="dkStreakRollingDryRun()" style="width:100%;padding:9px;background:#164a52;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px">Rolling Avg Streak — League 129 (read-only)</button>
           <button onclick="dkStreakRollingDryRun('lineage', 1)" style="width:100%;padding:9px;background:#164a52;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px">Rolling Avg Streak — Lineage 1 (read-only)</button>
@@ -8776,7 +8821,7 @@ function quickSpare()  {
    ============================================================= */
 function confirmAttempt() {
   cancelUndo();
-  _pendingTenPinAttID = null; // clear any stale deferred 10-pin prompt
+  _pendingConfirmAfterTenPin = null; // clear any stale paused confirm (10-pin decision superseded by a fresh entry)
 
   // ── NUMERIC MODE PATH ────────────────────────────────────────────
   if (G.numericMode) {
@@ -9000,12 +9045,61 @@ function confirmAttempt() {
     att.LeaveID = detectLeaveID(standing);
   }
 
-  // Auto-write pocket entry classification (frames 1-9, att1, non-strike)
+  // 10-pin ambiguity (ringing/flat) is decided BEFORE the scoring form
+  // advances. When the SDP is also about to show for this same attempt,
+  // the two are merged into ONE combined form (the ringing/flat question
+  // asked as an extra row inside the SDP itself) instead of two sequential
+  // modals handing G.frame/G.attempt state to each other across the pause —
+  // that handoff was the source of a real bug (see finishConfirmAttempt()).
+  // If ambiguous, pause the whole confirm here: finishConfirmAttempt()
+  // (frame-flags/score/save/advance/render) resumes from either
+  // resolveTenPin() (standalone) or sdCloseAndResume() (combined) once the
+  // user answers.
   if (G.frame <= 9 && G.attempt === 1 && pinfall < 10) {
     const standingSet = new Set();
     for (let p=1;p<=10;p++) { if (!G.knocked.has(p)) standingSet.add(p); }
+    const standingArr = Array.from(standingSet);
+    const is10PinLeave = standingArr.length === 1 && standingArr[0] === 10;
+    const tenPinAmbiguous = is10PinLeave
+      && att.PocketEntrySource !== 'user' && att.PocketEntrySource !== 'prompted'
+      && getPrefs().tenPinPrompt !== false && _tenPinSkipSeriesID !== G.seriesID;
+    if (tenPinAmbiguous) {
+      _pendingConfirmAfterTenPin = { frame, att, pinfall };
+      const sdpWillShow = getPrefs().practiceMode && !getPrefs().shotDetailPaused && !att.ShotDetailLogged;
+      if (sdpWillShow) {
+        // Combined form — attempt 1 is always fresh/not-a-spare-conversion.
+        openShotDetailPrompt(G.frame, G.attempt, true, false, att.AttemptID, false, true);
+      } else {
+        openTenPinPrompt(att); // no SDP to merge into — standalone prompt
+      }
+      return;
+    }
+    // Not ambiguous (not a 10-pin leave, series-skipped, or already
+    // user/prompted) — classify immediately, no prompt needed.
     autoWritePocketEntry(att, standingSet);
   }
+
+  finishConfirmAttempt(frame, att, pinfall);
+}
+
+/* Resumes confirmAttempt() once pin data (and, for an ambiguous 10-pin
+   leave, the ringing/flat decision — standalone or combined with the SDP)
+   is settled. Frame-flags/score/save, then advanceState() (moves the
+   scoring form to the next attempt/frame), then the Shot Detail Prompt for
+   the attempt just scored — in that order, so the form only advances once
+   the 10-pin decision (if any) is made. skipSDP=true when the combined
+   form already handled shot detail for this attempt inline (see
+   sdCloseAndResume()) — skips the ordinary SDP-opening tail below so it
+   doesn't fire a second time for the same attempt. */
+function finishConfirmAttempt(frame, att, pinfall, skipSDP) {
+  // Defensive re-pin: this may resume long after confirmAttempt() paused
+  // (e.g. waiting on the 10-pin ringing/flat modal), so G.frame/G.attempt
+  // must be forced back to the JUST-CONFIRMED attempt's own position
+  // rather than trusted as still-current — anything that nudges G while
+  // the modal is up would otherwise make advanceState() (and the SDP
+  // title right below) act on the wrong attempt.
+  G.frame = frame.FrameNumber;
+  G.attempt = att.Attempt;
 
   // Update frame flags
   updateFrameFlags(frame);
@@ -9032,6 +9126,7 @@ function confirmAttempt() {
   updatePinfallDisplay();
   updateScoringContext();
   haptic('success');
+  if (skipSDP) return; // combined form already handled shot detail for this attempt
   // Practice Mode: open shot detail prompt for the attempt just scored
   (function() {
     var _f = getFrame(_sdFrame);
@@ -9348,21 +9443,16 @@ function autoWritePocketEntry(att, standing) {
   const is810    = standingArr.length === 2 && standing.has(8) && standing.has(10);
 
   if (is10Pin) {
-    // Fire disambiguation prompt if enabled (and not series-skipped);
-    // otherwise assume flat
-    if (getPrefs().tenPinPrompt !== false && _tenPinSkipSeriesID !== G.seriesID) {
-      // SDP-first sequencing: if the Shot Detail Prompt is about to show for
-      // this attempt, defer the 10-pin prompt until the SDP is resolved.
-      var _sdpWillShow = getPrefs().practiceMode && !getPrefs().shotDetailPaused && !att.ShotDetailLogged;
-      if (_sdpWillShow) { _pendingTenPinAttID = att.AttemptID; }
-      else { openTenPinPrompt(att); }
-    } else {
-      att.PocketEntry       = 'light';
-      att.PocketEntrySource = 'auto';
-      att.BallRoll          = 'rolled-out';
-      att.BallRollSource    = 'auto';
-      saveAll();
-    }
+    // The ambiguous case (prompt enabled, not series-skipped) is
+    // intercepted earlier in confirmAttempt() — by the time this function
+    // is reached for a 10-pin leave, a prompt was either not warranted
+    // (series-skipped or already user/prompted) or doesn't apply. Assume
+    // flat, same default resolveTenPin()'s Skip path uses.
+    att.PocketEntry       = 'light';
+    att.PocketEntrySource = 'auto';
+    att.BallRoll          = 'rolled-out';
+    att.BallRollSource    = 'auto';
+    saveAll();
     return;
   }
 
@@ -9388,13 +9478,15 @@ function autoWritePocketEntry(att, standing) {
   }
 }
 
-/* 10-pin disambiguation prompt — fires after att1 confirm when leave is 10-pin.
-   _pendingTenPinAttID: when the SDP will show for the same attempt, the prompt
-   is deferred until the SDP is saved/dismissed (no modal collision).
+/* 10-pin disambiguation prompt — fires from confirmAttempt() BEFORE the
+   scoring form advances or the SDP shows (not deferred behind the SDP).
+   _pendingConfirmAfterTenPin: the paused confirmAttempt() continuation
+   (frame/att/pinfall) — resolveTenPin() resumes it via finishConfirmAttempt()
+   once the user answers, so the form only advances after the decision.
    _tenPinSkipSeriesID: tapping Skip silences the prompt for the rest of the
    current series; re-enabled automatically on a new series or by switching the
    Settings toggle off→on. */
-var _pendingTenPinAttID = null;
+var _pendingConfirmAfterTenPin = null;
 var _tenPinSkipSeriesID = null;
 
 function openTenPinPrompt(att) {
@@ -9403,13 +9495,13 @@ function openTenPinPrompt(att) {
     + '<div style="font-size:15px;font-weight:700;color:var(--t1);margin-bottom:4px">10-Pin Leave</div>'
     + '<div style="font-size:12px;color:var(--t3);margin-bottom:16px">How did the 6-pin go?</div>'
     + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">'
-    + '<button onclick="resolveTenPin(' + "'" + _attID + "','ringing')" + '"'
+    + '<button onclick="resolveTenPin(' + _attID + ',' + "'ringing')" + '"'
     + ' style="padding:14px 8px;border-radius:10px;border:1.5px solid var(--purple);'
     + 'background:rgba(157,78,221,0.12);color:var(--t1);font-size:13px;font-weight:700;cursor:pointer">'
     + '<div style="font-size:20px;margin-bottom:4px">&#x21BA;</div>Ringing'
     + '<div style="font-size:10px;color:var(--t3);margin-top:3px;font-weight:400">Flew over the 10</div>'
     + '</button>'
-    + '<button onclick="resolveTenPin(' + "'" + _attID + "','flat')" + '"'
+    + '<button onclick="resolveTenPin(' + _attID + ',' + "'flat')" + '"'
     + ' style="padding:14px 8px;border-radius:10px;border:1.5px solid var(--border2);'
     + 'background:var(--bg3);color:var(--t1);font-size:13px;font-weight:700;cursor:pointer">'
     + '<div style="font-size:20px;margin-bottom:4px">&#x2192;</div>Flat'
@@ -9417,33 +9509,35 @@ function openTenPinPrompt(att) {
     + '</button>'
     + '</div>'
     + '<div style="display:flex;justify-content:center;gap:16px">'
-    + '<span onclick="resolveTenPin(' + "'" + _attID + "',null)" + '"'
+    + '<span onclick="resolveTenPin(' + _attID + ',null)"'
     + ' style="font-size:12px;color:var(--t3);cursor:pointer;padding:4px 8px">Skip</span>'
-    + '<span onpointerdown="startTenPinSilence(this,' + "'" + _attID + "')" + '" ontouchstart="return false"'
+    + '<span onpointerdown="startTenPinSilence(this,' + _attID + ')" ontouchstart="return false"'
     + ' style="font-size:12px;color:var(--t3);cursor:pointer;padding:4px 8px">Silence</span>'
     + '</div>'
     + '</div>';
   openModal(html);
 }
 
-function resolveTenPin(attID, result) {
-  closeModal();
-  var att = db.attempts.find(function(a){ return a.AttemptID === attID; });
-  if (!att) return;
-  if (result === 'ringing') {
+/* Shared by the standalone 10-pin prompt (resolveTenPin) and the combined
+   SDP+10-pin form (sdSave/sdSkip/sdDismiss in the practice-mode case) —
+   one place that writes PocketEntry/BallRoll for a ringing/flat/unanswered
+   result, so the two entry points can never drift out of sync. */
+function applyTenPinChoice(att, choice) {
+  if (choice === 'ringing') {
     att.PocketEntry       = 'high';
     att.PocketEntrySource = 'prompted';
     att.BallRoll          = 'normal';
     att.BallRollSource    = 'prompted';
-  } else if (result === 'flat') {
+  } else if (choice === 'flat') {
     att.PocketEntry       = 'light';
     att.PocketEntrySource = 'prompted';
     att.BallRoll          = 'rolled-out';
     att.BallRollSource    = 'prompted';
   } else {
-    // Skip — silence the prompt for the remainder of this series, and assume
-    // flat at auto tier WITHOUT clobbering user/prompted data already written
-    // (e.g. values just saved via the SDP).
+    // Unanswered (Skip / dismiss without a choice) — silence the prompt for
+    // the remainder of this series, and assume flat at auto tier WITHOUT
+    // clobbering user/prompted data already written (e.g. values just
+    // saved via the SDP's other rows).
     _tenPinSkipSeriesID = G.seriesID;
     if (getPrefs().tenPinPrompt !== false) toast('10-pin prompt off for this series');
     if (att.PocketEntrySource !== 'user' && att.PocketEntrySource !== 'prompted') {
@@ -9455,14 +9549,37 @@ function resolveTenPin(attID, result) {
       att.BallRollSource    = 'auto';
     }
   }
+}
+
+function resolveTenPin(attID, result) {
+  closeModal();
+  // attID arrives as a number from openTenPinPrompt()'s onclick handlers;
+  // Number() here is defense-in-depth against any future caller that
+  // passes it as a string (e.g. an inline onclick that quotes it) — a
+  // strict === against the numeric AttemptID would otherwise silently
+  // fail the lookup and drop the whole resolve/advance/SDP chain below.
+  var attIDNum = Number(attID);
+  var att = db.attempts.find(function(a){ return a.AttemptID === attIDNum; });
+  if (!att) return;
+  applyTenPinChoice(att, result);
   saveAll();
-  // Belt-and-suspenders resync: confirmAttempt() already advanced G and
-  // rendered before this prompt was interactable, but force a fresh render
-  // here too so the visible attempt can never lag behind G's real state.
-  renderScorecard('sc-grid', false);
-  updatePinDisplay();
-  updatePinfallDisplay();
-  updateScoringContext();
+  // Resume the paused confirmAttempt() — frame-flags/score/save, advance
+  // to the next attempt/frame, then the SDP. Only reachable for the SAME
+  // attempt this prompt was opened for (defensive attID match), since
+  // openTenPinPrompt() can only be reached with a pending continuation
+  // set by confirmAttempt() immediately before it.
+  if (_pendingConfirmAfterTenPin && _pendingConfirmAfterTenPin.att.AttemptID === attIDNum) {
+    var _pending = _pendingConfirmAfterTenPin;
+    _pendingConfirmAfterTenPin = null;
+    finishConfirmAttempt(_pending.frame, _pending.att, _pending.pinfall);
+  } else {
+    // No pending continuation (e.g. prompt reopened some other way) —
+    // just resync the visible attempt so it can't lag behind real state.
+    renderScorecard('sc-grid', false);
+    updatePinDisplay();
+    updatePinfallDisplay();
+    updateScoringContext();
+  }
 }
 
 function startTenPinSilence(el, attID) {
@@ -9497,6 +9614,12 @@ function updateFrameFlags(frame) {
 /* Auto-select ball based on attempt number and alternating mode.
    Called by advanceState() after frame/attempt is updated. */
 function autoSelectBall() {
+  var prefs = getPrefs(); // v30.108 fix: was referenced bare at the spare-ball
+  // fallback (prefs.defaultSpareBallID) with no local/global declaration ->
+  // ReferenceError crashing advanceState() mid-flight on the FIRST att1->att2
+  // advance of a session in a league with no DefaultSpareBallID (latent since
+  // the v30.43 fallback chain; root cause of the 10-pin/SDP "extra advance +
+  // ghost SDP" bug -- see v30.106 handoff sec.4).
   if (G.attempt === 1) {
     if (G.altMode && G.altBall1 && G.altBall2) {
       // Alt applies to att1 of ALL frames including F10. Within F10, att2/att3
@@ -10104,12 +10227,15 @@ var _sdp = {
   attID: null,      // AttemptID so we can write back
   isFresh: false,   // was this a fresh-rack delivery? (gates Entry row)
   isSpareConv: false, // was a spare converted? (gates align-save offer)
+  tenPinPending: false, // combined form: a 10-pin ringing/flat decision is
+                         // bundled into this SDP instance (see confirmAttempt())
+  tenPinChoice: null,    // 'ringing' | 'flat' | null (unanswered — Skip/dismiss assumes flat)
   // current selections
   marker: null, speed: null, revs: null,
   entry: null, miss: null, boards: null
 };
 
-function openShotDetailPrompt(scoredFrame, scoredAtt, isFresh, isSpareConv, attID, force) {
+function openShotDetailPrompt(scoredFrame, scoredAtt, isFresh, isSpareConv, attID, force, tenPinPending) {
   if (!getPrefs().practiceMode) return;
   if (getPrefs().shotDetailPaused && !force) return;
 
@@ -10127,6 +10253,8 @@ function openShotDetailPrompt(scoredFrame, scoredAtt, isFresh, isSpareConv, attI
   _sdp.attID       = att.AttemptID;
   _sdp.isFresh     = isFresh;
   _sdp.isSpareConv = isSpareConv;
+  _sdp.tenPinPending = !!tenPinPending;
+  _sdp.tenPinChoice  = null;
   // Defaults (7/13 feedback): Arrows / Speed M / Revs M / Flush / Normal /
   // On-target — saved values or auto-classified entry still take precedence.
   _sdp.marker  = att.FocalTarget    || getPrefs().defaultFocalTarget || 'arrows';
@@ -10161,11 +10289,25 @@ function openShotDetailPrompt(scoredFrame, scoredAtt, isFresh, isSpareConv, attI
     titleEl.textContent = 'F' + scoredFrame + ' Att' + scoredAtt + leaveLabel;
   }
 
-  // Entry + Ball Roll rows: only on fresh-rack deliveries
+  // 10-Pin row: combined-form case only. Takes the place of Entry/Ball-Roll
+  // for this attempt (Ringing/Flat sets both at once — asking all three
+  // would just be the same question twice).
+  var tenPinRow = document.getElementById('sdp-row-tenpin');
+  if (tenPinRow) tenPinRow.style.display = _sdp.tenPinPending ? '' : 'none';
+
+  // Blocking backdrop — only for the combined form. The confirm() this SDP
+  // is standing in for hasn't advanced the scoring form yet, so the pin
+  // grid underneath must not be tappable until Save/Skip/dismiss resolves
+  // it (see sdCloseAndResume()); the ordinary SDP stays non-blocking.
+  var backdrop = document.getElementById('sdp-backdrop');
+  if (backdrop) backdrop.classList.toggle('sdp-blocking-active', _sdp.tenPinPending);
+
+  // Entry + Ball Roll rows: only on fresh-rack deliveries, and not when the
+  // 10-Pin row above is already covering the same ground for this attempt.
   var entryRow = document.getElementById('sdp-row-entry');
-  if (entryRow) entryRow.style.display = isFresh ? '' : 'none';
+  if (entryRow) entryRow.style.display = (isFresh && !_sdp.tenPinPending) ? '' : 'none';
   var ballRollRow = document.getElementById('sdp-row-ballroll');
-  if (ballRollRow) ballRollRow.style.display = isFresh ? '' : 'none';
+  if (ballRollRow) ballRollRow.style.display = (isFresh && !_sdp.tenPinPending) ? '' : 'none';
 
   // Spare alignment save offer
   var alignSave = document.getElementById('sdp-align-save');
@@ -10196,6 +10338,11 @@ function sdRenderSelections() {
   ['L','M','H'].forEach(function(v) {
     var el = document.getElementById('sdp-revs-' + v);
     if (el) { el.classList.toggle('sel', _sdp.revs === v); el.classList.toggle('teal', false); }
+  });
+  // 10-Pin (combined form)
+  ['ringing','flat'].forEach(function(v) {
+    var el = document.getElementById('sdp-tenpin-' + v);
+    if (el) el.classList.toggle('sel', _sdp.tenPinChoice === v);
   });
   // Entry
   ['high','light','flush','crossover'].forEach(function(v) {
@@ -10229,6 +10376,7 @@ function sdSetField(field, value) {
   if (field === 'marker') _sdp.marker = value;
   else if (field === 'speed')  _sdp.speed  = value;
   else if (field === 'revs')   _sdp.revs   = value;
+  else if (field === 'tenpin') _sdp.tenPinChoice = value;
   else if (field === 'entry')    _sdp.entry    = value;
   else if (field === 'ballroll') _sdp.ballroll = value;
   else if (field === 'miss') {
@@ -10259,9 +10407,13 @@ function sdSave() {
   att.MissDirection    = _sdp.miss    || null;
   att.MissBoards       = (_sdp.miss && _sdp.boards) ? _sdp.boards : null;
   att.ShotDetailLogged = true;
+  // Combined form: the bundled 10-pin ringing/flat decision overrides the
+  // Entry/Ball-Roll pair above with the more specific prompted values —
+  // same fields the standalone resolveTenPin() prompt writes.
+  if (_sdp.tenPinPending) applyTenPinChoice(att, _sdp.tenPinChoice);
   saveAll();
-  sdDismiss();
   haptic && haptic('light');
+  sdCloseAndResume();
 }
 
 function sdSkip() {
@@ -10269,9 +10421,16 @@ function sdSkip() {
   var frame = getFrame(_sdp.frame);
   if (frame) {
     var att = frameAttempts(frame.FrameID).find(function(a) { return a.Attempt === _sdp.attempt; });
-    if (att) { att.ShotDetailLogged = true; saveAll(); }
+    if (att) {
+      att.ShotDetailLogged = true;
+      // tenPinChoice is null here unless the user tapped Ringing/Flat before
+      // Skip — applyTenPinChoice(att, null) assumes flat, same default the
+      // standalone prompt's Skip uses.
+      if (_sdp.tenPinPending) applyTenPinChoice(att, _sdp.tenPinChoice);
+      saveAll();
+    }
   }
-  sdDismiss();
+  sdCloseAndResume();
 }
 
 /* Manual SDP trigger — target icon in the att-nav (Practice Mode only).
@@ -10294,14 +10453,35 @@ function sdOpenManual() {
 }
 
 function sdDismiss() {
+  // X / tap-outside without an explicit Save or Skip. For the combined
+  // form (10-pin decision bundled in), this still needs to resolve the
+  // ambiguity and resume the paused confirm — otherwise the scoring form
+  // is stuck on the un-advanced attempt with no way back in. Assumes flat,
+  // same default Skip uses, since no explicit choice was made.
+  if (_sdp.tenPinPending) {
+    var frame = getFrame(_sdp.frame);
+    var att = frame ? frameAttempts(frame.FrameID).find(function(a) { return a.Attempt === _sdp.attempt; }) : null;
+    if (att) { applyTenPinChoice(att, _sdp.tenPinChoice); saveAll(); }
+  }
+  sdCloseAndResume();
+}
+
+/* Shared tail for sdSave()/sdSkip()/sdDismiss(): closes the SDP sheet and,
+   if it was showing as the combined form (10-pin decision bundled into a
+   paused confirmAttempt()), resumes that confirm now — advances to the
+   next attempt/frame, no second SDP call (already handled above). */
+function sdCloseAndResume() {
   var prompt = document.getElementById('shot-detail-prompt');
   if (prompt) prompt.classList.remove('sdp-open');
-  // Deferred 10-pin prompt fires once the SDP is resolved (saved or dismissed)
-  if (_pendingTenPinAttID != null) {
-    var _pid = _pendingTenPinAttID;
-    _pendingTenPinAttID = null;
-    var _patt = db.attempts.find(function(a) { return a.AttemptID === _pid; });
-    if (_patt) openTenPinPrompt(_patt);
+  var backdrop = document.getElementById('sdp-backdrop');
+  if (backdrop) backdrop.classList.remove('sdp-blocking-active');
+  var wasTenPinPending = _sdp.tenPinPending;
+  _sdp.tenPinPending = false;
+  _sdp.tenPinChoice  = null;
+  if (wasTenPinPending && _pendingConfirmAfterTenPin) {
+    var pending = _pendingConfirmAfterTenPin;
+    _pendingConfirmAfterTenPin = null;
+    finishConfirmAttempt(pending.frame, pending.att, pending.pinfall, true);
   }
 }
 
@@ -11694,6 +11874,18 @@ function navNextAttempt() {
   if (!next) return;
   cancelUndo();
   jumpToPosition(next.frame, next.att);
+}
+
+/* U1 — Attempt transition gesture (LOCKED Option A, Transition/Ball Change
+   Matrix design doc §6). Tapping the A1/A2 badge (fm-att-badge and the
+   normal-mode "Attempt N" label) cycles attempts, reusing the existing
+   navNextAttempt()/jumpToPosition() logic rather than a parallel nav engine.
+   Advances forward while another recorded/live attempt position exists;
+   once at the last one, wraps back to attempt 1 of the current frame.
+   Swipe (Option B) was explicitly rejected for pin-stage tap-conflict risk. */
+function cycleAttemptBadge() {
+  if (getNextAttemptPosition(G.frame, G.attempt)) { navNextAttempt(); return; }
+  if (G.attempt !== 1) { cancelUndo(); jumpToPosition(G.frame, 1); }
 }
 
 /* Jump to a specific frame (tap on scorecard) — defaults to attempt 1.
@@ -21807,6 +21999,10 @@ function buildExportDoc() {
     spareAlignments: (() => {
       try { return JSON.parse(localStorage.getItem(SPARE_ALIGN_KEY) || '[]'); }
       catch(e) { return []; }
+    })(),
+    leaveDiagnosis: (() => {
+      try { return JSON.parse(localStorage.getItem(LEAVE_DIAGNOSIS_KEY) || 'null'); }
+      catch(e) { return null; }
     })()
   };
 }
@@ -22042,6 +22238,9 @@ async function confirmImport() {
     if (parsed.tileOrder) localStorage.setItem('bowlingdb_tile_order', JSON.stringify(parsed.tileOrder));
     // Restore spare alignments (Practice Mode data — full replace wins)
     if (parsed.spareAlignments?.length) localStorage.setItem(SPARE_ALIGN_KEY, JSON.stringify(parsed.spareAlignments));
+    // Restore Leave Diagnosis (Layer 1 reference table — full replace wins,
+    // same as spare alignments; user edits travel with the export)
+    if (parsed.leaveDiagnosis) localStorage.setItem(LEAVE_DIAGNOSIS_KEY, JSON.stringify(parsed.leaveDiagnosis));
 
     // Restore prefs — merge incoming with current (current wins for nulls)
     const incomingPrefs = parsed.prefs || {};
@@ -22143,6 +22342,19 @@ async function confirmImport() {
         const localLeaveIDs = new Set(localAlign.map(a => a.LeaveID));
         const newAlign = parsed.spareAlignments.filter(a => !localLeaveIDs.has(a.LeaveID));
         if (newAlign.length) localStorage.setItem(SPARE_ALIGN_KEY, JSON.stringify([...localAlign, ...newAlign]));
+      } catch(e) {}
+    }
+    // Merge Leave Diagnosis additively by leave key, per side — local
+    // entries win on conflict (same rule as spare alignments above)
+    if (parsed.leaveDiagnosis && (parsed.leaveDiagnosis.right || parsed.leaveDiagnosis.left)) {
+      try {
+        const localDiag = getLeaveDiagnosisTable();
+        ['right','left'].forEach(side => {
+          Object.keys(parsed.leaveDiagnosis[side] || {}).forEach(key => {
+            if (!localDiag[side][key]) localDiag[side][key] = parsed.leaveDiagnosis[side][key];
+          });
+        });
+        saveLeaveDiagnosisTable(localDiag);
       } catch(e) {}
     }
 
@@ -30702,6 +30914,230 @@ function aggregatePocketAngles(gameIDs, handedness) {
 }
 
 /* =============================================================
+   TRANSITION / BALL CHANGE MATRIX — LAYER 1
+   LEAVE_DIAGNOSIS seed table (design doc: BowlingDB_TransitionMatrix_Design,
+   Aug 2026, base v30.100). Phase 1 scope only: seed constant + LH mirror
+   generation + localStorage-backed editable copy + migration path. NOT yet
+   wired into autoWritePocketEntry()/the debrief — POCKET_ANGLE_TABLE above
+   remains the live classifier until Layer 3 (a later phase). This table is
+   read, dry-run only, by the DevKit classification diff report
+   (dkLeaveDiagnosisDiffRun) so old-vs-new can be reviewed before any
+   pipeline switchover.
+
+   Record shape per leave key: { angle, energy, signal, laneRemedy,
+   ballRemedy, confidence, escalation }
+     angle       'high'|'light'|'flush' — existing SDP vocabulary, retained
+     energy      'strong'|'normal'|'depleted' — NEW second axis (§4.1)
+     signal      diagnostic commentary only, never a leave name (existing
+                 POCKET_ANGLE_TABLE rule retained)
+     laneRemedy  first-tier move/speed/axis tip; null where the design doc
+                 gave no explicit lane text for that leave
+     ballRemedy  {read,surface,rg,diff} structured motion-delta codes,
+                 rendered to text only at display time; null where the
+                 design doc gave no explicit ball text for that leave
+     confidence  'vetted'|'user-vetted'|'disputed'|'provisional'
+     escalation  per-leave repeat-threshold override, or null (use the
+                 global default) — OPEN per design doc §5, left null on
+                 every seeded entry until real practice-mode data exists
+   Leave '10' is the one entry that branches: the RH ringing/flat 10-pin
+   already has its own disambiguation source (the existing 10-pin prompt,
+   written to BallRoll/PocketEntry), so it is stored as
+   {variants:{ringing,flat}} instead of a flat record and resolved via
+   leaveDiagnosisTenPinVariant() rather than a second, independent guess.
+   ============================================================= */
+
+const LEAVE_DIAGNOSIS_SEED_VERSION = 1;
+
+const LEAVE_DIAGNOSIS_SEED_RH = {
+  '10': {
+    variants: {
+      ringing: {
+        angle:'high', energy:'strong',
+        signal:'Excess entry angle / retained energy.',
+        laneRemedy:'1 left',
+        ballRemedy:{ read:'earlier', surface:'+', rg:'-', diff:null },
+        confidence:'vetted', escalation:null
+      },
+      flat: {
+        angle:'light', energy:'depleted',
+        signal:'Ball deflected or burned up.',
+        laneRemedy:'small move right / soften',
+        ballRemedy:{ read:'later', surface:'-', rg:'+', diff:null },
+        confidence:'vetted', escalation:null
+      }
+    }
+  },
+  '4': {
+    angle:'high', energy:'normal',
+    signal:'High hit; 2-pin absorbed deflection. Transition tell.',
+    laneRemedy:'slight left', ballRemedy:null,
+    confidence:'vetted', escalation:null
+  },
+  '7': {
+    angle:'light', energy:'depleted',
+    signal:'Too straight, deflected off the 3.',
+    laneRemedy:'right / more angle',
+    ballRemedy:{ read:'earlier', surface:null, rg:null, diff:null },
+    confidence:'vetted', escalation:null
+  },
+  '6-10': {
+    angle:'high', energy:'strong',
+    signal:'Sharp angle; 6 kicked off the deck.',
+    laneRemedy:'1 left / adjust breakpoint', ballRemedy:null,
+    confidence:'vetted', escalation:null
+  },
+  '9': {
+    // USER-VETTED (design doc §2, Table 0): ball driving through the 8-pin,
+    // not splitting 8-9 — was previously classified 'low' in POCKET_ANGLE_TABLE.
+    angle:'high', energy:'strong',
+    signal:'Driving through the 8-pin, not splitting 8-9. Treat as high-flush drive.',
+    laneRemedy:null, ballRemedy:null,
+    confidence:'user-vetted', escalation:null
+  },
+  '3-6-10': {
+    // CORRECTED (was 'high'/"bucket right" in POCKET_ANGLE_TABLE) — standard
+    // RH read is a light/thin pocket hit and a classic transition indicator.
+    angle:'light', energy:'normal',
+    signal:'Thin hit — classic transition indicator.',
+    laneRemedy:'move into oil', ballRemedy:null,
+    confidence:'vetted', escalation:null
+  },
+  '6': {
+    angle:'light', energy:'normal',
+    signal:'Slightly light; lost rightward drive.',
+    laneRemedy:null, ballRemedy:null,
+    confidence:'vetted', escalation:null
+  },
+  '4-7': {
+    // RELABELED — not a split (4 and 7 are vertically adjacent; the app's
+    // own SPLIT_VERT_ADJ agrees). Diagnostic classification unchanged.
+    angle:'high', energy:'strong',
+    signal:'Over-hook, high contact. Not a split (4/7 vertically adjacent).',
+    laneRemedy:null, ballRemedy:null,
+    confidence:'vetted', escalation:null
+  },
+  '3-6': {
+    // NEW RH ENTRY — previously existed only in the LH table; RH fell to
+    // the vague fallback rules in classifyPocketEntry(). Thin hit variant
+    // of 3-6-10.
+    angle:'light', energy:'normal',
+    signal:'Thin hit variant of 3-6-10.',
+    laneRemedy:null, ballRemedy:null,
+    confidence:'vetted', escalation:null
+  },
+  '2': {
+    angle:'high', energy:'strong',
+    signal:'Significant over-hook into the headpin.',
+    laneRemedy:null, ballRemedy:null,
+    confidence:'vetted', escalation:null
+  }
+};
+
+/* Standard pin mirror used everywhere handedness mirroring happens in this
+   file: 10<->7, 6<->4, 3<->2, 9<->8; 1/5 unchanged. */
+const LEAVE_MIRROR_PIN = { 1:1, 2:3, 3:2, 4:6, 5:5, 6:4, 7:10, 8:9, 9:8, 10:7 };
+
+function mirrorLeaveKey(key) {
+  return key.split('-').map(Number).map(p => LEAVE_MIRROR_PIN[p] || p)
+    .sort((a, b) => a - b).join('-');
+}
+
+/* Swaps standalone left/right direction words for the mirrored-handedness
+   copy, case-preserving, single-pass (no double-swap risk). Word-boundary
+   matched so it never touches unrelated substrings. */
+function mirrorLeaveDirectionText(text) {
+  if (!text) return text;
+  return text.replace(/\b(left|right)\b/gi, function(m) {
+    var swapped = m.toLowerCase() === 'left' ? 'right' : 'left';
+    if (m[0] === m[0].toUpperCase()) swapped = swapped[0].toUpperCase() + swapped.slice(1);
+    return swapped;
+  });
+}
+
+function mirrorLeaveDiagnosisRecord(rec) {
+  if (!rec) return rec;
+  if (rec.variants) {
+    var out = { variants:{} };
+    Object.keys(rec.variants).forEach(function(k) { out.variants[k] = mirrorLeaveDiagnosisRecord(rec.variants[k]); });
+    return out;
+  }
+  return {
+    angle: rec.angle, energy: rec.energy,
+    signal: mirrorLeaveDirectionText(rec.signal),
+    laneRemedy: mirrorLeaveDirectionText(rec.laneRemedy),
+    ballRemedy: rec.ballRemedy ? Object.assign({}, rec.ballRemedy) : null,
+    confidence: rec.confidence, escalation: rec.escalation
+  };
+}
+
+/* The LH mirror table is regenerated from the corrected RH table by the
+   standard pin mirror at seed time — never hand-maintained separately
+   (design doc §4.1). */
+function buildLeaveDiagnosisSeed() {
+  var right = LEAVE_DIAGNOSIS_SEED_RH;
+  var left = {};
+  Object.keys(right).forEach(function(key) {
+    left[mirrorLeaveKey(key)] = mirrorLeaveDiagnosisRecord(right[key]);
+  });
+  return { version: LEAVE_DIAGNOSIS_SEED_VERSION, right: right, left: left };
+}
+
+/* Resolve the 10-pin ringing/flat variant for one attempt using the same
+   signals the existing 10-pin prompt already writes (BallRoll/PocketEntry) —
+   never a second, independent guess. Defaults to 'flat', matching
+   autoWritePocketEntry's own default when the prompt is disabled/skipped. */
+function leaveDiagnosisTenPinVariant(att) {
+  if (!att) return 'flat';
+  if (att.BallRoll === 'normal' || att.PocketEntry === 'high') return 'ringing';
+  return 'flat';
+}
+
+/* Look up a leave's diagnosis record. leaveKey = sorted pin-string
+   (e.g. '3-6-10'). att = the attempt record, needed only to resolve the
+   10-pin variant. Returns null (not a guess) when nothing matches —
+   consistent with the app's Sanctioned-null philosophy: unknown ≠ zero. */
+function getLeaveDiagnosis(leaveKey, handedness, att) {
+  var table = getLeaveDiagnosisTable();
+  var side = (handedness === 'left') ? table.left : table.right;
+  var rec = side[leaveKey];
+  if (!rec) return null;
+  if (rec.variants) return rec.variants[leaveDiagnosisTenPinVariant(att)] || null;
+  return rec;
+}
+
+const LEAVE_DIAGNOSIS_KEY = 'bowlingdb_leave_diagnosis';
+
+/* Editable in-app so notes/remedies can be tuned without shipping (design
+   doc §4.1). Seeded on first run or when the seed version increments; a
+   version bump keeps any entry the user has explicitly edited (rec.edited
+   === true) and only reseeds the rest — never a blanket overwrite of user
+   edits. Phase 1 ships version 1 with no prior version, so the "keep user
+   edits" branch is a no-op today but establishes the migration path called
+   for in the design doc. */
+function getLeaveDiagnosisTable() {
+  var stored;
+  try { stored = JSON.parse(localStorage.getItem(LEAVE_DIAGNOSIS_KEY) || 'null'); }
+  catch(e) { stored = null; }
+  if (!stored || stored.version !== LEAVE_DIAGNOSIS_SEED_VERSION) {
+    var fresh = buildLeaveDiagnosisSeed();
+    if (stored && stored.version < LEAVE_DIAGNOSIS_SEED_VERSION) {
+      ['right','left'].forEach(function(side) {
+        Object.keys(stored[side] || {}).forEach(function(key) {
+          if (stored[side][key] && stored[side][key].edited) fresh[side][key] = stored[side][key];
+        });
+      });
+    }
+    try { localStorage.setItem(LEAVE_DIAGNOSIS_KEY, JSON.stringify(fresh)); } catch(e) {}
+    return fresh;
+  }
+  return stored;
+}
+
+function saveLeaveDiagnosisTable(table) {
+  try { localStorage.setItem(LEAVE_DIAGNOSIS_KEY, JSON.stringify(table)); } catch(e) {}
+}
+
+/* =============================================================
    PHASE 2 — CROSS-LEAGUE BASELINE BUILDER
    Computes rolling stats across all leagues, last N sessions.
    ============================================================= */
@@ -33988,6 +34424,121 @@ async function dkStreakDryRun() {
     toast('Streak dry run complete');
   } catch(e) {
     if (result) result.textContent = 'Streak dry run failed:\n' + (e && e.message ? e.message : e) + '\n' + (e && e.stack ? e.stack : '');
+  }
+}
+
+/* ── Leave Diagnosis Classification Diff (read-only) ──────────
+   Design doc §7: "old POCKET_ANGLE_TABLE vs new Layer 1 across all
+   historical att1 leaves — every changed classification listed for
+   review (expected: 3-6-10 flips, 3-6 gains coverage, 9 flips to high)."
+   Scans every non-strike, pocket-hit att1 in the real IDB data (frames
+   1-10, att1 only — F10 att2 is a different attempt slot and out of
+   scope per the literal "att1 leaves" wording), classifies each leave
+   both ways, and tallies per-leave-key old vs new so every changed,
+   newly-covered, and still-uncovered entry can be reviewed before any
+   pipeline switchover. Pure read-only — no writes. */
+async function dkLeaveDiagnosisDiffRun() {
+  var result = document.getElementById('dk-purge-result');
+  if (result) result.textContent = 'Loading scoring data...';
+  try {
+    await loadScoringData();
+    var hand = getPrefs().handedness || 'right';
+    // old POCKET_ANGLE_TABLE vocab (high/low/flat) -> new LEAVE_DIAGNOSIS
+    // vocab (high/light/flush), same mapping autoWritePocketEntry() uses.
+    var angleMap = { high:'high', low:'light', flat:'flush' };
+
+    // Same 3-tier leave resolution used by aggregatePocketAngles() above —
+    // duplicated locally (small, pure) rather than exported, to keep this
+    // dry run self-contained and not add a new shared-function surface
+    // during a design-only-locked / Phase-1-only session.
+    function getLeaveSet(a1) {
+      var standing = new Set();
+      for (var p = 1; p <= 10; p++) {
+        if (a1['PinStart' + p] === 1 && a1['PinDelta' + p] !== 1) standing.add(p);
+      }
+      if (standing.size > 0) return standing;
+      if (a1.LeaveID && db.leaves && db.leaves.length) {
+        var lv = db.leaves.find(function(l){ return l.LeaveID === a1.LeaveID; });
+        if (lv) { for (var p2 = 1; p2 <= 10; p2++) { if (lv['Pin' + p2]) standing.add(p2); } }
+        if (standing.size > 0) return standing;
+      }
+      var anyKnocked = [1,2,3,4,5,6,7,8,9,10].some(function(p3){ return a1['Pin' + p3] === true; });
+      if (anyKnocked) { for (var p4 = 1; p4 <= 10; p4++) { if (!a1['Pin' + p4]) standing.add(p4); } }
+      return standing;
+    }
+
+    var tally = {}; // key -> { label, oldAngle, newAngle, count, changed }
+    var totalAtt1 = 0, changedCount = 0;
+    var beforeMutCheck = JSON.stringify({ attempts:(db.attempts||[]).length, frames:(db.frames||[]).length });
+
+    db.frames.filter(function(f){ return f.FrameNumber >= 1 && f.FrameNumber <= 10; }).forEach(function(f) {
+      var a1 = db.attempts.find(function(a){ return a.FrameID === f.FrameID && a.Attempt === 1; });
+      if (!a1 || a1.Pinfall === null || a1.Pinfall === 10 || a1.Pinfall === 0) return;
+      var leave = getLeaveSet(a1);
+      if (leave.size === 0 || leave.has(1)) return; // no classifiable data, or headpin standing (not a pocket hit)
+      totalAtt1++;
+      var key = Array.from(leave).sort(function(a,b){ return a-b; }).join('-');
+
+      var geom = classifyPocketEntry(leave, hand);
+      var oldAngle = (geom && geom.angle && geom.angle !== 'unknown') ? (angleMap[geom.angle] || geom.angle) : null;
+
+      var diag = getLeaveDiagnosis(key, hand, a1);
+      var newAngle = diag ? diag.angle : null;
+
+      if (!tally[key]) tally[key] = { label: resolveLeaveDisplayName(leave, null), oldAngle:null, newAngle:null, count:0, changed:0 };
+      tally[key].count++;
+      tally[key].oldAngle = oldAngle;
+      tally[key].newAngle = newAngle;
+      if (oldAngle && newAngle && oldAngle !== newAngle) { tally[key].changed++; changedCount++; }
+    });
+
+    var pad = function(s,n){ s = (s==null?'—':String(s)); return s.length>n ? s.slice(0,n) : s+' '.repeat(n-s.length); };
+    var out = [];
+    out.push('LEAVE DIAGNOSIS CLASSIFICATION DIFF — read-only');
+    out.push('old POCKET_ANGLE_TABLE vs new LEAVE_DIAGNOSIS (Layer 1, seed v' + LEAVE_DIAGNOSIS_SEED_VERSION + ')');
+    out.push('Handedness: ' + hand + '   Scope: att1 only, frames 1-10, non-strike pocket hits');
+    out.push('Total att1 leaves scanned: ' + totalAtt1);
+    out.push('');
+    out.push(pad('Leave',10) + pad('Label',18) + pad('Old',8) + pad('New',8) + pad('Count',7) + 'Status');
+
+    var changedRows = [], newCoverageRows = [], unchangedRows = [], oldOnlyRows = [];
+    Object.entries(tally).sort(function(a,b){ return b[1].count - a[1].count; }).forEach(function(entry) {
+      var key = entry[0], v = entry[1];
+      var status;
+      if (v.oldAngle && v.newAngle && v.oldAngle !== v.newAngle) status = 'CHANGED';
+      else if (!v.oldAngle && v.newAngle) status = 'NEW COVERAGE';
+      else if (v.oldAngle && !v.newAngle) status = 'old-only (not in Layer 1 yet)';
+      else if (v.oldAngle && v.newAngle) status = 'unchanged';
+      else status = 'unresolved (neither table)';
+      var row = pad(key,10) + pad(v.label,18) + pad(v.oldAngle,8) + pad(v.newAngle,8) + pad(v.count,7) + status;
+      if (status === 'CHANGED') changedRows.push(row);
+      else if (status === 'NEW COVERAGE') newCoverageRows.push(row);
+      else if (status === 'unchanged') unchangedRows.push(row);
+      else oldOnlyRows.push(row);
+    });
+
+    out.push('');
+    out.push('=== CHANGED (' + changedRows.length + ') — expected: 3-6-10, 9 ===');
+    out = out.concat(changedRows.length ? changedRows : ['  none']);
+    out.push('');
+    out.push('=== NEW COVERAGE (' + newCoverageRows.length + ') — expected: 3-6 ===');
+    out = out.concat(newCoverageRows.length ? newCoverageRows : ['  none']);
+    out.push('');
+    out.push('=== UNCHANGED, both tables agree (' + unchangedRows.length + ') ===');
+    out = out.concat(unchangedRows.length ? unchangedRows : ['  none']);
+    out.push('');
+    out.push('=== NOT YET IN LAYER 1 — still old-table-only (' + oldOnlyRows.length + ') ===');
+    out = out.concat(oldOnlyRows.length ? oldOnlyRows : ['  none']);
+    out.push('');
+    out.push('Historical occurrences whose classification would change: ' + changedCount + ' of ' + totalAtt1);
+
+    var afterMutCheck = JSON.stringify({ attempts:(db.attempts||[]).length, frames:(db.frames||[]).length });
+    out.push('MUTATION CHECK (attempts/frames counts): ' + (beforeMutCheck === afterMutCheck ? 'PASS - no writes' : 'FAIL - dry run mutated scoring data'));
+
+    if (result) result.textContent = out.join('\n');
+    toast('Leave diagnosis diff complete');
+  } catch(e) {
+    if (result) result.textContent = 'Leave diagnosis diff failed:\n' + (e && e.message ? e.message : e) + '\n' + (e && e.stack ? e.stack : '');
   }
 }
 
