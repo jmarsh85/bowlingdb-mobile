@@ -1439,6 +1439,13 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
 }
 .fm-alt-pill.ball1 { background:rgba(255,255,255,0.10); color:#FFFFFF; border:1px solid rgba(255,255,255,0.25); }
 .fm-alt-pill.ball2 { background:rgba(255,215,0,0.12); color:var(--gold); border:1px solid rgba(255,215,0,0.3); }
+.fm-suggest-pill {
+  display:inline-flex; align-items:center; gap:4px; width:fit-content;
+  font-size:9px; font-weight:800; letter-spacing:0.4px;
+  padding:2px 7px; border-radius:20px; cursor:pointer;
+  background:rgba(0,217,217,0.12); color:var(--teal); border:1px solid rgba(0,217,217,0.3);
+  -webkit-tap-highlight-color:transparent;
+}
 
 /* ── Lane Reference Bar ─────────────────────────────────────── */
 .fm-lane-ref {
@@ -3411,6 +3418,7 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
             <button class="fm-nt-btn" id="fm-nt-btn" onclick="toggleNoTap()">NT</button>
             <button class="fm-num-btn" id="fm-num-btn" onclick="fmToggleNumeric()">NUM</button>
             <div class="fm-alt-pill" id="fm-alt-pill" style="display:none"></div>
+            <div class="fm-suggest-pill" id="fm-suggest-pill" style="display:none" onclick="fmApplySuggestedBall()"></div>
             <button class="fm-ref-confirm-btn" id="fm-ref-confirm-btn" onclick="fmRefEditConfirm()">✓ SET</button>
           </div>
         </div>
@@ -4555,6 +4563,10 @@ const G = {
   leave: new Set(),
   // Lane setup
   laneStart: null,
+  // Phase 2 ball-driven seeding: set by fmLoadBoardData() when the current
+  // leave/style has a saved alignment preferring a different ball than
+  // what's equipped. Surfaced as a tap-to-apply chip, never auto-swapped.
+  fmSuggestedBallID: null,
   lanePair: null,
   oddLane: null,
   evenLane: null,
@@ -10503,6 +10515,21 @@ function sdCloseAndResume() {
   }
 }
 
+/* Tap-to-apply for the suggestion pill in Focus Mode: swaps to the ball a
+   saved leave/style profile prefers, only on explicit tap — never
+   automatic, per design decision to avoid surprising a mid-game ball swap
+   the person didn't physically make. */
+function fmApplySuggestedBall() {
+  var ballID = G.fmSuggestedBallID;
+  if (ballID == null) return;
+  if (!db.balls.find(function(b) { return b.BallID === ballID && b.Active !== false; })) return;
+  G.ballID = ballID;
+  G.fmSuggestedBallID = null;
+  renderBallBar();
+  renderFocusModePanel();
+  haptic && haptic('light');
+}
+
 function sdSaveAlignment() {
   // Save current wheel values + marker as the spare alignment for this leave
   var frame = getFrame(_sdp.frame);
@@ -10515,7 +10542,7 @@ function sdSaveAlignment() {
     focalTarget: _sdp.marker || null,
     ballID: att.BallID || null,
     notes: ''
-  });
+  }, inferBallStyle(att.BallID));
   var alignEl = document.getElementById('sdp-align-save');
   if (alignEl) {
     alignEl.textContent = '✓ Setup saved for this spare';
@@ -10799,37 +10826,54 @@ function fmLoadBoardData() {
   //     keyed by the LeaveID detected on att1. Spare line-up is leave-specific
   //     ("I stand differently for a 10-pin than a 7-pin"), not lane-specific,
   //     so it must NOT inherit the lane reference at all.
-  var refSb = null, refTb = null, refSbHalf = false, refTbHalf = false;
+  var refSb = null, refTb = null, refBallSuggestion = null;
   if (!att || att.StartingBoard == null) {
     if (G.attempt === 1) {
       var _parity = currentLaneParity();
       if (_parity) {
         var _ref = getLaneRef();
-        refSb = _ref[_parity].sb;
-        refTb = _ref[_parity].tb;
-        refSbHalf = !!_ref[_parity].sbHalf;
-        refTbHalf = !!_ref[_parity].tbHalf;
+        refSb = _ref[_parity].sbHalf ? _ref[_parity].sb + 0.5 : _ref[_parity].sb;
+        refTb = _ref[_parity].tbHalf ? _ref[_parity].tb + 0.5 : _ref[_parity].tb;
       }
     } else {
       var _a1 = frameAttempts(frame.FrameID).find(function(a) { return a.Attempt === 1; });
       var _leaveID = _a1 ? _a1.LeaveID : null;
       if (_leaveID != null) {
-        var _align = getSpareAlignment(_leaveID);
+        // Ball-driven seeding: pull the profile matching the ball currently
+        // equipped for this attempt (G.ballID, set by autoSelectBall() just
+        // before this runs), not just the leave in isolation — a leave can
+        // have a different SB/TB for a straight vs a hook ball.
+        var _style = inferBallStyle(G.ballID);
+        var _align = getSpareAlignment(_leaveID, _style);
         if (_align) {
           refSb = _align.sb;
           refTb = _align.tb;
-          refSbHalf = false; // spare_alignments stores sb/tb as plain numbers, no half-board flag
-          refTbHalf = false;
+          // Suggested ball differs by style:
+          //  - straight: a dedicated plastic/spare ball rarely changes, so
+          //    the specific ballID picked in the Leaves Screen editor is
+          //    the suggestion.
+          //  - hook: intentionally NOT tied to a per-leave ballID — the
+          //    person doesn't want to tag a specific ball to an individual
+          //    spare here, they want it to intuitively default to whatever
+          //    they're currently using for strikes (G.lastBallAtt1), so it
+          //    tracks ball changes through a league game automatically
+          //    instead of needing every leave re-tagged.
+          if (_style === 'straight') {
+            if (_align.ballID != null && _align.ballID !== G.ballID) refBallSuggestion = _align.ballID;
+          } else if (_style === 'hook') {
+            if (G.lastBallAtt1 != null && G.lastBallAtt1 !== G.ballID) refBallSuggestion = G.lastBallAtt1;
+          }
         }
       }
     }
   }
+  G.fmSuggestedBallID = refBallSuggestion;
 
   var sbVal = (att && att.StartingBoard != null) ? att.StartingBoard
-              : (refSb != null ? (refSbHalf ? refSb + 0.5 : refSb)
+              : (refSb != null ? refSb
               : (G.attempt === 1 && G.lastSB != null ? G.lastSB : (prefs.defaultSB != null ? prefs.defaultSB : 17)));
   var tbVal = (att && att.TargetBoard != null) ? att.TargetBoard
-              : (refTb != null ? (refTbHalf ? refTb + 0.5 : refTb)
+              : (refTb != null ? refTb
               : (G.attempt === 1 && G.lastTB != null ? G.lastTB : (prefs.defaultTB != null ? prefs.defaultTB : 10)));
 
   fmScrollWheelTo(sbDrum, sbVal);
@@ -11527,6 +11571,8 @@ function renderFocusModePanel() {
     }
   }
 
+  var suggestPillEl = document.getElementById('fm-suggest-pill');
+  if (suggestPillEl) suggestPillEl.style.display = 'none'; // repopulated below, after fmLoadBoardData() runs
   var beerRowEl  = document.getElementById('fm-beer-row');
   var beerTextEl = document.getElementById('fm-beer-text');
   var entries = beerLog.filter(function(e) { return e.game === G.gameNum && e.frame === G.frame; });
@@ -11551,6 +11597,21 @@ function renderFocusModePanel() {
 
   if (document.getElementById('fm-sb-drum') && document.getElementById('fm-sb-drum').children.length > 0) {
     fmLoadBoardData();
+  }
+
+  // Populated only after fmLoadBoardData() (just above) has had a chance to
+  // set G.fmSuggestedBallID for the current attempt — doing this earlier in
+  // the function would show the previous attempt's suggestion for one render.
+  var suggestPillEl2 = document.getElementById('fm-suggest-pill');
+  if (suggestPillEl2) {
+    var _suggBallID = G.fmSuggestedBallID;
+    var _suggBall = _suggBallID != null ? db.balls.find(function(b){ return b.BallID === _suggBallID; }) : null;
+    if (_suggBall) {
+      suggestPillEl2.style.display = 'inline-flex';
+      suggestPillEl2.textContent = '\u2192 ' + _suggBall.BallName;
+    } else {
+      suggestPillEl2.style.display = 'none';
+    }
   }
 }
 
@@ -17188,13 +17249,31 @@ function _buildLeavesScreenHTML() {
    Opens from Leaves Screen "Setup" / "⊕ Setup" tap.
    Reads/writes via saveSpareAlignment(). No SDP dependency. */
 var _leaveAlignCurrent = null; // module-level — avoids inline onclick param quoting
+var _leaveAlignStyle = 'hook'; // which tab (straight/hook) is showing
 function openLeaveAlignModal(leaveID) {
   _leaveAlignCurrent = leaveID;
+  _leaveAlignStyle = 'hook';
+  openModal(_leaveAlignRenderBody());
+}
+
+function _leaveAlignSetStyle(style) {
+  _leaveAlignStyle = style;
+  // Re-render in place rather than reopening, so the modal doesn't flash/reset scroll.
+  var body = document.getElementById('modal-body');
+  if (body) body.innerHTML = _leaveAlignRenderBody();
+}
+
+function _leaveAlignRenderBody() {
+  var leaveID = _leaveAlignCurrent;
+  var style = _leaveAlignStyle;
   var lv = typeof leaveID === 'number'
     ? db.leaves.find(function(l) { return l.LeaveID === leaveID; })
     : null;
   var name = lv ? (lv.DisplayName || lv.ShortName || 'Leave') : ('Leave ' + leaveID);
-  var align = getSpareAlignment(leaveID) || {};
+  var align = getSpareAlignment(leaveID, style) || {};
+  // Flag when what we're showing is a legacy record that still applies to
+  // BOTH styles — saving here will split it and limit it to this tab only.
+  var isSharedLegacy = !!(align && align.leaveID != null && !align.style);
 
   // Ball picker options
   var ballOpts = db.balls.filter(function(b) { return b.Active !== false; })
@@ -17204,8 +17283,18 @@ function openLeaveAlignModal(leaveID) {
     }).join('');
   var noBall = (!align.ballID) ? ' selected' : '';
 
-  openModal('<div class="modal-title">' + name + ' Alignment</div>'
-    + '<div style="font-size:12px;color:var(--t3);margin-bottom:16px">Spare setup for this leave</div>'
+  return '<div class="modal-title">' + name + ' Alignment</div>'
+    + '<div style="font-size:12px;color:var(--t3);margin-bottom:12px">Spare setup for this leave</div>'
+
+    + '<div style="display:flex;gap:8px;margin-bottom:12px">'
+      + '<button class="btn ' + (style==='straight'?'btn-primary':'btn-secondary') + '" style="flex:1" '
+        + 'onclick="_leaveAlignSetStyle(\'straight\')">Straight Ball</button>'
+      + '<button class="btn ' + (style==='hook'?'btn-primary':'btn-secondary') + '" style="flex:1" '
+        + 'onclick="_leaveAlignSetStyle(\'hook\')">Hook Ball</button>'
+    + '</div>'
+    + (isSharedLegacy
+        ? '<div style="font-size:11px;color:var(--t3);margin-bottom:12px;line-height:1.5">This setup currently applies to both ball styles. Saving will limit it to ' + (style==='straight'?'Straight':'Hook') + ' only.</div>'
+        : '')
 
     + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">'
       + '<div>'
@@ -17227,12 +17316,15 @@ function openLeaveAlignModal(leaveID) {
     + '</div>'
 
     + '<div style="margin-bottom:12px">'
-      + '<div style="font-size:10px;font-weight:700;color:var(--t3);margin-bottom:4px">BALL (OPTIONAL)</div>'
-      + '<select id="la-ball" style="width:100%;padding:8px;border-radius:8px;border:1px solid var(--border2);'
-        + 'background:var(--bg3);color:var(--t1);font-size:14px;box-sizing:border-box">'
-        + '<option value=""' + noBall + '>— No specific ball —</option>'
-        + ballOpts
-      + '</select>'
+      + (style === 'straight'
+          ? '<div style="font-size:10px;font-weight:700;color:var(--t3);margin-bottom:4px">BALL — the specific ball suggested when this leave comes up straight</div>'
+            + '<select id="la-ball" style="width:100%;padding:8px;border-radius:8px;border:1px solid var(--border2);'
+              + 'background:var(--bg3);color:var(--t1);font-size:14px;box-sizing:border-box">'
+              + '<option value=""' + noBall + '>— No specific ball —</option>'
+              + ballOpts
+            + '</select>'
+          : '<div style="font-size:10px;font-weight:700;color:var(--t3);margin-bottom:4px">BALL</div>'
+            + '<div style="font-size:12px;color:var(--t3);line-height:1.5;padding:8px;background:var(--bg3);border-radius:8px">Hook setups default to whatever you\'re currently striking with — no need to pick one here.</div>')
     + '</div>'
 
     + '<div style="margin-bottom:16px">'
@@ -17251,8 +17343,7 @@ function openLeaveAlignModal(leaveID) {
       + '<button class="btn btn-secondary" style="flex:1" onclick="closeModal()">Cancel</button>'
       + '<button class="btn btn-primary" style="flex:1" '
         + 'onclick="_leaveAlignSave()">Save</button>'
-    + '</div>'
-  );
+    + '</div>';
 }
 
 function _leaveAlignSave() {
@@ -17262,7 +17353,7 @@ function _leaveAlignSave() {
   var tb    = parseFloat(document.getElementById('la-tb')?.value) || null;
   var ballID = parseInt(document.getElementById('la-ball')?.value) || null;
   var notes = (document.getElementById('la-notes')?.value || '').trim();
-  saveSpareAlignment(leaveID, { sb: sb, tb: tb, ballID: ballID, notes: notes });
+  saveSpareAlignment(leaveID, { sb: sb, tb: tb, ballID: ballID, notes: notes }, _leaveAlignStyle);
   closeModal();
   renderLeavesScreen();
   toast('Alignment saved');
@@ -17272,7 +17363,7 @@ function _leaveAlignSave() {
 function _leaveAlignDelete() {
   var leaveID = _leaveAlignCurrent;
   if (leaveID == null) return;
-  deleteSpareAlignment(leaveID);
+  deleteSpareAlignment(leaveID, _leaveAlignStyle);
   closeModal();
   renderLeavesScreen();
   toast('Alignment removed');
@@ -21277,27 +21368,75 @@ function getSpareAlignments() {
   catch(e) { return []; }
 }
 
-function getSpareAlignment(leaveID) {
-  return getSpareAlignments().find(function(r) { return r.leaveID === leaveID; }) || null;
+/* Straight vs hook is inferred from the ball itself — a dedicated plastic/
+   spare ball (Coverstock === 'Plastic' or HookRating 0) is 'straight',
+   anything else is 'hook'. No separate per-ball flag needed. */
+function inferBallStyle(ballID) {
+  if (ballID == null) return null;
+  var ball = db.balls.find(function(b) { return b.BallID === ballID; });
+  if (!ball) return null;
+  return (ball.Coverstock === 'Plastic' || ball.HookRating === 0) ? 'straight' : 'hook';
 }
 
-function saveSpareAlignment(leaveID, patch) {
-  // patch: { sb, tb, focalTarget, ballID, notes } — any subset
+/* Phase 2: a leave can now carry up to two saved setups — one tagged
+   'straight', one tagged 'hook' — instead of exactly one. Records saved
+   before this existed have no `style` field at all; those are treated as
+   a wildcard that matches EITHER style, so every leave you've already set
+   up keeps behaving exactly as before until you explicitly save a second,
+   style-specific profile for it. There's no migration pass — old data is
+   just left alone and only splits the first time you touch it via the
+   Straight/Hook toggle in the Leaves Screen editor. */
+function getSpareAlignment(leaveID, style) {
+  var forLeave = getSpareAlignments().filter(function(r) { return r.leaveID === leaveID; });
+  if (!forLeave.length) return null;
+  if (style) {
+    var exact = forLeave.find(function(r) { return r.style === style; });
+    if (exact) return exact;
+    var legacy = forLeave.find(function(r) { return !r.style; });
+    return legacy || null;
+  }
+  var legacy = forLeave.find(function(r) { return !r.style; });
+  if (legacy) return legacy;
+  return forLeave.slice().sort(function(a, b) {
+    return (b.updatedAt || '').localeCompare(a.updatedAt || '');
+  })[0];
+}
+
+function saveSpareAlignment(leaveID, patch, style) {
+  // patch: { sb, tb, focalTarget, ballID, notes } — any subset.
+  // style: 'straight' | 'hook' | omitted. Omitted means "update/create the
+  // untagged (wildcard) record" — preserves old single-profile behavior for
+  // any caller that hasn't been updated to pass a style yet.
   try {
     var all = getSpareAlignments();
-    var idx = all.findIndex(function(r) { return r.leaveID === leaveID; });
-    var existing = idx >= 0 ? all[idx] : { leaveID: leaveID, sb: null, tb: null,
+    var idx = -1;
+    if (style) {
+      idx = all.findIndex(function(r) { return r.leaveID === leaveID && r.style === style; });
+      // No exact-style record yet — if an untagged legacy one exists for
+      // this leave, promote it to this style rather than creating a dupe.
+      if (idx < 0) idx = all.findIndex(function(r) { return r.leaveID === leaveID && !r.style; });
+    } else {
+      idx = all.findIndex(function(r) { return r.leaveID === leaveID && !r.style; });
+    }
+    var existing = idx >= 0 ? all[idx] : { leaveID: leaveID, style: style || null, sb: null, tb: null,
       focalTarget: null, ballID: null, notes: '' };
     var updated = Object.assign({}, existing, patch, { updatedAt: new Date().toISOString() });
+    if (style) updated.style = style;
     if (idx >= 0) all[idx] = updated; else all.push(updated);
     localStorage.setItem(SPARE_ALIGN_KEY, JSON.stringify(all));
     return updated;
   } catch(e) { console.warn('saveSpareAlignment:', e); return null; }
 }
 
-function deleteSpareAlignment(leaveID) {
+function deleteSpareAlignment(leaveID, style) {
   try {
-    var all = getSpareAlignments().filter(function(r) { return r.leaveID !== leaveID; });
+    // Delete exactly the record getSpareAlignment(leaveID, style) would
+    // have resolved to (exact-style match, else the untagged legacy one),
+    // not every profile for the leave.
+    var target = getSpareAlignment(leaveID, style);
+    var all = getSpareAlignments().filter(function(r) {
+      return !(r.leaveID === leaveID && r.style === (target ? target.style : undefined));
+    });
     localStorage.setItem(SPARE_ALIGN_KEY, JSON.stringify(all));
   } catch(e) { console.warn('deleteSpareAlignment:', e); }
 }
@@ -23595,6 +23734,15 @@ function openSettingsModal() {
         <option value="">— None (keep current ball) —</option>
         ${db.balls.filter(b=>b.Active!==false).map(b=>`<option value="${b.BallID}"${getPrefs().defaultSpareBallID===b.BallID?' selected':''}>${b.BallName}</option>`).join('')}
       </select>
+    </div>
+
+    <!-- ── Spare Alignments (by Leave) ──────────────────────── -->
+    <div class="settings-section">
+      <div class="settings-section-hdr">Spare Alignments
+        <span class="settings-section-hint">Per-leave Straight/Hook board setups — previously only reachable via Stats → All Leaves</span>
+      </div>
+      <button class="btn btn-secondary" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px"
+        onclick="closeModal();navTo('s-leaves')">🎯 Manage Leave Alignments</button>
     </div>
 
     <!-- ── Balls / Centers / Patterns → Dev Mode ──────────── -->
