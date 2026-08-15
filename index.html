@@ -1440,10 +1440,16 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
 .fm-alt-pill.ball1 { background:rgba(255,255,255,0.10); color:#FFFFFF; border:1px solid rgba(255,255,255,0.25); }
 .fm-alt-pill.ball2 { background:rgba(255,215,0,0.12); color:var(--gold); border:1px solid rgba(255,215,0,0.3); }
 .fm-suggest-pill {
-  display:inline-flex; align-items:center; gap:4px; width:fit-content;
+  display:inline-flex; align-items:center; gap:5px; width:fit-content;
   font-size:9px; font-weight:800; letter-spacing:0.4px;
-  padding:2px 7px; border-radius:20px; cursor:pointer;
+  padding:2px 6px 2px 7px; border-radius:20px; cursor:pointer;
   background:rgba(0,217,217,0.12); color:var(--teal); border:1px solid rgba(0,217,217,0.3);
+  -webkit-tap-highlight-color:transparent;
+}
+.fm-suggest-pill-x {
+  display:inline-flex; align-items:center; justify-content:center;
+  width:13px; height:13px; border-radius:50%; font-size:10px; line-height:1;
+  color:var(--teal); opacity:0.65;
   -webkit-tap-highlight-color:transparent;
 }
 
@@ -3418,7 +3424,9 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
             <button class="fm-nt-btn" id="fm-nt-btn" onclick="toggleNoTap()">NT</button>
             <button class="fm-num-btn" id="fm-num-btn" onclick="fmToggleNumeric()">NUM</button>
             <div class="fm-alt-pill" id="fm-alt-pill" style="display:none"></div>
-            <div class="fm-suggest-pill" id="fm-suggest-pill" style="display:none" onclick="fmApplySuggestedBall()"></div>
+            <div class="fm-suggest-pill" id="fm-suggest-pill" style="display:none">
+              <span id="fm-suggest-pill-label" onclick="fmApplySuggestedBall()"></span><span class="fm-suggest-pill-x" onclick="fmDismissSuggestedBall(event)">&times;</span>
+            </div>
             <button class="fm-ref-confirm-btn" id="fm-ref-confirm-btn" onclick="fmRefEditConfirm()">✓ SET</button>
           </div>
         </div>
@@ -4567,6 +4575,9 @@ const G = {
   // leave/style has a saved alignment preferring a different ball than
   // what's equipped. Surfaced as a tap-to-apply chip, never auto-swapped.
   fmSuggestedBallID: null,
+  // 'frame-attempt' key of the last chip dismissal (fmDismissSuggestedBall) —
+  // scoped, not a global mute; see that function for why.
+  fmSuggestDismissedFor: null,
   lanePair: null,
   oddLane: null,
   evenLane: null,
@@ -10530,6 +10541,17 @@ function fmApplySuggestedBall() {
   haptic && haptic('light');
 }
 
+/* Dismiss the suggestion for THIS frame+attempt only, without applying it —
+   scoped rather than a global mute so the chip still shows up normally on
+   the next attempt/leave it's relevant for. */
+function fmDismissSuggestedBall(event) {
+  if (event) event.stopPropagation();
+  G.fmSuggestDismissedFor = G.frame + '-' + G.attempt;
+  var el = document.getElementById('fm-suggest-pill');
+  if (el) el.style.display = 'none';
+  haptic && haptic('light');
+}
+
 function sdSaveAlignment() {
   // Save current wheel values + marker as the spare alignment for this leave
   var frame = getFrame(_sdp.frame);
@@ -11606,9 +11628,14 @@ function renderFocusModePanel() {
   if (suggestPillEl2) {
     var _suggBallID = G.fmSuggestedBallID;
     var _suggBall = _suggBallID != null ? db.balls.find(function(b){ return b.BallID === _suggBallID; }) : null;
-    if (_suggBall) {
+    // A dismiss is scoped to the specific frame+attempt it was dismissed on
+    // (not a global mute) — moving to a different attempt re-shows the
+    // suggestion if it still applies there.
+    var _dismissed = (G.fmSuggestDismissedFor === (G.frame + '-' + G.attempt));
+    if (_suggBall && !_dismissed) {
       suggestPillEl2.style.display = 'inline-flex';
-      suggestPillEl2.textContent = '\u2192 ' + _suggBall.BallName;
+      var _labelEl = document.getElementById('fm-suggest-pill-label');
+      if (_labelEl) _labelEl.textContent = '\u2192 ' + _suggBall.BallName;
     } else {
       suggestPillEl2.style.display = 'none';
     }
@@ -32983,7 +33010,7 @@ const DKM_MAP_KEY= 'bowlingdb_imap_v1';
 var _dk = {
   visible:       false,
   panelOpen:     false,
-  tab:           'log',
+  tab:           'entries',
   cat:           'bug',
   activeFilter:  'all',
   tapCount:      0,
@@ -33760,7 +33787,8 @@ function dkAskAI(entryId) {
     openModal('<div class="modal-title">🤖 AI Analysis</div>'+
       '<div style="font-size:12px;color:var(--t2);margin-bottom:10px;font-style:italic">'+_escHtml(entry.msg)+'</div>'+
       '<div style="font-size:13px;color:var(--t1);line-height:1.6;white-space:pre-wrap">'+_escHtml(text)+'</div>'+
-      '<button class="btn btn-secondary" onclick="closeModal()" style="margin-top:12px;width:100%">Close</button>');
+      '<button class="btn btn-primary" onclick="navigator.clipboard&&navigator.clipboard.writeText('+JSON.stringify(text)+').then(function(){toast(\'Copied\')})" style="margin-top:12px;width:100%">📋 Copy</button>'+
+      '<button class="btn btn-secondary" onclick="closeModal()" style="margin-top:8px;width:100%">Close</button>');
   }).catch(function(err){ toast('AI request failed: '+err.message); });
 }
 
