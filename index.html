@@ -2317,6 +2317,17 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
 .sc-act-btn.stats-btn { color:var(--purple); border-color:rgba(157,78,221,0.3); }
 .sc-act-btn.ai-btn    { color:var(--gold);   border-color:rgba(255,215,0,0.3); }
 .sc-act-btn:active { transform:scale(0.95); }
+/* Series Reflect — one badge object, two isolated sections */
+.sc-act-btn.reflect-split { display:flex; padding:0; overflow:hidden; color:var(--lilac); border-color:rgba(196,168,240,0.3); }
+.reflect-half { padding:5px 10px; }
+.reflect-half:active { background:rgba(196,168,240,0.15); }
+.reflect-half + .reflect-half { border-left:1px solid var(--border1); }
+/* Reflect modal controls */
+.modal-label { font-size:12px; font-weight:700; color:var(--t2); margin-bottom:8px; display:flex; align-items:center; }
+.btn-pill { padding:7px 13px; border-radius:20px; font-size:12px; font-weight:600; cursor:pointer;
+  border:1px solid var(--border1); background:var(--bg2); color:var(--t2); transition:all 0.12s; }
+.btn-pill:active { transform:scale(0.96); }
+.btn-pill-sel { background:rgba(196,168,240,0.18); border-color:var(--lilac); color:var(--lilac); font-weight:700; }
 
 /* ── Game row with edit action ──────────────────────────────── */
 .game-row-wrap { position:relative; }
@@ -3096,14 +3107,14 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
 
   <!-- HEADER -->
   <div id="hdr">
-    <div id="hdr-back" onclick="navBack()">
+    <div id="hdr-back" onclick="handleBackTap()">
       <svg width="11" height="19" viewBox="0 0 11 19" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M9.5 1.5L1.5 9.5L9.5 17.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </div>
     <div id="hdr-title" onclick="hdrTitleTap()"><span class="brand">Bowling</span>DB</div>
     <div id="hdr-title-popover"></div>
-    <span id="hdr-build-ref">v30.57 · 2026-07-17</span>
+    <span id="hdr-build-ref">v30.119 · 2026-08-22</span>
     <div id="hdr-right">
       <div class="hdr-icon-btn" id="hdr-delete-game-btn" onclick="confirmDeleteGame(G.gameID)" title="Delete Game" style="display:none">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -3231,6 +3242,20 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
       <div id="grp-ball-row" style="display:none;padding:4px 12px 6px"></div>
     </div>
 
+    <!-- BAKER FORMAT — own navTo() screen (v30.119 structural rework, §5).
+         Mirrors the s-group/grp pattern: one persistent container whose
+         innerHTML is swapped by JS between setup / scoring / complete
+         views, driven by _bakerSetup / _bakerState. Data storage stays
+         in localStorage (bowlingdb_baker_sessions) — deliberately NOT
+         wired into db.series/games/frames/attempts. -->
+    <div id="s-baker" class="screen" data-title="Baker Game">
+      <div class="sec-header">
+        <span class="sec-title">🎳 Baker Game</span>
+        <button class="btn btn-ghost btn-sm" style="margin-top:0;font-size:12px" onclick="bakerViewHistory()">History</button>
+      </div>
+      <div id="baker-body"></div>
+    </div>
+
     <!-- LEAGUES -->
     <div id="s-leagues" class="screen" data-title="Leagues">
       <div class="sec-header">
@@ -3286,6 +3311,14 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
             cursor:pointer;padding:4px 6px;border-radius:8px;
             font-size:12px;font-weight:700;color:var(--gold);
             border:1px solid rgba(255,215,0,0.3)">↺ H</button>
+          <button id="series-baker-btn" title="Start Baker Game" onclick="bakerOpenSetup({leagueID:G.leagueID})"
+            style="display:none;background:rgba(196,168,240,0.12);border:1px solid rgba(196,168,240,0.3);
+            cursor:pointer;padding:5px 9px;border-radius:8px;
+            font-size:12px;font-weight:700;color:var(--lilac)">🎳 Baker</button>
+          <button id="series-baker-hist-btn" title="Baker Game History" onclick="bakerViewHistory()"
+            style="display:none;background:transparent;border:1px solid var(--border2);
+            cursor:pointer;padding:5px 8px;border-radius:8px;
+            font-size:12px;font-weight:700;color:var(--t3)">🕘</button>
           <button class="add-btn" onclick="openNewSeriesModal()"></button>
         </div>
       </div>
@@ -3333,7 +3366,17 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
     <div id="s-tournament-series" class="screen">
       <div class="sec-header">
         <span class="sec-title" id="tourn-series-title">Tournament</span>
-        <button class="add-btn" onclick="openNewTournamentSeriesModal()"></button>
+        <div style="display:flex;align-items:center;gap:6px">
+          <button id="tourn-baker-btn" title="Start Baker Game" onclick="bakerOpenSetup({tournamentID:G.tournamentID})"
+            style="display:none;background:rgba(196,168,240,0.12);border:1px solid rgba(196,168,240,0.3);
+            cursor:pointer;padding:5px 9px;border-radius:8px;
+            font-size:12px;font-weight:700;color:var(--lilac)">🎳 Baker</button>
+          <button id="tourn-baker-hist-btn" title="Baker Game History" onclick="bakerViewHistory()"
+            style="display:none;background:transparent;border:1px solid var(--border2);
+            cursor:pointer;padding:5px 8px;border-radius:8px;
+            font-size:12px;font-weight:700;color:var(--t3)">🕘</button>
+          <button class="add-btn" onclick="openNewTournamentSeriesModal()"></button>
+        </div>
       </div>
       <div id="tourn-series-list"></div>
     </div>
@@ -3790,6 +3833,14 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
       <div id="leaves-content" style="padding:0 0 32px"></div>
     </div>
 
+    <!-- LANE LIBRARY (v30.112, Phase A) -->
+    <div id="s-lane-library" class="screen" data-title="Lane Library">
+      <div id="lane-lib-content" style="padding:0 0 32px"></div>
+    </div>
+    <div id="s-lane-detail" class="screen" data-title="Lane Detail">
+      <div id="lane-detail-content" style="padding:0 0 32px"></div>
+    </div>
+
     <!-- ALL GAMES BROWSER -->
     <div id="s-games" class="screen" data-title="All Games">
       <div class="sec-header">
@@ -4108,6 +4159,14 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
           <button onclick="dkLineageDryRun()" style="width:100%;padding:9px;background:#4a2c94;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px">Lineage Dry Run (read-only)</button>
           <button onclick="dkStreakDryRun()" style="width:100%;padding:9px;background:#1e6b52;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px">Streak Dry Run (read-only)</button>
           <button onclick="dkLeaveDiagnosisDiffRun()" style="width:100%;padding:9px;background:#8a5a1e;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px">Leave Diagnosis Diff — old vs new (read-only)</button>
+          <button onclick="dkLeaveSideClusteringDryRun()" style="width:100%;padding:9px;background:#1e6b8a;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px">Leave-Side Clustering Dry Run (read-only)</button>
+          <button onclick="dkLaneHookRatingDryRun()" style="width:100%;padding:9px;background:#8a1e6b;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px">Lane Hook Rating Dry Run (read-only)</button>
+          <button onclick="dkSbtbComparisonDryRun()" style="width:100%;padding:9px;background:#6b8a1e;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px">SB/TB Comparison Dry Run (read-only)</button>
+          <button onclick="dkLanePrepBriefPreview()" style="width:100%;padding:9px;background:#8a4a1e;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px">Lane Prep Brief Preview — no AI call (read-only)</button>
+          <button onclick="dkUpdateGamesSincePrompt()" style="width:100%;padding:9px;background:#4a1e8a;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px">Update Games-Since-Prompt (real write)</button>
+          <button onclick="dkBallChangeRetrospectiveDryRun()" style="width:100%;padding:9px;background:#2c5f8a;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px">Ball-Change Retrospective (read-only)</button>
+          <button onclick="dkBallChangeStep2DryRun()" style="width:100%;padding:9px;background:#1e8a5f;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px">Ball-Change Step 2 Join (read-only)</button>
+          <button onclick="dkBallMotionProfileInspector()" style="width:100%;padding:9px;background:#6c47ff;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px">Ball Motion Profile Inspector (read-only)</button>
           <button onclick="dkStreakDryRunDetail()" style="width:100%;padding:9px;background:#1a4d3a;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px">Streak Detail — League 129 (read-only)</button>
           <button onclick="dkStreakRollingDryRun()" style="width:100%;padding:9px;background:#164a52;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px">Rolling Avg Streak — League 129 (read-only)</button>
           <button onclick="dkStreakRollingDryRun('lineage', 1)" style="width:100%;padding:9px;background:#164a52;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px">Rolling Avg Streak — Lineage 1 (read-only)</button>
@@ -4131,12 +4190,152 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
 
 <script>
 /* =============================================================
+   COACHING ENGINE — NORTH STAR REFERENCE (maintain this block!)
+   Last updated: v30.117, 2026-08-16.
+   ─────────────────────────────────────────────────────────────
+   This is the durable objectives anchor for the whole Lane
+   Library / Ball-Change Retrospective / Lane Hook Rating /
+   Coaching Matrix effort. It lives in the shipped code (not just
+   session history) so intent survives context resets. UPDATE
+   THIS BLOCK whenever a design decision locks, changes, or a new
+   piece ships — treat it as living documentation, not a changelog.
+
+   OVERALL GOAL: turn raw scoring data (leaves, balls, boards,
+   lanes) into actionable, personalized coaching signal — "what
+   should I do differently, right now, on THIS lane, with what's
+   in my bag" — grounded entirely in this bowler's own history,
+   never generic advice.
+
+   FOUR LAYERS:
+   Layer 1 — ACTUAL diagnosis of what a leave means. Source:
+     POCKET_ANGLE_TABLE (legacy) -> LEAVE_DIAGNOSIS (current,
+     editable, user-vetted). Three axes:
+       - angle (high/light/flush)        LOCKED, vetted per-leave
+       - energy (strong/normal/depleted) LOCKED, vetted per-leave
+       - side (left/right/mixed/center)  LOCKED v30.114, deterministic
+   Layer 2 — PREDICTED ball motion from specs alone (RG, Diff,
+     Coverstock, CoreType, current surface prep). ballMotionProfile().
+     LOCKED v30.113. Never stored, computed on demand.
+   Layer 3 — spec-driven diagnostic MATRIX: leave -> inferred cause
+     -> recommended lane/ball adjustment. Currently exists only as
+     reference tables (LEAVE_DIAGNOSIS remedy fields), not yet a
+     standalone callable engine.
+   Layer 3b — empirical OUTCOME MODEL: "what has actually worked
+     before," independent of spec predictions. Delta-based (RG/
+     Diff/cover-friction direction of change between from-ball and
+     to-ball), not literal-ball-identity based, so lessons survive
+     arsenal turnover. Step 1 (spec-independent outcome grading)
+     LOCKED & shipped v30.113 — ballChangeRetrospective(). Step 2
+     (compound-key join against Layer 2 deltas) LOCKED & shipped
+     v30.115 — ballChangeStep2Join(); bucketing = deltaDir x
+     triggerLeaveSide (2 axes), resolved against real population
+     counts rather than guessed (see Open Decisions history below).
+
+   DERIVED CROSS-LAYER TOOLS:
+   - Ball-Change Retrospective (Steps 1+2) — lane-side-aware
+     true-change detection (frame parity) + outcome grading +
+     spec-delta lens. LOCKED & shipped v30.113/v30.115.
+     ballChangeRetrospective() / ballChangeStep2Join(). ~771
+     events / 338 games / ~31/41/28% split; Step 2: 9 of 12
+     deltaDir x triggerLeaveSide cells clear n>=15 on the full
+     real backup.
+   - Lane Hook Rating — Layer 1 actual vs Layer 2 expected gap,
+     per lane. Shipped v30.114 as laneHookRating(). Sign
+     convention TENTATIVE (positive = "reading hot") — person
+     deferred the final call; shipped as a first pass. Still
+     DevKit-dry-run-only, not wired to any user-facing screen.
+   - SB/TB Comparison — att1 (strike line vs personal baseline =
+     lane-behavior signal) + att2 (spare execution vs saved Spare
+     Alignment default = execution-consistency signal). LOCKED &
+     shipped v30.116 as sbtbStrikeLineComparison() /
+     sbtbSpareExecutionComparison(), gated to 'user'-tier
+     StartingBoardSource/TargetBoardSource by default. DATA-
+     MATURITY GAP: source tiers shipped 2026-08-15 (v30.112); the
+     reference backup used to validate predates that (2026-08-12),
+     so gated real numbers are sparse/empty until fresher data
+     accumulates. Structurally validated via requireUserTier=false.
+   - Note-category AI-derivation helper — suggests a category/
+     subcategory for a freeform Lane Library note against the
+     locked 4-category taxonomy (Lane Condition / Ball Reaction /
+     Execution / Equipment). LOCKED & shipped v30.117 as
+     llDeriveNoteCategory() / llApplyDerivedCategory(). Writes
+     derivedCategory/derivedSubcategory — SEPARATE fields, never
+     overwrites a user's own category/subcategory tags.
+   - Lane Prep Brief — AI-summarized standing prompt combining
+     Lane Library notes + Ball-Change Retrospective + Lane Hook
+     Rating + SB/TB Comparison for one lane. LOCKED & shipped
+     v30.117 as llGeneratePrepBrief() (context assembly +
+     prompting validated against real data; live AI call itself
+     needs an on-device key to test). Games-played cadence (9
+     games / 3 series default via cooldownGames), snooze state
+     machine escalating 20 -> 50 -> 100 games (llSnoozeLanePrompt,
+     capped at level 3) + independent paused flag
+     (llSetLanePromptPaused). llBriefDue() is the single gate
+     check; llUpdateGamesSincePrompt() advances counters
+     idempotently. NOT YET wired to any actual screen/notification
+     — engine only, review/approve philosophy like every other AI
+     tool in this app (nothing auto-applies).
+
+   PHASE STATUS: A (Lane Library core) shipped v30.112. B (Ball-
+   Change Retrospective Step 1, Layer 2) shipped v30.113. C (leave-
+   side clustering, Lane Hook Rating, Step 2 join) shipped v30.114/
+   v30.115. D (SB/TB Comparison, note-category AI helper, Lane Prep
+   Brief) shipped v30.116/v30.117. Every engine in the design doc's
+   original checklist now exists and is callable — none of it is
+   wired into user-facing screens beyond Lane Library's own list/
+   detail views and DevKit dry-run tools. UI wiring, on-device
+   testing, and real-world review of the tentative pieces (Lane
+   Hook Rating sign, Lane Prep Brief tone/usefulness) are the
+   natural next phase.
+
+   GATING / DATA-QUALITY RULES THAT APPLY THROUGHOUT:
+   - Individual-lane granularity requires n>=15-20 recorded att1
+     leaves at that specific lane (LL_LEAVE_MIN); falls back to
+     pair-level display below that.
+   - Everything is computed on demand from source data — nothing
+     in this whole system is pre-aggregated/cached in a store,
+     except Lane Library's own notes + prompt-state (genuine user
+     data, not derived stats).
+   - Open Play games are excluded from numeric/statistical
+     aggregation throughout (notes still seed from them).
+   - Two-step outcome-model discipline: Step 1 (pure outcome
+     grading) must never be mixed with Step 2 (spec-delta lens) —
+     grade first, interpret second, always as separate passes.
+   - AI-derived suggestions (note categories, Lane Prep Brief text)
+     never auto-apply and never overwrite user-authored fields —
+     review/approve only, consistent with every other AI tool here.
+
+   REAL-DATA COVERAGE CAVEATS (still true, permanent ceilings on
+   OLD history — new data collected going forward is unaffected):
+   - Lane-level historical backfill covers only ~20.5% of games
+     (204/997) — most historical games have LaneStart=0, a legacy
+     import sentinel with no recoverable series-level fallback.
+   - SB/TB source tiers (StartingBoardSource/TargetBoardSource)
+     shipped 2026-08-15 (v30.112) — zero historical attempts
+     before that date carry them, so gated SB/TB comparisons need
+     fresh post-v30.112 data before they say anything trustworthy.
+
+   OPEN DECISIONS (deliberately unresolved — revisit before locking):
+   - Lane Hook Rating exact scale/sign — shipped as a first pass
+     (person's call: "your call for now"), needs real-world review
+     before any UI relies on it
+   - Center/lane-specific segmentation of Retrospective + Outcome
+     Model — deferred until whole-dataset rules are validated
+   - Energy-axis inference & escalation threshold — needs 3-5
+     practice-mode sessions with U5/U6 instrumentation
+   - U5 att2 seed-persistence — still PENDING on-device verification
+   - A 3rd Step 2 bucketing axis (trigger-leave angle/energy) was
+     tested and produces mostly sub-15 cells on the current
+     dataset — revisit once more Ball-Change history accumulates
+   ============================================================= */
+
+/* =============================================================
    DATA STORE
    ============================================================= */
 const STORE_KEY = 'bowlingdb_v2';
 // Scoring tables live in IndexedDB (large); reference data in localStorage (small)
 const IDB_NAME   = 'BowlingDB';
-const IDB_VER    = 2;
+const IDB_VER    = 4; // v4 (v30.118): + recalledContext store (Series Reflect)
 const IDB_STORES = ['series','games','frames','attempts'];
 
 /* ── Long-press utility (500ms, touch-based, iOS safe) ── */
@@ -4171,6 +4370,20 @@ function openIDB() {
       // v2: ball image blob cache
       if (!idb.objectStoreNames.contains('ballImages'))
         idb.createObjectStore('ballImages', { keyPath: 'BallID' });
+      // v3 (v30.112): Lane Library — per Center + INDIVIDUAL lane record.
+      // LaneKey = CenterID + ':' + LaneNumber. Holds notes + Phase D
+      // standing-prompt state only; numeric stats are computed live, never
+      // stored. NOT part of IDB_STORES (scoring-only) — survives scoring
+      // clears/imports on purpose, like ballImages.
+      if (!idb.objectStoreNames.contains('laneLibrary'))
+        idb.createObjectStore('laneLibrary', { keyPath: 'LaneKey' });
+      // v4 (v30.118): Series Reflect — user-recalled context (Session/Frames
+      // flows). Polymorphic eventRef, keyPath 'id' (deterministic string,
+      // e.g. 'rc_series_119' / 'rc_frame_355_1'). NOT part of IDB_STORES
+      // (scoring-only) — survives scoring-data clears/imports on purpose,
+      // same precedent as laneLibrary.
+      if (!idb.objectStoreNames.contains('recalledContext'))
+        idb.createObjectStore('recalledContext', { keyPath: 'id' });
     };
     req.onsuccess = e => {
       _idb = e.target.result;
@@ -4624,7 +4837,7 @@ const LOCK_BUFFER = 1;
    ============================================================= */
 const ROOT_SCREENS = ['s-home','s-leagues','s-open','s-tournaments','s-stats','s-tb-sessions','s-notap','s-ai-chat'];
 
-const SCORING_SCREENS = new Set(['s-series','s-tournament-series','s-game-select','s-scoring','s-game-complete','s-stats','s-games','s-league-report','s-handicap-tb','s-handicap-league','s-tb-sessions','s-performance']);
+const SCORING_SCREENS = new Set(['s-series','s-tournament-series','s-game-select','s-scoring','s-game-complete','s-stats','s-games','s-league-report','s-handicap-tb','s-handicap-league','s-tb-sessions','s-performance','s-lane-library','s-lane-detail']);
 
 async function navTo(screenId, opts={}) {
   toastDismiss(); // clear any stuck toast on navigation
@@ -4698,9 +4911,12 @@ async function navTo(screenId, opts={}) {
       's-stats': renderStats,
       's-performance': renderPerformanceScreen,
       's-leaves': renderLeavesScreen,
+      's-lane-library': renderLaneLibrary,
+      's-lane-detail': () => {},  // rendered by llOpenLane, no re-render needed
       's-games': renderGamesList,
       's-league-report': renderLeagueReport,
       's-group': renderGroupScreen,
+      's-baker': renderBakerScreen,
       's-tb-sessions': renderTBSessions,
       's-tb-games': renderTBGames,
       's-notap': renderNoTapList,
@@ -4721,6 +4937,18 @@ function navBack() {
   const prev = G.screenHistory.pop();
   if (prev) navTo(prev, { back:true });
   else navTo('s-home', { back:true });
+}
+
+/* Header back button — guards against silently losing an in-progress
+   Baker game (localStorage-only until Finish, so a stray back-tap would
+   otherwise discard it with no confirmation). Every other screen behaves
+   exactly as before. */
+function handleBackTap() {
+  if (getCurrentScreen() === 's-baker' && typeof _bakerState !== 'undefined' && _bakerState && !_bakerState.complete) {
+    if (!confirm('Leave this Baker game? Your progress will be lost unless you finish it.')) return;
+    _bakerState = null;
+  }
+  navBack();
 }
 
 /* =============================================================
@@ -7633,6 +7861,11 @@ function openLanePairGames(seriesID, event) {
 
 function renderSeriesList() {
   const el = document.getElementById('series-list');
+  const currentLeague = db.leagues.find(l=>l.LeagueID===G.leagueID);
+  const bakerBtn = document.getElementById('series-baker-btn');
+  if (bakerBtn) bakerBtn.style.display = currentLeague?.BakerFormat ? 'block' : 'none';
+  const bakerHistBtn = document.getElementById('series-baker-hist-btn');
+  if (bakerHistBtn) bakerHistBtn.style.display = currentLeague?.BakerFormat ? 'block' : 'none';
   const mySeries = db.series.filter(s=>s.LeagueID===G.leagueID)
     .sort((a,b)=>new Date(b.DateBowled)-new Date(a.DateBowled));
 
@@ -7769,6 +8002,10 @@ function renderSeriesList() {
       </div>
       <div class="series-card-actions">
         <div class="sc-act-btn stats-btn" onclick="openSeriesStatsModal(${s.SeriesID});event.stopPropagation()">📊 Stats</div>
+        ${scores.length ? `<div class="sc-act-btn reflect-split">
+          <span class="reflect-half" onclick="openReflectSessionModal(${s.SeriesID});event.stopPropagation()">🗒️ Session</span>
+          <span class="reflect-half" onclick="openReflectFramesModal(${s.SeriesID});event.stopPropagation()">Frames</span>
+        </div>` : ''}
         ${scores.length ? `<div class="sc-act-btn ai-btn" onclick="openSeriesDebriefModal(${s.SeriesID});event.stopPropagation()">🤖 Debrief</div>` : ''}
         <div class="sc-act-btn edit" onclick="openEditSeriesModal(${s.SeriesID});event.stopPropagation()">⋯</div>
       </div>
@@ -8407,6 +8644,8 @@ function blankAttempt(id, fid, fn, gn, gid, an) {
   const a = { AttemptID:id, FrameID:fid, FrameNumber:fn, GameNumber:gn, GameID:gid, Attempt:an,
     Pinfall:null, LeaveID:null, BallID:null, BSK_Progressive:null, AttemptNotes:'',
     StartingBoard:null, TargetBoard:null,
+    StartingBoardSource:null, // 'auto'|'prompted'|'user' — SB write tier, mirrors PocketEntrySource (v30.112)
+    TargetBoardSource:null,   // 'auto'|'prompted'|'user' — TB write tier (v30.112)
     // Practice Mode shot detail fields (Phase 1 — all nullable, written only by shot detail panel)
     FocalTarget:null,       // 'dots'|'arrows'|'downlane'|'pins'
     ShotSpeed:null,         // 'S'|'M'|'F'
@@ -10721,6 +10960,14 @@ function fmInitWheels() {
   tbDrum.parentNode.replaceChild(tbNew, tbDrum);
   sbNew.addEventListener('scroll', function() { fmOnWheelScroll('sb'); }, { passive: true });
   tbNew.addEventListener('scroll', function() { fmOnWheelScroll('tb'); }, { passive: true });
+  // v30.112 — mark drum as user-touched (scroll alone can't distinguish a
+  // programmatic fmScrollWheelTo from a finger drag; these events can).
+  sbNew.addEventListener('touchstart',  function() { _fmBoardTouched.sb = true; }, { passive: true });
+  tbNew.addEventListener('touchstart',  function() { _fmBoardTouched.tb = true; }, { passive: true });
+  sbNew.addEventListener('pointerdown', function() { _fmBoardTouched.sb = true; });
+  tbNew.addEventListener('pointerdown', function() { _fmBoardTouched.tb = true; });
+  sbNew.addEventListener('wheel',       function() { _fmBoardTouched.sb = true; }, { passive: true });
+  tbNew.addEventListener('wheel',       function() { _fmBoardTouched.tb = true; }, { passive: true });
   // Re-scroll after DOM replace
   fmScrollWheelTo(sbNew, sbBase);
   fmScrollWheelTo(tbNew, tbBase);
@@ -10734,6 +10981,7 @@ function fmSetHalfToggle(type, on) {
 function fmToggleHalf(type) {
   var btn = document.getElementById('fm-' + type + '-half');
   if (!btn) return;
+  _fmBoardTouched[type] = true; // v30.112 — explicit user tap
   var nowOn = btn.classList.toggle('on');
   // Update G.last* immediately
   var drumId = (type === 'sb') ? 'fm-sb-drum' : 'fm-tb-drum';
@@ -10758,6 +11006,15 @@ function fmScrollWheelTo(drum, value) {
 }
 
 var FM_WHEEL_PAD = 18; // must match .fm-wheel-pad height in CSS
+
+// v30.112 — SB/TB write-tier touch tracking. True once the user has
+// physically interacted with a drum (touch/pointer/wheel) or its half-toggle
+// since the last programmatic seed; fmLoadBoardData resets both on every
+// attempt load. Drives StartingBoardSource/TargetBoardSource ('user' vs
+// 'auto') so a seeded-but-never-touched wheel value is distinguishable from
+// a deliberately thrown one (design doc sec.3.6 prerequisite; protects the
+// still-PENDING U5 att2 seed-persistence case).
+var _fmBoardTouched = { sb: false, tb: false };
 
 function fmGetWheelValue(drumId) {
   var drum = document.getElementById(drumId);
@@ -10805,6 +11062,15 @@ function fmSaveBoardData() {
   // SB/TB always enabled (v30.56) — save whenever a value is present.
   att.StartingBoard = (sbBase != null) ? (sbHalf ? sbBase + 0.5 : sbBase) : null;
   att.TargetBoard   = (tbBase != null) ? (tbHalf ? tbBase + 0.5 : tbBase) : null;
+  // v30.112 — SB/TB write tiers (mirrors PocketEntrySource/BallRollSource).
+  // 'user' only when this drum/half-toggle was physically touched since the
+  // last programmatic seed; otherwise 'auto'. Never downgrades an existing
+  // 'user' tier — a later programmatic re-save (e.g. reload scroll settle)
+  // must not relabel a deliberately thrown value as seeded.
+  att.StartingBoardSource = (att.StartingBoard == null) ? null
+    : (_fmBoardTouched.sb ? 'user' : (att.StartingBoardSource === 'user' ? 'user' : 'auto'));
+  att.TargetBoardSource   = (att.TargetBoard == null) ? null
+    : (_fmBoardTouched.tb ? 'user' : (att.TargetBoardSource === 'user' ? 'user' : 'auto'));
   saveAll();
 
   // A manual bottom-row edit on the FRESH-RACK attempt (att1) is a live
@@ -10835,6 +11101,10 @@ function fmSaveBoardData() {
 function fmLoadBoardData() {
   var frame = getFrame(G.frame);
   if (!frame) return;
+  // v30.112 — every attempt load reseeds the drums programmatically; reset
+  // the touch flags so a save fired by the seed itself grades as 'auto'.
+  _fmBoardTouched.sb = false;
+  _fmBoardTouched.tb = false;
   var att = frameAttempts(frame.FrameID).find(function(a) { return a.Attempt === G.attempt; });
   var sbDrum = document.getElementById('fm-sb-drum');
   var tbDrum = document.getElementById('fm-tb-drum');
@@ -18624,6 +18894,17 @@ function openTournamentModal(id) {
         <div class="oe-btn${isEdit&&t.NoTap?'':' on'}" id="tm-notap-off" onclick="setTournNoTap(false)">Off</div>
         <div class="oe-btn${isEdit&&t.NoTap?' on':''}" id="tm-notap-on"  onclick="setTournNoTap(true)">✦ On</div>
       </div></div>
+    <div class="fgroup"><label class="flabel">Baker Format <span style="color:var(--lilac);font-size:11px">(rotating team scorecard)</span></label>
+      <div class="odd-even-toggle">
+        <div class="oe-btn${isEdit&&t.BakerFormat?'':' on'}" id="tm-baker-off" onclick="setTournBaker(false)">Off</div>
+        <div class="oe-btn${isEdit&&t.BakerFormat?' on':''}" id="tm-baker-on"  onclick="setTournBaker(true)">🎳 On</div>
+      </div>
+      <div id="tm-baker-teamsize" style="display:${isEdit&&t.BakerFormat?'block':'none'};margin-top:8px">
+        <select class="finput" id="tm-baker-size">
+          <option value="2"${(t?.BakerTeamSize||2)===2?' selected':''}>2 Bowlers (odd/even frames)</option>
+          <option value="5"${t?.BakerTeamSize===5?' selected':''}>5 Bowlers (2 frames each)</option>
+        </select>
+      </div></div>
     ${isEdit?`<div class="fgroup"><label class="flabel">Status</label>
       <div class="odd-even-toggle">
         <div class="oe-btn${!t.Archived?' on':''}" id="tm-arch-no"  onclick="this.classList.add('on');document.getElementById('tm-arch-yes').classList.remove('on')">Active</div>
@@ -18633,6 +18914,7 @@ function openTournamentModal(id) {
     <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
   `);
   window._tournNoTap = t?.NoTap||false;
+  window._tournBaker = t?.BakerFormat||false;
   setTimeout(()=>document.getElementById('tm-name')?.focus(), 350);
 }
 
@@ -18640,6 +18922,14 @@ function setTournNoTap(on) {
   window._tournNoTap = on;
   document.getElementById('tm-notap-off')?.classList.toggle('on', !on);
   document.getElementById('tm-notap-on')?.classList.toggle('on',   on);
+}
+
+function setTournBaker(on) {
+  window._tournBaker = on;
+  document.getElementById('tm-baker-off')?.classList.toggle('on', !on);
+  document.getElementById('tm-baker-on')?.classList.toggle('on',   on);
+  const sizeEl = document.getElementById('tm-baker-teamsize');
+  if (sizeEl) sizeEl.style.display = on ? 'block' : 'none';
 }
 
 function saveTournament(id) {
@@ -18651,19 +18941,24 @@ function saveTournament(id) {
   const notes    = document.getElementById('tm-notes')?.value.trim()||'';
   const noTap    = !!(window._tournNoTap);
   window._tournNoTap = false;
+  const bakerFormat = !!(window._tournBaker);
+  const bakerTeamSize = parseInt(document.getElementById('tm-baker-size')?.value) || 2;
+  window._tournBaker = false;
   if (!db.tournaments) db.tournaments = [];
   if (id) {
     const t = db.tournaments.find(x=>x.TournamentID===id);
     if (t) {
       t.TournamentName=name; t.CenterID=centerID; t.DateStart=date;
       t.GamesPerRound=gps; t.Notes=notes; t.NoTap=noTap;
+      t.BakerFormat=bakerFormat; t.BakerTeamSize=bakerTeamSize;
       t.Archived = document.getElementById('tm-arch-yes')?.classList.contains('on')||false;
     }
     saveDB(); closeModal(); renderTournamentList(); toast('Tournament updated!');
   } else {
     const newID = db.ids.tournament++;
     db.tournaments.push({ TournamentID:newID, TournamentName:name, CenterID:centerID,
-      DateStart:date, GamesPerRound:gps, Notes:notes, Archived:false, NoTap:noTap });
+      DateStart:date, GamesPerRound:gps, Notes:notes, Archived:false, NoTap:noTap,
+      BakerFormat:bakerFormat, BakerTeamSize:bakerTeamSize });
     saveDB(); closeModal(); renderTournamentList(); toast('Tournament created!');
   }
 }
@@ -18713,6 +19008,10 @@ function renderTournamentSeriesList() {
   if (!t) { el.innerHTML=''; return; }
   const titleEl = document.getElementById('tourn-series-title');
   if (titleEl) titleEl.textContent = t.TournamentName;
+  const bakerBtn = document.getElementById('tourn-baker-btn');
+  if (bakerBtn) bakerBtn.style.display = t.BakerFormat ? 'block' : 'none';
+  const bakerHistBtn = document.getElementById('tourn-baker-hist-btn');
+  if (bakerHistBtn) bakerHistBtn.style.display = t.BakerFormat ? 'block' : 'none';
 
   const mySeries = db.series
     .filter(s=>s.TournamentID===G.tournamentID)
@@ -18802,6 +19101,17 @@ function handleTournSeriesCardTap(event, seriesID) {
   G.noTap        = s?.NoTap || false;
   if (s?.BallID) G.ballID = s.BallID;
   if (s?.LanePair) { G.lanePair = s.LanePair; G.laneStart = s.LaneStart || null; }
+
+  // v30.119 fix (§2.4 bug 2 / §5.4): a Baker-format round must not fall
+  // into the regular personal scoring flow — route it to the Baker
+  // screen instead (resumes/reviews if a game for this round already
+  // exists, otherwise opens setup scoped to this round).
+  const t = (db.tournaments||[]).find(x=>x.TournamentID===G.tournamentID);
+  if (t?.BakerFormat) {
+    bakerHandleRoundTap(seriesID);
+    return;
+  }
+
   navTo('s-game-select');
 }
 
@@ -18995,6 +19305,18 @@ function openLeagueModal(id) {
         <span class="flabel" style="margin:0">Sport Bowling</span>
       </label>
     </div>
+    <div class="fgroup">
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+        <input type="checkbox" id="ml-baker" style="width:16px;height:16px;accent-color:var(--lilac)" ${l?.BakerFormat?'checked':''} onchange="document.getElementById('ml-baker-teamsize').style.display=this.checked?'block':'none'">
+        <span class="flabel" style="margin:0">🎳 Baker Format Available</span>
+      </label>
+      <div id="ml-baker-teamsize" style="display:${l?.BakerFormat?'block':'none'};margin-top:8px">
+        <select class="finput" id="ml-baker-size">
+          <option value="2"${(l?.BakerTeamSize||2)===2?' selected':''}>2 Bowlers (odd/even frames)</option>
+          <option value="5"${l?.BakerTeamSize===5?' selected':''}>5 Bowlers (2 frames each)</option>
+        </select>
+      </div>
+    </div>
     <!-- ── Season support fields (v30.41) — all optional ── -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
       <div class="fgroup"><label class="flabel">Start Date <span style="opacity:.6;font-weight:400">(optional)</span></label>
@@ -19046,6 +19368,8 @@ function saveLeague(id) {
   const notes = document.getElementById('ml-notes').value.trim();
   const handicap = document.getElementById('ml-handicap').checked;
   const sport = document.getElementById('ml-sport').checked;
+  const bakerFormat = document.getElementById('ml-baker').checked;
+  const bakerTeamSize = parseInt(document.getElementById('ml-baker-size')?.value) || 2;
   const startDate = document.getElementById('ml-startdate').value || null;
   const endDate = document.getElementById('ml-enddate').value || null;
   const sancRaw = document.getElementById('ml-sanctioned').value;
@@ -19067,6 +19391,7 @@ function saveLeague(id) {
       l.LeagueName=name; l.TeamName=teamName; l.CenterID=cid; l.GamesPerSeries=gps; l.DayOfBowling=day;
       l.Weeks=weeks; l.WeeklyDues=dues; l.DefaultBallID=ballID; l.DefaultSpareBallID=spareBallID; l.Notes=notes;
       l.Handicap=handicap; l.Sport=sport;
+      l.BakerFormat=bakerFormat; l.BakerTeamSize=bakerTeamSize;
       // A manual date/sanctioned edit is a deliberate correction - if the league
       // already had an auto-derived season tag, let it recompute against the
       // new dates next time it's touched rather than keeping a stale tag.
@@ -19085,6 +19410,7 @@ function saveLeague(id) {
     const newLeague = { LeagueID:newId, LeagueName:name, TeamName:teamName, CenterID:cid, GamesPerSeries:gps,
       DayOfBowling:day, Weeks:weeks, WeeklyDues:dues, DefaultBallID:ballID, DefaultSpareBallID:spareBallID, Notes:notes,
       Active:true, Handicap:handicap, Sport:sport, Archived:false,
+      BakerFormat:bakerFormat, BakerTeamSize:bakerTeamSize,
       StartDate:startDate, EndDate:endDate, Sanctioned:sanctioned, SeasonID:null, SeasonSource:null,
       LineageID:null, LineageSource:null };
     if (lineageChanged && lineageRaw) { newLeague.LineageID = parseInt(lineageRaw); newLeague.LineageSource = 'user'; }
@@ -19449,6 +19775,2402 @@ function commitSeriesLaneRemap() {
   saveAll(); closeModal();
   if (s.TournamentID) { renderTournamentSeriesList(); } else { renderSeriesList(); }
   toast(`Series updated — lane assignments remapped for ${games.length} game${games.length!==1?'s':''}`);
+}
+
+/* =============================================================
+   LANE LIBRARY (v30.112 — Phase A, per Lane Library design doc)
+   ─────────────────────────────────────────────────────────────
+   IDB store 'laneLibrary' keyed per Center + INDIVIDUAL lane
+   (LaneKey = CenterID + ':' + LaneNumber) with a derived pairKey
+   ("7,8" style, most recently seen) for rollup views. Individual
+   lane is the base unit — leagues record pairs, results happen
+   on lanes. The store persists ONLY notes + Phase D standing-
+   prompt state; every numeric stat is computed live on screen
+   load, never stored ("derived, not stale").
+   Historical backfill derives each game's individual lane via
+   computeGameLaneForNumber() (series lane-remap fix), raising
+   coverage far above the 18.9% of games with LaneStart stored.
+   Note seeding is idempotent — de-duped by source gameID/seriesID
+   (mirrors the Layer 1 seed-version pattern).
+   ============================================================= */
+var LL_LEAVE_MIN = 15; // individual-lane stats threshold (att1 recorded leaves)
+var LL_TAXONOMY = {
+  'Lane Condition': ['oil breakdown','carrydown','dry-early'],
+  'Ball Reaction':  ['reading early','reading late','over-hooking','under-hooking'],
+  'Execution':      ['line adjustment','physical game','mental game'],
+  'Equipment':      ['ball choice','surface','inserts','shoes','tape','other']
+};
+var _llCache = null;      // in-memory copy of the laneLibrary store
+var _llCurrentKey = null; // LaneKey currently open in the detail screen
+
+function llNormalizePair(pairStr) {
+  if (!pairStr) return null;
+  var parts = String(pairStr).split(/[,\-]/).map(Number).filter(function(n){ return !isNaN(n) && n > 0; });
+  if (parts.length < 2) return null;
+  parts.sort(function(a,b){ return a-b; });
+  return parts[0] + ',' + parts[1];
+}
+function llLaneKey(centerID, lane) { return centerID + ':' + lane; }
+
+function llIsOpenPlaySeries(s) {
+  // Open Play is excluded from Lane Library numeric stats (design §3.1) —
+  // ball selection/leave data there isn't representative of league play.
+  // Notes from open play may still appear in the log.
+  return s.GameType === 'Open' || s.LeagueID == 0 || s.LeagueID === '0';
+}
+
+/* Walk series → games and derive the individual lane for every game where
+   it's knowable. Returns { laneKey: { CenterID, LaneNumber, pairKey,
+   pairDate, gameIDs:[], games:[] } }. Traversal discipline: games are found
+   via SeriesID, never via denormalized fields on deeper tables. */
+function llDeriveHistory() {
+  var out = {};
+  db.series.forEach(function(s) {
+    if (s.CenterID == null) return;
+    var games = db.games.filter(function(g){ return g.SeriesID === s.SeriesID; });
+    games.forEach(function(g) {
+      var pairRaw = g.LanePair || s.LanePair;
+      var lane = (g.LaneStart != null && g.LaneStart !== '') ? Number(g.LaneStart)
+               : computeGameLaneForNumber(pairRaw, s.LaneStart, g.GameNumber);
+      if (!lane || isNaN(lane)) return;
+      var key = llLaneKey(s.CenterID, lane);
+      var rec = out[key];
+      if (!rec) {
+        rec = out[key] = { CenterID: s.CenterID, LaneNumber: lane, pairKey: null, pairDate: null, gameIDs: [], games: [] };
+      }
+      rec.gameIDs.push(g.GameID);
+      rec.games.push({ game: g, series: s });
+      var pk = llNormalizePair(pairRaw);
+      if (pk) {
+        var d = s.DateBowled || '';
+        if (rec.pairDate === null || d >= rec.pairDate) { rec.pairKey = pk; rec.pairDate = d; }
+      }
+    });
+  });
+  return out;
+}
+
+async function llLoadAll() {
+  _llCache = await idbGetAll('laneLibrary');
+  return _llCache;
+}
+
+/* Idempotent sync: upsert a laneLibrary row for every Center+lane derivable
+   from history, refresh pairKey, and seed notes from historical game/series
+   Notes fields. Safe to run on every screen load — de-dupe is by source
+   record id (gameID / seriesID per lane). Also serves as forward sync for
+   games recorded since the last visit. */
+async function llSyncFromHistory() {
+  var hist = llDeriveHistory();
+  if (!_llCache) await llLoadAll();
+  var byKey = {};
+  _llCache.forEach(function(r){ byKey[r.LaneKey] = r; });
+  var dirty = [];
+
+  Object.keys(hist).forEach(function(key) {
+    var h = hist[key];
+    var rec = byKey[key];
+    var changed = false;
+    if (!rec) {
+      rec = { LaneKey: key, CenterID: h.CenterID, LaneNumber: h.LaneNumber, pairKey: h.pairKey,
+              notes: [],
+              // Phase D standing-prompt state — seeded with design defaults now
+              cooldownGames: 9, gamesSincePrompt: 0, paused: false };
+      byKey[key] = rec; _llCache.push(rec); changed = true;
+    } else if (h.pairKey && rec.pairKey !== h.pairKey) {
+      rec.pairKey = h.pairKey; changed = true;
+    }
+    if (!Array.isArray(rec.notes)) { rec.notes = []; changed = true; }
+
+    // Seed game-level notes at this game's derived lane (de-dupe by gameID).
+    // deletedSeedIDs is the tombstone list: a user-deleted seeded note must
+    // NOT resurrect on the next idempotent sync (same bug class as the
+    // idbPutAll-is-upsert-only phantom-record invariant).
+    if (!Array.isArray(rec.deletedSeedIDs)) rec.deletedSeedIDs = [];
+    var tomb = {};
+    rec.deletedSeedIDs.forEach(function(id){ tomb[id] = true; });
+    var seededGameIDs = {};
+    var seededSeriesIDs = {};
+    rec.notes.forEach(function(n){
+      if (n.gameID   != null) seededGameIDs[n.gameID] = true;
+      if (n.seriesID != null && n.gameID == null) seededSeriesIDs[n.seriesID] = true;
+    });
+    h.games.forEach(function(gs) {
+      var g = gs.game, s = gs.series;
+      if (g.Notes && String(g.Notes).trim() && !seededGameIDs[g.GameID] && !tomb['g' + g.GameID]) {
+        rec.notes.push({ id: 'g' + g.GameID, ts: (s.DateBowled || new Date().toISOString().slice(0,10)),
+          text: String(g.Notes).trim(), category: null, subcategory: null, source: 'user',
+          gameID: g.GameID, seriesID: s.SeriesID });
+        seededGameIDs[g.GameID] = true; changed = true;
+      }
+      // Series-level notes describe the pair session; seed once per lane
+      if (s.Notes && String(s.Notes).trim() && !seededSeriesIDs[s.SeriesID] && !tomb['s' + s.SeriesID + '_' + rec.LaneNumber]) {
+        rec.notes.push({ id: 's' + s.SeriesID + '_' + rec.LaneNumber, ts: (s.DateBowled || new Date().toISOString().slice(0,10)),
+          text: String(s.Notes).trim(), category: null, subcategory: null, source: 'user',
+          seriesID: s.SeriesID });
+        seededSeriesIDs[s.SeriesID] = true; changed = true;
+      }
+    });
+    if (changed) dirty.push(rec);
+  });
+
+  if (dirty.length) await idbPutAll('laneLibrary', dirty);
+  return dirty.length;
+}
+
+/* Live numeric stats for a set of laneKeys (one lane, or both lanes of a
+   pair for the below-threshold fallback). League + Tournament games blended;
+   Open Play excluded. Traverses Game → Frames → Attempts via IDs only. */
+function llLaneStats(laneKeys) {
+  var hist = llDeriveHistory();
+  var entries = [];
+  laneKeys.forEach(function(k){ if (hist[k]) entries.push(hist[k]); });
+  var gamePairs = [];
+  entries.forEach(function(h){ h.games.forEach(function(gs){ if (!llIsOpenPlaySeries(gs.series)) gamePairs.push(gs); }); });
+  var gameIDs = {};
+  gamePairs.forEach(function(gs){ gameIDs[gs.game.GameID] = true; });
+
+  var scores = gamePairs.map(function(gs){ return gs.game.FinalScore; })
+    .filter(function(x){ return x != null && x > 0; });
+  var total = scores.reduce(function(a,b){ return a+b; }, 0);
+  var avg  = scores.length ? Math.floor(total / scores.length) : null; // Math.floor invariant
+  var high = scores.length ? Math.max.apply(null, scores) : null;
+
+  // Frame/attempt traversal (built per call; dataset is small enough)
+  var frameIDs = {};
+  db.frames.forEach(function(f){ if (gameIDs[f.GameID]) frameIDs[f.FrameID] = true; });
+  var ballCounts = {}, leaveCounts = {}, leaveN = 0;
+  db.attempts.forEach(function(a) {
+    if (!frameIDs[a.FrameID]) return;
+    if (a.Attempt !== 1) return;
+    if (a.BallID != null) ballCounts[a.BallID] = (ballCounts[a.BallID] || 0) + 1;
+    if (a.LeaveID != null) { leaveCounts[a.LeaveID] = (leaveCounts[a.LeaveID] || 0) + 1; leaveN++; }
+  });
+  var topBallID = null, topBallN = 0;
+  Object.keys(ballCounts).forEach(function(id){ if (ballCounts[id] > topBallN) { topBallN = ballCounts[id]; topBallID = Number(id); } });
+  var topLeaves = Object.keys(leaveCounts).map(function(id){ return { id: Number(id), n: leaveCounts[id] }; })
+    .sort(function(a,b){ return b.n - a.n; }).slice(0, 3);
+
+  return { games: scores.length, avg: avg, high: high,
+           topBallID: topBallID, topBallN: topBallN, topLeaves: topLeaves, leaveN: leaveN };
+}
+
+/* =============================================================
+   LANE HOOK RATING (v30.114, Phase C, Lane Library design doc
+   §3.4). The gap between Layer 1's ACTUAL leave-angle distribution
+   at a lane and Layer 2's EXPECTED motion from the ball(s) actually
+   thrown there. Gated by the same 15-leave threshold as the rest
+   of the Lane Library. Computed on demand, never stored.
+   ─────────────────────────────────────────────────────────────
+   SIGN CONVENTION (first-pass — person deferred final call, flag
+   for review against more on-lane experience): positive rating =
+   more high-angle/over-hook leaves than the thrown ball's specs
+   alone predict, labeled "reading hot" (lane offering less
+   resistance than the ball's rating would suggest, so it finishes
+   higher/earlier than expected). Negative = more light/flush
+   leaves than predicted, labeled "playing loose" (lane holding
+   the shot straighter/longer than the ball's specs would suggest).
+   ============================================================= */
+var LHR_ANGLE_WEIGHT = { high: 1, flush: 0, light: -1 };
+var LHR_LABEL_THRESHOLD = 0.3; // |rating| below this reads as "baseline / no clear signal"
+
+function laneHookRating(laneKeys) {
+  var hist = llDeriveHistory();
+  var entries = [];
+  laneKeys.forEach(function(k){ if (hist[k]) entries.push(hist[k]); });
+  var gamePairs = [];
+  entries.forEach(function(h){ h.games.forEach(function(gs){ if (!llIsOpenPlaySeries(gs.series)) gamePairs.push(gs); }); });
+  var gameIDs = {};
+  gamePairs.forEach(function(gs){ gameIDs[gs.game.GameID] = true; });
+
+  var frameIDs = {};
+  db.frames.forEach(function(f){ if (gameIDs[f.GameID]) frameIDs[f.FrameID] = true; });
+
+  var hand = getPrefs().handedness || 'right';
+  var angleSum = 0, angleN = 0;
+  var ballCounts = {};
+
+  function lhrStandingSet(a1) {
+    var standing = new Set();
+    for (var p = 1; p <= 10; p++) { if (a1['PinStart' + p] === 1 && a1['PinDelta' + p] !== 1) standing.add(p); }
+    if (standing.size > 0) return standing;
+    if (a1.LeaveID && db.leaves && db.leaves.length) {
+      var lv = db.leaves.find(function(l){ return l.LeaveID === a1.LeaveID; });
+      if (lv) { for (var p2 = 1; p2 <= 10; p2++) { if (lv['Pin' + p2]) standing.add(p2); } }
+      if (standing.size > 0) return standing;
+    }
+    var anyKnocked = [1,2,3,4,5,6,7,8,9,10].some(function(p3){ return a1['Pin' + p3] === true; });
+    if (anyKnocked) { for (var p4 = 1; p4 <= 10; p4++) { if (!a1['Pin' + p4]) standing.add(p4); } }
+    return standing;
+  }
+
+  db.attempts.forEach(function(a) {
+    if (!frameIDs[a.FrameID]) return;
+    if (a.Attempt !== 1) return;
+    if (a.BallID != null) ballCounts[a.BallID] = (ballCounts[a.BallID] || 0) + 1;
+    if (a.Pinfall === null || a.Pinfall === 10 || a.Pinfall === 0) return;
+    var standing = lhrStandingSet(a);
+    if (standing.size === 0 || standing.has(1)) return;
+    var geom = classifyPocketEntry(standing, hand);
+    var angleMap = { high: 'high', low: 'light', flat: 'flush' };
+    var angle = (geom && geom.angle && geom.angle !== 'unknown') ? (angleMap[geom.angle] || geom.angle) : null;
+    if (angle == null || LHR_ANGLE_WEIGHT[angle] === undefined) return;
+    angleSum += LHR_ANGLE_WEIGHT[angle];
+    angleN++;
+  });
+
+  if (angleN < LL_LEAVE_MIN) return null; // below the individual-lane gate
+
+  var actualScore = angleSum / angleN;
+
+  // Expected side — usage-weighted totalHookDerived of balls thrown at this
+  // lane, normalized against the bowler's own arsenal average/range (Layer 2).
+  var arsenalProfiles = (db.balls || []).map(ballMotionProfile).filter(function(p){ return p && p.totalHookDerived != null; });
+  if (!arsenalProfiles.length) return { n: angleN, actualScore: actualScore, expectedScore: null, rating: null, label: 'insufficient ball specs' };
+  var arsenalVals = arsenalProfiles.map(function(p){ return p.totalHookDerived; });
+  var arsenalAvg = arsenalVals.reduce(function(a,b){ return a + b; }, 0) / arsenalVals.length;
+  var arsenalMin = Math.min.apply(null, arsenalVals), arsenalMax = Math.max.apply(null, arsenalVals);
+  var arsenalRange = (arsenalMax - arsenalMin) || 1;
+
+  var weightedSum = 0, weightedN = 0;
+  Object.keys(ballCounts).forEach(function(ballID) {
+    var ball = (db.balls || []).find(function(b){ return b.BallID == ballID; });
+    var profile = ball ? ballMotionProfile(ball) : null;
+    if (!profile || profile.totalHookDerived == null) return;
+    weightedSum += profile.totalHookDerived * ballCounts[ballID];
+    weightedN += ballCounts[ballID];
+  });
+  if (!weightedN) return { n: angleN, actualScore: actualScore, expectedScore: null, rating: null, label: 'no ball data at this lane' };
+
+  var laneBallAvg = weightedSum / weightedN;
+  var expectedScore = Math.max(-1, Math.min(1, (laneBallAvg - arsenalAvg) / (arsenalRange / 2)));
+  var rating = actualScore - expectedScore;
+  var label = (rating > LHR_LABEL_THRESHOLD) ? 'reading hot' : (rating < -LHR_LABEL_THRESHOLD) ? 'playing loose' : 'baseline';
+
+  return { n: angleN, actualScore: actualScore, expectedScore: expectedScore, rating: rating, label: label };
+}
+
+/* =============================================================
+   SB/TB COMPARISON (v30.116, Phase D, Lane Library design doc
+   §3.6). Two independent lenses, gated to StartingBoardSource
+   === 'user' / TargetBoardSource === 'user' by default — this
+   specifically excludes seeded-but-never-touched values, the
+   exact concern (U5 att2 seed persistence) that motivated the
+   source tiers shipped in v30.112. Both computed on demand,
+   never stored.
+   ─────────────────────────────────────────────────────────────
+   att1 (strike line) — actual SB/TB at a lane vs. this bowler's
+   OWN personal baseline everywhere else. A lane-behavior signal:
+   "am I playing this lane differently than I normally do."
+   att2 (spare execution) — actual SB/TB thrown for a leave at a
+   lane vs. the saved Spare Alignment default for that leave. An
+   execution-consistency signal: "am I hitting my intended spare
+   line, or drifting."
+   Built together per the locked design since they answer
+   different questions and share no computation.
+
+   DATA-MATURITY NOTE: source tiers shipped 2026-08-15 (v30.112).
+   The reference backup used to validate this session predates
+   that (exported 2026-08-12) — zero attempts carry
+   StartingBoardSource/TargetBoardSource yet, so gated ('user'-
+   tier-only) real numbers are necessarily sparse/empty today.
+   Both functions accept requireUserTier=false for a structural
+   mechanics check against ungated historical data; re-validate
+   with requireUserTier=true (the default) once real user-tier
+   throws accumulate post-v30.112.
+   ============================================================= */
+function sbtbStrikeLineComparison(laneKeys, requireUserTier) {
+  requireUserTier = (requireUserTier !== false);
+  var hist = llDeriveHistory();
+  var laneGameIDs = {};
+  laneKeys.forEach(function(k) {
+    var h = hist[k];
+    if (!h) return;
+    h.games.forEach(function(gs){ if (!llIsOpenPlaySeries(gs.series)) laneGameIDs[gs.game.GameID] = true; });
+  });
+  var laneFrameIDs = {}, allFrameIDs = {};
+  db.frames.forEach(function(f) {
+    allFrameIDs[f.FrameID] = f.GameID;
+    if (laneGameIDs[f.GameID]) laneFrameIDs[f.FrameID] = true;
+  });
+
+  function collect(inLane) {
+    var sbVals = [], tbVals = [];
+    db.attempts.forEach(function(a) {
+      if (a.Attempt !== 1) return;
+      if (!allFrameIDs.hasOwnProperty(a.FrameID)) return;
+      var isInLane = !!laneFrameIDs[a.FrameID];
+      if (isInLane !== inLane) return;
+      var sbOK = a.StartingBoard != null && (!requireUserTier || a.StartingBoardSource === 'user');
+      var tbOK = a.TargetBoard != null && (!requireUserTier || a.TargetBoardSource === 'user');
+      if (sbOK) sbVals.push(a.StartingBoard);
+      if (tbOK) tbVals.push(a.TargetBoard);
+    });
+    return { sbVals: sbVals, tbVals: tbVals };
+  }
+
+  var lane = collect(true);
+  var baseline = collect(false);
+  function avg(arr) { return arr.length ? arr.reduce(function(a,b){ return a + b; }, 0) / arr.length : null; }
+
+  var laneSB = avg(lane.sbVals), laneTB = avg(lane.tbVals);
+  var baseSB = avg(baseline.sbVals), baseTB = avg(baseline.tbVals);
+
+  return {
+    requireUserTier: requireUserTier,
+    laneN: { sb: lane.sbVals.length, tb: lane.tbVals.length },
+    baselineN: { sb: baseline.sbVals.length, tb: baseline.tbVals.length },
+    laneAvg: { sb: laneSB, tb: laneTB },
+    baselineAvg: { sb: baseSB, tb: baseTB },
+    delta: {
+      sb: (laneSB != null && baseSB != null) ? Math.floor((laneSB - baseSB) * 10) / 10 : null,
+      tb: (laneTB != null && baseTB != null) ? Math.floor((laneTB - baseTB) * 10) / 10 : null
+    }
+  };
+}
+
+function sbtbSpareExecutionComparison(laneKeys, requireUserTier) {
+  requireUserTier = (requireUserTier !== false);
+  var hist = llDeriveHistory();
+  var laneGameIDs = {};
+  laneKeys.forEach(function(k) {
+    var h = hist[k];
+    if (!h) return;
+    h.games.forEach(function(gs){ if (!llIsOpenPlaySeries(gs.series)) laneGameIDs[gs.game.GameID] = true; });
+  });
+  var laneFrameIDs = {};
+  db.frames.forEach(function(f){ if (laneGameIDs[f.GameID]) laneFrameIDs[f.FrameID] = true; });
+
+  var alignments = {};
+  (db.spareAlignments || []).forEach(function(sa){ alignments[sa.leaveID] = sa; });
+
+  var byLeave = {};
+  db.attempts.forEach(function(a) {
+    if (a.Attempt !== 2) return;
+    if (!laneFrameIDs[a.FrameID]) return;
+    if (a.LeaveID == null) return;
+    var sbOK = a.StartingBoard != null && (!requireUserTier || a.StartingBoardSource === 'user');
+    var tbOK = a.TargetBoard != null && (!requireUserTier || a.TargetBoardSource === 'user');
+    if (!sbOK && !tbOK) return;
+    if (!byLeave[a.LeaveID]) byLeave[a.LeaveID] = { sbVals: [], tbVals: [] };
+    if (sbOK) byLeave[a.LeaveID].sbVals.push(a.StartingBoard);
+    if (tbOK) byLeave[a.LeaveID].tbVals.push(a.TargetBoard);
+  });
+
+  function avg(arr) { return arr.length ? arr.reduce(function(a,b){ return a + b; }, 0) / arr.length : null; }
+
+  var results = [];
+  Object.keys(byLeave).forEach(function(leaveID) {
+    var data = byLeave[leaveID];
+    var align = alignments[leaveID];
+    var actualSB = avg(data.sbVals), actualTB = avg(data.tbVals);
+    results.push({
+      leaveID: Number(leaveID),
+      n: { sb: data.sbVals.length, tb: data.tbVals.length },
+      actual: { sb: actualSB, tb: actualTB },
+      alignment: align ? { sb: align.sb, tb: align.tb } : null,
+      delta: {
+        sb: (align && align.sb != null && actualSB != null) ? Math.floor((actualSB - align.sb) * 10) / 10 : null,
+        tb: (align && align.tb != null && actualTB != null) ? Math.floor((actualTB - align.tb) * 10) / 10 : null
+      }
+    });
+  });
+  return results;
+}
+
+/* =============================================================
+   NOTE-CATEGORY AI-DERIVATION HELPER (v30.117, Phase D). Suggests
+   a category/subcategory for a freeform Lane Library note using
+   the locked two-tier taxonomy. Stored as derivedCategory /
+   derivedSubcategory — SEPARATE fields from the user-set
+   category/subcategory, per the Phase A design decision: AI
+   suggestions never overwrite a user's own tags. Nothing here
+   auto-applies to the UI; a caller decides whether to surface or
+   accept the suggestion.
+   ============================================================= */
+var LL_NOTE_TAXONOMY = {
+  'Lane Condition': ['Oil pattern', 'Breakdown or transition', 'Hook or friction', 'Other'],
+  'Ball Reaction':  ['Over or under reaction', 'Skid or flip', 'Deflection', 'Other'],
+  'Execution':      ['Release', 'Footwork or timing', 'Target line', 'Other'],
+  'Equipment':      ['Ball change', 'Surface or polish', 'Other']
+};
+
+// Shared AI call helper for Lane Library features — same call shape as the
+// existing _bdetCallAI pattern used elsewhere in the app, kept local to
+// this section so it returns raw text rather than assuming JSON.
+async function llCallAI(prompt, useDeepModel) {
+  var key = localStorage.getItem('bowlingdb_ai_key');
+  if (!key) throw new Error('No API key - add one in Settings');
+  var res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': key,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model: useDeepModel ? getAIModelDeep() : getAIModelFast(),
+      max_tokens: 1200,
+      messages: [{ role: 'user', content: prompt }]
+    })
+  });
+  var data = await res.json();
+  if (data.error) throw new Error(data.error.message);
+  return (data.content || []).map(function(c){ return c.text || ''; }).join('').trim();
+}
+
+function llDeriveNoteCategoryPrompt(noteText) {
+  var taxonomyLines = Object.keys(LL_NOTE_TAXONOMY).map(function(cat) {
+    return cat + ': ' + LL_NOTE_TAXONOMY[cat].join(', ');
+  }).join('\n');
+  var safeText = String(noteText || '').replace(/"/g, '\\"');
+  return 'You are categorizing a freeform note a bowler wrote about a specific lane. ' +
+    'Return ONLY valid JSON, no markdown fences, no explanation.\n\n' +
+    'Fixed taxonomy (pick exactly one category and one subcategory from it):\n' + taxonomyLines + '\n\n' +
+    'Note: "' + safeText + '"\n\n' +
+    'Return exactly this shape: {"category":"<one of the 4 categories above>","subcategory":"<one item from that category list>","confidence":"high or medium or low"}\n' +
+    'If the note does not clearly fit any category, return {"category":null,"subcategory":null,"confidence":"low"}.';
+}
+
+async function llDeriveNoteCategory(noteText) {
+  var raw = await llCallAI(llDeriveNoteCategoryPrompt(noteText), false);
+  var clean = raw.replace(/^```json\s*/, '').replace(/```\s*$/, '').trim();
+  var parsed = JSON.parse(clean);
+  // Defensive validation against the fixed taxonomy - never trust raw AI output blindly.
+  if (parsed.category && !LL_NOTE_TAXONOMY.hasOwnProperty(parsed.category)) parsed.category = null;
+  if (parsed.category && parsed.subcategory && LL_NOTE_TAXONOMY[parsed.category].indexOf(parsed.subcategory) < 0) parsed.subcategory = null;
+  if (!parsed.category) parsed.subcategory = null;
+  return parsed;
+}
+
+// Applies a derived suggestion to a note without touching the user-owned
+// category/subcategory fields - writes derivedCategory/derivedSubcategory
+// instead, per the Phase A design decision.
+async function llApplyDerivedCategory(laneKey, noteId) {
+  var rec = (_llCache || []).find(function(r){ return r.LaneKey === laneKey; });
+  if (!rec || !Array.isArray(rec.notes)) return null;
+  var note = rec.notes.find(function(n){ return String(n.id) === String(noteId); });
+  if (!note) return null;
+  var suggestion = await llDeriveNoteCategory(note.text);
+  note.derivedCategory = suggestion.category;
+  note.derivedSubcategory = suggestion.subcategory;
+  note.derivedConfidence = suggestion.confidence;
+  await idbPutAll('laneLibrary', [rec]);
+  return suggestion;
+}
+
+/* =============================================================
+   LANE PREP BRIEF (v30.117, Phase D). AI-summarized standing
+   prompt combining every signal this effort has built: Lane
+   Library notes, Ball-Change Retrospective (Steps 1+2), Lane
+   Hook Rating, and SB/TB Comparison - all for one lane. Nothing
+   auto-applies; this is a review/approve summary, matching every
+   other AI tool in this app. Cadence is games-played based
+   (default 9 games / 3 series), NOT calendar time, with a snooze
+   state machine escalating 20 -> 50 -> 100 games plus an
+   independent paused flag. State fields (cooldownGames,
+   gamesSincePrompt, paused) were already seeded on every lane
+   record back in Phase A.
+   ============================================================= */
+var LL_SNOOZE_THRESHOLDS = [20, 50, 100];
+
+// Increments gamesSincePrompt for every lane by however many NEW games
+// have been recorded since the last time this ran. Idempotent - tracks
+// its own high-water mark (_gameCountAtLastPromptCheck) rather than
+// touching llSyncFromHistory's separately-validated sync logic.
+async function llUpdateGamesSincePrompt() {
+  if (!_llCache) await llLoadAll();
+  var dirty = [];
+  (_llCache || []).forEach(function(rec) {
+    var current = llLaneStats([rec.LaneKey]).games || 0;
+    var lastKnown = (rec._gameCountAtLastPromptCheck != null) ? rec._gameCountAtLastPromptCheck : current;
+    var delta = current - lastKnown;
+    if (delta > 0) {
+      rec.gamesSincePrompt = (rec.gamesSincePrompt || 0) + delta;
+      rec._gameCountAtLastPromptCheck = current;
+      dirty.push(rec);
+    } else if (rec._gameCountAtLastPromptCheck == null) {
+      rec._gameCountAtLastPromptCheck = current;
+      dirty.push(rec);
+    }
+  });
+  if (dirty.length) await idbPutAll('laneLibrary', dirty);
+  return dirty.length;
+}
+
+function llBriefDue(rec) {
+  if (!rec || rec.paused) return false;
+  var threshold = (rec.snoozeThreshold != null) ? rec.snoozeThreshold : (rec.cooldownGames || 9);
+  return (rec.gamesSincePrompt || 0) >= threshold;
+}
+
+async function llSnoozeLanePrompt(laneKey) {
+  var rec = (_llCache || []).find(function(r){ return r.LaneKey === laneKey; });
+  if (!rec) return;
+  var level = Math.min((rec.snoozeLevel || 0) + 1, LL_SNOOZE_THRESHOLDS.length);
+  rec.snoozeLevel = level;
+  rec.snoozeThreshold = LL_SNOOZE_THRESHOLDS[level - 1];
+  rec.gamesSincePrompt = 0;
+  await idbPutAll('laneLibrary', [rec]);
+}
+
+async function llSetLanePromptPaused(laneKey, paused) {
+  var rec = (_llCache || []).find(function(r){ return r.LaneKey === laneKey; });
+  if (!rec) return;
+  rec.paused = !!paused;
+  await idbPutAll('laneLibrary', [rec]);
+}
+
+async function llMarkBriefShown(laneKey) {
+  var rec = (_llCache || []).find(function(r){ return r.LaneKey === laneKey; });
+  if (!rec) return;
+  rec.gamesSincePrompt = 0;
+  rec.snoozeLevel = 0;
+  rec.snoozeThreshold = null;
+  await idbPutAll('laneLibrary', [rec]);
+}
+
+// Gathers every signal for one lane into a structured context object.
+// Pure data assembly - calls no AI, separately testable/inspectable.
+function llBuildPrepBriefContext(laneKey) {
+  var hist = llDeriveHistory();
+  var h = hist[laneKey];
+  var gameIDs = h ? h.games.filter(function(gs){ return !llIsOpenPlaySeries(gs.series); }).map(function(gs){ return gs.game.GameID; }) : [];
+  var stats = llLaneStats([laneKey]);
+  var hookRating = laneHookRating([laneKey]);
+  var bcr = gameIDs.length ? ballChangeRetrospective(gameIDs) : null;
+  var bcrStep2 = gameIDs.length ? ballChangeStep2Join(gameIDs) : [];
+  var strikeLine = sbtbStrikeLineComparison([laneKey], true);
+  var spareExec = sbtbSpareExecutionComparison([laneKey], true);
+  var rec = (_llCache || []).find(function(r){ return r.LaneKey === laneKey; });
+  var notes = rec ? (rec.notes || []).slice(-10) : []; // most recent 10, keeps the prompt bounded
+
+  return {
+    laneKey: laneKey, stats: stats, hookRating: hookRating,
+    ballChangeRetrospective: bcr, ballChangeStep2: bcrStep2,
+    strikeLine: strikeLine, spareExecution: spareExec, notes: notes
+  };
+}
+
+function llBuildPrepBriefPrompt(ctx) {
+  var lines = [];
+  lines.push('You are writing a short, practical pre-game brief for ONE specific bowling lane, based only on this bowlers own recorded history there. Ground every statement in the data given below. If a signal is not available yet, say so plainly rather than guessing. 3-5 sentences, direct and actionable, no headers or markdown.');
+  lines.push('');
+  lines.push('LANE: ' + ctx.laneKey);
+  lines.push('Games recorded: ' + (ctx.stats.games || 0) + ', average score: ' + (ctx.stats.avg != null ? ctx.stats.avg : 'unknown'));
+  if (ctx.hookRating && ctx.hookRating.rating != null) {
+    lines.push('Lane Hook Rating: ' + ctx.hookRating.rating.toFixed(2) + ' (' + ctx.hookRating.label + '), based on ' + ctx.hookRating.n + ' classified leaves.');
+  } else {
+    lines.push('Lane Hook Rating: not enough data yet (needs 15+ classified leaves).');
+  }
+  if (ctx.ballChangeRetrospective && ctx.ballChangeRetrospective.totalEvents > 0) {
+    lines.push('Ball-change history at this lane: ' + ctx.ballChangeRetrospective.totalEvents + ' true changes, outcome split ' +
+      ctx.ballChangeRetrospective.pct.positive + '% positive, ' + ctx.ballChangeRetrospective.pct.neutral + '% neutral, ' + ctx.ballChangeRetrospective.pct.negative + '% negative.');
+  } else {
+    lines.push('Ball-change history at this lane: none recorded yet.');
+  }
+  if (ctx.strikeLine.laneN.sb + ctx.strikeLine.laneN.tb > 0) {
+    lines.push('Strike-line vs personal baseline: starting-board delta ' + ctx.strikeLine.delta.sb + ', target-board delta ' + ctx.strikeLine.delta.tb + ' boards.');
+  } else {
+    lines.push('Strike-line vs personal baseline: not enough tagged throws yet.');
+  }
+  if (ctx.notes.length) {
+    lines.push('Recent notes: ' + ctx.notes.map(function(n){ return JSON.stringify(n.text); }).join('; '));
+  }
+  return lines.join('\n');
+}
+
+async function llGeneratePrepBrief(laneKey) {
+  var ctx = llBuildPrepBriefContext(laneKey);
+  var prompt = llBuildPrepBriefPrompt(ctx);
+  var text = await llCallAI(prompt, false);
+  return { context: ctx, brief: text };
+}
+
+
+
+/* ── List screen ─────────────────────────────────────────────── */
+async function renderLaneLibrary() {
+  var el = document.getElementById('lane-lib-content');
+  if (!el) return;
+  el.innerHTML = '<div style="text-align:center;color:var(--t3);padding:32px 0">Syncing lane history…</div>';
+  try { await llSyncFromHistory(); } catch(e) { console.error('llSync error', e); }
+
+  var recs = (_llCache || []).slice();
+  if (!recs.length) {
+    el.innerHTML = '<div style="text-align:center;color:var(--t3);padding:32px 16px;line-height:1.6">' +
+      'No lanes yet. Lanes appear here automatically once a series has a known lane pair / starting lane, ' +
+      'and are backfilled from your full history.</div>';
+    return;
+  }
+  var hist = llDeriveHistory();
+  // Group Center → Pair → lanes
+  var byCenter = {};
+  recs.forEach(function(r) {
+    var cid = r.CenterID;
+    if (!byCenter[cid]) byCenter[cid] = {};
+    var pk = r.pairKey || ('Lane ' + r.LaneNumber);
+    if (!byCenter[cid][pk]) byCenter[cid][pk] = [];
+    byCenter[cid][pk].push(r);
+  });
+  var html = '';
+  Object.keys(byCenter).sort(function(a,b){
+    var ca = db.centers.find(function(x){ return x.CenterID == a; });
+    var cb = db.centers.find(function(x){ return x.CenterID == b; });
+    return String(ca ? ca.CenterName : a).localeCompare(String(cb ? cb.CenterName : b));
+  }).forEach(function(cid) {
+    var center = db.centers.find(function(x){ return x.CenterID == cid; });
+    html += '<div class="sec-header" style="margin-top:14px"><span class="sec-title">' +
+      _escHtml(center ? center.CenterName : ('Center #' + cid)) + '</span></div>';
+    Object.keys(byCenter[cid]).sort(function(a,b){
+      return (parseInt(a) || 0) - (parseInt(b) || 0);
+    }).forEach(function(pk) {
+      html += '<div style="font-size:11px;color:var(--t3);font-weight:700;letter-spacing:0.5px;margin:8px 2px 4px">PAIR ' + _escHtml(pk) + '</div>';
+      byCenter[cid][pk].sort(function(a,b){ return a.LaneNumber - b.LaneNumber; }).forEach(function(r) {
+        var h = hist[r.LaneKey];
+        var nGames = h ? h.games.filter(function(gs){ return !llIsOpenPlaySeries(gs.series); }).length : 0;
+        var nNotes = (r.notes || []).length;
+        html += '<div class="stat-row" style="cursor:pointer;padding:10px 8px" onclick="llOpenLane(\'' + r.LaneKey + '\')">' +
+          '<span style="font-weight:700">Lane ' + r.LaneNumber + '</span>' +
+          '<span class="sval" style="color:var(--t2);font-size:12px">' +
+            nGames + ' game' + (nGames === 1 ? '' : 's') + ' · ' + nNotes + ' note' + (nNotes === 1 ? '' : 's') + ' ›</span></div>';
+      });
+    });
+  });
+  el.innerHTML = html;
+}
+
+/* ── Detail screen ───────────────────────────────────────────── */
+async function llOpenLane(laneKey) {
+  _llCurrentKey = laneKey;
+  await navTo('s-lane-detail');
+  llRenderLaneDetail();
+}
+
+function llRenderLaneDetail() {
+  var el = document.getElementById('lane-detail-content');
+  if (!el || !_llCurrentKey) return;
+  var rec = (_llCache || []).find(function(r){ return r.LaneKey === _llCurrentKey; });
+  if (!rec) { el.innerHTML = '<div style="color:var(--t3);padding:24px">Lane not found.</div>'; return; }
+  var center = db.centers.find(function(x){ return x.CenterID == rec.CenterID; });
+
+  // Individual-lane stats gate: 15+ recorded att1 leaves at THIS lane,
+  // else fall back to pair-level (design §3.1 — leave-count, not game-count).
+  var soloStats = llLaneStats([rec.LaneKey]);
+  var usePair = soloStats.leaveN < LL_LEAVE_MIN && rec.pairKey;
+  var stats = soloStats, scopeLabel = 'This lane';
+  if (usePair) {
+    var lanes = rec.pairKey.split(',').map(function(n){ return llLaneKey(rec.CenterID, Number(n)); });
+    stats = llLaneStats(lanes);
+    scopeLabel = 'Pair ' + rec.pairKey + ' (lane has ' + soloStats.leaveN + ' of ' + LL_LEAVE_MIN + ' leaves needed)';
+  }
+  var ball = stats.topBallID != null ? db.balls.find(function(b){ return b.BallID === stats.topBallID; }) : null;
+  var leavesHtml = stats.topLeaves.length ? stats.topLeaves.map(function(tl) {
+    var lv = db.leaves.find(function(l){ return l.LeaveID === tl.id; });
+    return _escHtml(lv ? lv.LeaveName : ('Leave #' + tl.id)) + ' ×' + tl.n;
+  }).join(' · ') : '—';
+
+  var catOpts = '<option value="">— Category (optional) —</option>' +
+    Object.keys(LL_TAXONOMY).map(function(cat){ return '<option value="' + _escHtml(cat) + '">' + _escHtml(cat) + '</option>'; }).join('');
+
+  var notes = (rec.notes || []).slice().sort(function(a,b){ return String(b.ts).localeCompare(String(a.ts)); });
+  var notesHtml = notes.length ? notes.map(function(n) {
+    var tag = n.category ? (_escHtml(n.category) + (n.subcategory ? ' / ' + _escHtml(n.subcategory) : '')) : '';
+    var seed = (n.gameID != null || (n.seriesID != null && String(n.id).charAt(0) === 's')) ? ' 📎' : '';
+    var src = n.source === 'derived' ? ' <span style="color:var(--gold);font-size:10px">(AI)</span>' : '';
+    return '<div style="border-bottom:1px solid rgba(255,255,255,0.06);padding:8px 2px">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--t3)">' +
+        '<span>' + _escHtml(String(n.ts).slice(0,10)) + seed + src + (tag ? ' · <span style="color:var(--teal)">' + tag + '</span>' : '') + '</span>' +
+        '<span style="cursor:pointer;padding:2px 6px" onclick="llDeleteNote(\'' + _escHtml(String(n.id)) + '\')">✕</span></div>' +
+      '<div style="font-size:13px;color:var(--t1);line-height:1.5;white-space:pre-wrap">' + _escHtml(n.text) + '</div></div>';
+  }).join('') : '<div style="color:var(--t3);font-size:12px;padding:8px 2px">No notes yet — add the first one below.</div>';
+
+  el.innerHTML =
+    '<div class="sec-header"><span class="sec-title">' + _escHtml(center ? center.CenterName : ('Center #' + rec.CenterID)) +
+      ' — Lane ' + rec.LaneNumber + '</span></div>' +
+    (rec.pairKey ? '<div style="font-size:11px;color:var(--t3);margin:-6px 2px 10px">Pair ' + _escHtml(rec.pairKey) + '</div>' : '') +
+    '<div class="settings-section">' +
+      '<div class="settings-section-hdr">Lane Stats <span class="settings-section-hint">' + _escHtml(scopeLabel) + ' · League + Tournament only, computed live</span></div>' +
+      '<div class="stat-row"><span>Games</span><span class="sval">' + stats.games + '</span></div>' +
+      '<div class="stat-row"><span>Average</span><span class="sval">' + (stats.avg != null ? stats.avg : '—') + '</span></div>' +
+      '<div class="stat-row"><span>High Game</span><span class="sval">' + (stats.high != null ? stats.high : '—') + '</span></div>' +
+      '<div class="stat-row"><span>Most-Used Ball</span><span class="sval">' + _escHtml(ball ? ball.BallName : '—') + (stats.topBallN ? ' ×' + stats.topBallN : '') + '</span></div>' +
+      '<div class="stat-row"><span>Common Leaves</span><span class="sval" style="font-size:11px">' + leavesHtml + '</span></div>' +
+      '<div style="font-size:10px;color:var(--t3);margin-top:6px">Lane Hook Rating &amp; SB/TB comparison arrive in later phases.</div>' +
+    '</div>' +
+    '<div class="settings-section">' +
+      '<div class="settings-section-hdr">Add Note</div>' +
+      '<textarea class="finput" id="ll-note-text" rows="3" placeholder="What did this lane do tonight?" style="width:100%;resize:vertical"></textarea>' +
+      '<div style="display:flex;gap:8px;margin-top:8px">' +
+        '<select class="finput" id="ll-note-cat" style="flex:1" onchange="llCatChanged()">' + catOpts + '</select>' +
+        '<select class="finput" id="ll-note-sub" style="flex:1"><option value="">— Subcategory —</option></select>' +
+      '</div>' +
+      '<button class="btn btn-primary" style="width:100%;margin-top:10px" onclick="llAddNote()">＋ Add Note</button>' +
+    '</div>' +
+    '<div class="settings-section">' +
+      '<div class="settings-section-hdr">Notes Log <span class="settings-section-hint">📎 = seeded from a historical game/series note</span></div>' +
+      notesHtml +
+    '</div>';
+}
+
+function llCatChanged() {
+  var cat = document.getElementById('ll-note-cat');
+  var sub = document.getElementById('ll-note-sub');
+  if (!cat || !sub) return;
+  var subs = LL_TAXONOMY[cat.value] || [];
+  sub.innerHTML = '<option value="">— Subcategory —</option>' +
+    subs.map(function(s){ return '<option value="' + _escHtml(s) + '">' + _escHtml(s) + '</option>'; }).join('');
+}
+
+async function llAddNote() {
+  var rec = (_llCache || []).find(function(r){ return r.LaneKey === _llCurrentKey; });
+  var ta = document.getElementById('ll-note-text');
+  if (!rec || !ta) return;
+  var text = ta.value.trim();
+  if (!text) { toast('Note is empty'); return; }
+  var cat = document.getElementById('ll-note-cat');
+  var sub = document.getElementById('ll-note-sub');
+  if (!Array.isArray(rec.notes)) rec.notes = [];
+  rec.notes.push({
+    id: 'm' + Date.now(),
+    ts: new Date().toISOString(),
+    text: text,
+    category: (cat && cat.value) ? cat.value : null,
+    subcategory: (sub && sub.value) ? sub.value : null,
+    source: 'user'
+    // no gameID/seriesID — manual note (design §3.1 note record shape)
+  });
+  await idbPutAll('laneLibrary', [rec]);
+  toast('Note added');
+  llRenderLaneDetail();
+}
+
+async function llDeleteNote(noteId) {
+  var rec = (_llCache || []).find(function(r){ return r.LaneKey === _llCurrentKey; });
+  if (!rec || !Array.isArray(rec.notes)) return;
+  if (!confirm('Delete this note?')) return;
+  var victim = rec.notes.find(function(n){ return String(n.id) === String(noteId); });
+  rec.notes = rec.notes.filter(function(n){ return String(n.id) !== String(noteId); });
+  // Tombstone seeded notes so the idempotent history sync can't resurrect them
+  if (victim && (String(victim.id).charAt(0) === 'g' || String(victim.id).charAt(0) === 's')) {
+    if (!Array.isArray(rec.deletedSeedIDs)) rec.deletedSeedIDs = [];
+    if (rec.deletedSeedIDs.indexOf(String(victim.id)) < 0) rec.deletedSeedIDs.push(String(victim.id));
+  }
+  // Note removal is a field mutation + upsert of the SAME LaneKey record —
+  // no store key is being removed, so idbDeleteKeys is not required here.
+  await idbPutAll('laneLibrary', [rec]);
+  toast('Note deleted');
+  llRenderLaneDetail();
+}
+
+/* =============================================================
+   SERIES REFLECT (v30.118 — Series Debrief Design Doc, locked
+   2026-08-18)
+   ─────────────────────────────────────────────────────────────
+   Two on-demand, user-recalled capture flows reached from the
+   series card action row ("🗒️ Reflect" split button — Session |
+   Frames). Both write into the shared 'recalledContext' IDB
+   store (polymorphic eventRef, source:'user-recalled'), which
+   also reserves eventRef types for the separate, deferred
+   retrospective-revisit thread (Handoff §9) — not built here.
+
+   Flow A — Session-level debrief: oil volume (numeric, bucketed
+   to Light/Medium/Heavy display bands via the live tag
+   vocabulary), lane-to-lane comparison, execution character, SDP
+   baseline questions, general notes. One record per series.
+   Confidence is PER-QUESTION (locked). Prompts for LanePair if
+   missing on the series (locked) — doubles as a quiet Lane
+   Library backfill.
+
+   Flow B — Per-frame ball-entry review: every non-strike frame
+   in the series, step-through, recognition tags first, optional
+   note, confidence per frame. RESUMABLE — a progress cursor is
+   saved per series (localStorage) so a partial pass can continue
+   later (locked).
+
+   Tag vocabulary (oil volume bands, execution tags, recognition
+   tags, lane-comparison options) is user-customizable — see
+   TAG_VOCAB_DEFAULTS / getTagVocab / setTagVocab. The active
+   vocabulary is read at render time, so e.g. adding a 4th oil-
+   volume band shows up as a 4th button with no code change
+   (design doc §7). Retire options rather than deleting — old
+   recalledContext records must keep resolving to a label.
+
+   Non-strike frame identification mirrors the existing "Frame 10
+   spare opportunity" discipline: only att1's Pinfall/LeaveID/
+   BallID are used per frame; fill balls after a Frame-10 strike
+   are excluded since Frame.Strike already reflects the first-
+   ball result. Verified against the real backup (997 games / 329
+   series, avg 14.9 non-strike frames/series) in the DevKit
+   dry-run before this was wired in.
+   ============================================================= */
+
+var RC_LEFT_PINS  = [2,4,7,8];
+var RC_RIGHT_PINS = [3,6,9,10];
+var _rcCache = null; // in-memory copy of the recalledContext store
+
+async function rcLoadAll() {
+  _rcCache = await idbGetAll('recalledContext');
+  return _rcCache;
+}
+function rcGetCached(id) {
+  return (_rcCache || []).find(function(r){ return r.id === id; }) || null;
+}
+async function rcSave(rec) {
+  await idbPutAll('recalledContext', [rec]);
+  if (!_rcCache) _rcCache = [];
+  var idx = _rcCache.findIndex(function(r){ return r.id === rec.id; });
+  if (idx >= 0) _rcCache[idx] = rec; else _rcCache.push(rec);
+}
+
+function rcLeaveSide(leaveID) {
+  if (leaveID == null || !db.leaves || !db.leaves.length) return null;
+  var lv = db.leaves.find(function(l){ return l.LeaveID === leaveID; });
+  if (!lv) return null;
+  var left = false, right = false;
+  for (var p = 1; p <= 10; p++) {
+    if (!lv['Pin'+p]) continue;
+    if (RC_LEFT_PINS.indexOf(p) >= 0) left = true;
+    if (RC_RIGHT_PINS.indexOf(p) >= 0) right = true;
+  }
+  if (left && right) return 'mixed';
+  if (left) return 'left';
+  if (right) return 'right';
+  return 'center';
+}
+
+/* All non-strike frames for a series, in game/frame order. */
+function rcNonStrikeFrames(seriesID) {
+  var out = [];
+  var gamesInSeries = db.games.filter(function(g){ return g.SeriesID === seriesID; })
+    .sort(function(a,b){ return a.GameNumber - b.GameNumber; });
+  gamesInSeries.forEach(function(g) {
+    var frs = db.frames.filter(function(f){ return f.GameID === g.GameID; })
+      .sort(function(a,b){ return a.FrameNumber - b.FrameNumber; });
+    frs.forEach(function(fr) {
+      if (fr.Strike) return;
+      var atts = db.attempts.filter(function(a){ return a.FrameID === fr.FrameID; })
+        .sort(function(a,b){ return a.Attempt - b.Attempt; });
+      var att1 = atts.find(function(a){ return a.Attempt === 1; });
+      if (!att1) return;
+      out.push({
+        gameID: g.GameID, gameNumber: g.GameNumber,
+        frameID: fr.FrameID, frameNumber: fr.FrameNumber,
+        ballID: att1.BallID, leaveID: att1.LeaveID,
+        side: rcLeaveSide(att1.LeaveID),
+        pinfall: att1.Pinfall, spare: !!fr.Spare
+      });
+    });
+  });
+  return out;
+}
+
+function rcFrameRecordId(gameID, frameNumber) { return 'rc_frame_' + gameID + '_' + frameNumber; }
+function rcSeriesRecordId(seriesID) { return 'rc_series_' + seriesID; }
+
+/* ── Customizable tag vocabulary (design doc §7) ──────────────
+   Ships with defaults; first read clones them into localStorage,
+   which then becomes the source of truth. Never hard-delete an
+   option that's in use — mark inactive instead, so historical
+   recalledContext records still resolve to a label. Numeric
+   values (e.g. oil-volume bands) are likewise not retroactively
+   rewritten onto already-stored records if edited later. */
+var TAG_VOCAB_DEFAULTS = {
+  'oilVolume.bands': [
+    { value: 2, band: 'Light',  active: true },
+    { value: 3, band: 'Medium', active: true },
+    { value: 4, band: 'Heavy',  active: true }
+  ],
+  'flowA.laneComparison': [
+    { value: 'left',    label: 'Left',              active: true },
+    { value: 'right',   label: 'Right',              active: true },
+    { value: 'same',    label: 'About the same',     active: true },
+    { value: 'notSure', label: 'Not sure',           active: true }
+  ],
+  'flowA.execution': [
+    { value: 'missingLeft',  label: 'Missing left',  active: true },
+    { value: 'missingRight', label: 'Missing right', active: true },
+    { value: 'missingBoth',  label: 'Missing both',  active: true },
+    { value: 'drifting',     label: 'Drifting',      active: true },
+    { value: 'speed',        label: 'Speed',         active: true },
+    { value: 'targeting',    label: 'Targeting',     active: true },
+    { value: 'approach',     label: 'Approach',      active: true },
+    { value: 'feltClean',    label: 'Felt clean',    active: true }
+  ],
+  'flowB.recognitionTags': [
+    { value: 'laneDrying',   label: 'Lane drying / hooking more', active: true },
+    { value: 'freshFlooded', label: 'Fresh oil / flooded',        active: true },
+    { value: 'executionOff', label: 'Execution off',              active: true },
+    { value: 'transition',   label: 'Transition happening',       active: true },
+    { value: 'ballMismatch', label: 'Ball not matching',          active: true },
+    { value: 'notSure',      label: 'Not sure',                   active: true }
+  ]
+};
+function getTagVocab(category) {
+  try {
+    var all = JSON.parse(localStorage.getItem('bowlingdb_tagvocab') || '{}');
+    if (all[category]) return all[category];
+  } catch(e) {}
+  return (TAG_VOCAB_DEFAULTS[category] || []).slice();
+}
+function setTagVocab(category, list) {
+  try {
+    var all = JSON.parse(localStorage.getItem('bowlingdb_tagvocab') || '{}');
+    all[category] = list;
+    localStorage.setItem('bowlingdb_tagvocab', JSON.stringify(all));
+  } catch(e) { console.warn('setTagVocab:', e); }
+}
+
+/* ══════════ FLOW A — Session-Level Debrief ══════════ */
+var _rfDraft = null; // scratch state for the open Flow A modal
+
+async function openReflectSessionModal(seriesID) {
+  if (!_rcCache) await rcLoadAll();
+  var s = db.series.find(function(x){ return x.SeriesID === seriesID; });
+  if (!s) return;
+  var existing = rcGetCached(rcSeriesRecordId(seriesID));
+  _rfDraft = {
+    seriesID: seriesID,
+    lanePair: s.LanePair || null,
+    answers: (existing && existing.answers) ? (function(){
+      var o = {}; existing.answers.forEach(function(a){ o[a.questionId] = { value: a.value, confidence: a.confidence }; }); return o;
+    })() : {},
+    note: existing ? (existing.note || '') : ''
+  };
+  rfRenderSessionModal();
+}
+
+function rfSetAnswer(qid, value) {
+  if (!_rfDraft) return;
+  var prev = _rfDraft.answers[qid];
+  _rfDraft.answers[qid] = { value: value, confidence: (prev && prev.confidence) || 'clear' };
+  rfRenderSessionModal();
+}
+function rfToggleExecution(tagValue) {
+  if (!_rfDraft) return;
+  var cur = (_rfDraft.answers.execution && _rfDraft.answers.execution.value) || [];
+  var i = cur.indexOf(tagValue);
+  if (i >= 0) cur = cur.slice(0,i).concat(cur.slice(i+1)); else cur = cur.concat([tagValue]);
+  var prevConf = (_rfDraft.answers.execution && _rfDraft.answers.execution.confidence) || 'clear';
+  _rfDraft.answers.execution = { value: cur, confidence: prevConf };
+  rfRenderSessionModal();
+}
+function rfCycleConfidence(qid) {
+  if (!_rfDraft || !_rfDraft.answers[qid]) return;
+  var order = ['clear','thinkSo','noIdea'];
+  var i = order.indexOf(_rfDraft.answers[qid].confidence);
+  _rfDraft.answers[qid].confidence = order[(i+1) % order.length];
+  rfRenderSessionModal();
+}
+function rfConfBadge(qid) {
+  var a = _rfDraft.answers[qid];
+  if (!a) return '';
+  var label = a.confidence === 'clear' ? 'Clear' : a.confidence === 'thinkSo' ? 'Think so' : 'No idea';
+  var color = a.confidence === 'noIdea' ? 'var(--t3)' : 'var(--teal)';
+  return '<span onclick="rfCycleConfidence(\''+qid+'\')" style="font-size:9px;font-weight:700;color:'+color+';border:1px solid var(--border1);border-radius:6px;padding:2px 6px;cursor:pointer;margin-left:6px">'+label+'</span>';
+}
+function rfLanePairInput(value) { _rfDraft.lanePair = value; }
+
+function rfRenderSessionModal() {
+  var d = _rfDraft;
+  var s = db.series.find(function(x){ return x.SeriesID === d.seriesID; });
+  var dateStr = s && s.DateBowled ? fmtDate(s.DateBowled,{month:'short',day:'numeric',year:'numeric'}) : '';
+
+  var oilBands = getTagVocab('oilVolume.bands').filter(function(b){ return b.active !== false; })
+    .sort(function(a,b){ return a.value-b.value; });
+  var oilAns = d.answers.oilVolume;
+  var oilHtml = oilBands.map(function(b){
+    var sel = oilAns && oilAns.value === b.value;
+    return '<button class="btn-pill'+(sel?' btn-pill-sel':'')+'" onclick="rfSetAnswer(\'oilVolume\','+b.value+')">'+b.band+'</button>';
+  }).join('');
+
+  var laneOpts = getTagVocab('flowA.laneComparison').filter(function(o){ return o.active !== false; });
+  var laneAns = d.answers.laneComparison;
+  var laneHtml = laneOpts.map(function(o){
+    var sel = laneAns && laneAns.value === o.value;
+    return '<button class="btn-pill'+(sel?' btn-pill-sel':'')+'" onclick="rfSetAnswer(\'laneComparison\',\''+o.value+'\')">'+o.label+'</button>';
+  }).join('');
+
+  var execOpts = getTagVocab('flowA.execution').filter(function(o){ return o.active !== false; });
+  var execCur = (d.answers.execution && d.answers.execution.value) || [];
+  var execHtml = execOpts.map(function(o){
+    var sel = execCur.indexOf(o.value) >= 0;
+    return '<button class="btn-pill'+(sel?' btn-pill-sel':'')+'" onclick="rfToggleExecution(\''+o.value+'\')">'+o.label+'</button>';
+  }).join('');
+
+  var yesNoOpts = [{value:'yes',label:'Yes'},{value:'no',label:'No'},{value:'notSure',label:'Not sure'}];
+  function yesNoHtml(qid) {
+    var ans = d.answers[qid];
+    return yesNoOpts.map(function(o){
+      var sel = ans && ans.value === o.value;
+      return '<button class="btn-pill'+(sel?' btn-pill-sel':'')+'" onclick="rfSetAnswer(\''+qid+'\',\''+o.value+'\')">'+o.label+'</button>';
+    }).join('');
+  }
+
+  var anyAnswered = Object.keys(d.answers).length > 0;
+  var lanePairBlock = !d.lanePair ? (
+    '<div style="margin-bottom:16px">' +
+      '<div class="modal-label">Lane pair <span style="color:var(--t3);font-weight:400;margin-left:4px">(not on file for this series)</span></div>' +
+      '<input type="text" placeholder="e.g. 7,8" value="'+(d.lanePair||'')+'" oninput="rfLanePairInput(this.value)" style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--border1);background:var(--bg2);color:var(--t1);font-size:14px;box-sizing:border-box">' +
+    '</div>'
+  ) : '';
+
+  openModal(
+    '<div class="modal-title">🗒️ Series Reflect — Session</div>' +
+    '<div style="font-size:12px;color:var(--t3);margin-bottom:14px">'+dateStr+'</div>' +
+    lanePairBlock +
+    '<div style="margin-bottom:16px">' +
+      '<div class="modal-label">Oil volume'+rfConfBadge('oilVolume')+'</div>' +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap">'+oilHtml+'</div>' +
+    '</div>' +
+    '<div style="margin-bottom:16px">' +
+      '<div class="modal-label">Which lane was hooking more?'+rfConfBadge('laneComparison')+'</div>' +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap">'+laneHtml+'</div>' +
+    '</div>' +
+    '<div style="margin-bottom:16px">' +
+      '<div class="modal-label">Execution'+rfConfBadge('execution')+'</div>' +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap">'+execHtml+'</div>' +
+    '</div>' +
+    '<div style="margin-bottom:16px">' +
+      '<div class="modal-label">Throwing harder/faster than normal?'+rfConfBadge('throwingHarder')+'</div>' +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap">'+yesNoHtml('throwingHarder')+'</div>' +
+    '</div>' +
+    '<div style="margin-bottom:16px">' +
+      '<div class="modal-label">Trying for more revs than normal?'+rfConfBadge('moreRevs')+'</div>' +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap">'+yesNoHtml('moreRevs')+'</div>' +
+    '</div>' +
+    (anyAnswered ?
+      '<div style="margin-bottom:16px">' +
+        '<div class="modal-label">General notes</div>' +
+        '<textarea rows="3" placeholder="Optional" oninput="_rfDraft.note=this.value" style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--border1);background:var(--bg2);color:var(--t1);font-size:14px;resize:vertical;box-sizing:border-box">'+(d.note||'')+'</textarea>' +
+      '</div>' : ''
+    ) +
+    '<button class="btn btn-primary" style="width:100%" onclick="rfSaveSession()">Save</button>' +
+    '<button class="btn btn-secondary" style="width:100%;margin-top:8px" onclick="closeModal()">Cancel</button>'
+  );
+}
+
+async function rfSaveSession() {
+  var d = _rfDraft;
+  if (!d) return;
+  if (!Object.keys(d.answers).length && !d.note) { toast('Nothing to save yet'); return; }
+  // Backfill LanePair on the series itself if entered here (locked behavior)
+  if (d.lanePair) {
+    var s = db.series.find(function(x){ return x.SeriesID === d.seriesID; });
+    if (s && !s.LanePair) {
+      s.LanePair = d.lanePair;
+      await idbPutAll('series', [s]);
+    }
+  }
+  var answersArr = Object.keys(d.answers).map(function(qid){
+    return { questionId: qid, value: d.answers[qid].value, confidence: d.answers[qid].confidence };
+  });
+  var rec = {
+    id: rcSeriesRecordId(d.seriesID),
+    eventRef: { type: 'series', seriesID: d.seriesID },
+    answers: answersArr,
+    note: d.note || null,
+    source: 'user-recalled',
+    createdAt: new Date().toISOString()
+  };
+  await rcSave(rec);
+  closeModal();
+  toast('Session reflection saved');
+  renderSeriesList();
+}
+
+/* ══════════ FLOW B — Per-Frame Ball-Entry Review (resumable) ══════════ */
+var _rfbState = null; // { seriesID, frames:[], index, draftTags, draftConfidence, draftNote }
+
+function rfProgressKey(seriesID) { return 'rc_progress_' + seriesID; }
+function rfLoadProgress(seriesID) {
+  try { return JSON.parse(localStorage.getItem(rfProgressKey(seriesID)) || 'null'); } catch(e) { return null; }
+}
+function rfSaveProgress(seriesID, lastIndexCompleted, total) {
+  try { localStorage.setItem(rfProgressKey(seriesID), JSON.stringify({ lastIndexCompleted: lastIndexCompleted, total: total, ts: Date.now() })); }
+  catch(e) {}
+}
+function rfClearProgress(seriesID) {
+  try { localStorage.removeItem(rfProgressKey(seriesID)); } catch(e) {}
+}
+
+async function openReflectFramesModal(seriesID) {
+  if (!_rcCache) await rcLoadAll();
+  var frameList = rcNonStrikeFrames(seriesID);
+  if (!frameList.length) { toast('No non-strike frames in this series'); return; }
+  var progress = rfLoadProgress(seriesID);
+  var startIndex = (progress && progress.total === frameList.length)
+    ? Math.min(progress.lastIndexCompleted + 1, frameList.length - 1) : 0;
+  _rfbState = { seriesID: seriesID, frames: frameList, index: startIndex };
+  rfbRenderFrame();
+}
+
+function rfbCurrentAlreadySaved() {
+  var f = _rfbState.frames[_rfbState.index];
+  return rcGetCached(rcFrameRecordId(f.gameID, f.frameNumber));
+}
+function rfbToggleTag(tagValue) {
+  var st = _rfbState;
+  if (!st.draftTags) st.draftTags = [];
+  var i = st.draftTags.indexOf(tagValue);
+  if (i >= 0) st.draftTags = st.draftTags.slice(0,i).concat(st.draftTags.slice(i+1));
+  else st.draftTags = st.draftTags.concat([tagValue]);
+  rfbRenderFrame();
+}
+function rfbSetConfidence(conf) { _rfbState.draftConfidence = conf; rfbRenderFrame(); }
+function rfbNoteInput(val) { _rfbState.draftNote = val; }
+function rfbResetDraft() { _rfbState.draftTags = undefined; _rfbState.draftConfidence = undefined; _rfbState.draftNote = undefined; }
+
+function rfbRenderFrame() {
+  var st = _rfbState;
+  var f = st.frames[st.index];
+  var ball = f.ballID != null ? (db.balls||[]).find(function(b){ return b.BallID === f.ballID; }) : null;
+  var leave = f.leaveID != null ? (db.leaves||[]).find(function(l){ return l.LeaveID === f.leaveID; }) : null;
+
+  var existing = rfbCurrentAlreadySaved();
+  if (st.draftTags === undefined) st.draftTags = existing ? existing.tags.slice() : [];
+  if (st.draftConfidence === undefined) st.draftConfidence = existing ? existing.confidence : 'clear';
+  if (st.draftNote === undefined) st.draftNote = existing ? (existing.note||'') : '';
+
+  var tagOpts = getTagVocab('flowB.recognitionTags').filter(function(o){ return o.active !== false; });
+  var tagHtml = tagOpts.map(function(o){
+    var sel = st.draftTags.indexOf(o.value) >= 0;
+    return '<button class="btn-pill'+(sel?' btn-pill-sel':'')+'" onclick="rfbToggleTag(\''+o.value+'\')">'+o.label+'</button>';
+  }).join('');
+
+  var confOpts = [{v:'clear',l:'Clear'},{v:'thinkSo',l:'Think so'},{v:'noIdea',l:'No idea'}];
+  var confHtml = confOpts.map(function(c){
+    var sel = st.draftConfidence === c.v;
+    return '<button class="btn-pill'+(sel?' btn-pill-sel':'')+'" style="font-size:11px" onclick="rfbSetConfidence(\''+c.v+'\')">'+c.l+'</button>';
+  }).join('');
+
+  var sideLabel = f.side ? (f.side.charAt(0).toUpperCase()+f.side.slice(1)) : 'Unknown';
+
+  swapModal(
+    '<div class="modal-title">🗒️ Series Reflect — Frames</div>' +
+    '<div style="font-size:12px;color:var(--t3);margin-bottom:14px">Frame '+(st.index+1)+' of '+st.frames.length+(existing?' · saved':'')+'</div>' +
+    '<div style="background:var(--bg2);border:1px solid var(--border1);border-radius:10px;padding:12px;margin-bottom:16px">' +
+      '<div style="font-size:13px;font-weight:700">Game '+f.gameNumber+' · Frame '+f.frameNumber+'</div>' +
+      '<div style="font-size:12px;color:var(--t3);margin-top:4px">' +
+        (ball ? 'Ball: '+(ball.BallName||ball.Brand||'—')+' · ' : '') +
+        'Leave: '+(leave ? leave.DisplayName : '—')+' · Side: '+sideLabel+' · Pinfall: '+(f.pinfall!=null?f.pinfall:'—')+(f.spare?' · Spare':'') +
+      '</div>' +
+    '</div>' +
+    '<div style="margin-bottom:16px">' +
+      '<div class="modal-label">What happened on entry?</div>' +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap">'+tagHtml+'</div>' +
+    '</div>' +
+    (st.draftTags.length ?
+      '<div style="margin-bottom:16px">' +
+        '<div class="modal-label">Note (optional)</div>' +
+        '<textarea rows="2" oninput="rfbNoteInput(this.value)" style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--border1);background:var(--bg2);color:var(--t1);font-size:14px;resize:vertical;box-sizing:border-box">'+(st.draftNote||'')+'</textarea>' +
+      '</div>' : ''
+    ) +
+    '<div style="margin-bottom:18px">' +
+      '<div class="modal-label">Confidence</div>' +
+      '<div style="display:flex;gap:8px">'+confHtml+'</div>' +
+    '</div>' +
+    '<div style="display:flex;gap:8px">' +
+      (st.index>0 ? '<button class="btn btn-secondary" style="flex:1" onclick="rfbBack()">Back</button>' : '') +
+      '<button class="btn btn-secondary" style="flex:1" onclick="rfbSkip()">Skip</button>' +
+      '<button class="btn btn-primary" style="flex:1" onclick="rfbSaveAndNext()">'+(st.index===st.frames.length-1?'Save & Finish':'Save & Next')+'</button>' +
+    '</div>' +
+    '<button class="btn btn-secondary" style="width:100%;margin-top:8px" onclick="rfbFinishLater()">Finish later</button>'
+  );
+}
+
+async function rfbSaveAndNext() {
+  var st = _rfbState;
+  var f = st.frames[st.index];
+  if (st.draftTags.length) {
+    var rec = {
+      id: rcFrameRecordId(f.gameID, f.frameNumber),
+      eventRef: { type: 'frame', gameID: f.gameID, frameNumber: f.frameNumber, side: f.side },
+      tags: st.draftTags, confidence: st.draftConfidence || 'clear', note: st.draftNote || null,
+      source: 'user-recalled', createdAt: new Date().toISOString()
+    };
+    await rcSave(rec);
+  }
+  rfSaveProgress(st.seriesID, st.index, st.frames.length);
+  if (st.index >= st.frames.length - 1) { rfClearProgress(st.seriesID); closeModal(); toast('Frame review complete'); renderSeriesList(); return; }
+  st.index++;
+  rfbResetDraft();
+  rfbRenderFrame();
+}
+function rfbSkip() {
+  var st = _rfbState;
+  rfSaveProgress(st.seriesID, st.index, st.frames.length);
+  if (st.index >= st.frames.length - 1) { rfClearProgress(st.seriesID); closeModal(); toast('Frame review complete'); renderSeriesList(); return; }
+  st.index++;
+  rfbResetDraft();
+  rfbRenderFrame();
+}
+function rfbBack() {
+  var st = _rfbState;
+  if (st.index <= 0) return;
+  st.index--;
+  rfbResetDraft();
+  rfbRenderFrame();
+}
+function rfbFinishLater() {
+  var st = _rfbState;
+  rfSaveProgress(st.seriesID, st.index - 1, st.frames.length); // last COMPLETED index; current one not yet done
+  closeModal();
+  toast('Progress saved — pick up where you left off anytime');
+}
+
+/* =============================================================
+   BAKER FORMAT (v30.118 built same-day for a same-week tournament;
+   v30.119 STRUCTURAL REWORK per handoff §2.4/§5 — real navTo()
+   screen instead of a stacked modal, pin-tap semantics flipped to
+   match togglePin()/G.leave exactly, per-bowler ball selection,
+   and the two confirmed navigation bugs fixed).
+   ─────────────────────────────────────────────────────────────
+   Standalone, localStorage-based (mirrors the existing Team Bowl
+   'grp' system's architecture) — deliberately NOT wired into
+   db.series/games/frames/attempts. This is a genuine structural
+   fork from the personal single-bowler game model: a Baker game
+   is ONE shared 10-frame scorecard where frame OWNERSHIP rotates
+   across teammates rather than each bowler having their own full
+   game. Keeping it standalone means zero risk to the core scoring
+   engine or personal stats while still being fully functional for
+   live use. Phase 2 (later, not built here): decide whether/how
+   Baker sessions should feed personal stats or persist into the
+   main IDB tables — deliberately deferred, flagged in the handoff.
+
+   Rotation rule (LOCKED, matches spec exactly for both team
+   sizes given): bowlerIdx = (frameNumber - 1) % teamSize. This
+   generalizes cleanly to any team size that divides 10 evenly
+   (1, 2, 5, 10) — 3/4/6-bowler teams are NOT supported by this
+   formula and are out of scope until a real request arrives.
+
+   Scoring is standard tenpin rules — verified against known cases
+   (perfect game=300, all-gutters=0, all-spares-with-5-fill=150,
+   frame-10 fill-ball handling) via a standalone Node test file
+   before this was wired into the UI. Unchanged in v30.119.
+
+   ── v30.119 SCREEN ARCHITECTURE ──────────────────────────────
+   #s-baker is a real screen (registered in the navTo() dispatch
+   table, reached via bakerOpenSetup()), matching the s-group/grp
+   pattern: one persistent #baker-body container whose innerHTML
+   is swapped by renderBakerScreen()/bakerRenderSetup()/
+   bakerRenderScoring()/bakerRenderComplete() based on _bakerSetup
+   / _bakerState — no modal stacking, no closeModal()+swapModal()
+   timing hazard. handleBackTap() (see navBack() above) guards
+   against silently discarding an in-progress game via the header
+   back button.
+
+   ── v30.119 PIN-TAP SEMANTICS (§5.2) ─────────────────────────
+   Replicates togglePin()/G.leave EXACTLY, not reinvented:
+     LEAVE mode (fresh rack — st.alreadyDown.length === 0):
+       default assumes ALL pins knocked. Tapping a pin marks it
+       as the LEAVE (still standing). Knocked pins = complement.
+     SPARE mode (continuing rack — st.alreadyDown.length > 0):
+       tapping a pin marks it KNOCKED directly (only pins not
+       already down are interactive) — this was already Baker's
+       ball-2+ behavior and needed no change.
+   bakerGetMode() derives which mode applies from st.alreadyDown,
+   the same signal that already tracks rack-freshness correctly
+   across every Frame 1-9 and Frame 10 branch of
+   bakerNextBallMax() (fresh-rack resets after a strike, after a
+   spare, and after two strikes in F10 all fall out of this for
+   free — no separate F10 special-casing required).
+
+   ── v30.119 BALL SELECTION (§5.3) ────────────────────────────
+   Per-bowler, per explicit decision: each slot has its own ball
+   reference. Since only James's own equipment is maintained in
+   db.balls, each slot supports either picking from that list
+   (ballID) OR typing a manual free-text name for a teammate's
+   ball that isn't in the list (ballManual) — never both at once
+   (bakerSlotBallSelect/bakerSlotBallManual keep them mutually
+   exclusive). bakerBallLabel() resolves whichever is set for
+   display.
+
+   ── v30.119 NAVIGATION BUGS FIXED (§2.4) ─────────────────────
+   1. bakerViewHistory() now has real entry points: a "History"
+      button inside #s-baker itself, PLUS standalone header
+      buttons (#series-baker-hist-btn / #tourn-baker-hist-btn)
+      next to the existing "Start Baker Game" buttons — reachable
+      even with no game in progress.
+   2. handleTournSeriesCardTap() now checks the tournament's
+      BakerFormat flag and routes through bakerHandleRoundTap()
+      instead of unconditionally falling into the regular
+      s-game-select scoring flow. A completed Baker game already
+      logged for that specific round (ctx.seriesID) opens history
+      filtered to it; otherwise setup opens fresh for that round.
+   ============================================================= */
+
+var BAKER_STORAGE_KEY = 'bowlingdb_baker_sessions';
+var _bakerSetup = null;  // scratch state for the setup screen
+var _bakerState = null;  // scratch state for the active/complete scoring screen
+
+function bakerBowlerIdxForFrame(frameNumber, teamSize) { return (frameNumber - 1) % teamSize; }
+
+function bakerScoreGame(frames) {
+  var allBalls = [];
+  frames.forEach(function(f) { allBalls = allBalls.concat(f); });
+  var frameScores = [], resolved = [];
+  var idx = 0;
+  for (var fr = 0; fr < 10; fr++) {
+    if (fr < 9) {
+      if (allBalls[idx] === 10) {
+        resolved.push(allBalls.length >= idx + 3);
+        frameScores.push(10 + (allBalls[idx+1]||0) + (allBalls[idx+2]||0));
+        idx += 1;
+      } else if ((allBalls[idx]||0) + (allBalls[idx+1]||0) === 10) {
+        resolved.push(allBalls.length >= idx + 3);
+        frameScores.push(10 + (allBalls[idx+2]||0));
+        idx += 2;
+      } else {
+        resolved.push(allBalls.length >= idx + 2);
+        frameScores.push((allBalls[idx]||0) + (allBalls[idx+1]||0));
+        idx += 2;
+      }
+    } else {
+      resolved.push(bakerNextBallMax(10, frames[9]) === null);
+      frameScores.push(frames[9].reduce(function(a,b){return a+b;}, 0));
+    }
+  }
+  var running = [], cum = 0;
+  frameScores.forEach(function(s) { cum += s; running.push(cum); });
+  return { frameScores: frameScores, running: running, total: cum, resolved: resolved };
+}
+
+function bakerNextBallMax(frameNumber, ballsSoFar) {
+  if (frameNumber < 10) {
+    if (ballsSoFar.length === 0) return 10;
+    if (ballsSoFar.length === 1) return ballsSoFar[0] === 10 ? null : 10 - ballsSoFar[0];
+    return null;
+  }
+  if (ballsSoFar.length === 0) return 10;
+  if (ballsSoFar.length === 1) return ballsSoFar[0] === 10 ? 10 : 10 - ballsSoFar[0];
+  if (ballsSoFar.length === 2) {
+    var b1 = ballsSoFar[0], b2 = ballsSoFar[1];
+    if (b1 === 10) return b2 === 10 ? 10 : 10 - b2;
+    if (b1 + b2 === 10) return 10;
+    return null;
+  }
+  return null;
+}
+
+function bakerLoadSessions() {
+  try { return JSON.parse(localStorage.getItem(BAKER_STORAGE_KEY) || '[]'); } catch(e) { return []; }
+}
+function bakerSaveSessions(list) {
+  try { localStorage.setItem(BAKER_STORAGE_KEY, JSON.stringify(list)); } catch(e) { console.warn('bakerSaveSessions:', e); }
+}
+
+/* ── Screen dispatcher — registered in navTo()'s render table.
+   Re-derives what to show purely from _bakerState/_bakerSetup, so
+   it's safe to call on every navTo('s-baker') as well as directly
+   after any in-place state change (start/finish/cancel). ── */
+function renderBakerScreen() {
+  if (_bakerState) {
+    if (_bakerState.complete) {
+      bakerRenderComplete(bakerScoreGame(_bakerState.frames), _bakerState.bowlers);
+    } else {
+      bakerRenderScoring();
+    }
+  } else if (_bakerSetup) {
+    bakerRenderSetup();
+  } else {
+    var body = document.getElementById('baker-body');
+    if (body) body.innerHTML = '<div class="empty-state"><div class="empty-icon">🎳</div><div class="empty-label">No active Baker game</div></div>';
+  }
+}
+
+/* ── Entry point — replaces the old openBakerSetupModal(). Builds
+   setup scratch state and navigates to the real screen (mirrors the
+   Team Bowl 'grp' system's navTo() destination, per §5.1). ── */
+function bakerOpenSetup(ctx) {
+  var league = ctx.leagueID ? db.leagues.find(function(l){ return l.LeagueID===ctx.leagueID; }) : null;
+  var tourn  = ctx.tournamentID ? (db.tournaments||[]).find(function(t){ return t.TournamentID===ctx.tournamentID; }) : null;
+  var teamSize = (league && league.BakerTeamSize) || (tourn && tourn.BakerTeamSize) || 2;
+  var centerID = (league && league.CenterID) || (tourn && tourn.CenterID) || null;
+
+  _bakerSetup = {
+    ctx: ctx,
+    teamSize: teamSize,
+    centerID: centerID,
+    date: azToday(),
+    slots: Array.from({length: teamSize}, function(_,i){
+      return { BowlerID: null, name: 'Bowler ' + (i+1), ballID: null, ballManual: '', ballMode: null };
+    })
+  };
+  navTo('s-baker');
+}
+
+/* Round-card routing fix (§2.4 bug 2 / §5.4): tapping a tournament
+   round card when BakerFormat is on must not fall into the regular
+   personal scoring flow. If this round already has a completed Baker
+   game logged, open history filtered to it; otherwise start setup
+   scoped to this round (ctx.seriesID). */
+function bakerHandleRoundTap(seriesID) {
+  var t = (db.tournaments||[]).find(function(x){ return x.TournamentID===G.tournamentID; });
+  if (!t) return;
+  var existing = bakerLoadSessions().filter(function(s){
+    return s.ctx && s.ctx.tournamentID === G.tournamentID && s.ctx.seriesID === seriesID;
+  });
+  if (existing.length) {
+    bakerViewHistory(existing);
+  } else {
+    bakerOpenSetup({ tournamentID: G.tournamentID, seriesID: seriesID });
+  }
+}
+
+function bakerRenderSetup() {
+  var body = document.getElementById('baker-body');
+  if (!body) return;
+  var d = _bakerSetup;
+  var rosterOpts = (db.bowlers||[]).filter(function(b){ return b.Active!==false; })
+    .map(function(b){ return '<option value="'+b.BowlerID+'">'+b.Name+(b.IsMe?' (Me)':'')+'</option>'; }).join('');
+  var cOpts = db.centers.map(function(c){ return '<option value="'+c.CenterID+'"'+(d.centerID===c.CenterID?' selected':'')+'>'+c.CenterName+'</option>'; }).join('');
+  var ballList = db.balls.filter(function(b){ return b.Active!==false; });
+
+  var slotsHtml = d.slots.map(function(slot, i) {
+    var frames = [];
+    for (var fr=1; fr<=10; fr++) if (bakerBowlerIdxForFrame(fr, d.teamSize)===i) frames.push(fr);
+    var ballOpts = ballList.map(function(b){ return '<option value="'+b.BallID+'"'+(slot.ballID===b.BallID?' selected':'')+'>'+b.BallName+'</option>'; }).join('');
+    return '<div style="margin-bottom:12px;padding:10px;background:var(--bg2);border:1px solid var(--border1);border-radius:10px">' +
+      '<div style="font-size:11px;color:var(--t3);margin-bottom:6px">Bowler '+(i+1)+' — frames '+frames.join(', ')+'</div>' +
+      '<select class="finput" style="margin-bottom:6px" onchange="bakerSlotSelect('+i+',this.value)">' +
+        '<option value="">— New bowler (type name) —</option>' + rosterOpts +
+      '</select>' +
+      '<input class="finput" id="baker-name-'+i+'" type="text" placeholder="Bowler '+(i+1)+' name" value="'+(slot.BowlerID?'':slot.name)+'" style="margin-bottom:6px;'+(slot.BowlerID?'display:none':'')+'" oninput="bakerSlotNameEdit('+i+',this.value)">' +
+      '<select class="finput" onchange="bakerSlotBallSelect('+i+',this.value)">' +
+        '<option value="">— Ball not set —</option>' +
+        '<option value="__manual__"'+(slot.ballMode==='manual'?' selected':'')+'>Other (type manually)…</option>' +
+        ballOpts +
+      '</select>' +
+      '<input class="finput" id="baker-ballmanual-'+i+'" type="text" placeholder="Ball name" value="'+(slot.ballManual||'').replace(/"/g,'&quot;')+'" style="margin-top:6px;'+(slot.ballMode==='manual'?'':'display:none')+'" oninput="bakerSlotBallManual('+i+',this.value)">' +
+    '</div>';
+  }).join('');
+
+  body.innerHTML =
+    '<div style="font-size:12px;color:var(--t3);margin-bottom:14px">'+d.teamSize+'-bowler rotation</div>' +
+    '<div class="fgroup"><label class="flabel">Date</label>' +
+      '<input class="finput" type="date" value="'+d.date+'" oninput="_bakerSetup.date=this.value"></div>' +
+    '<div class="fgroup"><label class="flabel">Center</label>' +
+      '<select class="finput" onchange="_bakerSetup.centerID=parseInt(this.value)">'+cOpts+'</select></div>' +
+    '<div class="fgroup"><label class="flabel">Team</label>' + slotsHtml + '</div>' +
+    '<button class="btn btn-primary" style="width:100%" onclick="bakerStartSession()">Start Game →</button>' +
+    '<button class="btn btn-secondary" style="width:100%;margin-top:8px" onclick="bakerCancelSetup()">Cancel</button>';
+}
+
+function bakerCancelSetup() {
+  _bakerSetup = null;
+  navBack();
+}
+
+function bakerSlotSelect(i, val) {
+  var slot = _bakerSetup.slots[i];
+  if (!val) {
+    slot.BowlerID = null; slot.name = '';
+    var el = document.getElementById('baker-name-'+i);
+    if (el) { el.style.display = ''; el.value = ''; el.focus(); }
+  } else {
+    var id = parseInt(val);
+    var b = rosterGetByID(id);
+    if (!b) return;
+    slot.BowlerID = id; slot.name = b.Name;
+    var el2 = document.getElementById('baker-name-'+i);
+    if (el2) el2.style.display = 'none';
+  }
+}
+function bakerSlotNameEdit(i, val) {
+  _bakerSetup.slots[i].name = val.trim() || ('Bowler ' + (i+1));
+}
+
+/* Ball field keeps ballID / ballManual mutually exclusive — picking
+   from the list clears any manual text and vice versa, so a stale
+   value from switching back and forth never gets silently carried
+   into the saved session. */
+function bakerSlotBallSelect(i, val) {
+  var slot = _bakerSetup.slots[i];
+  var manualEl = document.getElementById('baker-ballmanual-'+i);
+  if (val === '__manual__') {
+    slot.ballMode = 'manual'; slot.ballID = null;
+    if (manualEl) { manualEl.style.display = ''; manualEl.focus(); }
+  } else if (!val) {
+    slot.ballMode = null; slot.ballID = null; slot.ballManual = '';
+    if (manualEl) { manualEl.style.display = 'none'; manualEl.value = ''; }
+  } else {
+    slot.ballMode = 'list'; slot.ballID = parseInt(val); slot.ballManual = '';
+    if (manualEl) { manualEl.style.display = 'none'; manualEl.value = ''; }
+  }
+}
+function bakerSlotBallManual(i, val) {
+  _bakerSetup.slots[i].ballManual = val;
+}
+
+/* Resolves whichever ball reference is set (list pick or manual text)
+   for display in the scoring header / complete breakdown / history. */
+function bakerBallLabel(bowler) {
+  if (bowler.ballID) {
+    var b = db.balls.find(function(x){ return x.BallID === bowler.ballID; });
+    if (b) return b.BallName;
+  }
+  if (bowler.ballManual) return bowler.ballManual;
+  return '';
+}
+
+/* Resolves a full history string when a bowler changed balls mid-game
+   (e.g. "Storm Phaze II (F1–4), Hammer Black Widow (F5–10)"), falling
+   back to the plain current-ball label when there was no change. Frame
+   ranges are clipped to the frames that actually belong to this bowler
+   in the rotation, so a change logged mid-rotation still reads cleanly. */
+function bakerBallHistoryLabel(bowler, teamSize) {
+  if (!bowler.ballChanges || bowler.ballChanges.length <= 1) return bakerBallLabel(bowler);
+  var myFrames = [];
+  for (var fr = 1; fr <= 10; fr++) if (bakerBowlerIdxForFrame(fr, teamSize) === bowler.__idx) myFrames.push(fr);
+  var parts = [];
+  for (var i = 0; i < bowler.ballChanges.length; i++) {
+    var chg = bowler.ballChanges[i];
+    var nextChg = bowler.ballChanges[i+1];
+    var rangeFrames = myFrames.filter(function(f){ return f >= chg.frame && (!nextChg || f < nextChg.frame); });
+    if (!rangeFrames.length) continue;
+    var label = chg.ballID ? ((db.balls.find(function(b){ return b.BallID === chg.ballID; })||{}).BallName) : chg.ballManual;
+    if (!label) continue;
+    var range = 'F' + rangeFrames[0] + (rangeFrames.length > 1 ? '\u2013' + rangeFrames[rangeFrames.length-1] : '');
+    parts.push(label + ' (' + range + ')');
+  }
+  return parts.join(', ');
+}
+
+/* ── Change ball on the fly (mid-game) ──
+   Scoped to whichever bowler is up right now. A short-lived modal is
+   fine here (unlike the main scoring flow) — this is a transient
+   utility action, not a stacked competing screen. Logs a ballChanges
+   entry so the post-game breakdown can show which ball covered which
+   frames, same spirit as the setup-time picker: list pick or manual
+   free-text, mutually exclusive. */
+var _bakerBallChangeScratch = null;
+
+function bakerChangeBallPrompt() {
+  var bowler = bakerCurrentBowler();
+  _bakerBallChangeScratch = { ballID: bowler.ballID || null, ballManual: bowler.ballManual || '' };
+  var isManual = !bowler.ballID && !!bowler.ballManual;
+  var ballOpts = db.balls.filter(function(b){ return b.Active!==false; })
+    .map(function(b){ return '<option value="'+b.BallID+'"'+(bowler.ballID===b.BallID?' selected':'')+'>'+b.BallName+'</option>'; }).join('');
+  openModal(
+    '<div class="modal-title">Change Ball \u2014 '+bowler.name+'</div>' +
+    '<select class="finput" onchange="bakerBallChangeSelect(this.value)">' +
+      '<option value="">\u2014 Not set \u2014</option>' +
+      '<option value="__manual__"'+(isManual?' selected':'')+'>Other (type manually)\u2026</option>' +
+      ballOpts +
+    '</select>' +
+    '<input class="finput" id="baker-changeball-manual" type="text" placeholder="Ball name" value="'+(bowler.ballManual||'').replace(/"/g,'&quot;')+'" style="margin-top:6px;'+(isManual?'':'display:none')+'" oninput="bakerBallChangeManual(this.value)">' +
+    '<button class="btn btn-primary" style="width:100%;margin-top:12px" onclick="bakerApplyBallChange()">Save</button>' +
+    '<button class="btn btn-secondary" style="width:100%;margin-top:8px" onclick="closeModal()">Cancel</button>'
+  );
+}
+
+function bakerBallChangeSelect(val) {
+  var manualEl = document.getElementById('baker-changeball-manual');
+  if (val === '__manual__') {
+    _bakerBallChangeScratch.ballID = null;
+    if (manualEl) { manualEl.style.display = ''; manualEl.focus(); }
+  } else if (!val) {
+    _bakerBallChangeScratch.ballID = null; _bakerBallChangeScratch.ballManual = '';
+    if (manualEl) { manualEl.style.display = 'none'; manualEl.value = ''; }
+  } else {
+    _bakerBallChangeScratch.ballID = parseInt(val); _bakerBallChangeScratch.ballManual = '';
+    if (manualEl) { manualEl.style.display = 'none'; manualEl.value = ''; }
+  }
+}
+function bakerBallChangeManual(val) { _bakerBallChangeScratch.ballManual = val; }
+
+function bakerApplyBallChange() {
+  var st = _bakerState;
+  var idx = bakerBowlerIdxForFrame(st.currentFrame, st.teamSize);
+  var bowler = st.bowlers[idx];
+  var changed = (bowler.ballID !== _bakerBallChangeScratch.ballID) || (bowler.ballManual !== _bakerBallChangeScratch.ballManual);
+  bowler.ballID = _bakerBallChangeScratch.ballID;
+  bowler.ballManual = _bakerBallChangeScratch.ballManual;
+  if (changed) {
+    if (!bowler.ballChanges) bowler.ballChanges = [];
+    bowler.ballChanges.push({ frame: st.currentFrame, ballID: bowler.ballID, ballManual: bowler.ballManual });
+  }
+  _bakerBallChangeScratch = null;
+  closeModal();
+  bakerRenderScoring();
+}
+
+function bakerStartSession() {
+  var d = _bakerSetup;
+  var names = d.slots.map(function(s){ return s.name; });
+  if (names.some(function(n){ return !n || !n.trim(); })) { toast('Enter a name for every bowler'); return; }
+  _bakerState = {
+    id: 'baker_' + Date.now(),
+    ctx: d.ctx, teamSize: d.teamSize, centerID: d.centerID, date: d.date,
+    bowlers: d.slots.map(function(s, i){
+      var b = { BowlerID: s.BowlerID, name: s.name, ballID: s.ballID||null, ballManual: s.ballManual||'', __idx: i };
+      b.ballChanges = (b.ballID || b.ballManual) ? [{ frame: 1, ballID: b.ballID, ballManual: b.ballManual }] : [];
+      return b;
+    }),
+    frames: Array.from({length:10}, function(){ return []; }),
+    currentFrame: 1,
+    complete: false,
+    alreadyDown: [],  // pin numbers down from an earlier ball in the current rack
+    tapped: []        // pin numbers tapped on the CURRENT ball, not yet confirmed
+  };
+  _bakerSetup = null;
+  renderBakerScreen();
+}
+
+/* ── Scoring screen ── */
+function bakerCurrentBowler() {
+  var st = _bakerState;
+  return st.bowlers[bakerBowlerIdxForFrame(st.currentFrame, st.teamSize)];
+}
+
+/* LEAVE mode = fresh rack (nothing down yet this frame/fill sequence).
+   SPARE mode = continuing a rack from an earlier ball. st.alreadyDown
+   is already the correct freshness signal — it's reset to [] every
+   time bakerConfirmBall() determines the NEXT ball starts a fresh
+   rack, across every Frame 1-9 and Frame 10 branch. */
+function bakerGetMode() {
+  return _bakerState.alreadyDown.length === 0 ? 'LEAVE' : 'SPARE';
+}
+
+function bakerTapPin(pinNum) {
+  var st = _bakerState;
+  if (st.alreadyDown.indexOf(pinNum) >= 0) return; // already down — not interactive
+  var i = st.tapped.indexOf(pinNum);
+  if (i >= 0) st.tapped.splice(i, 1); else st.tapped.push(pinNum);
+  bakerRenderScoring();
+}
+
+/* Translates the current tap set into which pins actually went down
+   THIS ball, mode-aware:
+     LEAVE mode: tapped = pins marked still standing. Knocked = the
+       complement (every pin NOT tapped).
+     SPARE mode: tapped = pins marked knocked, directly (unchanged
+       from the original build — this was already the correct
+       togglePin()-style behavior for ball 2+). */
+function bakerKnockedPinsThisBall() {
+  var st = _bakerState;
+  if (bakerGetMode() === 'LEAVE') {
+    var knocked = [];
+    for (var p = 1; p <= 10; p++) if (st.tapped.indexOf(p) < 0) knocked.push(p);
+    return knocked;
+  }
+  return st.tapped.slice();
+}
+
+/* Pinfall for the ball about to be confirmed, mode-aware — mirrors
+   the real engine's "Pinfall = 10 - G.leave.size" (LEAVE) vs.
+   "Pinfall = G.knocked.size" (SPARE) exactly. */
+function bakerPinsFromTapped() {
+  return bakerGetMode() === 'LEAVE' ? (10 - _bakerState.tapped.length) : _bakerState.tapped.length;
+}
+
+function bakerClearTaps() { _bakerState.tapped = []; bakerRenderScoring(); }
+
+/* Primary quick-action button — dynamic per mode, mirrors
+   quickPrimary()/quickSpare(): LEAVE mode = "Strike" (clear all
+   leave, confirm all-ten-knocked). SPARE mode = "Spare" (mark every
+   remaining standing pin knocked, confirm). */
+function bakerQuickPrimary() {
+  var st = _bakerState;
+  if (bakerGetMode() === 'LEAVE') {
+    st.tapped = [];
+  } else {
+    st.tapped = [];
+    for (var p = 1; p <= 10; p++) if (st.alreadyDown.indexOf(p) < 0) st.tapped.push(p);
+  }
+  bakerConfirmBall();
+}
+
+/* Secondary quick-action button — "Miss": LEAVE mode marks every pin
+   as leave (gutter ball, 0 knocked). SPARE mode marks nothing
+   knocked (miss on the remaining pins). Confirms immediately either
+   way, mirroring quickSecondary()'s standard-gutter path. */
+function bakerQuickSecondary() {
+  var st = _bakerState;
+  if (bakerGetMode() === 'LEAVE') {
+    st.tapped = [];
+    for (var p = 1; p <= 10; p++) st.tapped.push(p);
+  } else {
+    st.tapped = [];
+  }
+  bakerConfirmBall();
+}
+
+/* Commits the currently-tapped pins as this ball's result, then decides
+   whether the NEXT ball starts a fresh rack (all 10 standing again) or
+   continues from the pins still up — derived from bakerNextBallMax so
+   this can never drift out of sync with the tested scoring logic. */
+function bakerConfirmBall() {
+  var st = _bakerState;
+  var pins = bakerPinsFromTapped();
+  var frameArr = st.frames[st.currentFrame - 1];
+  var willBeArr = frameArr.concat([pins]);
+  var nextMax = bakerNextBallMax(st.currentFrame, willBeArr);
+  var continuesSameRack = (nextMax !== null && nextMax !== 10);
+  st.alreadyDown = continuesSameRack ? st.alreadyDown.concat(bakerKnockedPinsThisBall()) : [];
+  st.tapped = [];
+  bakerRecordBall(pins);
+}
+
+function bakerRecordBall(pins) {
+  var st = _bakerState;
+  var frameArr = st.frames[st.currentFrame - 1];
+  frameArr.push(pins);
+  var nextMax = bakerNextBallMax(st.currentFrame, frameArr);
+  if (nextMax === null) {
+    if (st.currentFrame === 10) {
+      st.complete = true;
+      bakerFinishSession();
+      return;
+    }
+    st.currentFrame++;
+  }
+  bakerRenderScoring();
+}
+
+function bakerUndoBall() {
+  var st = _bakerState;
+  var frameArr = st.frames[st.currentFrame - 1];
+  if (frameArr.length > 0) {
+    frameArr.pop();
+    st.alreadyDown = bakerRecomputeAlreadyDown(st.currentFrame, frameArr);
+    st.tapped = [];
+    bakerRenderScoring();
+    return;
+  }
+  if (st.currentFrame > 1) {
+    st.currentFrame--;
+    st.frames[st.currentFrame - 1] = [];
+    st.alreadyDown = [];
+    st.tapped = [];
+    bakerRenderScoring();
+  }
+}
+
+/* We track pin COUNTS historically, not which specific pins fell on each
+   prior ball. On Undo mid-rack, the deck is redrawn with a plausible-but-
+   arbitrary set of "already down" pins (lowest-numbered first) matching
+   the correct remaining count — a known cosmetic simplification, unchanged
+   from the original build. Only the LENGTH of this array is ever used to
+   determine LEAVE vs SPARE mode (bakerGetMode()), and that length is
+   always correct regardless of which specific pins are shown down. The
+   numeric score is unaffected either way; only the visual pin pattern
+   after an Undo may not match exactly what was physically knocked down. */
+function bakerRecomputeAlreadyDown(frameNumber, ballsSoFar) {
+  var maxNow = bakerNextBallMax(frameNumber, ballsSoFar);
+  if (maxNow === null || maxNow === 10) return [];
+  var downCount = 10 - maxNow;
+  var down = [];
+  for (var p = 1; p <= downCount; p++) down.push(p);
+  return down;
+}
+
+/* Standard bowling scorecard notation: X for a strike, / for a spare
+   (the second ball of a rack that brings the rack total to 10, marked
+   in place of the raw pin count), - for a miss/gutter ball, plain digit
+   otherwise. Works uniformly for both regular frames (1-2 balls) and
+   Frame 10 (up to 3 balls / up to 2 racks) since a "rack" here is never
+   more than 2 balls — a strike ends it at 1, anything else resolves
+   (spare or open) at exactly 2. */
+function bakerFormatFrameBalls(balls) {
+  var out = [];
+  var i = 0;
+  while (i < balls.length) {
+    var b1 = balls[i];
+    if (b1 === 10) { out.push('X'); i += 1; continue; }
+    var b2 = balls[i+1];
+    if (b2 !== undefined) {
+      if (b1 + b2 === 10) {
+        out.push(b1 === 0 ? '-' : String(b1));
+        out.push('/');
+      } else {
+        out.push(b1 === 0 ? '-' : String(b1));
+        out.push(b2 === 0 ? '-' : String(b2));
+      }
+      i += 2;
+    } else {
+      out.push(b1 === 0 ? '-' : String(b1));
+      i += 1;
+    }
+  }
+  return out.join(' ');
+}
+
+function bakerMiniScoresheet() {
+  var st = _bakerState;
+  var scored = bakerScoreGame(st.frames);
+  var cells = [];
+  for (var fr = 1; fr <= 10; fr++) {
+    var balls = st.frames[fr-1];
+    var isCurrent = fr === st.currentFrame && !st.complete;
+    var ballsStr = bakerFormatFrameBalls(balls);
+    var scoreStr = scored.resolved[fr-1] ? scored.running[fr-1] : '';
+    cells.push('<div style="flex:1;min-width:28px;text-align:center;padding:4px 2px;border-radius:6px;'+(isCurrent?'background:rgba(196,168,240,0.18);border:1px solid var(--lilac)':'border:1px solid var(--border1)')+'">' +
+      '<div style="font-size:9px;color:var(--t3)">'+fr+'</div>' +
+      '<div style="font-size:10px;font-weight:700">'+(ballsStr||'—')+'</div>' +
+      '<div style="font-size:11px;color:var(--lilac);font-weight:800">'+(scoreStr!==''?scoreStr:'')+'</div>' +
+    '</div>');
+  }
+  return '<div style="display:flex;gap:3px;margin-bottom:16px;overflow-x:auto">'+cells.join('')+'</div>';
+}
+
+function bakerRenderScoring() {
+  var st = _bakerState;
+  var bowler = bakerCurrentBowler();
+  var frameArr = st.frames[st.currentFrame - 1];
+  var ballNum = frameArr.length + 1;
+  var mode = bakerGetMode();
+
+  /* Class names match the real scoring engine's pin-btn convention
+     exactly (B=already down, L=leave/still-standing, K=knocked,
+     S=standing-default in SPARE mode, no class=default-dark "will be
+     knocked" in LEAVE mode) — see updatePinDisplay() for the source
+     of truth this replicates. */
+  function pinClass(p) {
+    if (st.alreadyDown.indexOf(p) >= 0) return 'B';
+    if (mode === 'LEAVE') return st.tapped.indexOf(p) >= 0 ? 'L' : '';
+    return st.tapped.indexOf(p) >= 0 ? 'K' : 'S';
+  }
+  function pinBtn(p) {
+    var cls = pinClass(p);
+    return '<button class="pin-btn'+(cls?' '+cls:'')+'" onclick="bakerTapPin('+p+')">'+p+'</button>';
+  }
+
+  var pinDeck =
+    '<div class="pin-stage">' +
+      '<div class="pin-row">'+pinBtn(7)+pinBtn(8)+pinBtn(9)+pinBtn(10)+'</div>' +
+      '<div class="pin-row">'+pinBtn(4)+pinBtn(5)+pinBtn(6)+'</div>' +
+      '<div class="pin-row">'+pinBtn(2)+pinBtn(3)+'</div>' +
+      '<div class="pin-row">'+pinBtn(1)+'</div>' +
+    '</div>';
+
+  var primaryLabel = mode === 'LEAVE' ? 'Strike ✕' : 'Spare ✓';
+  var primaryClass = mode === 'LEAVE' ? 'qa-strike' : 'qa-spare';
+  var pinsIfConfirmed = bakerPinsFromTapped();
+
+  var qaRow =
+    '<div class="qa-row">' +
+      '<button class="qa-btn '+primaryClass+'" onclick="bakerQuickPrimary()">'+primaryLabel+'</button>' +
+      '<button class="qa-btn qa-miss" onclick="bakerQuickSecondary()">Miss —</button>' +
+      '<button class="qa-btn" onclick="bakerConfirmBall()" style="background:linear-gradient(135deg,#00B8B8,var(--teal));color:#000;flex:1.4">Confirm '+pinsIfConfirmed+' →</button>' +
+    '</div>';
+
+  var ballLabel = bakerBallLabel(bowler);
+
+  var body = document.getElementById('baker-body');
+  if (!body) return;
+  body.innerHTML =
+    bakerMiniScoresheet() +
+    '<div style="background:var(--bg2);border:1px solid var(--border1);border-radius:10px;padding:12px;margin-bottom:10px;text-align:center">' +
+      '<div style="font-size:12px;color:var(--t3)">Frame '+st.currentFrame+' · Ball '+ballNum+'</div>' +
+      '<div style="font-size:18px;font-weight:800;color:var(--lilac);margin-top:4px">'+bowler.name+'\'s turn</div>' +
+      (ballLabel
+        ? '<div style="font-size:11px;color:var(--t3);margin-top:2px;cursor:pointer;text-decoration:underline dotted" onclick="bakerChangeBallPrompt()">🎳 '+ballLabel+' · change</div>'
+        : '<div style="font-size:11px;color:var(--lilac);margin-top:2px;cursor:pointer;text-decoration:underline dotted" onclick="bakerChangeBallPrompt()">+ Set ball</div>') +
+    '</div>' +
+    pinDeck +
+    qaRow +
+    '<button class="btn btn-secondary" style="width:100%" onclick="bakerUndoBall()">Undo Last Ball</button>' +
+    '<button class="btn btn-secondary" style="width:100%;margin-top:8px" onclick="bakerAbandonSession()">Cancel Game</button>';
+}
+
+function bakerAbandonSession() {
+  if (!confirm('Cancel this Baker game? Nothing will be saved.')) return;
+  _bakerState = null;
+  navBack();
+}
+
+function bakerFinishSession() {
+  var st = _bakerState;
+  var scored = bakerScoreGame(st.frames);
+  var sessions = bakerLoadSessions();
+  var record = {
+    id: st.id, ctx: st.ctx, teamSize: st.teamSize, centerID: st.centerID, date: st.date,
+    bowlers: st.bowlers, frames: st.frames, frameScores: scored.frameScores,
+    running: scored.running, finalScore: scored.total, createdAt: new Date().toISOString()
+  };
+  sessions.push(record);
+  bakerSaveSessions(sessions);
+  st.complete = true;
+  bakerRenderComplete(scored, st.bowlers);
+}
+
+function bakerRenderComplete(scored, bowlers) {
+  var st = _bakerState;
+  var breakdown = bowlers.map(function(b, i) {
+    var frames = [];
+    for (var fr=1; fr<=10; fr++) if (bakerBowlerIdxForFrame(fr, st.teamSize)===i) frames.push(fr);
+    var ballLabel = bakerBallHistoryLabel(b, st.teamSize);
+    return '<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border1)">' +
+      '<span>'+b.name+(ballLabel?' <span style="color:var(--t3);font-size:11px">('+ballLabel+')</span>':'')+'</span>' +
+      '<span style="color:var(--t3);font-size:12px">frames '+frames.join(', ')+'</span></div>';
+  }).join('');
+
+  var body = document.getElementById('baker-body');
+  if (!body) return;
+  body.innerHTML =
+    '<div style="text-align:center;padding:16px 0">' +
+      '<div style="font-size:42px;font-weight:900;color:var(--lilac)">'+scored.total+'</div>' +
+      '<div style="font-size:12px;color:var(--t3)">Team Score</div>' +
+    '</div>' +
+    bakerMiniScoresheet() +
+    '<div style="margin-bottom:16px">'+breakdown+'</div>' +
+    '<button class="btn btn-primary" style="width:100%" onclick="bakerDone()">Done</button>';
+}
+
+function bakerDone() {
+  _bakerState = null;
+  navBack();
+}
+
+/* History — reachable via #s-baker's own "History" button AND via the
+   standalone header buttons next to "Start Baker Game" on both the
+   League Series and Tournament Round screens (§2.4 bug fix: previously
+   nothing in the shipped UI called this at all). Optional `filtered`
+   list scopes the view to a single round (used by bakerHandleRoundTap()). */
+function bakerViewHistory(filtered) {
+  var sessions = (filtered || bakerLoadSessions()).slice()
+    .sort(function(a,b){ return (b.createdAt||'').localeCompare(a.createdAt||''); });
+  if (!sessions.length) { toast('No Baker games logged yet'); return; }
+  var rows = sessions.map(function(s) {
+    var names = s.bowlers.map(function(b){ return b.name; }).join(' · ');
+    return '<div style="padding:10px 0;border-bottom:1px solid var(--border1)">' +
+      '<div style="display:flex;justify-content:space-between"><strong>'+s.finalScore+'</strong><span style="font-size:11px;color:var(--t3)">'+s.date+'</span></div>' +
+      '<div style="font-size:12px;color:var(--t3)">'+names+'</div></div>';
+  }).join('');
+  openModal('<div class="modal-title">🎳 Baker Game History</div>' + rows +
+    '<button class="btn btn-secondary" style="width:100%;margin-top:12px" onclick="closeModal()">Close</button>');
+}
+
+/* =============================================================
+   BALL-CHANGE RETROSPECTIVE (v30.113 — Phase B, Lane Library
+   design doc §3.2). Standalone, computed on demand against the
+   existing dataset — never stored, same philosophy as Layer 1/2.
+   ─────────────────────────────────────────────────────────────
+   Frame parity is a universal lane-side proxy needing no per-
+   game lane number: frames 1/3/5/7/9 = side A, frames 2/4/6/8/10
+   = side B. Each game's att1 ball sequence is split into an odd-
+   frame and even-frame sub-sequence (frame 10 fill balls —
+   attempts 2/3 — are excluded; only att1 of frame 10 counts). A
+   "change" is recorded only when the ball on a side differs from
+   the LAST ball played on that SAME side — this correctly
+   excludes routine two-ball rotation strategies that a naive
+   adjacent-frame check would flag as constant switching.
+   Validated against the full backup (997 games, 660 complete):
+   338 games / 771 events, matching the locked design-doc figures.
+   ============================================================= */
+function bcrGameEvents(game) {
+  var frms = (db.frames || []).filter(function(f){ return f.GameID === game.GameID; })
+    .sort(function(a,b){ return a.FrameNumber - b.FrameNumber; });
+  if (frms.length !== 10) return null; // partial game — can't establish both side sequences
+
+  var sideSeq = { A: [], B: [] };
+  frms.forEach(function(f) {
+    var atts = (db.attempts || []).filter(function(a){ return a.FrameID === f.FrameID && a.Attempt === 1; });
+    var a1 = atts[0];
+    if (!a1 || a1.BallID == null) return; // no ball recorded — gap, doesn't reset side history
+    var side = (f.FrameNumber % 2 === 1) ? 'A' : 'B';
+    sideSeq[side].push({ frame: f, ball: a1.BallID, pinfall: a1.Pinfall });
+  });
+
+  var events = [];
+  ['A','B'].forEach(function(side) {
+    var seq = sideSeq[side];
+    for (var i = 1; i < seq.length; i++) {
+      if (seq[i].ball !== seq[i-1].ball) {
+        // Step 1 outcome grading — spec-independent, 3-frame window
+        // starting AT the switch frame, same side only (locked thresholds).
+        // Step 2 (ball-spec-delta lens) is NEVER computed here.
+        var win = seq.slice(i, i + 3);
+        var strikes = win.filter(function(w){ return w.pinfall === 10; }).length;
+        var grade = (strikes >= 2) ? 'positive' : (strikes === 0 ? 'negative' : 'neutral');
+        events.push({
+          gameID: game.GameID, side: side, frameNumber: seq[i].frame.FrameNumber,
+          fromBallID: seq[i - 1].ball, toBallID: seq[i].ball,
+          windowSize: win.length, strikes: strikes, grade: grade
+        });
+      }
+    }
+  });
+  return events;
+}
+
+/* Aggregate true-change events + Step 1 grading across a set of games
+   (defaults to every complete game in the dataset). */
+function ballChangeRetrospective(gameIDs) {
+  var games = gameIDs
+    ? (db.games || []).filter(function(g){ return gameIDs.indexOf(g.GameID) >= 0; })
+    : (db.games || []);
+  var allEvents = [];
+  var gamesConsidered = 0, gamesWithChange = 0;
+  games.forEach(function(g) {
+    var events = bcrGameEvents(g);
+    if (events === null) return;
+    gamesConsidered++;
+    if (events.length) { gamesWithChange++; allEvents = allEvents.concat(events); }
+  });
+  var counts = { positive: 0, neutral: 0, negative: 0 };
+  allEvents.forEach(function(e){ counts[e.grade]++; });
+  var total = allEvents.length;
+  var pct1 = function(n) { return total ? Math.floor(n / total * 1000) / 10 : 0; };
+  return {
+    gamesConsidered: gamesConsidered,
+    gamesWithChange: gamesWithChange,
+    totalEvents: total,
+    counts: counts,
+    pct: { positive: pct1(counts.positive), neutral: pct1(counts.neutral), negative: pct1(counts.negative) },
+    events: allEvents
+  };
+}
+
+/* =============================================================
+   BALL-CHANGE RETROSPECTIVE — STEP 2 (v30.115, Phase C). Joins
+   Step 1's spec-independent graded fact table against a Layer 2
+   spec-delta lens. NEVER mixed back into Step 1 grading — this is
+   an interpretive layer applied on top, computed on demand.
+   ─────────────────────────────────────────────────────────────
+   BUCKETING GRANULARITY (design-doc open decision — resolved this
+   session against real population counts, not guessed): two axes,
+     - deltaDir: Layer 2 totalHookDerived direction of change from
+       the pre-switch ball to the post-switch ball (up/down/flat,
+       dead zone < BCR_DELTA_DEADZONE to absorb noise)
+     - triggerLeaveSide: Layer 1's third axis (leave-side clustering),
+       classified from the leave immediately preceding the switch on
+       the SAME lane side (the leave that plausibly prompted it)
+   A third axis (angle/energy of the trigger leave) was tested and
+   produces mostly sub-15 cells on the current dataset — deferred
+   until more history accumulates (see North Star block, Open
+   Decisions). No overlap-resolution question arises with two
+   single-valued axes; that only becomes relevant if/when a third
+   axis is added. Real validation (997-game backup): 9 of 12 cells
+   clear the n>=15 gate; 'center' trigger-leave cells (~2% of all
+   leaves) mostly don't and are excluded rather than zero-filled.
+   ============================================================= */
+var BCR_DELTA_DEADZONE = 0.75; // totalHookDerived delta magnitude below this reads as 'flat'
+
+// The leave immediately preceding a switch, on the same side — the leave
+// that plausibly prompted the ball change. null for a strike/no-leave frame.
+function bcrTriggerLeaveSide(prevSeqEntry) {
+  var a1 = prevSeqEntry.a1;
+  if (a1.Pinfall == null || a1.Pinfall === 10 || a1.Pinfall === 0) return null;
+  var standing = new Set();
+  for (var p = 1; p <= 10; p++) { if (a1['PinStart' + p] === 1 && a1['PinDelta' + p] !== 1) standing.add(p); }
+  if (standing.size === 0 && a1.LeaveID && db.leaves && db.leaves.length) {
+    var lv = db.leaves.find(function(l){ return l.LeaveID === a1.LeaveID; });
+    if (lv) { for (var p2 = 1; p2 <= 10; p2++) { if (lv['Pin' + p2]) standing.add(p2); } }
+  }
+  if (standing.size === 0) {
+    var anyKnocked = [1,2,3,4,5,6,7,8,9,10].some(function(p3){ return a1['Pin' + p3] === true; });
+    if (anyKnocked) { for (var p4 = 1; p4 <= 10; p4++) { if (!a1['Pin' + p4]) standing.add(p4); } }
+  }
+  if (standing.size === 0 || standing.has(1)) return null;
+  return classifyLeaveSide(standing);
+}
+
+function bcrDeltaDirection(fromBallID, toBallID) {
+  var fromBall = (db.balls || []).find(function(b){ return b.BallID == fromBallID; });
+  var toBall = (db.balls || []).find(function(b){ return b.BallID == toBallID; });
+  var fromProfile = fromBall ? ballMotionProfile(fromBall) : null;
+  var toProfile = toBall ? ballMotionProfile(toBall) : null;
+  if (!fromProfile || !toProfile || fromProfile.totalHookDerived == null || toProfile.totalHookDerived == null) return null;
+  var d = toProfile.totalHookDerived - fromProfile.totalHookDerived;
+  if (Math.abs(d) < BCR_DELTA_DEADZONE) return 'flat';
+  return (d > 0) ? 'up' : 'down';
+}
+
+// Same event detection as Step 1 (bcrGameEvents), extended with the two
+// Step 2 join fields. Kept as a separate pass rather than modifying
+// bcrGameEvents itself, so Step 1's fact table stays exactly as validated.
+function bcrGameEventsWithStep2(game) {
+  var frms = (db.frames || []).filter(function(f){ return f.GameID === game.GameID; })
+    .sort(function(a,b){ return a.FrameNumber - b.FrameNumber; });
+  if (frms.length !== 10) return null;
+
+  var sideSeq = { A: [], B: [] };
+  frms.forEach(function(f) {
+    var atts = (db.attempts || []).filter(function(a){ return a.FrameID === f.FrameID && a.Attempt === 1; });
+    var a1 = atts[0];
+    if (!a1 || a1.BallID == null) return;
+    var side = (f.FrameNumber % 2 === 1) ? 'A' : 'B';
+    sideSeq[side].push({ frame: f, ball: a1.BallID, pinfall: a1.Pinfall, a1: a1 });
+  });
+
+  var events = [];
+  ['A', 'B'].forEach(function(side) {
+    var seq = sideSeq[side];
+    for (var i = 1; i < seq.length; i++) {
+      if (seq[i].ball !== seq[i - 1].ball) {
+        var win = seq.slice(i, i + 3);
+        var strikes = win.filter(function(w){ return w.pinfall === 10; }).length;
+        var grade = (strikes >= 2) ? 'positive' : (strikes === 0 ? 'negative' : 'neutral');
+        events.push({
+          gameID: game.GameID, side: side, frameNumber: seq[i].frame.FrameNumber,
+          fromBallID: seq[i - 1].ball, toBallID: seq[i].ball,
+          strikes: strikes, grade: grade,
+          triggerLeaveSide: bcrTriggerLeaveSide(seq[i - 1]),
+          deltaDir: bcrDeltaDirection(seq[i - 1].ball, seq[i].ball)
+        });
+      }
+    }
+  });
+  return events;
+}
+
+/* Aggregates Step 2 buckets across a set of games (defaults to all).
+   Returns per-cell { n, positive, neutral, negative, pct, gated } for
+   every deltaDir x triggerLeaveSide combination actually observed.
+   Cells below the n>=15 gate are still returned (gated:false) so a
+   caller can choose to hide vs. show-with-caveat, rather than being
+   silently zero-filled. */
+function ballChangeStep2Join(gameIDs) {
+  var games = gameIDs
+    ? (db.games || []).filter(function(g){ return gameIDs.indexOf(g.GameID) >= 0; })
+    : (db.games || []);
+  var buckets = {};
+  games.forEach(function(g) {
+    var events = bcrGameEventsWithStep2(g);
+    if (!events) return;
+    events.forEach(function(e) {
+      if (!e.deltaDir || !e.triggerLeaveSide) return; // unresolvable — excluded, not zero-filled
+      var key = e.deltaDir + '|' + e.triggerLeaveSide;
+      if (!buckets[key]) buckets[key] = { deltaDir: e.deltaDir, triggerLeaveSide: e.triggerLeaveSide, n: 0, positive: 0, neutral: 0, negative: 0 };
+      buckets[key].n++;
+      buckets[key][e.grade]++;
+    });
+  });
+  var cells = Object.keys(buckets).map(function(k) {
+    var b = buckets[k];
+    var pct1 = function(n) { return b.n ? Math.floor(n / b.n * 1000) / 10 : 0; };
+    return {
+      key: k, deltaDir: b.deltaDir, triggerLeaveSide: b.triggerLeaveSide, n: b.n,
+      positive: b.positive, neutral: b.neutral, negative: b.negative,
+      pct: { positive: pct1(b.positive), neutral: pct1(b.neutral), negative: pct1(b.negative) },
+      gated: b.n >= 15
+    };
+  });
+  cells.sort(function(a, b){ return b.n - a.n; });
+  return cells;
+}
+
+/* =============================================================
+   LAYER 2 — ballMotionProfile() (v30.113, Phase B, pulled
+   forward from Matrix Phase 4). Pure function of a ball's specs
+   (RG, Differential, Coverstock, CoreType) plus its MOST RECENT
+   logged surfaceDetails prep — surface finish outranks box
+
+   coverstock (a pearl at 500-1000 grit reads earlier than a
+   polished solid), so box specs alone are never used as a
+   surface stand-in. Computed on demand every call, never stored.
+   Normalization ranges are calibrated to this bowler's own
+   arsenal (RG 2.469-2.715, Diff 0.022-0.054 observed) since
+   relative position within THIS bag is what drives ball
+   selection, not generic industry constants.
+   ============================================================= */
+var BMP_RG_MIN = 2.46, BMP_RG_MAX = 2.72;
+var BMP_DIFF_MIN = 0.020, BMP_DIFF_MAX = 0.060;
+var BMP_GRIT_MIN = 360, BMP_GRIT_MAX = 4000;
+var BMP_DISAGREEMENT_THRESHOLD = 2.5; // 0-10 scale gap that flags a review row
+
+function bmpClamp10(v) { return Math.max(0, Math.min(10, v)); }
+
+// Coverstock friction base (0-10). Keyword match handles free-text specs
+// ("Pearl Reactive", "Hybrid Reactive", bare "Reactive", etc.) seen in the
+// real ball library rather than requiring an exact category string.
+function bmpCoverstockFriction(coverstockRaw) {
+  var c = String(coverstockRaw || '').toLowerCase();
+  if (!c) return null;
+  if (c.indexOf('plastic') >= 0 || c.indexOf('polyester') >= 0) return 0;
+  if (c.indexOf('urethane') >= 0) return 4;
+  if (c.indexOf('pearl') >= 0) return 3;
+  if (c.indexOf('hybrid') >= 0) return 6;
+  if (c.indexOf('solid') >= 0) return 9;
+  return 6; // bare "Reactive" with no cover-type qualifier — hybrid-like default
+}
+
+// Most recent surfaceDetails prep for a ball; null if never logged.
+function bmpLatestSurfacePrep(ballID) {
+  var preps = (db.surfaceDetails || []).filter(function(sd){ return sd.BallID == ballID; });
+  if (!preps.length) return null;
+  preps.sort(function(a, b){ return (b.DateSurfaced || '').localeCompare(a.DateSurfaced || ''); });
+  return preps[0];
+}
+
+// Surface friction contribution (0-10, higher = coarser = more hook).
+// Polish subtracts further — retains energy/skids longer, less total hook.
+function bmpSurfaceFriction(prep) {
+  if (!prep || prep.GritSimple == null) return null;
+  var score = bmpClamp10(10 - (prep.GritSimple - BMP_GRIT_MIN) / (BMP_GRIT_MAX - BMP_GRIT_MIN) * 10);
+  if (prep.Polished) score = bmpClamp10(score - 1.5);
+  return score;
+}
+
+function ballMotionProfile(ball) {
+  if (!ball) return null;
+  var rg = ball.RG, diff = ball.Differential;
+  var coverFriction = bmpCoverstockFriction(ball.Coverstock);
+  var isAsym = String(ball.CoreType || '').toLowerCase().indexOf('asym') >= 0;
+  var prep = bmpLatestSurfacePrep(ball.BallID);
+  var surfaceFriction = bmpSurfaceFriction(prep);
+
+  // READ POINT — low RG revs earlier/harder midlane read. Logged surface
+  // friction outranks box coverstock when both are known (design §3.2).
+  var readFromRG = (rg != null) ? bmpClamp10(10 - (rg - BMP_RG_MIN) / (BMP_RG_MAX - BMP_RG_MIN) * 10) : null;
+  var readPoint = null;
+  if (readFromRG != null && surfaceFriction != null)      readPoint = bmpClamp10(readFromRG * 0.55 + surfaceFriction * 0.45);
+  else if (readFromRG != null && coverFriction != null)   readPoint = bmpClamp10(readFromRG * 0.6  + coverFriction  * 0.4);
+  else                                                     readPoint = readFromRG;
+
+  // FLARE POTENTIAL — differential governs track flare / total boards
+  // covered. Asymmetric cores flare sharper for a given differential.
+  var flarePotential = (diff != null)
+    ? bmpClamp10((diff - BMP_DIFF_MIN) / (BMP_DIFF_MAX - BMP_DIFF_MIN) * 10 + (isAsym ? 0.5 : 0))
+    : null;
+
+  // BACKEND STRENGTH — pearl covers retain energy for a sharper breakpoint
+  // move; solid covers are smoother/more continuous (inverse of friction).
+  var backendBase = (coverFriction != null) ? bmpClamp10(10 - coverFriction) : null;
+  var backendStrength = (backendBase != null)
+    ? bmpClamp10(backendBase * 0.6 + (flarePotential != null ? flarePotential * 0.4 : 0) + (isAsym ? 0.5 : 0))
+    : null;
+
+  // TOTAL HOOK (derived) — composite used to sanity-check the self-rated
+  // HookRating; Step 2 of the Ball-Change Retrospective can later use this
+  // as an interpretive lens, never mixed into Step 1 grading.
+  var parts = [readPoint, flarePotential, coverFriction].filter(function(v){ return v != null; });
+  var totalHookDerived = parts.length
+    ? bmpClamp10(parts.reduce(function(a, b){ return a + b; }, 0) / parts.length)
+    : null;
+
+  return {
+    ballID: ball.BallID, ballName: ball.BallName,
+    readPoint: readPoint, flarePotential: flarePotential,
+    backendStrength: backendStrength, totalHookDerived: totalHookDerived,
+    surfaceSource: prep ? 'logged-prep' : (ball.BoxFinish ? 'box-finish-unlogged' : 'none'),
+    inputsMissing: { RG: rg == null, Differential: diff == null, Coverstock: !ball.Coverstock, CoreType: !ball.CoreType }
+  };
+}
+
+/* ── DevKit: Ball-Change Retrospective Dry Run (read-only) ───
+   Reports true-change event count + Step 1 grading split against
+   the full dataset, with a mutation guard. Design-doc reference
+   target: ~771 events / 338 games / 30.7% / 41.5% / 27.8%. */
+async function dkBallChangeRetrospectiveDryRun() {
+  var result = document.getElementById('dk-purge-result');
+  if (result) result.textContent = 'Loading scoring data...';
+  try {
+    await loadScoringData();
+    var beforeMutCheck = JSON.stringify({ games: (db.games || []).length, frames: (db.frames || []).length, attempts: (db.attempts || []).length });
+
+    var r = ballChangeRetrospective();
+
+    var out = [];
+    out.push('BALL-CHANGE RETROSPECTIVE DRY RUN — read-only');
+    out.push('Lane-side-aware true-change detection (frame parity), Step 1 outcome grading only.');
+    out.push('');
+    out.push('Complete (10-frame) games considered: ' + r.gamesConsidered);
+    out.push('Games with >=1 true change event: ' + r.gamesWithChange +
+      ' (' + (r.gamesConsidered ? Math.floor(r.gamesWithChange / r.gamesConsidered * 1000) / 10 : 0) + '%)');
+    out.push('Total true-change events: ' + r.totalEvents);
+    out.push('');
+    out.push('Step 1 outcome grading (2+ strikes/3 same-side frames = positive, 0 = negative, 1 = neutral):');
+    out.push('  Positive: ' + r.counts.positive + ' (' + r.pct.positive + '%)');
+    out.push('  Neutral:  ' + r.counts.neutral  + ' (' + r.pct.neutral  + '%)');
+    out.push('  Negative: ' + r.counts.negative + ' (' + r.pct.negative + '%)');
+    out.push('');
+    out.push('Design-doc reference target: ~771 events / 338 games / 30.7% / 41.5% / 27.8%.');
+
+    var afterMutCheck = JSON.stringify({ games: (db.games || []).length, frames: (db.frames || []).length, attempts: (db.attempts || []).length });
+    out.push('');
+    out.push('MUTATION CHECK: ' + (beforeMutCheck === afterMutCheck ? 'PASS - no writes' : 'FAIL - dry run mutated scoring data'));
+
+    if (result) result.textContent = out.join('\n');
+    toast('Ball-Change Retrospective complete');
+  } catch (e) {
+    if (result) result.textContent = 'Ball-Change Retrospective failed:\n' + (e && e.message ? e.message : e) + '\n' + (e && e.stack ? e.stack : '');
+  }
+}
+
+/* ── DevKit: Ball-Change Retrospective — Step 2 Join (read-only) ──
+   Reports the deltaDir x triggerLeaveSide bucket table with each
+   cell's grading split and gate status. Interpretive lens only. */
+async function dkBallChangeStep2DryRun() {
+  var result = document.getElementById('dk-purge-result');
+  if (result) result.textContent = 'Loading scoring data...';
+  try {
+    await loadScoringData();
+    var beforeMutCheck = JSON.stringify({ games: (db.games || []).length, frames: (db.frames || []).length, attempts: (db.attempts || []).length });
+
+    var cells = ballChangeStep2Join();
+    var pad = function(s, n) { s = (s == null ? '—' : String(s)); return s.length > n ? s.slice(0, n) : s + ' '.repeat(n - s.length); };
+
+    var out = [];
+    out.push('BALL-CHANGE RETROSPECTIVE — STEP 2 JOIN DRY RUN — read-only');
+    out.push('Bucket: deltaDir (Layer 2 totalHook direction) x triggerLeaveSide (Layer 1 axis 3)');
+    out.push('Interpretive lens only — never mixed back into Step 1 grading.');
+    out.push('');
+    out.push(pad('deltaDir', 10) + pad('side', 8) + pad('n', 6) + pad('pos%', 7) + pad('neu%', 7) + pad('neg%', 7) + 'gate');
+    cells.forEach(function(c) {
+      out.push(pad(c.deltaDir, 10) + pad(c.triggerLeaveSide, 8) + pad(c.n, 6) +
+        pad(c.pct.positive, 7) + pad(c.pct.neutral, 7) + pad(c.pct.negative, 7) +
+        (c.gated ? 'OK (n>=15)' : 'below gate'));
+    });
+    out.push('');
+    out.push('Cells clearing n>=15 gate: ' + cells.filter(function(c){ return c.gated; }).length + ' of ' + cells.length);
+
+    var afterMutCheck = JSON.stringify({ games: (db.games || []).length, frames: (db.frames || []).length, attempts: (db.attempts || []).length });
+    out.push('');
+    out.push('MUTATION CHECK: ' + (beforeMutCheck === afterMutCheck ? 'PASS - no writes' : 'FAIL - dry run mutated scoring data'));
+
+    if (result) result.textContent = out.join('\n');
+    toast('Step 2 join dry run complete');
+  } catch (e) {
+    if (result) result.textContent = 'Step 2 join dry run failed:\n' + (e && e.message ? e.message : e) + '\n' + (e && e.stack ? e.stack : '');
+  }
+}
+
+
+/* ── DevKit: Ball Motion Profile Inspector (read-only) ────────
+   Review/approve table only — nothing auto-applies. Recomputes
+   every active ball's Layer 2 profile live and flags derived-vs-
+   rated totalHook disagreements for the person to eyeball. */
+async function dkBallMotionProfileInspector() {
+  var result = document.getElementById('dk-purge-result');
+  if (result) result.textContent = 'Computing ball motion profiles...';
+  try {
+    var pad = function(s, n) { s = (s == null ? '—' : String(s)); return s.length > n ? s.slice(0, n) : s + ' '.repeat(n - s.length); };
+    var out = [];
+    out.push('BALL MOTION PROFILE INSPECTOR — read-only, review/approve only');
+    out.push('Layer 2: pure function of current specs + latest logged surface prep (never box specs alone).');
+    out.push('Flags a disagreement when |derived total hook - rated HookRating| >= ' + BMP_DISAGREEMENT_THRESHOLD + ' (0-10 scale).');
+    out.push('');
+    out.push(pad('Ball', 20) + pad('Rated', 7) + pad('Derived', 9) + pad('Δ', 6) + pad('Surface', 20) + 'Flag');
+
+    var flaggedCount = 0, missingSpecCount = 0;
+    (db.balls || []).forEach(function(b) {
+      var profile = ballMotionProfile(b);
+      if (!profile || profile.totalHookDerived == null) {
+        missingSpecCount++;
+        out.push(pad(b.BallName, 20) + pad(b.HookRating, 7) + pad('—', 9) + pad('—', 6) + pad('insufficient specs', 20) + '');
+        return;
+      }
+      var rated = b.HookRating;
+      var derived = Math.floor(profile.totalHookDerived * 10) / 10;
+      var delta = (rated != null) ? Math.floor(Math.abs(derived - rated) * 10) / 10 : null;
+      var flagged = (delta != null && delta >= BMP_DISAGREEMENT_THRESHOLD);
+      if (flagged) flaggedCount++;
+      out.push(pad(b.BallName, 20) + pad(rated, 7) + pad(derived, 9) + pad(delta, 6) + pad(profile.surfaceSource, 20) + (flagged ? '⚠ FLAG' : ''));
+    });
+
+    out.push('');
+    out.push('Total balls: ' + (db.balls || []).length + ' | Flagged disagreements: ' + flaggedCount + ' | Insufficient specs: ' + missingSpecCount);
+
+    if (result) result.textContent = out.join('\n');
+    toast('Ball Motion Profile Inspector complete');
+  } catch (e) {
+    if (result) result.textContent = 'Ball Motion Profile Inspector failed:\n' + (e && e.message ? e.message : e) + '\n' + (e && e.stack ? e.stack : '');
+  }
 }
 
 function openSeriesStatsModal(seriesID) {
@@ -22804,6 +25526,8 @@ function normaliseImportedAttempts(attempts) {
     if (out.PocketEntrySource=== undefined) out.PocketEntrySource= null;
     if (out.BallRoll        === undefined) out.BallRoll        = null;
     if (out.BallRollSource  === undefined) out.BallRollSource  = null;
+    if (out.StartingBoardSource === undefined) out.StartingBoardSource = null; // v30.112 SB/TB write tiers
+    if (out.TargetBoardSource   === undefined) out.TargetBoardSource   = null;
     if (out.MissDirection   === undefined) out.MissDirection   = null;
     if (out.MissBoards      === undefined) out.MissBoards      = null;
     if (out.ShotDetailLogged=== undefined) out.ShotDetailLogged= false;
@@ -23770,6 +26494,15 @@ function openSettingsModal() {
       </div>
       <button class="btn btn-secondary" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px"
         onclick="closeModal();navTo('s-leaves')">🎯 Manage Leave Alignments</button>
+    </div>
+
+    <!-- ── Lane Library (v30.112, Phase A) ───────────────────── -->
+    <div class="settings-section">
+      <div class="settings-section-hdr">Lane Library
+        <span class="settings-section-hint">Per-lane notes and behavior, grouped by center &amp; pair — backfilled from history</span>
+      </div>
+      <button class="btn btn-secondary" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px"
+        onclick="closeModal();navTo('s-lane-library')">🛣 Open Lane Library</button>
     </div>
 
     <!-- ── Balls / Centers / Patterns → Dev Mode ──────────── -->
@@ -31402,6 +34135,48 @@ function leaveDiagnosisTenPinVariant(att) {
   return 'flat';
 }
 
+/* =============================================================
+   LEAVE-SIDE CLUSTERING — third Layer 1 axis (v30.114, Phase C,
+   Lane Library design doc §3.5). A lateral axis alongside the
+   existing angle and energy axes, not a replacement. User-vetted
+   pin mapping: left = {2,4,7,8}, right = {3,6,9,10}, mixed =
+   pins present on both sides, center = remaining (effectively
+   just 1 and/or 5). Deterministic from the pin set, so computed
+   live rather than stored per-key in the editable diagnosis
+   table — nothing to tune here, unlike angle/energy/remedy.
+   Real-data validation (n=3005 non-strike att1 pocket hits):
+   right 50.8%, left 34.5%, mixed 12.8%, center 1.9% — matches
+   the design-doc figures (right 48.4/left 35.7/mixed 14.1/center
+   1.8 on an earlier, slightly smaller backup snapshot).
+   ============================================================= */
+var LEAVE_SIDE_LEFT  = [2, 4, 7, 8];
+var LEAVE_SIDE_RIGHT = [3, 6, 9, 10];
+
+function classifyLeaveSide(standingSet) {
+  if (!standingSet || standingSet.size === 0) return null;
+  var hasLeft = false, hasRight = false;
+  standingSet.forEach(function(p) {
+    if (LEAVE_SIDE_LEFT.indexOf(p) >= 0) hasLeft = true;
+    if (LEAVE_SIDE_RIGHT.indexOf(p) >= 0) hasRight = true;
+  });
+  if (hasLeft && hasRight) return 'mixed';
+  if (hasLeft) return 'left';
+  if (hasRight) return 'right';
+  return 'center';
+}
+
+// Parses a leaveKey string ('3-6-10' or the special-cased '3_6_10') back
+// into a pin-number Set for callers that only have the key, not the
+// original standing Set (e.g. getLeaveDiagnosis()).
+function leaveKeyToPinSet(leaveKey) {
+  var set = new Set();
+  String(leaveKey || '').split(/[-_]/).forEach(function(p) {
+    var n = parseInt(p, 10);
+    if (!isNaN(n)) set.add(n);
+  });
+  return set;
+}
+
 /* Look up a leave's diagnosis record. leaveKey = sorted pin-string
    (e.g. '3-6-10'). att = the attempt record, needed only to resolve the
    10-pin variant. Returns null (not a guess) when nothing matches —
@@ -31411,8 +34186,13 @@ function getLeaveDiagnosis(leaveKey, handedness, att) {
   var side = (handedness === 'left') ? table.left : table.right;
   var rec = side[leaveKey];
   if (!rec) return null;
-  if (rec.variants) return rec.variants[leaveDiagnosisTenPinVariant(att)] || null;
-  return rec;
+  var resolved = rec.variants ? (rec.variants[leaveDiagnosisTenPinVariant(att)] || null) : rec;
+  if (!resolved) return null;
+  // Third axis — deterministic, computed live, never stored per-key.
+  var out = {};
+  for (var k in resolved) { if (resolved.hasOwnProperty(k)) out[k] = resolved[k]; }
+  out.leaveSide = classifyLeaveSide(leaveKeyToPinSet(leaveKey));
+  return out;
 }
 
 const LEAVE_DIAGNOSIS_KEY = 'bowlingdb_leave_diagnosis';
@@ -33757,6 +36537,33 @@ function _dkBuildAIPrompt(e, catLabel) {
     'Provide: (1) likely root cause, (2) specific functions to investigate, (3) suggested fix approach. Be concise and technical.';
 }
 
+/* v30.112 fix — AI Analysis / batch review Copy buttons were dead: the
+   text was inlined into the onclick attribute via JSON.stringify, whose
+   double quotes closed the HTML attribute early and truncated the handler
+   (invariant: never pass literals/objects as onclick params — use a temp
+   global + primitive call). */
+function dkCopyAIText() {
+  var text = window._dkLastAIText || '';
+  if (!text) { toast('Nothing to copy'); return; }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text)
+      .then(function(){ toast('Copied ✓'); })
+      .catch(function(){ _dkCopyFallback(text); });
+  } else {
+    _dkCopyFallback(text);
+  }
+}
+function _dkCopyFallback(text) {
+  var ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed'; ta.style.opacity = '0'; ta.style.left = '-9999px';
+  document.body.appendChild(ta);
+  ta.focus(); ta.select(); ta.setSelectionRange(0, text.length);
+  try { document.execCommand('copy'); toast('Copied ✓'); }
+  catch(e) { toast('Copy failed — long-press the text to copy manually'); }
+  document.body.removeChild(ta);
+}
+
 function dkAskAI(entryId) {
   var log   = dkLoadLog();
   var entry = log.find(function(e){ return e.id===entryId; });
@@ -33783,11 +36590,12 @@ function dkAskAI(entryId) {
     entry.aiAnalysis = text;
     entry.aiTs       = new Date().toISOString();
     dkSaveLog(log);
-    // Show result in a modal
+    // Show result in a modal (v30.112: copy via temp global — see dkCopyAIText)
+    window._dkLastAIText = text;
     openModal('<div class="modal-title">🤖 AI Analysis</div>'+
       '<div style="font-size:12px;color:var(--t2);margin-bottom:10px;font-style:italic">'+_escHtml(entry.msg)+'</div>'+
       '<div style="font-size:13px;color:var(--t1);line-height:1.6;white-space:pre-wrap">'+_escHtml(text)+'</div>'+
-      '<button class="btn btn-primary" onclick="navigator.clipboard&&navigator.clipboard.writeText('+JSON.stringify(text)+').then(function(){toast(\'Copied\')})" style="margin-top:12px;width:100%">📋 Copy</button>'+
+      '<button class="btn btn-primary" onclick="dkCopyAIText()" style="margin-top:12px;width:100%">📋 Copy</button>'+
       '<button class="btn btn-secondary" onclick="closeModal()" style="margin-top:8px;width:100%">Close</button>');
   }).catch(function(err){ toast('AI request failed: '+err.message); });
 }
@@ -33816,9 +36624,10 @@ function dkReviewAndExport() {
     var text = (data.content||[]).map(function(c){ return c.text||''; }).join('');
     if (!text && data.error) { toast('AI error: '+data.error.message); return; }
     var full = '=== BowlingDB DevKit Review ===\n'+new Date().toLocaleDateString()+'\n'+open.length+' open items\n\n'+text;
+    window._dkLastAIText = full; // v30.112 — see dkCopyAIText
     openModal('<div class="modal-title">🤖 Review &amp; Export</div>'+
       '<div style="font-size:12px;color:var(--t1);line-height:1.6;white-space:pre-wrap;margin-bottom:12px">'+_escHtml(text)+'</div>'+
-      '<button class="btn btn-primary" onclick="navigator.clipboard&&navigator.clipboard.writeText('+JSON.stringify(full)+').then(function(){toast(\'Copied\')})">📋 Copy Full Report</button>'+
+      '<button class="btn btn-primary" onclick="dkCopyAIText()">📋 Copy Full Report</button>'+
       '<button class="btn btn-secondary" onclick="closeModal()" style="margin-top:8px;width:100%">Close</button>');
   }).catch(function(err){ toast('AI request failed: '+err.message); });
 }
@@ -34852,6 +37661,260 @@ async function dkLeaveDiagnosisDiffRun() {
     if (result) result.textContent = 'Leave diagnosis diff failed:\n' + (e && e.message ? e.message : e) + '\n' + (e && e.stack ? e.stack : '');
   }
 }
+
+/* ── Leave-Side Clustering Dry Run (read-only) ────────────────
+   Distribution check for the third Layer 1 axis (design doc §3.5)
+   against the full dataset. Reference target: right ~48-51%,
+   left ~34-36%, mixed ~13-15%, center ~2%. */
+async function dkLeaveSideClusteringDryRun() {
+  var result = document.getElementById('dk-purge-result');
+  if (result) result.textContent = 'Loading scoring data...';
+  try {
+    await loadScoringData();
+    var beforeMutCheck = JSON.stringify({ attempts:(db.attempts||[]).length, frames:(db.frames||[]).length });
+
+    function getLeaveSet(a1) {
+      var standing = new Set();
+      for (var p = 1; p <= 10; p++) { if (a1['PinStart' + p] === 1 && a1['PinDelta' + p] !== 1) standing.add(p); }
+      if (standing.size > 0) return standing;
+      if (a1.LeaveID && db.leaves && db.leaves.length) {
+        var lv = db.leaves.find(function(l){ return l.LeaveID === a1.LeaveID; });
+        if (lv) { for (var p2 = 1; p2 <= 10; p2++) { if (lv['Pin' + p2]) standing.add(p2); } }
+        if (standing.size > 0) return standing;
+      }
+      var anyKnocked = [1,2,3,4,5,6,7,8,9,10].some(function(p3){ return a1['Pin' + p3] === true; });
+      if (anyKnocked) { for (var p4 = 1; p4 <= 10; p4++) { if (!a1['Pin' + p4]) standing.add(p4); } }
+      return standing;
+    }
+
+    var dist = { left:0, right:0, mixed:0, center:0 };
+    var n = 0;
+    db.frames.filter(function(f){ return f.FrameNumber >= 1 && f.FrameNumber <= 10; }).forEach(function(f) {
+      var a1 = db.attempts.find(function(a){ return a.FrameID === f.FrameID && a.Attempt === 1; });
+      if (!a1 || a1.Pinfall === null || a1.Pinfall === 10 || a1.Pinfall === 0) return;
+      var leave = getLeaveSet(a1);
+      if (leave.size === 0 || leave.has(1)) return;
+      n++;
+      dist[classifyLeaveSide(leave)]++;
+    });
+
+    var out = [];
+    out.push('LEAVE-SIDE CLUSTERING DRY RUN — read-only');
+    out.push('Third Layer 1 axis: left={2,4,7,8} right={3,6,9,10} mixed=both center=remainder');
+    out.push('Scope: att1 only, frames 1-10, non-strike pocket hits (pin1 knocked)');
+    out.push('');
+    out.push('Total leaves classified: ' + n);
+    out.push('  Right:  ' + dist.right  + ' (' + (n ? Math.floor(dist.right/n*1000)/10 : 0)  + '%)');
+    out.push('  Left:   ' + dist.left   + ' (' + (n ? Math.floor(dist.left/n*1000)/10 : 0)   + '%)');
+    out.push('  Mixed:  ' + dist.mixed  + ' (' + (n ? Math.floor(dist.mixed/n*1000)/10 : 0)  + '%)');
+    out.push('  Center: ' + dist.center + ' (' + (n ? Math.floor(dist.center/n*1000)/10 : 0) + '%)');
+    out.push('');
+    out.push('Design-doc reference target: right ~48-51%, left ~34-36%, mixed ~13-15%, center ~2%.');
+
+    var afterMutCheck = JSON.stringify({ attempts:(db.attempts||[]).length, frames:(db.frames||[]).length });
+    out.push('');
+    out.push('MUTATION CHECK: ' + (beforeMutCheck === afterMutCheck ? 'PASS - no writes' : 'FAIL - dry run mutated scoring data'));
+
+    if (result) result.textContent = out.join('\n');
+    toast('Leave-side clustering dry run complete');
+  } catch(e) {
+    if (result) result.textContent = 'Leave-side clustering dry run failed:\n' + (e && e.message ? e.message : e) + '\n' + (e && e.stack ? e.stack : '');
+  }
+}
+
+/* ── Lane Hook Rating Dry Run (read-only) ─────────────────────
+   Reports the rating for every lane clearing the 15-leave gate,
+   for spot-checking against known lanes before any UI wiring.
+   Sign convention is first-pass/tentative (design doc §3.4,
+   scale/sign deferred to this review) — flagged in the header. */
+async function dkLaneHookRatingDryRun() {
+  var result = document.getElementById('dk-purge-result');
+  if (result) result.textContent = 'Loading scoring data...';
+  try {
+    await loadScoringData();
+    if (!_llCache) await llLoadAll();
+    await llSyncFromHistory();
+    var beforeMutCheck = JSON.stringify({ attempts:(db.attempts||[]).length, frames:(db.frames||[]).length, laneLibrary:(_llCache||[]).length });
+
+    var pad = function(s, n) { s = (s == null ? '—' : String(s)); return s.length > n ? s.slice(0, n) : s + ' '.repeat(n - s.length); };
+    var out = [];
+    out.push('LANE HOOK RATING DRY RUN — read-only');
+    out.push('TENTATIVE sign convention: rating > 0 = "reading hot" (more high-angle');
+    out.push('leaves than the thrown balls specs predict); < 0 = "playing loose".');
+    out.push('Not yet reviewed against enough on-lane sessions — treat as first-pass.');
+    out.push('');
+    out.push(pad('Lane', 10) + pad('n', 5) + pad('Actual', 8) + pad('Expected', 10) + pad('Rating', 8) + 'Label');
+
+    var rows = [];
+    (_llCache || []).forEach(function(rec) {
+      var r = laneHookRating([rec.LaneKey]);
+      if (!r || r.rating == null) return;
+      rows.push({ key: rec.LaneKey, n: r.n,
+        actual: Math.floor(r.actualScore * 100) / 100,
+        expected: Math.floor(r.expectedScore * 100) / 100,
+        rating: Math.floor(r.rating * 100) / 100,
+        label: r.label });
+    });
+    rows.sort(function(a, b){ return b.rating - a.rating; });
+    rows.forEach(function(row) {
+      out.push(pad(row.key, 10) + pad(row.n, 5) + pad(row.actual, 8) + pad(row.expected, 10) + pad(row.rating, 8) + row.label);
+    });
+
+    out.push('');
+    out.push('Gate-qualifying lanes rated: ' + rows.length);
+
+    var afterMutCheck = JSON.stringify({ attempts:(db.attempts||[]).length, frames:(db.frames||[]).length, laneLibrary:(_llCache||[]).length });
+    out.push('');
+    out.push('MUTATION CHECK: ' + (beforeMutCheck === afterMutCheck ? 'PASS - no writes' : 'FAIL - dry run mutated data'));
+
+    if (result) result.textContent = out.join('\n');
+    toast('Lane Hook Rating dry run complete');
+  } catch(e) {
+    if (result) result.textContent = 'Lane Hook Rating dry run failed:\n' + (e && e.message ? e.message : e) + '\n' + (e && e.stack ? e.stack : '');
+  }
+}
+
+/* ── DevKit: SB/TB Comparison Dry Run (read-only) ─────────────
+   Runs BOTH the gated ('user'-tier-only, real production mode)
+   and ungated (structural mechanics check) versions side by side,
+   since the reference backup predates the source-tier rollout —
+   the gated numbers are expected to be sparse/empty until fresher
+   data accumulates. Reports every gate-qualifying lane. */
+async function dkSbtbComparisonDryRun() {
+  var result = document.getElementById('dk-purge-result');
+  if (result) result.textContent = 'Loading scoring data...';
+  try {
+    await loadScoringData();
+    if (!_llCache) await llLoadAll();
+    await llSyncFromHistory();
+    var beforeMutCheck = JSON.stringify({ attempts:(db.attempts||[]).length, frames:(db.frames||[]).length });
+
+    var out = [];
+    out.push('SB/TB COMPARISON DRY RUN — read-only');
+    out.push('Gated = StartingBoardSource/TargetBoardSource === "user" only (production mode).');
+    out.push('Ungated = structural mechanics check only, ignores source tier.');
+    out.push('');
+
+    var recs = (_llCache || []);
+
+    out.push('=== att1 STRIKE LINE (lane behavior vs personal baseline) ===');
+    var anyGatedStrike = false;
+    recs.forEach(function(rec) {
+      var gated = sbtbStrikeLineComparison([rec.LaneKey], true);
+      var ungated = sbtbStrikeLineComparison([rec.LaneKey], false);
+      if (gated.laneN.sb + gated.laneN.tb > 0) anyGatedStrike = true;
+      if (ungated.laneN.sb + ungated.laneN.tb === 0) return; // nothing to show at all
+      out.push(rec.LaneKey + ':');
+      out.push('  gated:   n(sb/tb)=' + gated.laneN.sb + '/' + gated.laneN.tb + '  delta(sb/tb)=' + gated.delta.sb + '/' + gated.delta.tb);
+      out.push('  ungated: n(sb/tb)=' + ungated.laneN.sb + '/' + ungated.laneN.tb + '  delta(sb/tb)=' + ungated.delta.sb + '/' + ungated.delta.tb);
+    });
+    if (!anyGatedStrike) out.push('(no user-tier att1 SB/TB records yet — expected, backup predates v30.112 source tiers)');
+
+    out.push('');
+    out.push('=== att2 SPARE EXECUTION (vs saved Spare Alignment) ===');
+    var anyGatedSpare = false;
+    recs.forEach(function(rec) {
+      var gated = sbtbSpareExecutionComparison([rec.LaneKey], true);
+      var ungated = sbtbSpareExecutionComparison([rec.LaneKey], false);
+      if (gated.some(function(r){ return r.n.sb + r.n.tb > 0; })) anyGatedSpare = true;
+      if (!ungated.length) return;
+      out.push(rec.LaneKey + ':');
+      ungated.forEach(function(r) {
+        var g = gated.find(function(x){ return x.leaveID === r.leaveID; });
+        out.push('  leave ' + r.leaveID + ': ungated n=' + (r.n.sb + r.n.tb) +
+          ' delta(sb/tb)=' + r.delta.sb + '/' + r.delta.tb +
+          ' | gated n=' + (g ? (g.n.sb + g.n.tb) : 0));
+      });
+    });
+    if (!anyGatedSpare) out.push('(no user-tier att2 SB/TB records yet — expected, backup predates v30.112 source tiers)');
+
+    out.push('');
+    out.push('Spare Alignment records available: ' + (db.spareAlignments || []).length);
+
+    var afterMutCheck = JSON.stringify({ attempts:(db.attempts||[]).length, frames:(db.frames||[]).length });
+    out.push('');
+    out.push('MUTATION CHECK: ' + (beforeMutCheck === afterMutCheck ? 'PASS - no writes' : 'FAIL - dry run mutated scoring data'));
+
+    if (result) result.textContent = out.join('\n');
+    toast('SB/TB comparison dry run complete');
+  } catch(e) {
+    if (result) result.textContent = 'SB/TB comparison dry run failed:\n' + (e && e.message ? e.message : e) + '\n' + (e && e.stack ? e.stack : '');
+  }
+}
+
+/* ── DevKit: Lane Prep Brief — Context Preview (no AI call) ───
+   Assembles the same context object + prompt llGeneratePrepBrief
+   would send, WITHOUT actually calling the API — validates the
+   data-assembly mechanics for every gate-qualifying lane without
+   spending API quota. Read-only against scoring data; does NOT
+   touch gamesSincePrompt/snooze/paused state (that is a separate,
+   intentionally-mutating tool below). */
+async function dkLanePrepBriefPreview() {
+  var result = document.getElementById('dk-purge-result');
+  if (result) result.textContent = 'Loading scoring data...';
+  try {
+    await loadScoringData();
+    if (!_llCache) await llLoadAll();
+    await llSyncFromHistory();
+    var beforeMutCheck = JSON.stringify({ attempts:(db.attempts||[]).length, frames:(db.frames||[]).length, laneLibrary:(_llCache||[]).length });
+
+    var recs = (_llCache || []).slice(0, 3); // preview a few lanes, not all — keeps output readable
+    var out = [];
+    out.push('LANE PREP BRIEF — CONTEXT PREVIEW (no AI call, read-only)');
+    out.push('Shows the assembled context + prompt for the first 3 lanes, to check the');
+    out.push('data-assembly mechanics without spending API quota.');
+    out.push('');
+    recs.forEach(function(rec) {
+      var ctx = llBuildPrepBriefContext(rec.LaneKey);
+      var prompt = llBuildPrepBriefPrompt(ctx);
+      var due = llBriefDue(rec);
+      out.push('=== ' + rec.LaneKey + ' (due for brief: ' + due + ', gamesSincePrompt=' + (rec.gamesSincePrompt||0) + '/' + (rec.snoozeThreshold != null ? rec.snoozeThreshold : (rec.cooldownGames||9)) + ', paused=' + !!rec.paused + ') ===');
+      out.push(prompt);
+      out.push('');
+    });
+
+    var afterMutCheck = JSON.stringify({ attempts:(db.attempts||[]).length, frames:(db.frames||[]).length, laneLibrary:(_llCache||[]).length });
+    out.push('MUTATION CHECK: ' + (beforeMutCheck === afterMutCheck ? 'PASS - no writes' : 'FAIL - preview mutated data'));
+
+    if (result) result.textContent = out.join('\n');
+    toast('Lane Prep Brief preview complete');
+  } catch(e) {
+    if (result) result.textContent = 'Lane Prep Brief preview failed:\n' + (e && e.message ? e.message : e) + '\n' + (e && e.stack ? e.stack : '');
+  }
+}
+
+/* ── DevKit: Update Games-Since-Prompt (real state update) ────
+   NOT a dry run — this intentionally advances the standing-prompt
+   counters on every lane record, same as the real feature would
+   do on a normal app screen. Exposed here so the state machine
+   can be exercised/inspected before any UI is wired to it. */
+async function dkUpdateGamesSincePrompt() {
+  var result = document.getElementById('dk-purge-result');
+  if (result) result.textContent = 'Updating games-since-prompt counters...';
+  try {
+    await loadScoringData();
+    if (!_llCache) await llLoadAll();
+    await llSyncFromHistory();
+    var updated = await llUpdateGamesSincePrompt();
+
+    var out = [];
+    out.push('GAMES-SINCE-PROMPT UPDATE — real state write, not a dry run');
+    out.push('Lane records updated: ' + updated);
+    out.push('');
+    (_llCache || []).forEach(function(rec) {
+      var due = llBriefDue(rec);
+      out.push(rec.LaneKey + ': gamesSincePrompt=' + (rec.gamesSincePrompt||0) +
+        ' threshold=' + (rec.snoozeThreshold != null ? rec.snoozeThreshold : (rec.cooldownGames||9)) +
+        ' paused=' + !!rec.paused + ' due=' + due);
+    });
+
+    if (result) result.textContent = out.join('\n');
+    toast('Games-since-prompt updated for ' + updated + ' lanes');
+  } catch(e) {
+    if (result) result.textContent = 'Games-since-prompt update failed:\n' + (e && e.message ? e.message : e) + '\n' + (e && e.stack ? e.stack : '');
+  }
+}
+
 
 /* ── Streak Dry Run Detail (read-only) ───────────────────────
    Per-series trace for one league — shows the actual game scores,
