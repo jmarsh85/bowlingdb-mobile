@@ -3114,7 +3114,7 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
     </div>
     <div id="hdr-title" onclick="hdrTitleTap()"><span class="brand">Bowling</span>DB</div>
     <div id="hdr-title-popover"></div>
-    <span id="hdr-build-ref">v30.122 · 2026-08-23</span>
+    <span id="hdr-build-ref">v30.123 · 2026-08-23</span>
     <div id="hdr-right">
       <div class="hdr-icon-btn" id="hdr-delete-game-btn" onclick="confirmDeleteGame(G.gameID)" title="Delete Game" style="display:none">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -19327,25 +19327,40 @@ function saveNewTournament() { saveTournament(null); }
 /* =============================================================
    MODALS
    ============================================================= */
+// v30.123: some forms (e.g. Baker's assign-to-rounds tool) are tall
+// enough to need scrolling and consequential enough that an accidental
+// backdrop tap shouldn't silently discard the work with zero warning —
+// _modalBackdropDismissDisabled lets a specific modal opt out of
+// tap-to-dismiss for its lifetime. Always defaults back to enabled the
+// instant any new modal opens or any modal closes, so it can never leak
+// and block an unrelated, ordinary modal.
+var _modalBackdropDismissDisabled = false;
+
 function openModal(html) {
+  _modalBackdropDismissDisabled = false;
   document.getElementById('modal-body').innerHTML = html;
   document.getElementById('modal-bg').classList.add('open');
 }
 /* Replace modal content in-place — avoids close/open animation race condition.
    Use instead of closeModal() + openModal() when chaining modals. */
 function swapModal(html) {
+  _modalBackdropDismissDisabled = false;
   document.getElementById('modal-body').innerHTML = html;
   // Ensure modal is open (in case it was closing)
   document.getElementById('modal-bg').classList.add('open');
 }
 function closeModal() {
   toastDismiss(); // #103 — clear any lingering toast when modal closes
+  _modalBackdropDismissDisabled = false;
   const bg = document.getElementById('modal-bg');
   bg.classList.remove('open');
   // Clear content after transition so nothing lingers
   setTimeout(() => { document.getElementById('modal-body').innerHTML = ''; }, 300);
 }
-function handleModalBgClick(e) { if (e.target===document.getElementById('modal-bg')) closeModal(); }
+function handleModalBgClick(e) {
+  if (_modalBackdropDismissDisabled) return;
+  if (e.target===document.getElementById('modal-bg')) closeModal();
+}
 
 function openNewLeagueModal() { openLeagueModal(null); }
 function openEditLeagueModal(id) { openLeagueModal(id); }
@@ -21996,13 +22011,25 @@ function bakerRenderMigrationTool(candidateSeries) {
       '</div>' +
     '</div>';
   }).join('');
+  // v30.123: the row list gets its OWN bounded, independently-scrollable
+  // container instead of relying on the outer modal sheet to scroll —
+  // with up to 9+ rows this could exceed the visible viewport, and a
+  // scroll gesture starting near the top edge of the sheet risked
+  // landing on the backdrop instead (dismissing the whole form with
+  // zero warning, no save). Save/Cancel now sit outside that scrolling
+  // area, always visible without needing to find the end of the list
+  // first. Backdrop-tap-to-dismiss is also disabled for this modal
+  // specifically (see _modalBackdropDismissDisabled) — 9 rows of
+  // careful assignment work is too easy to lose to a stray tap;
+  // leaving via Cancel is still one explicit tap away.
   openModal(
     '<div class="modal-title">Assign Baker Games to Rounds</div>' +
-    '<div style="font-size:12px;color:var(--t3);margin-bottom:12px">Oldest game first (play order). Pick the round and game number for each — nothing is saved until you confirm.</div>' +
-    rows +
-    '<button class="btn btn-primary" style="width:100%;margin-top:12px" onclick="bakerConfirmMigration()">Save Assignments</button>' +
+    '<div style="font-size:12px;color:var(--t3);margin-bottom:10px">Oldest game first (play order). Pick the round and game number for each — nothing is saved until you tap Save Assignments below.</div>' +
+    '<div style="max-height:44vh;overflow-y:auto;-webkit-overflow-scrolling:touch;border-top:1px solid var(--border1);margin-bottom:12px">' + rows + '</div>' +
+    '<button class="btn btn-primary" style="width:100%" onclick="bakerConfirmMigration()">Save Assignments</button>' +
     '<button class="btn btn-secondary" style="width:100%;margin-top:8px" onclick="closeModal()">Cancel</button>'
   );
+  _modalBackdropDismissDisabled = true;
 }
 
 function bakerConfirmMigration() {
