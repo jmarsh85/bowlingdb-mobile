@@ -3114,7 +3114,7 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
     </div>
     <div id="hdr-title" onclick="hdrTitleTap()"><span class="brand">Bowling</span>DB</div>
     <div id="hdr-title-popover"></div>
-    <span id="hdr-build-ref">v30.123 · 2026-08-23</span>
+    <span id="hdr-build-ref">v30.124 · 2026-08-23</span>
     <div id="hdr-right">
       <div class="hdr-icon-btn" id="hdr-delete-game-btn" onclick="confirmDeleteGame(G.gameID)" title="Delete Game" style="display:none">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -3974,6 +3974,7 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
       <div id="dk-header-btns">
         <button class="dk-hdr-btn" id="dk-inspect-btn" onclick="dkToggleInspect()">🔍 Inspect</button>
         <button class="dk-hdr-btn" onclick="dkSessionBrief()">📋 Brief</button>
+        <button class="dk-hdr-btn" style="color:var(--gold)" onclick="dkBakerFixMigration()" title="One-time fix: assigns the 9 known Baker games to their real rounds">🎳 Baker Fix</button>
         <button class="dk-hdr-btn dk-export" onclick="dkExport()">⬆ Export</button>
         <button class="dk-hdr-btn dk-close" onclick="dkTogglePanel()">✕</button>
       </div>
@@ -22080,6 +22081,61 @@ function bakerRefreshAfterMigration() {
     renderTournamentSeriesList();
   }
 }
+
+/* ── DevKit one-time tool (v30.124) ──────────────────────────────
+   The interactive Assign-to-Rounds modal proved unreliable on-device
+   across three attempts (v30.121/122/123 each fixed a plausible cause
+   — a refresh race, then a backdrop-tap dismiss — but the underlying
+   symptom persisted, meaning something about the touch/scroll
+   interaction itself still isn't working end to end on this device).
+   Rather than keep guessing at custom-sheet touch handling, this does
+   the ONE known assignment directly — no modal, no scroll gesture, no
+   custom sheet at all. Confirmation and result both go through native
+   confirm()/alert(), which the browser itself owns and can't be
+   dismissed by a stray tap the way a custom overlay can.
+   Matches sessions by score (not by current binding state), since a
+   prior attempt may have already left them incorrectly bound to a
+   single round — this corrects that regardless of starting state. */
+function dkBakerFixMigration() {
+  var knownScores = [163, 236, 203, 219, 222, 217, 214, 224, 197];
+  var all = bakerLoadSessions();
+  var candidates = all.filter(function(s){
+    return s.date === '2026-08-22' && knownScores.indexOf(s.finalScore) >= 0;
+  }).sort(function(a,b){ return (a.createdAt||'').localeCompare(b.createdAt||''); });
+
+  if (candidates.length !== 9) {
+    alert('Expected exactly 9 Baker games from 2026-08-22 matching the known scores (163, 236, 203, 219, 222, 217, 214, 224, 197). Found ' + candidates.length + ' instead. Nothing changed — check the Baker Game History list and let Claude know what you see there.');
+    return;
+  }
+
+  var tournamentSeries = db.series.filter(function(s){
+    var t = (db.tournaments||[]).find(function(x){ return x.TournamentID === s.TournamentID; });
+    return t && t.BakerFormat;
+  }).sort(function(a,b){ return new Date(a.DateBowled) - new Date(b.DateBowled); });
+
+  if (tournamentSeries.length < 2) {
+    alert('Only ' + tournamentSeries.length + ' Baker-format round exists right now. Create Round 2 first (+ button on the Tournament screen), then run this again.');
+    return;
+  }
+
+  var round1 = tournamentSeries[0], round2 = tournamentSeries[1];
+  var r1Scores = candidates.slice(0,6).map(function(s){ return s.finalScore; }).join(', ');
+  var r2Scores = candidates.slice(6,9).map(function(s){ return s.finalScore; }).join(', ');
+  var preview = 'Round 1 (' + round1.DateBowled + ') — games 1-6: ' + r1Scores + '\n' +
+    'Round 2 (' + round2.DateBowled + ') — games 1-3: ' + r2Scores + '\n\n' +
+    'Apply this assignment now?';
+  if (!confirm(preview)) return;
+
+  candidates.forEach(function(s, i) {
+    if (i < 6) s.ctx = Object.assign({}, s.ctx, { seriesID: round1.SeriesID, gameNumber: i+1 });
+    else       s.ctx = Object.assign({}, s.ctx, { seriesID: round2.SeriesID, gameNumber: i-6+1 });
+  });
+  bakerSaveSessions(all);
+  bakerRefreshAfterMigration();
+
+  alert('Done. 9 games assigned:\nRound 1 (' + round1.DateBowled + '): games 1-6\nRound 2 (' + round2.DateBowled + '): games 1-3\n\nClose DevKit and check the round list.');
+}
+
 /* =============================================================
    BALL-CHANGE RETROSPECTIVE (v30.113 — Phase B, Lane Library
    design doc §3.2). Standalone, computed on demand against the
