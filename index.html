@@ -3114,7 +3114,7 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
     </div>
     <div id="hdr-title" onclick="hdrTitleTap()"><span class="brand">Bowling</span>DB</div>
     <div id="hdr-title-popover"></div>
-    <span id="hdr-build-ref">v30.121 · 2026-08-23</span>
+    <span id="hdr-build-ref">v30.122 · 2026-08-23</span>
     <div id="hdr-right">
       <div class="hdr-icon-btn" id="hdr-delete-game-btn" onclick="confirmDeleteGame(G.gameID)" title="Delete Game" style="display:none">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -7937,7 +7937,13 @@ function renderSeriesList() {
       const bakerSessions = bakerLoadSessions().filter(bs => bs.ctx && bs.ctx.seriesID === s.SeriesID);
       scores = bakerSessions.map(bs => bs.finalScore).filter(x=>x!=null);
       total = scores.reduce((a,b)=>a+b,0);
-      badges = Array.from({length: gamesPerSeries}, (_, i) => {
+      // v30.122: never let a bound session sit past the edge of the
+      // rendered circles, invisible — a wrong/in-progress assignment
+      // (e.g. everything landed on game numbers 7-9 before a second
+      // round existed to split into) needs to stay visible so it can be
+      // spotted and fixed via History → Reassign, not silently hidden.
+      const slotCount = Math.max(gamesPerSeries, ...bakerSessions.map(bs => bs.ctx.gameNumber), 0);
+      badges = Array.from({length: slotCount}, (_, i) => {
         const gameNum = i + 1;
         const sess = bakerSessions.find(bs => bs.ctx.gameNumber === gameNum);
         return sess
@@ -19081,7 +19087,10 @@ function renderTournamentSeriesList() {
       total = scores.reduce((a,b)=>a+b,0);
       isActive = bakerSessions.length < gamesPerRound;
       const tournArcColor = isActive ? 'var(--teal)' : 'var(--bar-complete)';
-      badges = Array.from({length: gamesPerRound}, (_, i) => {
+      // v30.122: never let a bound session sit past the edge of the
+      // rendered circles, invisible (see matching League fix above).
+      const slotCount = Math.max(gamesPerRound, ...bakerSessions.map(bs => bs.ctx.gameNumber), 0);
+      badges = Array.from({length: slotCount}, (_, i) => {
         const gameNum = i + 1;
         const sess = bakerSessions.find(bs => bs.ctx.gameNumber === gameNum);
         return sess
@@ -21901,24 +21910,33 @@ function bakerViewHistory(filtered) {
       '<div style="font-size:12px;color:var(--t3)">'+names+'</div>' +
       '<div style="font-size:11px;color:var(--t3);margin-top:2px">'+roundTag+(s.noTap?' · <span style="color:var(--gold)">✦ NoTap</span>':'')+'</div></div>';
   }).join('');
+  // v30.122: "Assign" is always offered when any Baker sessions exist at
+  // all, not just unbound ones — a previous assignment can be wrong (e.g.
+  // it was made before a second round existed yet) and needs a way back
+  // in to fix it, not just a one-shot fill-in-the-blanks.
+  var btnLabel = unbound.length
+    ? 'Assign ' + unbound.length + ' unassigned game' + (unbound.length>1?'s':'') + ' to rounds'
+    : 'Reassign games to rounds';
   openModal('<div class="modal-title">🎳 Baker Game History</div>' + rows +
-    (unbound.length ? '<button class="btn btn-secondary" style="width:100%;margin-top:12px;color:var(--gold)" onclick="closeModal();bakerOpenMigrationTool()">Assign '+unbound.length+' unassigned game'+(unbound.length>1?'s':'')+' to rounds</button>' : '') +
+    (all.length ? '<button class="btn btn-secondary" style="width:100%;margin-top:12px;color:var(--gold)" onclick="closeModal();bakerOpenMigrationTool()">'+btnLabel+'</button>' : '') +
     '<button class="btn btn-secondary" style="width:100%;margin-top:8px" onclick="closeModal()">Close</button>');
 }
 
 /* =============================================================
-   MIGRATION TOOL (v30.120, one-time use)
-   For sessions created before per-(SeriesID,GameNumber) binding
-   existed. Every row is independently editable before Save;
-   nothing writes until Save is tapped.
+   ASSIGN/REASSIGN TOOL (v30.120, extended v30.122)
+   Originally one-time-use for sessions created before per-
+   (SeriesID,GameNumber) binding existed; extended to cover ALL Baker
+   sessions so an existing (possibly wrong) assignment can be corrected
+   later too — e.g. games got bound before a second round had even been
+   created yet. Every row is independently editable before Save; nothing
+   writes until Save is tapped.
    ============================================================= */
 var _bakerMigrationRows = null;
 
 function bakerOpenMigrationTool() {
-  var unbound = bakerLoadSessions()
-    .filter(function(s){ return !s.ctx || !s.ctx.gameNumber; })
+  var candidates = bakerLoadSessions()
     .sort(function(a,b){ return (a.createdAt||'').localeCompare(b.createdAt||''); }); // oldest first = play order
-  if (!unbound.length) { toast('Nothing to assign'); return; }
+  if (!candidates.length) { toast('No Baker games to assign'); return; }
 
   var candidateSeries = db.series.filter(function(s){
     var league = s.LeagueID>0 ? db.leagues.find(function(l){return l.LeagueID===s.LeagueID;}) : null;
@@ -21927,17 +21945,23 @@ function bakerOpenMigrationTool() {
   }).sort(function(a,b){ return new Date(a.DateBowled) - new Date(b.DateBowled); })
     .map(function(s){ return { seriesID: s.SeriesID, label: bakerRoundLabelForSeries(s) + ' · ' + (localDate(s.DateBowled)).toLocaleDateString('en-US',{month:'numeric',day:'numeric'}) }; });
 
-  // Known one-time default (2026-08-22 TBT Scratch Bakers Doubles):
-  // 9 orphaned sessions from before per-slot binding existed, confirmed
-  // by direct account as Round 1 (6 games) then Round 2 (3 games), in
-  // play order — 163 first, 197 last. Pre-fills exactly that split when
-  // it still matches (9 unbound sessions, 2+ candidate rounds); every
-  // row stays independently editable before Save either way, and any
-  // other shape of unbound sessions falls back to the generic default
-  // (everything onto the first round, sequential game numbers) below.
-  var useKnownSplit = unbound.length === 9 && candidateSeries.length >= 2;
+  if (!candidateSeries.length) {
+    toast('No Baker-format round exists yet — create a round first, then assign games to it.');
+    return;
+  }
 
-  _bakerMigrationRows = unbound.map(function(s, i){
+  // Known one-time default (2026-08-22 TBT Scratch Bakers Doubles):
+  // 9 sessions, confirmed by direct account as Round 1 (6 games) then
+  // Round 2 (3 games), in play order — 163 first, 197 last. Applies
+  // whenever there are exactly 9 candidates and 2+ rounds now exist to
+  // split across — deliberately fires again even if all 9 are already
+  // (wrongly) bound to a single round, since that's exactly the state a
+  // second migration attempt needs to correct once the second round has
+  // been created. Every row stays independently editable before Save
+  // either way, so this is a starting point, not a silent overwrite.
+  var useKnownSplit = candidates.length === 9 && candidateSeries.length >= 2;
+
+  _bakerMigrationRows = candidates.map(function(s, i){
     if (useKnownSplit) {
       var inRoundOne = i < 6;
       return {
@@ -21946,7 +21970,14 @@ function bakerOpenMigrationTool() {
         gameNumber: inRoundOne ? (i + 1) : (i - 6 + 1)
       };
     }
-    return { session: s, seriesID: candidateSeries[0] ? candidateSeries[0].seriesID : null, gameNumber: i+1 };
+    // Fallback for any other shape: preserve an existing valid binding
+    // as the starting point (so reopening this tool to fix ONE wrong
+    // row doesn't reshuffle everything else); only genuinely unbound
+    // rows default to the first round, sequential numbers.
+    if (s.ctx && s.ctx.seriesID && s.ctx.gameNumber) {
+      return { session: s, seriesID: s.ctx.seriesID, gameNumber: s.ctx.gameNumber };
+    }
+    return { session: s, seriesID: candidateSeries[0].seriesID, gameNumber: i+1 };
   });
   bakerRenderMigrationTool(candidateSeries);
 }
@@ -21993,20 +22024,29 @@ function bakerConfirmMigration() {
   closeModal();
   toast('Baker games assigned');
 
-  // v30.121 fix: closing the modal used to just reveal whatever the
-  // Baker screen was already showing underneath — almost always a
-  // stale blank setup form for the slot the person tapped BEFORE they
-  // discovered History → migration, since that slot's own binding may
-  // have just changed. Nothing refreshed, so a successful save looked
-  // exactly like a silent failure. Now: clear any stale setup/state and
-  // return to the round list if migration was reached via the Baker
-  // screen's own History button, or refresh the round list in place if
-  // it was reached directly from there — either way lands somewhere
-  // that visibly shows the newly-assigned scores.
+  // v30.122 fix: v30.121 called the refresh synchronously in the same
+  // tick as closeModal() — closeModal() removes the .open class (which
+  // triggers a 300ms CSS fade) and only clears the modal body content
+  // on a delayed setTimeout, so touching the screen underneath in the
+  // same tick raced that transition and could leave the modal visually
+  // stuck mid-close over a screen that never actually got its refresh
+  // applied — exactly the "pops up then dismisses, stale/greyed" report.
+  // Now waits until just after the modal's own close transition finishes.
+  setTimeout(bakerRefreshAfterMigration, 320);
+}
+
+/* Split out from bakerConfirmMigration() so it's callable directly
+   (synchronously) from tests without needing fake timers, while
+   production always reaches it through the delayed call above. */
+function bakerRefreshAfterMigration() {
   var cur = getCurrentScreen();
   if (cur === 's-baker') {
+    // Whatever slot brought the person here may now be bound to a
+    // migrated game — clear stale scratch state and re-render in place
+    // (not navBack(), to avoid layering a second screen transition on
+    // top of the modal's own).
     _bakerSetup = null; _bakerState = null; _bakerViewOnly = null;
-    navBack();
+    renderBakerScreen();
   } else if (cur === 's-series') {
     renderSeriesList();
   } else if (cur === 's-tournament-series') {
