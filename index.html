@@ -3114,7 +3114,7 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
     </div>
     <div id="hdr-title" onclick="hdrTitleTap()"><span class="brand">Bowling</span>DB</div>
     <div id="hdr-title-popover"></div>
-    <span id="hdr-build-ref">v30.119 · 2026-08-22</span>
+    <span id="hdr-build-ref">v30.120 · 2026-08-23</span>
     <div id="hdr-right">
       <div class="hdr-icon-btn" id="hdr-delete-game-btn" onclick="confirmDeleteGame(G.gameID)" title="Delete Game" style="display:none">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -3311,10 +3311,6 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
             cursor:pointer;padding:4px 6px;border-radius:8px;
             font-size:12px;font-weight:700;color:var(--gold);
             border:1px solid rgba(255,215,0,0.3)">↺ H</button>
-          <button id="series-baker-btn" title="Start Baker Game" onclick="bakerOpenSetup({leagueID:G.leagueID})"
-            style="display:none;background:rgba(196,168,240,0.12);border:1px solid rgba(196,168,240,0.3);
-            cursor:pointer;padding:5px 9px;border-radius:8px;
-            font-size:12px;font-weight:700;color:var(--lilac)">🎳 Baker</button>
           <button id="series-baker-hist-btn" title="Baker Game History" onclick="bakerViewHistory()"
             style="display:none;background:transparent;border:1px solid var(--border2);
             cursor:pointer;padding:5px 8px;border-radius:8px;
@@ -3367,10 +3363,6 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
       <div class="sec-header">
         <span class="sec-title" id="tourn-series-title">Tournament</span>
         <div style="display:flex;align-items:center;gap:6px">
-          <button id="tourn-baker-btn" title="Start Baker Game" onclick="bakerOpenSetup({tournamentID:G.tournamentID})"
-            style="display:none;background:rgba(196,168,240,0.12);border:1px solid rgba(196,168,240,0.3);
-            cursor:pointer;padding:5px 9px;border-radius:8px;
-            font-size:12px;font-weight:700;color:var(--lilac)">🎳 Baker</button>
           <button id="tourn-baker-hist-btn" title="Baker Game History" onclick="bakerViewHistory()"
             style="display:none;background:transparent;border:1px solid var(--border2);
             cursor:pointer;padding:5px 8px;border-radius:8px;
@@ -7784,7 +7776,13 @@ function buildScoreRingBadge({ arcColor, score, inprog, empty, hasFrames, gameID
   const TOP_OFFSET = CIR * 0.25;
 
   if (empty) {
-    return `<div class="game-badge empty" style="--arc-color:${arcColor}">
+    // v30.120: carry seriesID/gameNum even when empty so a Baker round's
+    // still-unplayed slot circles are individually tappable (see
+    // bakerHandleGameSlotTap()) — previously only non-empty badges had
+    // any data attrs at all.
+    const emptyDataAttrs = (seriesID != null && gameNum != null)
+      ? `data-seriesid="${seriesID}" data-gamenum="${gameNum}"` : '';
+    return `<div class="game-badge empty" style="--arc-color:${arcColor}" ${emptyDataAttrs}>
       <svg viewBox="0 0 80 80">
         <circle cx="${CX}" cy="${CX}" r="${R}" fill="none" stroke="var(--ring-track)" stroke-width="${SW}"/>
         <text x="${CX}" y="${CX + 5}" text-anchor="middle"
@@ -7798,8 +7796,11 @@ function buildScoreRingBadge({ arcColor, score, inprog, empty, hasFrames, gameID
   const gap    = CIR - dash;
   const cls    = inprog ? 'inprog' : 'done';
   const hfCls  = hasFrames ? ' has-frames' : '';
-  const dataAttrs = gameID != null
-    ? `data-gameid="${gameID}" data-seriesid="${seriesID}" data-gamenum="${gameNum}"`
+  // v30.120: carry seriesID/gameNum for Baker badges even with no
+  // gameID (Baker never writes a db.games row) — was previously gated
+  // on gameID alone, which meant Baker badges never got tap targeting.
+  const dataAttrs = (seriesID != null && gameNum != null)
+    ? `data-gameid="${gameID ?? ''}" data-seriesid="${seriesID}" data-gamenum="${gameNum}"`
     : '';
   const arcOpacity = inprog ? '0.5' : '1';
   const subText = inprog
@@ -7862,8 +7863,8 @@ function openLanePairGames(seriesID, event) {
 function renderSeriesList() {
   const el = document.getElementById('series-list');
   const currentLeague = db.leagues.find(l=>l.LeagueID===G.leagueID);
-  const bakerBtn = document.getElementById('series-baker-btn');
-  if (bakerBtn) bakerBtn.style.display = currentLeague?.BakerFormat ? 'block' : 'none';
+  // v30.120: header "Start Baker Game" pill removed (see Baker block
+  // header note #1) — only History remains as a standalone entry point.
   const bakerHistBtn = document.getElementById('series-baker-hist-btn');
   if (bakerHistBtn) bakerHistBtn.style.display = currentLeague?.BakerFormat ? 'block' : 'none';
   const mySeries = db.series.filter(s=>s.LeagueID===G.leagueID)
@@ -7913,9 +7914,10 @@ function renderSeriesList() {
   const leagueBestTotal = Math.max(0, ...leagueSeriesTotals.filter(x=>x.hasScores).map(x=>x.total));
 
   el.innerHTML = mySeries.map(s => {
+    const league = db.leagues.find(l=>l.LeagueID===G.leagueID);
     const games = db.games.filter(g=>g.SeriesID===s.SeriesID).sort((a,b)=>a.GameNumber-b.GameNumber);
-    const scores = games.filter(g=>!g.IsTeammate).map(g=>g.FinalScore).filter(x=>x!=null);
-    const total = scores.reduce((a,b)=>a+b,0);
+    let scores = games.filter(g=>!g.IsTeammate).map(g=>g.FinalScore).filter(x=>x!=null);
+    let total = scores.reduce((a,b)=>a+b,0);
     const d = localDate(s.DateBowled);
     const dateStr = d.toLocaleDateString('en-US',{month:'numeric',day:'numeric',year:'2-digit'});
     const center = db.centers.find(c=>c.CenterID===s.CenterID);
@@ -7927,24 +7929,40 @@ function renderSeriesList() {
     const scBarClass = hasInprog ? 'sc-active' : isBest ? 'sc-best' : isNoTap ? 'sc-notap' : '';
     const arcColor = hasInprog ? 'var(--teal)' : isBest ? 'var(--gold)' : isNoTap ? 'var(--bar-notap)' : 'var(--bar-complete)';
 
-    const badges = games.map((g,i) => {
-      if (g.FinalScore!=null) {
-        const hasFrames = db.frames.some(f=>f.GameID===g.GameID);
-        return buildScoreRingBadge({ arcColor, score:g.FinalScore, hasFrames, gameID:g.GameID, seriesID:s.SeriesID, gameNum:i+1 });
-      }
-      const anyAttempt = db.attempts.some(a=>a.GameID===g.GameID && a.Pinfall!=null);
-      if (anyAttempt) {
-        const inprogFrames = db.frames.filter(f=>f.GameID===g.GameID);
-        const inprogScore  = inprogFrames.reduce((acc,f)=>acc+(f.RunningTotal||0), 0) ||
-          db.attempts.filter(a=>a.GameID===g.GameID&&a.Pinfall!=null).reduce((acc,a)=>acc+a.Pinfall,0);
-        return buildScoreRingBadge({ arcColor, score:inprogScore||0, inprog:true });
-      }
-      return buildScoreRingBadge({ arcColor, empty:true });
-    }).join('');
-
-    const league = db.leagues.find(l=>l.LeagueID===G.leagueID);
-    const emptyCount = Math.max(0,(league?.GamesPerSeries||3) - games.length);
-    const emptyBadges = Array(emptyCount).fill(buildScoreRingBadge({ arcColor, empty:true })).join('');
+    const gamesPerSeries = league?.GamesPerSeries||3;
+    let badges, emptyBadges;
+    if (league?.BakerFormat) {
+      // v30.120: same Baker-session-driven badge source as the
+      // Tournament round list — Baker never writes a db.games row.
+      const bakerSessions = bakerLoadSessions().filter(bs => bs.ctx && bs.ctx.seriesID === s.SeriesID);
+      scores = bakerSessions.map(bs => bs.finalScore).filter(x=>x!=null);
+      total = scores.reduce((a,b)=>a+b,0);
+      badges = Array.from({length: gamesPerSeries}, (_, i) => {
+        const gameNum = i + 1;
+        const sess = bakerSessions.find(bs => bs.ctx.gameNumber === gameNum);
+        return sess
+          ? buildScoreRingBadge({ arcColor, score:sess.finalScore, seriesID:s.SeriesID, gameNum })
+          : buildScoreRingBadge({ arcColor, empty:true, seriesID:s.SeriesID, gameNum });
+      }).join('');
+      emptyBadges = '';
+    } else {
+      badges = games.map((g,i) => {
+        if (g.FinalScore!=null) {
+          const hasFrames = db.frames.some(f=>f.GameID===g.GameID);
+          return buildScoreRingBadge({ arcColor, score:g.FinalScore, hasFrames, gameID:g.GameID, seriesID:s.SeriesID, gameNum:i+1 });
+        }
+        const anyAttempt = db.attempts.some(a=>a.GameID===g.GameID && a.Pinfall!=null);
+        if (anyAttempt) {
+          const inprogFrames = db.frames.filter(f=>f.GameID===g.GameID);
+          const inprogScore  = inprogFrames.reduce((acc,f)=>acc+(f.RunningTotal||0), 0) ||
+            db.attempts.filter(a=>a.GameID===g.GameID&&a.Pinfall!=null).reduce((acc,a)=>acc+a.Pinfall,0);
+          return buildScoreRingBadge({ arcColor, score:inprogScore||0, inprog:true });
+        }
+        return buildScoreRingBadge({ arcColor, empty:true });
+      }).join('');
+      const emptyCount = Math.max(0,gamesPerSeries - games.length);
+      emptyBadges = Array(emptyCount).fill(buildScoreRingBadge({ arcColor, empty:true })).join('');
+    }
 
     return `<div class="series-card-wrap">
       <button class="card-del-corner" onclick="confirmDeleteSeries(${s.SeriesID});event.stopPropagation()" title="Delete">−</button>
@@ -8083,6 +8101,25 @@ function selectSeries(id) {
 
 /* handleSeriesCardTap — tap on card body navigates to series; tap on a done badge opens game */
 function handleSeriesCardTap(event, seriesID) {
+  const league = db.leagues.find(l=>l.LeagueID===G.leagueID);
+
+  // v30.120: Baker series route per SLOT, mirroring the Tournament round
+  // fix — see handleTournSeriesCardTap().
+  if (league?.BakerFormat) {
+    const badge = event.target.closest('.game-badge');
+    let gameNum;
+    if (badge && badge.dataset.gamenum) {
+      gameNum = +badge.dataset.gamenum;
+    } else {
+      const bound = bakerLoadSessions().filter(bs => bs.ctx && bs.ctx.seriesID === seriesID).map(bs => bs.ctx.gameNumber);
+      const gamesPerSeries = league.GamesPerSeries || 3;
+      gameNum = 1;
+      while (bound.includes(gameNum) && gameNum < gamesPerSeries) gameNum++;
+    }
+    bakerHandleGameSlotTap({ leagueID: G.leagueID }, seriesID, gameNum);
+    return;
+  }
+
   const badge = event.target.closest('.game-badge.done.has-frames');
   if (badge) {
     // Short tap on a done badge with frames: toggle mini scorecard
@@ -19008,8 +19045,10 @@ function renderTournamentSeriesList() {
   if (!t) { el.innerHTML=''; return; }
   const titleEl = document.getElementById('tourn-series-title');
   if (titleEl) titleEl.textContent = t.TournamentName;
-  const bakerBtn = document.getElementById('tourn-baker-btn');
-  if (bakerBtn) bakerBtn.style.display = t.BakerFormat ? 'block' : 'none';
+  // v30.120: the header "Start Baker Game" pill is gone (it created
+  // detached, round-unlinked sessions) — only the History button
+  // remains as a standalone entry point. Starting now happens from the
+  // round's own game-slot circles, same as a normal game.
   const bakerHistBtn = document.getElementById('tourn-baker-hist-btn');
   if (bakerHistBtn) bakerHistBtn.style.display = t.BakerFormat ? 'block' : 'none';
 
@@ -19025,29 +19064,54 @@ function renderTournamentSeriesList() {
   }
 
   el.innerHTML = mySeries.map((s,ri) => {
-    const games   = db.games.filter(g=>g.SeriesID===s.SeriesID).sort((a,b)=>a.GameNumber-b.GameNumber);
-    const scores  = games.filter(g=>!g.IsTeammate).map(g=>g.FinalScore).filter(x=>x!=null);
-    const total   = scores.reduce((a,b)=>a+b,0);
     const d       = localDate(s.DateBowled);
     const dateStr = d.toLocaleDateString('en-US',{month:'numeric',day:'numeric',year:'2-digit'});
     const center  = db.centers.find(c=>c.CenterID===s.CenterID);
     const rn      = mySeries.length - ri;
-    const isActive = games.some(g=>g.FinalScore==null);
-    const barClass = isActive ? 'sc-active' : 'card-neutral';
-    const tournArcColor = isActive ? 'var(--teal)' : 'var(--bar-complete)';
-    const badges  = games.map((g,i) => {
-      if (g.FinalScore!=null) {
-        const hasFrames = db.frames.some(f=>f.GameID===g.GameID);
-        return buildScoreRingBadge({ arcColor:tournArcColor, score:g.FinalScore, hasFrames, gameID:g.GameID, seriesID:s.SeriesID, gameNum:i+1 });
-      }
-      if (db.attempts.some(a=>a.GameID===g.GameID&&a.Pinfall!=null)) {
-        const cur = db.frames.filter(f=>f.GameID===g.GameID).reduce((acc,f)=>acc+(f.RunningTotal||0),0);
-        return buildScoreRingBadge({ arcColor:tournArcColor, score:cur||0, inprog:true });
-      }
-      return buildScoreRingBadge({ arcColor:tournArcColor, empty:true });
-    }).join('');
-    const emptyCount  = Math.max(0,(t.GamesPerRound||3)-games.length);
-    const emptyBadges = Array(emptyCount).fill(buildScoreRingBadge({ arcColor:tournArcColor, empty:true })).join('');
+    const gamesPerRound = t.GamesPerRound || 3;
+
+    let total, scores, isActive, badges;
+    if (t.BakerFormat) {
+      // v30.120: Baker never writes a db.games row, so the round's
+      // slot circles are built from bound Baker sessions instead —
+      // this is what makes a finished Baker game actually show up on
+      // its round's card instead of the circles staying empty forever.
+      const bakerSessions = bakerLoadSessions().filter(bs => bs.ctx && bs.ctx.seriesID === s.SeriesID);
+      scores = bakerSessions.map(bs => bs.finalScore).filter(x=>x!=null);
+      total = scores.reduce((a,b)=>a+b,0);
+      isActive = bakerSessions.length < gamesPerRound;
+      const tournArcColor = isActive ? 'var(--teal)' : 'var(--bar-complete)';
+      badges = Array.from({length: gamesPerRound}, (_, i) => {
+        const gameNum = i + 1;
+        const sess = bakerSessions.find(bs => bs.ctx.gameNumber === gameNum);
+        return sess
+          ? buildScoreRingBadge({ arcColor:tournArcColor, score:sess.finalScore, seriesID:s.SeriesID, gameNum })
+          : buildScoreRingBadge({ arcColor:tournArcColor, empty:true, seriesID:s.SeriesID, gameNum });
+      }).join('');
+      var barClass = isActive ? 'sc-active' : 'card-neutral';
+      var emptyBadges = '';
+    } else {
+      const games   = db.games.filter(g=>g.SeriesID===s.SeriesID).sort((a,b)=>a.GameNumber-b.GameNumber);
+      scores  = games.filter(g=>!g.IsTeammate).map(g=>g.FinalScore).filter(x=>x!=null);
+      total   = scores.reduce((a,b)=>a+b,0);
+      isActive = games.some(g=>g.FinalScore==null);
+      barClass = isActive ? 'sc-active' : 'card-neutral';
+      const tournArcColor = isActive ? 'var(--teal)' : 'var(--bar-complete)';
+      badges  = games.map((g,i) => {
+        if (g.FinalScore!=null) {
+          const hasFrames = db.frames.some(f=>f.GameID===g.GameID);
+          return buildScoreRingBadge({ arcColor:tournArcColor, score:g.FinalScore, hasFrames, gameID:g.GameID, seriesID:s.SeriesID, gameNum:i+1 });
+        }
+        if (db.attempts.some(a=>a.GameID===g.GameID&&a.Pinfall!=null)) {
+          const cur = db.frames.filter(f=>f.GameID===g.GameID).reduce((acc,f)=>acc+(f.RunningTotal||0),0);
+          return buildScoreRingBadge({ arcColor:tournArcColor, score:cur||0, inprog:true });
+        }
+        return buildScoreRingBadge({ arcColor:tournArcColor, empty:true });
+      }).join('');
+      const emptyCount  = Math.max(0,gamesPerRound-games.length);
+      emptyBadges = Array(emptyCount).fill(buildScoreRingBadge({ arcColor:tournArcColor, empty:true })).join('');
+    }
+
     return `<div class="series-card-wrap">
       <button class="card-del-corner" onclick="confirmDeleteTournSeries(${s.SeriesID});event.stopPropagation()" title="Delete">−</button>
       <div class="series-card ${barClass}" onclick="handleTournSeriesCardTap(event,${s.SeriesID})">
@@ -19056,6 +19120,7 @@ function renderTournamentSeriesList() {
             <span class="series-date">Round ${rn} · ${dateStr}</span>
             ${center?`<div style="font-size:10px;color:var(--t3);margin-top:1px">${center.CenterName}</div>`:''}
             <div style="display:flex;gap:6px;margin-top:4px;flex-wrap:wrap">
+              ${t.BakerFormat?`<span class="pill" style="font-size:10px;background:rgba(196,168,240,0.18);color:var(--lilac);border:1px solid rgba(196,168,240,0.35)">🎳 BAKER</span>`:''}
               ${s.LanePair?`<span class="pill pill-teal" style="font-size:10px;cursor:pointer" onclick="openLanePairGames(${s.SeriesID},event)" title="View games on this lane pair">🎳 ${formatLanePairWithStart(s.LanePair, s.LaneStart)}</span>`:''}
               ${s.NoTap?`<span class="pill pill-gold" style="font-size:10px">✦ NoTap</span>`:''}
               ${s.Notes?`<span class="pill" style="font-size:10px;color:var(--t3)">📝</span>`:''}
@@ -19087,6 +19152,30 @@ function renderTournamentSeriesList() {
 }
 
 function handleTournSeriesCardTap(event, seriesID) {
+  const t = (db.tournaments||[]).find(x=>x.TournamentID===G.tournamentID);
+
+  // v30.120: Baker rounds route per SLOT — any tapped .game-badge
+  // (empty or finished, both now carry data-gamenum, see
+  // buildScoreRingBadge()) goes straight to that specific game number.
+  // A tap elsewhere on the card (header/date) defaults to the first
+  // not-yet-played slot. This replaces the old whole-card-only routing
+  // that could only ever bind one Baker game per round.
+  if (t?.BakerFormat) {
+    const badge = event.target.closest('.game-badge');
+    const s = db.series.find(x=>x.SeriesID===seriesID);
+    let gameNum;
+    if (badge && badge.dataset.gamenum) {
+      gameNum = +badge.dataset.gamenum;
+    } else {
+      const bound = bakerLoadSessions().filter(bs => bs.ctx && bs.ctx.seriesID === seriesID).map(bs => bs.ctx.gameNumber);
+      const gamesPerRound = t.GamesPerRound || 3;
+      gameNum = 1;
+      while (bound.includes(gameNum) && gameNum < gamesPerRound) gameNum++;
+    }
+    bakerHandleGameSlotTap({ tournamentID: G.tournamentID }, seriesID, gameNum);
+    return;
+  }
+
   const badge = event.target.closest('.game-badge.done.has-frames');
   if (badge) {
     // Short tap: toggle mini scorecard
@@ -19101,16 +19190,6 @@ function handleTournSeriesCardTap(event, seriesID) {
   G.noTap        = s?.NoTap || false;
   if (s?.BallID) G.ballID = s.BallID;
   if (s?.LanePair) { G.lanePair = s.LanePair; G.laneStart = s.LaneStart || null; }
-
-  // v30.119 fix (§2.4 bug 2 / §5.4): a Baker-format round must not fall
-  // into the regular personal scoring flow — route it to the Baker
-  // screen instead (resumes/reviews if a game for this round already
-  // exists, otherwise opens setup scoped to this round).
-  const t = (db.tournaments||[]).find(x=>x.TournamentID===G.tournamentID);
-  if (t?.BakerFormat) {
-    bakerHandleRoundTap(seriesID);
-    return;
-  }
 
   navTo('s-game-select');
 }
@@ -21022,88 +21101,76 @@ function rfbFinishLater() {
 
 /* =============================================================
    BAKER FORMAT (v30.118 built same-day for a same-week tournament;
-   v30.119 STRUCTURAL REWORK per handoff §2.4/§5 — real navTo()
-   screen instead of a stacked modal, pin-tap semantics flipped to
-   match togglePin()/G.leave exactly, per-bowler ball selection,
-   and the two confirmed navigation bugs fixed).
+   v30.119 structural rework — real navTo() screen, correct
+   togglePin()-style pin-tap semantics, per-bowler ball selection;
+   v30.120 — REBOUND after first real tournament use, per direct
+   feedback on the actual data produced:
+
+   1. Redundant entry point removed. The header "Baker" pill created
+      a brand-new, fully detached session on every tap — no SeriesID,
+      no game number, nothing tying it to the round it was played in.
+      That's why 9 real games ended up sitting in history while the
+      round card's own game-slot circles stayed empty the whole time.
+      The pill is gone; every Baker game now starts from the SAME
+      game-slot circle a normal game would. One entry point.
+      (See bakerHandleGameSlotTap().)
+
+   2. Sessions bind to (SeriesID, GameNumber), not just SeriesID —
+      a round can have several Baker games, each needs its own slot.
+
+   3. Baker AND NoTap now compose — a session carries its own noTap
+      flag (defaulting from the round's NoTap flag, editable per
+      game) independent of the Baker flag itself. Both badges can
+      show together. NoTap affects ball FLOW (bakerNextBallMax()
+      takes an isNoTap param — a fresh ball of 9+ ends the rack
+      immediately, same as a true strike, matching real NoTap house
+      rules: no second ball at the last standing pin). bakerGetMode()
+      itself is untouched — it still reads purely from alreadyDown,
+      which bakerConfirmBall() already resets correctly once nextMax
+      reflects the NoTap threshold. bakerApplyNoTapSubstitution()
+      then converts the resulting raw 9s to 10s for scoring/display
+      once the frames array is already correctly shaped. (First pass
+      tried keeping ball flow untouched as a pure post-hoc scoring
+      lens — caught by the test suite: a lingering standard-rules
+      ball2 in the raw data corrupted bonus-ball calculation. Fixed
+      before shipping.)
+
+   4. Lane pair is per-game, not fixed per round — some formats
+      rotate lanes after every game. Defaults from the round's
+      LanePair/LaneStart but is a plain editable field per game,
+      same free-text pattern used elsewhere (e.g. rfLanePairInput).
+
+   5. A migration tool (bakerOpenMigrationTool) is included for
+      sessions created before this rework — one-time use, surfaces
+      from the History modal only when unbound sessions exist.
    ─────────────────────────────────────────────────────────────
-   Standalone, localStorage-based (mirrors the existing Team Bowl
-   'grp' system's architecture) — deliberately NOT wired into
-   db.series/games/frames/attempts. This is a genuine structural
-   fork from the personal single-bowler game model: a Baker game
-   is ONE shared 10-frame scorecard where frame OWNERSHIP rotates
-   across teammates rather than each bowler having their own full
-   game. Keeping it standalone means zero risk to the core scoring
-   engine or personal stats while still being fully functional for
-   live use. Phase 2 (later, not built here): decide whether/how
-   Baker sessions should feed personal stats or persist into the
-   main IDB tables — deliberately deferred, flagged in the handoff.
+   Still standalone (own localStorage-backed store, exported/
+   imported alongside teamBowlSessions — see buildExportDoc()/
+   confirmImport()) — deliberately NOT wired into
+   db.series/games/frames/attempts. Checked before this rework:
+   NoTap/IsTeammate exclusion from personal stats is not a single
+   filter today, it's !g.NoTap / !g.IsTeammate copy-pasted across
+   25+ call sites in the stats/analytics code. Baker also has no
+   BowlerID anywhere in games/frames/attempts to hang a rotating
+   multi-bowler scorecard on — merging in would mean adding a third
+   scattered flag across all of that AND solving a schema mismatch
+   the tables were never built for. Kept as its own store instead;
+   zero risk to the 997-game personal dataset the rest of this app
+   is built around.
 
-   Rotation rule (LOCKED, matches spec exactly for both team
-   sizes given): bowlerIdx = (frameNumber - 1) % teamSize. This
-   generalizes cleanly to any team size that divides 10 evenly
-   (1, 2, 5, 10) — 3/4/6-bowler teams are NOT supported by this
-   formula and are out of scope until a real request arrives.
+   Rotation rule (LOCKED): bowlerIdx = (frameNumber - 1) % teamSize.
+   Generalizes to any team size that divides 10 evenly (1,2,5,10).
 
-   Scoring is standard tenpin rules — verified against known cases
-   (perfect game=300, all-gutters=0, all-spares-with-5-fill=150,
-   frame-10 fill-ball handling) via a standalone Node test file
-   before this was wired into the UI. Unchanged in v30.119.
-
-   ── v30.119 SCREEN ARCHITECTURE ──────────────────────────────
-   #s-baker is a real screen (registered in the navTo() dispatch
-   table, reached via bakerOpenSetup()), matching the s-group/grp
-   pattern: one persistent #baker-body container whose innerHTML
-   is swapped by renderBakerScreen()/bakerRenderSetup()/
-   bakerRenderScoring()/bakerRenderComplete() based on _bakerSetup
-   / _bakerState — no modal stacking, no closeModal()+swapModal()
-   timing hazard. handleBackTap() (see navBack() above) guards
-   against silently discarding an in-progress game via the header
-   back button.
-
-   ── v30.119 PIN-TAP SEMANTICS (§5.2) ─────────────────────────
-   Replicates togglePin()/G.leave EXACTLY, not reinvented:
-     LEAVE mode (fresh rack — st.alreadyDown.length === 0):
-       default assumes ALL pins knocked. Tapping a pin marks it
-       as the LEAVE (still standing). Knocked pins = complement.
-     SPARE mode (continuing rack — st.alreadyDown.length > 0):
-       tapping a pin marks it KNOCKED directly (only pins not
-       already down are interactive) — this was already Baker's
-       ball-2+ behavior and needed no change.
-   bakerGetMode() derives which mode applies from st.alreadyDown,
-   the same signal that already tracks rack-freshness correctly
-   across every Frame 1-9 and Frame 10 branch of
-   bakerNextBallMax() (fresh-rack resets after a strike, after a
-   spare, and after two strikes in F10 all fall out of this for
-   free — no separate F10 special-casing required).
-
-   ── v30.119 BALL SELECTION (§5.3) ────────────────────────────
-   Per-bowler, per explicit decision: each slot has its own ball
-   reference. Since only James's own equipment is maintained in
-   db.balls, each slot supports either picking from that list
-   (ballID) OR typing a manual free-text name for a teammate's
-   ball that isn't in the list (ballManual) — never both at once
-   (bakerSlotBallSelect/bakerSlotBallManual keep them mutually
-   exclusive). bakerBallLabel() resolves whichever is set for
-   display.
-
-   ── v30.119 NAVIGATION BUGS FIXED (§2.4) ─────────────────────
-   1. bakerViewHistory() now has real entry points: a "History"
-      button inside #s-baker itself, PLUS standalone header
-      buttons (#series-baker-hist-btn / #tourn-baker-hist-btn)
-      next to the existing "Start Baker Game" buttons — reachable
-      even with no game in progress.
-   2. handleTournSeriesCardTap() now checks the tournament's
-      BakerFormat flag and routes through bakerHandleRoundTap()
-      instead of unconditionally falling into the regular
-      s-game-select scoring flow. A completed Baker game already
-      logged for that specific round (ctx.seriesID) opens history
-      filtered to it; otherwise setup opens fresh for that round.
+   Scoring verified against known cases (perfect=300, all-gutters=0,
+   all-spares-with-5-fill=150, frame-10 fill-ball handling) via a
+   standalone Node harness before UI wiring, re-verified after each
+   rework — see /home/claude/reconcile/baker_*.js.
    ============================================================= */
 
 var BAKER_STORAGE_KEY = 'bowlingdb_baker_sessions';
 var _bakerSetup = null;  // scratch state for the setup screen
 var _bakerState = null;  // scratch state for the active/complete scoring screen
+var _bakerViewOnly = null; // when set, renderBakerScreen shows this finished session read-only
 
 function bakerBowlerIdxForFrame(frameNumber, teamSize) { return (frameNumber - 1) % teamSize; }
 
@@ -21137,21 +21204,59 @@ function bakerScoreGame(frames) {
   return { frameScores: frameScores, running: running, total: cum, resolved: resolved };
 }
 
-function bakerNextBallMax(frameNumber, ballsSoFar) {
+function bakerNextBallMax(frameNumber, ballsSoFar, isNoTap) {
+  var THRESH = isNoTap ? 9 : 10; // NoTap: 9+ on a fresh ball ends the rack, same as a true strike
   if (frameNumber < 10) {
     if (ballsSoFar.length === 0) return 10;
-    if (ballsSoFar.length === 1) return ballsSoFar[0] === 10 ? null : 10 - ballsSoFar[0];
+    if (ballsSoFar.length === 1) return ballsSoFar[0] >= THRESH ? null : 10 - ballsSoFar[0];
     return null;
   }
   if (ballsSoFar.length === 0) return 10;
-  if (ballsSoFar.length === 1) return ballsSoFar[0] === 10 ? 10 : 10 - ballsSoFar[0];
+  if (ballsSoFar.length === 1) return ballsSoFar[0] >= THRESH ? 10 : 10 - ballsSoFar[0];
   if (ballsSoFar.length === 2) {
     var b1 = ballsSoFar[0], b2 = ballsSoFar[1];
-    if (b1 === 10) return b2 === 10 ? 10 : 10 - b2;
+    if (b1 >= THRESH) return b2 >= THRESH ? 10 : 10 - b2;
     if (b1 + b2 === 10) return 10;
     return null;
   }
   return null;
+}
+
+/* NoTap (v30.120, corrected after testing): affects ball FLOW, not just
+   display. A fresh ball of 9+ ends the rack immediately, exactly like a
+   true strike — this is what real NoTap house rules do (no second ball
+   thrown at the last standing pin), and it's required for correct
+   scoring: bakerScoreGame() only recognizes a strike via a literal 10
+   in a single-ball frame, so a lingering ball2 in the raw data would
+   corrupt bonus-ball calculation for this frame AND miscount subsequent
+   frames' ball indices. bakerConfirmBall()/bakerRecordBall() pass
+   st.noTap into bakerNextBallMax() so this happens live during play,
+   not just after the fact.
+   bakerApplyNoTapSubstitution() is the remaining piece: once ball flow
+   has correctly kept the frames array free of phantom balls, this just
+   substitutes the raw 9 to a 10 for scoring/display, using the same
+   NoTap-aware freshness test. Frame 10's fill ball (3rd ball) is the
+   one exception, never substituted — matches calculateNoTapScores()
+   exactly (att3 is always scored as a raw fill ball under NoTap). */
+function bakerApplyNoTapSubstitution(frames) {
+  return frames.map(function(balls, idx) {
+    var frameNumber = idx + 1;
+    var out = [];
+    for (var i = 0; i < balls.length; i++) {
+      var isFresh = bakerNextBallMax(frameNumber, balls.slice(0, i), true) === 10;
+      var isFillBall = (frameNumber === 10 && i === 2);
+      var v = balls[i];
+      out.push((isFresh && !isFillBall && v === 9) ? 10 : v);
+    }
+    return out;
+  });
+}
+
+/* Frames used for display/scoring purposes, applying the NoTap lens
+   when the session has it on. Single point of truth so every render
+   function and the finish/persist step all agree. */
+function bakerDisplayFrames(session) {
+  return session.noTap ? bakerApplyNoTapSubstitution(session.frames) : session.frames;
 }
 
 function bakerLoadSessions() {
@@ -21160,15 +21265,19 @@ function bakerLoadSessions() {
 function bakerSaveSessions(list) {
   try { localStorage.setItem(BAKER_STORAGE_KEY, JSON.stringify(list)); } catch(e) { console.warn('bakerSaveSessions:', e); }
 }
+function bakerFindSession(seriesID, gameNumber) {
+  return bakerLoadSessions().find(function(s){
+    return s.ctx && s.ctx.seriesID === seriesID && s.ctx.gameNumber === gameNumber;
+  }) || null;
+}
 
-/* ── Screen dispatcher — registered in navTo()'s render table.
-   Re-derives what to show purely from _bakerState/_bakerSetup, so
-   it's safe to call on every navTo('s-baker') as well as directly
-   after any in-place state change (start/finish/cancel). ── */
+/* ── Screen dispatcher — registered in navTo()'s render table. ── */
 function renderBakerScreen() {
-  if (_bakerState) {
+  if (_bakerViewOnly) {
+    bakerRenderComplete(bakerScoreGame(bakerDisplayFrames(_bakerViewOnly)), _bakerViewOnly.bowlers, _bakerViewOnly, true);
+  } else if (_bakerState) {
     if (_bakerState.complete) {
-      bakerRenderComplete(bakerScoreGame(_bakerState.frames), _bakerState.bowlers);
+      bakerRenderComplete(bakerScoreGame(bakerDisplayFrames(_bakerState)), _bakerState.bowlers, _bakerState, false);
     } else {
       bakerRenderScoring();
     }
@@ -21180,43 +21289,37 @@ function renderBakerScreen() {
   }
 }
 
-/* ── Entry point — replaces the old openBakerSetupModal(). Builds
-   setup scratch state and navigates to the real screen (mirrors the
-   Team Bowl 'grp' system's navTo() destination, per §5.1). ── */
-function bakerOpenSetup(ctx) {
-  var league = ctx.leagueID ? db.leagues.find(function(l){ return l.LeagueID===ctx.leagueID; }) : null;
-  var tourn  = ctx.tournamentID ? (db.tournaments||[]).find(function(t){ return t.TournamentID===ctx.tournamentID; }) : null;
+/* Single entry point (v30.120) — a round's own game-slot circle,
+   exactly like a normal game. Looks up any session already bound to
+   this (seriesID, gameNumber); if one exists, opens it read-only;
+   otherwise starts setup scoped to this exact slot. */
+function bakerHandleGameSlotTap(ctxBase, seriesID, gameNumber) {
+  _bakerSetup = null; _bakerState = null; _bakerViewOnly = null;
+  var existing = bakerFindSession(seriesID, gameNumber);
+  if (existing) {
+    _bakerViewOnly = existing;
+    navTo('s-baker');
+    return;
+  }
+  var series = db.series.find(function(s){ return s.SeriesID === seriesID; });
+  var league = ctxBase.leagueID ? db.leagues.find(function(l){ return l.LeagueID===ctxBase.leagueID; }) : null;
+  var tourn  = ctxBase.tournamentID ? (db.tournaments||[]).find(function(t){ return t.TournamentID===ctxBase.tournamentID; }) : null;
   var teamSize = (league && league.BakerTeamSize) || (tourn && tourn.BakerTeamSize) || 2;
-  var centerID = (league && league.CenterID) || (tourn && tourn.CenterID) || null;
+  var centerID = (series && series.CenterID) || (league && league.CenterID) || (tourn && tourn.CenterID) || null;
 
   _bakerSetup = {
-    ctx: ctx,
+    ctx: Object.assign({}, ctxBase, { seriesID: seriesID, gameNumber: gameNumber }),
     teamSize: teamSize,
     centerID: centerID,
-    date: azToday(),
+    date: (series && series.DateBowled) || azToday(),
+    lanePair: (series && series.LanePair) || '',
+    laneStart: (series && series.LaneStart) || null,
+    noTap: !!(series && series.NoTap),
     slots: Array.from({length: teamSize}, function(_,i){
       return { BowlerID: null, name: 'Bowler ' + (i+1), ballID: null, ballManual: '', ballMode: null };
     })
   };
   navTo('s-baker');
-}
-
-/* Round-card routing fix (§2.4 bug 2 / §5.4): tapping a tournament
-   round card when BakerFormat is on must not fall into the regular
-   personal scoring flow. If this round already has a completed Baker
-   game logged, open history filtered to it; otherwise start setup
-   scoped to this round (ctx.seriesID). */
-function bakerHandleRoundTap(seriesID) {
-  var t = (db.tournaments||[]).find(function(x){ return x.TournamentID===G.tournamentID; });
-  if (!t) return;
-  var existing = bakerLoadSessions().filter(function(s){
-    return s.ctx && s.ctx.tournamentID === G.tournamentID && s.ctx.seriesID === seriesID;
-  });
-  if (existing.length) {
-    bakerViewHistory(existing);
-  } else {
-    bakerOpenSetup({ tournamentID: G.tournamentID, seriesID: seriesID });
-  }
 }
 
 function bakerRenderSetup() {
@@ -21225,8 +21328,9 @@ function bakerRenderSetup() {
   var d = _bakerSetup;
   var rosterOpts = (db.bowlers||[]).filter(function(b){ return b.Active!==false; })
     .map(function(b){ return '<option value="'+b.BowlerID+'">'+b.Name+(b.IsMe?' (Me)':'')+'</option>'; }).join('');
-  var cOpts = db.centers.map(function(c){ return '<option value="'+c.CenterID+'"'+(d.centerID===c.CenterID?' selected':'')+'>'+c.CenterName+'</option>'; }).join('');
   var ballList = db.balls.filter(function(b){ return b.Active!==false; });
+  var series = db.series.find(function(s){ return s.SeriesID === d.ctx.seriesID; });
+  var roundLabel = series ? bakerRoundLabelForSeries(series) : '';
 
   var slotsHtml = d.slots.map(function(slot, i) {
     var frames = [];
@@ -21248,11 +21352,14 @@ function bakerRenderSetup() {
   }).join('');
 
   body.innerHTML =
+    (roundLabel ? '<div style="font-size:12px;color:var(--t3);margin-bottom:4px">'+roundLabel+' · Game '+d.ctx.gameNumber+'</div>' : '') +
     '<div style="font-size:12px;color:var(--t3);margin-bottom:14px">'+d.teamSize+'-bowler rotation</div>' +
-    '<div class="fgroup"><label class="flabel">Date</label>' +
-      '<input class="finput" type="date" value="'+d.date+'" oninput="_bakerSetup.date=this.value"></div>' +
-    '<div class="fgroup"><label class="flabel">Center</label>' +
-      '<select class="finput" onchange="_bakerSetup.centerID=parseInt(this.value)">'+cOpts+'</select></div>' +
+    '<div class="fgroup"><label class="flabel">Lane Pair</label>' +
+      '<input class="finput" type="text" placeholder="e.g. 11,12" value="'+(d.lanePair||'').replace(/"/g,'&quot;')+'" oninput="_bakerSetup.lanePair=this.value"></div>' +
+    '<div class="fgroup" style="display:flex;align-items:center;justify-content:space-between;padding:10px 2px">' +
+      '<label class="flabel" style="margin:0">✦ NoTap</label>' +
+      '<div class="toggle-switch'+(d.noTap?' on':'')+'" onclick="bakerToggleSetupNoTap(this)"></div>' +
+    '</div>' +
     '<div class="fgroup"><label class="flabel">Team</label>' + slotsHtml + '</div>' +
     '<button class="btn btn-primary" style="width:100%" onclick="bakerStartSession()">Start Game →</button>' +
     '<button class="btn btn-secondary" style="width:100%;margin-top:8px" onclick="bakerCancelSetup()">Cancel</button>';
@@ -21282,10 +21389,11 @@ function bakerSlotNameEdit(i, val) {
   _bakerSetup.slots[i].name = val.trim() || ('Bowler ' + (i+1));
 }
 
-/* Ball field keeps ballID / ballManual mutually exclusive — picking
-   from the list clears any manual text and vice versa, so a stale
-   value from switching back and forth never gets silently carried
-   into the saved session. */
+function bakerToggleSetupNoTap(el) {
+  _bakerSetup.noTap = !_bakerSetup.noTap;
+  el.classList.toggle('on', _bakerSetup.noTap);
+}
+
 function bakerSlotBallSelect(i, val) {
   var slot = _bakerSetup.slots[i];
   var manualEl = document.getElementById('baker-ballmanual-'+i);
@@ -21304,8 +21412,6 @@ function bakerSlotBallManual(i, val) {
   _bakerSetup.slots[i].ballManual = val;
 }
 
-/* Resolves whichever ball reference is set (list pick or manual text)
-   for display in the scoring header / complete breakdown / history. */
 function bakerBallLabel(bowler) {
   if (bowler.ballID) {
     var b = db.balls.find(function(x){ return x.BallID === bowler.ballID; });
@@ -21315,11 +21421,6 @@ function bakerBallLabel(bowler) {
   return '';
 }
 
-/* Resolves a full history string when a bowler changed balls mid-game
-   (e.g. "Storm Phaze II (F1–4), Hammer Black Widow (F5–10)"), falling
-   back to the plain current-ball label when there was no change. Frame
-   ranges are clipped to the frames that actually belong to this bowler
-   in the rotation, so a change logged mid-rotation still reads cleanly. */
 function bakerBallHistoryLabel(bowler, teamSize) {
   if (!bowler.ballChanges || bowler.ballChanges.length <= 1) return bakerBallLabel(bowler);
   var myFrames = [];
@@ -21338,13 +21439,6 @@ function bakerBallHistoryLabel(bowler, teamSize) {
   return parts.join(', ');
 }
 
-/* ── Change ball on the fly (mid-game) ──
-   Scoped to whichever bowler is up right now. A short-lived modal is
-   fine here (unlike the main scoring flow) — this is a transient
-   utility action, not a stacked competing screen. Logs a ballChanges
-   entry so the post-game breakdown can show which ball covered which
-   frames, same spirit as the setup-time picker: list pick or manual
-   free-text, mutually exclusive. */
 var _bakerBallChangeScratch = null;
 
 function bakerChangeBallPrompt() {
@@ -21397,6 +21491,25 @@ function bakerApplyBallChange() {
   bakerRenderScoring();
 }
 
+/* Lane pair — editable mid-game too (some formats rotate lanes every
+   game; the round-level default doesn't always match what actually
+   happens on the night). */
+function bakerChangeLanePrompt() {
+  var st = _bakerState;
+  openModal(
+    '<div class="modal-title">Lane Pair</div>' +
+    '<input class="finput" id="baker-lane-input" type="text" placeholder="e.g. 11,12" value="'+(st.lanePair||'').replace(/"/g,'&quot;')+'">' +
+    '<button class="btn btn-primary" style="width:100%;margin-top:12px" onclick="bakerApplyLaneChange()">Save</button>' +
+    '<button class="btn btn-secondary" style="width:100%;margin-top:8px" onclick="closeModal()">Cancel</button>'
+  );
+}
+function bakerApplyLaneChange() {
+  var el = document.getElementById('baker-lane-input');
+  _bakerState.lanePair = el ? el.value : _bakerState.lanePair;
+  closeModal();
+  bakerRenderScoring();
+}
+
 function bakerStartSession() {
   var d = _bakerSetup;
   var names = d.slots.map(function(s){ return s.name; });
@@ -21404,6 +21517,8 @@ function bakerStartSession() {
   _bakerState = {
     id: 'baker_' + Date.now(),
     ctx: d.ctx, teamSize: d.teamSize, centerID: d.centerID, date: d.date,
+    lanePair: d.lanePair || '', laneStart: d.laneStart || null,
+    noTap: !!d.noTap,
     bowlers: d.slots.map(function(s, i){
       var b = { BowlerID: s.BowlerID, name: s.name, ballID: s.ballID||null, ballManual: s.ballManual||'', __idx: i };
       b.ballChanges = (b.ballID || b.ballManual) ? [{ frame: 1, ballID: b.ballID, ballManual: b.ballManual }] : [];
@@ -21412,43 +21527,30 @@ function bakerStartSession() {
     frames: Array.from({length:10}, function(){ return []; }),
     currentFrame: 1,
     complete: false,
-    alreadyDown: [],  // pin numbers down from an earlier ball in the current rack
-    tapped: []        // pin numbers tapped on the CURRENT ball, not yet confirmed
+    alreadyDown: [],
+    tapped: []
   };
   _bakerSetup = null;
   renderBakerScreen();
 }
 
-/* ── Scoring screen ── */
 function bakerCurrentBowler() {
   var st = _bakerState;
   return st.bowlers[bakerBowlerIdxForFrame(st.currentFrame, st.teamSize)];
 }
 
-/* LEAVE mode = fresh rack (nothing down yet this frame/fill sequence).
-   SPARE mode = continuing a rack from an earlier ball. st.alreadyDown
-   is already the correct freshness signal — it's reset to [] every
-   time bakerConfirmBall() determines the NEXT ball starts a fresh
-   rack, across every Frame 1-9 and Frame 10 branch. */
 function bakerGetMode() {
   return _bakerState.alreadyDown.length === 0 ? 'LEAVE' : 'SPARE';
 }
 
 function bakerTapPin(pinNum) {
   var st = _bakerState;
-  if (st.alreadyDown.indexOf(pinNum) >= 0) return; // already down — not interactive
+  if (st.alreadyDown.indexOf(pinNum) >= 0) return;
   var i = st.tapped.indexOf(pinNum);
   if (i >= 0) st.tapped.splice(i, 1); else st.tapped.push(pinNum);
   bakerRenderScoring();
 }
 
-/* Translates the current tap set into which pins actually went down
-   THIS ball, mode-aware:
-     LEAVE mode: tapped = pins marked still standing. Knocked = the
-       complement (every pin NOT tapped).
-     SPARE mode: tapped = pins marked knocked, directly (unchanged
-       from the original build — this was already the correct
-       togglePin()-style behavior for ball 2+). */
 function bakerKnockedPinsThisBall() {
   var st = _bakerState;
   if (bakerGetMode() === 'LEAVE') {
@@ -21459,19 +21561,12 @@ function bakerKnockedPinsThisBall() {
   return st.tapped.slice();
 }
 
-/* Pinfall for the ball about to be confirmed, mode-aware — mirrors
-   the real engine's "Pinfall = 10 - G.leave.size" (LEAVE) vs.
-   "Pinfall = G.knocked.size" (SPARE) exactly. */
 function bakerPinsFromTapped() {
   return bakerGetMode() === 'LEAVE' ? (10 - _bakerState.tapped.length) : _bakerState.tapped.length;
 }
 
 function bakerClearTaps() { _bakerState.tapped = []; bakerRenderScoring(); }
 
-/* Primary quick-action button — dynamic per mode, mirrors
-   quickPrimary()/quickSpare(): LEAVE mode = "Strike" (clear all
-   leave, confirm all-ten-knocked). SPARE mode = "Spare" (mark every
-   remaining standing pin knocked, confirm). */
 function bakerQuickPrimary() {
   var st = _bakerState;
   if (bakerGetMode() === 'LEAVE') {
@@ -21483,10 +21578,6 @@ function bakerQuickPrimary() {
   bakerConfirmBall();
 }
 
-/* Secondary quick-action button — "Miss": LEAVE mode marks every pin
-   as leave (gutter ball, 0 knocked). SPARE mode marks nothing
-   knocked (miss on the remaining pins). Confirms immediately either
-   way, mirroring quickSecondary()'s standard-gutter path. */
 function bakerQuickSecondary() {
   var st = _bakerState;
   if (bakerGetMode() === 'LEAVE') {
@@ -21498,16 +21589,12 @@ function bakerQuickSecondary() {
   bakerConfirmBall();
 }
 
-/* Commits the currently-tapped pins as this ball's result, then decides
-   whether the NEXT ball starts a fresh rack (all 10 standing again) or
-   continues from the pins still up — derived from bakerNextBallMax so
-   this can never drift out of sync with the tested scoring logic. */
 function bakerConfirmBall() {
   var st = _bakerState;
   var pins = bakerPinsFromTapped();
   var frameArr = st.frames[st.currentFrame - 1];
   var willBeArr = frameArr.concat([pins]);
-  var nextMax = bakerNextBallMax(st.currentFrame, willBeArr);
+  var nextMax = bakerNextBallMax(st.currentFrame, willBeArr, st.noTap);
   var continuesSameRack = (nextMax !== null && nextMax !== 10);
   st.alreadyDown = continuesSameRack ? st.alreadyDown.concat(bakerKnockedPinsThisBall()) : [];
   st.tapped = [];
@@ -21518,7 +21605,7 @@ function bakerRecordBall(pins) {
   var st = _bakerState;
   var frameArr = st.frames[st.currentFrame - 1];
   frameArr.push(pins);
-  var nextMax = bakerNextBallMax(st.currentFrame, frameArr);
+  var nextMax = bakerNextBallMax(st.currentFrame, frameArr, st.noTap);
   if (nextMax === null) {
     if (st.currentFrame === 10) {
       st.complete = true;
@@ -21535,7 +21622,7 @@ function bakerUndoBall() {
   var frameArr = st.frames[st.currentFrame - 1];
   if (frameArr.length > 0) {
     frameArr.pop();
-    st.alreadyDown = bakerRecomputeAlreadyDown(st.currentFrame, frameArr);
+    st.alreadyDown = bakerRecomputeAlreadyDown(st.currentFrame, frameArr, st.noTap);
     st.tapped = [];
     bakerRenderScoring();
     return;
@@ -21549,17 +21636,8 @@ function bakerUndoBall() {
   }
 }
 
-/* We track pin COUNTS historically, not which specific pins fell on each
-   prior ball. On Undo mid-rack, the deck is redrawn with a plausible-but-
-   arbitrary set of "already down" pins (lowest-numbered first) matching
-   the correct remaining count — a known cosmetic simplification, unchanged
-   from the original build. Only the LENGTH of this array is ever used to
-   determine LEAVE vs SPARE mode (bakerGetMode()), and that length is
-   always correct regardless of which specific pins are shown down. The
-   numeric score is unaffected either way; only the visual pin pattern
-   after an Undo may not match exactly what was physically knocked down. */
-function bakerRecomputeAlreadyDown(frameNumber, ballsSoFar) {
-  var maxNow = bakerNextBallMax(frameNumber, ballsSoFar);
+function bakerRecomputeAlreadyDown(frameNumber, ballsSoFar, isNoTap) {
+  var maxNow = bakerNextBallMax(frameNumber, ballsSoFar, isNoTap);
   if (maxNow === null || maxNow === 10) return [];
   var downCount = 10 - maxNow;
   var down = [];
@@ -21567,13 +21645,6 @@ function bakerRecomputeAlreadyDown(frameNumber, ballsSoFar) {
   return down;
 }
 
-/* Standard bowling scorecard notation: X for a strike, / for a spare
-   (the second ball of a rack that brings the rack total to 10, marked
-   in place of the raw pin count), - for a miss/gutter ball, plain digit
-   otherwise. Works uniformly for both regular frames (1-2 balls) and
-   Frame 10 (up to 3 balls / up to 2 racks) since a "rack" here is never
-   more than 2 balls — a strike ends it at 1, anything else resolves
-   (spare or open) at exactly 2. */
 function bakerFormatFrameBalls(balls) {
   var out = [];
   var i = 0;
@@ -21598,13 +21669,14 @@ function bakerFormatFrameBalls(balls) {
   return out.join(' ');
 }
 
-function bakerMiniScoresheet() {
-  var st = _bakerState;
-  var scored = bakerScoreGame(st.frames);
+function bakerMiniScoresheet(session) {
+  var st = session || _bakerState;
+  var displayFrames = bakerDisplayFrames(st);
+  var scored = bakerScoreGame(displayFrames);
   var cells = [];
   for (var fr = 1; fr <= 10; fr++) {
-    var balls = st.frames[fr-1];
-    var isCurrent = fr === st.currentFrame && !st.complete;
+    var balls = displayFrames[fr-1];
+    var isCurrent = st === _bakerState && fr === st.currentFrame && !st.complete;
     var ballsStr = bakerFormatFrameBalls(balls);
     var scoreStr = scored.resolved[fr-1] ? scored.running[fr-1] : '';
     cells.push('<div style="flex:1;min-width:28px;text-align:center;padding:4px 2px;border-radius:6px;'+(isCurrent?'background:rgba(196,168,240,0.18);border:1px solid var(--lilac)':'border:1px solid var(--border1)')+'">' +
@@ -21616,6 +21688,20 @@ function bakerMiniScoresheet() {
   return '<div style="display:flex;gap:3px;margin-bottom:16px;overflow-x:auto">'+cells.join('')+'</div>';
 }
 
+function bakerBadgesHTML(session) {
+  var out = '<span class="pill" style="font-size:10px;background:rgba(196,168,240,0.18);color:var(--lilac);border:1px solid rgba(196,168,240,0.35)">🎳 BAKER</span>';
+  if (session.noTap) out += ' <span class="pill pill-gold" style="font-size:10px">✦ NoTap</span>';
+  return out;
+}
+
+function bakerRoundLabelForSeries(series) {
+  var sameParent = db.series.filter(function(s){
+    return series.TournamentID ? s.TournamentID === series.TournamentID : s.LeagueID === series.LeagueID;
+  }).sort(function(a,b){ return new Date(a.DateBowled) - new Date(b.DateBowled); });
+  var idx = sameParent.findIndex(function(s){ return s.SeriesID === series.SeriesID; });
+  return 'Round ' + (idx + 1);
+}
+
 function bakerRenderScoring() {
   var st = _bakerState;
   var bowler = bakerCurrentBowler();
@@ -21623,11 +21709,6 @@ function bakerRenderScoring() {
   var ballNum = frameArr.length + 1;
   var mode = bakerGetMode();
 
-  /* Class names match the real scoring engine's pin-btn convention
-     exactly (B=already down, L=leave/still-standing, K=knocked,
-     S=standing-default in SPARE mode, no class=default-dark "will be
-     knocked" in LEAVE mode) — see updatePinDisplay() for the source
-     of truth this replicates. */
   function pinClass(p) {
     if (st.alreadyDown.indexOf(p) >= 0) return 'B';
     if (mode === 'LEAVE') return st.tapped.indexOf(p) >= 0 ? 'L' : '';
@@ -21658,17 +21739,24 @@ function bakerRenderScoring() {
     '</div>';
 
   var ballLabel = bakerBallLabel(bowler);
+  var series = db.series.find(function(s){ return s.SeriesID === st.ctx.seriesID; });
+  var roundLabel = series ? bakerRoundLabelForSeries(series) : '';
 
   var body = document.getElementById('baker-body');
   if (!body) return;
   body.innerHTML =
-    bakerMiniScoresheet() +
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">' +
+      '<div>' + bakerBadgesHTML(st) + '</div>' +
+      (roundLabel ? '<span style="font-size:11px;color:var(--t3)">'+roundLabel+' · Game '+st.ctx.gameNumber+'</span>' : '') +
+    '</div>' +
+    bakerMiniScoresheet(st) +
     '<div style="background:var(--bg2);border:1px solid var(--border1);border-radius:10px;padding:12px;margin-bottom:10px;text-align:center">' +
       '<div style="font-size:12px;color:var(--t3)">Frame '+st.currentFrame+' · Ball '+ballNum+'</div>' +
       '<div style="font-size:18px;font-weight:800;color:var(--lilac);margin-top:4px">'+bowler.name+'\'s turn</div>' +
       (ballLabel
         ? '<div style="font-size:11px;color:var(--t3);margin-top:2px;cursor:pointer;text-decoration:underline dotted" onclick="bakerChangeBallPrompt()">🎳 '+ballLabel+' · change</div>'
         : '<div style="font-size:11px;color:var(--lilac);margin-top:2px;cursor:pointer;text-decoration:underline dotted" onclick="bakerChangeBallPrompt()">+ Set ball</div>') +
+      '<div style="font-size:11px;color:var(--t3);margin-top:2px;cursor:pointer;text-decoration:underline dotted" onclick="bakerChangeLanePrompt()">📍 Lane '+(st.lanePair||'—')+' · change</div>' +
     '</div>' +
     pinDeck +
     qaRow +
@@ -21684,66 +21772,163 @@ function bakerAbandonSession() {
 
 function bakerFinishSession() {
   var st = _bakerState;
-  var scored = bakerScoreGame(st.frames);
+  var scored = bakerScoreGame(bakerDisplayFrames(st));
   var sessions = bakerLoadSessions();
   var record = {
     id: st.id, ctx: st.ctx, teamSize: st.teamSize, centerID: st.centerID, date: st.date,
+    lanePair: st.lanePair || '', laneStart: st.laneStart || null, noTap: !!st.noTap,
     bowlers: st.bowlers, frames: st.frames, frameScores: scored.frameScores,
     running: scored.running, finalScore: scored.total, createdAt: new Date().toISOString()
   };
   sessions.push(record);
   bakerSaveSessions(sessions);
   st.complete = true;
-  bakerRenderComplete(scored, st.bowlers);
+  bakerRenderComplete(scored, st.bowlers, st, false);
 }
 
-function bakerRenderComplete(scored, bowlers) {
-  var st = _bakerState;
+function bakerRenderComplete(scored, bowlers, session, viewOnly) {
   var breakdown = bowlers.map(function(b, i) {
     var frames = [];
-    for (var fr=1; fr<=10; fr++) if (bakerBowlerIdxForFrame(fr, st.teamSize)===i) frames.push(fr);
-    var ballLabel = bakerBallHistoryLabel(b, st.teamSize);
+    for (var fr=1; fr<=10; fr++) if (bakerBowlerIdxForFrame(fr, session.teamSize)===i) frames.push(fr);
+    var ballLabel = bakerBallHistoryLabel(b, session.teamSize);
     return '<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border1)">' +
       '<span>'+b.name+(ballLabel?' <span style="color:var(--t3);font-size:11px">('+ballLabel+')</span>':'')+'</span>' +
       '<span style="color:var(--t3);font-size:12px">frames '+frames.join(', ')+'</span></div>';
   }).join('');
 
+  var series = session.ctx && session.ctx.seriesID ? db.series.find(function(s){ return s.SeriesID === session.ctx.seriesID; }) : null;
+  var roundLabel = series ? bakerRoundLabelForSeries(series) : '';
+
   var body = document.getElementById('baker-body');
   if (!body) return;
   body.innerHTML =
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">' +
+      '<div>' + bakerBadgesHTML(session) + '</div>' +
+      (roundLabel ? '<span style="font-size:11px;color:var(--t3)">'+roundLabel+' · Game '+session.ctx.gameNumber+'</span>' : '') +
+    '</div>' +
+    (session.lanePair ? '<div style="font-size:11px;color:var(--t3);margin-bottom:10px">📍 Lane '+session.lanePair+'</div>' : '') +
     '<div style="text-align:center;padding:16px 0">' +
       '<div style="font-size:42px;font-weight:900;color:var(--lilac)">'+scored.total+'</div>' +
       '<div style="font-size:12px;color:var(--t3)">Team Score</div>' +
     '</div>' +
-    bakerMiniScoresheet() +
+    bakerMiniScoresheet(session) +
     '<div style="margin-bottom:16px">'+breakdown+'</div>' +
-    '<button class="btn btn-primary" style="width:100%" onclick="bakerDone()">Done</button>';
+    '<button class="btn btn-primary" style="width:100%" onclick="bakerDone()">'+(viewOnly?'Close':'Done')+'</button>';
 }
 
 function bakerDone() {
   _bakerState = null;
+  _bakerViewOnly = null;
   navBack();
 }
 
-/* History — reachable via #s-baker's own "History" button AND via the
-   standalone header buttons next to "Start Baker Game" on both the
-   League Series and Tournament Round screens (§2.4 bug fix: previously
-   nothing in the shipped UI called this at all). Optional `filtered`
-   list scopes the view to a single round (used by bakerHandleRoundTap()). */
 function bakerViewHistory(filtered) {
-  var sessions = (filtered || bakerLoadSessions()).slice()
+  var all = bakerLoadSessions();
+  var sessions = (filtered || all).slice()
     .sort(function(a,b){ return (b.createdAt||'').localeCompare(a.createdAt||''); });
   if (!sessions.length) { toast('No Baker games logged yet'); return; }
+  var unbound = all.filter(function(s){ return !s.ctx || !s.ctx.gameNumber; });
   var rows = sessions.map(function(s) {
     var names = s.bowlers.map(function(b){ return b.name; }).join(' · ');
+    var series = s.ctx && s.ctx.seriesID ? db.series.find(function(x){ return x.SeriesID === s.ctx.seriesID; }) : null;
+    var roundTag = series ? (bakerRoundLabelForSeries(series) + ' · G' + s.ctx.gameNumber) : '<span style="color:var(--gold)">unassigned</span>';
     return '<div style="padding:10px 0;border-bottom:1px solid var(--border1)">' +
       '<div style="display:flex;justify-content:space-between"><strong>'+s.finalScore+'</strong><span style="font-size:11px;color:var(--t3)">'+s.date+'</span></div>' +
-      '<div style="font-size:12px;color:var(--t3)">'+names+'</div></div>';
+      '<div style="font-size:12px;color:var(--t3)">'+names+'</div>' +
+      '<div style="font-size:11px;color:var(--t3);margin-top:2px">'+roundTag+(s.noTap?' · <span style="color:var(--gold)">✦ NoTap</span>':'')+'</div></div>';
   }).join('');
   openModal('<div class="modal-title">🎳 Baker Game History</div>' + rows +
-    '<button class="btn btn-secondary" style="width:100%;margin-top:12px" onclick="closeModal()">Close</button>');
+    (unbound.length ? '<button class="btn btn-secondary" style="width:100%;margin-top:12px;color:var(--gold)" onclick="closeModal();bakerOpenMigrationTool()">Assign '+unbound.length+' unassigned game'+(unbound.length>1?'s':'')+' to rounds</button>' : '') +
+    '<button class="btn btn-secondary" style="width:100%;margin-top:8px" onclick="closeModal()">Close</button>');
 }
 
+/* =============================================================
+   MIGRATION TOOL (v30.120, one-time use)
+   For sessions created before per-(SeriesID,GameNumber) binding
+   existed. Every row is independently editable before Save;
+   nothing writes until Save is tapped.
+   ============================================================= */
+var _bakerMigrationRows = null;
+
+function bakerOpenMigrationTool() {
+  var unbound = bakerLoadSessions()
+    .filter(function(s){ return !s.ctx || !s.ctx.gameNumber; })
+    .sort(function(a,b){ return (a.createdAt||'').localeCompare(b.createdAt||''); }); // oldest first = play order
+  if (!unbound.length) { toast('Nothing to assign'); return; }
+
+  var candidateSeries = db.series.filter(function(s){
+    var league = s.LeagueID>0 ? db.leagues.find(function(l){return l.LeagueID===s.LeagueID;}) : null;
+    var tourn  = s.TournamentID ? (db.tournaments||[]).find(function(t){return t.TournamentID===s.TournamentID;}) : null;
+    return (league && league.BakerFormat) || (tourn && tourn.BakerFormat);
+  }).sort(function(a,b){ return new Date(a.DateBowled) - new Date(b.DateBowled); })
+    .map(function(s){ return { seriesID: s.SeriesID, label: bakerRoundLabelForSeries(s) + ' · ' + (localDate(s.DateBowled)).toLocaleDateString('en-US',{month:'numeric',day:'numeric'}) }; });
+
+  // Known one-time default (2026-08-22 TBT Scratch Bakers Doubles):
+  // 9 orphaned sessions from before per-slot binding existed, confirmed
+  // by direct account as Round 1 (6 games) then Round 2 (3 games), in
+  // play order — 163 first, 197 last. Pre-fills exactly that split when
+  // it still matches (9 unbound sessions, 2+ candidate rounds); every
+  // row stays independently editable before Save either way, and any
+  // other shape of unbound sessions falls back to the generic default
+  // (everything onto the first round, sequential game numbers) below.
+  var useKnownSplit = unbound.length === 9 && candidateSeries.length >= 2;
+
+  _bakerMigrationRows = unbound.map(function(s, i){
+    if (useKnownSplit) {
+      var inRoundOne = i < 6;
+      return {
+        session: s,
+        seriesID: inRoundOne ? candidateSeries[0].seriesID : candidateSeries[1].seriesID,
+        gameNumber: inRoundOne ? (i + 1) : (i - 6 + 1)
+      };
+    }
+    return { session: s, seriesID: candidateSeries[0] ? candidateSeries[0].seriesID : null, gameNumber: i+1 };
+  });
+  bakerRenderMigrationTool(candidateSeries);
+}
+
+function bakerRenderMigrationTool(candidateSeries) {
+  var opts = candidateSeries.map(function(c){ return '<option value="'+c.seriesID+'">'+c.label+'</option>'; }).join('');
+  var rows = _bakerMigrationRows.map(function(row, i) {
+    var names = row.session.bowlers.map(function(b){ return b.name; }).join(' · ');
+    return '<div style="padding:10px 0;border-bottom:1px solid var(--border1)">' +
+      '<div style="display:flex;justify-content:space-between;margin-bottom:6px">' +
+        '<strong>'+row.session.finalScore+'</strong><span style="font-size:11px;color:var(--t3)">'+row.session.date+' · '+names+'</span>' +
+      '</div>' +
+      '<div style="display:flex;gap:6px">' +
+        '<select class="finput" style="flex:2" onchange="_bakerMigrationRows['+i+'].seriesID=parseInt(this.value)">'+opts+'</select>' +
+        '<input class="finput" style="flex:1" type="number" min="1" value="'+row.gameNumber+'" oninput="_bakerMigrationRows['+i+'].gameNumber=parseInt(this.value)||1">' +
+      '</div>' +
+    '</div>';
+  }).join('');
+  openModal(
+    '<div class="modal-title">Assign Baker Games to Rounds</div>' +
+    '<div style="font-size:12px;color:var(--t3);margin-bottom:12px">Oldest game first (play order). Pick the round and game number for each — nothing is saved until you confirm.</div>' +
+    rows +
+    '<button class="btn btn-primary" style="width:100%;margin-top:12px" onclick="bakerConfirmMigration()">Save Assignments</button>' +
+    '<button class="btn btn-secondary" style="width:100%;margin-top:8px" onclick="closeModal()">Cancel</button>'
+  );
+}
+
+function bakerConfirmMigration() {
+  var seen = {};
+  for (var i = 0; i < _bakerMigrationRows.length; i++) {
+    var row = _bakerMigrationRows[i];
+    if (!row.seriesID || !row.gameNumber) { toast('Every game needs a round and game number'); return; }
+    var key = row.seriesID + ':' + row.gameNumber;
+    if (seen[key]) { toast('Two games are both assigned to the same round + game number'); return; }
+    seen[key] = true;
+  }
+  var all = bakerLoadSessions();
+  _bakerMigrationRows.forEach(function(row) {
+    var s = all.find(function(x){ return x.id === row.session.id; });
+    if (s) s.ctx = Object.assign({}, s.ctx, { seriesID: row.seriesID, gameNumber: row.gameNumber });
+  });
+  bakerSaveSessions(all);
+  _bakerMigrationRows = null;
+  closeModal();
+  toast('Baker games assigned');
+}
 /* =============================================================
    BALL-CHANGE RETROSPECTIVE (v30.113 — Phase B, Lane Library
    design doc §3.2). Standalone, computed on demand against the
@@ -25000,6 +25185,11 @@ function buildExportDoc() {
       try { return JSON.parse(localStorage.getItem('grp_sessions') || '[]'); }
       catch(e) { return []; }
     })(),
+    // Baker Format sessions — same phone-only/localStorage precedent as
+    // teamBowlSessions above. Finishing a Baker game previously only ever
+    // wrote to localStorage, invisible to backups/exports entirely; this
+    // is what makes a finished Baker game durable across a restore.
+    bakerSessions: bakerLoadSessions(),
     prefs: (() => {
       try { return JSON.parse(localStorage.getItem('bowlingdb_prefs') || '{}'); }
       catch(e) { return {}; }
@@ -25197,6 +25387,7 @@ async function confirmImport() {
   const keepTeamBowl      = (() => {
     try { return JSON.parse(localStorage.getItem('grp_sessions') || '[]'); } catch(e) { return []; }
   })();
+  const keepBaker         = bakerLoadSessions();
   const keepPrefs         = (() => {
     try { return JSON.parse(localStorage.getItem('bowlingdb_prefs') || '{}'); } catch(e) { return {}; }
   })();
@@ -25250,6 +25441,12 @@ async function confirmImport() {
     const keepTBIDs = new Set(keepTeamBowl.map(s => s.id));
     const mergedTB = [...keepTeamBowl, ...incomingTB.filter(s => !keepTBIDs.has(s.id))];
     localStorage.setItem('grp_sessions', JSON.stringify(mergedTB));
+
+    // Restore Baker Format sessions — same merge-by-id pattern as Team Bowl above
+    const incomingBaker = parsed.bakerSessions || [];
+    const keepBakerIDs = new Set(keepBaker.map(s => s.id));
+    const mergedBaker = [...keepBaker, ...incomingBaker.filter(s => !keepBakerIDs.has(s.id))];
+    bakerSaveSessions(mergedBaker);
 
     // Restore handicap config — incoming wins, keep local keys not in import
     const incomingHdcp = parsed.handicapConfig || {};
@@ -25356,6 +25553,16 @@ async function confirmImport() {
       if (newTB.length) {
         localStorage.setItem('grp_sessions', JSON.stringify([...keepTeamBowl, ...newTB]));
         toast(`Merged ${newTB.length} new team bowl session${newTB.length>1?'s':''}`);
+      }
+    }
+    // Merge Baker Format sessions additively — same dedupe-by-id pattern as Team Bowl above
+    const inBaker = parsed.bakerSessions || [];
+    if (inBaker.length) {
+      const existBakerIDs = new Set(keepBaker.map(s => s.id));
+      const newBaker = inBaker.filter(s => !existBakerIDs.has(s.id));
+      if (newBaker.length) {
+        bakerSaveSessions([...keepBaker, ...newBaker]);
+        toast(`Merged ${newBaker.length} new Baker game${newBaker.length>1?'s':''}`);
       }
     }
     // Merge spare alignments additively by LeaveID — local entries win on conflict
