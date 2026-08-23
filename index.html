@@ -3114,7 +3114,7 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
     </div>
     <div id="hdr-title" onclick="hdrTitleTap()"><span class="brand">Bowling</span>DB</div>
     <div id="hdr-title-popover"></div>
-    <span id="hdr-build-ref">v30.120 · 2026-08-23</span>
+    <span id="hdr-build-ref">v30.121 · 2026-08-23</span>
     <div id="hdr-right">
       <div class="hdr-icon-btn" id="hdr-delete-game-btn" onclick="confirmDeleteGame(G.gameID)" title="Delete Game" style="display:none">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -21677,15 +21677,46 @@ function bakerMiniScoresheet(session) {
   for (var fr = 1; fr <= 10; fr++) {
     var balls = displayFrames[fr-1];
     var isCurrent = st === _bakerState && fr === st.currentFrame && !st.complete;
-    var ballsStr = bakerFormatFrameBalls(balls);
+    var symbolsHTML = bakerFrameSymbolsHTML(balls);
     var scoreStr = scored.resolved[fr-1] ? scored.running[fr-1] : '';
-    cells.push('<div style="flex:1;min-width:28px;text-align:center;padding:4px 2px;border-radius:6px;'+(isCurrent?'background:rgba(196,168,240,0.18);border:1px solid var(--lilac)':'border:1px solid var(--border1)')+'">' +
-      '<div style="font-size:9px;color:var(--t3)">'+fr+'</div>' +
-      '<div style="font-size:10px;font-weight:700">'+(ballsStr||'—')+'</div>' +
-      '<div style="font-size:11px;color:var(--lilac);font-weight:800">'+(scoreStr!==''?scoreStr:'')+'</div>' +
-    '</div>');
+    cells.push(
+      '<div class="fm-mini-cell'+(isCurrent?' cur':'')+'">' +
+        '<div class="fm-mini-fn">'+fr+'</div>' +
+        '<div class="fm-mini-atts">'+(symbolsHTML||'<span class="fm-mini-att empty">\u2014</span>')+'</div>' +
+        '<div style="font-size:9px;font-weight:800;color:var(--lilac);min-height:11px">'+(scoreStr!==''?scoreStr:'')+'</div>' +
+      '</div>'
+    );
   }
-  return '<div style="display:flex;gap:3px;margin-bottom:16px;overflow-x:auto">'+cells.join('')+'</div>';
+  return '<div class="fm-mini-strip" style="margin-bottom:14px">'+cells.join('')+'</div>';
+}
+
+/* HTML-symbol twin of bakerFormatFrameBalls() (same rack-walking rule,
+   same X// notation) styled with the real .fm-mini-att classes — kept
+   as a separate function rather than reworking bakerFormatFrameBalls
+   itself, since that one's plain-string return is depended on directly
+   by the test suite and any other plain-text use. */
+function bakerFrameSymbolsHTML(balls) {
+  var parts = [];
+  var i = 0;
+  while (i < balls.length) {
+    var b1 = balls[i];
+    if (b1 === 10) { parts.push('<span class="fm-mini-att X">X</span>'); i += 1; continue; }
+    var b2 = balls[i+1];
+    if (b2 !== undefined) {
+      if (b1 + b2 === 10) {
+        parts.push('<span class="fm-mini-att">'+(b1===0?'-':b1)+'</span>');
+        parts.push('<span class="fm-mini-att sp">/</span>');
+      } else {
+        parts.push('<span class="fm-mini-att">'+(b1===0?'-':b1)+'</span>');
+        parts.push('<span class="fm-mini-att">'+(b2===0?'-':b2)+'</span>');
+      }
+      i += 2;
+    } else {
+      parts.push('<span class="fm-mini-att">'+(b1===0?'-':b1)+'</span>');
+      i += 1;
+    }
+  }
+  return parts.join('');
 }
 
 function bakerBadgesHTML(session) {
@@ -21742,22 +21773,55 @@ function bakerRenderScoring() {
   var series = db.series.find(function(s){ return s.SeriesID === st.ctx.seriesID; });
   var roundLabel = series ? bakerRoundLabelForSeries(series) : '';
 
+  // Running score through the last fully-resolved frame — same
+  // information Focus Mode's fm-score-val shows, computed the same way
+  // (using the NoTap-adjusted display frames so the header number always
+  // matches what the mini-strip and complete screen will show).
+  var scoredSoFar = bakerScoreGame(bakerDisplayFrames(st));
+  var runningSoFar = 0;
+  for (var fi = 0; fi < 10; fi++) if (scoredSoFar.resolved[fi]) runningSoFar = scoredSoFar.running[fi];
+
+  // Header mirrors Focus Mode's real .fm-header layout/classes exactly
+  // (frame number large, game/format label small-caps, attempt + mode
+  // pills beneath, running score pinned top-right) rather than an
+  // independent ad hoc box — same visual language, own logic underneath.
+  var header =
+    '<div class="fm-header" style="padding:0 0 6px">' +
+      '<div class="fm-header-left">' +
+        '<div style="display:flex;align-items:center;gap:6px">' +
+          '<span class="fm-frame-label">F'+st.currentFrame+'</span>' +
+          '<span class="fm-game-label">🎳 BAKER'+(roundLabel?' · '+roundLabel+' G'+st.ctx.gameNumber:'')+(st.noTap?' · NoTap':'')+'</span>' +
+        '</div>' +
+        '<div style="display:flex;align-items:center;gap:4px;margin-top:1px">' +
+          '<span class="att-pill">B'+ballNum+'</span>' +
+          '<span class="att-nav-modepill '+mode+'">'+mode+'</span>' +
+        '</div>' +
+      '</div>' +
+      '<div class="fm-header-right">' +
+        '<div class="fm-score-label">SCORE</div>' +
+        '<div class="fm-score-val">'+runningSoFar+'</div>' +
+      '</div>' +
+    '</div>';
+
+  // Compact bowler/ball/lane status — who's up, on which ball, with
+  // which ball and lane, each independently tappable to change.
+  var statusCard =
+    '<div style="background:var(--bg2);border:1px solid var(--border1);border-radius:10px;padding:10px 12px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;gap:8px">' +
+      '<div style="font-size:16px;font-weight:800;color:var(--lilac)">'+bowler.name+'</div>' +
+      '<div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end">' +
+        (ballLabel
+          ? '<span class="pill" style="font-size:10px;cursor:pointer" onclick="bakerChangeBallPrompt()">🎳 '+ballLabel+'</span>'
+          : '<span class="pill pill-teal" style="font-size:10px;cursor:pointer" onclick="bakerChangeBallPrompt()">+ Set ball</span>') +
+        '<span class="pill pill-teal" style="font-size:10px;cursor:pointer" onclick="bakerChangeLanePrompt()">📍 '+(st.lanePair||'Set lane')+'</span>' +
+      '</div>' +
+    '</div>';
+
   var body = document.getElementById('baker-body');
   if (!body) return;
   body.innerHTML =
-    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">' +
-      '<div>' + bakerBadgesHTML(st) + '</div>' +
-      (roundLabel ? '<span style="font-size:11px;color:var(--t3)">'+roundLabel+' · Game '+st.ctx.gameNumber+'</span>' : '') +
-    '</div>' +
+    header +
     bakerMiniScoresheet(st) +
-    '<div style="background:var(--bg2);border:1px solid var(--border1);border-radius:10px;padding:12px;margin-bottom:10px;text-align:center">' +
-      '<div style="font-size:12px;color:var(--t3)">Frame '+st.currentFrame+' · Ball '+ballNum+'</div>' +
-      '<div style="font-size:18px;font-weight:800;color:var(--lilac);margin-top:4px">'+bowler.name+'\'s turn</div>' +
-      (ballLabel
-        ? '<div style="font-size:11px;color:var(--t3);margin-top:2px;cursor:pointer;text-decoration:underline dotted" onclick="bakerChangeBallPrompt()">🎳 '+ballLabel+' · change</div>'
-        : '<div style="font-size:11px;color:var(--lilac);margin-top:2px;cursor:pointer;text-decoration:underline dotted" onclick="bakerChangeBallPrompt()">+ Set ball</div>') +
-      '<div style="font-size:11px;color:var(--t3);margin-top:2px;cursor:pointer;text-decoration:underline dotted" onclick="bakerChangeLanePrompt()">📍 Lane '+(st.lanePair||'—')+' · change</div>' +
-    '</div>' +
+    statusCard +
     pinDeck +
     qaRow +
     '<button class="btn btn-secondary" style="width:100%" onclick="bakerUndoBall()">Undo Last Ball</button>' +
@@ -21928,6 +21992,26 @@ function bakerConfirmMigration() {
   _bakerMigrationRows = null;
   closeModal();
   toast('Baker games assigned');
+
+  // v30.121 fix: closing the modal used to just reveal whatever the
+  // Baker screen was already showing underneath — almost always a
+  // stale blank setup form for the slot the person tapped BEFORE they
+  // discovered History → migration, since that slot's own binding may
+  // have just changed. Nothing refreshed, so a successful save looked
+  // exactly like a silent failure. Now: clear any stale setup/state and
+  // return to the round list if migration was reached via the Baker
+  // screen's own History button, or refresh the round list in place if
+  // it was reached directly from there — either way lands somewhere
+  // that visibly shows the newly-assigned scores.
+  var cur = getCurrentScreen();
+  if (cur === 's-baker') {
+    _bakerSetup = null; _bakerState = null; _bakerViewOnly = null;
+    navBack();
+  } else if (cur === 's-series') {
+    renderSeriesList();
+  } else if (cur === 's-tournament-series') {
+    renderTournamentSeriesList();
+  }
 }
 /* =============================================================
    BALL-CHANGE RETROSPECTIVE (v30.113 — Phase B, Lane Library
