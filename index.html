@@ -1564,6 +1564,51 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
 #fm-pin-anchor .pin-btn { width:68px; height:68px; font-size:20px; }
 #fm-pin-anchor .num-pad { padding:0 14px; } /* display managed entirely by applyNumericModeUI() inline style */
 
+/* ── Baker scoring screen — Focus Mode layout twin (v30.126) ─────────
+   Same visual language as #focus-mode-panel, own logic underneath.
+   Reuses .fm-header/.fm-mini-strip/.fm-lane-ref/.fm-ref-chip/.fm-float-chip
+   verbatim; only Baker-specific pieces get new classes here. ──────── */
+#s-baker.bk-host { padding:0 !important; }
+#s-baker.bk-host .sec-header { padding:10px 14px 0; margin:0; }
+.bk-panel { display:flex; flex-direction:column; min-height:calc(100vh - 110px); }
+/* Frame-owner rotation row — occupies the beer-frame slot */
+.bk-owner-row {
+  display:flex; align-items:center; gap:6px;
+  margin:0 10px 4px; padding:0 4px; height:34px; box-sizing:border-box;
+  overflow-x:auto; scrollbar-width:none;
+}
+.bk-owner-row::-webkit-scrollbar { display:none; }
+.bk-owner-chip {
+  display:flex; align-items:center; gap:6px; flex:1; min-width:0;
+  padding:0 8px; height:28px; border-radius:8px;
+  border:1px solid var(--border1); background:var(--bg2);
+  cursor:pointer; -webkit-tap-highlight-color:transparent;
+}
+.bk-owner-chip.cur { border-color:rgba(196,168,240,0.55); background:rgba(196,168,240,0.10); }
+.bk-owner-chip.next { border-color:rgba(196,168,240,0.25); }
+.bk-owner-name { font-size:12px; font-weight:800; color:var(--t2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.bk-owner-chip.cur .bk-owner-name { color:var(--lilac); }
+.bk-owner-frames { font-size:8px; font-weight:700; color:var(--t3); letter-spacing:0.4px; white-space:nowrap; flex-shrink:0; }
+.bk-owner-up { font-size:8px; font-weight:900; letter-spacing:0.8px; color:var(--lilac); flex-shrink:0; }
+/* Pin anchor — mirrors #fm-pin-anchor sizing so pins land where the thumb expects */
+.bk-pin-anchor { flex:1; position:relative; display:flex; flex-direction:column; align-items:stretch; min-height:340px; }
+.bk-pin-anchor .pin-stage { gap:0; padding:8px 44px 8px; flex:1; justify-content:space-evenly; }
+.bk-pin-anchor .pin-row { gap:14px; }
+.bk-pin-anchor .pin-btn { width:68px; height:68px; font-size:20px; }
+.bk-pin-anchor .fm-float-chip { bottom:10px; }
+.bk-pin-anchor .fm-float-chip.bk-cur  { left:6px; }
+.bk-pin-anchor .fm-float-chip.bk-next { right:6px; }
+.bk-chip-blank {
+  width:76px; height:76px; border-radius:50%; border:2px dashed var(--border2);
+  background:var(--bg3); display:flex; align-items:center; justify-content:center;
+  font-size:22px; color:var(--t3);
+}
+.bk-next-chip .bk-chip-blank, .bk-next-chip .fm-chip-img { border-color:var(--lilac); }
+.bk-next-chip-label { font-size:7px; font-weight:900; letter-spacing:0.8px; color:var(--lilac); text-transform:uppercase; line-height:1; }
+.bk-cur-chip-label  { font-size:7px; font-weight:900; letter-spacing:0.8px; color:var(--teal);  text-transform:uppercase; line-height:1; }
+.bk-foot { display:flex; gap:8px; padding:6px 10px 10px; }
+.bk-foot .btn { flex:1; margin:0; font-size:12px; padding:9px 0; }
+
 /* Focus Mode QA row — primary, secondary, and Confirm hidden. The side
    next-attempt arrow (fmHandleNext) is the spare-confirm trigger in SPARE
    mode; qa-spare is repurposed as the minimal Miss/confirm-tapped button. */
@@ -3114,7 +3159,7 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
     </div>
     <div id="hdr-title" onclick="hdrTitleTap()"><span class="brand">Bowling</span>DB</div>
     <div id="hdr-title-popover"></div>
-    <span id="hdr-build-ref">v30.124 · 2026-08-23</span>
+    <span id="hdr-build-ref">v30.126 · 2026-08-23</span>
     <div id="hdr-right">
       <div class="hdr-icon-btn" id="hdr-delete-game-btn" onclick="confirmDeleteGame(G.gameID)" title="Delete Game" style="display:none">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -3974,7 +4019,7 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
       <div id="dk-header-btns">
         <button class="dk-hdr-btn" id="dk-inspect-btn" onclick="dkToggleInspect()">🔍 Inspect</button>
         <button class="dk-hdr-btn" onclick="dkSessionBrief()">📋 Brief</button>
-        <button class="dk-hdr-btn" style="color:var(--gold)" onclick="dkBakerFixMigration()" title="One-time fix: assigns the 9 known Baker games to their real rounds">🎳 Baker Fix</button>
+        <button class="dk-hdr-btn" style="color:var(--gold)" onclick="dkBakerPurgeShells()" title="Remove empty db.games shells created in Baker rounds by the pre-v30.126 routing bug">🎳 Baker Purge</button>
         <button class="dk-hdr-btn dk-export" onclick="dkExport()">⬆ Export</button>
         <button class="dk-hdr-btn dk-close" onclick="dkTogglePanel()">✕</button>
       </div>
@@ -8648,7 +8693,39 @@ function getActiveSeries() {
   return { gamesPerSeries: l?.GamesPerSeries || 3, isTournament: false, league: l };
 }
 
+/* v30.126 — Baker gate. A series belongs to a Baker league/tournament
+   if its parent has BakerFormat set. Baker never writes db.games/frames/
+   attempts; every "enter a game" path must divert to the Baker slot
+   handler instead. Kept as a single helper so the check can't drift. */
+function bakerSeriesIsBaker(seriesID) {
+  const s = db.series.find(x=>x.SeriesID===seriesID);
+  if (!s) return false;
+  const league = s.LeagueID>0 ? db.leagues.find(l=>l.LeagueID===s.LeagueID) : null;
+  const tourn  = s.TournamentID ? (db.tournaments||[]).find(t=>t.TournamentID===s.TournamentID) : null;
+  return !!((league && league.BakerFormat) || (tourn && tourn.BakerFormat));
+}
+function bakerCtxForSeries(seriesID) {
+  const s = db.series.find(x=>x.SeriesID===seriesID);
+  return (s && s.TournamentID) ? { tournamentID: s.TournamentID } : { leagueID: s ? s.LeagueID : G.leagueID };
+}
+/* Divert to Baker: next unbound slot for this series (or the requested one). */
+function bakerDivertFromChokePoint(seriesID, gameNumber) {
+  const s = db.series.find(x=>x.SeriesID===seriesID);
+  if (!gameNumber) {
+    const bound = bakerLoadSessions().filter(bs=>bs.ctx && bs.ctx.seriesID===seriesID).map(bs=>bs.ctx.gameNumber);
+    const tourn = s?.TournamentID ? (db.tournaments||[]).find(t=>t.TournamentID===s.TournamentID) : null;
+    const league = s?.LeagueID>0 ? db.leagues.find(l=>l.LeagueID===s.LeagueID) : null;
+    const per = (tourn && tourn.GamesPerRound) || (league && league.GamesPerSeries) || 3;
+    gameNumber = 1;
+    while (bound.includes(gameNumber) && gameNumber < per) gameNumber++;
+  }
+  bakerHandleGameSlotTap(bakerCtxForSeries(seriesID), seriesID, gameNumber);
+}
+
 function createAndStartGame() {
+  // v30.126 — Baker gate (covers saveTournamentSeries, League new-series
+  // save, "+ Start Game N" row, goNextGame — every caller, one place).
+  if (bakerSeriesIsBaker(G.seriesID)) { bakerDivertFromChokePoint(G.seriesID, null); return; }
   const series = db.series.find(s=>s.SeriesID===G.seriesID);
   const existing = db.games.filter(g=>g.SeriesID===G.seriesID);
   const gameNum = existing.length + 1;
@@ -8709,6 +8786,11 @@ function blankAttempt(id, fid, fn, gn, gid, an) {
 }
 
 function openGame(gameID, gameNum) {
+  // v30.126 — Baker gate for pre-existing stray shells (a db.games row that
+  // was created before createAndStartGame() was gated). Never open the
+  // personal scoring engine for a Baker round; divert to the matching slot.
+  { const _g = db.games.find(g=>g.GameID===gameID);
+    if (_g && bakerSeriesIsBaker(_g.SeriesID)) { bakerDivertFromChokePoint(_g.SeriesID, _g.GameNumber||gameNum||1); return; } }
   G.gameID = gameID;
   G.gameNum = gameNum;
   const game = db.games.find(g=>g.GameID===gameID);
@@ -21128,54 +21210,68 @@ function rfbFinishLater() {
    BAKER FORMAT (v30.118 built same-day for a same-week tournament;
    v30.119 structural rework — real navTo() screen, correct
    togglePin()-style pin-tap semantics, per-bowler ball selection;
-   v30.120 — REBOUND after first real tournament use, per direct
-   feedback on the actual data produced:
+   v30.120 — rebound after first real tournament use: per-slot
+   binding, Baker+NoTap composition, per-game lane pair, migration
+   tool; v30.121-123 — on-device migration-tool fixes (refresh race,
+   then backdrop-tap dismiss); v30.124 — DevKit direct-write fallback
+   after the modal still proved unreliable on-device;
 
-   1. Redundant entry point removed. The header "Baker" pill created
-      a brand-new, fully detached session on every tap — no SeriesID,
-      no game number, nothing tying it to the round it was played in.
-      That's why 9 real games ended up sitting in history while the
-      round card's own game-slot circles stayed empty the whole time.
-      The pill is gone; every Baker game now starts from the SAME
-      game-slot circle a normal game would. One entry point.
-      (See bakerHandleGameSlotTap().)
+   v30.126 — Baker gate at the openGame()/createAndStartGame() choke
+   point (round/series creation, "+ Start Game", goNextGame all covered
+   in one place); DevKit "Baker Purge" for stray empty shells; scoring
+   screen rebuilt as a Focus Mode layout twin (mini-strip in header,
+   frame-owner row in the beer-frame slot, LANE band, BL/BR ball chips,
+   no SB/TB) — own data and logic underneath, unchanged;
+   v30.125 — full attempt-level storage, adopting Team Bowl's proven
+   shape instead of inventing a new one. Investigated before building:
+   Team Bowl ("grp") sessions are the established precedent for team-
+   format scoring in this app, running in real production use for a
+   long time (6 real sessions in the live backup). Its frame storage
+   is a flat list of { bowlerIdx, frameNum, att:[...], runningTotal }
+   entries, each attempt carrying { pins, knocked, leave, bsk, BallID }
+   — i.e. genuine pin-level detail (which pins fell, which are still
+   standing, a BSK_Progressive-format string) and a real per-ball
+   BallID, matching what db.attempts itself captures for personal
+   games. Baker adopts the exact same shape (see bakerGetOrCreateFrameEntry(),
+   bakerBuildBsk() — the bsk algorithm is a direct port of grp's, for
+   byte-for-byte consistency with the app's established convention)
+   instead of inventing a third format, since this app is expected to
+   consolidate around fewer, shared data shapes as it matures.
 
-   2. Sessions bind to (SeriesID, GameNumber), not just SeriesID —
-      a round can have several Baker games, each needs its own slot.
+   Baker's OWN rotation means exactly one bowler owns each frameNum
+   (bowlerIdx = (frameNumber-1) % teamSize), unlike Team Bowl where
+   each bowler plays their own full 10-frame progression — so a Baker
+   game's frameEntries list has exactly 10 entries (one per frame
+   number) rather than teamSize×10. bowlerIdx on each entry is exactly
+   the "coded field tying bowler position to context" this was built
+   for.
 
-   3. Baker AND NoTap now compose — a session carries its own noTap
-      flag (defaulting from the round's NoTap flag, editable per
-      game) independent of the Baker flag itself. Both badges can
-      show together. NoTap affects ball FLOW (bakerNextBallMax()
-      takes an isNoTap param — a fresh ball of 9+ ends the rack
-      immediately, same as a true strike, matching real NoTap house
-      rules: no second ball at the last standing pin). bakerGetMode()
-      itself is untouched — it still reads purely from alreadyDown,
-      which bakerConfirmBall() already resets correctly once nextMax
-      reflects the NoTap threshold. bakerApplyNoTapSubstitution()
-      then converts the resulting raw 9s to 10s for scoring/display
-      once the frames array is already correctly shaped. (First pass
-      tried keeping ball flow untouched as a pure post-hoc scoring
-      lens — caught by the test suite: a lingering standard-rules
-      ball2 in the raw data corrupted bonus-ball calculation. Fixed
-      before shipping.)
+   Baker's own pin-tap MODE logic (LEAVE/SPARE matching togglePin()
+   exactly) is kept as-is rather than adopting Team Bowl's simpler
+   direct-tap model — that fidelity to the real scoring screen was an
+   explicit, deliberate ask and is more faithful than Team Bowl's own
+   implementation. Only the STORAGE shape changes here, not how pins
+   get tapped.
 
-   4. Lane pair is per-game, not fixed per round — some formats
-      rotate lanes after every game. Defaults from the round's
-      LanePair/LaneStart but is a plain editable field per game,
-      same free-text pattern used elsewhere (e.g. rfLanePairInput).
-
-   5. A migration tool (bakerOpenMigrationTool) is included for
-      sessions created before this rework — one-time use, surfaces
-      from the History modal only when unbound sessions exist.
+   All of the pure, heavily-tested scoring functions (bakerScoreGame,
+   bakerNextBallMax, bakerApplyNoTapSubstitution, bakerFormatFrameBalls)
+   are UNCHANGED — they still operate on the simple "10-slot array of
+   pinfall-count arrays" shape. bakerFramesAsPinfallArrays() is the one
+   new adapter that derives that view from the richer frameEntries
+   storage, so none of those functions or their existing tests needed
+   to change at all. It also transparently handles the 9 pre-v30.125
+   sessions (old flat `frames` shape, no attempt-level detail — that
+   data was never captured and stays exactly as accurate as it always
+   was, just without pin-level detail, per direct confirmation this is
+   an acceptable, known trade-off for that batch specifically).
    ─────────────────────────────────────────────────────────────
    Still standalone (own localStorage-backed store, exported/
    imported alongside teamBowlSessions — see buildExportDoc()/
    confirmImport()) — deliberately NOT wired into
-   db.series/games/frames/attempts. Checked before this rework:
+   db.series/games/frames/attempts, same as Team Bowl itself isn't.
    NoTap/IsTeammate exclusion from personal stats is not a single
    filter today, it's !g.NoTap / !g.IsTeammate copy-pasted across
-   25+ call sites in the stats/analytics code. Baker also has no
+   25+ call sites in the stats/analytics code, and Baker has no
    BowlerID anywhere in games/frames/attempts to hang a rotating
    multi-bowler scorecard on — merging in would mean adding a third
    scattered flag across all of that AND solving a schema mismatch
@@ -21247,22 +21343,6 @@ function bakerNextBallMax(frameNumber, ballsSoFar, isNoTap) {
   return null;
 }
 
-/* NoTap (v30.120, corrected after testing): affects ball FLOW, not just
-   display. A fresh ball of 9+ ends the rack immediately, exactly like a
-   true strike — this is what real NoTap house rules do (no second ball
-   thrown at the last standing pin), and it's required for correct
-   scoring: bakerScoreGame() only recognizes a strike via a literal 10
-   in a single-ball frame, so a lingering ball2 in the raw data would
-   corrupt bonus-ball calculation for this frame AND miscount subsequent
-   frames' ball indices. bakerConfirmBall()/bakerRecordBall() pass
-   st.noTap into bakerNextBallMax() so this happens live during play,
-   not just after the fact.
-   bakerApplyNoTapSubstitution() is the remaining piece: once ball flow
-   has correctly kept the frames array free of phantom balls, this just
-   substitutes the raw 9 to a 10 for scoring/display, using the same
-   NoTap-aware freshness test. Frame 10's fill ball (3rd ball) is the
-   one exception, never substituted — matches calculateNoTapScores()
-   exactly (att3 is always scored as a raw fill ball under NoTap). */
 function bakerApplyNoTapSubstitution(frames) {
   return frames.map(function(balls, idx) {
     var frameNumber = idx + 1;
@@ -21277,11 +21357,63 @@ function bakerApplyNoTapSubstitution(frames) {
   });
 }
 
+/* Adapts a session's frame storage into the plain "10-slot array of
+   pinfall-count arrays" shape bakerScoreGame()/bakerFormatFrameBalls()/
+   bakerApplyNoTapSubstitution() all operate on — those stay exactly as
+   written and tested regardless of which storage shape feeds them.
+   Handles both v30.125+ sessions (frameEntries, full attempt detail)
+   and legacy pre-v30.125 sessions (flat `frames` pinfall-count arrays
+   only — the first 9 games, which never had pin-level detail captured
+   in the first place and aren't expected to gain it retroactively). */
+function bakerFramesAsPinfallArrays(session) {
+  if (session.frameEntries) {
+    var out = Array.from({length:10}, function(){ return []; });
+    session.frameEntries.forEach(function(fe) {
+      out[fe.frameNum - 1] = fe.att.map(function(a){ return a.pins; });
+    });
+    return out;
+  }
+  return session.frames || Array.from({length:10}, function(){ return []; });
+}
+
 /* Frames used for display/scoring purposes, applying the NoTap lens
    when the session has it on. Single point of truth so every render
    function and the finish/persist step all agree. */
 function bakerDisplayFrames(session) {
-  return session.noTap ? bakerApplyNoTapSubstitution(session.frames) : session.frames;
+  var frames = bakerFramesAsPinfallArrays(session);
+  return session.noTap ? bakerApplyNoTapSubstitution(frames) : frames;
+}
+
+function bakerGetOrCreateFrameEntry(st, frameNum) {
+  for (var i = 0; i < st.frameEntries.length; i++) {
+    if (st.frameEntries[i].frameNum === frameNum) return st.frameEntries[i];
+  }
+  var entry = { bowlerIdx: bakerBowlerIdxForFrame(frameNum, st.teamSize), frameNum: frameNum, att: [], runningTotal: null };
+  st.frameEntries.push(entry);
+  return entry;
+}
+
+/* Exact port of Team Bowl's BSK_Progressive generation (see the real
+   grpConfirmAtt() implementation) so Baker's per-attempt detail is
+   byte-for-byte consistent with the app's established convention:
+   'B' = pin unavailable (already down before this attempt) OR a
+   fresh-rack non-strike knock; 'S' = still standing after this
+   attempt; 'K' = a true strike (fresh rack, all 10 knocked) or a
+   spare-rack/continuation knock. */
+function bakerBuildBsk(rackStanding, knocked) {
+  var isFreshRack = rackStanding.length === 10;
+  var isStrikeAttempt = isFreshRack && knocked.length === 10;
+  var knockedSet = {};
+  knocked.forEach(function(p){ knockedSet[p] = true; });
+  var allPins = [1,2,3,4,5,6,7,8,9,10];
+  return allPins.map(function(p) {
+    var wasAvailable = rackStanding.indexOf(p) >= 0;
+    if (!wasAvailable) return 'B';
+    if (isStrikeAttempt) return 'K';
+    if (isFreshRack && knockedSet[p]) return 'B';
+    if (!knockedSet[p]) return 'S';
+    return 'K';
+  }).join('');
 }
 
 function bakerLoadSessions() {
@@ -21298,6 +21430,11 @@ function bakerFindSession(seriesID, gameNumber) {
 
 /* ── Screen dispatcher — registered in navTo()'s render table. ── */
 function renderBakerScreen() {
+  // v30.126: the Focus-style scoring layout strips the screen padding;
+  // every other Baker state (setup / complete / view-only / empty) wants
+  // the normal padded screen back.
+  var _host = document.getElementById('s-baker');
+  if (_host && !(_bakerState && !_bakerState.complete && !_bakerViewOnly)) _host.classList.remove('bk-host');
   if (_bakerViewOnly) {
     bakerRenderComplete(bakerScoreGame(bakerDisplayFrames(_bakerViewOnly)), _bakerViewOnly.bowlers, _bakerViewOnly, true);
   } else if (_bakerState) {
@@ -21446,29 +21583,48 @@ function bakerBallLabel(bowler) {
   return '';
 }
 
-function bakerBallHistoryLabel(bowler, teamSize) {
-  if (!bowler.ballChanges || bowler.ballChanges.length <= 1) return bakerBallLabel(bowler);
-  var myFrames = [];
-  for (var fr = 1; fr <= 10; fr++) if (bakerBowlerIdxForFrame(fr, teamSize) === bowler.__idx) myFrames.push(fr);
-  var parts = [];
-  for (var i = 0; i < bowler.ballChanges.length; i++) {
-    var chg = bowler.ballChanges[i];
-    var nextChg = bowler.ballChanges[i+1];
-    var rangeFrames = myFrames.filter(function(f){ return f >= chg.frame && (!nextChg || f < nextChg.frame); });
-    if (!rangeFrames.length) continue;
-    var label = chg.ballID ? ((db.balls.find(function(b){ return b.BallID === chg.ballID; })||{}).BallName) : chg.ballManual;
-    if (!label) continue;
-    var range = 'F' + rangeFrames[0] + (rangeFrames.length > 1 ? '\u2013' + rangeFrames[rangeFrames.length-1] : '');
-    parts.push(label + ' (' + range + ')');
-  }
-  return parts.join(', ');
+/* Ball-per-frame-range history, derived from actual per-attempt BallID
+   values in frameEntries (source of truth) rather than a separately-
+   maintained change log — one less thing that can drift out of sync.
+   Legacy (pre-v30.125) sessions have no frameEntries at all, so they
+   fall back to the plain current-ball label (single value, no ranges —
+   that granularity was never captured for those games). */
+function bakerBallHistoryLabel(bowler, session) {
+  if (!session.frameEntries) return bakerBallLabel(bowler);
+  var myFrames = session.frameEntries
+    .filter(function(fe){ return fe.bowlerIdx === bowler.__idx; })
+    .slice().sort(function(a,b){ return a.frameNum - b.frameNum; });
+  if (!myFrames.length) return bakerBallLabel(bowler);
+
+  var parts = [], rangeBallID, rangeStart = null, rangeEnd = null, started = false;
+  myFrames.forEach(function(fe) {
+    var ballID = (fe.att[0] && fe.att[0].BallID) || null;
+    if (!started || ballID !== rangeBallID) {
+      if (started && rangeBallID) parts.push({ ballID: rangeBallID, start: rangeStart, end: rangeEnd });
+      rangeBallID = ballID; rangeStart = fe.frameNum; started = true;
+    }
+    rangeEnd = fe.frameNum;
+  });
+  if (started && rangeBallID) parts.push({ ballID: rangeBallID, start: rangeStart, end: rangeEnd });
+
+  var labels = parts.map(function(p) {
+    var b = db.balls.find(function(x){ return x.BallID === p.ballID; });
+    if (!b) return null;
+    var range = 'F' + p.start + (p.end !== p.start ? '\u2013' + p.end : '');
+    return b.BallName + ' (' + range + ')';
+  }).filter(function(x){ return x; });
+
+  return labels.length ? labels.join(', ') : bakerBallLabel(bowler);
 }
 
 var _bakerBallChangeScratch = null;
 
-function bakerChangeBallPrompt() {
-  var bowler = bakerCurrentBowler();
-  _bakerBallChangeScratch = { ballID: bowler.ballID || null, ballManual: bowler.ballManual || '' };
+function bakerChangeBallPrompt(bowlerIdx) {
+  var st = _bakerState;
+  // v30.126 — optional explicit bowler (BR "next" chip); default = frame owner.
+  var idx = (typeof bowlerIdx === 'number') ? bowlerIdx : bakerBowlerIdxForFrame(st.currentFrame, st.teamSize);
+  var bowler = st.bowlers[idx];
+  _bakerBallChangeScratch = { idx: idx, ballID: bowler.ballID || null, ballManual: bowler.ballManual || '' };
   var isManual = !bowler.ballID && !!bowler.ballManual;
   var ballOpts = db.balls.filter(function(b){ return b.Active!==false; })
     .map(function(b){ return '<option value="'+b.BallID+'"'+(bowler.ballID===b.BallID?' selected':'')+'>'+b.BallName+'</option>'; }).join('');
@@ -21500,17 +21656,18 @@ function bakerBallChangeSelect(val) {
 }
 function bakerBallChangeManual(val) { _bakerBallChangeScratch.ballManual = val; }
 
+/* Updates the bowler's LIVE/current ball only — every attempt recorded
+   from here forward stamps this onto att.BallID directly (see
+   bakerConfirmBall()), which is now the single source of truth for
+   ball-per-frame history (see bakerBallHistoryLabel()). No separate
+   change log to keep in sync. */
 function bakerApplyBallChange() {
   var st = _bakerState;
-  var idx = bakerBowlerIdxForFrame(st.currentFrame, st.teamSize);
+  var idx = (_bakerBallChangeScratch && typeof _bakerBallChangeScratch.idx === 'number')
+    ? _bakerBallChangeScratch.idx : bakerBowlerIdxForFrame(st.currentFrame, st.teamSize);
   var bowler = st.bowlers[idx];
-  var changed = (bowler.ballID !== _bakerBallChangeScratch.ballID) || (bowler.ballManual !== _bakerBallChangeScratch.ballManual);
   bowler.ballID = _bakerBallChangeScratch.ballID;
   bowler.ballManual = _bakerBallChangeScratch.ballManual;
-  if (changed) {
-    if (!bowler.ballChanges) bowler.ballChanges = [];
-    bowler.ballChanges.push({ frame: st.currentFrame, ballID: bowler.ballID, ballManual: bowler.ballManual });
-  }
   _bakerBallChangeScratch = null;
   closeModal();
   bakerRenderScoring();
@@ -21545,11 +21702,9 @@ function bakerStartSession() {
     lanePair: d.lanePair || '', laneStart: d.laneStart || null,
     noTap: !!d.noTap,
     bowlers: d.slots.map(function(s, i){
-      var b = { BowlerID: s.BowlerID, name: s.name, ballID: s.ballID||null, ballManual: s.ballManual||'', __idx: i };
-      b.ballChanges = (b.ballID || b.ballManual) ? [{ frame: 1, ballID: b.ballID, ballManual: b.ballManual }] : [];
-      return b;
+      return { BowlerID: s.BowlerID, name: s.name, ballID: s.ballID||null, ballManual: s.ballManual||'', __idx: i };
     }),
-    frames: Array.from({length:10}, function(){ return []; }),
+    frameEntries: [],  // v30.125 — see block header. Built up as { bowlerIdx, frameNum, att:[{pins,knocked,leave,bsk,BallID}], runningTotal } entries.
     currentFrame: 1,
     complete: false,
     alreadyDown: [],
@@ -21614,23 +21769,35 @@ function bakerQuickSecondary() {
   bakerConfirmBall();
 }
 
+/* Builds the full attempt record (pins/knocked/leave/bsk/BallID) for
+   the ball just confirmed, matching Team Bowl's shape exactly (see
+   block header), then hands off to bakerRecordBall() to persist it
+   into the current frame entry. */
 function bakerConfirmBall() {
   var st = _bakerState;
   var pins = bakerPinsFromTapped();
-  var frameArr = st.frames[st.currentFrame - 1];
-  var willBeArr = frameArr.concat([pins]);
+  var knocked = bakerKnockedPinsThisBall();
+  var rackStanding = [1,2,3,4,5,6,7,8,9,10].filter(function(p){ return st.alreadyDown.indexOf(p) < 0; });
+  var leave = rackStanding.filter(function(p){ return knocked.indexOf(p) < 0; });
+  var bsk = bakerBuildBsk(rackStanding, knocked);
+  var bowler = bakerCurrentBowler();
+  var ballID = bowler.ballID || null;
+
+  var entry = bakerGetOrCreateFrameEntry(st, st.currentFrame);
+  var willBeArr = entry.att.map(function(a){ return a.pins; }).concat([pins]);
   var nextMax = bakerNextBallMax(st.currentFrame, willBeArr, st.noTap);
   var continuesSameRack = (nextMax !== null && nextMax !== 10);
-  st.alreadyDown = continuesSameRack ? st.alreadyDown.concat(bakerKnockedPinsThisBall()) : [];
+  st.alreadyDown = continuesSameRack ? st.alreadyDown.concat(knocked) : [];
   st.tapped = [];
-  bakerRecordBall(pins);
+  bakerRecordBall({ pins: pins, knocked: knocked, leave: leave, bsk: bsk, BallID: ballID });
 }
 
-function bakerRecordBall(pins) {
+function bakerRecordBall(att) {
   var st = _bakerState;
-  var frameArr = st.frames[st.currentFrame - 1];
-  frameArr.push(pins);
-  var nextMax = bakerNextBallMax(st.currentFrame, frameArr, st.noTap);
+  var entry = bakerGetOrCreateFrameEntry(st, st.currentFrame);
+  entry.att.push(att);
+  var ballsSoFar = entry.att.map(function(a){ return a.pins; });
+  var nextMax = bakerNextBallMax(st.currentFrame, ballsSoFar, st.noTap);
   if (nextMax === null) {
     if (st.currentFrame === 10) {
       st.complete = true;
@@ -21644,17 +21811,23 @@ function bakerRecordBall(pins) {
 
 function bakerUndoBall() {
   var st = _bakerState;
-  var frameArr = st.frames[st.currentFrame - 1];
-  if (frameArr.length > 0) {
-    frameArr.pop();
-    st.alreadyDown = bakerRecomputeAlreadyDown(st.currentFrame, frameArr, st.noTap);
+  var entry = bakerGetOrCreateFrameEntry(st, st.currentFrame);
+  if (entry.att.length > 0) {
+    entry.att.pop();
+    var ballsSoFar = entry.att.map(function(a){ return a.pins; });
+    st.alreadyDown = bakerRecomputeAlreadyDown(st.currentFrame, ballsSoFar, st.noTap);
     st.tapped = [];
     bakerRenderScoring();
     return;
   }
   if (st.currentFrame > 1) {
+    // Drop the now-empty current-frame entry entirely so it doesn't
+    // linger as a stray zero-attempt entry in frameEntries.
+    var idx = st.frameEntries.indexOf(entry);
+    if (idx >= 0) st.frameEntries.splice(idx, 1);
     st.currentFrame--;
-    st.frames[st.currentFrame - 1] = [];
+    var prevEntry = bakerGetOrCreateFrameEntry(st, st.currentFrame);
+    prevEntry.att = [];
     st.alreadyDown = [];
     st.tapped = [];
     bakerRenderScoring();
@@ -21694,7 +21867,7 @@ function bakerFormatFrameBalls(balls) {
   return out.join(' ');
 }
 
-function bakerMiniScoresheet(session) {
+function bakerMiniScoresheet(session, inHeader) {
   var st = session || _bakerState;
   var displayFrames = bakerDisplayFrames(st);
   var scored = bakerScoreGame(displayFrames);
@@ -21712,7 +21885,10 @@ function bakerMiniScoresheet(session) {
       '</div>'
     );
   }
-  return '<div class="fm-mini-strip" style="margin-bottom:14px">'+cells.join('')+'</div>';
+  // v30.126: inHeader=true drops the bottom margin so the strip can sit
+  // inside .fm-header between the frame label and the score, exactly
+  // where Focus Mode places its own #fm-mini-strip.
+  return '<div class="fm-mini-strip"'+(inHeader?'':' style="margin-bottom:14px"')+'>'+cells.join('')+'</div>';
 }
 
 /* HTML-symbol twin of bakerFormatFrameBalls() (same rack-walking rule,
@@ -21761,8 +21937,8 @@ function bakerRoundLabelForSeries(series) {
 function bakerRenderScoring() {
   var st = _bakerState;
   var bowler = bakerCurrentBowler();
-  var frameArr = st.frames[st.currentFrame - 1];
-  var ballNum = frameArr.length + 1;
+  var entry = bakerGetOrCreateFrameEntry(st, st.currentFrame);
+  var ballNum = entry.att.length + 1;
   var mode = bakerGetMode();
 
   function pinClass(p) {
@@ -21794,7 +21970,6 @@ function bakerRenderScoring() {
       '<button class="qa-btn" onclick="bakerConfirmBall()" style="background:linear-gradient(135deg,#00B8B8,var(--teal));color:#000;flex:1.4">Confirm '+pinsIfConfirmed+' →</button>' +
     '</div>';
 
-  var ballLabel = bakerBallLabel(bowler);
   var series = db.series.find(function(s){ return s.SeriesID === st.ctx.seriesID; });
   var roundLabel = series ? bakerRoundLabelForSeries(series) : '';
 
@@ -21806,51 +21981,106 @@ function bakerRenderScoring() {
   var runningSoFar = 0;
   for (var fi = 0; fi < 10; fi++) if (scoredSoFar.resolved[fi]) runningSoFar = scoredSoFar.running[fi];
 
-  // Header mirrors Focus Mode's real .fm-header layout/classes exactly
-  // (frame number large, game/format label small-caps, attempt + mode
-  // pills beneath, running score pinned top-right) rather than an
-  // independent ad hoc box — same visual language, own logic underneath.
+  /* ── v30.126 layout: a twin of #focus-mode-panel, top to bottom ──
+     header (frame · BAKER label · B#/mode pills | mini-strip | SCORE)
+     owner row  (replaces beer-frame row — who owns this frame)
+     lane band  (.fm-lane-ref — LANE nn chips, active by frame parity;
+                 no SB/TB — Baker is multi-bowler, targeting is personal)
+     pin anchor (Focus-sized pins + two floating ball chips:
+                 BL = frame owner's ball, BR = next bowler's ball)
+     QA row · footer (Undo / Cancel)
+     Own data underneath throughout — nothing here touches Focus Mode's
+     JS, db.attempts, or the personal scoring engine. */
+
+  var curIdx  = bakerBowlerIdxForFrame(st.currentFrame, st.teamSize);
+  var nextIdx = st.currentFrame < 10 ? bakerBowlerIdxForFrame(st.currentFrame + 1, st.teamSize) : null;
+
   var header =
-    '<div class="fm-header" style="padding:0 0 6px">' +
+    '<div class="fm-header">' +
       '<div class="fm-header-left">' +
         '<div style="display:flex;align-items:center;gap:6px">' +
           '<span class="fm-frame-label">F'+st.currentFrame+'</span>' +
-          '<span class="fm-game-label">🎳 BAKER'+(roundLabel?' · '+roundLabel+' G'+st.ctx.gameNumber:'')+(st.noTap?' · NoTap':'')+'</span>' +
+          '<span class="fm-game-label">🎳 BAKER'+(roundLabel?' · G'+st.ctx.gameNumber:'')+(st.noTap?' · NT':'')+'</span>' +
         '</div>' +
         '<div style="display:flex;align-items:center;gap:4px;margin-top:1px">' +
           '<span class="att-pill">B'+ballNum+'</span>' +
           '<span class="att-nav-modepill '+mode+'">'+mode+'</span>' +
         '</div>' +
       '</div>' +
+      bakerMiniScoresheet(st, true) +
       '<div class="fm-header-right">' +
         '<div class="fm-score-label">SCORE</div>' +
         '<div class="fm-score-val">'+runningSoFar+'</div>' +
       '</div>' +
     '</div>';
 
-  // Compact bowler/ball/lane status — who's up, on which ball, with
-  // which ball and lane, each independently tappable to change.
-  var statusCard =
-    '<div style="background:var(--bg2);border:1px solid var(--border1);border-radius:10px;padding:10px 12px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;gap:8px">' +
-      '<div style="font-size:16px;font-weight:800;color:var(--lilac)">'+bowler.name+'</div>' +
-      '<div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end">' +
-        (ballLabel
-          ? '<span class="pill" style="font-size:10px;cursor:pointer" onclick="bakerChangeBallPrompt()">🎳 '+ballLabel+'</span>'
-          : '<span class="pill pill-teal" style="font-size:10px;cursor:pointer" onclick="bakerChangeBallPrompt()">+ Set ball</span>') +
-        '<span class="pill pill-teal" style="font-size:10px;cursor:pointer" onclick="bakerChangeLanePrompt()">📍 '+(st.lanePair||'Set lane')+'</span>' +
-      '</div>' +
+  // Frame-owner rotation row (beer-frame slot). One chip per bowler with
+  // the frames they own; the current owner is lit, the next one hinted.
+  var ownerRow = '<div class="bk-owner-row">' + st.bowlers.map(function(b, i) {
+    var frames = [];
+    for (var fr=1; fr<=10; fr++) if (bakerBowlerIdxForFrame(fr, st.teamSize)===i) frames.push(fr);
+    var cls = 'bk-owner-chip' + (i===curIdx ? ' cur' : (i===nextIdx ? ' next' : ''));
+    return '<div class="'+cls+'" onclick="bakerChangeBallPrompt('+i+')">' +
+      (i===curIdx ? '<span class="bk-owner-up">UP</span>' : '') +
+      '<span class="bk-owner-name">'+b.name+'</span>' +
+      '<span class="bk-owner-frames">F'+frames.join('·')+'</span>' +
+    '</div>';
+  }).join('') + '</div>';
+
+  // Lane band — same .fm-ref-chip visuals as Focus Mode's LANE nn band,
+  // active chip follows frame parity (odd frames on the game's start lane).
+  var laneParts = (st.lanePair||'').split(/[,\-\s]+/).map(function(x){ return parseInt(x,10); }).filter(function(n){ return !isNaN(n); });
+  var laneBand;
+  if (laneParts.length >= 2) {
+    var startLane = (st.laneStart && laneParts.indexOf(st.laneStart)>=0) ? st.laneStart : laneParts[0];
+    var otherLane = laneParts.find(function(n){ return n !== startLane; });
+    var curLane = (st.currentFrame % 2 === 1) ? startLane : otherLane;
+    var chip = function(n){
+      return '<div class="fm-ref-chip'+(n===curLane?' active':'')+'" onclick="bakerChangeLanePrompt()">' +
+        '<span class="fm-ref-parity">LANE '+n+'</span>' +
+        '<div class="fm-ref-vals"><span class="fm-ref-val-num">'+(n===curLane?'●':'')+'</span></div>' +
+      '</div>';
+    };
+    laneBand = '<div class="fm-lane-ref">'+chip(Math.min(startLane,otherLane))+chip(Math.max(startLane,otherLane))+'</div>';
+  } else {
+    laneBand = '<div class="fm-lane-ref"><div class="fm-ref-chip" onclick="bakerChangeLanePrompt()"><span class="fm-ref-parity">LANE</span><div class="fm-ref-vals"><span class="fm-ref-val-num">Set lane pair</span></div></div></div>';
+  }
+
+  // Floating ball chips — same .fm-float-chip/.fm-chip-img visuals.
+  function ballChip(idx, cls, label, labelCls) {
+    var b = st.bowlers[idx];
+    var name = bakerBallLabel(b);
+    var src = b.ballID ? getBallImgSrc(b.ballID, 'cover') : null;
+    var img = src
+      ? '<img class="fm-chip-img" src="'+src+'" alt="">'
+      : '<div class="bk-chip-blank">'+(name?'🎳':'+')+'</div>';
+    return '<div class="fm-float-chip '+cls+'" onclick="bakerChangeBallPrompt('+idx+')">' +
+      img +
+      '<span class="fm-chip-name">'+(name||'Set ball')+'</span>' +
+      (label ? '<span class="'+(labelCls||'bk-next-chip-label')+'">'+label+'</span>' : '') +
+    '</div>';
+  }
+  var pinAnchor =
+    '<div class="bk-pin-anchor">' +
+      ballChip(curIdx, 'bk-cur', 'UP · '+bowler.name, 'bk-cur-chip-label') +
+      (nextIdx !== null && nextIdx !== curIdx ? ballChip(nextIdx, 'bk-next bk-next-chip', 'NEXT · '+st.bowlers[nextIdx].name) : '') +
+      pinDeck +
+    '</div>';
+
+  var foot =
+    '<div class="bk-foot">' +
+      '<button class="btn btn-secondary" onclick="bakerUndoBall()">Undo Last Ball</button>' +
+      '<button class="btn btn-secondary" onclick="bakerAbandonSession()">Cancel Game</button>' +
     '</div>';
 
   var body = document.getElementById('baker-body');
   if (!body) return;
+  var host = document.getElementById('s-baker');
+  if (host) host.classList.add('bk-host');
   body.innerHTML =
-    header +
-    bakerMiniScoresheet(st) +
-    statusCard +
-    pinDeck +
-    qaRow +
-    '<button class="btn btn-secondary" style="width:100%" onclick="bakerUndoBall()">Undo Last Ball</button>' +
-    '<button class="btn btn-secondary" style="width:100%;margin-top:8px" onclick="bakerAbandonSession()">Cancel Game</button>';
+    '<div class="bk-panel">' +
+      header + ownerRow + laneBand + pinAnchor + qaRow + foot +
+    '</div>';
 }
 
 function bakerAbandonSession() {
@@ -21866,7 +22096,7 @@ function bakerFinishSession() {
   var record = {
     id: st.id, ctx: st.ctx, teamSize: st.teamSize, centerID: st.centerID, date: st.date,
     lanePair: st.lanePair || '', laneStart: st.laneStart || null, noTap: !!st.noTap,
-    bowlers: st.bowlers, frames: st.frames, frameScores: scored.frameScores,
+    bowlers: st.bowlers, frameEntries: st.frameEntries, frameScores: scored.frameScores,
     running: scored.running, finalScore: scored.total, createdAt: new Date().toISOString()
   };
   sessions.push(record);
@@ -21879,7 +22109,7 @@ function bakerRenderComplete(scored, bowlers, session, viewOnly) {
   var breakdown = bowlers.map(function(b, i) {
     var frames = [];
     for (var fr=1; fr<=10; fr++) if (bakerBowlerIdxForFrame(fr, session.teamSize)===i) frames.push(fr);
-    var ballLabel = bakerBallHistoryLabel(b, session.teamSize);
+    var ballLabel = bakerBallHistoryLabel(b, session);
     return '<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border1)">' +
       '<span>'+b.name+(ballLabel?' <span style="color:var(--t3);font-size:11px">('+ballLabel+')</span>':'')+'</span>' +
       '<span style="color:var(--t3);font-size:12px">frames '+frames.join(', ')+'</span></div>';
@@ -21926,10 +22156,6 @@ function bakerViewHistory(filtered) {
       '<div style="font-size:12px;color:var(--t3)">'+names+'</div>' +
       '<div style="font-size:11px;color:var(--t3);margin-top:2px">'+roundTag+(s.noTap?' · <span style="color:var(--gold)">✦ NoTap</span>':'')+'</div></div>';
   }).join('');
-  // v30.122: "Assign" is always offered when any Baker sessions exist at
-  // all, not just unbound ones — a previous assignment can be wrong (e.g.
-  // it was made before a second round existed yet) and needs a way back
-  // in to fix it, not just a one-shot fill-in-the-blanks.
   var btnLabel = unbound.length
     ? 'Assign ' + unbound.length + ' unassigned game' + (unbound.length>1?'s':'') + ' to rounds'
     : 'Reassign games to rounds';
@@ -21966,15 +22192,6 @@ function bakerOpenMigrationTool() {
     return;
   }
 
-  // Known one-time default (2026-08-22 TBT Scratch Bakers Doubles):
-  // 9 sessions, confirmed by direct account as Round 1 (6 games) then
-  // Round 2 (3 games), in play order — 163 first, 197 last. Applies
-  // whenever there are exactly 9 candidates and 2+ rounds now exist to
-  // split across — deliberately fires again even if all 9 are already
-  // (wrongly) bound to a single round, since that's exactly the state a
-  // second migration attempt needs to correct once the second round has
-  // been created. Every row stays independently editable before Save
-  // either way, so this is a starting point, not a silent overwrite.
   var useKnownSplit = candidates.length === 9 && candidateSeries.length >= 2;
 
   _bakerMigrationRows = candidates.map(function(s, i){
@@ -21986,10 +22203,6 @@ function bakerOpenMigrationTool() {
         gameNumber: inRoundOne ? (i + 1) : (i - 6 + 1)
       };
     }
-    // Fallback for any other shape: preserve an existing valid binding
-    // as the starting point (so reopening this tool to fix ONE wrong
-    // row doesn't reshuffle everything else); only genuinely unbound
-    // rows default to the first round, sequential numbers.
     if (s.ctx && s.ctx.seriesID && s.ctx.gameNumber) {
       return { session: s, seriesID: s.ctx.seriesID, gameNumber: s.ctx.gameNumber };
     }
@@ -22012,17 +22225,6 @@ function bakerRenderMigrationTool(candidateSeries) {
       '</div>' +
     '</div>';
   }).join('');
-  // v30.123: the row list gets its OWN bounded, independently-scrollable
-  // container instead of relying on the outer modal sheet to scroll —
-  // with up to 9+ rows this could exceed the visible viewport, and a
-  // scroll gesture starting near the top edge of the sheet risked
-  // landing on the backdrop instead (dismissing the whole form with
-  // zero warning, no save). Save/Cancel now sit outside that scrolling
-  // area, always visible without needing to find the end of the list
-  // first. Backdrop-tap-to-dismiss is also disabled for this modal
-  // specifically (see _modalBackdropDismissDisabled) — 9 rows of
-  // careful assignment work is too easy to lose to a stray tap;
-  // leaving via Cancel is still one explicit tap away.
   openModal(
     '<div class="modal-title">Assign Baker Games to Rounds</div>' +
     '<div style="font-size:12px;color:var(--t3);margin-bottom:10px">Oldest game first (play order). Pick the round and game number for each — nothing is saved until you tap Save Assignments below.</div>' +
@@ -22051,28 +22253,12 @@ function bakerConfirmMigration() {
   _bakerMigrationRows = null;
   closeModal();
   toast('Baker games assigned');
-
-  // v30.122 fix: v30.121 called the refresh synchronously in the same
-  // tick as closeModal() — closeModal() removes the .open class (which
-  // triggers a 300ms CSS fade) and only clears the modal body content
-  // on a delayed setTimeout, so touching the screen underneath in the
-  // same tick raced that transition and could leave the modal visually
-  // stuck mid-close over a screen that never actually got its refresh
-  // applied — exactly the "pops up then dismisses, stale/greyed" report.
-  // Now waits until just after the modal's own close transition finishes.
   setTimeout(bakerRefreshAfterMigration, 320);
 }
 
-/* Split out from bakerConfirmMigration() so it's callable directly
-   (synchronously) from tests without needing fake timers, while
-   production always reaches it through the delayed call above. */
 function bakerRefreshAfterMigration() {
   var cur = getCurrentScreen();
   if (cur === 's-baker') {
-    // Whatever slot brought the person here may now be bound to a
-    // migrated game — clear stale scratch state and re-render in place
-    // (not navBack(), to avoid layering a second screen transition on
-    // top of the modal's own).
     _bakerSetup = null; _bakerState = null; _bakerViewOnly = null;
     renderBakerScreen();
   } else if (cur === 's-series') {
@@ -22082,20 +22268,44 @@ function bakerRefreshAfterMigration() {
   }
 }
 
-/* ── DevKit one-time tool (v30.124) ──────────────────────────────
-   The interactive Assign-to-Rounds modal proved unreliable on-device
-   across three attempts (v30.121/122/123 each fixed a plausible cause
-   — a refresh race, then a backdrop-tap dismiss — but the underlying
-   symptom persisted, meaning something about the touch/scroll
-   interaction itself still isn't working end to end on this device).
-   Rather than keep guessing at custom-sheet touch handling, this does
-   the ONE known assignment directly — no modal, no scroll gesture, no
-   custom sheet at all. Confirmation and result both go through native
-   confirm()/alert(), which the browser itself owns and can't be
-   dismissed by a stray tap the way a custom overlay can.
-   Matches sessions by score (not by current binding state), since a
-   prior attempt may have already left them incorrectly bound to a
-   single round — this corrects that regardless of starting state. */
+/* ── DevKit direct-write tool (v30.124) — kept as a fallback path,
+   unaffected by this session's storage-shape change (only touches
+   session.ctx). ── */
+/* v30.126 — Purge stray personal-game shells in Baker rounds. These were
+   created by createAndStartGame() before it was Baker-gated. Only removes
+   games whose attempts have NO Pinfall anywhere (harmless empty shells);
+   any game with real pin data is listed but left untouched for manual review.
+   Order: attempts → frames → games. idbDeleteKeys before saveAll. */
+async function dkBakerPurgeShells() {
+  var strays = db.games.filter(function(g){ return bakerSeriesIsBaker(g.SeriesID); });
+  if (!strays.length) { alert('No db.games rows exist in any Baker-format round. Nothing to purge.'); return; }
+  var empty = [], dirty = [];
+  strays.forEach(function(g){
+    var fids = db.frames.filter(function(f){ return f.GameID===g.GameID; }).map(function(f){ return f.FrameID; });
+    var hasPins = db.attempts.some(function(a){ return fids.indexOf(a.FrameID)>=0 && a.Pinfall!=null; });
+    (hasPins ? dirty : empty).push(g);
+  });
+  var msg = 'Baker rounds contain ' + strays.length + ' personal game row(s):\n' +
+    '  ' + empty.length + ' empty shell(s) → will be deleted: ' + empty.map(function(g){return 'GameID '+g.GameID+' (Series '+g.SeriesID+' G'+g.GameNumber+')';}).join(', ') + '\n' +
+    (dirty.length ? '  ' + dirty.length + ' with real pinfall → LEFT ALONE, review manually: ' + dirty.map(function(g){return 'GameID '+g.GameID;}).join(', ') + '\n' : '') +
+    '\nDelete the empty shell(s) now?';
+  if (!empty.length) { alert(msg.replace('\nDelete the empty shell(s) now?','')); return; }
+  if (!confirm(msg)) return;
+  var gameIDs  = empty.map(function(g){ return g.GameID; });
+  var frameIDs = db.frames.filter(function(f){ return gameIDs.indexOf(f.GameID)>=0; }).map(function(f){ return f.FrameID; });
+  var attIDs   = db.attempts.filter(function(a){ return frameIDs.indexOf(a.FrameID)>=0; }).map(function(a){ return a.AttemptID; });
+  db.attempts = db.attempts.filter(function(a){ return frameIDs.indexOf(a.FrameID)<0; });
+  db.frames   = db.frames.filter(function(f){ return gameIDs.indexOf(f.GameID)<0; });
+  db.games    = db.games.filter(function(g){ return gameIDs.indexOf(g.GameID)<0; });
+  await idbDeleteKeys('attempts', attIDs);
+  await idbDeleteKeys('frames',   frameIDs);
+  await idbDeleteKeys('games',    gameIDs);
+  await saveAll();
+  alert('Purged ' + gameIDs.length + ' shell game(s), ' + frameIDs.length + ' frames, ' + attIDs.length + ' attempts. Close DevKit and re-open the tournament.');
+  try { bakerRefreshAfterMigration(); } catch(e) {}
+}
+
+/* Retired v30.126 — migration applied 2026-08-23 (all 9 sessions bound). Kept for reference; no longer wired to a button. */
 function dkBakerFixMigration() {
   var knownScores = [163, 236, 203, 219, 222, 217, 214, 224, 197];
   var all = bakerLoadSessions();
@@ -22135,7 +22345,6 @@ function dkBakerFixMigration() {
 
   alert('Done. 9 games assigned:\nRound 1 (' + round1.DateBowled + '): games 1-6\nRound 2 (' + round2.DateBowled + '): games 1-3\n\nClose DevKit and check the round list.');
 }
-
 /* =============================================================
    BALL-CHANGE RETROSPECTIVE (v30.113 — Phase B, Lane Library
    design doc §3.2). Standalone, computed on demand against the
