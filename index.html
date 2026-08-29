@@ -133,6 +133,31 @@ body {
   border-radius:50%;
 }
 #hdr-back.show { opacity:1; pointer-events:auto; }
+
+/* ── Docking scope bar (v30.130) — Stats screen filter row ────
+   Sticky by default; .docked (added by scroll listener) shrinks
+   padding/font-size so the bar reads as a minimized, out-of-the-
+   way strip once the person is scrolled into tab content, rather
+   than holding full height the whole time. Border replaced with
+   a soft downward shadow so it reads as a layer above content —
+   this, plus removing the duplicate scope-label caption that used
+   to sit just under it, is what stops content bleeding through. */
+.scope-bar-sticky {
+  transition: box-shadow 0.2s ease;
+  box-shadow: 0 10px 16px -12px rgba(0,0,0,0.75);
+}
+.scope-bar-sticky .scope-collapsed-row {
+  transition: padding 0.18s ease, min-height 0.18s ease;
+}
+.scope-bar-sticky.docked .scope-collapsed-row {
+  padding-top: 5px; padding-bottom: 5px; min-height: 30px;
+}
+.scope-bar-sticky.docked .scope-chip {
+  font-size: 11px; padding: 3px 9px;
+}
+.scope-bar-sticky.docked .scope-toggle {
+  width: 22px; height: 22px; font-size: 12px;
+}
 #hdr-title {
   flex:1; min-width:0; font-size:17px; font-weight:800; letter-spacing:-0.3px;
   white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
@@ -3159,7 +3184,7 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
     </div>
     <div id="hdr-title" onclick="hdrTitleTap()"><span class="brand">Bowling</span>DB</div>
     <div id="hdr-title-popover"></div>
-    <span id="hdr-build-ref">v30.126 · 2026-08-23</span>
+    <span id="hdr-build-ref">v30.130 · 2026-08-29</span>
     <div id="hdr-right">
       <div class="hdr-icon-btn" id="hdr-delete-game-btn" onclick="confirmDeleteGame(G.gameID)" title="Delete Game" style="display:none">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -14454,6 +14479,77 @@ function buildStatsSparkline(pts, color, label) {
   </svg>`;
 }
 
+/* ── Frame strike % trend chart (v30.130) ─────────────────────
+   Replaces the old 10-tile heatmap grid on the Strikes tab.
+   Deliberately mirrors buildStatsSparkline()'s visual grammar
+   (gradient fill, glow line, dashed avg reference, rounded-10
+   y-domain) so Stats and Performance read as one design system,
+   but adds per-frame tap targets and a full 1–10 x-axis, since
+   the ten frames are a fixed labeled set rather than a date
+   series. Best frame highlighted teal, weakest frame(s) red —
+   matches the app's existing --teal/--red semantic pair. ── */
+function buildFrameStrikeChart(frameStrikePcts, gameIDsCSV) {
+  const W = 320, H = 138, pad = { t: 14, r: 10, b: 26, l: 30 };
+  const vals = frameStrikePcts.map(f => f.pct);
+  const minV = Math.floor(Math.min(...vals) / 10) * 10;
+  const maxV = Math.ceil(Math.max(...vals) / 10) * 10;
+  const rangeV = (maxV - minV) || 10;
+  const n = frameStrikePcts.length;
+  const cx = i => pad.l + i / (n - 1) * (W - pad.l - pad.r);
+  const cy = v => pad.t + (1 - (v - minV) / rangeV) * (H - pad.t - pad.b);
+
+  const totalHits = frameStrikePcts.reduce((s, f) => s + f.hits, 0);
+  const totalOpps = frameStrikePcts.reduce((s, f) => s + f.opps, 0);
+  const avgV = totalOpps > 0 ? (totalHits / totalOpps * 100) : 0;
+
+  const pathD = vals.map((v, i) => (i === 0 ? 'M' : 'L') + cx(i).toFixed(1) + ',' + cy(v).toFixed(1)).join(' ');
+  const areaD = pathD + ` L${cx(n - 1).toFixed(1)},${(H - pad.b).toFixed(1)} L${cx(0).toFixed(1)},${(H - pad.b).toFixed(1)} Z`;
+
+  const yStep = rangeV <= 30 ? 10 : rangeV <= 60 ? 20 : 25;
+  let yLabels = '';
+  for (let v = Math.ceil(minV / yStep) * yStep; v <= maxV; v += yStep) {
+    yLabels += `<text x="${pad.l - 4}" y="${(cy(v) + 3).toFixed(1)}" text-anchor="end" font-size="8.5" fill="var(--t3)">${v}</text>`;
+  }
+
+  const bestV = Math.max(...vals), worstV = Math.min(...vals);
+  let dots = '';
+  frameStrikePcts.forEach((f, i) => {
+    const isBest = f.pct === bestV;
+    const isWorst = f.pct === worstV && bestV !== worstV;
+    const col = isBest ? 'var(--teal)' : (isWorst ? 'var(--red)' : 'var(--purple)');
+    const r = (isBest || isWorst) ? 4 : 2.2;
+    dots += `<circle cx="${cx(i).toFixed(1)}" cy="${cy(f.pct).toFixed(1)}" r="${r}" fill="${col}"/>`;
+    if (isBest || isWorst) {
+      const ly = isBest ? cy(f.pct) - 9 : cy(f.pct) + 15;
+      dots += `<text x="${cx(i).toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="middle" font-size="10" font-weight="700" fill="${col}">${f.pct}%</text>`;
+    }
+    // Generous transparent tap target — the visible dot stays small.
+    dots += `<circle cx="${cx(i).toFixed(1)}" cy="${cy(f.pct).toFixed(1)}" r="13" fill="transparent" style="cursor:pointer" onclick="_statsFrameStrikeDetail(${f.fn},[${gameIDsCSV}])"/>`;
+  });
+
+  const xLabels = frameStrikePcts.map((f, i) =>
+    `<text x="${cx(i).toFixed(1)}" y="${H - pad.b + 12}" text-anchor="middle" font-size="9" fill="var(--t2)">${f.fn}</text>`
+  ).join('');
+
+  const avgLine = `<line x1="${pad.l}" y1="${cy(avgV).toFixed(1)}" x2="${W - pad.r}" y2="${cy(avgV).toFixed(1)}"
+      stroke="var(--lilac)" stroke-width="1" stroke-dasharray="3 4" opacity="0.55"/>
+    <text x="${W - pad.r + 1}" y="${(cy(avgV) + 3).toFixed(1)}" font-size="8" fill="var(--t2)" text-anchor="end">avg</text>`;
+
+  return `<svg width="100%" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="display:block;overflow:visible">
+    <defs>
+      <linearGradient id="fsChartFill" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="var(--purple)" stop-opacity="0.28"/>
+        <stop offset="100%" stop-color="var(--purple)" stop-opacity="0.02"/>
+      </linearGradient>
+      <filter id="fsChartGlow"><feGaussianBlur stdDeviation="1.6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    </defs>
+    <path d="${areaD}" fill="url(#fsChartFill)"/>
+    ${avgLine}
+    <path d="${pathD}" fill="none" stroke="var(--purple)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" filter="url(#fsChartGlow)"/>
+    ${yLabels}${xLabels}${dots}
+  </svg>`;
+}
+
 /* ── Frame-data availability check ─────────────────────────*/
 function _statsHasFrameData(games) {
   return games.some(g => db.frames.some(f => f.GameID === g.GameID));
@@ -16018,7 +16114,7 @@ function _renderPerformanceInner(el) {
     else if (!avgObj) { subText = gamesInWindow === 0 ? 'no games' : '—'; subColor = 'var(--t3)'; }
     else if (deltaObj.cls === 'flat') { subText = 'same as scope'; subColor = 'var(--t3)'; }
     else { subText = deltaObj.text; subColor = _perfDeltaColor(deltaObj.cls); }
-    return `<div style="flex-shrink:0;width:96px;background:${active ? 'rgba(0,217,217,0.08)' : 'var(--bg2)'};
+    return `<div style="flex-shrink:0;width:96px;scroll-snap-align:start;background:${active ? 'rgba(0,217,217,0.08)' : 'var(--bg2)'};
       border:1px solid ${active ? 'var(--teal)' : 'var(--border1)'};border-radius:10px;padding:10px 11px">
       <div style="font-size:8px;font-weight:700;color:${active ? 'var(--teal)' : 'var(--t3)'};text-transform:uppercase;letter-spacing:0.5px;margin-bottom:5px">${lbl}</div>
       <div style="font-size:20px;font-weight:800;letter-spacing:-0.5px;color:${active ? 'var(--teal)' : 'var(--t1)'}">${avgObj ? avgObj.floor : '—'}</div>
@@ -16026,7 +16122,7 @@ function _renderPerformanceInner(el) {
     </div>`;
   }
   function achCard(lbl, valStr, subStr, color) {
-    return `<div style="flex-shrink:0;width:96px;background:var(--bg2);border:1px solid var(--border1);border-radius:10px;padding:10px 11px">
+    return `<div style="flex-shrink:0;width:96px;scroll-snap-align:start;background:var(--bg2);border:1px solid var(--border1);border-radius:10px;padding:10px 11px">
       <div style="font-size:8px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:5px">${lbl}</div>
       <div style="font-size:20px;font-weight:800;letter-spacing:-0.5px;color:${color}">${valStr}</div>
       <div style="font-size:9px;font-weight:700;margin-top:3px;color:var(--t3)">${subStr}</div>
@@ -16046,12 +16142,24 @@ function _renderPerformanceInner(el) {
   const achStrikeStr = achStats.strikePct !== '—' ? achStats.strikePct.split(' ')[0] : '—';
   const achStrikeSub = achStats.strikePct !== '—' ? achStats.strikePct.split(' ').slice(1).join(' ') : 'no frame data';
 
-  const benchHTML = `<div style="padding:10px 16px 0"><div style="font-size:9px;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:0.6px">🏆 Achievements</div></div>
-  <div style="display:flex;gap:8px;padding:8px 16px 12px;overflow-x:auto;scrollbar-width:none">
-    ${benchCard('This League', thisAvg, null, true, thisScopeGames.length)}
-    ${achCard('High Game', achHiGame != null ? achHiGame : '—', 'best game', 'var(--gold)')}
-    ${achCard('High Series', achHiSeries != null ? achHiSeries : '—', 'best series', 'var(--teal)')}
-    ${achCard('Strike %', achStrikeStr, achStrikeSub || 'X per frame', 'var(--purple)')}
+  // v30.130 — wrapped the achievements row in its own card (was a bare
+  // flex row directly under the label, which let tiles clip flush
+  // against the screen edge with no affordance that more existed off
+  // to the right). scroll-snap-align on each tile (added above) plus
+  // a right-edge mask-image fade here signal "swipe for more" instead
+  // of reading as a rendering bug. scroll-padding-left keeps the snap
+  // stop aligned with the card's own 16px inset.
+  const benchHTML = `<div class="stat-card" style="padding:12px 0 10px;margin-bottom:10px;overflow:hidden">
+    <div style="padding:0 16px 10px"><div style="font-size:9px;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:0.6px">🏆 Achievements</div></div>
+    <div style="display:flex;gap:8px;padding:0 16px 2px;overflow-x:auto;-webkit-overflow-scrolling:touch;
+      scroll-snap-type:x mandatory;scroll-padding-left:16px;scrollbar-width:none;
+      -webkit-mask-image:linear-gradient(90deg,#000 0,#000 88%,transparent 100%);
+      mask-image:linear-gradient(90deg,#000 0,#000 88%,transparent 100%)">
+      ${benchCard('This League', thisAvg, null, true, thisScopeGames.length)}
+      ${achCard('High Game', achHiGame != null ? achHiGame : '—', 'best game', 'var(--gold)')}
+      ${achCard('High Series', achHiSeries != null ? achHiSeries : '—', 'best series', 'var(--teal)')}
+      ${achCard('Strike %', achStrikeStr, achStrikeSub || 'X per frame', 'var(--purple)')}
+    </div>
   </div>`;
 
   const tabDefs = [{ k: 'ta', l: 'Averages' }, { k: 'tb', l: 'Spares' }, { k: 'tc', l: 'Strikes' }];
@@ -16332,9 +16440,10 @@ function _renderStatsInner(el) {
   const activeCondLabel = (hasSport && sc.condition !== 'any')
     ? (sc.condition === 'sport' ? 'Sport' : 'Standard') : null;
   const summaryChips = [activeCtxLabel, activePeriodLabel, ...(activeCondLabel ? [activeCondLabel] : [])]
-    .map(lbl => `<span style="padding:4px 10px;border-radius:14px;font-size:12px;font-weight:600;
+    .map(lbl => `<span class="scope-chip" style="padding:4px 10px;border-radius:14px;font-size:12px;font-weight:600;
       background:rgba(0,217,217,0.1);border:1px solid rgba(0,217,217,0.3);color:var(--teal);
-      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px;display:inline-block;vertical-align:middle">${lbl}</span>`).join('');
+      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px;display:inline-block;vertical-align:middle;
+      transition:font-size 0.18s ease,padding 0.18s ease">${lbl}</span>`).join('');
 
   // ── Center row ───────────────────────────────────────────
   const centerOptions = [
@@ -16367,16 +16476,19 @@ function _renderStatsInner(el) {
   ) : '';
 
   const scopeBarHTML = `
-    <div style="background:var(--bg2);border-bottom:1px solid var(--border1);position:sticky;top:0;z-index:10">
-      <!-- Collapsed summary row — always visible, tap to toggle -->
-      <div onclick="_statsScopeToggle()" style="display:flex;align-items:center;justify-content:space-between;
+    <div id="stats-scope-bar" class="scope-bar-sticky" style="background:var(--bg2);position:sticky;top:0;z-index:10">
+      <!-- Collapsed summary row — always visible, tap to toggle. Shrinks via
+           .docked (toggled by a scroll listener, see bottom of this function)
+           instead of holding full height while the person reads tab content. -->
+      <div onclick="_statsScopeToggle()" class="scope-collapsed-row" style="display:flex;align-items:center;justify-content:space-between;
         padding:8px 14px;cursor:pointer;-webkit-tap-highlight-color:transparent;min-height:40px">
         <div style="display:flex;gap:6px;align-items:center;flex:1;min-width:0;overflow:hidden">
           ${summaryChips}
         </div>
-        <div style="flex-shrink:0;margin-left:10px;width:28px;height:28px;border-radius:50%;
+        <div class="scope-toggle" style="flex-shrink:0;margin-left:10px;width:28px;height:28px;border-radius:50%;
           background:var(--bg3);display:flex;align-items:center;justify-content:center;
-          font-size:14px;color:var(--t3);transform:rotate(${scopeOpen?'180':'0'}deg);transition:transform 0.2s">⌃</div>
+          font-size:14px;color:var(--t3);transform:rotate(${scopeOpen?'180':'0'}deg);
+          transition:transform 0.2s,width 0.18s ease,height 0.18s ease,font-size 0.18s ease">⌃</div>
       </div>
       <!-- Expanded panel — own scroll, never bleeds to page -->
       ${scopeOpen ? `
@@ -16419,11 +16531,13 @@ function _renderStatsInner(el) {
         <span style="font-size:10px;font-weight:400;color:var(--t3)"> vs prior period</span>
        </div>`
     : `<div style="font-size:11px;color:var(--t3)">No prior period</div>`;
-  const scopeLabel = _statsScopeLabel(sc);
+  // (v30.130) Dropped the _statsScopeLabel() caption that used to render
+  // here — it duplicated the sticky bar's summary chips directly above it
+  // and was the source of the "text bleeding through the filter" bug,
+  // since this row scrolls with the page while the bar above it is sticky.
 
   const heroHTML = `
     <div style="padding:12px 14px 8px;border-bottom:1px solid var(--border1)">
-      <div style="font-size:10px;font-weight:700;color:var(--t3);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:8px">${scopeLabel}</div>
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center">
         <div>
           <div style="font-size:22px;font-weight:800;color:var(--teal)">${avgDisplay}</div>
@@ -16485,6 +16599,22 @@ function _renderStatsInner(el) {
 
   el.innerHTML = _perfEntryCardHTML() + scopeBarHTML + heroHTML + tabBarHTML +
     `<div style="padding:14px;padding-bottom:80px">${tabContent}</div>`;
+
+  // ── Scope bar dock-on-scroll (v30.130) ───────────────────
+  // #s-stats (the .screen element) is the actual scroll container;
+  // #stats-content's innerHTML is replaced on every filter change,
+  // but #s-stats itself persists, so the listener is bound once
+  // per app session (guarded via a property flag) rather than
+  // re-bound on every render.
+  const _scopeScrollHost = document.getElementById('s-stats');
+  if (_scopeScrollHost && !_scopeScrollHost._scopeDockBound) {
+    _scopeScrollHost._scopeDockBound = true;
+    _scopeScrollHost.addEventListener('scroll', () => {
+      const bar = document.getElementById('stats-scope-bar');
+      if (!bar) return;
+      bar.classList.toggle('docked', _scopeScrollHost.scrollTop > 24);
+    }, { passive: true });
+  }
 }
 
 /* ── Tab: Overview ──────────────────────────────────────────*/
@@ -16735,26 +16865,20 @@ function _statsTabStrikes(games, hasFrames) {
     const pct = opps > 0 ? Math.round(hits / opps * 100) : 0;
     frameStrikePcts.push({ fn, pct, opps, hits });
   }
-  const maxPct = Math.max(...frameStrikePcts.map(f=>f.pct), 1);
 
+  const fsGameIDsCSV = games.map(g => g.GameID).join(',');
+  const fsBestPct = Math.max(...frameStrikePcts.map(f => f.pct));
+  const fsWorstPct = Math.min(...frameStrikePcts.map(f => f.pct));
   const heatmapHTML = `
     <div class="stat-card" style="margin-bottom:16px">
-      <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:0.8px;text-transform:uppercase;margin-bottom:10px">Strike % by Frame</div>
-      <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -4px">
-        <div style="display:grid;grid-template-columns:repeat(10,minmax(52px,1fr));gap:4px;min-width:520px;padding:0 4px">
-          ${frameStrikePcts.map(f => {
-            const intensity = maxPct > 0 ? f.pct / maxPct : 0;
-            const bg = `rgba(0,217,217,${(0.08 + intensity * 0.55).toFixed(2)})`;
-            const textCol = intensity > 0.6 ? '#000' : 'var(--t1)';
-            return `<div style="text-align:center;background:${bg};border-radius:8px;padding:8px 4px;cursor:pointer;-webkit-tap-highlight-color:transparent"
-              onclick="_statsFrameStrikeDetail(${f.fn},[${games.map(g=>g.GameID).join(',')}])">
-              <div style="font-size:15px;font-weight:800;color:${textCol}">${f.pct}%</div>
-              <div style="font-size:9px;color:var(--t3);margin-top:3px">F${f.fn}</div>
-            </div>`;
-          }).join('')}
-        </div>
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:2px">
+        <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:0.8px;text-transform:uppercase">Strike % by Frame</div>
       </div>
-      <div style="font-size:10px;color:var(--t3);margin-top:8px;text-align:center">Tap a frame for detail · Darker = higher %</div>
+      ${buildFrameStrikeChart(frameStrikePcts, fsGameIDsCSV)}
+      <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--t3);margin-top:2px">
+        <span><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--teal);margin-right:4px;vertical-align:1px"></span>Best frame${fsBestPct!==fsWorstPct?`<span style="margin-left:10px"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--red);margin-right:4px;vertical-align:1px"></span>Weakest</span>`:''}</span>
+        <span>Tap a frame for detail</span>
+      </div>
     </div>`;
 
   // Key metrics
@@ -18893,22 +19017,40 @@ function ldToggleHundred(kind, hundred) {
 // good/bad color direction for stats where lower is better — every
 // metric used today (avg, high game, high series, spare %) defaults to
 // higher-is-better, but the hook is here for e.g. split % later.
+// (v30.130) Added opts.size ('hero' | 'normal' | 'compact') so the same
+// chip renders at three scales — one hero number for Average, a 4-up
+// row for the high/low extremes, a denser 3-col grid for the nine
+// execution stats — instead of 14 identically-sized tiles. Delta
+// styling changed from bare colored text to an arrow pill; the
+// good/bad color logic itself (opts.invert) was already correct and
+// is unchanged — Split % already read as "improvement" in teal, not
+// by coincidence of sign. font-variant-numeric:tabular-nums added
+// throughout so digits align across rows regardless of width.
 function _ldDeltaChip(label, curVal, cmpVal, opts) {
   opts = opts || {};
   if (curVal == null) return '';
   const decimals = opts.decimals || 0, suffix = opts.suffix || '';
+  const size = opts.size || 'normal';
+  const valPx = size === 'hero' ? 52 : size === 'normal' ? 20 : 18;
+  const labPx = size === 'hero' ? 11 : 10;
+  const pillPx = size === 'hero' ? 13 : 11;
   let deltaHTML = '';
   if (cmpVal != null) {
     const d = curVal - cmpVal;
     const flat = Math.abs(d) < (opts.epsilon || 0.005);
     const good = opts.invert ? d < 0 : d > 0;
     const color = flat ? 'var(--t3)' : (good ? 'var(--teal)' : 'var(--sedona)');
+    const bg = flat ? 'var(--bg3)' : (good ? 'rgba(0,217,217,0.13)' : 'rgba(232,93,76,0.13)');
+    const arrow = flat ? '' : (good ? '▲' : '▼');
     const sign = d > 0 ? '+' : '';
-    deltaHTML = `<div style="font-size:11px;font-weight:700;color:${color};margin-top:2px">${sign}${d.toFixed(decimals)}${suffix}</div>`;
+    deltaHTML = `<div style="display:inline-flex;align-items:center;gap:3px;font-size:${pillPx}px;font-weight:700;
+      color:${color};background:${bg};padding:2px 8px;border-radius:999px;margin-top:5px;
+      font-variant-numeric:tabular-nums">${arrow} ${sign}${d.toFixed(decimals)}${suffix}</div>`;
   }
-  return `<div style="text-align:center;min-width:64px">
-    <div style="font-size:20px;font-weight:900;color:var(--t1)">${curVal.toFixed(decimals)}${suffix}</div>
-    <div style="font-size:10px;color:var(--t3);margin-top:2px">${label}</div>
+  return `<div style="text-align:center;min-width:${size === 'hero' ? 'auto' : '60px'}">
+    <div style="font-size:${valPx}px;font-weight:${size === 'hero' ? 800 : 900};color:var(--t1);
+      font-variant-numeric:tabular-nums;letter-spacing:${size === 'hero' ? '-1.5px' : '-0.2px'}">${curVal.toFixed(decimals)}${suffix}</div>
+    <div style="font-size:${labPx}px;color:var(--t2);margin-top:3px;white-space:nowrap">${label}</div>
     ${deltaHTML}
   </div>`;
 }
@@ -18918,17 +19060,27 @@ function _ldDeltaChip(label, curVal, cmpVal, opts) {
 // possible value (game's standalone "300") skips the accordion and
 // drills straight into the modal on tap. Every row — hundred or ten —
 // is a data point per the design ask, not decoration.
-function _ldBlocksHTML(blocks, kind, leagueID) {
+// (v30.130) Added totalCount so each hundred-group row can carry a thin
+// proportional bar (share of all games/series in this league) — mirrors
+// the Highlights-card bar treatment on Performance, so a bare count like
+// "683 / 683" (one series bowled) reads as "100% of 1" rather than a
+// number that looks like a bug at a glance.
+function _ldBlocksHTML(blocks, kind, leagueID, totalCount) {
   if (!blocks.length) return `<div style="color:var(--t3);font-size:12px;text-align:center;padding:16px 0">No data yet.</div>`;
+  const grand = totalCount || blocks.reduce((s, hb) => s + hb.total, 0) || 1;
   return blocks.slice().reverse().map(hb => {
     const expanded = _ldExpandedHundred[kind] === hb.hundred;
     const isSingleton = hb.tens.length === 1 && hb.tens[0].min === hb.tens[0].max;
-    return `<div style="border-bottom:1px solid var(--border1)">
+    const barPct = Math.max(3, Math.round(hb.total / grand * 100));
+    return `<div style="border-bottom:1px solid var(--border1);position:relative">
+      <div style="position:absolute;left:0;bottom:0;height:2px;width:${barPct}%;
+        background:linear-gradient(90deg,var(--purple),transparent);border-radius:2px"></div>
       <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 4px;cursor:pointer"
         onclick="${isSingleton ? `openScoreBlockModal('${kind}',${leagueID},${hb.tens[0].min},${hb.tens[0].max},'${hb.label}')` : `ldToggleHundred('${kind}',${hb.hundred})`}">
         <span style="font-weight:700;font-size:13px">${hb.label}</span>
         <span style="display:flex;align-items:center;gap:6px">
-          <span style="font-size:13px;font-weight:800;color:var(--teal)">${hb.total}</span>
+          <span style="font-size:13px;font-weight:800;color:var(--teal);font-variant-numeric:tabular-nums">${hb.total}<span
+            style="color:var(--t3);font-weight:500;font-size:11px;margin-left:4px">of ${grand}</span></span>
           ${!isSingleton ? `<span style="color:var(--t3);font-size:11px;transform:rotate(${expanded ? 90 : 0}deg);transition:transform 0.15s;display:inline-block">›</span>` : ''}
         </span>
       </div>
@@ -18936,7 +19088,7 @@ function _ldBlocksHTML(blocks, kind, leagueID) {
         ${hb.tens.filter(t => t.count > 0).map(t => `<div onclick="event.stopPropagation();openScoreBlockModal('${kind}',${leagueID},${t.min},${t.max},'${t.label}')"
           style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;cursor:pointer">
           <span style="font-size:12px;color:var(--t2)">${t.label}</span>
-          <span style="font-size:12px;font-weight:700;color:var(--t1)">${t.count}</span>
+          <span style="font-size:12px;font-weight:700;color:var(--t1);font-variant-numeric:tabular-nums">${t.count}</span>
         </div>`).join('')}
       </div>` : ''}
     </div>`;
@@ -18978,29 +19130,46 @@ function renderLeagueDashboard() {
     <button onclick="ldNavigate(1)" ${navIdx === -1 || navIdx >= allOrdered.length - 1 ? 'disabled' : ''}
       style="background:none;border:none;font-size:20px;padding:4px 8px;color:${(navIdx === -1 || navIdx >= allOrdered.length - 1) ? 'var(--t3)' : 'var(--teal)'};cursor:${(navIdx === -1 || navIdx >= allOrdered.length - 1) ? 'default' : 'pointer'}">›</button>
   </div>
-  <div style="text-align:center;font-size:10px;color:var(--t3);margin-bottom:10px">${navIdx + 1} of ${allOrdered.length} · sorted by first series date</div>`;
+  <div style="text-align:center;font-size:10px;color:var(--t3);margin-bottom:2px">${navIdx + 1} of ${allOrdered.length} · sorted by first series date</div>
+  <div style="text-align:center;font-size:11px;color:var(--t2);margin-bottom:10px">${row.seriesCount} series · ${row.gameCount} games</div>`;
 
-  // v30.128 — expanded stat grid (strike %, single pin conv %, makeable
-  // conv %, FBA, X-on-X, bounceback, plus the original average/high
-  // game/high series/spare %). Grid instead of a single flex row since
-  // this many chips need to wrap cleanly on a phone screen. splitPct
-  // uses invert:true since a lower split rate is the good direction.
-  const statsRow = `<div class="stat-card" style="margin-bottom:14px">
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px 4px">
-      ${_ldDeltaChip('Average', row.avg, cmpRow ? cmpRow.avg : null)}
+  // v30.130 — replaced the flat 14-chip grid with three tiers: a hero
+  // card for Average (the number that actually anchors the screen), a
+  // 4-up row for the high/low extremes, and a denser "Execution" card
+  // for the nine percentage stats. Percentages standardized to whole
+  // numbers (was a mix of .0f/.1f) so the grid doesn't read louder in
+  // some rows than others; FBA keeps 2 decimals since it's a distinct
+  // unit (balls), not a percentage. Delta color logic (invert-aware
+  // good/bad) is unchanged from v30.128 — only the presentation moved
+  // from bare text to arrow pills.
+  const heroRow = `<div class="stat-card" style="margin-bottom:10px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+      ${_ldDeltaChip('Average', row.avg, cmpRow ? cmpRow.avg : null, { size: 'hero', decimals: 0 })}
+      ${cmpRow ? `<div style="text-align:right;font-size:11px;color:var(--t3)">vs last season</div>` : ''}
+    </div>
+  </div>`;
+
+  const extremesRow = `<div class="stat-card" style="margin-bottom:10px">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px 4px">
       ${_ldDeltaChip('High Game', row.highGame, cmpRow ? cmpRow.highGame : null)}
       ${_ldDeltaChip('High Series', row.highSeries, cmpRow ? cmpRow.highSeries : null)}
       ${_ldDeltaChip('Low Game', row.lowGame, cmpRow ? cmpRow.lowGame : null)}
       ${_ldDeltaChip('Low Series', row.lowSeries, cmpRow ? cmpRow.lowSeries : null)}
-      ${_ldDeltaChip('FBA', parseFloat(row.firstBallAvg) || 0, cmpRow ? (parseFloat(cmpRow.firstBallAvg) || 0) : null, { decimals: 2 })}
-      ${_ldDeltaChip('Strike %', parseFloat(row.strikePct) || 0, cmpRow ? (parseFloat(cmpRow.strikePct) || 0) : null, { decimals: 1, suffix: '%' })}
-      ${_ldDeltaChip('Spare %', parseFloat(row.sparePct) || 0, cmpRow ? (parseFloat(cmpRow.sparePct) || 0) : null, { decimals: 1, suffix: '%' })}
-      ${_ldDeltaChip('Split %', parseFloat(row.splitPct) || 0, cmpRow ? (parseFloat(cmpRow.splitPct) || 0) : null, { decimals: 1, suffix: '%', invert: true })}
-      ${_ldDeltaChip('Single Pin %', parseFloat(row.singlePct) || 0, cmpRow ? (parseFloat(cmpRow.singlePct) || 0) : null, { decimals: 1, suffix: '%' })}
-      ${_ldDeltaChip('Makeable %', parseFloat(row.makeablePct) || 0, cmpRow ? (parseFloat(cmpRow.makeablePct) || 0) : null, { decimals: 1, suffix: '%' })}
-      ${_ldDeltaChip('X-on-X %', parseFloat(row.xOnXPct) || 0, cmpRow ? (parseFloat(cmpRow.xOnXPct) || 0) : null, { decimals: 1, suffix: '%' })}
-      ${_ldDeltaChip('Bounceback %', parseFloat(row.bounceBackPct) || 0, cmpRow ? (parseFloat(cmpRow.bounceBackPct) || 0) : null, { decimals: 1, suffix: '%' })}
-      ${_ldDeltaChip('10-Pin Conv', parseFloat(row.tenPinPct) || 0, cmpRow ? (parseFloat(cmpRow.tenPinPct) || 0) : null, { decimals: 0, suffix: '%' })}
+    </div>
+  </div>`;
+
+  const executionRow = `<div class="stat-card" style="margin-bottom:14px">
+    <div style="font-size:10.5px;font-weight:700;color:var(--t3);letter-spacing:0.8px;text-transform:uppercase;margin-bottom:10px">Execution</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px 4px">
+      ${_ldDeltaChip('FBA', parseFloat(row.firstBallAvg) || 0, cmpRow ? (parseFloat(cmpRow.firstBallAvg) || 0) : null, { decimals: 2, size: 'compact' })}
+      ${_ldDeltaChip('Strike %', parseFloat(row.strikePct) || 0, cmpRow ? (parseFloat(cmpRow.strikePct) || 0) : null, { decimals: 0, suffix: '%', size: 'compact' })}
+      ${_ldDeltaChip('Spare %', parseFloat(row.sparePct) || 0, cmpRow ? (parseFloat(cmpRow.sparePct) || 0) : null, { decimals: 0, suffix: '%', size: 'compact' })}
+      ${_ldDeltaChip('Split %', parseFloat(row.splitPct) || 0, cmpRow ? (parseFloat(cmpRow.splitPct) || 0) : null, { decimals: 0, suffix: '%', invert: true, size: 'compact' })}
+      ${_ldDeltaChip('Single Pin %', parseFloat(row.singlePct) || 0, cmpRow ? (parseFloat(cmpRow.singlePct) || 0) : null, { decimals: 0, suffix: '%', size: 'compact' })}
+      ${_ldDeltaChip('Makeable %', parseFloat(row.makeablePct) || 0, cmpRow ? (parseFloat(cmpRow.makeablePct) || 0) : null, { decimals: 0, suffix: '%', size: 'compact' })}
+      ${_ldDeltaChip('X-on-X %', parseFloat(row.xOnXPct) || 0, cmpRow ? (parseFloat(cmpRow.xOnXPct) || 0) : null, { decimals: 0, suffix: '%', size: 'compact' })}
+      ${_ldDeltaChip('Bounceback %', parseFloat(row.bounceBackPct) || 0, cmpRow ? (parseFloat(cmpRow.bounceBackPct) || 0) : null, { decimals: 0, suffix: '%', size: 'compact' })}
+      ${_ldDeltaChip('10-Pin Conv', parseFloat(row.tenPinPct) || 0, cmpRow ? (parseFloat(cmpRow.tenPinPct) || 0) : null, { decimals: 0, suffix: '%', size: 'compact' })}
     </div>
   </div>`;
 
@@ -19010,14 +19179,16 @@ function renderLeagueDashboard() {
   el.innerHTML = `
     ${navHTML}
     ${cmpNote}
-    ${statsRow}
+    ${heroRow}
+    ${extremesRow}
+    ${executionRow}
     <div class="stat-card" style="margin-bottom:14px">
       <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:0.8px;text-transform:uppercase;margin-bottom:8px">Game Score Blocks</div>
-      ${_ldBlocksHTML(gameBlocks, 'game', league.LeagueID)}
+      ${_ldBlocksHTML(gameBlocks, 'game', league.LeagueID, row.gameCount)}
     </div>
     <div class="stat-card">
       <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:0.8px;text-transform:uppercase;margin-bottom:8px">Series Score Blocks</div>
-      ${_ldBlocksHTML(seriesBlocks, 'series', league.LeagueID)}
+      ${_ldBlocksHTML(seriesBlocks, 'series', league.LeagueID, row.seriesCount)}
     </div>
   `;
 }
@@ -19091,7 +19262,204 @@ function fsEditProfileName() {
   renderFriendFeed();
 }
 
+// ══════════════════════════════════════════════════════════════
+// TEAM BOWL → BOWLER CONNECT real-data bridge (v30.130)
+// ══════════════════════════════════════════════════════════════
+// Derives teammates, their all-time stats, and feed posts from your
+// actual Team Bowl history (grp_sessions in localStorage) so the
+// design preview runs on real teammates and real nights instead of
+// only ever showing the four staged FS_MOCK_FRIENDS. Team Bowl data
+// stays isolated from db.games/frames/attempts per the standing
+// rule — this only READS grp_sessions via the existing grpLoadAll()
+// accessor and never writes back to it.
+//
+// Coverage note: strike %, spare %, first-ball avg, X-on-X %,
+// bounceback %, F10 avg, and strike streak all derive from
+// att[].pins alone, which every Team Bowl frame has — including the
+// ~8.5% of frames entered as numeric-only with no pin-position
+// detail. Split % and Makeable % are left null (not fabricated as
+// 0) for teammates, since those need the pin-position flood-fill
+// clustering that lives inside calculateAdvancedStats()'s local
+// VERT_ADJ helper and isn't factored out for reuse yet. "Series"
+// don't exist as a Team Bowl concept, so highSeries/currentSeasonAvg
+// are also left honest (null / equal to all-time avg) rather than
+// invented.
+//
+// PRIVACY NOTE for whoever wires the Supabase backend: these
+// teammates never opted into Bowler Connect. Keep this derivation
+// local-only — do not sync a teammate's derived profile until THEY
+// connect via friend code, per the private-by-default design rule
+// in the Stage 1 design doc.
+
+function _tbFrameStrike(fr) {
+  const a1 = fr.att && fr.att[0];
+  return !!a1 && a1.pins === 10;
+}
+
+function _tbTeammateStatsAll() {
+  const sessions = grpLoadAll();
+  const byID = {};
+  sessions.forEach(sess => {
+    const centerName = sess.centerID != null
+      ? (db.centers.find(c => c.CenterID === sess.centerID)?.CenterName || null) : null;
+    (sess.bowlers || []).forEach((b, idx) => {
+      if (b.isMe || b.BowlerID == null) return;
+      const rec = byID[b.BowlerID] || (byID[b.BowlerID] = {
+        id: 'tb' + b.BowlerID, name: b.name, scores: [], strikes: 0, strikeOpps: 0,
+        spares: 0, spareOpps: 0, fbaSum: 0, fbaN: 0, xOnXOpps: 0, xOnXHits: 0,
+        bbOpps: 0, bbHits: 0, f10Sum: 0, f10N: 0, maxStreak: 0, curStreak: 0,
+        centerCounts: {}, sessionPts: []
+      });
+      if (centerName) rec.centerCounts[centerName] = (rec.centerCounts[centerName] || 0) + 1;
+      let sessionTotal = 0, sessionGames = 0;
+      (sess.games || []).forEach(g => {
+        const score = g.finalScores ? g.finalScores[idx] : null;
+        if (score != null && score > 0) { rec.scores.push(score); sessionTotal += score; sessionGames++; }
+        const frames = (g.frames || []).filter(fr => fr.bowlerIdx === idx).sort((a, b) => a.frameNum - b.frameNum);
+        let prevStrike = false;
+        frames.forEach(fr => {
+          const a1 = fr.att && fr.att[0];
+          if (fr.frameNum <= 9) {
+            if (!a1 || a1.pins == null) return;
+            rec.strikeOpps++;
+            const isStrike = a1.pins === 10;
+            if (isStrike) { rec.strikes++; rec.curStreak++; if (rec.curStreak > rec.maxStreak) rec.maxStreak = rec.curStreak; }
+            else rec.curStreak = 0;
+            if (prevStrike) { rec.xOnXOpps++; if (isStrike) rec.xOnXHits++; }
+            else { rec.bbOpps++; if (isStrike) rec.bbHits++; }
+            prevStrike = isStrike;
+            rec.fbaSum += a1.pins; rec.fbaN++;
+            if (!isStrike) {
+              const a2 = fr.att && fr.att[1];
+              if (a2 && a2.pins != null) { rec.spareOpps++; if (a1.pins + a2.pins === 10) rec.spares++; }
+            }
+          } else {
+            // Frame 10 — same "fresh rack opportunity" model used
+            // elsewhere in this app (buildFrameStrikeChart, calculateAdvancedStats).
+            const a2 = fr.att && fr.att[1], a3 = fr.att && fr.att[2];
+            if (a1 && a1.pins != null) {
+              let f10 = a1.pins;
+              rec.strikeOpps++; rec.fbaSum += a1.pins; rec.fbaN++;
+              const s1 = a1.pins === 10;
+              if (s1) rec.strikes++;
+              if (a2 && a2.pins != null) {
+                f10 += a2.pins;
+                if (s1) { rec.strikeOpps++; if (a2.pins === 10) rec.strikes++; }
+                else { rec.spareOpps++; if (a1.pins + a2.pins === 10) rec.spares++; }
+                if (a3 && a3.pins != null) {
+                  f10 += a3.pins;
+                  const fresh = (s1 && a2.pins === 10) || (!s1 && a1.pins + a2.pins === 10);
+                  if (fresh) { rec.strikeOpps++; if (a3.pins === 10) rec.strikes++; }
+                }
+              }
+              rec.f10Sum += f10; rec.f10N++;
+            }
+          }
+        });
+      });
+      if (sessionGames > 0) rec.sessionPts.push({ date: sess.date || '', score: Math.round(sessionTotal / sessionGames) });
+    });
+  });
+
+  return Object.values(byID).map(rec => {
+    if (!rec.scores.length) return null;
+    const games = rec.scores.length;
+    const avg = Math.floor(rec.scores.reduce((a, b) => a + b, 0) / games);
+    const highGame = Math.max(...rec.scores);
+    const trend = rec.sessionPts.slice().sort((a, b) => (a.date || '').localeCompare(b.date || '')).map(p => p.score);
+    const homeCenter = Object.entries(rec.centerCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || null;
+    return {
+      id: rec.id, name: rec.name,
+      stats: {
+        games, avg,
+        highGame, highGameCount: rec.scores.filter(s => s === highGame).length,
+        highSeries: null, highSeriesCount: 0,
+        strikePct: rec.strikeOpps ? +(rec.strikes / rec.strikeOpps * 100).toFixed(1) : null,
+        sparePct: rec.spareOpps ? +(rec.spares / rec.spareOpps * 100).toFixed(1) : null,
+        cleanPct: null,
+        strikeStreak: rec.maxStreak,
+        firstBallAvg: rec.fbaN ? +(rec.fbaSum / rec.fbaN).toFixed(1) : null,
+        avgF10: rec.f10N ? +(rec.f10Sum / rec.f10N).toFixed(1) : null,
+        makeablePct: null, splitPct: null,
+        xOnXPct: rec.xOnXOpps ? +(rec.xOnXHits / rec.xOnXOpps * 100).toFixed(1) : null,
+        bounceBackPct: rec.bbOpps ? +(rec.bbHits / rec.bbOpps * 100).toFixed(1) : null,
+        currentSeasonAvg: null, allTimeAvg: avg,
+        homeCenter, trend: trend.length >= 2 ? trend : [avg, avg]
+      }
+    };
+  }).filter(Boolean);
+}
+
+// One feed post per real Team Bowl session (not one per bowler) —
+// the team's Tuesday reads as a single event, matching how a real
+// team feed would spotlight the outing rather than posting four
+// separate cards for the same night. Attributed to whoever had the
+// session's standout game.
+const TB_AVATAR_POOL = [
+  { avatar: '🎳', color: 'var(--teal)' }, { avatar: '⚡', color: 'var(--purple)' },
+  { avatar: '🔥', color: 'var(--gold)' }, { avatar: '🌟', color: 'var(--lilac)' },
+  { avatar: '🎯', color: '#5DA8FF' },     { avatar: '💥', color: 'var(--red)' }
+];
+function _tbAvatarFor(id) {
+  let h = 0;
+  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0;
+  return TB_AVATAR_POOL[h % TB_AVATAR_POOL.length];
+}
+
+function _tbSessionPosts() {
+  const sessions = grpLoadAll();
+  const today = azToday();
+  return sessions.map(sess => {
+    const others = (sess.bowlers || []).map((b, idx) => ({ b, idx })).filter(x => !x.b.isMe && x.b.BowlerID != null);
+    if (!others.length) return null;
+    let best = null;
+    others.forEach(({ b, idx }) => {
+      (sess.games || []).forEach(g => {
+        const score = g.finalScores ? g.finalScores[idx] : null;
+        if (score != null && (!best || score > best.score)) best = { b, idx, score };
+      });
+    });
+    if (!best) return null;
+    const gamesForBest = (sess.games || []).map(g => g.finalScores ? g.finalScores[best.idx] : null).filter(v => v != null);
+    if (!gamesForBest.length) return null;
+    const daysAgo = sess.date ? Math.max(0, (new Date(today) - new Date(sess.date)) / 86400000) : 0;
+    let headline = null;
+    if (gamesForBest.includes(300)) headline = '🎳 PERFECT GAME';
+    else if (Math.max(...gamesForBest) >= 279) headline = '🔥 Great Game';
+    const league = sess.leagueID != null ? db.leagues.find(l => l.LeagueID === sess.leagueID) : null;
+    const centerName = sess.centerID != null ? (db.centers.find(c => c.CenterID === sess.centerID)?.CenterName || null) : null;
+    return {
+      id: 'tb-' + sess.id, friendId: 'tb' + best.b.BowlerID, daysAgo,
+      league: league ? league.LeagueName : (sess.teamName || 'Team Bowl'),
+      center: centerName, games: gamesForBest, headline, acks: []
+    };
+  }).filter(Boolean);
+}
+
+// Merged accessors — real Team Bowl teammates take priority; the
+// staged FS_MOCK_* set only fills in when there's no Team Bowl
+// history at all, so the preview still demonstrates the feed for
+// someone who hasn't used Team Bowl yet. The two sets are never
+// mixed together in the same render.
+function fsFriendsSource() {
+  const tb = _tbTeammateStatsAll();
+  return tb.length ? tb.map(t => Object.assign({ id: t.id, name: t.name }, _tbAvatarFor(t.id))) : FS_MOCK_FRIENDS;
+}
+function fsProfileStatsSource() {
+  const tb = _tbTeammateStatsAll();
+  if (!tb.length) return FS_MOCK_PROFILE_STATS;
+  const map = {};
+  tb.forEach(t => { map[t.id] = t.stats; });
+  return map;
+}
+function fsPostsSource() {
+  const tb = _tbSessionPosts();
+  return tb.length ? tb : FS_MOCK_POSTS;
+}
+
 // Staged sample friends — cosmetic only, for the design preview.
+// Used only as a fallback by fsFriendsSource() when grp_sessions is
+// empty (see above).
 const FS_MOCK_FRIENDS = [
   { id: 'f1', name: 'Marcus T.', avatar: '🔥', color: 'var(--gold)' },
   { id: 'f2', name: 'Dana R.',   avatar: '⚡', color: 'var(--purple)' },
@@ -19100,7 +19468,8 @@ const FS_MOCK_FRIENDS = [
 ];
 
 // Staged sample posts. daysAgo is relative to "now" so the demo always
-// looks current regardless of when it's viewed.
+// looks current regardless of when it's viewed. Fallback only — see
+// fsPostsSource() above.
 const FS_MOCK_POSTS = [
   { id: 'm1', friendId: 'f1', daysAgo: 0.2, league: 'Thursday Vegas Fun Time', center: 'AMF Chandler Lanes', games: [212, 245, 289], headline: '🔥 New Season High!', acks: ['f2','f3'] },
   { id: 'm2', friendId: 'f2', daysAgo: 1,   league: 'Foxes and Hounds Summer Trios', center: 'Bowlero Kyrene', games: [178, 190, 205], headline: null, acks: ['f1'] },
@@ -19109,12 +19478,13 @@ const FS_MOCK_POSTS = [
 ];
 
 // Local-only acknowledgment state for the demo — postId -> array of
-// "who acked", seeded from FS_MOCK_POSTS, mutated in place as you tap.
+// "who acked", seeded from whichever posts source is active, mutated
+// in place as you tap.
 let _fsAckState = null;
 function _fsInitAckState() {
   if (_fsAckState) return;
   _fsAckState = {};
-  FS_MOCK_POSTS.forEach(p => { _fsAckState[p.id] = p.acks.slice(); });
+  fsPostsSource().forEach(p => { _fsAckState[p.id] = p.acks.slice(); });
 }
 function fsToggleAck(postId) {
   _fsInitAckState();
@@ -19166,7 +19536,7 @@ function _fsAvatarHTML(person, size) {
 
 function _fsPostCardHTML(post, profile) {
   const isReal = !!post.isReal;
-  const friend = isReal ? profile : FS_MOCK_FRIENDS.find(f => f.id === post.friendId);
+  const friend = isReal ? profile : fsFriendsSource().find(f => f.id === post.friendId);
   const name = isReal ? profile.name : friend.name;
   const total = post.total != null ? post.total : post.games.reduce((a,b)=>a+b,0);
   const cardClass = post.headline ? 'card card-best' : 'card card-complete';
@@ -19206,7 +19576,9 @@ function renderFriendFeed() {
   if (!el) return;
   const profile = fsGetProfile();
   const realPosts = _fsRealPosts(2);
-  const allPosts = realPosts.concat(FS_MOCK_POSTS).sort((a,b) => a.daysAgo - b.daysAgo);
+  const stagedPosts = fsPostsSource();
+  const usingRealTeammates = fsFriendsSource() !== FS_MOCK_FRIENDS;
+  const allPosts = realPosts.concat(stagedPosts).sort((a,b) => a.daysAgo - b.daysAgo);
 
   const headerHTML = `
     <div class="stat-card" style="margin-bottom:16px">
@@ -19214,13 +19586,16 @@ function renderFriendFeed() {
         <div onclick="openBowlerProfile('me')" style="cursor:pointer">${_fsAvatarHTML(profile, 48)}</div>
         <div style="flex:1;min-width:0">
           <div onclick="fsEditProfileName()" style="font-size:16px;font-weight:800;color:var(--t1);cursor:pointer">${_escHtml(profile.name)} <span style="font-size:11px;color:var(--t3);font-weight:500">✏️</span></div>
-          <div style="font-size:11px;color:var(--t3);margin-top:2px">${FS_MOCK_FRIENDS.length} friends (preview)</div>
+          <div style="font-size:11px;color:var(--t3);margin-top:2px">${fsFriendsSource().length} ${usingRealTeammates ? 'Team Bowl teammates' : 'friends (preview)'}</div>
         </div>
         <button class="btn btn-ghost btn-sm" onclick="fsShowStub('add')">+ Add Friend</button>
       </div>
     </div>
     <div style="background:rgba(0,217,217,0.06);border:1px solid rgba(0,217,217,0.2);border-radius:12px;padding:10px 12px;margin-bottom:16px;font-size:11px;color:var(--t2);line-height:1.5">
-      🛠️ <b>Design preview</b> — this is what the friend feed will look like once the backend is wired up. Your own posts below are pulled from your real recent series; everything else is staged sample data.
+      🛠️ <b>Design preview</b> — this is what the friend feed will look like once the backend is wired up.
+      ${usingRealTeammates
+        ? `Your posts and teammate posts are both pulled from real data — yours from recent series, teammates\u2019 from Team Bowl sessions. Reactions and friend connections are still local-only until the backend ships.`
+        : `Your own posts below are pulled from your real recent series; everything else is staged sample data.`}
     </div>`;
 
   const feedHTML = allPosts.length
@@ -19344,10 +19719,10 @@ function _fsRealProfileStats() {
 }
 
 function _fsPersonStats(personId) {
-  return personId === 'me' ? _fsRealProfileStats() : (FS_MOCK_PROFILE_STATS[personId] || null);
+  return personId === 'me' ? _fsRealProfileStats() : (fsProfileStatsSource()[personId] || null);
 }
 function _fsPersonInfo(personId) {
-  return personId === 'me' ? fsGetProfile() : FS_MOCK_FRIENDS.find(f => f.id === personId);
+  return personId === 'me' ? fsGetProfile() : fsFriendsSource().find(f => f.id === personId);
 }
 
 function _fsStatChip(label, val, opts) {
@@ -41212,4 +41587,3 @@ function dkToggleInspect() {
 </script>
 </body>
 </html>
-
