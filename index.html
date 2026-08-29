@@ -3877,6 +3877,15 @@ input[type="number"].hdcp-input::-webkit-outer-spin-button { -webkit-appearance:
     <div id="s-lane-detail" class="screen" data-title="Lane Detail">
       <div id="lane-detail-content" style="padding:0 0 32px"></div>
     </div>
+    <div id="s-league-dashboard" class="screen" data-title="League Dashboard">
+      <div id="league-dashboard-content" style="padding:0 0 32px"></div>
+    </div>
+    <div id="s-friend-feed" class="screen" data-title="Bowler Connect">
+      <div id="friend-feed-content" style="padding:0 0 32px"></div>
+    </div>
+    <div id="s-bowler-profile" class="screen" data-title="Bowler Profile">
+      <div id="bowler-profile-content" style="padding:0 0 32px"></div>
+    </div>
 
     <!-- ALL GAMES BROWSER -->
     <div id="s-games" class="screen" data-title="All Games">
@@ -4875,7 +4884,7 @@ const LOCK_BUFFER = 1;
    ============================================================= */
 const ROOT_SCREENS = ['s-home','s-leagues','s-open','s-tournaments','s-stats','s-tb-sessions','s-notap','s-ai-chat'];
 
-const SCORING_SCREENS = new Set(['s-series','s-tournament-series','s-game-select','s-scoring','s-game-complete','s-stats','s-games','s-league-report','s-handicap-tb','s-handicap-league','s-tb-sessions','s-performance','s-lane-library','s-lane-detail']);
+const SCORING_SCREENS = new Set(['s-series','s-tournament-series','s-game-select','s-scoring','s-game-complete','s-stats','s-games','s-league-report','s-league-dashboard','s-friend-feed','s-bowler-profile','s-handicap-tb','s-handicap-league','s-tb-sessions','s-performance','s-lane-library','s-lane-detail']);
 
 async function navTo(screenId, opts={}) {
   toastDismiss(); // clear any stuck toast on navigation
@@ -4951,6 +4960,9 @@ async function navTo(screenId, opts={}) {
       's-leaves': renderLeavesScreen,
       's-lane-library': renderLaneLibrary,
       's-lane-detail': () => {},  // rendered by llOpenLane, no re-render needed
+      's-league-dashboard': () => {}, // rendered by openLeagueDashboard, no re-render needed
+      's-friend-feed': renderFriendFeed,
+      's-bowler-profile': () => {}, // rendered by openBowlerProfile, no re-render needed
       's-games': renderGamesList,
       's-league-report': renderLeagueReport,
       's-group': renderGroupScreen,
@@ -8851,17 +8863,34 @@ function openGame(gameID, gameNum) {
   G.lastBallAtt1 = att1s[0]?.BallID || G.ballID || null;
   G.lastBallAtt2 = att2s[0]?.BallID || null;
 
-  // If alt mode is carrying over from the previous game, apply frame-1 parity
-  // correction now so the ball bar shows the right ball immediately on game open.
-  // (autoSelectBall is normally only called by advanceState, not at game open.)
+  // Alt mode carry-over across a game boundary (bug fix v30.127): this
+  // previously re-derived frame-1 parity from a frame-NUMBER difference
+  // across games (G.frame reset to 1 vs. G.altStartFrame left over from
+  // the PREVIOUS game) — that arithmetic has no relationship to whether
+  // the lane actually changed, so it could flip the ball even when the
+  // new game started on the exact same lane. Now: only flip if this
+  // game's LaneStart genuinely differs from the previous game's. If the
+  // lane didn't change (or isn't tracked for this series), keep going
+  // with whichever ball ended the previous game — already seeded into
+  // G.ballID above from the prior game's F10 att1 ball.
   if (G.altMode && G.altBall1 && G.altBall2 && !att1s.length) {
-    // Use same offset formula as autoSelectBall() so parity is always consistent
-    const openOffset = 1 - (G.altStartFrame || 1);
-    const frame1Ball = (openOffset % 2 === 0) ? G.altBall1 : G.altBall2;
-    if (db.balls.find(b => b.BallID === frame1Ball && b.Active !== false)) {
-      G.ballID = frame1Ball;
-      G.lastBallAtt1 = frame1Ball;
+    const prevGameRow = gameNum > 1
+      ? db.games.find(g => g.SeriesID === game?.SeriesID && g.GameNumber === gameNum - 1)
+      : null;
+    const laneChanged = !!(prevGameRow && prevGameRow.LaneStart != null
+      && game?.LaneStart != null && prevGameRow.LaneStart !== game.LaneStart);
+
+    if (laneChanged) {
+      const flipped = (G.ballID === G.altBall1) ? G.altBall2 : G.altBall1;
+      if (db.balls.find(b => b.BallID === flipped && b.Active !== false)) {
+        G.ballID = flipped;
+        G.lastBallAtt1 = flipped;
+      }
     }
+    // Re-anchor parity so THIS game's frame 1 maps to whichever ball is
+    // now in G.ballID, keeping in-game alternation (autoSelectBall)
+    // consistent for the rest of this game.
+    G.altStartFrame = (G.ballID === G.altBall2) ? 0 : 1;
   }
 
   initScoringState();
@@ -9616,6 +9645,14 @@ function proceedWithFrameEdit() {
   saveAll();
   showUndoBar(frame, att);
 
+  // Bug fix (v30.127): if F10 is still fully recorded after this edit,
+  // the game is still complete — close it the same way "Skip to Summary"
+  // does, instead of leaving FinalScore null. See frame10StillComplete().
+  if (frame10StillComplete()) {
+    finishGame();
+    return;
+  }
+
   G.knocked = new Set();
   G.leave   = new Set();
   advanceState();
@@ -9667,6 +9704,31 @@ function clearDownstreamAttempts(fromFrame, fromAtt) {
   // by the calculateScores() call that follows in confirmAttempt().
   const game = db.games.find(g=>g.GameID===G.gameID);
   if (game) game.FinalScore = null;
+}
+
+/* Bug fix (v30.127): after clearDownstreamAttempts() nulls FinalScore on a
+   re-edit, only the edited frame's own siblings were actually cleared —
+   later frames (including F10) keep their raw data. If F10 still has
+   everything it needs, the game IS still complete; it just needs its
+   FinalScore recomputed. Without this check the game was stuck "open"
+   until manually revisiting F10 and tapping Skip to Summary. Mirrors the
+   exact completeness logic advanceState() uses to decide when frame 10
+   is done. Returns false (never null) if F10 is missing/incomplete. */
+function frame10StillComplete() {
+  const f10 = getFrame(10);
+  if (!f10) return false;
+  const atts = frameAttempts(f10.FrameID);
+  const a1 = atts.find(a=>a.Attempt===1);
+  const a2 = atts.find(a=>a.Attempt===2);
+  if (!a1 || a1.Pinfall == null || !a2 || a2.Pinfall == null) return false;
+  const game = db.games.find(g=>g.GameID===G.gameID);
+  const noTapOn = !!(game && game.NoTap);
+  const att1Strike = a1.Pinfall === 10 || (noTapOn && a1.Pinfall >= 9);
+  const att1A2Spare = !att1Strike && (a1.Pinfall + a2.Pinfall) >= 10;
+  const needsBonus = att1Strike || att1A2Spare;
+  if (!needsBonus) return true;
+  const a3 = atts.find(a=>a.Attempt===3);
+  return !!(a3 && a3.Pinfall != null);
 }
 
 /* =============================================================
@@ -14099,6 +14161,74 @@ function _statsLoadScope() {
 function _statsSaveScope(sc) {
   try { localStorage.setItem(STATS_SCOPE_KEY, JSON.stringify(sc)); } catch(e) {}
 }
+
+// v30.127 — Milestones card's "Score Blocks" expandable section state.
+// Not persisted (pure UI toggle); _statsBlocksGamesPool is set fresh on
+// every _statsTabOverview() render so the block-tap modal always reads
+// whatever scope (all-time / one league / one center / a custom period)
+// is currently active on the Stats screen.
+var _statsBlocksExpanded = false;
+var _statsBlocksGamesPool = [];
+function _statsToggleBlocks() { _statsBlocksExpanded = !_statsBlocksExpanded; renderStats(); }
+
+// Accordion renderer for the Milestones card's block breakdown — visual
+// twin of League Dashboard's _ldBlocksHTML(), but without an accordion
+// expand state of its own (this section is small enough to just show
+// every hundred-group's tens inline once expanded, rather than nesting
+// a second level of disclosure).
+function _statsBlocksHTML(blocks, kind) {
+  if (!blocks.length) return `<div style="color:var(--t3);font-size:11px;padding:4px 0">No data yet.</div>`;
+  return blocks.slice().reverse().map(hb => {
+    const activeTens = hb.tens.filter(t => t.count > 0);
+    return `
+    <div style="margin-bottom:6px">
+      <div style="font-size:11px;font-weight:700;color:var(--t2);padding:3px 0">${hb.label} <span style="color:var(--teal)">(${hb.total})</span></div>
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px">
+        ${activeTens.map(t => `<div onclick="statsOpenScoreBlockModal('${kind}',${t.min},${t.max},'${t.label}')"
+          style="text-align:center;padding:4px 2px;border-radius:6px;background:var(--bg3);cursor:pointer">
+          <div style="font-size:10px;color:var(--t3)">${t.label.replace('-','–')}</div>
+          <div style="font-size:12px;font-weight:800;color:var(--t1)">${t.count}</div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// Drill-down modal for the Milestones card's blocks — mirrors
+// openScoreBlockModal() but reads the already-scoped games pool stored
+// at render time instead of re-querying by leagueID, since this card
+// can be showing any Stats scope, not just one league.
+function statsOpenScoreBlockModal(kind, min, max, label) {
+  const pool = _statsBlocksGamesPool || [];
+  let rowsHTML = '';
+  if (kind === 'game') {
+    const games = pool.filter(g => g.FinalScore != null && g.FinalScore >= min && g.FinalScore <= max)
+      .map(g => ({ g, s: db.series.find(s => s.SeriesID === g.SeriesID) }))
+      .sort((a,b) => (b.s?.DateBowled||'').localeCompare(a.s?.DateBowled||''));
+    rowsHTML = games.length ? games.map(({g,s}) => `
+      <div class="stat-row" style="cursor:pointer" onclick="closeModal();openSeriesStatsModal(${g.SeriesID})">
+        <span>${s?.DateBowled ? fmtDate(s.DateBowled,{month:'short',day:'numeric',year:'numeric'}) : '—'} · Game ${g.GameNumber}</span>
+        <span class="sval t">${g.FinalScore}</span>
+      </div>`).join('') : `<div style="color:var(--t3);font-size:12px;padding:12px 0;text-align:center">No games in this range.</div>`;
+  } else {
+    const seriesTotals = {};
+    pool.forEach(g => { seriesTotals[g.SeriesID] = (seriesTotals[g.SeriesID]||0) + g.FinalScore; });
+    const matches = Object.entries(seriesTotals).filter(([sid,total]) => total >= min && total <= max)
+      .map(([sid,total]) => ({ s: db.series.find(x => x.SeriesID == sid), total }))
+      .sort((a,b) => (b.s?.DateBowled||'').localeCompare(a.s?.DateBowled||''));
+    rowsHTML = matches.length ? matches.map(({s,total}) => `
+      <div class="stat-row" style="cursor:pointer" onclick="closeModal();openSeriesStatsModal(${s.SeriesID})">
+        <span>${s?.DateBowled ? fmtDate(s.DateBowled,{month:'short',day:'numeric',year:'numeric'}) : '—'}</span>
+        <span class="sval t">${total}</span>
+      </div>`).join('') : `<div style="color:var(--t3);font-size:12px;padding:12px 0;text-align:center">No series in this range.</div>`;
+  }
+  openModal(`
+    <div class="modal-title">${_escHtml(label)} · ${kind === 'game' ? 'Games' : 'Series'}</div>
+    <div style="max-height:60vh;overflow-y:auto">${rowsHTML}</div>
+    <button class="btn btn-secondary" style="width:100%;margin-top:10px" onclick="closeModal()">Close</button>
+  `);
+}
+
 function _statsGetScope() {
   const sc = _statsLoadScope();
   if (!sc.context)   sc.context   = 'all';
@@ -14959,15 +15089,23 @@ function perfOpenPicker() {
   const lineages = opts.filter(o => o.type === 'lineage');
   const standalone = opts.filter(o => o.type === 'league' && !o.lineageID);
   function row(o, indent) {
+    // v30.127 — a 📊 icon on individual-league rows (not lineage roll-ups,
+    // since the dashboard is per single season) opens the League Dashboard
+    // directly, without changing the Performance screen's own scope.
+    const dashBtn = (o.type === 'league')
+      ? `<span onclick="event.stopPropagation();closeModal();openLeagueDashboard(${o.id})"
+          style="font-size:16px;padding:6px 8px;margin:-6px -6px -6px 4px;flex-shrink:0" title="League Dashboard">📊</span>`
+      : '';
     return `<div onclick="perfPickOption('${o.type}',${o.id})"
       style="display:flex;align-items:center;justify-content:space-between;padding:13px 16px 13px ${indent ? 32 : 16}px;
       border-bottom:1px solid var(--border1);cursor:pointer">
-      <div>
+      <div style="min-width:0;flex:1">
         <div style="font-size:${indent ? 13 : 15}px;font-weight:${indent ? 500 : 600};color:${indent ? 'var(--t2)' : 'var(--t1)'}">${o.name}${
           o.leagueCount > 1 ? ` <span style="color:var(--t3);font-weight:500;font-size:11px">(${o.leagueCount} seasons)</span>` : ''
         }</div>
         <div style="font-size:11px;color:var(--t3);margin-top:2px">${o.centerName}${o.centerName ? ' · ' : ''}${o.gameCount} games</div>
       </div>
+      ${dashBtn}
     </div>`;
   }
   const lineageRows = lineages.map(ln => {
@@ -16423,6 +16561,29 @@ function _statsTabOverview(games, core, allStdGames, sc, hasFrames) {
   const ms675 = msSeriesVals.filter(t=>t>=675).length;
   const ms750 = msSeriesVals.filter(t=>t>=750).length;
   const ms800 = msSeriesVals.filter(t=>t>=800).length;
+  // v30.127 — full tens-resolution breakdown alongside the fixed tiles
+  // above (per design decision: add, don't replace). Stores the current
+  // scoped games pool so the block-tap drill-down modal can read it —
+  // this section can appear under any Stats scope (all-time, one
+  // league, one center…), not just a single league, so it can't reuse
+  // the League Dashboard's leagueID-based query.
+  _statsBlocksGamesPool = games;
+  const msGameScores = games.map(g => g.FinalScore);
+  const msGameBlocks = buildScoreBlocks(msGameScores, 'game');
+  const msSeriesBlocks = buildScoreBlocks(msSeriesVals, 'series');
+  const scoreBlocksHTML = (msGameBlocks.length || msSeriesBlocks.length) ? `
+    <div style="margin-top:14px">
+      <div onclick="_statsToggleBlocks()" style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;padding:8px 0;border-top:1px solid var(--border1)">
+        <span style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:0.5px;text-transform:uppercase">Score Blocks (full breakdown)</span>
+        <span style="color:var(--t3);font-size:11px;transform:rotate(${_statsBlocksExpanded?90:0}deg);transition:transform 0.15s;display:inline-block">›</span>
+      </div>
+      ${_statsBlocksExpanded ? `
+        <div style="font-size:10px;font-weight:700;color:var(--t3);letter-spacing:0.5px;text-transform:uppercase;margin:8px 0 4px">Series</div>
+        ${_statsBlocksHTML(msSeriesBlocks, 'series')}
+        <div style="font-size:10px;font-weight:700;color:var(--t3);letter-spacing:0.5px;text-transform:uppercase;margin:10px 0 4px">Games</div>
+        ${_statsBlocksHTML(msGameBlocks, 'game')}
+      ` : ''}
+    </div>` : '';
   const milestonesHTML = `
     <div class="stat-card" style="margin-bottom:16px">
       <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:0.8px;text-transform:uppercase;margin-bottom:10px">Milestones</div>
@@ -16442,6 +16603,7 @@ function _statsTabOverview(games, core, allStdGames, sc, hasFrames) {
           <div style="font-size:10px;color:var(--t3);margin-top:2px">${m.lbl}</div>
         </div>`).join('')}
       </div>
+      ${scoreBlocksHTML}
       <div style="display:flex;gap:8px;margin-top:14px">
         <button class="btn btn-ghost" style="flex:1;font-size:12px;padding:8px"
           onclick="openAllTimeHighsModal()">🏆 All-Time Highs &amp; Streaks</button>
@@ -16493,6 +16655,9 @@ function _statsTabOverview(games, core, allStdGames, sc, hasFrames) {
       </div>
       <div style="margin-top:6px">
         <button class="btn btn-ghost" style="width:100%;font-size:13px" onclick="navTo('s-league-report')">📊 League Report</button>
+      </div>
+      <div style="margin-top:6px">
+        <button class="btn btn-ghost" style="width:100%;font-size:13px" onclick="navTo('s-friend-feed')">🤝 Bowler Connect <span style="opacity:0.6;font-weight:500">(preview)</span></button>
       </div>
     </div>`;
 
@@ -18282,7 +18447,21 @@ function _leagueReportComputeRow(league) {
     seriesBracketLen: seriesBracket ? seriesBracket.length : null,
     topBallName: topBall ? topBall.BallName : '—',
     topBallCt,
-    lastDate
+    lastDate,
+    // v30.127 — League Dashboard needs raw average + raw score arrays,
+    // which the table itself never needed as first-class fields.
+    avg: games.length ? Math.floor(scores.reduce((a,b)=>a+b,0) / games.length) : null,
+    gameScores: scores,
+    seriesTotals: seriesTotalVals,
+    // v30.128 — additional stat-block fields for the League Dashboard's
+    // expanded stat grid. All already computed inside advStats above;
+    // the table itself just never needed to surface them before now.
+    strikePct: advStats.strikePct,
+    xOnXPct: advStats.xOnXPct,
+    bounceBackPct: advStats.bounceBackPct,
+    makeablePct: advStats.makeablePct,
+    singlePct: advStats.singlePct,
+    firstDate: seriesTotals.length ? seriesTotals[0].date : null
   };
 }
 
@@ -18567,7 +18746,7 @@ function renderLeagueReport() {
   }).join('');
 
   const rowsHTML = rows.map((r, i) => `
-    <div style="display:flex;background:${i % 2 ? 'var(--bg2)' : 'transparent'}">
+    <div style="display:flex;background:${i % 2 ? 'var(--bg2)' : 'transparent'};cursor:pointer" onclick="openLeagueDashboard(${r.league.LeagueID})">
       ${columns.map(c => {
         const isExpanded = expandedSet.has(c.key);
         const isSelected = mv && mv.selected.has(c.key);
@@ -18585,12 +18764,789 @@ function renderLeagueReport() {
     </div>
     <div style="font-size:11px;color:var(--t3);margin-top:8px;text-align:center;line-height:1.8">
       Tap a header to sort · tap ⤢ to expand · press &amp; hold to reorder · <span onclick="resetLeagueReportColOrder()" style="color:var(--teal);cursor:pointer">reset order</span><br>
+      Tap a row for that league's dashboard<br>
       <span onclick="openLeagueReportManageLeaguesModal()" style="color:var(--teal);cursor:pointer">Manage Leagues</span> · <span onclick="openLeagueReportEditHeadersModal()" style="color:var(--teal);cursor:pointer">Edit Headers</span> · ${rows.length}${hiddenLeagues.size ? ' shown (' + hiddenLeagues.size + ' hidden)' : ' leagues'}
     </div>
   `;
 
   const newScroller = el.querySelector('.lr-scroll');
   if (newScroller) newScroller.scrollLeft = prevScrollLeft;
+}
+
+/* =============================================================
+   LEAGUE DASHBOARD (v30.127) — single-league visual dashboard,
+   reached by tapping a League Report row or the 📊 icon in the
+   Performance screen's league picker. Reuses _leagueReportComputeRow()
+   for all underlying stats rather than re-deriving them, and reuses
+   the existing lineage system (league.LineageID / db.lineages,
+   already built for the Performance league picker) for season
+   comparison — no new season-tracking needed.
+   ============================================================= */
+
+// Dynamic score-block generator — pure function, no DOM/db access.
+// kind: 'game' (adds a standalone "300" block, since that's a fixed
+// ceiling every bowler already thinks of as its own milestone, not
+// part of a "300-309" range that could never hold more than one
+// value) or 'series' (no ceiling — just continues the hundred/ten
+// pattern as high as the data goes). Hundred-groups with zero values
+// are skipped entirely so a bowler with no 400s series never sees an
+// empty "400s" row; a hundred-group that IS shown renders all ten
+// ten-blocks (including zero-count ones) so the shape reads as a real
+// histogram rather than a sparse list with gaps.
+function buildScoreBlocks(values, kind) {
+  const vals = (values || []).filter(v => v != null);
+  if (!vals.length) return [];
+  const cap = kind === 'game' ? 300 : null;
+  const capCount = cap != null ? vals.filter(v => v === cap).length : 0;
+  const nonCap = cap != null ? vals.filter(v => v < cap) : vals.slice();
+  const out = [];
+  if (nonCap.length) {
+    const min = Math.min(...nonCap), max = Math.max(...nonCap);
+    const minHundred = Math.floor(min / 100) * 100, maxHundred = Math.floor(max / 100) * 100;
+    for (let h = minHundred; h <= maxHundred; h += 100) {
+      const hundredVals = nonCap.filter(v => v >= h && v < h + 100);
+      if (!hundredVals.length) continue;
+      const tens = [];
+      for (let t = h; t < h + 100; t += 10) {
+        tens.push({ label: t + '-' + (t + 9), min: t, max: t + 9, count: nonCap.filter(v => v >= t && v < t + 10).length });
+      }
+      out.push({ hundred: h, label: h + 's', total: hundredVals.length, tens });
+    }
+  }
+  if (cap != null && capCount > 0) {
+    out.push({ hundred: cap, label: String(cap), total: capCount, tens: [{ label: String(cap), min: cap, max: cap, count: capCount }] });
+  }
+  return out;
+}
+
+// Chronologically-ordered (oldest→newest) lineage members that actually
+// have series data. A standalone league (no LineageID) is a lineage of
+// one. Mirrors the recency ordering already used by the Performance
+// league picker (most-recent series date per league).
+function leagueLineageMembersOrdered(league) {
+  if (league.LineageID == null) return [league];
+  const members = db.leagues.filter(l => l.LineageID === league.LineageID);
+  return members
+    .map(l => {
+      const dates = db.series.filter(s => s.LeagueID === l.LeagueID).map(s => s.DateBowled).filter(Boolean).sort();
+      return { league: l, lastDate: dates.length ? dates[dates.length - 1] : null };
+    })
+    .filter(m => m.lastDate != null)
+    .sort((a, b) => a.lastDate.localeCompare(b.lastDate))
+    .map(m => m.league);
+}
+
+// Season-comparison target per the design rule: viewing the CURRENT
+// (most-recent) season of a lineage compares against the PREVIOUS one;
+// viewing any OLDER season compares against the CURRENT one instead —
+// so there's always a "how does this stack up against the most/least
+// recent" story regardless of which season is open. Returns null when
+// there's nothing to compare against (standalone league, or a lineage
+// where only this one season has data).
+function leagueSeasonComparisonTarget(league) {
+  const ordered = leagueLineageMembersOrdered(league);
+  if (ordered.length < 2) return null;
+  const isCurrent = ordered[ordered.length - 1].LeagueID === league.LeagueID;
+  return isCurrent ? ordered[ordered.length - 2] : ordered[ordered.length - 1];
+}
+
+var _ldCurrentLeagueID = null;                          // league currently open in the dashboard
+var _ldExpandedHundred = { game: null, series: null };  // which hundred-group accordion is open, per kind
+
+async function openLeagueDashboard(leagueID) {
+  _ldCurrentLeagueID = leagueID;
+  _ldExpandedHundred = { game: null, series: null };
+  await navTo('s-league-dashboard');
+  renderLeagueDashboard();
+}
+
+// v30.128 — every league with at least one standard game, ordered by
+// FIRST series bowled date (ascending) — a global ordering across ALL
+// leagues, distinct from the lineage-scoped "current vs previous
+// season" comparison above. This is what Prev/Next in the dashboard
+// header pages through.
+function _ldAllLeaguesOrdered() {
+  return db.leagues
+    .map(l => ({ league: l, row: _leagueReportComputeRow(l) }))
+    .filter(x => x.row && x.row.firstDate)
+    .sort((a, b) => a.row.firstDate.localeCompare(b.row.firstDate))
+    .map(x => x.league);
+}
+
+function ldNavigate(dir) {
+  const ordered = _ldAllLeaguesOrdered();
+  const idx = ordered.findIndex(l => l.LeagueID === _ldCurrentLeagueID);
+  if (idx === -1) return;
+  const nextIdx = idx + dir;
+  if (nextIdx < 0 || nextIdx >= ordered.length) return;
+  _ldCurrentLeagueID = ordered[nextIdx].LeagueID;
+  _ldExpandedHundred = { game: null, series: null };
+  renderLeagueDashboard();
+}
+
+function ldToggleHundred(kind, hundred) {
+  _ldExpandedHundred[kind] = (_ldExpandedHundred[kind] === hundred) ? null : hundred;
+  renderLeagueDashboard();
+}
+
+// One metric's current-vs-comparison delta chip. `invert` flips the
+// good/bad color direction for stats where lower is better — every
+// metric used today (avg, high game, high series, spare %) defaults to
+// higher-is-better, but the hook is here for e.g. split % later.
+function _ldDeltaChip(label, curVal, cmpVal, opts) {
+  opts = opts || {};
+  if (curVal == null) return '';
+  const decimals = opts.decimals || 0, suffix = opts.suffix || '';
+  let deltaHTML = '';
+  if (cmpVal != null) {
+    const d = curVal - cmpVal;
+    const flat = Math.abs(d) < (opts.epsilon || 0.005);
+    const good = opts.invert ? d < 0 : d > 0;
+    const color = flat ? 'var(--t3)' : (good ? 'var(--teal)' : 'var(--sedona)');
+    const sign = d > 0 ? '+' : '';
+    deltaHTML = `<div style="font-size:11px;font-weight:700;color:${color};margin-top:2px">${sign}${d.toFixed(decimals)}${suffix}</div>`;
+  }
+  return `<div style="text-align:center;min-width:64px">
+    <div style="font-size:20px;font-weight:900;color:var(--t1)">${curVal.toFixed(decimals)}${suffix}</div>
+    <div style="font-size:10px;color:var(--t3);margin-top:2px">${label}</div>
+    ${deltaHTML}
+  </div>`;
+}
+
+// Accordion list of hundred-groups (newest hundred first), each
+// expandable into its ten-blocks. A hundred-group with only one
+// possible value (game's standalone "300") skips the accordion and
+// drills straight into the modal on tap. Every row — hundred or ten —
+// is a data point per the design ask, not decoration.
+function _ldBlocksHTML(blocks, kind, leagueID) {
+  if (!blocks.length) return `<div style="color:var(--t3);font-size:12px;text-align:center;padding:16px 0">No data yet.</div>`;
+  return blocks.slice().reverse().map(hb => {
+    const expanded = _ldExpandedHundred[kind] === hb.hundred;
+    const isSingleton = hb.tens.length === 1 && hb.tens[0].min === hb.tens[0].max;
+    return `<div style="border-bottom:1px solid var(--border1)">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 4px;cursor:pointer"
+        onclick="${isSingleton ? `openScoreBlockModal('${kind}',${leagueID},${hb.tens[0].min},${hb.tens[0].max},'${hb.label}')` : `ldToggleHundred('${kind}',${hb.hundred})`}">
+        <span style="font-weight:700;font-size:13px">${hb.label}</span>
+        <span style="display:flex;align-items:center;gap:6px">
+          <span style="font-size:13px;font-weight:800;color:var(--teal)">${hb.total}</span>
+          ${!isSingleton ? `<span style="color:var(--t3);font-size:11px;transform:rotate(${expanded ? 90 : 0}deg);transition:transform 0.15s;display:inline-block">›</span>` : ''}
+        </span>
+      </div>
+      ${(!isSingleton && expanded) ? `<div style="padding:0 4px 8px">
+        ${hb.tens.filter(t => t.count > 0).map(t => `<div onclick="event.stopPropagation();openScoreBlockModal('${kind}',${leagueID},${t.min},${t.max},'${t.label}')"
+          style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;cursor:pointer">
+          <span style="font-size:12px;color:var(--t2)">${t.label}</span>
+          <span style="font-size:12px;font-weight:700;color:var(--t1)">${t.count}</span>
+        </div>`).join('')}
+      </div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function renderLeagueDashboard() {
+  const el = document.getElementById('league-dashboard-content');
+  if (!el || _ldCurrentLeagueID == null) return;
+  const league = db.leagues.find(l => l.LeagueID === _ldCurrentLeagueID);
+  if (!league) { el.innerHTML = `<div style="padding:24px;color:var(--t3)">League not found.</div>`; return; }
+  const row = _leagueReportComputeRow(league);
+  if (!row) {
+    el.innerHTML = `<div style="padding:24px;color:var(--t3);text-align:center">No standard games recorded for ${_escHtml(league.LeagueName)} yet.</div>`;
+    return;
+  }
+  const cmpLeague = leagueSeasonComparisonTarget(league);
+  const cmpRow = cmpLeague ? _leagueReportComputeRow(cmpLeague) : null;
+  const ordered = leagueLineageMembersOrdered(league);
+  const isCurrent = ordered.length ? ordered[ordered.length - 1].LeagueID === league.LeagueID : true;
+
+  const cmpNote = cmpRow
+    ? `<div style="font-size:11px;color:var(--t3);text-align:center;margin-bottom:10px">
+        vs. <span style="color:var(--teal)">${_escHtml(cmpRow.league.LeagueName)}</span>${isCurrent ? ' (previous season)' : ' (current season)'}
+      </div>`
+    : ordered.length > 1
+      ? `<div style="font-size:11px;color:var(--t3);text-align:center;margin-bottom:10px">No comparable prior season with data yet</div>`
+      : '';
+
+  // v30.128 — Prev/Next across ALL leagues, ordered by first-series-bowled
+  // date (global ordering, distinct from the lineage-scoped season
+  // comparison above). Arrows disable at either end of the list.
+  const allOrdered = _ldAllLeaguesOrdered();
+  const navIdx = allOrdered.findIndex(l => l.LeagueID === league.LeagueID);
+  const navHTML = `<div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+    <button onclick="ldNavigate(-1)" ${navIdx <= 0 ? 'disabled' : ''}
+      style="background:none;border:none;font-size:20px;padding:4px 8px;color:${navIdx <= 0 ? 'var(--t3)' : 'var(--teal)'};cursor:${navIdx <= 0 ? 'default' : 'pointer'}">‹</button>
+    <div style="flex:1;text-align:center;font-size:16px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${_escHtml(league.LeagueName)}</div>
+    <button onclick="ldNavigate(1)" ${navIdx === -1 || navIdx >= allOrdered.length - 1 ? 'disabled' : ''}
+      style="background:none;border:none;font-size:20px;padding:4px 8px;color:${(navIdx === -1 || navIdx >= allOrdered.length - 1) ? 'var(--t3)' : 'var(--teal)'};cursor:${(navIdx === -1 || navIdx >= allOrdered.length - 1) ? 'default' : 'pointer'}">›</button>
+  </div>
+  <div style="text-align:center;font-size:10px;color:var(--t3);margin-bottom:10px">${navIdx + 1} of ${allOrdered.length} · sorted by first series date</div>`;
+
+  // v30.128 — expanded stat grid (strike %, single pin conv %, makeable
+  // conv %, FBA, X-on-X, bounceback, plus the original average/high
+  // game/high series/spare %). Grid instead of a single flex row since
+  // this many chips need to wrap cleanly on a phone screen. splitPct
+  // uses invert:true since a lower split rate is the good direction.
+  const statsRow = `<div class="stat-card" style="margin-bottom:14px">
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px 4px">
+      ${_ldDeltaChip('Average', row.avg, cmpRow ? cmpRow.avg : null)}
+      ${_ldDeltaChip('High Game', row.highGame, cmpRow ? cmpRow.highGame : null)}
+      ${_ldDeltaChip('High Series', row.highSeries, cmpRow ? cmpRow.highSeries : null)}
+      ${_ldDeltaChip('Low Game', row.lowGame, cmpRow ? cmpRow.lowGame : null)}
+      ${_ldDeltaChip('Low Series', row.lowSeries, cmpRow ? cmpRow.lowSeries : null)}
+      ${_ldDeltaChip('FBA', parseFloat(row.firstBallAvg) || 0, cmpRow ? (parseFloat(cmpRow.firstBallAvg) || 0) : null, { decimals: 2 })}
+      ${_ldDeltaChip('Strike %', parseFloat(row.strikePct) || 0, cmpRow ? (parseFloat(cmpRow.strikePct) || 0) : null, { decimals: 1, suffix: '%' })}
+      ${_ldDeltaChip('Spare %', parseFloat(row.sparePct) || 0, cmpRow ? (parseFloat(cmpRow.sparePct) || 0) : null, { decimals: 1, suffix: '%' })}
+      ${_ldDeltaChip('Split %', parseFloat(row.splitPct) || 0, cmpRow ? (parseFloat(cmpRow.splitPct) || 0) : null, { decimals: 1, suffix: '%', invert: true })}
+      ${_ldDeltaChip('Single Pin %', parseFloat(row.singlePct) || 0, cmpRow ? (parseFloat(cmpRow.singlePct) || 0) : null, { decimals: 1, suffix: '%' })}
+      ${_ldDeltaChip('Makeable %', parseFloat(row.makeablePct) || 0, cmpRow ? (parseFloat(cmpRow.makeablePct) || 0) : null, { decimals: 1, suffix: '%' })}
+      ${_ldDeltaChip('X-on-X %', parseFloat(row.xOnXPct) || 0, cmpRow ? (parseFloat(cmpRow.xOnXPct) || 0) : null, { decimals: 1, suffix: '%' })}
+      ${_ldDeltaChip('Bounceback %', parseFloat(row.bounceBackPct) || 0, cmpRow ? (parseFloat(cmpRow.bounceBackPct) || 0) : null, { decimals: 1, suffix: '%' })}
+      ${_ldDeltaChip('10-Pin Conv', parseFloat(row.tenPinPct) || 0, cmpRow ? (parseFloat(cmpRow.tenPinPct) || 0) : null, { decimals: 0, suffix: '%' })}
+    </div>
+  </div>`;
+
+  const gameBlocks = buildScoreBlocks(row.gameScores, 'game');
+  const seriesBlocks = buildScoreBlocks(row.seriesTotals, 'series');
+
+  el.innerHTML = `
+    ${navHTML}
+    ${cmpNote}
+    ${statsRow}
+    <div class="stat-card" style="margin-bottom:14px">
+      <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:0.8px;text-transform:uppercase;margin-bottom:8px">Game Score Blocks</div>
+      ${_ldBlocksHTML(gameBlocks, 'game', league.LeagueID)}
+    </div>
+    <div class="stat-card">
+      <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:0.8px;text-transform:uppercase;margin-bottom:8px">Series Score Blocks</div>
+      ${_ldBlocksHTML(seriesBlocks, 'series', league.LeagueID)}
+    </div>
+  `;
+}
+
+// Drill-down modal — lists the games or series in one score block for
+// one league (per your answer: modal, not navigation). Rows open the
+// parent series' stats modal on tap — there's no standalone single-
+// game modal elsewhere in the app, so games and series both land on
+// the same, already-existing openSeriesStatsModal().
+function openScoreBlockModal(kind, leagueID, min, max, label) {
+  const league = db.leagues.find(l => l.LeagueID === leagueID);
+  const leagueSeriesIDs = new Set(db.series.filter(s => s.LeagueID === leagueID).map(s => s.SeriesID));
+  let rowsHTML = '';
+  if (kind === 'game') {
+    const games = db.games.filter(g => leagueSeriesIDs.has(g.SeriesID) && g.FinalScore != null && g.FinalScore >= min && g.FinalScore <= max && !g.IsTeammate && !g.NoTap)
+      .map(g => ({ g, s: db.series.find(s => s.SeriesID === g.SeriesID) }))
+      .sort((a, b) => (b.s?.DateBowled || '').localeCompare(a.s?.DateBowled || ''));
+    rowsHTML = games.length ? games.map(({ g, s }) => `
+      <div class="stat-row" style="cursor:pointer" onclick="closeModal();openSeriesStatsModal(${g.SeriesID})">
+        <span>${s?.DateBowled ? fmtDate(s.DateBowled, { month: 'short', day: 'numeric', year: 'numeric' }) : '—'} · Game ${g.GameNumber}</span>
+        <span class="sval t">${g.FinalScore}</span>
+      </div>`).join('') : `<div style="color:var(--t3);font-size:12px;padding:12px 0;text-align:center">No games in this range.</div>`;
+  } else {
+    const seriesTotals = {};
+    db.games.filter(g => leagueSeriesIDs.has(g.SeriesID) && g.FinalScore != null && g.FinalScore > 0 && !g.IsTeammate && !g.NoTap)
+      .forEach(g => { seriesTotals[g.SeriesID] = (seriesTotals[g.SeriesID] || 0) + g.FinalScore; });
+    const matches = Object.entries(seriesTotals).filter(([sid, total]) => total >= min && total <= max)
+      .map(([sid, total]) => ({ s: db.series.find(x => x.SeriesID == sid), total }))
+      .sort((a, b) => (b.s?.DateBowled || '').localeCompare(a.s?.DateBowled || ''));
+    rowsHTML = matches.length ? matches.map(({ s, total }) => `
+      <div class="stat-row" style="cursor:pointer" onclick="closeModal();openSeriesStatsModal(${s.SeriesID})">
+        <span>${s?.DateBowled ? fmtDate(s.DateBowled, { month: 'short', day: 'numeric', year: 'numeric' }) : '—'}</span>
+        <span class="sval t">${total}</span>
+      </div>`).join('') : `<div style="color:var(--t3);font-size:12px;padding:12px 0;text-align:center">No series in this range.</div>`;
+  }
+  openModal(`
+    <div class="modal-title">${_escHtml(label)} · ${kind === 'game' ? 'Games' : 'Series'}</div>
+    <div style="font-size:11px;color:var(--t3);margin-bottom:10px">${_escHtml(league ? league.LeagueName : '')}</div>
+    <div style="max-height:60vh;overflow-y:auto">${rowsHTML}</div>
+    <button class="btn btn-secondary" style="width:100%;margin-top:10px" onclick="closeModal()">Close</button>
+  `);
+}
+
+/* =============================================================
+   FRIEND SPACE — DESIGN PREVIEW (v30.128)
+   Visual-only prototype of the Stage 1 Connected Bowler design (see
+   design doc). No backend yet — this demonstrates the finished look
+   using your real recent series alongside staged sample friends,
+   built entirely from the app's existing design tokens/components
+   (.card, .pill, .stat-card, --teal/--purple/--gold/etc) so it reads
+   as a native part of the app rather than a bolted-on mockup.
+   Acknowledgment taps live in local module state for the demo —
+   nothing is persisted to IDB or sent anywhere.
+   ============================================================= */
+
+const FS_PROFILE_KEY = 'bowlingdb_fs_profile';
+function fsGetProfile() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(FS_PROFILE_KEY) || 'null');
+    if (saved && saved.name) return saved;
+  } catch(e) {}
+  return { name: 'You', avatar: '🎳', color: 'var(--teal)' };
+}
+function fsSaveProfile(p) { try { localStorage.setItem(FS_PROFILE_KEY, JSON.stringify(p)); } catch(e) {} }
+function fsEditProfileName() {
+  const cur = fsGetProfile();
+  const name = prompt('Your display name (for the Bowler Connect preview):', cur.name === 'You' ? '' : cur.name);
+  if (name === null) return;
+  const trimmed = name.trim();
+  fsSaveProfile(Object.assign({}, cur, { name: trimmed || 'You' }));
+  renderFriendFeed();
+}
+
+// Staged sample friends — cosmetic only, for the design preview.
+const FS_MOCK_FRIENDS = [
+  { id: 'f1', name: 'Marcus T.', avatar: '🔥', color: 'var(--gold)' },
+  { id: 'f2', name: 'Dana R.',   avatar: '⚡', color: 'var(--purple)' },
+  { id: 'f3', name: 'Chris B.',  avatar: '🎯', color: 'var(--teal)' },
+  { id: 'f4', name: 'Priya K.',  avatar: '🌟', color: 'var(--lilac)' }
+];
+
+// Staged sample posts. daysAgo is relative to "now" so the demo always
+// looks current regardless of when it's viewed.
+const FS_MOCK_POSTS = [
+  { id: 'm1', friendId: 'f1', daysAgo: 0.2, league: 'Thursday Vegas Fun Time', center: 'AMF Chandler Lanes', games: [212, 245, 289], headline: '🔥 New Season High!', acks: ['f2','f3'] },
+  { id: 'm2', friendId: 'f2', daysAgo: 1,   league: 'Foxes and Hounds Summer Trios', center: 'Bowlero Kyrene', games: [178, 190, 205], headline: null, acks: ['f1'] },
+  { id: 'm3', friendId: 'f3', daysAgo: 2.5, league: 'NFL League 2026-2027', center: 'AMF Chandler Lanes', games: [300], headline: '🎳 PERFECT GAME', acks: ['f1','f2','f4'] },
+  { id: 'm4', friendId: 'f4', daysAgo: 4,   league: 'Virtue Fun Fall 2026', center: 'Fountain Lanes', games: [188, 201, 176], headline: null, acks: [] }
+];
+
+// Local-only acknowledgment state for the demo — postId -> array of
+// "who acked", seeded from FS_MOCK_POSTS, mutated in place as you tap.
+let _fsAckState = null;
+function _fsInitAckState() {
+  if (_fsAckState) return;
+  _fsAckState = {};
+  FS_MOCK_POSTS.forEach(p => { _fsAckState[p.id] = p.acks.slice(); });
+}
+function fsToggleAck(postId) {
+  _fsInitAckState();
+  const list = _fsAckState[postId] || (_fsAckState[postId] = []);
+  const idx = list.indexOf('me');
+  if (idx >= 0) list.splice(idx, 1); else list.push('me');
+  renderFriendFeed();
+}
+
+function _fsTimeAgo(daysAgo) {
+  if (daysAgo < 1) { const h = Math.round(daysAgo * 24); return h <= 0 ? 'Just now' : h + 'h ago'; }
+  if (daysAgo < 2) return 'Yesterday';
+  return Math.round(daysAgo) + 'd ago';
+}
+
+// Pulls your most recent real series (from the app's own data, not
+// staged) so the preview genuinely demonstrates "your profile data
+// alongside staged data," not an entirely fake feed.
+function _fsRealPosts(limit) {
+  const stdGames = db.games.filter(g => g.FinalScore != null && g.FinalScore > 0 && !g.IsTeammate && !g.NoTap);
+  const bySeries = {};
+  stdGames.forEach(g => { (bySeries[g.SeriesID] = bySeries[g.SeriesID] || []).push(g); });
+  const series = Object.keys(bySeries)
+    .map(sid => ({ series: db.series.find(s => s.SeriesID == sid), games: bySeries[sid].sort((a,b)=>a.GameNumber-b.GameNumber) }))
+    .filter(x => x.series && x.series.DateBowled)
+    .sort((a,b) => b.series.DateBowled.localeCompare(a.series.DateBowled))
+    .slice(0, limit);
+  const today = azToday();
+  return series.map(({series: s, games}) => {
+    const league = db.leagues.find(l => l.LeagueID === s.LeagueID);
+    const scores = games.map(g => g.FinalScore);
+    const total = scores.reduce((a,b)=>a+b, 0);
+    const daysAgo = Math.max(0, (new Date(today) - new Date(s.DateBowled)) / 86400000);
+    let headline = null;
+    if (scores.includes(300)) headline = '🎳 PERFECT GAME';
+    else if (Math.max(...scores) >= 279) headline = '🔥 Great Game';
+    return {
+      id: 'real-' + s.SeriesID, isReal: true, friendId: null,
+      league: league ? league.LeagueName : 'Open Play', center: null,
+      games: scores, total, daysAgo, headline
+    };
+  });
+}
+
+function _fsAvatarHTML(person, size) {
+  size = size || 38;
+  return `<div style="width:${size}px;height:${size}px;border-radius:50%;background:${person.color};display:flex;align-items:center;justify-content:center;font-size:${Math.round(size*0.52)}px;flex-shrink:0">${person.avatar}</div>`;
+}
+
+function _fsPostCardHTML(post, profile) {
+  const isReal = !!post.isReal;
+  const friend = isReal ? profile : FS_MOCK_FRIENDS.find(f => f.id === post.friendId);
+  const name = isReal ? profile.name : friend.name;
+  const total = post.total != null ? post.total : post.games.reduce((a,b)=>a+b,0);
+  const cardClass = post.headline ? 'card card-best' : 'card card-complete';
+  _fsInitAckState();
+  const acks = isReal ? [] : (_fsAckState[post.id] || []);
+  const iAcked = acks.includes('me');
+  const ackCount = acks.length;
+  return `<div class="${cardClass}" style="margin-bottom:12px">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+      <div onclick="openBowlerProfile('${isReal ? 'me' : post.friendId}')" style="cursor:pointer">${_fsAvatarHTML(friend)}</div>
+      <div style="min-width:0;flex:1">
+        <div style="font-weight:700;font-size:14px;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${_escHtml(name)}${isReal ? ' <span style="font-size:10px;font-weight:700;color:var(--teal);vertical-align:middle">· YOUR SERIES</span>' : ''}</div>
+        <div style="font-size:11px;color:var(--t3)">${_escHtml(post.league)}${post.center ? ' · ' + _escHtml(post.center) : ''}</div>
+      </div>
+      <div style="font-size:11px;color:var(--t3);flex-shrink:0">${_fsTimeAgo(post.daysAgo)}</div>
+    </div>
+    ${post.headline ? `<div style="margin-bottom:8px"><span class="pill pill-gold">${post.headline}</span></div>` : ''}
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        ${post.games.map(g => `<span style="font-size:12px;font-weight:700;color:var(--t2);background:var(--bg3);padding:3px 8px;border-radius:8px">${g}</span>`).join('')}
+      </div>
+      <div style="font-size:20px;font-weight:900;color:${post.headline ? 'var(--gold)' : 'var(--t1)'}">${total}</div>
+    </div>
+    ${!isReal ? `
+    <div style="display:flex;align-items:center;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border1)">
+      <button onclick="fsToggleAck('${post.id}')" style="display:flex;align-items:center;gap:5px;background:${iAcked ? 'rgba(0,217,217,0.15)' : 'var(--bg3)'};border:1px solid ${iAcked ? 'var(--teal)' : 'var(--border1)'};border-radius:20px;padding:5px 12px;cursor:pointer;color:${iAcked ? 'var(--teal)' : 'var(--t2)'};font-size:12px;font-weight:700">
+        🙌 ${ackCount > 0 ? ackCount : ''}
+      </button>
+      <span style="font-size:11px;color:var(--t3)">${ackCount === 0 ? 'Be the first to react' : (iAcked && ackCount === 1 ? 'You reacted' : iAcked ? 'You and ' + (ackCount-1) + ' other' + (ackCount-1===1?'':'s') : ackCount + ' reaction' + (ackCount===1?'':'s'))}</span>
+    </div>` : `
+    <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border1);font-size:11px;color:var(--t3);text-align:center">Not shared — tap Share on a series to post it here</div>`}
+  </div>`;
+}
+
+function renderFriendFeed() {
+  const el = document.getElementById('friend-feed-content');
+  if (!el) return;
+  const profile = fsGetProfile();
+  const realPosts = _fsRealPosts(2);
+  const allPosts = realPosts.concat(FS_MOCK_POSTS).sort((a,b) => a.daysAgo - b.daysAgo);
+
+  const headerHTML = `
+    <div class="stat-card" style="margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div onclick="openBowlerProfile('me')" style="cursor:pointer">${_fsAvatarHTML(profile, 48)}</div>
+        <div style="flex:1;min-width:0">
+          <div onclick="fsEditProfileName()" style="font-size:16px;font-weight:800;color:var(--t1);cursor:pointer">${_escHtml(profile.name)} <span style="font-size:11px;color:var(--t3);font-weight:500">✏️</span></div>
+          <div style="font-size:11px;color:var(--t3);margin-top:2px">${FS_MOCK_FRIENDS.length} friends (preview)</div>
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="fsShowStub('add')">+ Add Friend</button>
+      </div>
+    </div>
+    <div style="background:rgba(0,217,217,0.06);border:1px solid rgba(0,217,217,0.2);border-radius:12px;padding:10px 12px;margin-bottom:16px;font-size:11px;color:var(--t2);line-height:1.5">
+      🛠️ <b>Design preview</b> — this is what the friend feed will look like once the backend is wired up. Your own posts below are pulled from your real recent series; everything else is staged sample data.
+    </div>`;
+
+  const feedHTML = allPosts.length
+    ? allPosts.map(p => _fsPostCardHTML(p, profile)).join('')
+    : `<div class="empty-state"><div class="empty-icon">🤝</div><div class="empty-label">No activity yet</div></div>`;
+
+  el.innerHTML = `
+    <div class="sec-header"><span class="sec-title">Bowler Connect</span></div>
+    ${headerHTML}
+    ${feedHTML}
+  `;
+}
+
+function fsShowStub(kind) {
+  toast(kind === 'add' ? 'Adding friends needs the backend — coming in the next phase' : 'Coming soon');
+}
+
+// v30.129 — staged friend all-time profile stats, cosmetic only. Same
+// shape _fsRealProfileStats() returns for you, so profile screens and
+// the comparison view treat real-you and staged-friends identically.
+// `trend` is a fabricated recent-series-average sequence for the
+// sparkline; `homeCenter` is a plausible display-only string (friends
+// don't have a real db.centers row).
+const FS_MOCK_PROFILE_STATS = {
+  f1: { games: 142, avg: 198, highGame: 289, highGameCount: 1, highSeries: 720, highSeriesCount: 1,
+        strikePct: 28.4, sparePct: 61.2, cleanPct: 34, strikeStreak: 7, firstBallAvg: 8.2,
+        avgF10: 15.4, makeablePct: 78.5, splitPct: 6.1, xOnXPct: 41.2, bounceBackPct: 55.0,
+        currentSeasonAvg: 204, allTimeAvg: 198, homeCenter: 'AMF Chandler Lanes',
+        trend: [188,192,195,201,198,205,209,204,212,208,215,210,218,214,221] },
+  f2: { games: 98,  avg: 176, highGame: 245, highGameCount: 1, highSeries: 645, highSeriesCount: 1,
+        strikePct: 19.8, sparePct: 58.0, cleanPct: 22, strikeStreak: 4, firstBallAvg: 7.1,
+        avgF10: 12.8, makeablePct: 71.0, splitPct: 9.4, xOnXPct: 28.6, bounceBackPct: 46.0,
+        currentSeasonAvg: 172, allTimeAvg: 176, homeCenter: 'Bowlero Kyrene',
+        trend: [180,178,175,172,176,170,174,169,173,168,171,167,172,169,171] },
+  f3: { games: 210, avg: 214, highGame: 300, highGameCount: 1, highSeries: 758, highSeriesCount: 2,
+        strikePct: 35.6, sparePct: 64.9, cleanPct: 41, strikeStreak: 12, firstBallAvg: 9.0,
+        avgF10: 16.9, makeablePct: 82.3, splitPct: 4.8, xOnXPct: 49.5, bounceBackPct: 61.0,
+        currentSeasonAvg: 219, allTimeAvg: 214, homeCenter: 'AMF Chandler Lanes',
+        trend: [205,208,211,209,214,217,213,219,216,222,218,225,221,227,224] },
+  f4: { games: 76,  avg: 165, highGame: 211, highGameCount: 1, highSeries: 580, highSeriesCount: 1,
+        strikePct: 15.2, sparePct: 55.4, cleanPct: 18, strikeStreak: 3, firstBallAvg: 6.7,
+        avgF10: 11.2, makeablePct: 68.0, splitPct: 10.8, xOnXPct: 22.1, bounceBackPct: 40.0,
+        currentSeasonAvg: 168, allTimeAvg: 165, homeCenter: 'Fountain Lanes',
+        trend: [160,163,158,166,161,164,159,167,163,169,165,171,166,170,168] }
+};
+
+// Your real stats, expanded (v30.129) to cover every metric the full
+// profile screen shows: high game/series each with an occurrence count
+// (for the ×N badge), longest strike streak, FBA, average Frame 10
+// score, makeable/split/X-on-X/bounceback %, and current-season vs.
+// all-time average. "Current season" = the league with the most
+// recent series date across ALL your leagues (i.e. whichever league
+// you're actively bowling right now) — reuses the same
+// _leagueReportComputeRow() pipeline as the League Dashboard rather
+// than a separate computation.
+function _fsRealProfileStats() {
+  const games = getAllTimeLeagueGames();
+  const gameIDs = games.map(g => g.GameID);
+  const scores = games.map(g => g.FinalScore);
+  const stats = calculateAdvancedStats(gameIDs);
+  const streaks = calculateStrikeStreaks(gameIDs);
+  const seriesTotals = {};
+  games.forEach(g => { seriesTotals[g.SeriesID] = (seriesTotals[g.SeriesID] || 0) + g.FinalScore; });
+  const seriesVals = Object.values(seriesTotals);
+  const highGame = scores.length ? Math.max(...scores) : 0;
+  const highSeries = seriesVals.length ? Math.max(...seriesVals) : 0;
+  const f10Frames = db.frames.filter(f => f.FrameNumber === 10 && f.FrameScore != null && games.some(g => g.GameID === f.GameID));
+  const avgF10 = f10Frames.length ? f10Frames.reduce((a,f)=>a+f.FrameScore,0) / f10Frames.length : null;
+
+  // Current season = whichever league has the most recent series date.
+  let currentLeagueID = null, currentLastDate = null;
+  db.leagues.forEach(l => {
+    const row = _leagueReportComputeRow(l);
+    if (row && row.lastDate && (currentLastDate === null || row.lastDate > currentLastDate)) {
+      currentLastDate = row.lastDate; currentLeagueID = l.LeagueID;
+    }
+  });
+  const currentSeasonGames = currentLeagueID != null
+    ? games.filter(g => { const s = db.series.find(x => x.SeriesID === g.SeriesID); return s && s.LeagueID === currentLeagueID; })
+    : [];
+  const currentSeasonAvg = currentSeasonGames.length
+    ? Math.floor(currentSeasonGames.reduce((a,g)=>a+g.FinalScore,0) / currentSeasonGames.length) : null;
+
+  // Trend: last 15 series, one point per series (that series' average).
+  const bySeries = {};
+  games.forEach(g => { (bySeries[g.SeriesID] = bySeries[g.SeriesID] || []).push(g); });
+  const trendSeries = Object.keys(bySeries)
+    .map(sid => ({ series: db.series.find(s => s.SeriesID == sid), games: bySeries[sid] }))
+    .filter(x => x.series && x.series.DateBowled)
+    .sort((a,b) => a.series.DateBowled.localeCompare(b.series.DateBowled))
+    .slice(-15);
+  const trend = trendSeries.map(x => ({
+    score: Math.round(x.games.reduce((a,g)=>a+g.FinalScore,0) / x.games.length),
+    date: x.series.DateBowled
+  }));
+
+  return {
+    games: games.length,
+    avg: games.length ? Math.floor(scores.reduce((a,b)=>a+b,0) / games.length) : 0,
+    highGame, highGameCount: highGame ? scores.filter(s => s === highGame).length : 0,
+    highSeries, highSeriesCount: highSeries ? seriesVals.filter(v => v === highSeries).length : 0,
+    strikePct: parseFloat(stats.strikePct) || 0,
+    sparePct: parseFloat(stats.sparePct) || 0,
+    cleanPct: stats.cleanPct || 0,
+    strikeStreak: streaks.maxStreak || 0,
+    firstBallAvg: parseFloat(stats.firstBallAvg) || 0,
+    avgF10,
+    makeablePct: parseFloat(stats.makeablePct) || 0,
+    splitPct: parseFloat(stats.splitPct) || 0,
+    xOnXPct: parseFloat(stats.xOnXPct) || 0,
+    bounceBackPct: parseFloat(stats.bounceBackPct) || 0,
+    currentSeasonAvg,
+    allTimeAvg: games.length ? Math.floor(scores.reduce((a,b)=>a+b,0) / games.length) : 0,
+    homeCenter: (function() {
+      const cid = fsGetProfile().homeCenterID;
+      const c = cid ? db.centers.find(x => x.CenterID === cid) : null;
+      return c ? c.CenterName : null;
+    })(),
+    trend
+  };
+}
+
+function _fsPersonStats(personId) {
+  return personId === 'me' ? _fsRealProfileStats() : (FS_MOCK_PROFILE_STATS[personId] || null);
+}
+function _fsPersonInfo(personId) {
+  return personId === 'me' ? fsGetProfile() : FS_MOCK_FRIENDS.find(f => f.id === personId);
+}
+
+function _fsStatChip(label, val, opts) {
+  opts = opts || {};
+  const display = val == null ? '—' : (val + (opts.suffix || ''));
+  return `<div style="text-align:center">
+    <div style="font-size:18px;font-weight:900;color:var(--t1)">${display}</div>
+    <div style="font-size:10px;color:var(--t3);margin-top:2px;line-height:1.3">${label}</div>
+  </div>`;
+}
+// Badge variant for High Game / High Series — appends "×N" when the
+// value has occurred more than once, per the design ask.
+function _fsHighBadgeVal(val, count) {
+  if (val == null) return '—';
+  return val + (count > 1 ? ` <span style="color:var(--gold)">×${count}</span>` : '');
+}
+
+var _bpCurrentPersonID = null;
+function openBowlerProfile(personId) {
+  _bpCurrentPersonID = personId;
+  navTo('s-bowler-profile');
+  renderBowlerProfile();
+}
+
+// v30.129 — full-screen Bowler Profile (previously a slide-up modal).
+// Header (avatar / name / home center, editable for "me") + a recent-
+// average trend sparkline (reusing buildStatsSparkline(), the same
+// renderer the Stats screen already uses) + the full achievement grid.
+// Real numbers for you, staged for friends — same layout either way,
+// same as the rest of Bowler Connect.
+function renderBowlerProfile() {
+  const el = document.getElementById('bowler-profile-content');
+  if (!el || !_bpCurrentPersonID) return;
+  const personId = _bpCurrentPersonID;
+  const person = _fsPersonInfo(personId);
+  const stats = _fsPersonStats(personId);
+  if (!person || !stats) { el.innerHTML = `<div style="padding:24px;color:var(--t3)">Not found.</div>`; return; }
+  const isMe = personId === 'me';
+
+  const headerHTML = `
+    <div style="text-align:center;padding:8px 0 18px">
+      <div onclick="${isMe ? "fsOpenAvatarPicker()" : ''}" style="margin:0 auto 12px;width:76px;cursor:${isMe ? 'pointer' : 'default'}">${_fsAvatarHTML(person, 76)}</div>
+      <div onclick="${isMe ? "fsEditProfileName()" : ''}" style="font-size:22px;font-weight:900;color:var(--t1);cursor:${isMe ? 'pointer' : 'default'}">
+        ${_escHtml(person.name)} ${isMe ? '<span style="font-size:13px;color:var(--t3)">✏️</span>' : ''}
+      </div>
+      <div onclick="${isMe ? "fsOpenHomeCenterPicker()" : ''}" style="font-size:12px;color:var(--t3);margin-top:4px;cursor:${isMe ? 'pointer' : 'default'}">
+        🏠 ${stats.homeCenter ? _escHtml(stats.homeCenter) : (isMe ? 'Set home center' : '—')} ${isMe ? '<span style="color:var(--teal)">✏️</span>' : ''}
+      </div>
+      <div style="font-size:11px;color:var(--t3);margin-top:6px">${isMe ? 'All-time league stats' : 'Bowler Connect preview profile'}</div>
+    </div>`;
+
+  const trendHTML = `
+    <div class="stat-card" style="margin-bottom:14px">
+      <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:0.8px;text-transform:uppercase;margin-bottom:8px">Recent Average Trend</div>
+      ${buildStatsSparkline(stats.trend, 'var(--teal)', 'bowlerProfile' + personId)}
+    </div>`;
+
+  const seasonDelta = (stats.currentSeasonAvg != null && stats.allTimeAvg != null) ? stats.currentSeasonAvg - stats.allTimeAvg : null;
+  const seasonHTML = `
+    <div class="stat-card" style="margin-bottom:14px">
+      <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:0.8px;text-transform:uppercase;margin-bottom:8px">Current Season vs. All-Time</div>
+      <div style="display:flex;justify-content:space-around;text-align:center">
+        <div>
+          <div style="font-size:24px;font-weight:900;color:var(--t1)">${stats.currentSeasonAvg ?? '—'}</div>
+          <div style="font-size:10px;color:var(--t3);margin-top:2px">Current Season</div>
+        </div>
+        <div>
+          <div style="font-size:24px;font-weight:900;color:var(--t2)">${stats.allTimeAvg ?? '—'}</div>
+          <div style="font-size:10px;color:var(--t3);margin-top:2px">All-Time</div>
+        </div>
+        <div>
+          <div style="font-size:24px;font-weight:900;color:${seasonDelta == null ? 'var(--t3)' : seasonDelta > 0 ? 'var(--teal)' : seasonDelta < 0 ? 'var(--red)' : 'var(--t3)'}">${seasonDelta == null ? '—' : (seasonDelta > 0 ? '+' : '') + seasonDelta}</div>
+          <div style="font-size:10px;color:var(--t3);margin-top:2px">Δ Weighted</div>
+        </div>
+      </div>
+    </div>`;
+
+  const achievementsHTML = `
+    <div class="stat-card" style="margin-bottom:14px">
+      <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:0.8px;text-transform:uppercase;margin-bottom:10px">Stats &amp; Achievements</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px 4px">
+        <div style="text-align:center"><div style="font-size:18px;font-weight:900;color:var(--gold)">${_fsHighBadgeVal(stats.highGame, stats.highGameCount)}</div><div style="font-size:10px;color:var(--t3);margin-top:2px">High Game</div></div>
+        <div style="text-align:center"><div style="font-size:18px;font-weight:900;color:var(--gold)">${_fsHighBadgeVal(stats.highSeries, stats.highSeriesCount)}</div><div style="font-size:10px;color:var(--t3);margin-top:2px">High Series</div></div>
+        ${_fsStatChip('Strike Streak', stats.strikeStreak)}
+        ${_fsStatChip('FBA', stats.firstBallAvg != null ? stats.firstBallAvg.toFixed(2) : null)}
+        ${_fsStatChip('Avg F10', stats.avgF10 != null ? stats.avgF10.toFixed(1) : null)}
+        ${_fsStatChip('Makeable %', stats.makeablePct, { suffix: '%' })}
+        ${_fsStatChip('Split %', stats.splitPct, { suffix: '%' })}
+        ${_fsStatChip('X-on-X %', stats.xOnXPct, { suffix: '%' })}
+        ${_fsStatChip('Bounceback %', stats.bounceBackPct, { suffix: '%' })}
+      </div>
+    </div>`;
+
+  const compareBtn = !isMe ? `<button class="btn btn-primary" style="margin-bottom:10px" onclick="fsOpenComparison('${personId}')">⚖️ Compare with ${_escHtml(person.name)}</button>` : '';
+
+  el.innerHTML = `
+    ${headerHTML}
+    ${trendHTML}
+    ${seasonHTML}
+    ${achievementsHTML}
+    ${compareBtn}
+  `;
+}
+
+// Avatar picker — emoji + accent color, same visual language as the
+// staged friends (FS_MOCK_FRIENDS). A full photo-upload profile
+// picture is a bigger lift (file input, resize, storage) than this
+// prototype stage needs; this keeps "you" visually consistent with
+// everyone else in the feed rather than introducing a second avatar
+// style.
+const FS_AVATAR_OPTIONS = [
+  { avatar: '🎳', color: 'var(--teal)' }, { avatar: '🔥', color: 'var(--gold)' },
+  { avatar: '⚡', color: 'var(--purple)' }, { avatar: '🎯', color: 'var(--teal)' },
+  { avatar: '🌟', color: 'var(--lilac)' }, { avatar: '💪', color: 'var(--red)' },
+  { avatar: '🏆', color: 'var(--gold)' }, { avatar: '🎱', color: 'var(--t2)' },
+  { avatar: '👑', color: 'var(--gold)' }, { avatar: '🚀', color: 'var(--purple)' },
+  { avatar: '💥', color: 'var(--red)' }, { avatar: '🍀', color: 'var(--green)' }
+];
+function fsOpenAvatarPicker() {
+  const cur = fsGetProfile();
+  openModal(`
+    <div class="modal-title">Choose Your Avatar</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:14px 0">
+      ${FS_AVATAR_OPTIONS.map(o => `
+        <div onclick="fsSetAvatar('${o.avatar}','${o.color}')" style="text-align:center;cursor:pointer;padding:6px;border-radius:12px;border:2px solid ${cur.avatar===o.avatar ? 'var(--teal)' : 'transparent'}">
+          ${_fsAvatarHTML(o, 46)}
+        </div>`).join('')}
+    </div>
+    <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+  `);
+}
+function fsSetAvatar(avatar, color) {
+  fsSaveProfile(Object.assign({}, fsGetProfile(), { avatar, color }));
+  closeModal();
+  renderBowlerProfile();
+}
+
+function fsOpenHomeCenterPicker() {
+  const cur = fsGetProfile();
+  const cOpts = db.centers.map(c => `<option value="${c.CenterID}"${cur.homeCenterID===c.CenterID?' selected':''}>${_escHtml(c.CenterName)}</option>`).join('');
+  openModal(`
+    <div class="modal-title">🏠 Home Center</div>
+    <div class="fgroup">
+      <label class="flabel">Center</label>
+      <select id="fs-home-center-sel" class="finput"><option value="">— None —</option>${cOpts}</select>
+    </div>
+    <button class="btn btn-primary" onclick="fsSaveHomeCenter()">Save</button>
+    <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+  `);
+}
+function fsSaveHomeCenter() {
+  const sel = document.getElementById('fs-home-center-sel');
+  const val = sel && sel.value ? parseInt(sel.value, 10) : null;
+  fsSaveProfile(Object.assign({}, fsGetProfile(), { homeCenterID: val }));
+  closeModal();
+  renderBowlerProfile();
+}
+
+// Comparison view — visual twin of the Performance screen's compare-tab
+// metric rows (_perfCmpMetricRow): side-by-side cards per stat, teal +
+// ▲ marking whoever's ahead. All metrics here are higher-is-better, so
+// no invert option is needed (unlike splitPct elsewhere in the app).
+function _fsCompareRow(title, meVal, themVal, meInfo, themInfo, opts) {
+  opts = opts || {};
+  const suffix = opts.suffix || '';
+  function card(person, val, isWinner) {
+    const display = val == null ? '—' : (val + suffix);
+    return `<div style="flex:1;background:${isWinner ? 'rgba(0,217,217,0.08)' : 'var(--bg2)'};border:1px solid ${isWinner ? 'var(--teal)' : 'var(--border1)'};border-radius:10px;padding:10px 8px;text-align:center">
+      <div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:6px;color:var(--t3)">${_escHtml(person.name.split(' ')[0])}</div>
+      <div style="font-size:17px;font-weight:900;color:${isWinner ? 'var(--teal)' : 'var(--t1)'}">${display}${isWinner ? ' ▲' : ''}</div>
+    </div>`;
+  }
+  const meWins = meVal != null && themVal != null && meVal > themVal;
+  const themWins = meVal != null && themVal != null && themVal > meVal;
+  return `<div style="margin-bottom:12px">
+    <div style="font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">${title}</div>
+    <div style="display:flex;gap:8px">${card(meInfo, meVal, meWins)}${card(themInfo, themVal, themWins)}</div>
+  </div>`;
+}
+
+function fsOpenComparison(personId) {
+  const me = fsGetProfile();
+  const them = _fsPersonInfo(personId);
+  const meStats = _fsRealProfileStats();
+  const themStats = _fsPersonStats(personId);
+  if (!them || !themStats) return;
+  openModal(`
+    <div class="modal-title">⚖️ ${_escHtml(me.name)} vs ${_escHtml(them.name)}</div>
+    <div style="font-size:11px;color:var(--t3);margin-bottom:14px">Bowler Connect preview — your stats are real, ${_escHtml(them.name)}'s are staged sample data</div>
+    ${_fsCompareRow('Average', meStats.avg, themStats.avg, me, them)}
+    ${_fsCompareRow('High Game', meStats.highGame, themStats.highGame, me, them)}
+    ${_fsCompareRow('High Series', meStats.highSeries, themStats.highSeries, me, them)}
+    ${_fsCompareRow('Strike %', meStats.strikePct, themStats.strikePct, me, them, { suffix: '%' })}
+    ${_fsCompareRow('Spare %', meStats.sparePct, themStats.sparePct, me, them, { suffix: '%' })}
+    ${_fsCompareRow('Strike Streak', meStats.strikeStreak, themStats.strikeStreak, me, them)}
+    ${_fsCompareRow('FBA', meStats.firstBallAvg, themStats.firstBallAvg, me, them, { suffix: '' })}
+    ${_fsCompareRow('Games', meStats.games, themStats.games, me, them)}
+    <button class="btn btn-secondary" style="margin-top:6px" onclick="closeModal()">Close</button>
+  `);
 }
 
 function setLeagueReportSort(key) {
@@ -19988,6 +20944,8 @@ var LL_TAXONOMY = {
 };
 var _llCache = null;      // in-memory copy of the laneLibrary store
 var _llCurrentKey = null; // LaneKey currently open in the detail screen
+var _llSort = 'az';       // v30.127 — 'az' (Center > Pair > Lane, existing) | 'recent' (newest-bowled first)
+var _llSearchTerm = '';   // v30.127 — filters by center name or "Lane N"
 
 function llNormalizePair(pairStr) {
   if (!pairStr) return null;
@@ -20582,7 +21540,16 @@ async function renderLaneLibrary() {
   if (!el) return;
   el.innerHTML = '<div style="text-align:center;color:var(--t3);padding:32px 0">Syncing lane history…</div>';
   try { await llSyncFromHistory(); } catch(e) { console.error('llSync error', e); }
+  llRenderList();
+}
 
+/* v30.127 — the actual list build/render, split out from renderLaneLibrary()
+   so sort/search changes can re-render instantly from the already-synced
+   _llCache without re-running the async history sync (and its "Syncing…"
+   flash) on every keystroke. */
+function llRenderList() {
+  var el = document.getElementById('lane-lib-content');
+  if (!el) return;
   var recs = (_llCache || []).slice();
   if (!recs.length) {
     el.innerHTML = '<div style="text-align:center;color:var(--t3);padding:32px 16px;line-height:1.6">' +
@@ -20591,40 +21558,122 @@ async function renderLaneLibrary() {
     return;
   }
   var hist = llDeriveHistory();
-  // Group Center → Pair → lanes
-  var byCenter = {};
+
+  // v30.127 — precompute game count, note count, and most-recent-bowled
+  // date for every lane up front (used by both sort modes and by search).
+  var centerNameCache = {};
+  function centerNameFor(cid) {
+    if (centerNameCache[cid] !== undefined) return centerNameCache[cid];
+    var c = db.centers.find(function(x){ return x.CenterID == cid; });
+    return (centerNameCache[cid] = c ? c.CenterName : ('Center #' + cid));
+  }
   recs.forEach(function(r) {
-    var cid = r.CenterID;
-    if (!byCenter[cid]) byCenter[cid] = {};
-    var pk = r.pairKey || ('Lane ' + r.LaneNumber);
-    if (!byCenter[cid][pk]) byCenter[cid][pk] = [];
-    byCenter[cid][pk].push(r);
+    var h = hist[r.LaneKey];
+    var leagueGames = h ? h.games.filter(function(gs){ return !llIsOpenPlaySeries(gs.series); }) : [];
+    r._nGames = leagueGames.length;
+    r._nNotes = (r.notes || []).length;
+    var lastDate = null;
+    leagueGames.forEach(function(gs){
+      var d = gs.series && gs.series.DateBowled;
+      if (d && (lastDate === null || d > lastDate)) lastDate = d;
+    });
+    r._lastDate = lastDate; // null sorts last regardless of direction
+    r._centerName = centerNameFor(r.CenterID);
   });
-  var html = '';
-  Object.keys(byCenter).sort(function(a,b){
-    var ca = db.centers.find(function(x){ return x.CenterID == a; });
-    var cb = db.centers.find(function(x){ return x.CenterID == b; });
-    return String(ca ? ca.CenterName : a).localeCompare(String(cb ? cb.CenterName : b));
-  }).forEach(function(cid) {
-    var center = db.centers.find(function(x){ return x.CenterID == cid; });
-    html += '<div class="sec-header" style="margin-top:14px"><span class="sec-title">' +
-      _escHtml(center ? center.CenterName : ('Center #' + cid)) + '</span></div>';
-    Object.keys(byCenter[cid]).sort(function(a,b){
-      return (parseInt(a) || 0) - (parseInt(b) || 0);
-    }).forEach(function(pk) {
-      html += '<div style="font-size:11px;color:var(--t3);font-weight:700;letter-spacing:0.5px;margin:8px 2px 4px">PAIR ' + _escHtml(pk) + '</div>';
-      byCenter[cid][pk].sort(function(a,b){ return a.LaneNumber - b.LaneNumber; }).forEach(function(r) {
-        var h = hist[r.LaneKey];
-        var nGames = h ? h.games.filter(function(gs){ return !llIsOpenPlaySeries(gs.series); }).length : 0;
-        var nNotes = (r.notes || []).length;
-        html += '<div class="stat-row" style="cursor:pointer;padding:10px 8px" onclick="llOpenLane(\'' + r.LaneKey + '\')">' +
-          '<span style="font-weight:700">Lane ' + r.LaneNumber + '</span>' +
-          '<span class="sval" style="color:var(--t2);font-size:12px">' +
-            nGames + ' game' + (nGames === 1 ? '' : 's') + ' · ' + nNotes + ' note' + (nNotes === 1 ? '' : 's') + ' ›</span></div>';
+
+  // v30.127 — search filter (center name or "Lane N" substring match)
+  var term = (_llSearchTerm || '').trim().toLowerCase();
+  if (term) {
+    recs = recs.filter(function(r) {
+      var laneStr = ('lane ' + r.LaneNumber).toLowerCase();
+      return r._centerName.toLowerCase().indexOf(term) !== -1
+          || laneStr.indexOf(term) !== -1
+          || String(r.LaneNumber).indexOf(term) !== -1;
+    });
+  }
+
+  function sortBtnHtml(label, val) {
+    var active = (_llSort === val) ? 'background:var(--teal);color:#000;border-color:var(--teal);' : '';
+    return '<button class="btn btn-ghost" style="font-size:12px;padding:5px 12px;' + active + '"'
+      + ' onclick="llSetSort(\'' + val + '\')">' + label + '</button>';
+  }
+  var controlsHtml = '<div style="padding:10px 8px 4px">' +
+    '<input id="ll-search" type="text" placeholder="Search center or lane…" value="' + _escHtml(_llSearchTerm || '') + '" ' +
+      'oninput="llSetSearch(this.value)" style="width:100%;box-sizing:border-box;padding:8px 10px;border-radius:8px;' +
+      'border:1px solid var(--border1);background:var(--bg2);color:var(--t1);font-size:14px;margin-bottom:8px">' +
+    '<div style="display:flex;gap:8px">' + sortBtnHtml('A–Z', 'az') + sortBtnHtml('Recent', 'recent') + '</div>' +
+  '</div>';
+
+  if (!recs.length) {
+    el.innerHTML = controlsHtml +
+      '<div style="text-align:center;color:var(--t3);padding:32px 16px">No lanes match "' + _escHtml(_llSearchTerm) + '".</div>';
+    return;
+  }
+
+  var html = controlsHtml;
+
+  if (_llSort === 'recent') {
+    // Flat list, newest-bowled first (undated lanes sink to the bottom).
+    // Search can span multiple centers, so each row names its center.
+    recs.sort(function(a,b) {
+      if (a._lastDate === b._lastDate) return a._centerName.localeCompare(b._centerName) || (a.LaneNumber - b.LaneNumber);
+      if (a._lastDate === null) return 1;
+      if (b._lastDate === null) return -1;
+      return b._lastDate.localeCompare(a._lastDate);
+    });
+    recs.forEach(function(r) {
+      html += '<div class="stat-row" style="cursor:pointer;padding:10px 8px" onclick="llOpenLane(\'' + r.LaneKey + '\')">' +
+        '<span style="font-weight:700">' + _escHtml(r._centerName) + ' — Lane ' + r.LaneNumber + '</span>' +
+        '<span class="sval" style="color:var(--t2);font-size:12px">' +
+          (r._lastDate ? _escHtml(r._lastDate) + ' · ' : '') +
+          r._nGames + ' game' + (r._nGames === 1 ? '' : 's') + ' · ' + r._nNotes + ' note' + (r._nNotes === 1 ? '' : 's') + ' ›</span></div>';
+    });
+  } else {
+    // Original grouped view: Center (A–Z) → Pair (numeric) → Lane (numeric)
+    var byCenter = {};
+    recs.forEach(function(r) {
+      var cid = r.CenterID;
+      if (!byCenter[cid]) byCenter[cid] = {};
+      var pk = r.pairKey || ('Lane ' + r.LaneNumber);
+      if (!byCenter[cid][pk]) byCenter[cid][pk] = [];
+      byCenter[cid][pk].push(r);
+    });
+    Object.keys(byCenter).sort(function(a,b){
+      return centerNameFor(a).localeCompare(centerNameFor(b));
+    }).forEach(function(cid) {
+      html += '<div class="sec-header" style="margin-top:14px"><span class="sec-title">' +
+        _escHtml(centerNameFor(cid)) + '</span></div>';
+      Object.keys(byCenter[cid]).sort(function(a,b){
+        return (parseInt(a) || 0) - (parseInt(b) || 0);
+      }).forEach(function(pk) {
+        html += '<div style="font-size:11px;color:var(--t3);font-weight:700;letter-spacing:0.5px;margin:8px 2px 4px">PAIR ' + _escHtml(pk) + '</div>';
+        byCenter[cid][pk].sort(function(a,b){ return a.LaneNumber - b.LaneNumber; }).forEach(function(r) {
+          html += '<div class="stat-row" style="cursor:pointer;padding:10px 8px" onclick="llOpenLane(\'' + r.LaneKey + '\')">' +
+            '<span style="font-weight:700">Lane ' + r.LaneNumber + '</span>' +
+            '<span class="sval" style="color:var(--t2);font-size:12px">' +
+              r._nGames + ' game' + (r._nGames === 1 ? '' : 's') + ' · ' + r._nNotes + ' note' + (r._nNotes === 1 ? '' : 's') + ' ›</span></div>';
+        });
       });
     });
-  });
+  }
   el.innerHTML = html;
+}
+
+function llSetSort(val) { _llSort = val; llRenderList(); }
+
+var _llSearchTimer = null;
+function llSetSearch(val) {
+  // Debounced like the All Games lane filter (debounceLaneFilter) — avoids
+  // rebuilding the whole list (and losing input focus) on every keystroke.
+  clearTimeout(_llSearchTimer);
+  _llSearchTimer = setTimeout(function() {
+    _llSearchTerm = val;
+    llRenderList();
+    setTimeout(function(){
+      var inp = document.getElementById('ll-search');
+      if (inp) { inp.focus(); var n = inp.value.length; inp.setSelectionRange(n, n); }
+    }, 0);
+  }, 250);
 }
 
 /* ── Detail screen ───────────────────────────────────────────── */
@@ -20845,7 +21894,12 @@ function rcNonStrikeFrames(seriesID) {
         frameID: fr.FrameID, frameNumber: fr.FrameNumber,
         ballID: att1.BallID, leaveID: att1.LeaveID,
         side: rcLeaveSide(att1.LeaveID),
-        pinfall: att1.Pinfall, spare: !!fr.Spare
+        pinfall: att1.Pinfall, spare: !!fr.Spare,
+        // v30.127 — carried through so the Frames card can show the
+        // pin-leave diagram, ball photo, and (for a bare 10-pin) the
+        // ringing/flat classification already captured elsewhere.
+        pocketEntry: att1.PocketEntry, pocketEntrySource: att1.PocketEntrySource,
+        ballRoll: att1.BallRoll
       });
     });
   });
@@ -21133,14 +22187,51 @@ function rfbRenderFrame() {
 
   var sideLabel = f.side ? (f.side.charAt(0).toUpperCase()+f.side.slice(1)) : 'Unknown';
 
+  // v30.127 — pull in a real pin diagram for the leave, reusing the exact
+  // renderer the Leaves screen already uses (leavePinHTML), rather than a
+  // new image asset. Built from the leave record's Pin1..10 flags.
+  var leavePinDiagram = '';
+  if (leave) {
+    var _lvBsk = '';
+    for (var _lp = 1; _lp <= 10; _lp++) _lvBsk += (leave['Pin' + _lp] ? 'S' : 'B');
+    try { leavePinDiagram = leavePinHTML(_lvBsk); } catch(_lvErr) {}
+  }
+
+  // v30.127 — ball photo thumbnail, reusing the same getBallImgSrc() cache
+  // used everywhere else in the app (ball bar, scorecard chips, etc).
+  var ballImgSrc = f.ballID ? getBallImgSrc(f.ballID, 'cover') : null;
+  var ballImgHtml = ballImgSrc
+    ? '<img src="'+ballImgSrc+'" alt="" style="width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0">'
+    : '';
+
+  // v30.127 — surface the flat/ringing 10-pin ambiguity classification
+  // already captured by the live scoring prompt (openTenPinPrompt /
+  // resolveTenPin), rather than re-deriving it. Only shown when this
+  // frame's leave is a bare 10-pin AND a classification actually exists.
+  var tenPinBadge = '';
+  if (leave && leave.Pin10 && [1,2,3,4,5,6,7,8,9].every(function(pn){ return !leave['Pin'+pn]; })
+      && f.pocketEntrySource) {
+    var _variant = leaveDiagnosisTenPinVariant({ PocketEntry: f.pocketEntry, BallRoll: f.ballRoll });
+    var _qual = (f.pocketEntrySource === 'user' || f.pocketEntrySource === 'prompted') ? 'OBSERVED' : 'CLASSIFIED';
+    var _qColor = _qual === 'OBSERVED' ? 'var(--teal)' : 'var(--t3)';
+    tenPinBadge = '<span style="font-size:10px;font-weight:700;margin-left:6px;color:'+(_variant==='ringing'?'var(--gold)':'var(--t2)')+'">'
+      + (_variant === 'ringing' ? 'Ringing' : 'Flat') + '</span>'
+      + '<span style="font-size:9px;margin-left:3px;color:'+_qColor+'">('+_qual+')</span>';
+  }
+
   swapModal(
     '<div class="modal-title">🗒️ Series Reflect — Frames</div>' +
     '<div style="font-size:12px;color:var(--t3);margin-bottom:14px">Frame '+(st.index+1)+' of '+st.frames.length+(existing?' · saved':'')+'</div>' +
-    '<div style="background:var(--bg2);border:1px solid var(--border1);border-radius:10px;padding:12px;margin-bottom:16px">' +
-      '<div style="font-size:13px;font-weight:700">Game '+f.gameNumber+' · Frame '+f.frameNumber+'</div>' +
-      '<div style="font-size:12px;color:var(--t3);margin-top:4px">' +
-        (ball ? 'Ball: '+(ball.BallName||ball.Brand||'—')+' · ' : '') +
-        'Leave: '+(leave ? leave.DisplayName : '—')+' · Side: '+sideLabel+' · Pinfall: '+(f.pinfall!=null?f.pinfall:'—')+(f.spare?' · Spare':'') +
+    '<div style="background:var(--bg2);border:1px solid var(--border1);border-radius:10px;padding:12px;margin-bottom:16px;display:flex;gap:12px;align-items:center">' +
+      (leavePinDiagram ? '<div style="flex-shrink:0;transform:scale(0.85)">'+leavePinDiagram+'</div>' : '') +
+      '<div style="min-width:0;flex:1">' +
+        '<div style="font-size:13px;font-weight:700">Game '+f.gameNumber+' · Frame '+f.frameNumber+'</div>' +
+        '<div style="font-size:12px;color:var(--t3);margin-top:4px;display:flex;align-items:center;flex-wrap:wrap;gap:6px">' +
+          ballImgHtml +
+          '<span>' + (ball ? (ball.BallName||ball.Brand||'—')+' · ' : '') +
+          'Leave: '+(leave ? leave.DisplayName : '—')+' · Side: '+sideLabel+' · Pinfall: '+(f.pinfall!=null?f.pinfall:'—')+(f.spare?' · Spare':'') + '</span>' +
+          tenPinBadge +
+        '</div>' +
       '</div>' +
     '</div>' +
     '<div style="margin-bottom:16px">' +
@@ -36962,42 +38053,65 @@ function dkIdbExport() {
   });
 }
 
+/* Bug fix (v30.127): dkRenderEntries() previously had no error handling at
+   all — a single malformed/legacy entry (old field shape from an earlier
+   app version, still sitting in localStorage under DK_KEY) throwing inside
+   _entryHTML() would abort this ENTIRE function. Since dkmSaveQuickLog()
+   and dkSubmit() both call this synchronously and only clear the
+   textarea/show the "saved" feedback on the lines AFTER it, that throw
+   silently ate the confirmation — the entry actually saved to localStorage,
+   but the form looked stuck (no toast, text still in the box) and the
+   uncaught exception was left as unhandled console noise. Two layers of
+   defense: (1) a bad individual entry is skipped rather than killing the
+   whole render, (2) the function overall never throws, so it can never
+   again block whatever called it. */
 function dkRenderEntries() {
-  var filter = _dk.activeFilter || 'all';
-  // Build entries from DKM_ROWS that have content logged
-  var dkmEntries = (typeof DKM_ROWS !== 'undefined' ? DKM_ROWS : [])
-    .filter(function(r){ return r.desc || r.desired || r.notes || r.ref; })
-    .map(function(r){
-      // Map DKM row status (ok/partial/broken/tbd) to entry status (open/fixed/wontfix)
-      var entryStatus = (r.status==='ok'||r.status==='working') ? 'fixed'
-                      : r.status==='wontfix'                    ? 'wontfix'
-                      : 'open';
-      return {
-        id:       r.id,
-        ts:       r._ts || new Date(r.id).toISOString(),
-        cat:      r.cat || 'note',
-        msg:      r.desc || r.object || '',
-        screen:   r.form || '',
-        ref:      r.ref  || null,
-        mapRowId: r.id,
-        status:   entryStatus,
-        snap:     null,
-        _dkmRow:  true
-      };
+  try {
+    var filter = _dk.activeFilter || 'all';
+    // Build entries from DKM_ROWS that have content logged
+    var dkmEntries = (typeof DKM_ROWS !== 'undefined' ? DKM_ROWS : [])
+      .filter(function(r){ return r.desc || r.desired || r.notes || r.ref; })
+      .map(function(r){
+        // Map DKM row status (ok/partial/broken/tbd) to entry status (open/fixed/wontfix)
+        var entryStatus = (r.status==='ok'||r.status==='working') ? 'fixed'
+                        : r.status==='wontfix'                    ? 'wontfix'
+                        : 'open';
+        return {
+          id:       r.id,
+          ts:       r._ts || new Date(r.id).toISOString(),
+          cat:      r.cat || 'note',
+          msg:      r.desc || r.object || '',
+          screen:   r.form || '',
+          ref:      r.ref  || null,
+          mapRowId: r.id,
+          status:   entryStatus,
+          snap:     null,
+          _dkmRow:  true
+        };
+      });
+    // Standalone log entries (no mapRowId) sorted newest-first, then map items with content
+    var standalone = dkLoadLog().filter(function(e){ return !e.mapRowId; })
+      .sort(function(a,b){ return b.id - a.id; });
+    var all = standalone.concat(dkmEntries.sort(function(a,b){ return b.id - a.id; }));
+    // Apply filter
+    var filtered = filter === 'all' ? all : all.filter(function(e){
+      return (e.status||'open') === filter;
     });
-  // Standalone log entries (no mapRowId) sorted newest-first, then map items with content
-  var standalone = dkLoadLog().filter(function(e){ return !e.mapRowId; })
-    .sort(function(a,b){ return b.id - a.id; });
-  var all = standalone.concat(dkmEntries.sort(function(a,b){ return b.id - a.id; }));
-  // Apply filter
-  var filtered = filter === 'all' ? all : all.filter(function(e){
-    return (e.status||'open') === filter;
-  });
-  var html = filtered.length
-    ? filtered.map(function(e){ return _entryHTML(e); }).join('')
-    : '<div style="padding:32px 16px;text-align:center;color:var(--t3);font-size:13px">No '+(filter==='all'?'logged items':filter+' entries')+'.</div>';
-  var el = document.getElementById('dk-entries-list');
-  if (el) el.innerHTML = html;
+    var html = filtered.length
+      ? filtered.map(function(e){
+          // Skip (don't crash on) any single entry that fails to render —
+          // most likely a legacy entry shape from an older app version.
+          try { return _entryHTML(e); }
+          catch(rowErr) { console.warn('dkRenderEntries: skipped unrenderable entry', e && e.id, rowErr); return ''; }
+        }).join('')
+      : '<div style="padding:32px 16px;text-align:center;color:var(--t3);font-size:13px">No '+(filter==='all'?'logged items':filter+' entries')+'.</div>';
+    var el = document.getElementById('dk-entries-list');
+    if (el) el.innerHTML = html;
+  } catch(err) {
+    console.error('dkRenderEntries failed:', err);
+    var elErr = document.getElementById('dk-entries-list');
+    if (elErr) elErr.innerHTML = '<div style="padding:16px;color:var(--red);font-size:12px">Entries list failed to render — see console.</div>';
+  }
 }
 
 /* ── Submit ───────────────────────────────────────────────── */
@@ -40098,3 +41212,4 @@ function dkToggleInspect() {
 </script>
 </body>
 </html>
+
