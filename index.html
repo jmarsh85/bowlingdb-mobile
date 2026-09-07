@@ -1210,6 +1210,12 @@ padding:10px 14px 6px; gap:8px;
 .fm-frame-label { font-size:20px; font-weight:900; color:var(--t1); letter-spacing:0.3px; }
 .fm-game-label  { font-size:11px; font-weight:600; color:var(--t3); text-transform:uppercase; letter-spacing:0.5px; }
 .fm-header-right { display:flex; flex-direction:column; align-items:flex-end; gap:1px; flex-shrink:0; }
+/* v30.132b — header collapsed from two stacked rows to one. The pills and
+   the notes/clear icons moved out of .fm-header-left onto the frame-number
+   line, pushed right by a flex spacer. .fm-header-left keeps its column
+   rules untouched: Baker's header twin reuses that class verbatim. */
+.fm-header-pills { display:flex; align-items:center; gap:4px; flex-shrink:0; }
+.fm-header-icons { display:flex; align-items:center; gap:2px; flex-shrink:0; margin-left:6px; }
 .fm-score-label { font-size:9px; font-weight:700; color:var(--t3); letter-spacing:1px; text-transform:uppercase; }
 .fm-score-val   { font-size:24px; font-weight:900; color:var(--teal); }
 /* Mini frame-history strip: all 10 frames, horizontally scrollable so any
@@ -1565,7 +1571,12 @@ next-attempt arrow (fmHandleNext) is the spare-confirm trigger in SPARE
 mode; qa-spare is repurposed as the minimal Miss/confirm-tapped button. */
 .fm-active-qa #qa-primary        { display:none !important; }
 .fm-active-qa #qa-secondary      { display:none !important; }
-.fm-active-qa #btn-confirm       { display:none !important; }
+/* v30.132b — the single full-width bar becomes two buttons: the
+   contextual gutter/miss action and an explicit Enter (submit). Enter is
+   #btn-confirm, which already routes to fmHandleNext() — the same path the
+   side arrow uses — so pin-selection + Enter and the arrow stay one
+   behaviour with two entry points. */
+.fm-active-qa #btn-confirm       { display:flex !important; flex:1 1 0% !important; height:auto; font-size:14px; }
 .fm-active-qa #qa-spare          { flex:1; }
 /* ── Side strip Prev/Next ───────────────────────────────────── */
 .fm-side-strip {
@@ -1580,6 +1591,17 @@ cursor:pointer; z-index:5;
 .fm-side-strip svg { color:var(--t3); opacity:0.45; transition:opacity 0.1s; }
 .fm-side-strip:active svg { opacity:1; }
 .fm-side-strip.disabled { opacity:0.1; pointer-events:none; }
+/* v30.132b — visible confirmation that the advance fired. Runs on a direct
+   arrow tap AND on Enter/spare submission, since both go through
+   fmHandleNext(); without it a pin-grid + Enter submit gave no feedback at
+   the arrow at all. */
+.fm-side-strip.fm-armed svg { opacity:1; color:var(--teal); transform:scale(1.25); }
+.fm-side-strip.fm-pulse svg { opacity:1; animation:fmPulse 0.34s ease-out; }
+@keyframes fmPulse {
+  0%   { transform:scale(1);   filter:none; }
+  35%  { transform:scale(1.55); filter:drop-shadow(0 0 6px var(--teal)); }
+  100% { transform:scale(1);   filter:none; }
+}
 /*
 MODE BADGE — FRESH / LEAVE / SPARE
 */
@@ -3401,6 +3423,17 @@ outline:none; font-family:inherit; box-sizing:border-box;
             <div style="display:flex;align-items:center;gap:6px">
               <span class="fm-frame-label" id="fm-frame-num">1</span>
               <span class="fm-game-label" id="fm-game-badge">G1</span>
+            </div>
+          </div>
+          <div style="flex:1;min-width:0"></div>
+          <div class="fm-header-pills">
+            <span id="fm-att-badge" class="att-pill" onclick="cycleAttemptBadge()" title="Tap to cycle attempt">A1</span>
+            <span id="fm-mode-pill" class="att-nav-modepill FRESH">LEAVE</span>
+            <span class="fm-beer-btn" id="fm-beer-row" onclick="focusModeOpenBeer()" title="Beer frame">
+              <span id="fm-beer-text">&#x1F37A;</span>
+            </span>
+          </div>
+          <div class="fm-header-icons">
               <span id="fm-notes-dot" onclick="openAttemptNotesModal()" title="Attempt Notes"
                 style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;
                 cursor:pointer;flex-shrink:0;-webkit-tap-highlight-color:transparent;transition:all 0.15s">
@@ -3421,17 +3454,7 @@ outline:none; font-family:inherit; box-sizing:border-box;
                   <path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/>
                 </svg>
               </span>
-            </div>
-            <div style="display:flex;align-items:center;gap:4px;margin-top:1px">
-              <span id="fm-att-badge" class="att-pill" onclick="cycleAttemptBadge()" title="Tap to cycle attempt">A1</span>
-              <span id="fm-mode-pill" class="att-nav-modepill FRESH">LEAVE</span>
-              <!-- Beer control (v30.132, A1): was a full-width bar below the header -->
-              <span class="fm-beer-btn" id="fm-beer-row" onclick="focusModeOpenBeer()" title="Beer frame">
-                <span id="fm-beer-text">&#x1F37A;</span>
-              </span>
-            </div>
           </div>
-          <div style="flex:1;min-width:0"></div>
           <div class="fm-header-right" onclick="fmScoreCycleAdvance()" style="cursor:pointer;-webkit-tap-highlight-color:transparent">
             <div class="fm-score-label" id="fm-score-label">SCORE</div>
             <div class="fm-score-val" id="fm-score-val">&#x2014;</div>
@@ -3752,8 +3775,10 @@ outline:none; font-family:inherit; box-sizing:border-box;
         <button class="qa-btn qa-strike" id="qa-primary" onclick="quickPrimary()">Strike ✕</button>
         <button class="qa-btn qa-miss" id="qa-spare" onclick="qaSpareBtnAction()">Miss —</button>
         <button class="qa-btn qa-miss" id="qa-secondary" onclick="quickSecondary()">Miss —</button>
-        <button class="qa-btn" id="btn-confirm" onclick="fmHandleNext()"
-          style="background:linear-gradient(135deg,#00B8B8,var(--teal));color:#000;box-shadow:var(--glow-teal);flex:1.4">Confirm →</button>
+        <button class="qa-btn" id="btn-confirm" onclick="confirmBtnAction()"
+          onpointerdown="fmArmNext(true)" onpointerup="fmArmNext(false)"
+          onpointercancel="fmArmNext(false)" onpointerleave="fmArmNext(false)"
+          style="background:linear-gradient(135deg,#00B8B8,var(--teal));color:#000;box-shadow:var(--glow-teal)">Confirm →</button>
       </div>
 
       <!-- Jump to Summary — shown only in F10 once att1 is recorded -->
@@ -11944,6 +11969,7 @@ function fmHandlePrev() {
 }
 
 function fmHandleNext() {
+  fmPulseNext();
   fmCollapseBallStrip();
   if (fmIsFrameComplete()) {
     // Current frame is fully scored.
@@ -12226,7 +12252,9 @@ function updateScoringContext() {
   var _cbtn = document.getElementById('btn-confirm');
   if (_cbtn) {
     var _frameDone = fmIsFrameComplete();
-    _cbtn.innerHTML = (_frameDone && G.frame < 10) ? 'Next Frame \u2192' : 'Confirm \u2192';
+    // v30.132b — in FM this button is the explicit Enter beside Gutter/Miss.
+    _cbtn.innerHTML = (_frameDone && G.frame < 10) ? 'Next Frame \u2192'
+                    : (getPrefs().focusMode ? 'Enter \u2192' : 'Confirm \u2192');
   }
 
   // Manual Shot Detail reopen icon — Practice Mode only
@@ -12400,10 +12428,68 @@ function updateQuickButtons(mode) {
     secondaryBtn.className = 'qa-btn qa-miss';
     secondaryBtn.disabled = false;
     secondaryBtn.style.opacity = '1';
-    // #qa-spare (Miss button) is active and functional in SPARE mode
+    // #qa-spare (Miss button) is active and functional in SPARE mode.
+    // Label restored explicitly: v30.131's FM mirror wrote 'Gutter —' onto
+    // this button in LEAVE mode and the SPARE branch never wrote it back,
+    // so it read 'Gutter —' on attempt 2. Verified against v30.131.
+    spareBtn.textContent = 'Miss \u2014';
+    spareBtn.className   = 'qa-btn qa-miss';
     spareBtn.style.opacity = '1';
     spareBtn.disabled = false;
   }
+}
+
+/* Does the current pin entry already amount to a spare? Read-only — used to
+   arm/flash the arrow, never to change what gets scored. */
+function fmEntryIsSpare() {
+  if (getAttemptMode() !== 'SPARE') return false;
+  if (G.numericMode) {
+    var fr = getFrame(G.frame);
+    if (!fr) return false;
+    var a1 = frameAttempts(fr.FrameID).find(function(a) { return a.Attempt === 1; });
+    return !!(a1 && a1.Pinfall != null && G.numericPinfall === (10 - a1.Pinfall));
+  }
+  for (var p = 1; p <= 10; p++) {
+    if (G.pinState[p] === 'S' && !G.knocked.has(p)) return false;
+  }
+  return true;
+}
+
+/* ENTER (#btn-confirm) — deliberately NOT the arrow.
+   The arrow is a shortcut: in SPARE mode it records a full spare regardless of
+   what is tapped. Enter is the literal path — it scores whatever the pin grid
+   says, so all-pins-selected produces a spare because that is what was entered,
+   not because a shortcut was taken. Both land in confirmAttempt(), which is the
+   point: when Enter does produce a spare it flashes the arrow, and holding
+   Enter over a spare entry arms it, so the two controls visibly share one
+   engine. Standard mode is untouched — it keeps the merged confirm/advance
+   action fmHandleNext() has always given it. */
+function confirmBtnAction() {
+  if (!getPrefs().focusMode) { fmHandleNext(); return; }
+  if (fmIsFrameComplete()) { fmHandleNext(); return; }  // label reads "Next Frame →"
+  var wasSpare = fmEntryIsSpare();
+  fmCollapseBallStrip();
+  confirmAttempt();
+  fmArmNext(false);
+  if (wasSpare) fmPulseNext();
+}
+
+/* Hold-state on the arrow while Enter is pressed over a spare entry. */
+function fmArmNext(on) {
+  var el = document.getElementById('fm-next-strip');
+  if (!el) return;
+  el.classList.toggle('fm-armed', !!(on && getPrefs().focusMode && fmEntryIsSpare()));
+}
+
+/* Flash the next-attempt arrow. Called from fmHandleNext() (arrow press) and
+   from confirmBtnAction() when Enter resolves to a spare. */
+function fmPulseNext() {
+  var el = document.getElementById('fm-next-strip');
+  if (!el || el.classList.contains('disabled')) return;
+  el.classList.remove('fm-pulse');
+  void el.offsetWidth;                 // restart the animation
+  el.classList.add('fm-pulse');
+  setTimeout(function() { el.classList.remove('fm-pulse'); }, 360);
 }
 
 /*
