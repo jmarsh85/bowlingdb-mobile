@@ -12014,10 +12014,18 @@ function fmIsFrameComplete() {
     var a1 = atts.find(function(a) { return a.Attempt === 1; });
     var a2 = atts.find(function(a) { return a.Attempt === 2; });
     if (!a1 || a1.Pinfall === null || !a2 || a2.Pinfall === null) return false;
-    // Frame 10 needs 3 balls if att1 or att2 was a strike/NT9, or att1+att2 = spare
+    // Frame 10 gets a 3rd ball from a strike on ball 1, or a spare. NOT from a
+    // NoTap 9 on ball 2: NoTap converts a 9 on a FRESH rack, and ball 2 is only
+    // a fresh rack when ball 1 struck — in which case att1 already grants the
+    // 3rd ball. The old att2 clause made [0,9] under NoTap (gutter, then 9 of
+    // 10 standing) read as a strike and hand out an extra ball on what is an
+    // open 9. It also contradicted this function's own frames 1-9 rule, which
+    // applies NoTap to attempt 1 only. Found by differentially testing this
+    // against bakerNextBallMax() over all 2,019 legally reachable frame states:
+    // one disagreement, and Baker was right. Zero occurrences in the 18 NoTap
+    // games on file, so no historical scores move.
     var att1StrikeOrNT = a1.Pinfall === 10 || (noTapOn && a1.Pinfall >= 9);
-    var att2StrikeOrNT = a2.Pinfall === 10 || (noTapOn && a2.Pinfall >= 9);
-    var needs3 = att1StrikeOrNT || att2StrikeOrNT || (a1.Pinfall + a2.Pinfall >= 10);
+    var needs3 = att1StrikeOrNT || (a1.Pinfall + a2.Pinfall >= 10);
     if (!needs3) return true;
     var a3 = atts.find(function(a) { return a.Attempt === 3; });
     return !!(a3 && a3.Pinfall !== null);
@@ -30797,9 +30805,13 @@ function calculateNoTapScores(frames) {
       const att1Spare = !nt1 && (p1+p2)>=10;
       let sum = sc1 + sc2;
       if (nt1 || att1Spare) {
-        // Earned att3 (fill ball — no NT substitution, scored as actual pins)
         if (p3===null) { fr.NoTapFrameScore=null; fr.NoTapRunningTotal=null; return; }
-        sum += p3; // att3 is always fill ball, raw value
+        // att3 was previously scored raw on the reasoning that a fill ball never
+        // earns NT credit. Wrong: the rule is FRESH RACK, not attempt number.
+        // Ball 3 stands a full rack when ball 2 was a mark, or when balls 1+2
+        // made a spare — so up to THREE marks are possible in frame 10.
+        const att3FreshRack = nt2 || att1Spare;
+        sum += (att3FreshRack && p3===9) ? 10 : p3;
       }
       fr.NoTapFrameScore = sum;
     }
