@@ -1587,7 +1587,7 @@ transition:transform 0.12s, background 0.12s;
 .series-hdr { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; }
 .series-date { font-size:15px; font-weight:800; letter-spacing:-0.2px; }
 .series-total { font-size:28px; font-weight:900; color:var(--teal); letter-spacing:-0.5px; }
-.series-games { display:flex; gap:10px; align-items:center; }
+.series-games { display:flex; flex-wrap:wrap; gap:10px; row-gap:10px; align-items:center; }
 .game-badge {
 flex:0 0 80px; width:80px; height:80px;
 position:relative; cursor:pointer;
@@ -2524,7 +2524,7 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
     </div>
     <div id="hdr-title" onclick="hdrTitleTap()"><span class="brand">Bowling</span>DB</div>
     <div id="hdr-title-popover"></div>
-    <span id="hdr-build-ref">v30.134 · 2026-09-11</span>
+    <span id="hdr-build-ref">v30.138 · 2026-09-12</span>
     <div id="hdr-right">
       <div class="hdr-icon-btn" id="hdr-delete-game-btn" onclick="confirmDeleteGame(G.gameID)" title="Delete Game" style="display:none">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -2748,6 +2748,14 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
         <span class="sec-title" id="game-select-title">Games</span>
       </div>
       <div id="game-select-list"></div>
+    </div>
+
+    <!-- BAKER ROUND — GAME SELECT (v30.137) -->
+    <div id="s-baker-games" class="screen" data-title="Baker Round">
+      <div class="sec-header">
+        <span class="sec-title" id="baker-games-title">Games</span>
+      </div>
+      <div id="baker-games-list"></div>
     </div>
 
     <!-- OPEN BOWLING -->
@@ -3986,7 +3994,7 @@ const LOCK_BUFFER = 1;
 
 
 const ROOT_SCREENS = ['s-home','s-leagues','s-open','s-tournaments','s-stats','s-tb-sessions','s-notap','s-ai-chat'];
-const SCORING_SCREENS = new Set(['s-series','s-tournament-series','s-game-select','s-scoring','s-game-complete','s-stats','s-games','s-league-report','s-league-dashboard','s-friend-feed','s-bowler-profile','s-handicap-tb','s-handicap-league','s-tb-sessions','s-performance','s-lane-library','s-lane-detail']);
+const SCORING_SCREENS = new Set(['s-series','s-tournament-series','s-game-select','s-baker-games','s-scoring','s-game-complete','s-stats','s-games','s-league-report','s-league-dashboard','s-friend-feed','s-bowler-profile','s-handicap-tb','s-handicap-league','s-tb-sessions','s-performance','s-lane-library','s-lane-detail']);
 async function navTo(screenId, opts={}) {
 toastDismiss(); 
 if (!opts.back) G.screenHistory.push(getCurrentScreen());
@@ -4044,6 +4052,7 @@ try {
 's-ball-detail': () => {},  
 's-series': renderSeriesList,
 's-game-select': renderGameSelect,
+'s-baker-games': renderBakerGameSelect,
 's-scoring': renderScoringScreen,
 's-game-complete':   renderGameComplete,
 's-handicap-league': renderLeagueHandicap,
@@ -6613,7 +6622,7 @@ openModal(`
     <div class="stat-row" style="padding-left:14px"><span style="color:var(--t2)">Clutch Strike</span><span class="sval" style="color:var(--gold)">${stats.clutchPct}</span></div>
     <div class="stat-row" style="padding-left:14px"><span style="color:var(--t2)">Fill Ball Avg</span><span class="sval" style="color:var(--teal)">${stats.fillBallAvg}</span></div>
     <div class="stat-row clickable" onclick="openSpareDetailModal([${allGames.map(g=>g.GameID).join(',')}],'${stats.sparePct}','${stats.makeablePct}','${stats.singlePct}','${stats.multiPct}','${stats.splitPct}')"><span>Spares <span style="font-size:11px;color:var(--t3)">▶</span></span><span class="sval t">${stats.sparePct}</span></div>
-    <div class="stat-row"><span>Opens</span><span class="sval s">${stats.opens} (${stats.totalFr ? Math.round(stats.opens/stats.totalFr*100) : 0}%)</span></div>
+    <div class="stat-row"><span>Splits</span><span class="sval s">${stats.splitOpp} (${stats.totalFr ? Math.round(stats.splitOpp/stats.totalFr*100) : 0}%)</span></div>
     <div class="stat-row"><span>Low Game</span><span class="sval" style="color:var(--t2)">${low||'—'}</span></div>
     ${ntGames.length ? renderNoTapStatsSectionHTML(ntGames) : ''}
     ${buildBallUsageHTML(allGames.map(g=>g.GameID))}
@@ -6969,10 +6978,8 @@ let gameNum;
 if (badge && badge.dataset.gamenum) {
 gameNum = +badge.dataset.gamenum;
 } else {
-const bound = bakerLoadSessions().filter(bs => bs.ctx && bs.ctx.seriesID === seriesID).map(bs => bs.ctx.gameNumber);
-const gamesPerSeries = league.GamesPerSeries || 3;
-gameNum = 1;
-while (bound.includes(gameNum) && gameNum < gamesPerSeries) gameNum++;
+openBakerRound(seriesID, { leagueID: G.leagueID });
+return;
 }
 bakerHandleGameSlotTap({ leagueID: G.leagueID }, seriesID, gameNum);
 return;
@@ -18460,7 +18467,7 @@ openModal(`
     <div class="stat-row" style="padding-left:14px"><span style="color:var(--t2)">Clutch Strike</span><span class="sval" style="color:var(--gold)">${stats.clutchPct}</span></div>
     <div class="stat-row" style="padding-left:14px"><span style="color:var(--t2)">Fill Ball Avg</span><span class="sval" style="color:var(--teal)">${stats.fillBallAvg}</span></div>
     <div class="stat-row clickable" onclick="openSpareDetailModal([${stdSessionGames.map(g=>g.GameID).join(',')}],'${stats.sparePct}','${stats.makeablePct}','${stats.singlePct}','${stats.multiPct}','${stats.splitPct}')"><span>Spares <span style="font-size:11px;color:var(--t3)">▶</span></span><span class="sval t">${stats.sparePct}</span></div>
-    <div class="stat-row"><span>Opens</span><span class="sval s">${stats.opens} (${stats.totalFr ? Math.round(stats.opens/stats.totalFr*100) : 0}%)</span></div>
+    <div class="stat-row"><span>Splits</span><span class="sval s">${stats.splitOpp} (${stats.totalFr ? Math.round(stats.splitOpp/stats.totalFr*100) : 0}%)</span></div>
     <div class="stat-row"><span>Clean Games</span><span class="sval ${cleanCount===stdSessionGames.length?'g':'t'}">${cleanCount} / ${stdSessionGames.length}</span></div>
     ${stats.projGamesCount > 0 ? `
     <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border1)">
@@ -18928,10 +18935,8 @@ let gameNum;
 if (badge && badge.dataset.gamenum) {
 gameNum = +badge.dataset.gamenum;
 } else {
-const bound = bakerLoadSessions().filter(bs => bs.ctx && bs.ctx.seriesID === seriesID).map(bs => bs.ctx.gameNumber);
-const gamesPerRound = t.GamesPerRound || 3;
-gameNum = 1;
-while (bound.includes(gameNum) && gameNum < gamesPerRound) gameNum++;
+openBakerRound(seriesID, { tournamentID: G.tournamentID });
+return;
 }
 bakerHandleGameSlotTap({ tournamentID: G.tournamentID }, seriesID, gameNum);
 return;
@@ -19282,13 +19287,13 @@ const laneSection = `
     <div class="fgroup"><label class="flabel">Lane Pair</label>
       <div class="lane-pair-row">
         <input class="lane-num-input" id="ms-lane-odd"  type="number" min="1" max="99"
-          value="${isEdit ? _editLaneA : 15}"
+          value="${isEdit ? _editLaneA : ''}" placeholder="Ln"
           onfocus="this.select()"
           oninput="seriesLaneInput('ms-lane-odd','ms-lane-even','odd')"
           onblur="autoFillLane('ms-lane-odd','ms-lane-even','odd');updateLanePreview()">
         <div class="lane-sep">,</div>
         <input class="lane-num-input" id="ms-lane-even" type="number" min="2" max="100"
-          value="${isEdit ? _editLaneB : 16}"
+          value="${isEdit ? _editLaneB : ''}" placeholder="Ln"
           onfocus="this.select()"
           oninput="seriesLaneInput('ms-lane-even','ms-lane-odd','even')"
           onblur="autoFillLane('ms-lane-even','ms-lane-odd','even');updateLanePreview()">
@@ -19297,7 +19302,7 @@ const laneSection = `
         <div class="oe-btn${(!isEdit||_editStartOdd)?' on':''}" id="oe-odd" onclick="setStartLane('odd')">Start Odd Lane</div>
         <div class="oe-btn${(isEdit&&!_editStartOdd)?' on':''}" id="oe-even" onclick="setStartLane('even')">Start Even Lane</div>
       </div>
-      <div class="lane-preview" id="lane-preview">Game 1: Lane 15 · Game 2: Lane 16 · Game 3: Lane 15</div>
+      <div class="lane-preview" id="lane-preview">${isEdit ? '' : 'Enter a lane to set the pair'}</div>
       ${isEdit ? `<div style="font-size:11px;color:var(--t3);margin-top:6px;line-height:1.5">Changing the lane pair or starting lane here will re-map which lane each game in this series shows as played — you'll be asked to confirm before it's applied.</div>`: ''}
     </div>`;
 openModal(`
@@ -19396,6 +19401,7 @@ partner = (val % 2 === 0) ? val - 1 : val + 1;
 partner = (val % 2 === 1) ? val + 1 : val - 1;
 }
 if (partner >= 1) partnerEl.value = partner;
+if (partnerEmpty && sourceId.indexOf('ms-lane') === 0 && document.getElementById('oe-odd')) setStartLane(val % 2 === 1 ? 'odd' : 'even');
 }
 
 
@@ -19417,6 +19423,7 @@ const oddEl  = document.getElementById('ms-lane-odd')  || document.getElementByI
 const evenEl = document.getElementById('ms-lane-even') || document.getElementById('ob-lane-even');
 const previewEl = document.getElementById('lane-preview') || document.getElementById('ob-lane-preview');
 if (!oddEl || !previewEl) return;
+if (!oddEl.value || isNaN(parseInt(oddEl.value))) { previewEl.textContent = 'Enter a lane to set the pair'; return; }
 const odd  = parseInt(oddEl.value)  || 15;
 const even = evenEl ? (parseInt(evenEl.value) || odd+1) : null;
 
@@ -19478,8 +19485,11 @@ confirmSeriesLaneRemap(id, newLanePair, newLaneStart, rest);
 applySeriesEdit(id, rest, newLanePair, newLaneStart);
 }
 } else {
-const oddLane = parseInt(document.getElementById('ms-lane-odd')?.value)||15;
-const evenLane = parseInt(document.getElementById('ms-lane-even')?.value)||(oddLane+1);
+const _lnA = parseInt(document.getElementById('ms-lane-odd')?.value);
+const _lnB = parseInt(document.getElementById('ms-lane-even')?.value);
+if (isNaN(_lnA) && isNaN(_lnB)) { toast('Enter a lane pair'); document.getElementById('ms-lane-odd')?.focus(); return; }
+const oddLane = !isNaN(_lnA) ? _lnA : (_lnB - 1);
+const evenLane = !isNaN(_lnB) ? _lnB : (oddLane + 1);
 const startOdd = document.getElementById('oe-odd')?.classList.contains('on') !== false;
 const lanePair = `${Math.min(oddLane,evenLane)},${Math.max(oddLane,evenLane)}`;
 const laneStart = startOdd ? Math.min(oddLane,evenLane) : Math.max(oddLane,evenLane);
@@ -21087,6 +21097,351 @@ if (body) body.innerHTML = '<div class="empty-state"><div class="empty-icon">�
 
 
 
+/*
+   BAKER ROUND — GAME SELECT (v30.137)
+   Baker games live in localStorage (bakerSessions), not db.games, so this
+   deliberately mirrors renderGameSelect() rather than sharing it: same
+   .game-row-wrap / .list-row / .gr-act-btn shape, different data source.
+   Per the 2026-09-13 decision the Baker engine stays forked; this is the
+   round-level container that per-game and per-round Baker stats hang off.
+   Legacy pre-v30.125 sessions carry pinfall counts only (no `leave`), so
+   the split column degrades to a dash rather than reporting zero.
+   */
+/*
+   BAKER STATS (v30.138)
+   Scoped to Baker data only — the engines stay forked by decision, so
+   nothing here reads db.frames/db.attempts. Layout deliberately mirrors
+   the league series stats modal: per-game breakdown rows, then aggregate.
+   Tabs switch between the team line and each individual bowler.
+   Bowler identity is keyed on BowlerID (name as fallback), NOT roster
+   index — the lead bowler alternates between games, so index is not
+   stable across a round.
+   Frame ownership comes from frameEntries[].bowlerIdx where present and
+   falls back to the positional rule. Pre-v30.125 sessions have no
+   frameEntries at all: they still contribute scores and marks, but split
+   figures are unavailable and are reported as such rather than as zero.
+   */
+var _bakerStatsScope = null;
+var _bakerStatsTab   = 'team';
+function bakerRoundSessions(seriesID) {
+return bakerLoadSessions()
+.filter(function(bs){ return bs.ctx && bs.ctx.seriesID === seriesID; })
+.sort(function(a,b){ return (a.ctx.gameNumber||0) - (b.ctx.gameNumber||0); });
+}
+function bakerRosterKey(b) {
+if (!b) return '';
+return b.BowlerID != null ? 'id:'+b.BowlerID : 'nm:'+(b.name||'');
+}
+function bakerRoundRoster(sessions) {
+var seen = {}, out = [];
+sessions.forEach(function(s){
+(s.bowlers||[]).forEach(function(b){
+var k = bakerRosterKey(b);
+if (!k || seen[k]) return;
+seen[k] = 1;
+out.push({ key:k, name:b.name||'Bowler', initials:bakerBowlerInitials(b) });
+});
+});
+return out;
+}
+function bakerFrameOwner(session, frameNum) {
+var fe = (session.frameEntries||[]).find(function(e){ return e.frameNum === frameNum; });
+var idx = (fe && fe.bowlerIdx != null)
+? fe.bowlerIdx
+: bakerBowlerIdxForFrame(frameNum, session.teamSize || 2);
+return (session.bowlers||[])[idx] || null;
+}
+function bakerStatsFor(sessions, bowlerKey) {
+var st = { games:0, frames:0, fresh:0, strikes:0, spareOpps:0, spares:0,
+splits:0, splitConv:0, opens:0, cleanGames:0, pins:0,
+fbSum:0, fbN:0, framesNoDetail:0 };
+sessions.forEach(function(s){
+var raw  = bakerFramesAsPinfallArrays(s);
+var disp = bakerDisplayFrames(s);
+var anyFrame = false, gameClean = true;
+for (var fr = 1; fr <= 10; fr++) {
+if (bowlerKey) {
+var ow = bakerFrameOwner(s, fr);
+if (!ow || bakerRosterKey(ow) !== bowlerKey) continue;
+}
+var b = disp[fr-1] || [], rb = raw[fr-1] || [];
+if (!b.length) continue;
+anyFrame = true; st.frames++;
+st.fbSum += rb[0]; st.fbN++;
+var fe  = (s.frameEntries||[]).find(function(e){ return e.frameNum === fr; });
+if (!fe) st.framesNoDetail++;
+var lv0 = (fe && fe.att && fe.att[0]) ? fe.att[0].leave : null;
+var isSplit = !!(lv0 && lv0.length && isSplitLocal(new Set(lv0)));
+if (fr < 10) {
+st.fresh++;
+if (b[0] === 10) { st.strikes++; continue; }
+st.spareOpps++;
+var conv = b.length > 1 && (b[0] + b[1] >= 10);
+if (conv) st.spares++;
+else if (b.length > 1) { st.opens++; gameClean = false; }
+if (isSplit) { st.splits++; if (conv) st.splitConv++; }
+continue;
+}
+st.fresh++;
+if (b[0] === 10) {
+st.strikes++;
+if (b.length > 1) {
+st.fresh++;
+if (b[1] === 10) {
+st.strikes++;
+if (b.length > 2) { st.fresh++; if (b[2] === 10) st.strikes++; }
+}
+}
+continue;
+}
+if (b.length > 1) {
+st.spareOpps++;
+var c10 = (b[0] + b[1] >= 10);
+if (c10) st.spares++; else { st.opens++; gameClean = false; }
+if (isSplit) { st.splits++; if (c10) st.splitConv++; }
+if (c10 && b.length > 2) { st.fresh++; if (b[2] === 10) st.strikes++; }
+}
+}
+if (anyFrame) {
+st.games++;
+if (gameClean) st.cleanGames++;
+if (!bowlerKey) st.pins += (s.finalScore||0);
+}
+});
+return st;
+}
+function _bkPct(n, d) { return d ? Math.round(n/d*100)+'% ('+n+'/'+d+')' : '\u2014'; }
+function _bkRow(label, val, cls, indent) {
+return '<div class="stat-row"'+(indent?' style="padding-left:14px"':'')+
+'><span'+(indent?' style="color:var(--t2)"':'')+'>'+label+'</span>'+
+'<span class="sval '+(cls||'')+'">'+val+'</span></div>';
+}
+function openBakerStatsModal(seriesID, gameNum) {
+_bakerStatsScope = { seriesID:seriesID, gameNum:gameNum || null };
+_bakerStatsTab = 'team';
+renderBakerStatsModal();
+}
+function bakerStatsSetTab(tab) { _bakerStatsTab = tab; renderBakerStatsModal(); }
+function renderBakerStatsModal() {
+var sc = _bakerStatsScope;
+if (!sc) return;
+var all = bakerRoundSessions(sc.seriesID);
+var sessions = sc.gameNum
+? all.filter(function(s){ return s.ctx.gameNumber === sc.gameNum; })
+: all;
+if (!sessions.length) { toast('No Baker games logged for this round yet'); return; }
+var roster = bakerRoundRoster(sessions);
+var series = db.series.find(function(s){ return s.SeriesID === sc.seriesID; });
+var title  = (series ? bakerRoundLabelForSeries(series) : 'Baker') +
+(sc.gameNum ? ' \u00b7 Game '+sc.gameNum : '');
+if (_bakerStatsTab !== 'team' && !roster.some(function(r){ return r.key === _bakerStatsTab; })) {
+_bakerStatsTab = 'team';
+}
+var tabs = '<div class="odd-even-toggle" style="margin-bottom:14px">'+
+'<div class="oe-btn'+(_bakerStatsTab==='team'?' on':'')+
+'" onclick="bakerStatsSetTab(\'team\')">Team</div>'+
+roster.map(function(r){
+return '<div class="oe-btn'+(_bakerStatsTab===r.key?' on':'')+
+'" onclick="bakerStatsSetTab(\''+r.key+'\')" title="'+r.name+'">'+r.initials+'</div>';
+}).join('')+'</div>';
+var key = _bakerStatsTab === 'team' ? null : _bakerStatsTab;
+var st  = bakerStatsFor(sessions, key);
+var breakdown = '';
+if (sessions.length > 1) {
+breakdown = sessions.map(function(s){
+var gs = bakerStatsFor([s], key);
+var right = key
+? '<span class="sval">'+gs.frames+'f \u00b7 <span style="color:var(--gold)">X'+gs.strikes+
+'</span> <span style="color:var(--teal)">/'+gs.spares+'</span></span>'
+: '<span class="sval t">'+(s.finalScore!=null?s.finalScore:'\u2014')+'</span>';
+return '<div class="stat-row"><span>Game '+(s.ctx.gameNumber||'?')+'</span>'+right+'</div>';
+}).join('');
+}
+var totals = '';
+if (!key) {
+var avg = st.games ? (st.pins/st.games).toFixed(2) : '\u2014';
+totals = _bkRow('Total', st.pins, 'g') + _bkRow('Average', avg, 't');
+} else {
+totals = _bkRow('Frames Bowled', st.frames, 't');
+}
+var splitVal, splitConvVal;
+if (st.framesNoDetail >= st.frames) {
+splitVal = '\u2014'; splitConvVal = '\u2014';
+} else {
+splitVal = st.splits + (st.fresh ? ' ('+Math.round(st.splits/st.fresh*100)+'%)' : '');
+splitConvVal = st.splits ? _bkPct(st.splitConv, st.splits) : '\u2014';
+}
+var body =
+_bkRow('First Ball Avg', st.fbN ? (st.fbSum/st.fbN).toFixed(2) : '\u2014', 't') +
+_bkRow('Strikes', _bkPct(st.strikes, st.fresh), 'g') +
+_bkRow('Spares', _bkPct(st.spares, st.spareOpps), 't') +
+_bkRow('Splits', splitVal, 's') +
+_bkRow('Split Conv.', splitConvVal, '', true) +
+(key ? '' : _bkRow('Clean Games', st.cleanGames+' / '+st.games, 't'));
+var note = (st.framesNoDetail > 0 && st.framesNoDetail < st.frames)
+? '<div style="font-size:11px;color:var(--t3);margin-top:10px;line-height:1.5">'+
+'Split figures cover '+(st.frames - st.framesNoDetail)+' of '+st.frames+
+' frames \u2014 games logged before pin-level detail was captured are excluded.</div>'
+: (st.framesNoDetail >= st.frames
+? '<div style="font-size:11px;color:var(--t3);margin-top:10px;line-height:1.5">'+
+'These games were logged before pin-level detail was captured, so split figures are unavailable.</div>'
+: '');
+openModal(
+'<div class="modal-title">\ud83c\udfb3 '+title+'</div>'+
+tabs + breakdown + totals + body + note +
+'<button class="btn btn-secondary" style="width:100%;margin-top:16px" onclick="closeModal()">Close</button>'
+);
+}
+function bakerRoundSlotCount(seriesID) {
+var series = db.series.find(function(s){ return s.SeriesID === seriesID; });
+var league = series && series.LeagueID > 0
+? db.leagues.find(function(l){ return l.LeagueID === series.LeagueID; }) : null;
+var tourn  = series && series.TournamentID
+? (db.tournaments||[]).find(function(t){ return t.TournamentID === series.TournamentID; }) : null;
+var per = (tourn && tourn.GamesPerRound) || (league && league.GamesPerSeries)
+|| (series && series.GamesPerSeries) || 3;
+var bound = bakerLoadSessions()
+.filter(function(bs){ return bs.ctx && bs.ctx.seriesID === seriesID; })
+.map(function(bs){ return bs.ctx.gameNumber || 0; });
+return Math.max.apply(null, [per].concat(bound));
+}
+function bakerBowlerInitials(bowler) {
+var parts = String((bowler && bowler.name) || '').trim().split(/\s+/).filter(Boolean);
+if (!parts.length) return '?';
+if (parts.length === 1) return parts[0].slice(0,2).toUpperCase();
+return (parts[0][0] + parts[parts.length-1][0]).toUpperCase();
+}
+function bakerGameSummary(session) {
+var disp = bakerDisplayFrames(session);
+var entries = session.frameEntries || null;
+var out = { strikes:0, spares:0, opens:0, splits:0, fba:'\u2014', clean:true,
+maxStreak:0, hasDetail:!!entries };
+var fbSum = 0, fbN = 0, cur = 0;
+for (var i = 0; i < 9; i++) {
+var b = disp[i] || [];
+if (!b.length) continue;
+fbSum += b[0]; fbN++;
+if (b[0] === 10) { out.strikes++; cur++; if (cur > out.maxStreak) out.maxStreak = cur; }
+else {
+cur = 0;
+if (b.length > 1) {
+if (b[0] + b[1] >= 10) out.spares++;
+else { out.opens++; out.clean = false; }
+}
+if (entries) {
+var fe = entries.find(function(e){ return e.frameNum === (i+1); });
+var lv = fe && fe.att && fe.att[0] && fe.att[0].leave;
+if (lv && lv.length && isSplitLocal(new Set(lv))) out.splits++;
+}
+}
+}
+var t = disp[9] || [];
+if (t.length) {
+fbSum += t[0]; fbN++;
+if (t[0] !== 10 && t.length > 1 && (t[0] + t[1]) < 10) out.clean = false;
+}
+if (fbN) out.fba = (fbSum / fbN).toFixed(1);
+return out;
+}
+function openBakerRound(seriesID, ctxBase) {
+G.bakerSeriesID = seriesID;
+G.bakerCtx = ctxBase || {};
+navTo('s-baker-games');
+}
+function bakerRoundOpenSlot(gameNum) {
+bakerHandleGameSlotTap(G.bakerCtx || {}, G.bakerSeriesID, gameNum);
+}
+function toggleBakerSnapshot(gameNum) {
+var box = document.getElementById('bk-snap-'+gameNum);
+var btn = document.getElementById('bk-snap-btn-'+gameNum);
+if (!box) return;
+var open = box.style.display === 'block';
+box.style.display = open ? 'none' : 'block';
+if (btn) btn.innerHTML = open ? 'Scorecard \u25be' : 'Scorecard \u25b4';
+}
+function renderBakerGameSelect() {
+var seriesID = G.bakerSeriesID;
+var series = db.series.find(function(s){ return s.SeriesID === seriesID; });
+var sessions = bakerLoadSessions()
+.filter(function(bs){ return bs.ctx && bs.ctx.seriesID === seriesID; });
+var slots = bakerRoundSlotCount(seriesID);
+var roundLabel = series ? bakerRoundLabelForSeries(series) : 'Baker Round';
+var hdr = document.getElementById('hdr-title');
+if (hdr) hdr.textContent = roundLabel;
+var titleEl = document.getElementById('baker-games-title');
+if (titleEl) titleEl.textContent = 'Games';
+var el = document.getElementById('baker-games-list');
+if (!el) return;
+var dateStr = series && series.DateBowled
+? fmtDate(series.DateBowled, {month:'short',day:'numeric',year:'numeric'}) : '';
+var total = sessions.reduce(function(a,b){ return a + (b.finalScore||0); }, 0);
+var html = dateStr ? '<div class="game-date-sub">'+dateStr+'</div>' : '';
+if (sessions.length) {
+html += '<div class="stat-row"><span>Round Total</span>'+
+'<span class="sval t">'+total+'</span></div>'+
+'<div class="stat-row"><span>Games Bowled</span>'+
+'<span class="sval">'+sessions.length+' / '+slots+'</span></div>'+
+'<button class="btn btn-secondary" style="width:100%;margin:10px 0 14px" '+
+'onclick="openBakerStatsModal('+seriesID+',null)">\ud83d\udcca Round Stats</button>';
+}
+for (var gn = 1; gn <= slots; gn++) {
+var sess = sessions.find(function(bs){ return bs.ctx.gameNumber === gn; });
+if (!sess) {
+html += '<div class="list-row list-row-dashed" onclick="bakerRoundOpenSlot('+gn+')">'+
+'<div class="list-row-body">'+
+'<div class="list-row-name" style="color:var(--teal)">+ Start Game '+gn+'</div>'+
+'<div class="list-row-meta">Begin scoring</div>'+
+'</div></div>';
+continue;
+}
+var sum = bakerGameSummary(sess);
+var gscore = ((sess.finalScore||0)/300).toFixed(4);
+var roster = (sess.bowlers||[]).map(function(b, i){
+var frames = [];
+for (var fr = 1; fr <= 10; fr++) {
+if (bakerBowlerIdxForFrame(fr, sess.teamSize) === i) frames.push(fr);
+}
+return '<div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px">'+
+'<span style="color:var(--lilac);font-weight:700">'+bakerBowlerInitials(b)+
+'</span> <span style="color:var(--t3)">'+b.name+'</span>'+
+'<span style="color:var(--t3)">frames '+frames.join(', ')+'</span></div>';
+}).join('');
+html += '<div class="game-row-wrap">'+
+'<div class="list-row" data-gscore="'+gscore+'" style="--gscore:'+gscore+'" '+
+'onclick="bakerRoundOpenSlot('+gn+')">'+
+'<div class="list-row-body" style="flex:1;min-width:0">'+
+'<div style="display:flex;justify-content:space-between;align-items:flex-start">'+
+'<div class="list-row-name">Game '+gn+'</div>'+
+'<div style="font-size:20px;font-weight:800;color:var(--lilac);line-height:1;'+
+'margin-left:8px;white-space:nowrap">'+sess.finalScore+'</div>'+
+'</div>'+
+'<div style="font-size:11px;color:var(--t3);margin-top:4px;display:flex;gap:8px;'+
+'align-items:center;flex-wrap:nowrap">'+
+'<span style="color:var(--gold)">X'+sum.strikes+'</span>'+
+'<span style="color:var(--teal)">/'+sum.spares+'</span>'+
+'<span style="color:var(--red)">S'+(sum.hasDetail ? sum.splits : '\u2014')+'</span>'+
+'<span style="color:var(--border1)">\u00b7</span>'+
+'<span style="color:'+(sum.clean?'var(--teal)':'var(--t3)')+'">'+(sum.clean?'\u2713':'\u2715')+'</span>'+
+'<span style="color:var(--border1)">\u00b7</span>'+
+'<span style="color:var(--gold)">\u21af'+sum.maxStreak+'X</span>'+
+'<span style="color:var(--border1)">\u00b7</span>'+
+'<span style="color:var(--teal)">'+sum.fba+'</span>'+
+'<span style="font-size:9px;color:var(--t3)">fba</span>'+
+(sess.noTap ? '<span style="color:var(--gold)">\u2726NT</span>' : '')+
+'</div>'+
+'</div><span class="list-row-chevron">\u203a</span></div>'+
+'<div class="game-row-actions">'+
+'<div class="gr-act-btn stats" onclick="openBakerStatsModal('+seriesID+','+gn+');'+
+'event.stopPropagation()">Stats</div>'+
+'<div class="gr-act-btn expand" id="bk-snap-btn-'+gn+'" '+
+'onclick="toggleBakerSnapshot('+gn+');event.stopPropagation()">Scorecard \u25be</div>'+
+'</div>'+
+'<div class="game-snapshot" id="bk-snap-'+gn+'" style="display:none;padding:10px 12px">'+
+bakerMiniScoresheet(sess) + roster +
+'</div></div>';
+}
+el.innerHTML = html;
+}
 function bakerHandleGameSlotTap(ctxBase, seriesID, gameNumber) {
 _bakerSetup = null; _bakerState = null; _bakerViewOnly = null;
 var existing = bakerFindSession(seriesID, gameNumber);
@@ -22150,7 +22505,7 @@ openModal(`
     <div class="stat-row" style="padding-left:14px"><span style="color:var(--t2)">Clutch Strike</span><span class="sval" style="color:var(--gold)">${stats.clutchPct}</span></div>
     <div class="stat-row" style="padding-left:14px"><span style="color:var(--t2)">Fill Ball Avg</span><span class="sval" style="color:var(--teal)">${stats.fillBallAvg}</span></div>
     <div class="stat-row clickable" onclick="openSpareDetailModal([${stdGames.map(g=>g.GameID).join(',')}],'${stats.sparePct}','${stats.makeablePct}','${stats.singlePct}','${stats.multiPct}','${stats.splitPct}')"><span>Spares <span style="font-size:11px;color:var(--t3)">▶</span></span><span class="sval t">${stats.sparePct}</span></div>
-    <div class="stat-row"><span>Opens</span><span class="sval s">${stats.opens} (${stats.totalFr ? Math.round(stats.opens/stats.totalFr*100) : 0}%)</span></div>
+    <div class="stat-row"><span>Splits</span><span class="sval s">${stats.splitOpp} (${stats.totalFr ? Math.round(stats.splitOpp/stats.totalFr*100) : 0}%)</span></div>
     <div class="stat-row"><span>Clean Games</span><span class="sval ${cleanCount===stdGames.length?'g':'t'}">${cleanCount} / ${stdGames.length}</span></div>
     ${stats.projGamesCount > 0 ? `
     <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border1)">
@@ -22508,7 +22863,7 @@ openModal(`
     <div class="stat-row" style="padding-left:14px"><span style="color:var(--t2)">Clutch Strike</span><span class="sval" style="color:var(--gold)">${stats.clutchPct}</span></div>
     <div class="stat-row" style="padding-left:14px"><span style="color:var(--t2)">Fill Ball Avg</span><span class="sval" style="color:var(--teal)">${stats.fillBallAvg}</span></div>
     <div class="stat-row clickable" onclick="openSpareDetailModal([${gameID}],'${stats.sparePct}','${stats.makeablePct}','${stats.singlePct}','${stats.multiPct}','${stats.splitPct}')"><span>Spares <span style="font-size:11px;color:var(--t3)">▶</span></span><span class="sval t">${stats.sparePct}</span></div>
-    <div class="stat-row"><span>Opens</span><span class="sval s">${stats.opens} (${stats.totalFr ? Math.round(stats.opens/stats.totalFr*100) : 0}%)</span></div>
+    <div class="stat-row"><span>Splits</span><span class="sval s">${stats.splitOpp} (${stats.totalFr ? Math.round(stats.splitOpp/stats.totalFr*100) : 0}%)</span></div>
     <div class="stat-row"><span>Clean Game</span><span class="sval ${isClean?'g':'s'}">${isClean ? 'Yes ✓': 'No'}</span></div>
     <div class="stat-row"><span>10th Frame</span><span class="sval">${f10label}</span></div>
     ${stats.projGamesCount > 0 ? `
@@ -22876,6 +23231,7 @@ if (a2.Pinfall === 10) strikes++;
 } else {
 spareOpps++;
 if (a1.Pinfall + a2.Pinfall >= 10) spares++;
+else opens++;
 }
 if (a3 && a3.Pinfall !== null) {
 const att3Fresh = (a1.Pinfall === 10 && a2.Pinfall === 10) ||
@@ -24831,7 +25187,7 @@ const exportFrames = frames.filter(f => exportGameIDs.has(f.GameID));
 const exportFrameIDs = new Set(exportFrames.map(f => f.FrameID));
 const exportAttempts = db.attempts.filter(a => exportFrameIDs.has(a.FrameID));
 const exportSeriesIDs = new Set(exportGames.map(g => g.SeriesID));
-const exportSeries = db.series.filter(s => exportSeriesIDs.has(s.SeriesID) || db.games.some(g=>g.SeriesID===s.SeriesID));
+const exportSeries = db.series.filter(s => exportSeriesIDs.has(s.SeriesID) || db.games.some(g=>g.SeriesID===s.SeriesID) || !!s.TournamentID);
 return {
 meta: {
 version: '1.0',
@@ -24947,7 +25303,7 @@ meta: {
 kind: 'bowlingdb-snapshot',
 snapshotVersion: 1,
 exportDate: new Date().toISOString(),
-exportSource: 'BowlingDB PWA v30.134',
+exportSource: 'BowlingDB PWA v30.138',
 includesBallImages: !!includeBallImages,
 excluded: Array.from(SNAPSHOT_LS_SKIP)
 },
