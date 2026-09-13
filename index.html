@@ -2524,7 +2524,7 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
     </div>
     <div id="hdr-title" onclick="hdrTitleTap()"><span class="brand">Bowling</span>DB</div>
     <div id="hdr-title-popover"></div>
-    <span id="hdr-build-ref">v30.138 · 2026-09-12</span>
+    <span id="hdr-build-ref">v30.141 · 2026-09-13</span>
     <div id="hdr-right">
       <div class="hdr-icon-btn" id="hdr-delete-game-btn" onclick="confirmDeleteGame(G.gameID)" title="Delete Game" style="display:none">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -4094,7 +4094,7 @@ else navTo('s-home', { back:true });
 
 function handleBackTap() {
 if (getCurrentScreen() === 's-baker'&& typeof _bakerState !== 'undefined'&& _bakerState && !_bakerState.complete) {
-if (!confirm('Leave this Baker game? Your progress will be lost unless you finish it.')) return;
+if (typeof bakerSaveActive === 'function') bakerSaveActive(_bakerState);
 _bakerState = null;
 }
 navBack();
@@ -18837,7 +18837,7 @@ el.innerHTML = mySeries.map((s,ri) => {
 const d       = localDate(s.DateBowled);
 const dateStr = d.toLocaleDateString('en-US',{month:'numeric',day:'numeric',year:'2-digit'});
 const center  = db.centers.find(c=>c.CenterID===s.CenterID);
-const rn      = mySeries.length - ri;
+const rn      = parseInt(String(bakerRoundLabelForSeries(s)).replace(/\D+/g,''), 10) || (mySeries.length - ri);
 const gamesPerRound = t.GamesPerRound || 3;
 let total, scores, isActive, badges;
 if (t.BakerFormat) {
@@ -18858,7 +18858,7 @@ const gameNum = i + 1;
 const sess = bakerSessions.find(bs => bs.ctx.gameNumber === gameNum);
 return sess
 ? buildScoreRingBadge({ arcColor:tournArcColor, score:sess.finalScore, seriesID:s.SeriesID, gameNum })
-: buildScoreRingBadge({ arcColor:tournArcColor, empty:true, seriesID:s.SeriesID, gameNum });
+: '';
 }).join('');
 var barClass = isActive ? 'sc-active': 'card-neutral';
 var emptyBadges = '';
@@ -18878,10 +18878,9 @@ if (db.attempts.some(a=>a.GameID===g.GameID&&a.Pinfall!=null)) {
 const cur = db.frames.filter(f=>f.GameID===g.GameID).reduce((acc,f)=>acc+(f.RunningTotal||0),0);
 return buildScoreRingBadge({ arcColor:tournArcColor, score:cur||0, inprog:true });
 }
-return buildScoreRingBadge({ arcColor:tournArcColor, empty:true });
+return '';
 }).join('');
-const emptyCount  = Math.max(0,gamesPerRound-games.length);
-emptyBadges = Array(emptyCount).fill(buildScoreRingBadge({ arcColor:tournArcColor, empty:true })).join('');
+emptyBadges = '';
 }
 return `<div class="series-card-wrap">
       <button class="card-del-corner" onclick="confirmDeleteTournSeries(${s.SeriesID});event.stopPropagation()" title="Delete">−</button>
@@ -21171,7 +21170,7 @@ st.fbSum += rb[0]; st.fbN++;
 var fe  = (s.frameEntries||[]).find(function(e){ return e.frameNum === fr; });
 if (!fe) st.framesNoDetail++;
 var lv0 = (fe && fe.att && fe.att[0]) ? fe.att[0].leave : null;
-var isSplit = !!(lv0 && lv0.length && isSplitLocal(new Set(lv0)));
+var isSplit = !!(lv0 && lv0.length && isSplitLeave(new Set(lv0)));
 if (fr < 10) {
 st.fresh++;
 if (b[0] === 10) { st.strikes++; continue; }
@@ -21331,7 +21330,7 @@ else { out.opens++; out.clean = false; }
 if (entries) {
 var fe = entries.find(function(e){ return e.frameNum === (i+1); });
 var lv = fe && fe.att && fe.att[0] && fe.att[0].leave;
-if (lv && lv.length && isSplitLocal(new Set(lv))) out.splits++;
+if (lv && lv.length && isSplitLeave(new Set(lv))) out.splits++;
 }
 }
 }
@@ -21387,10 +21386,13 @@ html += '<div class="stat-row"><span>Round Total</span>'+
 for (var gn = 1; gn <= slots; gn++) {
 var sess = sessions.find(function(bs){ return bs.ctx.gameNumber === gn; });
 if (!sess) {
+var act = bakerActiveForSlot(seriesID, gn);
 html += '<div class="list-row list-row-dashed" onclick="bakerRoundOpenSlot('+gn+')">'+
 '<div class="list-row-body">'+
-'<div class="list-row-name" style="color:var(--teal)">+ Start Game '+gn+'</div>'+
-'<div class="list-row-meta">Begin scoring</div>'+
+'<div class="list-row-name" style="color:var(--teal)">'+
+(act ? '↻ Resume Game '+gn : '+ Start Game '+gn)+'</div>'+
+'<div class="list-row-meta">'+
+(act ? bakerActiveProgressLabel(act) : 'Begin scoring')+'</div>'+
 '</div></div>';
 continue;
 }
@@ -21437,13 +21439,19 @@ html += '<div class="game-row-wrap">'+
 'onclick="toggleBakerSnapshot('+gn+');event.stopPropagation()">Scorecard \u25be</div>'+
 '</div>'+
 '<div class="game-snapshot" id="bk-snap-'+gn+'" style="display:none;padding:10px 12px">'+
-bakerMiniScoresheet(sess) + roster +
+bakerScorecardHTML(sess, { editable:false }) + roster +
 '</div></div>';
 }
 el.innerHTML = html;
 }
 function bakerHandleGameSlotTap(ctxBase, seriesID, gameNumber) {
 _bakerSetup = null; _bakerState = null; _bakerViewOnly = null;
+var resumable = bakerActiveForSlot(seriesID, gameNumber);
+if (resumable) {
+_bakerState = resumable;
+navTo('s-baker');
+return;
+}
 var existing = bakerFindSession(seriesID, gameNumber);
 if (existing) {
 _bakerViewOnly = existing;
@@ -21679,6 +21687,7 @@ alreadyDown: [],
 tapped: []
 };
 _bakerSetup = null;
+bakerSaveActive(_bakerState);
 renderBakerScreen();
 }
 function bakerCurrentBowler() {
@@ -21733,6 +21742,7 @@ bakerConfirmBall();
 
 function bakerConfirmBall() {
 var st = _bakerState;
+if (!st) return;
 var pins = bakerPinsFromTapped();
 var knocked = bakerKnockedPinsThisBall();
 var rackStanding = [1,2,3,4,5,6,7,8,9,10].filter(function(p){ return st.alreadyDown.indexOf(p) < 0; });
@@ -21754,6 +21764,12 @@ var entry = bakerGetOrCreateFrameEntry(st, st.currentFrame);
 entry.att.push(att);
 var ballsSoFar = entry.att.map(function(a){ return a.pins; });
 var nextMax = bakerNextBallMax(st.currentFrame, ballsSoFar, st.noTap);
+if (st._editFrame) {
+if (nextMax === null) { bakerFinishEdit(); return; }
+bakerSaveActive(st);
+bakerRenderScoring();
+return;
+}
 if (nextMax === null) {
 if (st.currentFrame === 10) {
 st.complete = true;
@@ -21762,6 +21778,7 @@ return;
 }
 st.currentFrame++;
 }
+bakerSaveActive(st);
 bakerRenderScoring();
 }
 function bakerUndoBall() {
@@ -21772,6 +21789,7 @@ entry.att.pop();
 var ballsSoFar = entry.att.map(function(a){ return a.pins; });
 st.alreadyDown = bakerRecomputeAlreadyDown(st.currentFrame, ballsSoFar, st.noTap);
 st.tapped = [];
+bakerSaveActive(st);
 bakerRenderScoring();
 return;
 }
@@ -21785,6 +21803,7 @@ var prevEntry = bakerGetOrCreateFrameEntry(st, st.currentFrame);
 prevEntry.att = [];
 st.alreadyDown = [];
 st.tapped = [];
+bakerSaveActive(st);
 bakerRenderScoring();
 }
 }
@@ -21882,7 +21901,10 @@ return out;
 function bakerRoundLabelForSeries(series) {
 var sameParent = db.series.filter(function(s){
 return series.TournamentID ? s.TournamentID === series.TournamentID : s.LeagueID === series.LeagueID;
-}).sort(function(a,b){ return new Date(a.DateBowled) - new Date(b.DateBowled); });
+}).sort(function(a,b){
+var d = new Date(a.DateBowled) - new Date(b.DateBowled);
+return d !== 0 ? d : (a.SeriesID - b.SeriesID);
+});
 var idx = sameParent.findIndex(function(s){ return s.SeriesID === series.SeriesID; });
 return 'Round '+ (idx + 1);
 }
@@ -22009,34 +22031,322 @@ pinDeck +
 var foot =
 '<div class="bk-foot">'+
 '<button class="btn btn-secondary" onclick="bakerUndoBall()">Undo Last Ball</button>'+
-'<button class="btn btn-secondary" onclick="bakerAbandonSession()">Cancel Game</button>'+
+'<button class="btn btn-secondary" onclick="bakerAbandonSession()">'+
+(st._editFrame ? 'Cancel Edit' : 'Cancel Game')+'</button>'+
 '</div>';
 var body = document.getElementById('baker-body');
 if (!body) return;
 var host = document.getElementById('s-baker');
 if (host) host.classList.add('bk-host');
 body.innerHTML =
+(st._editFrame
+? '<div style="background:rgba(240,190,90,0.12);border:1px solid var(--gold);border-radius:10px;'+
+'padding:8px 12px;margin-bottom:10px;font-size:12px;color:var(--gold);font-weight:700">'+
+'✎ Editing frame '+st._editFrame+' — re-enter this frame to save, or Cancel Edit to leave it unchanged</div>'
+: '')+
 '<div class="bk-panel">'+
 header + ownerRow + laneBand + pinAnchor + qaRow + foot +
 '</div>';
 }
 function bakerAbandonSession() {
+if (_bakerState && _bakerState._editFrame) { bakerCancelEdit(); return; }
 if (!confirm('Cancel this Baker game? Nothing will be saved.')) return;
+bakerClearActive();
 _bakerState = null;
 navBack();
+}
+/*
+   BAKER SESSION PERSISTENCE PRIMITIVE (v30.139) — register A14 step 1.
+   Prerequisite for BOTH A10 (autosave/resume of an in-progress game) and
+   A14 (retroactive edit). Before this, bakerFinishSession() ended in an
+   unconditional sessions.push(), so writing the same game twice appended
+   a duplicate to bakerSessions — which double-counts the round total, the
+   Round Stats / per-bowler tabs and the export, while looking correct on
+   screen.
+
+   bakerUpsertSession() replaces by `id` when one matches and pushes
+   otherwise. The (seriesID, gameNumber) fallback applies ONLY to records
+   carrying no id at all: a record that has an id but no id-match is a
+   genuinely new session and must not overwrite whatever happens to sit in
+   that slot. All 19 sessions on file carry unique ids and no slot is
+   doubly bound, so the fallback is a safety net, not a live path.
+
+   bakerHydrateState() turns a stored record back into a _bakerState — the
+   other half of the primitive, and what lets a completed game be reopened
+   at all. It returns null for pre-v30.125 records, which hold pinfall
+   counts under `frames` with no per-throw detail: those can be read and
+   scored but never edited, because the pin data to edit does not exist.
+   `complete` is derived by walking bakerNextBallMax() rather than trusted
+   from the record, so a partially-written state resumes at the right ball.
+   */
+/*
+   BAKER AUTOSAVE / RESUME (v30.140) — register A10, riding on A14 step 1.
+   The in-progress game lives in its OWN localStorage key, never in
+   bakerSessions: the round screen, Baker stats and the export all read
+   that array as completed games only, and a half-finished game appearing
+   there would corrupt every one of them.
+   Written after each confirmed ball and each undo, cleared on finish and
+   on deliberate abandon. Resume is offered from bakerHandleGameSlotTap
+   ahead of the completed-session branch, so reopening the slot you walked
+   away from puts you back on the next ball rather than at setup.
+   */
+var BAKER_ACTIVE_KEY = 'bowlingdb_baker_active';
+function bakerSaveActive(st) {
+try {
+if (!st || st.complete) { bakerClearActive(); return; }
+localStorage.setItem(BAKER_ACTIVE_KEY, JSON.stringify(st));
+} catch (e) { }
+}
+function bakerLoadActive() {
+try {
+var raw = localStorage.getItem(BAKER_ACTIVE_KEY);
+if (!raw) return null;
+var st = JSON.parse(raw);
+if (!st || !st.ctx || st.complete) return null;
+return st;
+} catch (e) { return null; }
+}
+function bakerClearActive() {
+try { localStorage.removeItem(BAKER_ACTIVE_KEY); } catch (e) { }
+}
+function bakerActiveForSlot(seriesID, gameNumber) {
+var st = bakerLoadActive();
+if (!st) return null;
+return (st.ctx.seriesID === seriesID && st.ctx.gameNumber === gameNumber) ? st : null;
+}
+function bakerActiveProgressLabel(st) {
+var n = (st.frameEntries||[]).reduce(function(a,e){ return a + ((e.att||[]).length ? 1 : 0); }, 0);
+return 'In progress \u00b7 frame '+ (st.currentFrame||1) +' of 10 \u00b7 '+ n +' frame'+(n===1?'':'s')+' entered';
+}
+/*
+   BAKER SCORECARD WITH LEAVE DATA (v30.141)
+   Mirrors the league mini scorecard (.mini-sc-grid / .sc-frame / .sc-bsk)
+   and reuses bskTriangleHTML() directly — Baker stores a per-ball `bsk`
+   string in the same B/S/K vocabulary the league dots are built from, so
+   no conversion is needed. Frames from pre-v30.125 sessions have no
+   frameEntries and render without pin data rather than blank.
+   When editable, every ball is tappable: bakerEditBall() re-enters the
+   game at that exact attempt (register A14).
+   */
+function bakerBallSpans(balls, frameNum, editable, seriesID, gameNum) {
+var parts = [];
+var i = 0;
+function wrap(idx, inner, cls) {
+var open = '<span class="fm-mini-att'+(cls?' '+cls:'')+'"';
+if (editable) {
+open += ' style="cursor:pointer;text-decoration:underline;text-decoration-style:dotted;'+
+'text-underline-offset:2px" onclick="bakerEditBall('+seriesID+','+gameNum+','+
+frameNum+','+idx+');event.stopPropagation()"';
+}
+return open + '>'+ inner +'</span>';
+}
+while (i < balls.length) {
+var b1 = balls[i];
+if (b1 === 10) { parts.push(wrap(i, 'X', 'X')); i += 1; continue; }
+var b2 = balls[i+1];
+if (b2 !== undefined) {
+parts.push(wrap(i, (b1===0?'-':b1)));
+parts.push(wrap(i+1, (b1+b2===10 ? '/' : (b2===0?'-':b2)), (b1+b2===10 ? 'sp':'')));
+i += 2;
+} else {
+parts.push(wrap(i, (b1===0?'-':b1)));
+i += 1;
+}
+}
+return parts.join('');
+}
+function bakerScorecardHTML(session, opts) {
+opts = opts || {};
+var disp    = bakerDisplayFrames(session);
+var scored  = bakerScoreGame(disp);
+var entries = session.frameEntries || null;
+var sid = session.ctx ? session.ctx.seriesID : null;
+var gnum = session.ctx ? session.ctx.gameNumber : null;
+var editable = !!(opts.editable && entries && sid != null && gnum != null);
+var html = '<div class="mini-sc-lbl">Scorecard'+
+(editable ? ' \u00b7 tap a ball to edit' : (entries ? '' : ' \u00b7 no pin detail'))+'</div>';
+html += '<div class="mini-sc-scroll"><div class="mini-sc-grid">';
+for (var fr = 1; fr <= 10; fr++) {
+var balls = disp[fr-1] || [];
+var fe = entries ? entries.find(function(e){ return e.frameNum === fr; }) : null;
+var atts = (fe && fe.att) ? fe.att : [];
+var isF10 = (fr === 10);
+html += '<div class="sc-frame"><div class="sc-fn">'+fr+'</div>';
+html += '<div class="sc-bsk'+(isF10?' f10':'')+'">';
+if (atts.length) {
+if (isF10) {
+var tiny = atts.length >= 2;
+atts.forEach(function(a){ html += bskTriangleHTML(a.bsk, tiny) || ''; });
+} else {
+var shown = atts.length > 1 ? atts[1] : atts[0];
+html += bskTriangleHTML(shown.bsk, false) || '<div style="height:24px"></div>';
+}
+} else {
+html += '<div style="height:24px"></div>';
+}
+html += '</div>';
+html += '<div class="sc-atts">'+
+(bakerBallSpans(balls, fr, editable, sid, gnum) || '<span class="fm-mini-att empty">\u2014</span>')+
+'</div>';
+html += '<div class="sc-tot'+(scored.resolved[fr-1]?'':' pend')+'">'+
+(scored.resolved[fr-1] ? scored.running[fr-1] : '\u2014')+'</div>';
+html += '</div>';
+}
+html += '</div></div>';
+return html;
+}
+/*
+   FRAME / ATTEMPT EDIT (v30.141) — register A14 steps 3 and 4.
+   bakerEditBall() truncates the chosen frame to the balls BEFORE the one
+   tapped and re-enters live scoring there, so earlier balls in the frame
+   survive and later frames are never touched — which is why this could
+   not be built on bakerUndoBall(), whose walk-back wipes the preceding
+   frame as it steps. alreadyDown is rebuilt from the retained balls'
+   actual `knocked` arrays (mirroring bakerConfirmBall) rather than from
+   bakerRecomputeAlreadyDown(), which only approximates a count.
+   The rescore is free: bakerScoreGame() recomputes every running total
+   and bonus from the frame arrays.
+   */
+function bakerAllFramesDone(st) {
+for (var fr = 1; fr <= 10; fr++) {
+var e = (st.frameEntries||[]).find(function(x){ return x.frameNum === fr; });
+var balls = e ? e.att.map(function(a){ return a.pins; }) : [];
+if (bakerNextBallMax(fr, balls, st.noTap) !== null) return false;
+}
+return true;
+}
+function bakerEditBall(seriesID, gameNum, frameNum, attIdx) {
+var sess = bakerFindSession(seriesID, gameNum);
+if (!sess) { toast('Game not found'); return; }
+var st = bakerHydrateState(sess);
+if (!st) { toast('Logged before pin detail was captured \u2014 this game cannot be edited'); return; }
+var entry = (st.frameEntries||[]).find(function(e){ return e.frameNum === frameNum; });
+if (!entry) { toast('No data for frame '+frameNum); return; }
+entry.att = entry.att.slice(0, attIdx);
+var balls = entry.att.map(function(a){ return a.pins; });
+var nextMax = bakerNextBallMax(frameNum, balls, st.noTap);
+var continuesSameRack = (nextMax !== null && nextMax !== 10);
+st.alreadyDown = continuesSameRack
+? entry.att.reduce(function(acc, a){ return acc.concat(a.knocked || []); }, [])
+: [];
+st.tapped = [];
+st.currentFrame = frameNum;
+st.complete = false;
+st._editFrame = frameNum;
+_bakerViewOnly = null;
+_bakerState = st;
+bakerSaveActive(st);
+renderBakerScreen();
+}
+function bakerFinishEdit() {
+var st = _bakerState;
+var fr = st._editFrame;
+delete st._editFrame;
+st.complete = bakerAllFramesDone(st);
+var scored = bakerScoreGame(bakerDisplayFrames(st));
+bakerUpsertSession(bakerBuildRecord(st, scored));
+bakerClearActive();
+toast('Frame '+fr+' updated \u00b7 game now '+scored.total);
+if (st.complete && st.ctx) {
+_bakerViewOnly = bakerFindSession(st.ctx.seriesID, st.ctx.gameNumber) || st;
+_bakerState = null;
+}
+renderBakerScreen();
+}
+function bakerCancelEdit() {
+var st = _bakerState;
+if (!confirm('Discard this edit? The saved game will be left unchanged.')) return;
+bakerClearActive();
+_bakerState = null;
+_bakerViewOnly = (st && st.ctx) ? bakerFindSession(st.ctx.seriesID, st.ctx.gameNumber) : null;
+renderBakerScreen();
+}
+function bakerBuildRecord(st, scored) {
+var sc = scored || bakerScoreGame(bakerDisplayFrames(st));
+return {
+id: st.id, ctx: st.ctx, teamSize: st.teamSize, centerID: st.centerID, date: st.date,
+lanePair: st.lanePair || '', laneStart: st.laneStart || null, noTap: !!st.noTap,
+bowlers: st.bowlers, frameEntries: st.frameEntries, frameScores: sc.frameScores,
+running: sc.running, finalScore: sc.total,
+createdAt: st.createdAt || new Date().toISOString()
+};
+}
+function bakerUpsertSession(record) {
+var list = bakerLoadSessions();
+var idx = -1, i;
+if (record.id) {
+for (i = 0; i < list.length; i++) {
+if (list[i].id && list[i].id === record.id) { idx = i; break; }
+}
+} else if (record.ctx && record.ctx.seriesID != null && record.ctx.gameNumber != null) {
+for (i = 0; i < list.length; i++) {
+var cx = list[i].ctx;
+if (cx && cx.seriesID === record.ctx.seriesID && cx.gameNumber === record.ctx.gameNumber) {
+idx = i; break;
+}
+}
+}
+if (idx >= 0) {
+if (!record.id && list[idx].id) record.id = list[idx].id;
+record.createdAt = list[idx].createdAt || record.createdAt;
+record.updatedAt = new Date().toISOString();
+list[idx] = record;
+} else {
+list.push(record);
+}
+bakerSaveSessions(list);
+return idx >= 0 ? 'updated' : 'created';
+}
+function bakerHydrateState(session) {
+if (!session || !session.frameEntries) return null;
+var entries = session.frameEntries.map(function(e){
+return {
+bowlerIdx: e.bowlerIdx,
+frameNum: e.frameNum,
+att: (e.att||[]).map(function(a){
+return { pins: a.pins,
+knocked: (a.knocked||[]).slice(),
+leave: (a.leave||[]).slice(),
+bsk: a.bsk,
+BallID: a.BallID != null ? a.BallID : null };
+}),
+runningTotal: e.runningTotal != null ? e.runningTotal : null
+};
+});
+var st = {
+id: session.id || ('baker_'+ Date.now()),
+ctx: session.ctx, teamSize: session.teamSize || 2, centerID: session.centerID,
+date: session.date, lanePair: session.lanePair || '', laneStart: session.laneStart || null,
+noTap: !!session.noTap,
+bowlers: (session.bowlers||[]).map(function(b, i){
+return { BowlerID: b.BowlerID != null ? b.BowlerID : null, name: b.name,
+ballID: b.ballID || null, ballManual: b.ballManual || '',
+__idx: b.__idx != null ? b.__idx : i };
+}),
+frameEntries: entries,
+createdAt: session.createdAt || null,
+currentFrame: 1, complete: false, alreadyDown: [], tapped: []
+};
+var ballsAt = function(fr) {
+var e = entries.find(function(x){ return x.frameNum === fr; });
+return e ? e.att.map(function(a){ return a.pins; }) : [];
+};
+var fr = 1;
+for (; fr <= 10; fr++) {
+if (bakerNextBallMax(fr, ballsAt(fr), st.noTap) !== null) break;
+}
+if (fr > 10) { st.currentFrame = 10; st.complete = true; }
+else {
+st.currentFrame = fr;
+st.alreadyDown = bakerRecomputeAlreadyDown(fr, ballsAt(fr), st.noTap);
+}
+return st;
 }
 function bakerFinishSession() {
 var st = _bakerState;
 var scored = bakerScoreGame(bakerDisplayFrames(st));
-var sessions = bakerLoadSessions();
-var record = {
-id: st.id, ctx: st.ctx, teamSize: st.teamSize, centerID: st.centerID, date: st.date,
-lanePair: st.lanePair || '', laneStart: st.laneStart || null, noTap: !!st.noTap,
-bowlers: st.bowlers, frameEntries: st.frameEntries, frameScores: scored.frameScores,
-running: scored.running, finalScore: scored.total, createdAt: new Date().toISOString()
-};
-sessions.push(record);
-bakerSaveSessions(sessions);
+bakerUpsertSession(bakerBuildRecord(st, scored));
+bakerClearActive();
 st.complete = true;
 bakerRenderComplete(scored, st.bowlers, st, false);
 }
@@ -22063,7 +22373,7 @@ body.innerHTML =
 '<div style="font-size:42px;font-weight:900;color:var(--lilac)">'+scored.total+'</div>'+
 '<div style="font-size:12px;color:var(--t3)">Team Score</div>'+
 '</div>'+
-bakerMiniScoresheet(session) +
+bakerScorecardHTML(session, { editable: !!(session.ctx && session.frameEntries) }) +
 '<div style="margin-bottom:16px">'+breakdown+'</div>'+
 '<button class="btn btn-primary" style="width:100%" onclick="bakerDone()">'+(viewOnly?'Close':'Done')+'</button>';
 }
@@ -25303,7 +25613,7 @@ meta: {
 kind: 'bowlingdb-snapshot',
 snapshotVersion: 1,
 exportDate: new Date().toISOString(),
-exportSource: 'BowlingDB PWA v30.138',
+exportSource: 'BowlingDB PWA v30.141',
 includesBallImages: !!includeBallImages,
 excluded: Array.from(SNAPSHOT_LS_SKIP)
 },
