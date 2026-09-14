@@ -2524,7 +2524,7 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
     </div>
     <div id="hdr-title" onclick="hdrTitleTap()"><span class="brand">Bowling</span>DB</div>
     <div id="hdr-title-popover"></div>
-    <span id="hdr-build-ref">v30.141 · 2026-09-13</span>
+    <span id="hdr-build-ref">v30.142 · 2026-09-13</span>
     <div id="hdr-right">
       <div class="hdr-icon-btn" id="hdr-delete-game-btn" onclick="confirmDeleteGame(G.gameID)" title="Delete Game" style="display:none">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -6621,6 +6621,7 @@ openModal(`
     <div class="stat-row" style="padding-left:14px"><span style="color:var(--t2)">BounceBack</span><span class="sval" style="color:var(--purple)">${stats.bounceBackPct}</span></div>
     <div class="stat-row" style="padding-left:14px"><span style="color:var(--t2)">Clutch Strike</span><span class="sval" style="color:var(--gold)">${stats.clutchPct}</span></div>
     <div class="stat-row" style="padding-left:14px"><span style="color:var(--t2)">Fill Ball Avg</span><span class="sval" style="color:var(--teal)">${stats.fillBallAvg}</span></div>
+    <div class="stat-row" style="padding-left:14px"><span style="color:var(--t2)">Frame 10 Score</span><span class="sval" style="color:var(--purple)">${stats.f10ScoreAvg}</span></div>
     <div class="stat-row clickable" onclick="openSpareDetailModal([${allGames.map(g=>g.GameID).join(',')}],'${stats.sparePct}','${stats.makeablePct}','${stats.singlePct}','${stats.multiPct}','${stats.splitPct}')"><span>Spares <span style="font-size:11px;color:var(--t3)">▶</span></span><span class="sval t">${stats.sparePct}</span></div>
     <div class="stat-row"><span>Splits</span><span class="sval s">${stats.splitOpp} (${stats.totalFr ? Math.round(stats.splitOpp/stats.totalFr*100) : 0}%)</span></div>
     <div class="stat-row"><span>Low Game</span><span class="sval" style="color:var(--t2)">${low||'—'}</span></div>
@@ -18466,6 +18467,7 @@ openModal(`
     <div class="stat-row" style="padding-left:14px"><span style="color:var(--t2)">BounceBack</span><span class="sval" style="color:var(--purple)">${stats.bounceBackPct}</span></div>
     <div class="stat-row" style="padding-left:14px"><span style="color:var(--t2)">Clutch Strike</span><span class="sval" style="color:var(--gold)">${stats.clutchPct}</span></div>
     <div class="stat-row" style="padding-left:14px"><span style="color:var(--t2)">Fill Ball Avg</span><span class="sval" style="color:var(--teal)">${stats.fillBallAvg}</span></div>
+    <div class="stat-row" style="padding-left:14px"><span style="color:var(--t2)">Frame 10 Score</span><span class="sval" style="color:var(--purple)">${stats.f10ScoreAvg}</span></div>
     <div class="stat-row clickable" onclick="openSpareDetailModal([${stdSessionGames.map(g=>g.GameID).join(',')}],'${stats.sparePct}','${stats.makeablePct}','${stats.singlePct}','${stats.multiPct}','${stats.splitPct}')"><span>Spares <span style="font-size:11px;color:var(--t3)">▶</span></span><span class="sval t">${stats.sparePct}</span></div>
     <div class="stat-row"><span>Splits</span><span class="sval s">${stats.splitOpp} (${stats.totalFr ? Math.round(stats.splitOpp/stats.totalFr*100) : 0}%)</span></div>
     <div class="stat-row"><span>Clean Games</span><span class="sval ${cleanCount===stdSessionGames.length?'g':'t'}">${cleanCount} / ${stdSessionGames.length}</span></div>
@@ -21153,7 +21155,9 @@ return (session.bowlers||[])[idx] || null;
 function bakerStatsFor(sessions, bowlerKey) {
 var st = { games:0, frames:0, fresh:0, strikes:0, spareOpps:0, spares:0,
 splits:0, splitConv:0, opens:0, cleanGames:0, pins:0,
-fbSum:0, fbN:0, framesNoDetail:0 };
+fbSum:0, fbN:0, framesNoDetail:0,
+xOpp:0, xConv:0, bbOpp:0, bbConv:0, clutchOpp:0, clutchX:0,
+fillSum:0, fillN:0, f10Sum:0, f10N:0, advNoOwner:0 };
 sessions.forEach(function(s){
 var raw  = bakerFramesAsPinfallArrays(s);
 var disp = bakerDisplayFrames(s);
@@ -21205,6 +21209,68 @@ if (anyFrame) {
 st.games++;
 if (gameClean) st.cleanGames++;
 if (!bowlerKey) st.pins += (s.finalScore||0);
+}
+
+/* ---- ADVANCED METRICS (added 2026-09-13) ----
+   Scoping decision, per the 2026-09-13 session:
+     TEAM tab   -> counted as scored normally. The sequence is frames
+                   1..10 in team order, which makes this a literal port
+                   of the league logic in calculateAdvancedStats().
+     BOWLER tab -> counted across that bowler's OWN consecutive frames
+                   only. In Baker you do not throw back-to-back frames,
+                   so "X-on-X" for a bowler means a strike in their next
+                   OWN frame, skipping the partner's. That is the only
+                   reading comparable to the same bowler's league figure.
+
+   OWNERSHIP GATE: per-bowler advanced figures require frameEntries,
+   because that is where bowlerIdx is actually RECORDED. Without it
+   bakerFrameOwner() derives the owner from roster position, and the
+   roster order in the nine pre-v30.125 sessions is frozen across every
+   game (Julius|James in all 9) while every session that records
+   ownership alternates it every single game. Deriving there would
+   credit one bowler with every frame 10 and the other with none. So we
+   withhold instead of inferring, exactly as split figures already do.
+   Team figures are unaffected -- they never consult ownership. */
+if (bowlerKey && !s.frameEntries) { st.advNoOwner++; return; }
+
+var seq = [];
+for (var q = 1; q <= 10; q++) {
+if (bowlerKey) {
+var qo = bakerFrameOwner(s, q);
+if (!qo || bakerRosterKey(qo) !== bowlerKey) continue;
+}
+var qb = disp[q-1] || [];
+if (!qb.length) continue;
+seq.push({ fr:q, balls:qb });
+}
+
+for (var z = 0; z < seq.length - 1; z++) {
+var curr = seq[z].balls[0], next = seq[z+1].balls[0];
+if (curr == null || next == null) continue;
+if (curr === 10) { st.xOpp++; if (next === 10) st.xConv++; }
+else             { st.bbOpp++; if (next === 10) st.bbConv++; }
+}
+
+var t10 = null;
+for (var y = 0; y < seq.length; y++) { if (seq[y].fr === 10) t10 = seq[y]; }
+if (t10) {
+var q1 = t10.balls[0], q2 = t10.balls[1], q3 = t10.balls[2];
+if (q1 != null) {
+if (q1 === 10 && q2 != null) { st.xOpp++; if (q2 === 10) st.xConv++; }
+if (q1 === 10 && q2 === 10 && q3 != null) { st.xOpp++; if (q3 === 10) st.xConv++; }
+st.clutchOpp++; if (q1 === 10) st.clutchX++;
+st.f10Sum += q1 + (q2 || 0) + (q3 || 0); st.f10N++;
+/* Fill ball, definition C -- a bonus delivery at a FRESH rack.
+   Same three shapes as the league engine: X->ball2, XX->ball3,
+   spare->ball3. Ball 3 after X then a non-strike is excluded
+   because it is thrown at ball 2's leave. */
+if (q1 === 10 && q2 != null) {
+st.fillSum += q2; st.fillN++;
+if (q2 === 10 && q3 != null) { st.fillSum += q3; st.fillN++; }
+} else if (q1 !== 10 && q2 != null && (q1 + q2) >= 10 && q3 != null) {
+st.fillSum += q3; st.fillN++;
+}
+}
 }
 });
 return st;
@@ -21270,13 +21336,27 @@ splitVal = '\u2014'; splitConvVal = '\u2014';
 splitVal = st.splits + (st.fresh ? ' ('+Math.round(st.splits/st.fresh*100)+'%)' : '');
 splitConvVal = st.splits ? _bkPct(st.splitConv, st.splits) : '\u2014';
 }
+var advHeld = !!(key && st.advNoOwner > 0 && st.xOpp === 0 && st.clutchOpp === 0);
+var dash = '\u2014';
 var body =
-_bkRow('First Ball Avg', st.fbN ? (st.fbSum/st.fbN).toFixed(2) : '\u2014', 't') +
+_bkRow('First Ball Avg', st.fbN ? (st.fbSum/st.fbN).toFixed(2) : dash, 't') +
 _bkRow('Strikes', _bkPct(st.strikes, st.fresh), 'g') +
+_bkRow('X-on-X', advHeld ? dash : _bkPct(st.xConv, st.xOpp), 't', true) +
+_bkRow('BounceBack', advHeld ? dash : _bkPct(st.bbConv, st.bbOpp), 's', true) +
+_bkRow('Clutch Strike', advHeld ? dash : _bkPct(st.clutchX, st.clutchOpp), 'g', true) +
+_bkRow('Fill Ball Avg', (!advHeld && st.fillN) ? (st.fillSum/st.fillN).toFixed(2) : dash, 't', true) +
+_bkRow('Frame 10 Score', (!advHeld && st.f10N) ? (st.f10Sum/st.f10N).toFixed(2) : dash, 's', true) +
 _bkRow('Spares', _bkPct(st.spares, st.spareOpps), 't') +
 _bkRow('Splits', splitVal, 's') +
 _bkRow('Split Conv.', splitConvVal, '', true) +
 (key ? '' : _bkRow('Clean Games', st.cleanGames+' / '+st.games, 't'));
+var ownerNote = advHeld
+? '<div style="font-size:11px;color:var(--t3);margin-top:10px;line-height:1.5">'+
+'Per-bowler X-on-X, BounceBack, Clutch, Fill Ball and Frame 10 Score are '+
+'unavailable for '+st.advNoOwner+' game'+(st.advNoOwner===1?'':'s')+' in this scope: they were '+
+'logged before frame ownership was recorded, so which bowler threw which frame '+
+'cannot be established. Team figures above are unaffected.</div>'
+: '';
 var note = (st.framesNoDetail > 0 && st.framesNoDetail < st.frames)
 ? '<div style="font-size:11px;color:var(--t3);margin-top:10px;line-height:1.5">'+
 'Split figures cover '+(st.frames - st.framesNoDetail)+' of '+st.frames+
@@ -21287,7 +21367,7 @@ var note = (st.framesNoDetail > 0 && st.framesNoDetail < st.frames)
 : '');
 openModal(
 '<div class="modal-title">\ud83c\udfb3 '+title+'</div>'+
-tabs + breakdown + totals + body + note +
+tabs + breakdown + totals + body + ownerNote + note +
 '<button class="btn btn-secondary" style="width:100%;margin-top:16px" onclick="closeModal()">Close</button>'
 );
 }
@@ -22787,6 +22867,20 @@ inputsMissing: { RG: rg == null, Differential: diff == null, Coverstock: !ball.C
 function openSeriesStatsModal(seriesID) {
 const s = db.series.find(x=>x.SeriesID===seriesID);
 const games = db.games.filter(g=>g.SeriesID===seriesID).sort((a,b)=>a.GameNumber-b.GameNumber);
+
+/* BAKER ROUNDS (fixed 2026-09-13). A Baker round's games live in
+   bakerSessions in localStorage, never in db.games, so every figure
+   below computed against an empty set: Total and Average rendered as
+   dashes while Splits rendered "0 (0%)" and Clean Games "0 / 0", which
+   read as measured zeros rather than absent data. Route those series to
+   the Baker engine, which has the Team / per-bowler tabs and the same
+   metric set. Guarded on games.length so a series that somehow holds
+   both keeps the league path. */
+if (!games.length) {
+const bkSessions = (typeof bakerRoundSessions === 'function')
+? bakerRoundSessions(seriesID) : [];
+if (bkSessions.length) { openBakerStatsModal(seriesID); return; }
+}
 const scores = games.map(g=>g.FinalScore).filter(x=>x!=null && x > 0);
 const total = scores.reduce((a,b)=>a+b,0);
 const avg = scores.length ? (total/scores.length).toFixed(2) : 0;
@@ -22814,6 +22908,7 @@ openModal(`
     <div class="stat-row" style="padding-left:14px"><span style="color:var(--t2)">BounceBack</span><span class="sval" style="color:var(--purple)">${stats.bounceBackPct}</span></div>
     <div class="stat-row" style="padding-left:14px"><span style="color:var(--t2)">Clutch Strike</span><span class="sval" style="color:var(--gold)">${stats.clutchPct}</span></div>
     <div class="stat-row" style="padding-left:14px"><span style="color:var(--t2)">Fill Ball Avg</span><span class="sval" style="color:var(--teal)">${stats.fillBallAvg}</span></div>
+    <div class="stat-row" style="padding-left:14px"><span style="color:var(--t2)">Frame 10 Score</span><span class="sval" style="color:var(--purple)">${stats.f10ScoreAvg}</span></div>
     <div class="stat-row clickable" onclick="openSpareDetailModal([${stdGames.map(g=>g.GameID).join(',')}],'${stats.sparePct}','${stats.makeablePct}','${stats.singlePct}','${stats.multiPct}','${stats.splitPct}')"><span>Spares <span style="font-size:11px;color:var(--t3)">▶</span></span><span class="sval t">${stats.sparePct}</span></div>
     <div class="stat-row"><span>Splits</span><span class="sval s">${stats.splitOpp} (${stats.totalFr ? Math.round(stats.splitOpp/stats.totalFr*100) : 0}%)</span></div>
     <div class="stat-row"><span>Clean Games</span><span class="sval ${cleanCount===stdGames.length?'g':'t'}">${cleanCount} / ${stdGames.length}</span></div>
@@ -23172,6 +23267,7 @@ openModal(`
     <div class="stat-row" style="padding-left:14px"><span style="color:var(--t2)">BounceBack</span><span class="sval" style="color:var(--purple)">${stats.bounceBackPct}</span></div>
     <div class="stat-row" style="padding-left:14px"><span style="color:var(--t2)">Clutch Strike</span><span class="sval" style="color:var(--gold)">${stats.clutchPct}</span></div>
     <div class="stat-row" style="padding-left:14px"><span style="color:var(--t2)">Fill Ball Avg</span><span class="sval" style="color:var(--teal)">${stats.fillBallAvg}</span></div>
+    <div class="stat-row" style="padding-left:14px"><span style="color:var(--t2)">Frame 10 Score</span><span class="sval" style="color:var(--purple)">${stats.f10ScoreAvg}</span></div>
     <div class="stat-row clickable" onclick="openSpareDetailModal([${gameID}],'${stats.sparePct}','${stats.makeablePct}','${stats.singlePct}','${stats.multiPct}','${stats.splitPct}')"><span>Spares <span style="font-size:11px;color:var(--t3)">▶</span></span><span class="sval t">${stats.sparePct}</span></div>
     <div class="stat-row"><span>Splits</span><span class="sval s">${stats.splitOpp} (${stats.totalFr ? Math.round(stats.splitOpp/stats.totalFr*100) : 0}%)</span></div>
     <div class="stat-row"><span>Clean Game</span><span class="sval ${isClean?'g':'s'}">${isClean ? 'Yes ✓': 'No'}</span></div>
@@ -23564,20 +23660,50 @@ if (a1.Pinfall === 10) clutchStrikes++;
 
 
 let fillBallSum = 0, fillBallCount = 0;
+let f10ScoreSum = 0, f10ScoreCount = 0;
 f10Frames.forEach(f10 => {
 const a1 = allAttempts.find(a => a.FrameID === f10.FrameID && a.Attempt === 1);
 const a2 = allAttempts.find(a => a.FrameID === f10.FrameID && a.Attempt === 2);
 const a3 = allAttempts.find(a => a.FrameID === f10.FrameID && a.Attempt === 3);
 if (!a1 || a1.Pinfall === null) return;
-if (a1.Pinfall === 10 && a2 && a2.Pinfall !== null) {
-fillBallSum += a2.Pinfall; fillBallCount++;          
-if (a2.Pinfall === 10 && a3 && a3.Pinfall !== null) {
-fillBallSum += a3.Pinfall; fillBallCount++;        
-}
+const p1 = a1.Pinfall;
+const p2 = (a2 && a2.Pinfall !== null) ? a2.Pinfall : null;
+const p3 = (a3 && a3.Pinfall !== null) ? a3.Pinfall : null;
+
+/* FRAME 10 SCORE (added 2026-09-13). Total pinfall across all three
+   deliveries of the tenth, max 30. Counted for every frame 10 that has
+   a first ball, including opens, so the denominator is "tenth frames
+   bowled" and not "tenth frames marked". League average at the time of
+   writing: 20.01 across 687 frames. */
+f10ScoreSum += p1 + (p2 || 0) + (p3 || 0);
+f10ScoreCount++;
+
+/* FILL BALL AVG (definition settled 2026-09-13). A fill is a BONUS
+   delivery thrown at a FRESH RACK. Exactly three shapes qualify:
+     X      -> ball 2 is a fill  (fresh rack, earned by the strike)
+     X X    -> ball 3 is a fill  (fresh rack, earned by the double)
+     spare  -> ball 3 is a fill  (fresh rack, earned by the spare)
+   DELIBERATELY EXCLUDED: ball 3 after a strike followed by a non-strike
+   ball 2. That ball is thrown at ball 2's leave, so it is a spare
+   attempt, not a fill, and counting it measures a different skill.
+   Measured against the real database at the time of the change:
+     this definition      9.09 over 746 deliveries
+     every bonus ball     7.73 over 910   (folds in 164 spare attempts)
+     final bonus ball     6.94 over 575
+   The previous shipped version omitted the spare case entirely (9.14
+   over 506), which is why historical Fill Ball Avg moves slightly down
+   after this change. That movement is the bug fix, not a regression. */
+if (p1 === 10 && p2 !== null) {
+fillBallSum += p2; fillBallCount++;
+if (p2 === 10 && p3 !== null) { fillBallSum += p3; fillBallCount++; }
+} else if (p1 !== 10 && p2 !== null && (p1 + p2) >= 10 && p3 !== null) {
+fillBallSum += p3; fillBallCount++;
 }
 });
 const fillBallAvg = fillBallCount > 0
 ? (fillBallSum / fillBallCount).toFixed(2) : '—';
+const f10ScoreAvg = f10ScoreCount > 0
+? (f10ScoreSum / f10ScoreCount).toFixed(2) : '—';
 
 const att1s = allAttempts.filter(a => a.Attempt === 1 && a.Pinfall !== null);
 const firstBallAvg = att1s.length > 0
@@ -23766,6 +23892,7 @@ clutchOpps,
 clutchStrikes,
 clutchPct: clutchOpps ? pctFull(clutchStrikes, clutchOpps) : '—',
 fillBallAvg,
+f10ScoreAvg,
 hasPinData,
 makeableOpp, makeableConv,
 makeablePct: makeableOpp ? pctFull(makeableConv, makeableOpp) : '—',
@@ -25613,7 +25740,7 @@ meta: {
 kind: 'bowlingdb-snapshot',
 snapshotVersion: 1,
 exportDate: new Date().toISOString(),
-exportSource: 'BowlingDB PWA v30.141',
+exportSource: 'BowlingDB PWA v30.142',
 includesBallImages: !!includeBallImages,
 excluded: Array.from(SNAPSHOT_LS_SKIP)
 },
