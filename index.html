@@ -1142,7 +1142,15 @@ font-size:9px; font-weight:800; color:var(--t3);
 letter-spacing:0.6px; text-transform:uppercase;
 -webkit-tap-highlight-color:transparent;
 user-select:none; flex-shrink:0;
+transition:color 0.15s, opacity 0.15s;
 }
+/* Provenance cue (2026-09-17). The wheel shows a value either way, so
+   the label carries the distinction: solid teal = this attempt's value
+   was actually set, dimmed and italic = it is a carried-forward
+   suggestion nobody has confirmed. Deliberately quiet -- it is a
+   reference the bowler glances at, not a prompt demanding an answer. */
+.fm-wheel-lbl.align-set      { color:var(--teal); opacity:1; }
+.fm-wheel-lbl.align-suggest  { color:var(--t3); opacity:0.55; font-style:italic; }
 .fm-half-btn {
 font-size:9px; font-weight:800; color:var(--t3);
 background:none; border:1px solid var(--border2);
@@ -2524,7 +2532,7 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
     </div>
     <div id="hdr-title" onclick="hdrTitleTap()"><span class="brand">Bowling</span>DB</div>
     <div id="hdr-title-popover"></div>
-    <span id="hdr-build-ref">v30.142 · 2026-09-13</span>
+    <span id="hdr-build-ref">v30.145 · 2026-09-17</span>
     <div id="hdr-right">
       <div class="hdr-icon-btn" id="hdr-delete-game-btn" onclick="confirmDeleteGame(G.gameID)" title="Delete Game" style="display:none">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -3736,6 +3744,7 @@ return idbPutAll(name, tbl||[]);
 
 function saveAll() {
 _scoreOnlyCacheBust(); 
+if (typeof alignStaleBust === 'function') alignStaleBust();
 _radarDistBust();
 if (typeof ldHeatBust === 'function') ldHeatBust(); 
 
@@ -7939,8 +7948,6 @@ confirmAttempt();
 }
 }
 
-function quickStrike() { quickPrimary(); }
-function quickMiss()   { quickSecondary(); }
 
 
 
@@ -9761,7 +9768,12 @@ if (btn) btn.classList.toggle('on', !!on);
 function fmToggleHalf(type) {
 var btn = document.getElementById('fm-'+ type + '-half');
 if (!btn) return;
-_fmBoardTouched[type] = true; 
+_fmBoardTouched[type] = true;
+if (typeof fmPaintAlignCue === 'function') {
+var _f = getFrame(G.frame);
+fmPaintAlignCue(_f ? frameAttempts(_f.FrameID).find(function(a){ return a.Attempt === G.attempt; }) : null);
+}
+
 var nowOn = btn.classList.toggle('on');
 
 var drumId = (type === 'sb') ? 'fm-sb-drum': 'fm-tb-drum';
@@ -9835,10 +9847,9 @@ att.TargetBoard   = (tbBase != null) ? (tbHalf ? tbBase + 0.5 : tbBase) : null;
 
 
 
-att.StartingBoardSource = (att.StartingBoard == null) ? null
-: (_fmBoardTouched.sb ? 'user': (att.StartingBoardSource === 'user'? 'user': 'auto'));
-att.TargetBoardSource   = (att.TargetBoard == null) ? null
-: (_fmBoardTouched.tb ? 'user': (att.TargetBoardSource === 'user'? 'user': 'auto'));
+var _alignShown = fmWheelsVisible();
+att.StartingBoardSource = alignNextSource(att.StartingBoard, _fmBoardTouched.sb, att.StartingBoardSource, _alignShown);
+att.TargetBoardSource   = alignNextSource(att.TargetBoard,   _fmBoardTouched.tb, att.TargetBoardSource,   _alignShown);
 saveAll();
 
 
@@ -9864,6 +9875,28 @@ _liveRef[_liveParity] = { sb: sbBase, tb: tbBase, sbHalf: sbHalf, tbHalf: tbHalf
 saveLaneRef(_liveRef);
 }
 }
+/* Paints the provenance cue on the SB/TB labels. Called on load and on
+   first touch, so the label flips to 'set' the moment the bowler moves
+   the wheel rather than waiting for the attempt to be confirmed. */
+function fmPaintAlignCue(att) {
+var map = { sb: 'fm-sb-lbl', tb: 'fm-tb-lbl' };
+var info = att ? attemptAlignment(att) : null;
+Object.keys(map).forEach(function(k) {
+var el = document.getElementById(map[k]);
+if (!el) return;
+var touched = _fmBoardTouched[k];
+var tier = info ? info.tier : 0;
+var isSet = touched || tier === 2;
+var hasVal = touched || (info && (k === 'sb' ? info.sb != null : info.tb != null));
+el.classList.toggle('align-set', !!isSet);
+el.classList.toggle('align-suggest', !!(hasVal && !isSet));
+el.title = !hasVal ? ''
+: isSet ? 'Set for this shot'
+: (info && info.staleness != null
+? ('Carried forward \u2014 ' + info.staleness + ' shot' + (info.staleness === 1 ? '' : 's') + ' since last set')
+: 'Carried forward \u2014 not confirmed');
+});
+}
 function fmLoadBoardData() {
 var frame = getFrame(G.frame);
 if (!frame) return;
@@ -9872,6 +9905,7 @@ if (!frame) return;
 _fmBoardTouched.sb = false;
 _fmBoardTouched.tb = false;
 var att = frameAttempts(frame.FrameID).find(function(a) { return a.Attempt === G.attempt; });
+fmPaintAlignCue(att);
 var sbDrum = document.getElementById('fm-sb-drum');
 var tbDrum = document.getElementById('fm-tb-drum');
 if (!sbDrum || !tbDrum) return;
@@ -12642,39 +12676,6 @@ return true;
 return games;
 }
  
-function _statsScopeLabel(sc) {
-let parts = [];
-if (sc.context && sc.context !== 'all') {
-const [type, idStr] = sc.context.split(':');
-const id = parseInt(idStr);
-if (type === 'league') {
-const lg = db.leagues.find(l => l.LeagueID === id);
-parts.push(lg?.LeagueName || 'League');
-} else if (type === 'center') {
-const ct = db.centers.find(c => c.CenterID === id);
-parts.push(ct?.CenterName || 'Center');
-}
-}
-const period = sc.period || 'all';
-if (period === 'last10wks') parts.push('Last 10 wks');
-else if (period === 'all') parts.push('All time');
-else if (period === 'season') {
-const sel = sc.periodSeasons || [];
-if (sel.length === 1) parts.push(sel[0] + ' season');
-else if (sel.length > 1) parts.push(sel.slice().sort((a,b)=>b.localeCompare(a)).join('+') + ' seasons');
-}
-else if (period.startsWith('season:')) parts.push(period.slice(7) + ' season');
-else if (period === 'custom') {
-const f = sc.customFrom || ''; const t = sc.customTo || '';
-if (f && t) parts.push(f.slice(5) + ' – '+ t.slice(5));
-else if (f) parts.push('From '+ f.slice(5));
-else if (t) parts.push('To '+ t.slice(5));
-else parts.push('Custom');
-}
-if (sc.condition === 'sport') parts.push('Sport');
-else if (sc.condition === 'standard') parts.push('Standard');
-return parts.join(' · ') || 'All time';
-}
  
 function _statsTrendDelta(scopedGames, sc, allStdGames) {
 if (!scopedGames.length) return null;
@@ -15316,23 +15317,6 @@ if (series) G.leagueID = series.LeagueID;
 await navTo('s-game-complete');
 }
  
-function toggleStatsBlock(id) {
-const STATS_BLOCKS_KEY = 'bowlingdb_stats_layout';
-let sbState;
-try { sbState = JSON.parse(localStorage.getItem(STATS_BLOCKS_KEY) || '{}'); } catch(e) { sbState = {}; }
-if (!sbState.collapsed) sbState.collapsed = {};
-sbState.collapsed[id] = !sbState.collapsed[id];
-try { localStorage.setItem(STATS_BLOCKS_KEY, JSON.stringify(sbState)); } catch(e) {}
-const content = document.getElementById('sb-content-'+id);
-const chevron = document.querySelector(`#sb-${id} [id^="sb-chev"]`);
-if (content) {
-const isCollapsed = sbState.collapsed[id];
-content.style.display = isCollapsed ? 'none': 'block';
-
-const header = document.querySelector(`#sb-${id} > div:first-child > div:last-child`);
-if (header) header.style.transform = isCollapsed ? 'rotate(180deg)': 'rotate(0deg)';
-}
-}
 function goToAvgGames() {
 const pool = getCanonicalLast10WksGames();
 const dates = pool.map(g => db.series.find(s => s.SeriesID === g.SeriesID)?.DateBowled).filter(Boolean);
@@ -15646,10 +15630,6 @@ return '<div style="display:grid;grid-template-columns:22px 56px 1fr 46px;gap:8p
 return meta+rows;
 }
  
-function setLeavesFilter(filterGames) {
-var el = document.getElementById('stats-leaves-content');
-if (el) el.innerHTML = buildTopLeavesHTML(filterGames);
-}
 
 
 
@@ -15970,11 +15950,11 @@ return '<div class="modal-title">'+ name + ' Alignment</div>'
 + '</div>'
 + '<div style="display:flex;gap:8px">'
 + (align.leaveID != null
-? '<button class="btn btn-ghost" style="color:var(--red);flex:0 0 auto" '
+? '<button class="btn btn-ghost" style="color:var(--red);flex:0 1 auto;width:auto;margin-top:0" '
 + 'onclick="_leaveAlignDelete()">Delete</button>'
 : '')
-+ '<button class="btn btn-secondary" style="flex:1" onclick="closeModal()">Cancel</button>'
-+ '<button class="btn btn-primary" style="flex:1" '
++ '<button class="btn btn-secondary" style="flex:1;width:auto;margin-top:0" onclick="closeModal()">Cancel</button>'
++ '<button class="btn btn-primary" style="flex:1;width:auto;margin-top:0" '
 + 'onclick="_leaveAlignSave()">Save</button>'
 + '</div>';
 }
@@ -19857,16 +19837,140 @@ return { n: angleN, actualScore: actualScore, expectedScore: expectedScore, rati
    Built together per the locked design since they answer
    different questions and share no computation.
 
-   DATA-MATURITY NOTE: source tiers shipped 2026-08-15 (v30.112).
-   The reference backup used to validate this session predates
-   that (exported 2026-08-12) — zero attempts carry
-   StartingBoardSource/TargetBoardSource yet, so gated ('user'-
-   tier-only) real numbers are necessarily sparse/empty today.
-   Both functions accept requireUserTier=false for a structural
-   mechanics check against ungated historical data; re-validate
-   with requireUserTier=true (the default) once real user-tier
-   throws accumulate post-v30.112.
+   DATA-MATURITY NOTE (rewritten 2026-09-17). Both functions now go
+   through attemptAlignment()/alignUsable() rather than testing
+   StartingBoardSource === 'user' directly. That mattered: a
+   'user'-only gate accepted 113 records and discarded 824 'legacy'
+   ones, which predate v30.112 and were manual by necessity because
+   auto-fill did not exist yet. Via the accessor the gate accepts
+   937 strong-tier records, 1,041 including near-confirmations, and
+   excludes the 680 board-0 sentinels it used to count as real.
+   requireUserTier=false still disables the gate entirely for a
+   structural mechanics check.
    */
+/* ============================================================
+   ALIGNMENT PROVENANCE (2026-09-17)
+
+   SB/TB serves two jobs that pull against each other: it is a
+   REFERENCE the bowler glances at, and it is an OBSERVATION used to
+   ask whether an alignment works. The reference role wants a value
+   always present; the observation role wants only values that were
+   actually verified. Left unseparated, a default the bowler never
+   looked at gets analysed as though it were a measurement.
+
+   Provenance answers that, in four tiers:
+
+     user    - actively set on the wheel. Strong.
+     legacy  - has values but no source tag. Predates v30.112, when
+               auto-fill did not exist, so it was manual BY NECESSITY.
+               Strong. 823 records in the 2026-09-13 snapshot; a
+               'user'-only filter would have thrown all of them away.
+     shown   - the wheel was on screen carrying this value when the
+               attempt was confirmed, and the bowler did not correct
+               it. Weak evidence, but real, and free to capture.
+     auto    - filled in without ever being surfaced. No evidence.
+
+   ZERO IS NOT A BOARD. Real values in the database run 10..50.
+   680 records sit at board 0, all pre-tagging: that is a legacy
+   import sentinel meaning "not recorded", and any test of
+   `StartingBoard != null` counts them as observations. Normalised
+   away here, at read time, so no migration has to run first.
+
+   STALENESS is DERIVED, never stored. Ordering attempts by
+   AttemptID, it counts shots since the last strong-tier value. This
+   costs no schema change and no capture friction, and it is what
+   makes 'auto' usable rather than merely discardable: an auto value
+   one shot after a confirmation is very likely still true, one
+   twelve shots after is not. In the 2026-09-13 snapshot 78% of
+   tagged records were strong-tier or within two shots of one, and
+   the longest unconfirmed run in the whole database was 12.
+
+   The residual ambiguity cannot be removed: "did not move" and
+   "moved and forgot" are identical at the record level, and only a
+   per-shot prompt would separate them. The goal here is not clean
+   data, it is KNOWING HOW CLEAN — so analysis can report what it
+   rests on instead of silently averaging over unknowns.
+   ============================================================ */
+/* True when the SB/TB wheels were actually on screen carrying their
+   current value. Distinguishes 'shown' (the bowler saw it and let it
+   stand) from 'auto' (filled in behind them). offsetParent is null for
+   a hidden element, so this is a real visibility test, not just a
+   presence one. */
+function fmWheelsVisible() {
+var panel = document.getElementById('focus-mode-panel');
+if (!panel || !panel.classList.contains('fm-active')) return false;
+var drum = document.getElementById('fm-sb-drum');
+return !!(drum && drum.offsetParent !== null);
+}
+/* Provenance transition, with the OVERWRITE GUARD lifted from the
+   10-pin prompt: an unverified value must never demote a verified one.
+   Tiers only ever move up. */
+function alignNextSource(value, touched, prev, wasShown) {
+if (value == null || value === 0) return null;
+if (touched) return 'user';
+if (prev === 'user' || prev === 'legacy' || prev === 'shown') return prev;
+return wasShown ? 'shown' : 'auto';
+}
+function alignSourceTier(s) {
+if (s === 'user' || s === 'legacy') return 2;
+if (s === 'shown') return 1;
+return 0;
+}
+function alignNormalizeSource(att) {
+if (!att) return null;
+var sb = att.StartingBoard, tb = att.TargetBoard;
+var hasSB = (sb != null && sb !== 0);
+var hasTB = (tb != null && tb !== 0);
+if (!hasSB && !hasTB) return null;
+var s = att.StartingBoardSource || att.TargetBoardSource;
+if (s) return s;
+return 'legacy';
+}
+var _alignStaleCache = null;
+function alignStaleBust() { _alignStaleCache = null; }
+function _alignStaleIndex() {
+if (_alignStaleCache) return _alignStaleCache;
+var m = {};
+var rows = db.attempts.slice().sort(function(a, b) { return a.AttemptID - b.AttemptID; });
+var since = null;
+rows.forEach(function(a) {
+var s = alignNormalizeSource(a);
+if (s == null) return;
+if (alignSourceTier(s) === 2) since = 0;
+else if (since != null) since += 1;
+m[a.AttemptID] = since;
+});
+_alignStaleCache = m;
+return m;
+}
+/* The one accessor every consumer of SB/TB should go through.
+   Returns sb/tb already normalised (0 -> null), the provenance tier,
+   and derived staleness. Callers decide their own threshold rather
+   than each re-deriving what counts as trustworthy. */
+function attemptAlignment(att) {
+var source = alignNormalizeSource(att);
+if (!source) {
+return { sb: null, tb: null, source: null, tier: 0, confirmed: false, staleness: null };
+}
+var sb = (att.StartingBoard === 0) ? null : att.StartingBoard;
+var tb = (att.TargetBoard === 0) ? null : att.TargetBoard;
+var tier = alignSourceTier(source);
+return {
+sb: sb, tb: tb, source: source, tier: tier,
+confirmed: (tier === 2),
+staleness: _alignStaleIndex()[att.AttemptID]
+};
+}
+/* Default acceptance test: strong tier, or weak/none but close enough
+   to a confirmation that the bowler is very unlikely to have moved.
+   maxStale defaults to 2, which retained 78% of tagged records. */
+function alignUsable(att, maxStale) {
+var a = attemptAlignment(att);
+if (!a.source) return false;
+if (a.tier === 2) return true;
+var lim = (maxStale == null) ? 2 : maxStale;
+return (a.staleness != null && a.staleness <= lim);
+}
 function sbtbStrikeLineComparison(laneKeys, requireUserTier) {
 requireUserTier = (requireUserTier !== false);
 var hist = llDeriveHistory();
@@ -19888,10 +19992,12 @@ if (a.Attempt !== 1) return;
 if (!allFrameIDs.hasOwnProperty(a.FrameID)) return;
 var isInLane = !!laneFrameIDs[a.FrameID];
 if (isInLane !== inLane) return;
-var sbOK = a.StartingBoard != null && (!requireUserTier || a.StartingBoardSource === 'user');
-var tbOK = a.TargetBoard != null && (!requireUserTier || a.TargetBoardSource === 'user');
-if (sbOK) sbVals.push(a.StartingBoard);
-if (tbOK) tbVals.push(a.TargetBoard);
+var _al = attemptAlignment(a);
+var _alOK = (!requireUserTier || alignUsable(a));
+var sbOK = _al.sb != null && _alOK;
+var tbOK = _al.tb != null && _alOK;
+if (sbOK) sbVals.push(_al.sb);
+if (tbOK) tbVals.push(_al.tb);
 });
 return { sbVals: sbVals, tbVals: tbVals };
 }
@@ -19930,12 +20036,14 @@ db.attempts.forEach(function(a) {
 if (a.Attempt !== 2) return;
 if (!laneFrameIDs[a.FrameID]) return;
 if (a.LeaveID == null) return;
-var sbOK = a.StartingBoard != null && (!requireUserTier || a.StartingBoardSource === 'user');
-var tbOK = a.TargetBoard != null && (!requireUserTier || a.TargetBoardSource === 'user');
+var _al = attemptAlignment(a);
+var _alOK = (!requireUserTier || alignUsable(a));
+var sbOK = _al.sb != null && _alOK;
+var tbOK = _al.tb != null && _alOK;
 if (!sbOK && !tbOK) return;
 if (!byLeave[a.LeaveID]) byLeave[a.LeaveID] = { sbVals: [], tbVals: [] };
-if (sbOK) byLeave[a.LeaveID].sbVals.push(a.StartingBoard);
-if (tbOK) byLeave[a.LeaveID].tbVals.push(a.TargetBoard);
+if (sbOK) byLeave[a.LeaveID].sbVals.push(_al.sb);
+if (tbOK) byLeave[a.LeaveID].tbVals.push(_al.tb);
 });
 function avg(arr) { return arr.length ? arr.reduce(function(a,b){ return a + b; }, 0) / arr.length : null; }
 var results = [];
@@ -20910,7 +21018,7 @@ toast('Progress saved — pick up where you left off anytime');
    get tapped.
 
    All of the pure, heavily-tested scoring functions (bakerScoreGame,
-   bakerNextBallMax, bakerApplyNoTapSubstitution, bakerFormatFrameBalls)
+   bakerNextBallMax, bakerApplyNoTapSubstitution)
    are UNCHANGED — they still operate on the simple "10-slot array of
    pinfall-count arrays" shape. bakerFramesAsPinfallArrays() is the one
    new adapter that derives that view from the richer frameEntries
@@ -21007,8 +21115,8 @@ return out;
 });
 }
 /* Adapts a session's frame storage into the plain "10-slot array of
-   pinfall-count arrays" shape bakerScoreGame()/bakerFormatFrameBalls()/
-   bakerApplyNoTapSubstitution() all operate on — those stay exactly as
+   pinfall-count arrays" shape bakerScoreGame() and
+   bakerApplyNoTapSubstitution() both operate on — those stay exactly as
    written and tested regardless of which storage shape feeds them.
    Handles both v30.125+ sessions (frameEntries, full attempt detail)
    and legacy pre-v30.125 sessions (flat `frames` pinfall-count arrays
@@ -21894,29 +22002,6 @@ var downCount = 10 - maxNow;
 var down = [];
 for (var p = 1; p <= downCount; p++) down.push(p);
 return down;
-}
-function bakerFormatFrameBalls(balls) {
-var out = [];
-var i = 0;
-while (i < balls.length) {
-var b1 = balls[i];
-if (b1 === 10) { out.push('X'); i += 1; continue; }
-var b2 = balls[i+1];
-if (b2 !== undefined) {
-if (b1 + b2 === 10) {
-out.push(b1 === 0 ? '-': String(b1));
-out.push('/');
-} else {
-out.push(b1 === 0 ? '-': String(b1));
-out.push(b2 === 0 ? '-': String(b2));
-}
-i += 2;
-} else {
-out.push(b1 === 0 ? '-': String(b1));
-i += 1;
-}
-}
-return out.join(' ');
 }
 function bakerMiniScoresheet(session, inHeader) {
 var st = session || _bakerState;
@@ -24673,10 +24758,6 @@ return `<div class="ball-card${b.Archived?' archived':''}">
     </div>`;
 }).join('');
 }
-function openEditBallModal(ballID) {
-
-openBallDetailModal(ballID);
-}
 function openBallOptions(ballID) {
 const b = db.balls.find(x=>x.BallID==ballID);
 if (!b) return;
@@ -25226,22 +25307,6 @@ renderBallBar();
 
 if (getPrefs().focusMode) renderFocusModePanel();
 }
-function openAddBallModal() {
-openModal(`
-    <div class="modal-title">Add Ball</div>
-    <div class="fgroup"><label class="flabel">Ball Name</label>
-      <input class="finput" id="ab-name" placeholder="e.g. Roto Grip Idol Pearl" type="text" autocomplete="off"></div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-      <div class="fgroup"><label class="flabel">Weight (lbs)</label>
-        <input class="finput" id="ab-wt" type="number" value="15" min="6" max="16"></div>
-      <div class="fgroup"><label class="flabel">Manufacturer</label>
-        <input class="finput" id="ab-mfg" placeholder="e.g. Storm" type="text" autocomplete="off"></div>
-    </div>
-    <button class="btn btn-primary" onclick="saveNewBall()">Add Ball</button>
-    <button class="btn btn-secondary" onclick="openDevModal('balls')">← Back</button>
-  `);
-setTimeout(()=>document.getElementById('ab-name')?.focus(),350);
-}
 function saveNewBall() {
 const name = document.getElementById('ab-name').value.trim();
 if (!name) { toast('Enter a ball name'); return; }
@@ -25254,123 +25319,7 @@ Coverstock:'', CoverName:'', RG:null, Differential:null, RGDiff:'', DateReleased
 saveDB(); closeModal(); toast('Ball added!');
 }
  
-function openBallDetailModal(ballID) {
-const b = db.balls.find(x=>x.BallID==ballID);
-if (!b) return;
-
-const preps = db.surfaceDetails
-.filter(sd=>sd.BallID==ballID)
-.sort((a,z)=>z.DateSurfaced>a.DateSurfaced?1:-1);
-const prepRows = preps.length ? preps.map(sd=>{
-const surf = db.surfaces.find(s=>s.SurfaceID==sd.SurfaceID);
-const gritLabel = sd.GritSimple ? sd.GritSimple+'g': (surf?.GritActual || '—');
-const tags = [];
-if (sd.Polished) tags.push('<span style="background:rgba(52,211,153,.15);color:var(--teal);border-radius:4px;padding:1px 5px;font-size:10px">Polished</span>');
-if (sd.Bake)     tags.push('<span style="background:rgba(251,191,36,.12);color:#f59e0b;border-radius:4px;padding:1px 5px;font-size:10px">Baked</span>');
-return `
-    <div class="stat-row" style="align-items:flex-start;padding:8px 0">
-      <div>
-        <div style="font-size:13px;font-weight:500">${sd.DateSurfaced?.slice(0,10)||'—'}</div>
-        <div style="font-size:11px;color:var(--t3);margin-top:2px">${gritLabel}${tags.length?' · '+tags.join(' '):''}</div>
-      </div>
-      <span style="cursor:pointer;color:var(--t3);font-size:18px;line-height:1" onclick="deleteSurfacePrep(${sd.SurfacedDetailID},${ballID})" title="Delete">×</span>
-    </div>`;
-}).join('') : '<div style="font-size:12px;color:var(--t3);padding:6px 0">No surface prep logged yet</div>';
-
-const specRows = [
-['Hook Rating', b.HookRating!=null ? b.HookRating+'/10': null],
-['Box Finish',  b.BoxFinish||null],
-['Coverstock',  b.Coverstock||null],
-['Cover Name',  b.CoverName||null],
-['Core Type',   b.CoreType||null],
-['RG / Diff',   (b.RG||b.Differential) ? `${b.RG||'—'} / ${b.Differential||'—'}`: null],
-['RG Category', b.RGDiff||null],
-['Perfect Scale', b.PerfectScaleVal!=null ? b.PerfectScaleVal : null],
-['Released',    b.DateReleased?.slice(0,10)||null],
-].filter(([,v])=>v!=null);
-const specsHTML = specRows.length ? `
-    <div class="settings-section">
-      <div class="settings-section-hdr">Specs</div>
-      ${specRows.map(([k,v])=>`
-        <div class="stat-row" style="padding:5px 0">
-          <span style="color:var(--t3);font-size:12px">${k}</span>
-          <span class="sval" style="font-size:12px">${v}</span>
-        </div>`).join('')}
-    </div>`: '';
-const _bdSrc = getBallImgSrc(b.BallID, 'cover');
-const imgHTML = _bdSrc
-? `<div style="text-align:center;margin-bottom:14px">
-        <img src="${_bdSrc}" alt="${b.BallName}"
-          style="max-height:110px;max-width:100%;object-fit:contain;border-radius:12px"
-          onerror="this.style.display='none'">
-      </div>`
-: '';
-openModal(`
-    ${imgHTML}
-    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px">
-      <div>
-        <div class="modal-title" style="margin-bottom:2px">${b.BallName}</div>
-        <div style="font-size:12px;color:var(--t3)">${b.MFG?b.MFG+' · ':''}${b.Weight} lb${b.Active===false?' · <span style="color:#ef4444">Inactive</span>':''}</div>
-      </div>
-      <div style="display:flex;gap:6px;flex-shrink:0;margin-top:4px">
-        <button class="btn btn-ghost btn-sm" style="font-size:11px" onclick="fetchBallInfo(${ballID})">ⓘ Specs</button>
-        <button class="btn btn-ghost btn-sm" style="font-size:11px" onclick="openEditBallModal(${ballID})">Edit</button>
-      </div>
-    </div>
-
-    <button class="btn btn-primary" style="width:100%;margin:8px 0"
-      onclick="openLogSurfacePrepModal(${ballID})">+ Surface</button>
-
-    ${specsHTML}
-
-    <div class="settings-section">
-      <div class="settings-section-hdr">Surface Prep History
-        <span class="settings-section-hint">${preps.length} session${preps.length!==1?'s':''}</span>
-      </div>
-      ${prepRows}
-    </div>
-
-    <button class="btn btn-secondary" onclick="openDevModal('balls')">← Back</button>
-  `);
-}
  
-function openEditBallModal(ballID) {
-const b = db.balls.find(x=>x.BallID==ballID);
-if (!b) return;
-openModal(`
-    <div class="modal-title">Edit Ball</div>
-    <div class="fgroup"><label class="flabel">Ball Name</label>
-      <input class="finput" id="eb-name" value="${b.BallName.replace(/"/g,'&quot;')}" type="text" autocomplete="off"></div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-      <div class="fgroup"><label class="flabel">Weight (lbs)</label>
-        <input class="finput" id="eb-wt" type="number" value="${b.Weight}" min="6" max="16"></div>
-      <div class="fgroup"><label class="flabel">Manufacturer</label>
-        <input class="finput" id="eb-mfg" value="${(b.MFG||'').replace(/"/g,'&quot;')}" type="text" autocomplete="off" placeholder="e.g. Storm"></div>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-      <div class="fgroup"><label class="flabel">Hook Rating (1–10)</label>
-        <input class="finput" id="eb-hook" type="number" value="${b.HookRating??''}" min="1" max="10" placeholder="—"></div>
-      <div class="fgroup"><label class="flabel">Box Finish</label>
-        <input class="finput" id="eb-finish" value="${(b.BoxFinish||'').replace(/"/g,'&quot;')}" type="text" placeholder="e.g. 2000 Grit"></div>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-      <div class="fgroup"><label class="flabel">Coverstock Type</label>
-        <input class="finput" id="eb-cover" value="${(b.Coverstock||'').replace(/"/g,'&quot;')}" type="text" placeholder="e.g. Solid, Pearl"></div>
-      <div class="fgroup"><label class="flabel">Core Type</label>
-        <input class="finput" id="eb-core" value="${(b.CoreType||'').replace(/"/g,'&quot;')}" type="text" placeholder="Symm / Asymm"></div>
-    </div>
-    <div class="fgroup" style="margin-top:6px">
-      <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
-        <input type="checkbox" id="eb-active" ${b.Active!==false?'checked':''} style="width:18px;height:18px">
-        <span class="flabel" style="margin-bottom:0">Active (show in ball picker)</span>
-      </label>
-    </div>
-    <button class="btn btn-primary" onclick="saveEditBall(${ballID})">Save Changes</button>
-    <button class="btn btn-danger" style="margin-top:6px" onclick="deleteBall(${ballID})">Remove Ball</button>
-    <button class="btn btn-secondary" style="margin-top:6px" onclick="openBallDetailModal(${ballID})">← Back</button>
-  `);
-setTimeout(()=>document.getElementById('eb-name')?.focus(),350);
-}
 function saveEditBall(ballID) {
 const b = db.balls.find(x=>x.BallID==ballID);
 if (!b) return;
@@ -25740,7 +25689,7 @@ meta: {
 kind: 'bowlingdb-snapshot',
 snapshotVersion: 1,
 exportDate: new Date().toISOString(),
-exportSource: 'BowlingDB PWA v30.142',
+exportSource: 'BowlingDB PWA v30.145',
 includesBallImages: !!includeBallImages,
 excluded: Array.from(SNAPSHOT_LS_SKIP)
 },
@@ -27578,23 +27527,7 @@ openModal(`
     <button class="btn btn-secondary" onclick="openBallDetailModal(${ballID})">← Back</button>
   `);
 }
-function saveNewCenter() {
-const name = document.getElementById('ac-name').value.trim();
-if (!name) { toast('Enter a center name'); return; }
-const id = db.ids.center++;
-db.centers.push({ CenterID:id, CenterName:name, Address:'', City:'', State:'', Zip:'', Lanes:0, LaneSurface:'', Website:'', ProShop:false });
-saveDB(); closeModal(); toast('Center added!');
-}
  
-function saveNewPattern() {
-const name = document.getElementById('ap-name').value.trim();
-if (!name) { toast('Enter a pattern name'); return; }
-const length = parseFloat(document.getElementById('ap-length').value)||null;
-const oil = document.getElementById('ap-oil').value.trim();
-const id = db.ids.pattern++;
-db.patterns.push({ PatternID:id, PatternName:name, Length:length, Oil:oil });
-saveDB(); openSettingsModal(); toast('Pattern added!');
-}
  
 
 const PIN_COLOR_DEFAULTS = { B: '#0E0F11', S: '#00D9D9', K: '#00D9D9'};
@@ -27949,21 +27882,6 @@ fr.NoTapRunningTotal = running;
 
 
 
-function saveAttemptNote(attID) {
-const note = (document.getElementById('att-note-input')?.value || '').trim();
-const att = db.attempts.find(a=>a.AttemptID===attID);
-if (att) { att.AttemptNotes = note; saveAll(); }
-closeModal();
-updateNotesIcon();
-toast(note ? 'Note saved ✓': 'Note cleared');
-}
-function clearAttemptNote(attID) {
-const att = db.attempts.find(a=>a.AttemptID===attID);
-if (att) { att.AttemptNotes = ''; saveAll(); }
-closeModal();
-updateNotesIcon();
-toast('Note cleared');
-}
 function updateNotesIcon() {
 const icon = document.getElementById('notes-icon-btn');
 if (!icon) return;
@@ -27997,30 +27915,6 @@ const offBtn = document.getElementById('ob-notap-off');
 const onBtn  = document.getElementById('ob-notap-on');
 if (offBtn) offBtn.className = 'oe-btn'+ (!val?' on':'');
 if (onBtn)  onBtn.className  = 'oe-btn'+ (val?' on':'');
-}
-function setTournNoTap(val) {
-window._tournNoTap = val;
-const offBtn = document.getElementById('nt-notap-off');
-const onBtn  = document.getElementById('nt-notap-on');
-if (offBtn) offBtn.className = 'oe-btn'+ (!val?' on':'');
-if (onBtn)  onBtn.className  = 'oe-btn'+ (val?' on':'');
-}
-function updateLanePairPreview() {
-const raw = (document.getElementById('ms-lanepair')?.value || '').trim();
-const el = document.getElementById('ms-lane-preview');
-if (!el) return;
-if (!raw || !raw.includes('-')) { el.textContent = 'Enter a lane pair above'; return; }
-const parts = raw.split('-').map(Number);
-if (parts.length !== 2 || isNaN(parts[0]) || isNaN(parts[1])) {
-el.textContent = 'Enter a valid pair (e.g. 15-16)'; return;
-}
-const [a, b] = parts;
-const odd = a % 2 !== 0 ? a : b;
-const even = a % 2 === 0 ? a : b;
-const startOdd = window._seriesModalState?.startOdd !== false;
-const lane1 = startOdd ? odd : even;
-const lane2 = startOdd ? even : odd;
-el.innerHTML = `G1: <strong style="color:var(--teal)">${lane1}</strong> &rarr; G2: <strong style="color:var(--teal)">${lane2}</strong> &rarr; G3: <strong style="color:var(--teal)">${lane1}</strong>`;
 }
 
 
@@ -28410,12 +28304,6 @@ return last;
 
 
 
-function jumpToCurrentFrame() {
-const target = findCurrentFrameAttempt();
-cancelUndo();
-jumpToPosition(target.frame, target.att);
-haptic('light');
-}
 /*
    MOVE FRAMES (Item 2, v30.6)
    Mid-game-only correction tool. Select a contiguous range of
@@ -28436,8 +28324,11 @@ haptic('light');
 
    After a successful shift, the cursor parks at attempt 1 of the
    first vacated frame — i.e. where correction continues — per
-   product decision. The separate jumpToCurrentFrame() control
-   (above) is how the user gets back to live scoring afterward.
+   product decision. NOTE (2026-09-13): this paragraph used to say the
+   separate jumpToCurrentFrame() control above was how the user got back
+   to live scoring. That function had NO callers and was removed in purge
+   batch 2. Either the return path moved elsewhere or it was lost at some
+   point -- unverified on device. See register A9-note.
    */
 let MOVE = {
 active: false,           
@@ -32857,33 +32748,6 @@ closeModal();
 const tmNote = includeTeammates ? ' (+ teammates)': '';
 const overwriteNote = isOverwrite ? ' (overwritten)': '';
 toast(`Series transferred! ${session.numGames} games · ${totalScore} total${tmNote}${overwriteNote}`, 3000);
-}
-async function grpConfirmTransfer(gameIdx) {
-if (typeof loadScoringData === 'function') await loadScoringData();
-const session  = GRP.session;
-const meIdx    = session.bowlers.findIndex(b => b.isMe);
-let   seriesID = parseInt(document.getElementById('grp-xfer-series')?.value) || null;
-const includeTeammates = !!(document.getElementById('grp-xfer-teammates')?.checked);
-let   lgID     = null;
-if (!seriesID) {
-lgID = parseInt(document.getElementById('grp-xfer-league')?.value) || session.leagueID || null;
-seriesID = db.ids.series++;
-db.series.push({
-SeriesID: seriesID, LeagueID: lgID, CenterID: session.centerID || null,
-LanePair: session.lanePair || '', DateBowled: session.date || azToday(),
-NoTap: session.noTap || false, GamesPerSeries: session.numGames,
-Notes: 'Group session transfer'
-});
-} else {
-lgID = db.series.find(s => s.SeriesID === seriesID)?.LeagueID || null;
-}
-const myScore = writeGrpGameToSeries(session, gameIdx, seriesID, meIdx, includeTeammates);
-saveDB();
-await saveAll();
-await silentHdcpRecalc(lgID);
-closeModal();
-const tmNote = includeTeammates ? ' (+ teammates)': '';
-toast(`Game ${gameIdx + 1} saved! Score: ${myScore}${tmNote}`, 2500);
 }
 
 
