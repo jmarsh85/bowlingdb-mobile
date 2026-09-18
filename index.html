@@ -1260,16 +1260,57 @@ letter-spacing:-0.3px;
 .fm-ref-chip.active .fm-ref-val-num { color:var(--teal); }
 .fm-ref-chip.editing .fm-ref-val-num { color:var(--gold); }
 .fm-ref-sep { font-size:8px; color:var(--border2); }
+/* NEW-9 (2026-09-17). This control flips which lane chip counts as active
+   -- normally chosen automatically by frame parity. It used to render as a
+   bare glyph with only a title attribute, which reads as an unexplained
+   object rather than a switch, and was repeatedly mistaken for an SB/TB
+   logging toggle. It now carries a word for its state and a filled track
+   when engaged, so it looks like what it is. */
 .fm-ref-override-btn {
-font-size:11px; color:var(--t3); padding:3px 5px;
-background:none; border:1px solid var(--border2); border-radius:6px;
+display:flex; align-items:center; gap:3px;
+font-size:8px; font-weight:900; letter-spacing:0.5px; text-transform:uppercase;
+color:var(--t3); padding:3px 6px;
+background:none; border:1px solid var(--border2); border-radius:999px;
 cursor:pointer; -webkit-tap-highlight-color:transparent;
 flex-shrink:0; line-height:1;
-transition:border-color 0.15s, color 0.15s;
+transition:border-color 0.15s, color 0.15s, background 0.15s;
+}
+.fm-ref-override-btn .fm-ref-dot {
+width:5px; height:5px; border-radius:50%;
+background:var(--t3); transition:background 0.15s, box-shadow 0.15s;
 }
 .fm-ref-override-btn.on {
 border-color:var(--sedona); color:var(--sedona);
+background:rgba(203,98,58,0.12);
 }
+.fm-ref-override-btn.on .fm-ref-dot {
+background:var(--sedona); box-shadow:0 0 5px var(--sedona);
+}
+/* Spare hint (2026-09-17). Sits above the wheels, only when there is
+   something to say: that the numbers were borrowed from the other ball
+   style, or that the last time this leave actually came up the bowler
+   stood somewhere else. Quiet by default -- it is an offer, not a
+   prompt, and it must never look like it is demanding an answer. */
+.fm-spare-hint {
+display:flex; align-items:center; justify-content:center; gap:6px;
+font-size:9px; letter-spacing:0.3px; padding:2px 0;
+color:var(--t3); text-align:center;
+}
+.fm-spare-hint .fm-hint-borrow { color:var(--t3); opacity:0.75; font-style:italic; }
+.fm-spare-hint .fm-hint-last {
+color:var(--gold); border:1px solid var(--gold); border-radius:999px;
+padding:2px 7px; font-weight:800; cursor:pointer;
+-webkit-tap-highlight-color:transparent; background:none;
+transition:background 0.12s;
+}
+.fm-spare-hint .fm-hint-last:active { background:rgba(214,169,76,0.18); }
+.fm-spare-hint .fm-hint-save {
+color:var(--teal); border:1px solid var(--teal); border-radius:999px;
+padding:2px 7px; font-weight:800; cursor:pointer;
+-webkit-tap-highlight-color:transparent; background:none;
+transition:background 0.12s;
+}
+.fm-spare-hint .fm-hint-save:active { background:rgba(0,184,184,0.18); }
 .fm-ref-edit-label {
 font-size:9px; font-weight:900; color:var(--gold); letter-spacing:0.6px;
 text-align:center; padding:2px 0; display:none;
@@ -2532,7 +2573,7 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
     </div>
     <div id="hdr-title" onclick="hdrTitleTap()"><span class="brand">Bowling</span>DB</div>
     <div id="hdr-title-popover"></div>
-    <span id="hdr-build-ref">v30.145 · 2026-09-17</span>
+    <span id="hdr-build-ref">v30.148 · 2026-09-17</span>
     <div id="hdr-right">
       <div class="hdr-icon-btn" id="hdr-delete-game-btn" onclick="confirmDeleteGame(G.gameID)" title="Delete Game" style="display:none">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -2863,6 +2904,8 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
         </div>
         <!-- Ref-edit mode label (above drums) -->
         <div class="fm-ref-edit-label" id="fm-ref-edit-label"></div>
+        <!-- Spare hint: borrowed-style notice and last-used offer -->
+        <div class="fm-spare-hint" id="fm-spare-hint" style="display:none"></div>
 
         <!-- Collapsed ball row: SB/TB wheels | NT + ALT (chip is floating, lives in pin anchor) -->
         <div class="fm-ball-row-collapsed" id="fm-ball-row-collapsed">
@@ -9918,6 +9961,10 @@ var prefs = getPrefs();
 
 
 var refSb = null, refTb = null, refBallSuggestion = null;
+/* Reset per load: _fmSpareCtx is only assigned in the attempt-2 branch
+   when a leave is known, so without this it would survive into a frame
+   with no leave recorded and the hint would describe the wrong one. */
+_fmSpareCtx = null;
 if (!att || att.StartingBoard == null) {
 if (G.attempt === 1) {
 var _parity = currentLaneParity();
@@ -9935,7 +9982,12 @@ if (_leaveID != null) {
 
 
 var _style = inferBallStyle(G.ballID);
-var _align = getSpareAlignment(_leaveID, _style);
+/* Cross-style fallback (2026-09-17). A leave with only a straight
+   setup used to surface nothing when a hook ball was up, even though
+   the one real reference on file was perfectly usable. */
+var _res = spareAlignResolve(_leaveID, _style);
+var _align = _res.align;
+_fmSpareCtx = { leaveID: _leaveID, style: _style, borrowedFrom: _res.borrowedFrom, def: _align };
 if (_align) {
 refSb = _align.sb;
 refTb = _align.tb;
@@ -9967,6 +10019,7 @@ var tbVal = (att && att.TargetBoard != null) ? att.TargetBoard
 : (G.attempt === 1 && G.lastTB != null ? G.lastTB : (prefs.defaultTB != null ? prefs.defaultTB : 10)));
 fmScrollWheelTo(sbDrum, sbVal);
 fmScrollWheelTo(tbDrum, tbVal);
+fmRenderSpareHint();
 fmSetHalfToggle('sb', sbVal % 1 >= 0.5);
 fmSetHalfToggle('tb', tbVal % 1 >= 0.5);
 }
@@ -10015,6 +10068,98 @@ var frameOnStart = ((G.frame || 1) % 2 === 1);
 var onOdd = frameOnStart ? gameStartIsOdd : !gameStartIsOdd;
 return onOdd ? 'odd': 'even';
 }
+var _fmSpareCtx = null;
+/* Renders the spare hint for the attempt currently loaded. Two things
+   it can say, independently:
+     - the shown numbers were borrowed from the other ball style
+     - the last time this leave actually came up, the bowler used
+       something different (strong-tier only -- see spareLastUsed)
+   Tapping the last-used pill moves the wheels and marks them touched,
+   so adopting it records as 'user' rather than silently as 'auto'. */
+function fmRenderSpareHint() {
+var el = document.getElementById('fm-spare-hint');
+if (!el) return;
+var ctx = _fmSpareCtx;
+if (!ctx || ctx.leaveID == null || G.attempt === 1) {
+el.style.display = 'none'; el.innerHTML = ''; _fmLastUsedOffer = null; return;
+}
+var parts = [];
+if (ctx.borrowedFrom) {
+parts.push('<span class="fm-hint-borrow">from ' + ctx.borrowedFrom + ' setup</span>');
+}
+var last = spareLastUsed(ctx.leaveID, ctx.style);
+_fmLastUsedOffer = null;
+if (last && spareAlignDiffers(ctx.def, last)) {
+_fmLastUsedOffer = last;
+var lbl = (last.sb != null ? last.sb : '\u2013') + ' / ' + (last.tb != null ? last.tb : '\u2013');
+parts.push('<button class="fm-hint-last" onclick="fmAdoptLastUsed()">last used ' + lbl + '</button>');
+}
+/* Manual promotion. Offered whenever the wheels are sitting somewhere
+   other than this leave's saved setup for this style -- including when
+   there is no saved setup yet, which is how a leave gets its first one.
+   Deliberately manual: a rule that promotes automatically would need a
+   repeat threshold, and until post-v30.147 data shows what a genuine
+   repeat override looks like, any threshold would be a guess. */
+var cur = fmCurrentWheelPair();
+if (cur && (cur.sb != null || cur.tb != null)) {
+var def = ctx.def;
+var already = def && !ctx.borrowedFrom && def.sb === cur.sb && def.tb === cur.tb;
+if (!already) {
+parts.push('<button class="fm-hint-save" onclick="fmMakeSpareDefault()">make default</button>');
+}
+}
+if (!parts.length) { el.style.display = 'none'; el.innerHTML = ''; return; }
+el.innerHTML = parts.join('');
+el.style.display = 'flex';
+}
+var _fmLastUsedOffer = null;
+/* Current wheel values including the half-board buttons, in the same
+   shape the write path uses, so a promoted default is byte-for-byte
+   what would have been recorded for the shot. */
+function fmCurrentWheelPair() {
+var sbBase = fmGetWheelValue('fm-sb-drum');
+var tbBase = fmGetWheelValue('fm-tb-drum');
+var sbHalfBtn = document.getElementById('fm-sb-half');
+var tbHalfBtn = document.getElementById('fm-tb-half');
+var sbHalf = sbHalfBtn && sbHalfBtn.classList.contains('on');
+var tbHalf = tbHalfBtn && tbHalfBtn.classList.contains('on');
+return {
+sb: (sbBase != null) ? (sbHalf ? sbBase + 0.5 : sbBase) : null,
+tb: (tbBase != null) ? (tbHalf ? tbBase + 0.5 : tbBase) : null
+};
+}
+function fmMakeSpareDefault() {
+var ctx = _fmSpareCtx;
+if (!ctx || ctx.leaveID == null) return;
+var cur = fmCurrentWheelPair();
+if (cur.sb == null && cur.tb == null) return;
+/* Saved against the style actually on the wheels. When the numbers were
+   borrowed from the other style, this is what converts a borrowed
+   reference into a real setup for THIS style rather than editing the
+   one it was borrowed from. */
+var style = ctx.style || null;
+saveSpareAlignment(ctx.leaveID, { sb: cur.sb, tb: cur.tb }, style);
+_fmSpareCtx.def = getSpareAlignment(ctx.leaveID, style);
+_fmSpareCtx.borrowedFrom = null;
+haptic('light');
+if (typeof toast === 'function') {
+toast('Default set \u2014 ' + (cur.sb != null ? cur.sb : '\u2013') + ' / ' + (cur.tb != null ? cur.tb : '\u2013') +
+(style ? (' (' + style + ')') : ''));
+}
+fmRenderSpareHint();
+}
+function fmAdoptLastUsed() {
+var last = _fmLastUsedOffer;
+if (!last) return;
+var sbDrum = document.getElementById('fm-sb-drum');
+var tbDrum = document.getElementById('fm-tb-drum');
+if (last.sb != null && sbDrum) { fmScrollWheelTo(sbDrum, last.sb); _fmBoardTouched.sb = true; }
+if (last.tb != null && tbDrum) { fmScrollWheelTo(tbDrum, last.tb); _fmBoardTouched.tb = true; }
+haptic('light');
+var frame = getFrame(G.frame);
+fmPaintAlignCue(frame ? frameAttempts(frame.FrameID).find(function(a){ return a.Attempt === G.attempt; }) : null);
+fmRenderSpareHint();
+}
 function fmRenderLaneRef() {
 var el = document.getElementById('fm-lane-ref');
 if (!el) return;
@@ -10060,8 +10205,10 @@ return '<div class="'+ cls + '" id="fm-ref-chip-'+ parity + '" onclick="fmRefEdi
 }
 
 var overrideCls = 'fm-ref-override-btn'+ (override ? ' on': '');
-var overrideIcon = override ? '&#x27F3;': '&#x2298;';
-var overrideTip = override ? 'Restore auto lane': 'Override lane parity';
+var overrideIcon = '<span class="fm-ref-dot"></span>'+ (override ? 'Held': 'Auto');
+var overrideTip = override
+? 'Lane reference held on this pair \u2014 tap to follow frame parity again'
+: 'Lane reference follows frame parity \u2014 tap to hold it on this pair';
 el.innerHTML =
 chipHTML('odd') +
 chipHTML('even') +
@@ -10870,11 +11017,13 @@ secondaryBtn.style.opacity = '1';
 
 
 if (getPrefs().focusMode) {
+spareBtn.style.display = '';
 spareBtn.textContent = secondaryBtn.textContent;
 spareBtn.className   = secondaryBtn.className;
 spareBtn.disabled    = false;
 spareBtn.style.opacity = '1';
 } else {
+spareBtn.style.display = '';
 spareBtn.style.opacity = '0.28';
 spareBtn.disabled = true;
 }
@@ -10892,10 +11041,24 @@ secondaryBtn.style.opacity = '1';
 
 
 
+/* NEW-8 (2026-09-17). In SPARE mode qaSpareBtnAction() falls through to
+   confirmAttempt() -- the identical action to #btn-confirm -- while the
+   button read "Miss --", naming something it did not do. Tapping no pins
+   and confirming already records a miss, so the second button was pure
+   duplication. In Focus Mode it is now hidden and #btn-confirm spans the
+   row; outside Focus Mode the layout is unchanged, since #qa-secondary is
+   visible there and genuinely does record a miss.
+   LEAVE mode is untouched: there the two buttons really do differ
+   ("Gutter --" / "NoTap" vs confirming tapped pins). */
+if (getPrefs().focusMode) {
+spareBtn.style.display = 'none';
+} else {
+spareBtn.style.display = '';
 spareBtn.textContent = 'Miss \u2014';
 spareBtn.className   = 'qa-btn qa-miss';
 spareBtn.style.opacity = '1';
 spareBtn.disabled = false;
+}
 }
 }
 
@@ -24863,6 +25026,83 @@ return forLeave.slice().sort(function(a, b) {
 return (b.updatedAt || '').localeCompare(a.updatedAt || '');
 })[0];
 }
+/* SPARE ALIGNMENT RESOLUTION (2026-09-17)
+
+   getSpareAlignment() matches the requested style, then falls back to a
+   legacy untagged record, then gives up. It deliberately does NOT fall
+   back across styles, and it must not: deleteSpareAlignment() resolves
+   through it, so a cross-style fallback there would make "delete the
+   hook setup" delete the straight one.
+
+   So the fallback lives here instead, as a separate read-only resolver
+   used by the display and default paths only. The case it exists for:
+   leave 10 carries a straight setup at 33.5/8 and no hook setup, so
+   selecting hook used to surface nothing at all rather than the one
+   real reference on file. Borrowed results are flagged so the UI can
+   say where the numbers came from instead of implying they were set
+   for the style on screen. */
+function spareAlignResolve(leaveID, style) {
+var direct = getSpareAlignment(leaveID, style);
+if (direct) return { align: direct, borrowed: false, borrowedFrom: null };
+if (!style) return { align: null, borrowed: false, borrowedFrom: null };
+var other = (style === 'straight') ? 'hook' : 'straight';
+var alt = getSpareAlignments().find(function(r) {
+return r.leaveID === leaveID && r.style === other && (r.sb != null || r.tb != null);
+});
+if (alt) return { align: alt, borrowed: true, borrowedFrom: other };
+return { align: null, borrowed: false, borrowedFrom: null };
+}
+
+/* What the bowler ACTUALLY used the last time this leave came up, as
+   opposed to what is saved as its setup. Strong-tier only (see
+   CON-15) -- an 'auto' value is a carried-forward suggestion, so
+   treating it as "last used" would just echo the default back and
+   make the two look falsely in agreement. */
+function spareLastUsed(leaveID, style) {
+if (leaveID == null) return null;
+/* STYLE FILTER (added 2026-09-17). Without it this keyed on leave
+   alone, so a hook attempt was reported as "last used" against a
+   straight default -- and those are not small differences. Leave 4
+   read 15/13.5 saved against 23/9 "last used", eight boards apart,
+   because a straight-ball corner-pin line and a hook line are simply
+   different shots. Comparing them produced a hint on 8 of 10 leaves
+   and would have fed a promotion rule values from the wrong style.
+   Attempts carry BallID (10,960 of 14,388), so the style is
+   recoverable; attempts with no ball recorded are skipped rather
+   than guessed at. */
+var best = null;
+var byFrame = {};
+db.attempts.forEach(function(x) {
+if (x.Attempt === 1) byFrame[x.FrameID] = x;
+});
+db.attempts.forEach(function(a) {
+if (a.Attempt === 1) return;
+var a1 = byFrame[a.FrameID];
+if (!a1 || a1.LeaveID !== leaveID) return;
+if (style) {
+if (a.BallID == null) return;
+if (inferBallStyle(a.BallID) !== style) return;
+}
+var info = attemptAlignment(a);
+if (info.tier !== 2) return;
+if (info.sb == null && info.tb == null) return;
+if (!best || a.AttemptID > best.attemptID) {
+best = { sb: info.sb, tb: info.tb, attemptID: a.AttemptID, source: info.source, ballID: a.BallID };
+}
+});
+return best;
+}
+
+/* True when the last actually-used setup differs from the resolved
+   default by enough to be worth surfacing. Half-board moves count --
+   they are exactly the "couple of boards in or out" adjustment the
+   bowler makes when friction changes. */
+function spareAlignDiffers(def, last) {
+if (!def || !last) return false;
+var dSb = (def.sb == null || last.sb == null) ? false : (def.sb !== last.sb);
+var dTb = (def.tb == null || last.tb == null) ? false : (def.tb !== last.tb);
+return dSb || dTb;
+}
 function saveSpareAlignment(leaveID, patch, style) {
 
 
@@ -25689,7 +25929,7 @@ meta: {
 kind: 'bowlingdb-snapshot',
 snapshotVersion: 1,
 exportDate: new Date().toISOString(),
-exportSource: 'BowlingDB PWA v30.145',
+exportSource: 'BowlingDB PWA v30.148',
 includesBallImages: !!includeBallImages,
 excluded: Array.from(SNAPSHOT_LS_SKIP)
 },
