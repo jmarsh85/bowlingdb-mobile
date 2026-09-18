@@ -542,6 +542,11 @@ host.insertAdjacentHTML('beforeend',`<!-- ── DEVKIT OVERLAY ─────�
           <button class="dk-tool-btn" onclick="dkSeasonDryRun()">Season Dry Run</button>
           <button class="dk-tool-btn" onclick="dkLineageDryRun()">Lineage Dry Run</button>
 
+          <div class="dk-tool-group">Alignment provenance</div>
+          <button class="dk-tool-btn" onclick="dkAlignAudit()">Alignment Audit</button>
+          <button class="dk-tool-btn" onclick="dkAlignMigrateDryRun()">Alignment Migration — Dry Run</button>
+          <button class="dk-tool-btn" onclick="dkAlignMigrateDryRun(true)">Alignment Migration — COMMIT</button>
+
           <div class="dk-tool-group">Streaks</div>
           <button class="dk-tool-btn" onclick="dkStreakDryRun()">Streak Dry Run</button>
           <button class="dk-tool-btn" onclick="dkStreakDryRunDetail()">Streak Detail — League 129</button>
@@ -886,8 +891,144 @@ try { bakerRefreshAfterMigration(); } catch(e) {}
 
 
 
+/* A4 (2026-09-13). #dk-purge-result is shared by ~22 tools and sits at the
+   bottom of a long Tools pane, so a tool run from near the top wrote its
+   output off-screen. Rather than touch all 22 call sites, the box watches
+   itself: the first fetch attaches a MutationObserver that scrolls it into
+   view whenever its content changes. block:'nearest' so it only scrolls if
+   the box is actually out of view. */
+/* ALIGNMENT PROVENANCE AUDIT (2026-09-17). Reports the four SB/TB
+   cohorts and the staleness distribution behind them. Read-only. */
+function dkAlignAudit() {
+var result = dkResultBox();
+if (!result) return;
+try {
+var A = db.attempts || [];
+var c = { user: 0, legacy: 0, shown: 0, auto: 0, none: 0 };
+var stale = {}, zeros = 0, usable = 0, confirmed = 0;
+A.forEach(function(a) {
+if (a.StartingBoard === 0 || a.TargetBoard === 0) zeros++;
+var r = attemptAlignment(a);
+c[r.source || 'none']++;
+if (!r.source) return;
+if (r.confirmed) confirmed++;
+if (alignUsable(a)) usable++;
+if (r.tier < 2) { var k = (r.staleness == null) ? 'never' : r.staleness; stale[k] = (stale[k] || 0) + 1; }
+});
+var withData = A.length - c.none;
+var lines = [];
+lines.push('ALIGNMENT PROVENANCE AUDIT');
+lines.push('attempts total          ' + A.length);
+lines.push('with usable SB/TB       ' + withData);
+lines.push('');
+lines.push('  user   (set)         ' + c.user);
+lines.push('  legacy (pre-v30.112) ' + c.legacy);
+lines.push('  shown  (not corrected)' + c.shown);
+lines.push('  auto   (never shown) ' + c.auto);
+lines.push('');
+lines.push('strong tier (analysable) ' + confirmed);
+lines.push('+ near-confirmations     ' + usable + '  (stale <= 2)');
+lines.push('');
+lines.push('board-0 sentinels        ' + zeros + '  (normalised to null on read)');
+lines.push('');
+lines.push('staleness of weak-tier records:');
+Object.keys(stale).sort(function(x, y) {
+if (x === 'never') return 1;
+if (y === 'never') return -1;
+return Number(x) - Number(y);
+}).forEach(function(k) {
+lines.push('   ' + String(k).padStart(5) + ' shots ago   ' + stale[k]);
+});
+result.textContent = lines.join('\n');
+} catch (e) {
+result.textContent = 'FAILED: ' + (e && e.message ? e.message : String(e));
+}
+}
+
+/* ALIGNMENT MIGRATION (2026-09-17). Optional cleanup only --
+   attemptAlignment() already normalises both cases at READ time, so
+   nothing depends on this running. It writes the inferences down so
+   the stored data matches what analysis sees:
+     1. untagged records with real values -> StartingBoardSource
+        'legacy' (they predate v30.112, so they were manual)
+     2. board-0 sentinels -> null (0 is not a board; real values run
+        10..50, and a null cannot be mistaken for a measurement)
+   Call with no argument for a dry run. Pass true to commit. */
+function dkAlignMigrateDryRun(commit) {
+var result = dkResultBox();
+if (!result) return;
+try {
+var A = db.attempts || [];
+var toLegacy = [], toNull = [], skipped = 0;
+A.forEach(function(a) {
+var sbZero = (a.StartingBoard === 0), tbZero = (a.TargetBoard === 0);
+if (sbZero || tbZero) { toNull.push(a); return; }
+var hasVal = (a.StartingBoard != null) || (a.TargetBoard != null);
+if (!hasVal) return;
+if (a.StartingBoardSource || a.TargetBoardSource) { skipped++; return; }
+toLegacy.push(a);
+});
+var lines = [];
+lines.push(commit ? 'ALIGNMENT MIGRATION - COMMITTING' : 'ALIGNMENT MIGRATION - DRY RUN (nothing written)');
+lines.push('');
+lines.push('tag as legacy      ' + toLegacy.length);
+lines.push('null board-0       ' + toNull.length);
+lines.push('already tagged     ' + skipped + '  (untouched)');
+lines.push('');
+if (toLegacy.length) {
+lines.push('sample legacy tags:');
+toLegacy.slice(0, 5).forEach(function(a) {
+lines.push('   att ' + a.AttemptID + '  SB ' + a.StartingBoard + ' / TB ' + a.TargetBoard);
+});
+lines.push('');
+}
+if (toNull.length) {
+lines.push('sample board-0 clears:');
+toNull.slice(0, 5).forEach(function(a) {
+lines.push('   att ' + a.AttemptID + '  SB ' + a.StartingBoard + ' / TB ' + a.TargetBoard);
+});
+lines.push('');
+}
+if (!commit) {
+lines.push('Re-run with COMMIT to write these changes.');
+} else {
+toLegacy.forEach(function(a) {
+if (a.StartingBoard != null) a.StartingBoardSource = 'legacy';
+if (a.TargetBoard != null) a.TargetBoardSource = 'legacy';
+});
+toNull.forEach(function(a) {
+if (a.StartingBoard === 0) { a.StartingBoard = null; a.StartingBoardSource = null; }
+if (a.TargetBoard === 0) { a.TargetBoard = null; a.TargetBoardSource = null; }
+});
+if (typeof alignStaleBust === 'function') alignStaleBust();
+saveAll();
+lines.push('WRITTEN. ' + (toLegacy.length + toNull.length) + ' attempts updated, saveAll() called.');
+lines.push('Re-run Alignment Audit to confirm the cohorts moved as expected.');
+}
+result.textContent = lines.join('\n');
+} catch (e) {
+result.textContent = 'FAILED: ' + (e && e.message ? e.message : String(e));
+}
+}
+
+function dkResultBox() {
+var el = document.getElementById('dk-purge-result');
+if (el && !el._dkWatch && typeof MutationObserver === 'function') {
+/* Guarded: this box is the output surface for ~22 tools, so a throw
+   here would take all of them down, not just the auto-scroll. Any
+   failure degrades to "no scroll", never to "no tools". */
+try {
+el._dkWatch = new MutationObserver(function () {
+try { el.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } catch (e) {}
+});
+el._dkWatch.observe(el, { childList: true, characterData: true, subtree: true });
+} catch (e) { el._dkWatch = null; }
+}
+return el;
+}
+
 async function dkBallChangeRetrospectiveDryRun() {
-var result = document.getElementById('dk-purge-result');
+var result = dkResultBox();
 if (result) result.textContent = 'Loading scoring data...';
 try {
 await loadScoringData();
@@ -920,7 +1061,7 @@ if (result) result.textContent = 'Ball-Change Retrospective failed:\n'+ (e && e.
 
 
 async function dkBallChangeStep2DryRun() {
-var result = document.getElementById('dk-purge-result');
+var result = dkResultBox();
 if (result) result.textContent = 'Loading scoring data...';
 try {
 await loadScoringData();
@@ -953,7 +1094,7 @@ if (result) result.textContent = 'Step 2 join dry run failed:\n'+ (e && e.messag
 
 
 async function dkBallMotionProfileInspector() {
-var result = document.getElementById('dk-purge-result');
+var result = dkResultBox();
 if (result) result.textContent = 'Computing ball motion profiles...';
 try {
 var pad = function(s, n) { s = (s == null ? '—': String(s)); return s.length > n ? s.slice(0, n) : s + ' '.repeat(n - s.length); };
@@ -1439,45 +1580,6 @@ var elErr = document.getElementById('dk-entries-list');
 if (elErr) elErr.innerHTML = '<div style="padding:16px;color:var(--red);font-size:12px">Entries list failed to render — see console.</div>';
 }
 } 
-function dkSubmit() {
-var msgEl = document.getElementById('dk-msg');
-var msg   = (msgEl ? msgEl.value : '').trim();
-if (!msg) { toast('Add a description first'); return; }
-var snap = null;
-try {
-snap = {
-screen:    getCurrentScreen(),
-leagueID:  G.leagueID || null,
-seriesID:  G.seriesID || null,
-gameID:    G.gameID   || null,
-frameNum:  G.frameNum || null,
-mode:      G.mode     || null,
-modalOpen: !!(document.getElementById('modal-bg') && document.getElementById('modal-bg').classList.contains('open'))
-};
-} catch(ex) { snap = {error: ex.message}; }
-var entry = {
-id:       Date.now(),
-ts:       new Date().toISOString(),
-cat:      _dk.cat,
-msg:      msg,
-screen:   getCurrentScreen(),
-ref:      _dk.pendingRef    || null,
-mapRowId: _dk.pendingMapRowId || null,
-status:   'open',
-snap:     snap
-};
-var log = dkLoadLog();
-log.unshift(entry);
-dkSaveLog(log);
-_dk.pendingRef = null;
-_dk.pendingMapRowId = null;
-if (msgEl) msgEl.value = '';
-dkClearRef();
-dkClearMapLink();
-dkRenderEntries();
-var btn = document.getElementById('dk-submit');
-if (btn) { var orig=btn.textContent; btn.textContent='✓ Saved'; setTimeout(function(){ btn.textContent=orig; },1200); }
-} 
 function dkSetStatus(id, status) {
 
 var log = dkLoadLog();
@@ -1747,14 +1849,7 @@ _dk.pendingRef = null;
 var chip = document.getElementById('dk-ref-chip');
 if (chip) { chip.innerHTML=''; chip.style.display='none'; }
 } 
-function dkSetMapLink(rowId) {
-_dk.pendingMapRowId = rowId;
-var inp = document.getElementById('dk-maplink-search');
-if (inp) inp.value = '';
-var dd = document.getElementById('dk-maplink-dd');
-if (dd) dd.style.display = 'none';
-dkRenderMapLinkChip();
-}function dkClearMapLink() {
+function dkClearMapLink() {
 _dk.pendingMapRowId = null;
 dkRenderMapLinkChip();
 }function dkRenderMapLinkChip() {
@@ -1835,7 +1930,7 @@ el.textContent =
    disagree, the span logic is wrong and the engine is not trusted.
    ═══════════════════════════════════════════════════════════ */
 async function dkSeasonDryRun() {
-var result = document.getElementById('dk-purge-result');
+var result = dkResultBox();
 if (result) result.textContent = 'Loading scoring data...';
 try {
 await loadScoringData();   
@@ -1961,7 +2056,7 @@ if (result) result.textContent = 'Season dry run failed:\n'+ (e && e.message ? e
 }
 } 
 async function dkEnsureLineagesRun() {
-var result = document.getElementById('dk-purge-result');
+var result = dkResultBox();
 if (result) result.textContent = 'Running...';
 try {
 await loadScoringData();
@@ -1989,7 +2084,7 @@ if (result) result.textContent = 'Ensure Lineages failed:\n'+ (e && e.message ? 
 
 
 async function dkLineageDryRun() {
-var result = document.getElementById('dk-purge-result');
+var result = dkResultBox();
 if (result) result.textContent = 'Loading scoring data...';
 try {
 await loadScoringData();
@@ -2114,7 +2209,7 @@ if (result) result.textContent = 'Lineage dry run failed:\n'+ (e && e.message ? 
    presentation-layer concern for the eventual UI, not something
    the dry run should hide while you're checking correctness. */
 async function dkStreakDryRun() {
-var result = document.getElementById('dk-purge-result');
+var result = dkResultBox();
 if (result) result.textContent = 'Loading scoring data...';
 try {
 await loadScoringData();
@@ -2296,7 +2391,7 @@ if (result) result.textContent = 'Streak dry run failed:\n'+ (e && e.message ? e
    newly-covered, and still-uncovered entry can be reviewed before any
    pipeline switchover. Pure read-only — no writes. */
 async function dkLeaveDiagnosisDiffRun() {
-var result = document.getElementById('dk-purge-result');
+var result = dkResultBox();
 if (result) result.textContent = 'Loading scoring data...';
 try {
 await loadScoringData();
@@ -2392,7 +2487,7 @@ if (result) result.textContent = 'Leave diagnosis diff failed:\n'+ (e && e.messa
 
 
 async function dkLeaveSideClusteringDryRun() {
-var result = document.getElementById('dk-purge-result');
+var result = dkResultBox();
 if (result) result.textContent = 'Loading scoring data...';
 try {
 await loadScoringData();
@@ -2446,7 +2541,7 @@ if (result) result.textContent = 'Leave-side clustering dry run failed:\n'+ (e &
 
 
 async function dkLaneHookRatingDryRun() {
-var result = document.getElementById('dk-purge-result');
+var result = dkResultBox();
 if (result) result.textContent = 'Loading scoring data...';
 try {
 await loadScoringData();
@@ -2492,7 +2587,7 @@ if (result) result.textContent = 'Lane Hook Rating dry run failed:\n'+ (e && e.m
 
 
 async function dkSbtbComparisonDryRun() {
-var result = document.getElementById('dk-purge-result');
+var result = dkResultBox();
 if (result) result.textContent = 'Loading scoring data...';
 try {
 await loadScoringData();
@@ -2552,7 +2647,7 @@ if (result) result.textContent = 'SB/TB comparison dry run failed:\n'+ (e && e.m
    touch gamesSincePrompt/snooze/paused state (that is a separate,
    intentionally-mutating tool below). */
 async function dkLanePrepBriefPreview() {
-var result = document.getElementById('dk-purge-result');
+var result = dkResultBox();
 if (result) result.textContent = 'Loading scoring data...';
 try {
 await loadScoringData();
@@ -2586,7 +2681,7 @@ if (result) result.textContent = 'Lane Prep Brief preview failed:\n'+ (e && e.me
 
 
 async function dkUpdateGamesSincePrompt() {
-var result = document.getElementById('dk-purge-result');
+var result = dkResultBox();
 if (result) result.textContent = 'Updating games-since-prompt counters...';
 try {
 await loadScoringData();
@@ -2618,7 +2713,7 @@ if (result) result.textContent = 'Games-since-prompt update failed:\n'+ (e && e.
    per request; pass a different LeagueID to check another league. */
 async function dkStreakDryRunDetail(leagueID) {
 leagueID = leagueID || 129;
-var result = document.getElementById('dk-purge-result');
+var result = dkResultBox();
 if (result) result.textContent = 'Loading scoring data...';
 try {
 await loadScoringData();
@@ -2709,7 +2804,7 @@ if (result) result.textContent = 'Streak detail dry run failed:\n'+ (e && e.mess
    existing LINEAGE/GLOBAL tiers for per-series streaks. */
 async function dkStreakRollingDryRun(scope, id) {
 scope = scope || 'league';
-var result = document.getElementById('dk-purge-result');
+var result = dkResultBox();
 if (result) result.textContent = 'Loading scoring data...';
 try {
 await loadScoringData();
@@ -2793,7 +2888,7 @@ if (result) result.textContent = 'Rolling average dry run failed:\n'+ (e && e.me
 
 async function dkBestSeriesStreakDryRun(scope, id) {
 scope = scope || 'lineage';
-var result = document.getElementById('dk-purge-result');
+var result = dkResultBox();
 if (result) result.textContent = 'Loading scoring data...';
 try {
 var before = JSON.stringify(db.series || []) + JSON.stringify(db.games || []);
@@ -2846,7 +2941,7 @@ toast('Best streak dry run complete — '+ scope);
 if (result) result.textContent = 'Best streak dry run failed:\n'+ (e && e.message ? e.message : e) + '\n'+ (e && e.stack ? e.stack : '');
 }
 }async function dkIDBDump() {
-var result = document.getElementById('dk-purge-result');
+var result = dkResultBox();
 if (result) result.textContent = 'Reading raw IDB...';
 try {
 var [rawSeries, rawGames, rawFrames, rawAtts] = await Promise.all(
@@ -2888,7 +2983,7 @@ if (result) result.textContent = 'Dump error: '+err.message;
 }
 } 
 async function dkAIAnalyze() {
-var result = document.getElementById('dk-purge-result');
+var result = dkResultBox();
 var aiKey = localStorage.getItem('bowlingdb_ai_key');
 if (!aiKey) { if (result) result.textContent = 'No AI key set. Add key in Settings.'; return; }
 if (result) result.textContent = 'Gathering IDB state for AI analysis...';
@@ -2926,7 +3021,7 @@ if (result) result.textContent = 'AI error: '+err.message;
 }
 } 
 async function dkPurgeOrphans() {
-var result = document.getElementById('dk-purge-result');
+var result = dkResultBox();
 if (result) result.textContent = 'Reading raw IDB...';
 try {
 
@@ -2993,7 +3088,7 @@ console.error('dkPurgeOrphans:', err);
 }
 
 async function dkNukeOpenPhantoms() {
-var result = document.getElementById('dk-purge-result');
+var result = dkResultBox();
 if (!confirm('Delete ALL open bowling IDB records not matching a current session? This cannot be undone. Current sessions are preserved.')) return;
 if (result) result.textContent = 'Nuclear purge: reading IDB...';
 try {
@@ -3027,7 +3122,7 @@ console.error('dkNukeOpenPhantoms:', err);
 }
 } 
 function dkCopyResult() {
-var el = document.getElementById('dk-purge-result');
+var el = dkResultBox();
 var txt = el ? el.textContent : '';
 if (!txt.trim()) { toast('Nothing to copy'); return; }
 navigator.clipboard.writeText(txt)
@@ -3044,7 +3139,7 @@ console.error('Copy error:', err);
 });
 } 
 async function dkApplyAIFix() {
-var result = document.getElementById('dk-purge-result');
+var result = dkResultBox();
 if (!confirm('Apply AI-recommended fix? Deletes phantom series 4, 415, 422, 429 and their games. League data untouched.')) return;
 if (result) result.textContent = 'Reading IDB...';
 try {
@@ -3609,13 +3704,6 @@ var log = dkLoadLog(); log.unshift(entry); dkSaveLog(log);
 toast('Added to map ✓');
 DKM.screen = form;
 dkmSelectRow(newId);
-} 
-function dkmExport() {
-var out = JSON.stringify(DKM_ROWS.map(function(r){
-return {id:r.id,form:r.form,object:r.object,type:r.type,status:r.status,
-priority:r.priority,current:r.current,desired:r.desired,notes:r.notes};
-}), null, 2);
-dkShowExportText('Interaction Map Export', out, 'bowlingdb_interaction_map');
 } 
 function dkBubbleCat(cat) {
 _dk.pendingCat = cat;
