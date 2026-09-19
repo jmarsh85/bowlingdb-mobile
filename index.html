@@ -2573,7 +2573,7 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
     </div>
     <div id="hdr-title" onclick="hdrTitleTap()"><span class="brand">Bowling</span>DB</div>
     <div id="hdr-title-popover"></div>
-    <span id="hdr-build-ref">v30.148 · 2026-09-17</span>
+    <span id="hdr-build-ref">v30.152 · 2026-09-17</span>
     <div id="hdr-right">
       <div class="hdr-icon-btn" id="hdr-delete-game-btn" onclick="confirmDeleteGame(G.gameID)" title="Delete Game" style="display:none">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -7854,10 +7854,22 @@ return false;
            pins (leave), not pins knocked.
    SPARE:  Attempt 2+ on a non-fresh rack. User marks pins KNOCKED.
    */
+/* GUTTER -> LEAVE MODE (2026-09-17). After a gutter all ten pins are
+   still standing, so marking what is STILL UP is the natural entry --
+   the same thing the bowler does on a first ball. fmFacesFullRack()
+   is isFreshAttempt() plus exactly that case, so this extends LEAVE
+   mode to gutters and to nothing else.
+
+   IMPORTANT: this changes ENTRY only. The delivery is still a spare
+   opportunity for scoring, so the three places that used SPARE mode as
+   a proxy for "can complete a spare" now ask isFreshAttempt() directly
+   -- see fmEntryIsSpare(), quickSpare() and the arrow path. Without
+   that, a gutter followed by all ten would have stopped counting as a
+   spare. */
 function getAttemptMode() {
 
 
-if (isFreshAttempt()) return 'LEAVE';
+if (fmFacesFullRack()) return 'LEAVE';
 
 
 return 'SPARE';
@@ -8016,7 +8028,11 @@ haptic('medium');
 confirmAttempt();
 return;
 }
-if (mode !== 'SPARE') return;
+/* Rack, not mode: after a gutter this is still a spare shot. */
+if (isFreshAttempt()) return;
+/* LEAVE-mode confirm derives knocked as standing-minus-leave, so clear
+   the leave set or a full spare would be scored as a partial. */
+G.leave = new Set();
 G.knocked = new Set();
 for (let p=1;p<=10;p++) {
 if (G.pinState[p] === 'S') G.knocked.add(p);
@@ -8836,7 +8852,15 @@ G.ballID = G.lastBallAtt1;
 
 
 const noTap = !!(db.games.find(g=>g.GameID===G.gameID)?.NoTap);
-if (G.frame === 10) {
+/* A gutter leaves a full rack, so this is a strike shot: keep the strike
+   ball instead of reaching for the spare. Checked ahead of both branches
+   because frame 10 had the same gap -- a gutter there is not a strike, so
+   att1Strike was false and it switched to the spare ball too. */
+const _f2 = getFrame(G.frame);
+const _prev2 = _f2 ? frameAttempts(_f2.FrameID).find(a => a.Attempt === G.attempt - 1) : null;
+if (_prev2 && _prev2.Pinfall === 0) {
+if (G.lastBallAtt1 && db.balls.find(b => b.BallID === G.lastBallAtt1)) G.ballID = G.lastBallAtt1;
+} else if (G.frame === 10) {
 
 const frame = getFrame(10);
 const a1 = frame ? frameAttempts(frame.FrameID).find(a=>a.Attempt===1) : null;
@@ -9966,7 +9990,21 @@ var refSb = null, refTb = null, refBallSuggestion = null;
    with no leave recorded and the hint would describe the wrong one. */
 _fmSpareCtx = null;
 if (!att || att.StartingBoard == null) {
-if (G.attempt === 1) {
+/* FRESH VS SPARE, NOT ATTEMPT NUMBER (fixed 2026-09-17).
+   This used to branch on G.attempt === 1, which is wrong in frame 10
+   and wrong in the most common way: after a strike, ball 2 is a FRESH
+   rack, but the old branch treated it as a spare, looked up the leave
+   from ball 1 -- which is null, because a strike leaves nothing -- found
+   no alignment, and fell all the way through to prefs.defaultSB/defaultTB
+   (17 / 10). So the wheels jumped to a fixed pair mid-frame precisely
+   when the bowler was striking and should have stayed on the lane
+   reference. isFreshAttempt() already handles every frame-10 shape,
+   NoTap included, so ask it instead.
+
+   The leave also comes from the PREVIOUS delivery rather than ball 1:
+   in frame 10 after a strike then an open, ball 3 is shot at ball 2's
+   leave. */
+if (fmFacesFullRack()) {
 var _parity = currentLaneParity();
 if (_parity) {
 var _ref = getLaneRef();
@@ -9974,8 +10012,8 @@ refSb = _ref[_parity].sbHalf ? _ref[_parity].sb + 0.5 : _ref[_parity].sb;
 refTb = _ref[_parity].tbHalf ? _ref[_parity].tb + 0.5 : _ref[_parity].tb;
 }
 } else {
-var _a1 = frameAttempts(frame.FrameID).find(function(a) { return a.Attempt === 1; });
-var _leaveID = _a1 ? _a1.LeaveID : null;
+var _prevAtt = frameAttempts(frame.FrameID).find(function(a) { return a.Attempt === G.attempt - 1; });
+var _leaveID = _prevAtt ? _prevAtt.LeaveID : null;
 if (_leaveID != null) {
 
 
@@ -10011,12 +10049,16 @@ if (G.lastBallAtt1 != null && G.lastBallAtt1 !== G.ballID) refBallSuggestion = G
 }
 }
 G.fmSuggestedBallID = refBallSuggestion;
+/* Same rule for the carried-forward values: a fresh rack in frame 10
+   should inherit the last fresh-rack line, not drop to the 17/10
+   default pair. */
+var _freshNow = fmFacesFullRack();
 var sbVal = (att && att.StartingBoard != null) ? att.StartingBoard
 : (refSb != null ? refSb
-: (G.attempt === 1 && G.lastSB != null ? G.lastSB : (prefs.defaultSB != null ? prefs.defaultSB : 17)));
+: (_freshNow && G.lastSB != null ? G.lastSB : (prefs.defaultSB != null ? prefs.defaultSB : 17)));
 var tbVal = (att && att.TargetBoard != null) ? att.TargetBoard
 : (refTb != null ? refTb
-: (G.attempt === 1 && G.lastTB != null ? G.lastTB : (prefs.defaultTB != null ? prefs.defaultTB : 10)));
+: (_freshNow && G.lastTB != null ? G.lastTB : (prefs.defaultTB != null ? prefs.defaultTB : 10)));
 fmScrollWheelTo(sbDrum, sbVal);
 fmScrollWheelTo(tbDrum, tbVal);
 fmRenderSpareHint();
@@ -10080,7 +10122,7 @@ function fmRenderSpareHint() {
 var el = document.getElementById('fm-spare-hint');
 if (!el) return;
 var ctx = _fmSpareCtx;
-if (!ctx || ctx.leaveID == null || G.attempt === 1) {
+if (!ctx || ctx.leaveID == null || fmFacesFullRack()) {
 el.style.display = 'none'; el.innerHTML = ''; _fmLastUsedOffer = null; return;
 }
 var parts = [];
@@ -10561,9 +10603,13 @@ img.onerror = function() { this.src = FM_BALL_PLACEHOLDER; };
 img.style.display = '';
 name.textContent = ball.BallName || '';
 } else {
+/* No spare ball resolved -- no ball thrown on a second attempt yet this
+   game, and no league or global default set. An em-dash read as an
+   error; naming the slot leaves the interpretation with the bowler,
+   who may simply not keep a dedicated spare ball. */
 img.src = FM_BALL_PLACEHOLDER;
 img.style.display = '';
-name.textContent = '\u2014';
+name.textContent = 'Spare ball';
 }
 }
  
@@ -10622,10 +10668,9 @@ if (G.attempt === 1 && a1 && a1.Pinfall !== null && a2 && a2.Pinfall !== null) {
 
 
 jumpToPosition(G.frame, 2);
-} else if (getAttemptMode() === 'SPARE') {
-
-
-
+} else if (!isFreshAttempt()) {
+/* Rack, not mode -- the arrow must still offer the full-spare shortcut
+   on the ball after a gutter, which now enters in LEAVE mode. */
 quickSpare();
 } else {
 confirmAttempt();
@@ -11064,15 +11109,27 @@ spareBtn.disabled = false;
 
 
 function fmEntryIsSpare() {
-if (getAttemptMode() !== 'SPARE') return false;
+/* Gated on the RACK, not the entry mode. A fresh rack cannot complete a
+   spare; anything else can, including the ball after a gutter, which now
+   enters in LEAVE mode. */
+if (isFreshAttempt()) return false;
 if (G.numericMode) {
 var fr = getFrame(G.frame);
 if (!fr) return false;
 var a1 = frameAttempts(fr.FrameID).find(function(a) { return a.Attempt === 1; });
 return !!(a1 && a1.Pinfall != null && G.numericPinfall === (10 - a1.Pinfall));
 }
+/* In LEAVE mode G.knocked is not populated until confirmAttempt()
+   derives it, so derive it here the same way: standing minus still-up. */
+var _knocked = G.knocked;
+if (getAttemptMode() === 'LEAVE') {
+_knocked = new Set();
+for (var q = 1; q <= 10; q++) {
+if (G.pinState[q] === 'S'&& !G.leave.has(q)) _knocked.add(q);
+}
+}
 for (var p = 1; p <= 10; p++) {
-if (G.pinState[p] === 'S'&& !G.knocked.has(p)) return false;
+if (G.pinState[p] === 'S'&& !_knocked.has(p)) return false;
 }
 return true;
 }
@@ -19256,7 +19313,7 @@ const l = id ? db.leagues.find(x=>x.LeagueID===id) : null;
 const isEdit = !!l;
 const cOpts = db.centers.map(c=>`<option value="${c.CenterID}"${l?.CenterID===c.CenterID?' selected':''}>${c.CenterName}</option>`).join('');
 const bOpts = `<option value="">— None —</option>`+ sortedBalls(l?.DefaultBallID).map(b=>`<option value="${b.BallID}"${l?.DefaultBallID===b.BallID?' selected':''}>${b.BallName}</option>`).join('');
-const spareBOpts = `<option value="">— None (use global default) —</option>`+ sortedBalls(l?.DefaultSpareBallID).map(b=>`<option value="${b.BallID}"${l?.DefaultSpareBallID===b.BallID?' selected':''}>${b.BallName}</option>`).join('');
+const spareBOpts = `<option value="">— None (use global default) —</option>`+ sortedBalls(l?.DefaultSpareBallID, 'spare').map(b=>`<option value="${b.BallID}"${l?.DefaultSpareBallID===b.BallID?' selected':''}>${b.BallName}</option>`).join('');
 const days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
 const dayOpts = `<option value="">— Any —</option>`+ days.map(d=>`<option${l?.DayOfBowling===d?' selected':''}>${d}</option>`).join('');
 const gpsOpts = [2,3,4,5,6].map(n=>`<option value="${n}"${(l?.GamesPerSeries||3)===n?' selected':''}>${n}</option>`).join('');
@@ -25071,14 +25128,18 @@ if (leaveID == null) return null;
    recoverable; attempts with no ball recorded are skipped rather
    than guessed at. */
 var best = null;
+var freshIdx = buildFreshIndex();
 var byFrame = {};
 db.attempts.forEach(function(x) {
-if (x.Attempt === 1) byFrame[x.FrameID] = x;
+(byFrame[x.FrameID] = byFrame[x.FrameID] || {})[x.Attempt] = x;
 });
 db.attempts.forEach(function(a) {
-if (a.Attempt === 1) return;
-var a1 = byFrame[a.FrameID];
-if (!a1 || a1.LeaveID !== leaveID) return;
+if (freshIdx[a.AttemptID]) return;
+/* The leave being shot at belongs to the PREVIOUS delivery, not to
+   ball 1. In frame 10 after a strike then an open, ball 3 is shot at
+   ball 2's leave -- keying on ball 1 read the wrong leave entirely. */
+var prev = (byFrame[a.FrameID] || {})[a.Attempt - 1];
+if (!prev || prev.LeaveID !== leaveID) return;
 if (style) {
 if (a.BallID == null) return;
 if (inferBallStyle(a.BallID) !== style) return;
@@ -25310,9 +25371,104 @@ order.splice(newIdx, 0, ballID);
 savePrefs({ ballOrder: order });
 openSettingsModal(); 
 }
-function sortedBalls(preferBallID) {
+/* SCENARIO SCOPE (2026-09-17). Strike and spare balls behave nothing
+   alike: a spare ball is one stable piece of equipment a bowler keeps
+   for shooting outside the pocket, while the strike ball cycles through
+   an arsenal and can change within a single game. Counting them
+   together made the lineup meaningless for whichever one you were not
+   currently choosing.
+
+   This used to hard-filter to `a.Attempt !== 1`, so recency and
+   frequency were computed from FIRST BALLS ONLY -- every spare throw in
+   the database was invisible to the ordering, in both modes. Now the
+   scope follows what is being chosen: 'strike' counts first balls,
+   'spare' counts second and third. Omitted, it behaves exactly as
+   before. */
+/* FRESH VS SPARE FOR A STORED ATTEMPT (2026-09-17)
+
+   isFreshAttempt() answers this for the LIVE shot, from G. This answers
+   it for a record already on file, which the ordering and history
+   lookups need and were getting wrong.
+
+   Attempt number is not the answer. In frames 1-9 it happens to line up
+   -- ball 1 fresh, ball 2 at a leave -- but frame 10 breaks it in both
+   directions:
+     a1 strike            -> a2 is a FRESH rack, not a spare
+     a1 strike, a2 strike -> a3 is a FRESH rack
+     a1 strike, a2 open   -> a3 is a SPARE at a2's leave
+     a1 + a2 spare        -> a3 is a FRESH rack
+   So "attempt >= 2 means spare" mislabels up to three deliveries per
+   game, and in exactly the frames that matter most.
+
+   NoTap is honoured the same way isFreshAttempt() honours it: a ninth
+   pin counts as the mark. */
+/* FULL RACK STANDING (2026-09-17)
+
+   Deliberately SEPARATE from attemptIsFreshRack(), and it must stay that
+   way. A gutter leaves all ten pins up, so the next delivery is
+   physically a strike shot -- same ball, same line, same lane reference.
+   But for SCORING it is still a spare attempt, and attemptIsFreshRack()
+   is what X-on-X, BounceBack, Fill Ball and strike percentage are built
+   on. Widening that one to include gutters would quietly turn a
+   gutter-then-strike into a counted strike and corrupt all of them.
+
+   attemptIsFreshRack() answers "what happened, for the record".
+   This answers "what is the bowler looking at". Only ball choice and
+   targeting may ask it. */
+function attemptFacesFullRack(frameNumber, attemptNum, a1, a2, noTap) {
+if (attemptIsFreshRack(frameNumber, attemptNum, a1, a2, noTap)) return true;
+var prev = (attemptNum === 2) ? a1 : (attemptNum === 3 ? a2 : null);
+return !!(prev && prev.Pinfall === 0);
+}
+function fmFacesFullRack() {
+if (isFreshAttempt()) return true;
+var frame = getFrame(G.frame);
+if (!frame) return false;
+var prev = frameAttempts(frame.FrameID).find(function(a) { return a.Attempt === G.attempt - 1; });
+return !!(prev && prev.Pinfall === 0);
+}
+function attemptIsFreshRack(frameNumber, attemptNum, a1, a2, noTap) {
+if (attemptNum === 1) return true;
+if (frameNumber !== 10) return false;
+var mark = function(a) {
+if (!a || a.Pinfall == null) return false;
+return a.Pinfall === 10 || (noTap && a.Pinfall >= 9);
+};
+if (attemptNum === 2) return mark(a1);
+if (attemptNum === 3) {
+if (mark(a1) && mark(a2)) return true;
+if (a1 && !mark(a1) && a2 && a2.Pinfall != null && (a1.Pinfall + a2.Pinfall) >= 10) return true;
+return false;
+}
+return false;
+}
+/* Index of every stored attempt to fresh/spare, built once per call so
+   the ordering and history lookups stop keying on attempt number. */
+function buildFreshIndex() {
+var out = {};
+var frameOf = {};
+db.frames.forEach(function(f) { frameOf[f.FrameID] = f; });
+var noTapOf = {};
+db.games.forEach(function(g) { noTapOf[g.GameID] = !!g.NoTap; });
+var byFrame = {};
+db.attempts.forEach(function(a) {
+(byFrame[a.FrameID] = byFrame[a.FrameID] || {})[a.Attempt] = a;
+});
+db.attempts.forEach(function(a) {
+var f = frameOf[a.FrameID];
+if (!f) return;
+var atts = byFrame[a.FrameID] || {};
+out[a.AttemptID] = attemptFacesFullRack(f.FrameNumber, a.Attempt, atts[1], atts[2], !!noTapOf[f.GameID]);
+});
+return out;
+}
+function sortedBalls(preferBallID, scope) {
 const active = db.balls.filter(b => b.Active !== false);
-const prefer = preferBallID ?? getPrefs().defaultBallID ?? null;
+const _spareScope = (scope === 'spare');
+const _prefDefault = _spareScope
+? (getPrefs().defaultSpareBallID ?? getPrefs().defaultBallID ?? null)
+: (getPrefs().defaultBallID ?? null);
+const prefer = preferBallID ?? _prefDefault;
 const ballOrder = getPrefs().ballOrder || [];
 
 const leagueID  = G.leagueID  || null;
@@ -25340,8 +25496,10 @@ const centerFrameIDs = centerGameIDs.size
 : new Set();
 
 const leagueCount = {}, centerCount = {}, globalRecency = {};
+const _freshIdx = buildFreshIndex();
 db.attempts.forEach(a => {
-if (!a.BallID || a.Attempt !== 1) return;
+if (!a.BallID) return;
+if (_spareScope ? _freshIdx[a.AttemptID] : !_freshIdx[a.AttemptID]) return;
 if (leagueFrameIDs.has(a.FrameID)) leagueCount[a.BallID] = (leagueCount[a.BallID] || 0) + 1;
 if (centerFrameIDs.has(a.FrameID)) centerCount[a.BallID] = (centerCount[a.BallID] || 0) + 1;
 if (a.AttemptID && (!globalRecency[a.BallID] || a.AttemptID > globalRecency[a.BallID]))
@@ -25398,7 +25556,12 @@ const activeBalls = db.balls.filter(b => b.Active !== false);
 
 
 
-const baseSorted = sortedBalls(G.ballID); 
+/* The strip is opened either for the strike ball or for the spare
+   ball, and on a second attempt it is a spare shot regardless. Order
+   by whichever scenario is actually being chosen. */
+const _ballScope = (getPrefs().focusMode && _fmBallStripMode === 'spare') ? 'spare'
+: ((typeof fmFacesFullRack === 'function' && !fmFacesFullRack()) ? 'spare' : 'strike');
+const baseSorted = sortedBalls(G.ballID, _ballScope); 
 const ordered = [];
 const add = id => { if (id && !ordered.includes(id) && activeBalls.find(b=>b.BallID===id)) ordered.push(id); };
 
@@ -25929,7 +26092,7 @@ meta: {
 kind: 'bowlingdb-snapshot',
 snapshotVersion: 1,
 exportDate: new Date().toISOString(),
-exportSource: 'BowlingDB PWA v30.148',
+exportSource: 'BowlingDB PWA v30.152',
 includesBallImages: !!includeBallImages,
 excluded: Array.from(SNAPSHOT_LS_SKIP)
 },
