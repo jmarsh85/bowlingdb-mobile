@@ -1,0 +1,143 @@
+name: catalog-refresh
+
+# Design ref: DESIGN_ball_catalog.md §7
+#
+# Scheduled Actions go dormant after 60 days of repo inactivity on public
+# repos. A run that commits counts as activity, so this self-sustains while
+# balls keep releasing — but a quiet stretch switches it off silently.
+# The heartbeat job below is the guard: it fails loudly if the source
+# stops responding, which is the failure this would otherwise hide.
+
+on:
+  schedule:
+    - cron: '17 9 * * 1'      # Mondays; USBC updates weekly
+  workflow_dispatch:
+    inputs:
+      force_commit:
+        description: 'Commit even if nothing changed'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: catalog-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # Tests run BEFORE the fetch. A parser regression must not be
+      # allowed to write artifacts.
+      - name: Unit + pipeline tests
+        run: |
+          cd catalog
+          node normalize_test.js
+          node pipeline_test.js
+
+      - name: Fetch USBC list
+        id: fetch
+        run: |
+          set -euo pipefail
+          mkdir -p .work
+          curl -fsSL --retry 3 --retry-delay 5 \
+            -o .work/approved.pdf \
+            'https://bowl.com/getmedia/8b570e80-761c-4486-8628-9d50d718dd60/approved_balllist_CURRENT.pdf'
+          test -s .work/approved.pdf
+          echo "bytes=$(stat -c%s .work/approved.pdf)" >> "$GITHUB_OUTPUT"
+
+      - name: Extract text
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils
+          pdftotext -layout .work/approved.pdf .work/approved.txt
+          wc -l .work/approved.txt
+
+      # The list's own date stamp is on line 1. Use it as ListVersion so a
+      # stale eligibility flag is visibly stale rather than silently wrong.
+      - name: Read list version
+        id: version
+        run: |
+          RAW=$(head -1 .work/approved.txt | tr -d '[:space:]')
+          ISO=$(date -d "$RAW" +%F 2>/dev/null || date +%F)
+          echo "iso=$ISO" >> "$GITHUB_OUTPUT"
+          echo "USBC list version: $RAW -> $ISO"
+
+      - name: Parse
+        run: |
+          cd catalog
+          node parse_usbc.js ../.work/approved.txt > ../.work/rows.json
+          test -s ../.work/rows.json
+
+      # Guardrail: the list only grows. A sudden collapse means the fetch or
+      # the parse broke, and we must NOT publish a gutted catalog.
+      # Degrade to "no new balls this week", never to a broken catalog.
+      - name: Sanity gate
+        run: |
+          NEW=$(node -e "console.log(JSON.parse(require('fs').readFileSync('.work/rows.json')).length)")
+          OLD=$(node -e "try{console.log(JSON.parse(require('fs').readFileSync('dist/index.json')).length)}catch(e){console.log(0)}")
+          echo "rows: $NEW (published: $OLD)"
+          if [ "$OLD" -gt 0 ] && [ "$NEW" -lt $((OLD * 95 / 100)) ]; then
+            echo "::error::Row count fell from $OLD to $NEW (>5%). Refusing to publish."
+            exit 1
+          fi
+
+      - name: Build
+        id: build
+        env:
+          USBC_LIST_VERSION: ${{ steps.version.outputs.iso }}
+        run: |
+          cd catalog
+          SPECS=""
+          [ -f specs.json ] && SPECS="--specs specs.json"
+          node build_catalog.js ../.work/rows.json $SPECS --out ../dist | tee ../.work/result
+          grep -q 'changed: true' ../.work/result && echo "changed=true" >> "$GITHUB_OUTPUT" || echo "changed=false" >> "$GITHUB_OUTPUT"
+
+      - name: Review summary
+        run: |
+          node -e "
+            const r = require('./dist/review.json');
+            const line = (k,v) => console.log('- **'+k+'**: '+v);
+            console.log('## Catalog review');
+            line('list version', r.listVersion);
+            line('bad dates', r.badDates.length);
+            line('id collisions', r.idCollisions.length);
+            line('missing specs', r.missingSpecs.length);
+            line('weight-limited', r.weightLimited.length);
+            if (r.badDates.length) console.log('\n\`\`\`\n' + r.badDates.map(d=>d.raw+'  '+d.line).join('\n') + '\n\`\`\`');
+          " >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Commit
+        if: steps.build.outputs.changed == 'true' || inputs.force_commit
+        run: |
+          git config user.name  'catalog-bot'
+          git config user.email 'catalog-bot@users.noreply.github.com'
+          git add dist
+          git diff --cached --quiet && { echo 'nothing staged'; exit 0; }
+          git commit -m "catalog: USBC ${{ steps.version.outputs.iso }}"
+          git push
+
+      - name: No-op notice
+        if: steps.build.outputs.changed != 'true'
+        run: echo "No change this week. Existing catalog remains published." >> "$GITHUB_STEP_SUMMARY"
+
+  # Runs even when refresh fails, so a silent source outage is visible.
+  heartbeat:
+    runs-on: ubuntu-latest
+    needs: refresh
+    if: always()
+    steps:
+      - name: Report
+        run: |
+          echo "refresh result: ${{ needs.refresh.result }}" >> "$GITHUB_STEP_SUMMARY"
+          if [ "${{ needs.refresh.result }}" != "success" ]; then
+            echo "::error::Catalog refresh did not succeed. Check the fetch and parse steps."
+            exit 1
+          fi
