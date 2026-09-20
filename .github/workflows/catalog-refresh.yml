@@ -29,7 +29,17 @@ jobs:
   refresh:
     runs-on: ubuntu-latest
     steps:
+      # Code comes from the branch this ran on.
       - uses: actions/checkout@v4
+
+      # Published artifacts live on their own branch, checked out beside it.
+      # Same reasoning as the `balls` branch: a catalog that rewrites weekly
+      # would otherwise grow main's history forever.
+      - name: Check out dist branch
+        uses: actions/checkout@v4
+        with:
+          ref: dist
+          path: published
 
       - uses: actions/setup-node@v4
         with:
@@ -82,7 +92,7 @@ jobs:
       - name: Sanity gate
         run: |
           NEW=$(node -e "console.log(JSON.parse(require('fs').readFileSync('.work/rows.json')).length)")
-          OLD=$(node -e "try{console.log(JSON.parse(require('fs').readFileSync('dist/index.json')).length)}catch(e){console.log(0)}")
+          OLD=$(node -e "try{console.log(JSON.parse(require('fs').readFileSync('published/index.json')).length)}catch(e){console.log(0)}")
           echo "rows: $NEW (published: $OLD)"
           if [ "$OLD" -gt 0 ] && [ "$NEW" -lt $((OLD * 95 / 100)) ]; then
             echo "::error::Row count fell from $OLD to $NEW (>5%). Refusing to publish."
@@ -97,13 +107,13 @@ jobs:
           cd catalog
           SPECS=""
           [ -f specs.json ] && SPECS="--specs specs.json"
-          node build_catalog.js ../.work/rows.json $SPECS --out ../dist | tee ../.work/result
+          node build_catalog.js ../.work/rows.json $SPECS --out ../published | tee ../.work/result
           grep -q 'changed: true' ../.work/result && echo "changed=true" >> "$GITHUB_OUTPUT" || echo "changed=false" >> "$GITHUB_OUTPUT"
 
       - name: Review summary
         run: |
           node -e "
-            const r = require('./dist/review.json');
+            const r = require('./published/review.json');
             const line = (k,v) => console.log('- **'+k+'**: '+v);
             console.log('## Catalog review');
             line('list version', r.listVersion);
@@ -114,15 +124,16 @@ jobs:
             if (r.badDates.length) console.log('\n\`\`\`\n' + r.badDates.map(d=>d.raw+'  '+d.line).join('\n') + '\n\`\`\`');
           " >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Commit
+      - name: Commit to dist branch
         if: steps.build.outputs.changed == 'true' || inputs.force_commit
+        working-directory: published
         run: |
           git config user.name  'catalog-bot'
           git config user.email 'catalog-bot@users.noreply.github.com'
-          git add dist
+          git add -A index.json usbc.json manifest.json review.json detail
           git diff --cached --quiet && { echo 'nothing staged'; exit 0; }
           git commit -m "catalog: USBC ${{ steps.version.outputs.iso }}"
-          git push
+          git push origin HEAD:dist
 
       - name: No-op notice
         if: steps.build.outputs.changed != 'true'
