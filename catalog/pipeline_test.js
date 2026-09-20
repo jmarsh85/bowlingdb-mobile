@@ -1,4 +1,3 @@
-
 /* catalog/pipeline_test.js — end-to-end: parse -> build -> review
  *
  *   node pipeline_test.js                     # fixtures only
@@ -67,8 +66,47 @@ const { entries, index, shards, usbc, review } = B.build(rows, {}, '2026-09-15')
 ok('one entry per row', entries.length === rows.length, { entries: entries.length, rows: rows.length });
 ok('no id collisions', review.idCollisions.length === 0, review.idCollisions);
 ok('CatalogID is a pure function of identity (no year appended)',
-   entries.every(e => e.CatalogID === B.catalogID({
-     mfg: e.MFG, ballName: e.BallName, colorway: e.Colorway })));
+   entries.filter(e => !/-\d+$/.test(e.CatalogID) || !review.idCollisions.some(c => c.assigned === e.CatalogID))
+     .every(e => e.CatalogID === B.catalogID({
+       mfg: e.MFG, ballName: e.BallName, colorway: e.Colorway,
+       weightLimit: e.WeightLimit })));
+
+/* --- collision causes, all four found in the 2026-09-20 real run ----- */
+const cid = (m, n, w) => B.catalogID({ mfg: m, ballName: n, colorway: null, weightLimit: w || null });
+ok('superscript survives (X vs X-squared)',
+   cid('900 Global','X') !== cid('900 Global','X\u00b2'), cid('900 Global','X\u00b2'));
+ok('505C vs 505C-squared distinct',
+   cid('Track Inc.','505C') !== cid('Track Inc.','505C\u00b2'));
+ok('plus survives (Results vs Results+)',
+   cid('Radical','Results') !== cid('Radical','Results+'));
+ok('(All Colors) kept in CatalogID',
+   cid('Roto Grip','Cosmos') !== cid('Roto Grip','Cosmos (All Colors)'));
+ok('** entry distinct from full-weight entry',
+   cid('Ebonite','Wolf') !== cid('Ebonite','Wolf', N.WEIGHT_LIMIT_UNDER_13));
+ok('** suffix is u13',
+   cid('Ebonite','Wolf', N.WEIGHT_LIMIT_UNDER_13).endsWith('-u13'));
+ok('(All Colors) still folded in ModelKey (legacy matching)',
+   N.modelKey('Roto Grip','Cosmos') === N.modelKey('Roto Grip','Cosmos (All Colors)'));
+
+/* --- no row may ever be dropped -------------------------------------- */
+{
+  const dupes = [
+    { mfg:'Ebonite', ballName:'Turbo X', colorway:null, modelKey:'ebonite|turbox' },
+    { mfg:'Ebonite', ballName:'Turbo X', colorway:null, modelKey:'ebonite|turbox' },
+    { mfg:'Ebonite', ballName:'Turbo X', colorway:null, modelKey:'ebonite|turbox' },
+    { mfg:'Brunswick', ballName:'(Danger) Zone', colorway:null, modelKey:'brunswick|dangerzone' },
+    { mfg:'Brunswick', ballName:'Danger Zone', colorway:null, modelKey:'brunswick|dangerzone' },
+  ];
+  const r2 = B.build(dupes, {}, '2026-09-20');
+  ok('every colliding row still published', r2.entries.length === dupes.length,
+     { got: r2.entries.length, want: dupes.length });
+  ok('assigned IDs unique',
+     new Set(r2.entries.map(e => e.CatalogID)).size === dupes.length);
+  ok('collisions reported with base and assigned',
+     r2.review.idCollisions.every(c => c.base && c.assigned));
+  ok('identical-name dupes flagged',
+     r2.review.idCollisions.filter(c => c.identical).length === 2);
+}
 ok('CatalogIDs unique', new Set(entries.map(e => e.CatalogID)).size === entries.length);
 ok('bad date surfaced in review', review.badDates.length === 1, review.badDates);
 ok('weight limits surfaced', review.weightLimited.length >= 1);
