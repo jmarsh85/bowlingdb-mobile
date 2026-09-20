@@ -1891,6 +1891,51 @@
  },
  {
   "Aliases": [],
+  "BallName": "Elite Skull & Crossbones",
+  "CatalogID": "elite-bowlers-paradise-elite-skull-and-crossbones",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Elite (Bowlers Paradise)",
+  "MatchKey": "elitebowlersparadise|eliteskullandcrossbones|",
+  "ModelKey": "elitebowlersparadise|eliteskullandcrossbones",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2009-10",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
   "BallName": "Elite Skull Blue/Red",
   "CatalogID": "elite-bowlers-paradise-elite-skull-blue-red",
   "Colorway": null,
@@ -1969,51 +2014,6 @@
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2010-03",
-   "ApprovedDateRaw": null,
-   "Ineligible": {
-    "NoSlowOil": false,
-    "SlowOil78D": false
-   },
-   "ListVersion": "2026-09-20",
-   "NonConforming": false
-  },
-  "WeightLimit": null
- },
- {
-  "Aliases": [],
-  "BallName": "Elite Skull & Crossbones",
-  "CatalogID": "elite-bowlers-paradise-elite-skull-crossbones",
-  "Colorway": null,
-  "Core": {
-   "Name": null,
-   "Type": null
-  },
-  "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
-  },
-  "DateReleased": null,
-  "FieldSources": {
-   "BallName": "usbc",
-   "USBC": "usbc"
-  },
-  "Images": {
-   "Core": null,
-   "Cover": null,
-   "Thumb": null
-  },
-  "MFG": "Elite (Bowlers Paradise)",
-  "MatchKey": "elitebowlersparadise|eliteskullcrossbones|",
-  "ModelKey": "elitebowlersparadise|eliteskullcrossbones",
-  "Ratings": {
-   "HookRating": null,
-   "PerfectScaleVal": null
-  },
-  "SpecsByWeight": {},
-  "USBC": {
-   "Approved": true,
-   "ApprovedDate": "2009-10",
    "ApprovedDateRaw": null,
    "Ineligible": {
     "NoSlowOil": false,
@@ -3017,7 +3017,7 @@
  {
   "Aliases": [],
   "BallName": "Star (All Colors)",
-  "CatalogID": "elite-bowlers-paradise-star",
+  "CatalogID": "elite-bowlers-paradise-star-all-colors",
   "Colorway": null,
   "Core": {
    "Name": null,

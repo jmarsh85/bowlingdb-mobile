@@ -1,8 +1,8 @@
 [
  {
   "Aliases": [],
-  "BallName": "Insider-R (All Colors)",
-  "CatalogID": "ballmaker-net-insider-r-all-colors",
+  "BallName": "Obsidian",
+  "CatalogID": "cometandco-obsidian",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -23,9 +23,9 @@
    "Cover": null,
    "Thumb": null
   },
-  "MFG": "Ballmaker.net",
-  "MatchKey": "ballmakernet|insiderr|",
-  "ModelKey": "ballmakernet|insiderr",
+  "MFG": "Comet&Co.",
+  "MatchKey": "cometandco|obsidian|",
+  "ModelKey": "cometandco|obsidian",
   "Ratings": {
    "HookRating": null,
    "PerfectScaleVal": null
@@ -33,7 +33,7 @@
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
-   "ApprovedDate": "2023-01-10",
+   "ApprovedDate": "2026-07-28",
    "ApprovedDateRaw": null,
    "Ineligible": {
     "NoSlowOil": false,

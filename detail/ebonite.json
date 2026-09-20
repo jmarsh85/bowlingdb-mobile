@@ -992,7 +992,7 @@
  {
   "Aliases": [],
   "BallName": "Apache 6 Star Hunter Green",
-  "CatalogID": "ebonite-apache-6-star-hunter-green",
+  "CatalogID": "ebonite-apache-6-star-hunter-green-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1127,7 +1127,7 @@
  {
   "Aliases": [],
   "BallName": "Apex Addiction Spinner",
-  "CatalogID": "ebonite-apex-addiction-spinner",
+  "CatalogID": "ebonite-apex-addiction-spinner-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1397,7 +1397,7 @@
  {
   "Aliases": [],
   "BallName": "Apex Black",
-  "CatalogID": "ebonite-apex-black",
+  "CatalogID": "ebonite-apex-black-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1442,7 +1442,7 @@
  {
   "Aliases": [],
   "BallName": "Apex II Blue",
-  "CatalogID": "ebonite-apex-ii-blue",
+  "CatalogID": "ebonite-apex-ii-blue-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1487,7 +1487,7 @@
  {
   "Aliases": [],
   "BallName": "Apex II Hunter Green",
-  "CatalogID": "ebonite-apex-ii-hunter-green",
+  "CatalogID": "ebonite-apex-ii-hunter-green-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1532,7 +1532,7 @@
  {
   "Aliases": [],
   "BallName": "Apex III Blood Red/White",
-  "CatalogID": "ebonite-apex-iii-blood-red-white",
+  "CatalogID": "ebonite-apex-iii-blood-red-white-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1712,7 +1712,7 @@
  {
   "Aliases": [],
   "BallName": "Apex Reflex Export",
-  "CatalogID": "ebonite-apex-reflex-export",
+  "CatalogID": "ebonite-apex-reflex-export-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1757,7 +1757,7 @@
  {
   "Aliases": [],
   "BallName": "Apex RPM",
-  "CatalogID": "ebonite-apex-rpm",
+  "CatalogID": "ebonite-apex-rpm-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2342,7 +2342,7 @@
  {
   "Aliases": [],
   "BallName": "Black Wolf (11 M)",
-  "CatalogID": "ebonite-black-wolf-11-m",
+  "CatalogID": "ebonite-black-wolf-11-m-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2522,7 +2522,7 @@
  {
   "Aliases": [],
   "BallName": "Blue Wolf (11 M)",
-  "CatalogID": "ebonite-blue-wolf-11-m",
+  "CatalogID": "ebonite-blue-wolf-11-m-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -4457,7 +4457,7 @@
  {
   "Aliases": [],
   "BallName": "Crush/R New Red Sanded",
-  "CatalogID": "ebonite-crush-r-new-red-sanded",
+  "CatalogID": "ebonite-crush-r-new-red-sanded-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -4546,51 +4546,6 @@
  },
  {
   "Aliases": [],
-  "BallName": "Crush/R Red",
-  "CatalogID": "ebonite-crush-r-red",
-  "Colorway": null,
-  "Core": {
-   "Name": null,
-   "Type": null
-  },
-  "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
-  },
-  "DateReleased": null,
-  "FieldSources": {
-   "BallName": "usbc",
-   "USBC": "usbc"
-  },
-  "Images": {
-   "Core": null,
-   "Cover": null,
-   "Thumb": null
-  },
-  "MFG": "Ebonite",
-  "MatchKey": "ebonite|crushrred|",
-  "ModelKey": "ebonite|crushrred",
-  "Ratings": {
-   "HookRating": null,
-   "PerfectScaleVal": null
-  },
-  "SpecsByWeight": {},
-  "USBC": {
-   "Approved": true,
-   "ApprovedDate": "2015-11-24",
-   "ApprovedDateRaw": null,
-   "Ineligible": {
-    "NoSlowOil": false,
-    "SlowOil78D": false
-   },
-   "ListVersion": "2026-09-20",
-   "NonConforming": false
-  },
-  "WeightLimit": "under 13 lb"
- },
- {
-  "Aliases": [],
   "BallName": "Crush/R Red/Purple/Gold",
   "CatalogID": "ebonite-crush-r-red-purple-gold",
   "Colorway": null,
@@ -4633,6 +4588,51 @@
    "NonConforming": false
   },
   "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Crush/R Red",
+  "CatalogID": "ebonite-crush-r-red-u13",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Ebonite",
+  "MatchKey": "ebonite|crushrred|",
+  "ModelKey": "ebonite|crushrred",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2015-11-24",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": "under 13 lb"
  },
  {
   "Aliases": [],
@@ -8867,7 +8867,7 @@
  {
   "Aliases": [],
   "BallName": "Game Time Red",
-  "CatalogID": "ebonite-game-time-red",
+  "CatalogID": "ebonite-game-time-red-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -10127,7 +10127,7 @@
  {
   "Aliases": [],
   "BallName": "Honor Blue",
-  "CatalogID": "ebonite-honor-blue",
+  "CatalogID": "ebonite-honor-blue-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -10172,7 +10172,7 @@
  {
   "Aliases": [],
   "BallName": "Honor Burgundy (EY Below 13 Only)",
-  "CatalogID": "ebonite-honor-burgundy-ey-below-13-only",
+  "CatalogID": "ebonite-honor-burgundy-ey-below-13-only-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -10217,7 +10217,7 @@
  {
   "Aliases": [],
   "BallName": "Honor Deep Navy (11 Lb. Only)",
-  "CatalogID": "ebonite-honor-deep-navy-11-lb-only",
+  "CatalogID": "ebonite-honor-deep-navy-11-lb-only-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -10262,7 +10262,7 @@
  {
   "Aliases": [],
   "BallName": "Honor Purple (11M)",
-  "CatalogID": "ebonite-honor-purple-11m",
+  "CatalogID": "ebonite-honor-purple-11m-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -10981,51 +10981,6 @@
  },
  {
   "Aliases": [],
-  "BallName": "Killer Instinct",
-  "CatalogID": "ebonite-killer-instinct",
-  "Colorway": null,
-  "Core": {
-   "Name": null,
-   "Type": null
-  },
-  "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
-  },
-  "DateReleased": null,
-  "FieldSources": {
-   "BallName": "usbc",
-   "USBC": "usbc"
-  },
-  "Images": {
-   "Core": null,
-   "Cover": null,
-   "Thumb": null
-  },
-  "MFG": "Ebonite",
-  "MatchKey": "ebonite|killerinstinct|",
-  "ModelKey": "ebonite|killerinstinct",
-  "Ratings": {
-   "HookRating": null,
-   "PerfectScaleVal": null
-  },
-  "SpecsByWeight": {},
-  "USBC": {
-   "Approved": true,
-   "ApprovedDate": "2005-05",
-   "ApprovedDateRaw": null,
-   "Ineligible": {
-    "NoSlowOil": false,
-    "SlowOil78D": false
-   },
-   "ListVersion": "2026-09-20",
-   "NonConforming": false
-  },
-  "WeightLimit": "under 13 lb"
- },
- {
-  "Aliases": [],
   "BallName": "Killer Instinct Pearl",
   "CatalogID": "ebonite-killer-instinct-pearl",
   "Colorway": null,
@@ -11113,6 +11068,51 @@
    "NonConforming": false
   },
   "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Killer Instinct",
+  "CatalogID": "ebonite-killer-instinct-u13",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Ebonite",
+  "MatchKey": "ebonite|killerinstinct|",
+  "ModelKey": "ebonite|killerinstinct",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2005-05",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": "under 13 lb"
  },
  {
   "Aliases": [],
@@ -11297,7 +11297,7 @@
  {
   "Aliases": [],
   "BallName": "Legacy 7 Stars Hunter Green",
-  "CatalogID": "ebonite-legacy-7-stars-hunter-green",
+  "CatalogID": "ebonite-legacy-7-stars-hunter-green-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -12107,7 +12107,7 @@
  {
   "Aliases": [],
   "BallName": "Magnum (All Colors)",
-  "CatalogID": "ebonite-magnum",
+  "CatalogID": "ebonite-magnum-all-colors",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -12557,7 +12557,7 @@
  {
   "Aliases": [],
   "BallName": "Matrix FX Export",
-  "CatalogID": "ebonite-matrix-fx-export",
+  "CatalogID": "ebonite-matrix-fx-export-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -13007,7 +13007,7 @@
  {
   "Aliases": [],
   "BallName": "Matrix TPS 3 Hunter Green",
-  "CatalogID": "ebonite-matrix-tps-3-hunter-green",
+  "CatalogID": "ebonite-matrix-tps-3-hunter-green-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -13142,7 +13142,7 @@
  {
   "Aliases": [],
   "BallName": "Matrix Trimax 3 Burgundy/Purple",
-  "CatalogID": "ebonite-matrix-trimax-3-burgundy-purple",
+  "CatalogID": "ebonite-matrix-trimax-3-burgundy-purple-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -13502,7 +13502,7 @@
  {
   "Aliases": [],
   "BallName": "Maxim Beauty Rest",
-  "CatalogID": "ebonite-maxim-beauty-rest",
+  "CatalogID": "ebonite-maxim-beauty-rest-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -13592,7 +13592,7 @@
  {
   "Aliases": [],
   "BallName": "Maxim Comforpedic",
-  "CatalogID": "ebonite-maxim-comforpedic",
+  "CatalogID": "ebonite-maxim-comforpedic-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -13997,7 +13997,7 @@
  {
   "Aliases": [],
   "BallName": "Mission 2.0 Black (11 M)",
-  "CatalogID": "ebonite-mission-2-0-black-11-m",
+  "CatalogID": "ebonite-mission-2-0-black-11-m-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -15032,7 +15032,7 @@
  {
   "Aliases": [],
   "BallName": "Mission Red/Black",
-  "CatalogID": "ebonite-mission-red-black",
+  "CatalogID": "ebonite-mission-red-black-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -15572,7 +15572,7 @@
  {
   "Aliases": [],
   "BallName": "Mission X Black/Purple",
-  "CatalogID": "ebonite-mission-x-black-purple",
+  "CatalogID": "ebonite-mission-x-black-purple-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -15617,7 +15617,7 @@
  {
   "Aliases": [],
   "BallName": "Mission X Black/Silver",
-  "CatalogID": "ebonite-mission-x-black-silver",
+  "CatalogID": "ebonite-mission-x-black-silver-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -15662,7 +15662,7 @@
  {
   "Aliases": [],
   "BallName": "Mission X Deep Purple",
-  "CatalogID": "ebonite-mission-x-deep-purple",
+  "CatalogID": "ebonite-mission-x-deep-purple-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -15707,7 +15707,7 @@
  {
   "Aliases": [],
   "BallName": "Mission X Silver/Purple",
-  "CatalogID": "ebonite-mission-x-silver-purple",
+  "CatalogID": "ebonite-mission-x-silver-purple-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -15752,7 +15752,7 @@
  {
   "Aliases": [],
   "BallName": "Mission X Wine",
-  "CatalogID": "ebonite-mission-x-wine",
+  "CatalogID": "ebonite-mission-x-wine-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -16922,7 +16922,7 @@
  {
   "Aliases": [],
   "BallName": "Nitro/X Squared Red Sanded",
-  "CatalogID": "ebonite-nitro-x-squared-red-sanded",
+  "CatalogID": "ebonite-nitro-x-squared-red-sanded-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -21286,6 +21286,51 @@
  },
  {
   "Aliases": [],
+  "BallName": "Puma",
+  "CatalogID": "ebonite-puma-2",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Ebonite",
+  "MatchKey": "ebonite|puma|",
+  "ModelKey": "ebonite|puma",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2021-06-15",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
   "BallName": "Puma Classic",
   "CatalogID": "ebonite-puma-classic",
   "Colorway": null,
@@ -21332,7 +21377,7 @@
  {
   "Aliases": [],
   "BallName": "Puma Hazel Pearl",
-  "CatalogID": "ebonite-puma-hazel-pearl",
+  "CatalogID": "ebonite-puma-hazel-pearl-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -22187,7 +22232,7 @@
  {
   "Aliases": [],
   "BallName": "Red Wolf Special Edition",
-  "CatalogID": "ebonite-red-wolf-special-edition",
+  "CatalogID": "ebonite-red-wolf-special-edition-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -27542,7 +27587,7 @@
  {
   "Aliases": [],
   "BallName": "Timberwolf Apple Pearl Export",
-  "CatalogID": "ebonite-timberwolf-apple-pearl-export",
+  "CatalogID": "ebonite-timberwolf-apple-pearl-export-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -27632,7 +27677,7 @@
  {
   "Aliases": [],
   "BallName": "Timberwolf Pine Green",
-  "CatalogID": "ebonite-timberwolf-pine-green",
+  "CatalogID": "ebonite-timberwolf-pine-green-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -27677,7 +27722,7 @@
  {
   "Aliases": [],
   "BallName": "Timberwolf Red Pearl Export",
-  "CatalogID": "ebonite-timberwolf-red-pearl-export",
+  "CatalogID": "ebonite-timberwolf-red-pearl-export-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -27857,7 +27902,7 @@
  {
   "Aliases": [],
   "BallName": "Tomahawk Low Torque Black/Blue",
-  "CatalogID": "ebonite-tomahawk-low-torque-black-blue",
+  "CatalogID": "ebonite-tomahawk-low-torque-black-blue-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -27902,7 +27947,7 @@
  {
   "Aliases": [],
   "BallName": "Tomahawk Low Torque Black/Burgundy",
-  "CatalogID": "ebonite-tomahawk-low-torque-black-burgundy",
+  "CatalogID": "ebonite-tomahawk-low-torque-black-burgundy-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -27947,7 +27992,7 @@
  {
   "Aliases": [],
   "BallName": "Tomahawk Low Torque Blue",
-  "CatalogID": "ebonite-tomahawk-low-torque-blue",
+  "CatalogID": "ebonite-tomahawk-low-torque-blue-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -28037,7 +28082,7 @@
  {
   "Aliases": [],
   "BallName": "Tomahawk Low Torque Merlot",
-  "CatalogID": "ebonite-tomahawk-low-torque-merlot",
+  "CatalogID": "ebonite-tomahawk-low-torque-merlot-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -28082,7 +28127,7 @@
  {
   "Aliases": [],
   "BallName": "Tomahawk Low Torque Purple",
-  "CatalogID": "ebonite-tomahawk-low-torque-purple",
+  "CatalogID": "ebonite-tomahawk-low-torque-purple-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -28127,7 +28172,7 @@
  {
   "Aliases": [],
   "BallName": "Tomahawk Low Torque RPM",
-  "CatalogID": "ebonite-tomahawk-low-torque-rpm",
+  "CatalogID": "ebonite-tomahawk-low-torque-rpm-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -28172,7 +28217,7 @@
  {
   "Aliases": [],
   "BallName": "Tomahawk Low Torque Rubine Red",
-  "CatalogID": "ebonite-tomahawk-low-torque-rubine-red",
+  "CatalogID": "ebonite-tomahawk-low-torque-rubine-red-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -28262,7 +28307,7 @@
  {
   "Aliases": [],
   "BallName": "Tomahawk Low Torque TPS 3 Hunter Green",
-  "CatalogID": "ebonite-tomahawk-low-torque-tps-3-hunter-green",
+  "CatalogID": "ebonite-tomahawk-low-torque-tps-3-hunter-green-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -28307,7 +28352,7 @@
  {
   "Aliases": [],
   "BallName": "Tomahawk Pro High Torque",
-  "CatalogID": "ebonite-tomahawk-pro-high-torque",
+  "CatalogID": "ebonite-tomahawk-pro-high-torque-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -28352,7 +28397,7 @@
  {
   "Aliases": [],
   "BallName": "Tomahawk Pro Low Torque",
-  "CatalogID": "ebonite-tomahawk-pro-low-torque",
+  "CatalogID": "ebonite-tomahawk-pro-low-torque-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -28397,7 +28442,7 @@
  {
   "Aliases": [],
   "BallName": "Tomahawk TPS Navy",
-  "CatalogID": "ebonite-tomahawk-tps-navy",
+  "CatalogID": "ebonite-tomahawk-tps-navy-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -28442,7 +28487,7 @@
  {
   "Aliases": [],
   "BallName": "Tomahawk TPSGoldstone",
-  "CatalogID": "ebonite-tomahawk-tpsgoldstone",
+  "CatalogID": "ebonite-tomahawk-tpsgoldstone-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -28576,53 +28621,8 @@
  },
  {
   "Aliases": [],
-  "BallName": "Tomahawk X-Plosion Export Black",
-  "CatalogID": "ebonite-tomahawk-x-plosion-export-black",
-  "Colorway": null,
-  "Core": {
-   "Name": null,
-   "Type": null
-  },
-  "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
-  },
-  "DateReleased": null,
-  "FieldSources": {
-   "BallName": "usbc",
-   "USBC": "usbc"
-  },
-  "Images": {
-   "Core": null,
-   "Cover": null,
-   "Thumb": null
-  },
-  "MFG": "Ebonite",
-  "MatchKey": "ebonite|tomahawkxplosionexportblack|",
-  "ModelKey": "ebonite|tomahawkxplosionexportblack",
-  "Ratings": {
-   "HookRating": null,
-   "PerfectScaleVal": null
-  },
-  "SpecsByWeight": {},
-  "USBC": {
-   "Approved": true,
-   "ApprovedDate": "2004-01",
-   "ApprovedDateRaw": null,
-   "Ineligible": {
-    "NoSlowOil": false,
-    "SlowOil78D": false
-   },
-   "ListVersion": "2026-09-20",
-   "NonConforming": false
-  },
-  "WeightLimit": "under 13 lb"
- },
- {
-  "Aliases": [],
   "BallName": "Tomahawk X-Plosion Export Black/Blue",
-  "CatalogID": "ebonite-tomahawk-x-plosion-export-black-blue",
+  "CatalogID": "ebonite-tomahawk-x-plosion-export-black-blue-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -28666,8 +28666,53 @@
  },
  {
   "Aliases": [],
+  "BallName": "Tomahawk X-Plosion Export Black",
+  "CatalogID": "ebonite-tomahawk-x-plosion-export-black-u13",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Ebonite",
+  "MatchKey": "ebonite|tomahawkxplosionexportblack|",
+  "ModelKey": "ebonite|tomahawkxplosionexportblack",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2004-01",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": "under 13 lb"
+ },
+ {
+  "Aliases": [],
   "BallName": "Tomahawk X-Plosion Green",
-  "CatalogID": "ebonite-tomahawk-x-plosion-green",
+  "CatalogID": "ebonite-tomahawk-x-plosion-green-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -28744,6 +28789,51 @@
   "USBC": {
    "Approved": true,
    "ApprovedDate": "1999-01",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Tomahawk X-plosion Tour",
+  "CatalogID": "ebonite-tomahawk-x-plosion-tour-2",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Ebonite",
+  "MatchKey": "ebonite|tomahawkxplosiontour|",
+  "ModelKey": "ebonite|tomahawkxplosiontour",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "1999-04",
    "ApprovedDateRaw": null,
    "Ineligible": {
     "NoSlowOil": false,
@@ -29342,7 +29432,7 @@
  {
   "Aliases": [],
   "BallName": "Tornado Blue/Violet Sparkle",
-  "CatalogID": "ebonite-tornado-blue-violet-sparkle",
+  "CatalogID": "ebonite-tornado-blue-violet-sparkle-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -30602,7 +30692,7 @@
  {
   "Aliases": [],
   "BallName": "TPC Player Black/Red",
-  "CatalogID": "ebonite-tpc-player-black-red",
+  "CatalogID": "ebonite-tpc-player-black-red-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -30647,7 +30737,7 @@
  {
   "Aliases": [],
   "BallName": "TPC Player Black/Silver",
-  "CatalogID": "ebonite-tpc-player-black-silver",
+  "CatalogID": "ebonite-tpc-player-black-silver-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -30737,7 +30827,7 @@
  {
   "Aliases": [],
   "BallName": "TPC Shooter Spinner",
-  "CatalogID": "ebonite-tpc-shooter-spinner",
+  "CatalogID": "ebonite-tpc-shooter-spinner-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -30872,7 +30962,7 @@
  {
   "Aliases": [],
   "BallName": "TPC Warrior Blue Swirl",
-  "CatalogID": "ebonite-tpc-warrior-blue-swirl",
+  "CatalogID": "ebonite-tpc-warrior-blue-swirl-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -30962,7 +31052,7 @@
  {
   "Aliases": [],
   "BallName": "TPC Warrior Red",
-  "CatalogID": "ebonite-tpc-warrior-red",
+  "CatalogID": "ebonite-tpc-warrior-red-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -31772,7 +31862,7 @@
  {
   "Aliases": [],
   "BallName": "Turbo-R Purple-Pink (13 Lb & Under)",
-  "CatalogID": "ebonite-turbo-r-purple-pink-13-lb-under",
+  "CatalogID": "ebonite-turbo-r-purple-pink-13-lb-and-under",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -31794,8 +31884,8 @@
    "Thumb": null
   },
   "MFG": "Ebonite",
-  "MatchKey": "ebonite|turborpurplepink13lbunder|",
-  "ModelKey": "ebonite|turborpurplepink13lbunder",
+  "MatchKey": "ebonite|turborpurplepink13lbandunder|",
+  "ModelKey": "ebonite|turborpurplepink13lbandunder",
   "Ratings": {
    "HookRating": null,
    "PerfectScaleVal": null
@@ -31996,6 +32086,96 @@
  },
  {
   "Aliases": [],
+  "BallName": "Turbo X",
+  "CatalogID": "ebonite-turbo-x-2",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Ebonite",
+  "MatchKey": "ebonite|turbox|",
+  "ModelKey": "ebonite|turbox",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2003-07",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Turbo X",
+  "CatalogID": "ebonite-turbo-x-3",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Ebonite",
+  "MatchKey": "ebonite|turbox|",
+  "ModelKey": "ebonite|turbox",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2025-04-29",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
   "BallName": "Turbo X Black (15 Lb. Only)",
   "CatalogID": "ebonite-turbo-x-black-15-lb-only",
   "Colorway": null,
@@ -32163,6 +32343,51 @@
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
+   "ApprovedDate": "1994-08",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Turbo XL",
+  "CatalogID": "ebonite-turbo-xl-u13",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Ebonite",
+  "MatchKey": "ebonite|turboxl|",
+  "ModelKey": "ebonite|turboxl",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
    "ApprovedDate": "2015-07",
    "ApprovedDateRaw": null,
    "Ineligible": {
@@ -32177,7 +32402,7 @@
  {
   "Aliases": [],
   "BallName": "Turbo XL Wine",
-  "CatalogID": "ebonite-turbo-xl-wine",
+  "CatalogID": "ebonite-turbo-xl-wine-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -32672,7 +32897,7 @@
  {
   "Aliases": [],
   "BallName": "V2 Particle Blue",
-  "CatalogID": "ebonite-v2-particle-blue",
+  "CatalogID": "ebonite-v2-particle-blue-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -32762,7 +32987,7 @@
  {
   "Aliases": [],
   "BallName": "V2 RPM",
-  "CatalogID": "ebonite-v2-rpm",
+  "CatalogID": "ebonite-v2-rpm-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -33392,7 +33617,7 @@
  {
   "Aliases": [],
   "BallName": "Vortex 1 Purple/Teal",
-  "CatalogID": "ebonite-vortex-1-purple-teal",
+  "CatalogID": "ebonite-vortex-1-purple-teal-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -33527,7 +33752,7 @@
  {
   "Aliases": [],
   "BallName": "Vortex 2 Black/Blue Sanded",
-  "CatalogID": "ebonite-vortex-2-black-blue-sanded",
+  "CatalogID": "ebonite-vortex-2-black-blue-sanded-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -33662,7 +33887,7 @@
  {
   "Aliases": [],
   "BallName": "Vortex 3 Royal Blue Sanded",
-  "CatalogID": "ebonite-vortex-3-royal-blue-sanded",
+  "CatalogID": "ebonite-vortex-3-royal-blue-sanded-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -34022,7 +34247,7 @@
  {
   "Aliases": [],
   "BallName": "Warrior Black/Silver/Blue (Under 13-Lb. Only)",
-  "CatalogID": "ebonite-warrior-black-silver-blue-under-13-lb-only",
+  "CatalogID": "ebonite-warrior-black-silver-blue-under-13-lb-only-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -34998,7 +35223,7 @@
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
-   "ApprovedDate": "2006-09",
+   "ApprovedDate": "1996-05",
    "ApprovedDateRaw": null,
    "Ineligible": {
     "NoSlowOil": false,
@@ -35007,12 +35232,57 @@
    "ListVersion": "2026-09-20",
    "NonConforming": false
   },
-  "WeightLimit": "under 13 lb"
+  "WeightLimit": null
  },
  {
   "Aliases": [],
   "BallName": "Wolf Black",
   "CatalogID": "ebonite-wolf-black",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Ebonite",
+  "MatchKey": "ebonite|wolfblack|",
+  "ModelKey": "ebonite|wolfblack",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2021-01-26",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Wolf Black",
+  "CatalogID": "ebonite-wolf-black-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -35147,7 +35417,7 @@
  {
   "Aliases": [],
   "BallName": "Wolf Export Navy/Green",
-  "CatalogID": "ebonite-wolf-export-navy-green",
+  "CatalogID": "ebonite-wolf-export-navy-green-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -35192,7 +35462,7 @@
  {
   "Aliases": [],
   "BallName": "Wolf Gold",
-  "CatalogID": "ebonite-wolf-gold",
+  "CatalogID": "ebonite-wolf-gold-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -35358,7 +35628,7 @@
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
-   "ApprovedDate": "2012-08",
+   "ApprovedDate": "2022-04-12",
    "ApprovedDateRaw": null,
    "Ineligible": {
     "NoSlowOil": false,
@@ -35367,7 +35637,7 @@
    "ListVersion": "2026-09-20",
    "NonConforming": false
   },
-  "WeightLimit": "under 13 lb"
+  "WeightLimit": null
  },
  {
   "Aliases": [],
@@ -35416,8 +35686,53 @@
  },
  {
   "Aliases": [],
+  "BallName": "Wolf Purple",
+  "CatalogID": "ebonite-wolf-purple-u13",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Ebonite",
+  "MatchKey": "ebonite|wolfpurple|",
+  "ModelKey": "ebonite|wolfpurple",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2012-08",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": "under 13 lb"
+ },
+ {
+  "Aliases": [],
   "BallName": "Wolf Reactive Export Red",
-  "CatalogID": "ebonite-wolf-reactive-export-red",
+  "CatalogID": "ebonite-wolf-reactive-export-red-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -35503,6 +35818,51 @@
    "NonConforming": false
   },
   "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Wolf",
+  "CatalogID": "ebonite-wolf-u13",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Ebonite",
+  "MatchKey": "ebonite|wolf|",
+  "ModelKey": "ebonite|wolf",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2006-09",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": "under 13 lb"
  },
  {
   "Aliases": [],
@@ -35597,7 +35957,7 @@
  {
   "Aliases": [],
   "BallName": "Xcel (Blue)",
-  "CatalogID": "ebonite-xcel-blue",
+  "CatalogID": "ebonite-xcel-blue-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -35867,7 +36227,7 @@
  {
   "Aliases": [],
   "BallName": "XXXcel Navy",
-  "CatalogID": "ebonite-xxxcel-navy",
+  "CatalogID": "ebonite-xxxcel-navy-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -35957,7 +36317,7 @@
  {
   "Aliases": [],
   "BallName": "XXXcel Red",
-  "CatalogID": "ebonite-xxxcel-red",
+  "CatalogID": "ebonite-xxxcel-red-u13",
   "Colorway": null,
   "Core": {
    "Name": null,

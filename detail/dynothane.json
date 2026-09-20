@@ -1172,7 +1172,7 @@
  {
   "Aliases": [],
   "BallName": "D&C SA",
-  "CatalogID": "dyno-thane-d-c-sa",
+  "CatalogID": "dyno-thane-dandc-sa",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1194,8 +1194,8 @@
    "Thumb": null
   },
   "MFG": "Dyno-Thane",
-  "MatchKey": "dynothane|dcsa|",
-  "ModelKey": "dynothane|dcsa",
+  "MatchKey": "dynothane|dandcsa|",
+  "ModelKey": "dynothane|dandcsa",
   "Ratings": {
    "HookRating": null,
    "PerfectScaleVal": null
@@ -1217,7 +1217,7 @@
  {
   "Aliases": [],
   "BallName": "D&C SS",
-  "CatalogID": "dyno-thane-d-c-ss",
+  "CatalogID": "dyno-thane-dandc-ss",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1239,8 +1239,8 @@
    "Thumb": null
   },
   "MFG": "Dyno-Thane",
-  "MatchKey": "dynothane|dcss|",
-  "ModelKey": "dynothane|dcss",
+  "MatchKey": "dynothane|dandcss|",
+  "ModelKey": "dynothane|dandcss",
   "Ratings": {
    "HookRating": null,
    "PerfectScaleVal": null
@@ -4097,7 +4097,7 @@
  {
   "Aliases": [],
   "BallName": "Turbine Black/Blue",
-  "CatalogID": "dyno-thane-turbine-black-blue",
+  "CatalogID": "dyno-thane-turbine-black-blue-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -4142,7 +4142,7 @@
  {
   "Aliases": [],
   "BallName": "Turbine II Black/Gold",
-  "CatalogID": "dyno-thane-turbine-ii-black-gold",
+  "CatalogID": "dyno-thane-turbine-ii-black-gold-u13",
   "Colorway": null,
   "Core": {
    "Name": null,

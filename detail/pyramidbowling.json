@@ -1802,7 +1802,7 @@
  {
   "Aliases": [],
   "BallName": "Path (All Colors)",
-  "CatalogID": "pyramid-bowling-path",
+  "CatalogID": "pyramid-bowling-path-all-colors",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2689,6 +2689,51 @@
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2019-04-02",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Pathogen X²",
+  "CatalogID": "pyramid-bowling-pathogen-x2",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Pyramid Bowling",
+  "MatchKey": "pyramidbowling|pathogenx2|",
+  "ModelKey": "pyramidbowling|pathogenx2",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2020-09-08",
    "ApprovedDateRaw": null,
    "Ineligible": {
     "NoSlowOil": false,

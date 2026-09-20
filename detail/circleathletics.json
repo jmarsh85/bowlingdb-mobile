@@ -316,6 +316,51 @@
  },
  {
   "Aliases": [],
+  "BallName": "Hard Core",
+  "CatalogID": "circle-athletics-hard-core-2",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Circle Athletics",
+  "MatchKey": "circleathletics|hardcore|",
+  "ModelKey": "circleathletics|hardcore",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2006-01",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
   "BallName": "Hard Core Fanatic Green/Purple",
   "CatalogID": "circle-athletics-hard-core-fanatic-green-purple",
   "Colorway": null,

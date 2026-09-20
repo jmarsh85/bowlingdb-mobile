@@ -1,8 +1,8 @@
 [
  {
   "Aliases": [],
-  "BallName": "Insider-R (All Colors)",
-  "CatalogID": "ballmaker-net-insider-r-all-colors",
+  "BallName": "Black Myth",
+  "CatalogID": "m-and-t-associates-black-myth",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -23,9 +23,9 @@
    "Cover": null,
    "Thumb": null
   },
-  "MFG": "Ballmaker.net",
-  "MatchKey": "ballmakernet|insiderr|",
-  "ModelKey": "ballmakernet|insiderr",
+  "MFG": "M & T Associates",
+  "MatchKey": "mandtassociates|blackmyth|",
+  "ModelKey": "mandtassociates|blackmyth",
   "Ratings": {
    "HookRating": null,
    "PerfectScaleVal": null
@@ -33,7 +33,7 @@
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
-   "ApprovedDate": "2023-01-10",
+   "ApprovedDate": "2001-09",
    "ApprovedDateRaw": null,
    "Ineligible": {
     "NoSlowOil": false,

@@ -406,8 +406,53 @@
  },
  {
   "Aliases": [],
+  "BallName": "Laser",
+  "CatalogID": "linds-laser-2",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Linds",
+  "MatchKey": "linds|laser|",
+  "ModelKey": "linds|laser",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2006-03",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
   "BallName": "Laser (Pink and Blue)",
-  "CatalogID": "linds-laser-pink-and-blue",
+  "CatalogID": "linds-laser-pink-and-blue-u13",
   "Colorway": null,
   "Core": {
    "Name": null,

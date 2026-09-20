@@ -14446,53 +14446,8 @@
  },
  {
   "Aliases": [],
-  "BallName": "Ice (All Colors)",
-  "CatalogID": "storm-ice",
-  "Colorway": null,
-  "Core": {
-   "Name": null,
-   "Type": null
-  },
-  "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
-  },
-  "DateReleased": null,
-  "FieldSources": {
-   "BallName": "usbc",
-   "USBC": "usbc"
-  },
-  "Images": {
-   "Core": null,
-   "Cover": null,
-   "Thumb": null
-  },
-  "MFG": "Storm",
-  "MatchKey": "storm|ice|",
-  "ModelKey": "storm|ice",
-  "Ratings": {
-   "HookRating": null,
-   "PerfectScaleVal": null
-  },
-  "SpecsByWeight": {},
-  "USBC": {
-   "Approved": true,
-   "ApprovedDate": "2016-08-30",
-   "ApprovedDateRaw": null,
-   "Ineligible": {
-    "NoSlowOil": false,
-    "SlowOil78D": false
-   },
-   "ListVersion": "2026-09-20",
-   "NonConforming": false
-  },
-  "WeightLimit": null
- },
- {
-  "Aliases": [],
   "BallName": "Ice 30 (All Colors)",
-  "CatalogID": "storm-ice-30",
+  "CatalogID": "storm-ice-30-all-colors",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -14536,8 +14491,53 @@
  },
  {
   "Aliases": [],
+  "BallName": "Ice (All Colors)",
+  "CatalogID": "storm-ice-all-colors",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Storm",
+  "MatchKey": "storm|ice|",
+  "ModelKey": "storm|ice",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2016-08-30",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
   "BallName": "Ice Storm (All Colors)",
-  "CatalogID": "storm-ice-storm",
+  "CatalogID": "storm-ice-storm-all-colors",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -15797,7 +15797,7 @@
  {
   "Aliases": [],
   "BallName": "JOPO Grips Clear Poly (All Colors)",
-  "CatalogID": "storm-jopo-grips-clear-poly",
+  "CatalogID": "storm-jopo-grips-clear-poly-all-colors",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -17462,7 +17462,7 @@
  {
   "Aliases": [],
   "BallName": "Marvel Impact +",
-  "CatalogID": "storm-marvel-impact",
+  "CatalogID": "storm-marvel-impact-plus",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -17484,8 +17484,8 @@
    "Thumb": null
   },
   "MFG": "Storm",
-  "MatchKey": "storm|marvelimpact|",
-  "ModelKey": "storm|marvelimpact",
+  "MatchKey": "storm|marvelimpactplus|",
+  "ModelKey": "storm|marvelimpactplus",
   "Ratings": {
    "HookRating": null,
    "PerfectScaleVal": null
@@ -20162,7 +20162,7 @@
  {
   "Aliases": [],
   "BallName": "Mix (All Colors)",
-  "CatalogID": "storm-mix",
+  "CatalogID": "storm-mix-all-colors",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -20927,7 +20927,7 @@
  {
   "Aliases": [],
   "BallName": "Nano Spin",
-  "CatalogID": "storm-nano-spin",
+  "CatalogID": "storm-nano-spin-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -31232,7 +31232,7 @@
  {
   "Aliases": [],
   "BallName": "SPI Clear (All Colors)",
-  "CatalogID": "storm-spi-clear",
+  "CatalogID": "storm-spi-clear-all-colors",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -31277,7 +31277,7 @@
  {
   "Aliases": [],
   "BallName": "SPI Cube (All Colors)",
-  "CatalogID": "storm-spi-cube",
+  "CatalogID": "storm-spi-cube-all-colors",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -31367,7 +31367,7 @@
  {
   "Aliases": [],
   "BallName": "Spin Mode",
-  "CatalogID": "storm-spin-mode",
+  "CatalogID": "storm-spin-mode-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -31637,7 +31637,7 @@
  {
   "Aliases": [],
   "BallName": "Spot On (All Colors)",
-  "CatalogID": "storm-spot-on",
+  "CatalogID": "storm-spot-on-all-colors",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -32267,7 +32267,7 @@
  {
   "Aliases": [],
   "BallName": "Striking Out Breast Cancer Clear Poly (All Colors)",
-  "CatalogID": "storm-striking-out-breast-cancer-clear-poly",
+  "CatalogID": "storm-striking-out-breast-cancer-clear-poly-all-colors",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -33527,7 +33527,7 @@
  {
   "Aliases": [],
   "BallName": "Super Spin",
-  "CatalogID": "storm-super-spin",
+  "CatalogID": "storm-super-spin-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -34067,7 +34067,7 @@
  {
   "Aliases": [],
   "BallName": "Sword C³",
-  "CatalogID": "storm-sword-c",
+  "CatalogID": "storm-sword-c3",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -34089,8 +34089,8 @@
    "Thumb": null
   },
   "MFG": "Storm",
-  "MatchKey": "storm|swordc|",
-  "ModelKey": "storm|swordc",
+  "MatchKey": "storm|swordc3|",
+  "ModelKey": "storm|swordc3",
   "Ratings": {
    "HookRating": null,
    "PerfectScaleVal": null
@@ -34909,6 +34909,51 @@
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2004-01",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Team Storm",
+  "CatalogID": "storm-team-storm-2",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Storm",
+  "MatchKey": "storm|teamstorm|",
+  "ModelKey": "storm|teamstorm",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2008-10",
    "ApprovedDateRaw": null,
    "Ineligible": {
     "NoSlowOil": false,
@@ -38701,6 +38746,51 @@
  },
  {
   "Aliases": [],
+  "BallName": "Tropical Storm Blue/Orange",
+  "CatalogID": "storm-tropical-storm-blue-orange-2",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Storm",
+  "MatchKey": "storm|tropicalstormblueorange|",
+  "ModelKey": "storm|tropicalstormblueorange",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2007-05",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
   "BallName": "Tropical Storm Blue/Yellow",
   "CatalogID": "storm-tropical-storm-blue-yellow",
   "Colorway": null,
@@ -38734,6 +38824,51 @@
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2005-06",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Tropical Storm Blue/Yellow",
+  "CatalogID": "storm-tropical-storm-blue-yellow-2",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Storm",
+  "MatchKey": "storm|tropicalstormblueyellow|",
+  "ModelKey": "storm|tropicalstormblueyellow",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2006-09",
    "ApprovedDateRaw": null,
    "Ineligible": {
     "NoSlowOil": false,
@@ -38914,6 +39049,51 @@
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2005-05",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Tropical Storm Green/Yellow",
+  "CatalogID": "storm-tropical-storm-green-yellow-2",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Storm",
+  "MatchKey": "storm|tropicalstormgreenyellow|",
+  "ModelKey": "storm|tropicalstormgreenyellow",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2006-09",
    "ApprovedDateRaw": null,
    "Ineligible": {
     "NoSlowOil": false,
@@ -39241,6 +39421,51 @@
  },
  {
   "Aliases": [],
+  "BallName": "Tropical Storm Red/Black",
+  "CatalogID": "storm-tropical-storm-red-black-2",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Storm",
+  "MatchKey": "storm|tropicalstormredblack|",
+  "ModelKey": "storm|tropicalstormredblack",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2006-09",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
   "BallName": "Tropical Storm Red/Purple",
   "CatalogID": "storm-tropical-storm-red-purple",
   "Colorway": null,
@@ -39274,6 +39499,51 @@
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2005-06",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Tropical Storm Red/Purple",
+  "CatalogID": "storm-tropical-storm-red-purple-2",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Storm",
+  "MatchKey": "storm|tropicalstormredpurple|",
+  "ModelKey": "storm|tropicalstormredpurple",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2006-09",
    "ApprovedDateRaw": null,
    "Ineligible": {
     "NoSlowOil": false,

@@ -91,53 +91,8 @@
  },
  {
   "Aliases": [],
-  "BallName": "The Great King",
-  "CatalogID": "iwei-the-great-king",
-  "Colorway": null,
-  "Core": {
-   "Name": null,
-   "Type": null
-  },
-  "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
-  },
-  "DateReleased": null,
-  "FieldSources": {
-   "BallName": "usbc",
-   "USBC": "usbc"
-  },
-  "Images": {
-   "Core": null,
-   "Cover": null,
-   "Thumb": null
-  },
-  "MFG": "IWEI",
-  "MatchKey": "iwei|thegreatking|",
-  "ModelKey": "iwei|thegreatking",
-  "Ratings": {
-   "HookRating": null,
-   "PerfectScaleVal": null
-  },
-  "SpecsByWeight": {},
-  "USBC": {
-   "Approved": true,
-   "ApprovedDate": "2011-09",
-   "ApprovedDateRaw": null,
-   "Ineligible": {
-    "NoSlowOil": false,
-    "SlowOil78D": false
-   },
-   "ListVersion": "2026-09-20",
-   "NonConforming": false
-  },
-  "WeightLimit": "under 13 lb"
- },
- {
-  "Aliases": [],
   "BallName": "The Great King Navy Blue",
-  "CatalogID": "iwei-the-great-king-navy-blue",
+  "CatalogID": "iwei-the-great-king-navy-blue-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -161,6 +116,51 @@
   "MFG": "IWEI",
   "MatchKey": "iwei|thegreatkingnavyblue|",
   "ModelKey": "iwei|thegreatkingnavyblue",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2011-09",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": "under 13 lb"
+ },
+ {
+  "Aliases": [],
+  "BallName": "The Great King",
+  "CatalogID": "iwei-the-great-king-u13",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "IWEI",
+  "MatchKey": "iwei|thegreatking|",
+  "ModelKey": "iwei|thegreatking",
   "Ratings": {
    "HookRating": null,
    "PerfectScaleVal": null

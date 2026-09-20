@@ -4142,7 +4142,7 @@
  {
   "Aliases": [],
   "BallName": "Enigma Black/Blue/Light Blue",
-  "CatalogID": "columbia-300-enigma-black-blue-light-blue",
+  "CatalogID": "columbia-300-enigma-black-blue-light-blue-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -4277,7 +4277,7 @@
  {
   "Aliases": [],
   "BallName": "Enigma Red/Orange/Yellow",
-  "CatalogID": "columbia-300-enigma-red-orange-yellow",
+  "CatalogID": "columbia-300-enigma-red-orange-yellow-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -16111,6 +16111,51 @@
  },
  {
   "Aliases": [],
+  "BallName": "Rock & Ricochet",
+  "CatalogID": "columbia-300-rock-and-ricochet",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Columbia 300",
+  "MatchKey": "columbia300|rockandricochet|",
+  "ModelKey": "columbia300|rockandricochet",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2006-05",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
   "BallName": "Rock Black",
   "CatalogID": "columbia-300-rock-black",
   "Colorway": null,
@@ -16684,51 +16729,6 @@
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2000-06",
-   "ApprovedDateRaw": null,
-   "Ineligible": {
-    "NoSlowOil": false,
-    "SlowOil78D": false
-   },
-   "ListVersion": "2026-09-20",
-   "NonConforming": false
-  },
-  "WeightLimit": null
- },
- {
-  "Aliases": [],
-  "BallName": "Rock & Ricochet",
-  "CatalogID": "columbia-300-rock-ricochet",
-  "Colorway": null,
-  "Core": {
-   "Name": null,
-   "Type": null
-  },
-  "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
-  },
-  "DateReleased": null,
-  "FieldSources": {
-   "BallName": "usbc",
-   "USBC": "usbc"
-  },
-  "Images": {
-   "Core": null,
-   "Cover": null,
-   "Thumb": null
-  },
-  "MFG": "Columbia 300",
-  "MatchKey": "columbia300|rockricochet|",
-  "ModelKey": "columbia300|rockricochet",
-  "Ratings": {
-   "HookRating": null,
-   "PerfectScaleVal": null
-  },
-  "SpecsByWeight": {},
-  "USBC": {
-   "Approved": true,
-   "ApprovedDate": "2006-05",
    "ApprovedDateRaw": null,
    "Ineligible": {
     "NoSlowOil": false,
@@ -22547,7 +22547,7 @@
  {
   "Aliases": [],
   "BallName": "Throw Down Black",
-  "CatalogID": "columbia-300-throw-down-black",
+  "CatalogID": "columbia-300-throw-down-black-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -24122,7 +24122,7 @@
  {
   "Aliases": [],
   "BallName": "White Dot (All Colors)",
-  "CatalogID": "columbia-300-white-dot",
+  "CatalogID": "columbia-300-white-dot-all-colors",
   "Colorway": null,
   "Core": {
    "Name": null,

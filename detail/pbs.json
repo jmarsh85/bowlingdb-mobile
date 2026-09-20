@@ -91,6 +91,51 @@
  },
  {
   "Aliases": [],
+  "BallName": "Dragon Ball (All Colors)",
+  "CatalogID": "pbs-dragon-ball-all-colors",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "PBS",
+  "MatchKey": "pbs|dragonball|",
+  "ModelKey": "pbs|dragonball",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2018-08-14",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
   "BallName": "Dragon Ball Blue/White",
   "CatalogID": "pbs-dragon-ball-blue-white",
   "Colorway": null,
@@ -227,7 +272,7 @@
  {
   "Aliases": [],
   "BallName": "Frenzied (All Colors)",
-  "CatalogID": "pbs-frenzied",
+  "CatalogID": "pbs-frenzied-all-colors",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -497,7 +542,7 @@
  {
   "Aliases": [],
   "BallName": "Mustang (All Colors)",
-  "CatalogID": "pbs-mustang",
+  "CatalogID": "pbs-mustang-all-colors",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -542,7 +587,7 @@
  {
   "Aliases": [],
   "BallName": "PBS (All Colors)",
-  "CatalogID": "pbs-pbs",
+  "CatalogID": "pbs-pbs-all-colors",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -902,7 +947,7 @@
  {
   "Aliases": [],
   "BallName": "Sniper L96A1 AW",
-  "CatalogID": "pbs-sniper-l96a1-aw",
+  "CatalogID": "pbs-sniper-l96a1-aw-u13",
   "Colorway": null,
   "Core": {
    "Name": null,

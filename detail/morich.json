@@ -767,7 +767,7 @@
  {
   "Aliases": [],
   "BallName": "EZ Lev RG ML&L",
-  "CatalogID": "morich-ez-lev-rg-ml-l",
+  "CatalogID": "morich-ez-lev-rg-mlandl",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -789,8 +789,8 @@
    "Thumb": null
   },
   "MFG": "MoRich",
-  "MatchKey": "morich|ezlevrgmll|",
-  "ModelKey": "morich|ezlevrgmll",
+  "MatchKey": "morich|ezlevrgmlandl|",
+  "ModelKey": "morich|ezlevrgmlandl",
   "Ratings": {
    "HookRating": null,
    "PerfectScaleVal": null
@@ -857,7 +857,7 @@
  {
   "Aliases": [],
   "BallName": "Grand Shock & Awe",
-  "CatalogID": "morich-grand-shock-awe",
+  "CatalogID": "morich-grand-shock-and-awe",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -879,8 +879,8 @@
    "Thumb": null
   },
   "MFG": "MoRich",
-  "MatchKey": "morich|grandshockawe|",
-  "ModelKey": "morich|grandshockawe",
+  "MatchKey": "morich|grandshockandawe|",
+  "ModelKey": "morich|grandshockandawe",
   "Ratings": {
    "HookRating": null,
    "PerfectScaleVal": null
@@ -1127,7 +1127,7 @@
  {
   "Aliases": [],
   "BallName": "Lane Magic Revival ML & L",
-  "CatalogID": "morich-lane-magic-revival-ml-l",
+  "CatalogID": "morich-lane-magic-revival-ml-and-l",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1149,8 +1149,8 @@
    "Thumb": null
   },
   "MFG": "MoRich",
-  "MatchKey": "morich|lanemagicrevivalmll|",
-  "ModelKey": "morich|lanemagicrevivalmll",
+  "MatchKey": "morich|lanemagicrevivalmlandl|",
+  "ModelKey": "morich|lanemagicrevivalmlandl",
   "Ratings": {
    "HookRating": null,
    "PerfectScaleVal": null
@@ -1532,7 +1532,7 @@
  {
   "Aliases": [],
   "BallName": "Maximum Shock & Awe Black/Red",
-  "CatalogID": "morich-maximum-shock-awe-black-red",
+  "CatalogID": "morich-maximum-shock-and-awe-black-red",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1554,8 +1554,8 @@
    "Thumb": null
   },
   "MFG": "MoRich",
-  "MatchKey": "morich|maximumshockaweblackred|",
-  "ModelKey": "morich|maximumshockaweblackred",
+  "MatchKey": "morich|maximumshockandaweblackred|",
+  "ModelKey": "morich|maximumshockandaweblackred",
   "Ratings": {
    "HookRating": null,
    "PerfectScaleVal": null
@@ -1577,7 +1577,7 @@
  {
   "Aliases": [],
   "BallName": "Maximum Shock & Awe Black/Red Pearl",
-  "CatalogID": "morich-maximum-shock-awe-black-red-pearl",
+  "CatalogID": "morich-maximum-shock-and-awe-black-red-pearl",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1599,8 +1599,8 @@
    "Thumb": null
   },
   "MFG": "MoRich",
-  "MatchKey": "morich|maximumshockaweblackredpearl|",
-  "ModelKey": "morich|maximumshockaweblackredpearl",
+  "MatchKey": "morich|maximumshockandaweblackredpearl|",
+  "ModelKey": "morich|maximumshockandaweblackredpearl",
   "Ratings": {
    "HookRating": null,
    "PerfectScaleVal": null
@@ -3332,7 +3332,7 @@
  {
   "Aliases": [],
   "BallName": "Seek & Destroy",
-  "CatalogID": "morich-seek-destroy",
+  "CatalogID": "morich-seek-and-destroy",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3354,8 +3354,8 @@
    "Thumb": null
   },
   "MFG": "MoRich",
-  "MatchKey": "morich|seekdestroy|",
-  "ModelKey": "morich|seekdestroy",
+  "MatchKey": "morich|seekanddestroy|",
+  "ModelKey": "morich|seekanddestroy",
   "Ratings": {
    "HookRating": null,
    "PerfectScaleVal": null
@@ -3377,7 +3377,7 @@
  {
   "Aliases": [],
   "BallName": "Shock & Awe",
-  "CatalogID": "morich-shock-awe",
+  "CatalogID": "morich-shock-and-awe",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3399,8 +3399,8 @@
    "Thumb": null
   },
   "MFG": "MoRich",
-  "MatchKey": "morich|shockawe|",
-  "ModelKey": "morich|shockawe",
+  "MatchKey": "morich|shockandawe|",
+  "ModelKey": "morich|shockandawe",
   "Ratings": {
    "HookRating": null,
    "PerfectScaleVal": null
@@ -3602,7 +3602,7 @@
  {
   "Aliases": [],
   "BallName": "Total Shock & Awe",
-  "CatalogID": "morich-total-shock-awe",
+  "CatalogID": "morich-total-shock-and-awe",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3624,8 +3624,8 @@
    "Thumb": null
   },
   "MFG": "MoRich",
-  "MatchKey": "morich|totalshockawe|",
-  "ModelKey": "morich|totalshockawe",
+  "MatchKey": "morich|totalshockandawe|",
+  "ModelKey": "morich|totalshockandawe",
   "Ratings": {
    "HookRating": null,
    "PerfectScaleVal": null

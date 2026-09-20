@@ -2161,6 +2161,51 @@
  },
  {
   "Aliases": [],
+  "BallName": "Cosmos (All Colors)",
+  "CatalogID": "roto-grip-cosmos-all-colors",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Roto Grip",
+  "MatchKey": "rotogrip|cosmos|",
+  "ModelKey": "rotogrip|cosmos",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2025-07-08",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
   "BallName": "Critical",
   "CatalogID": "roto-grip-critical",
   "Colorway": null,
@@ -7291,51 +7336,6 @@
  },
  {
   "Aliases": [],
-  "BallName": "Hustle M+M",
-  "CatalogID": "roto-grip-hustle-m-m",
-  "Colorway": null,
-  "Core": {
-   "Name": null,
-   "Type": null
-  },
-  "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
-  },
-  "DateReleased": null,
-  "FieldSources": {
-   "BallName": "usbc",
-   "USBC": "usbc"
-  },
-  "Images": {
-   "Core": null,
-   "Cover": null,
-   "Thumb": null
-  },
-  "MFG": "Roto Grip",
-  "MatchKey": "rotogrip|hustlemm|",
-  "ModelKey": "rotogrip|hustlemm",
-  "Ratings": {
-   "HookRating": null,
-   "PerfectScaleVal": null
-  },
-  "SpecsByWeight": {},
-  "USBC": {
-   "Approved": true,
-   "ApprovedDate": "2023-05-30",
-   "ApprovedDateRaw": null,
-   "Ineligible": {
-    "NoSlowOil": false,
-    "SlowOil78D": false
-   },
-   "ListVersion": "2026-09-20",
-   "NonConforming": false
-  },
-  "WeightLimit": null
- },
- {
-  "Aliases": [],
   "BallName": "Hustle Metal",
   "CatalogID": "roto-grip-hustle-metal",
   "Colorway": null,
@@ -7369,6 +7369,51 @@
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2020-08-25",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Hustle M+M",
+  "CatalogID": "roto-grip-hustle-mplusm",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Roto Grip",
+  "MatchKey": "rotogrip|hustlemplusm|",
+  "ModelKey": "rotogrip|hustlemplusm",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2023-05-30",
    "ApprovedDateRaw": null,
    "Ineligible": {
     "NoSlowOil": false,

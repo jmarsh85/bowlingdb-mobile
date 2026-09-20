@@ -5356,6 +5356,51 @@
  },
  {
   "Aliases": [],
+  "BallName": "Danger Zone",
+  "CatalogID": "brunswick-danger-zone-2",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Brunswick",
+  "MatchKey": "brunswick|dangerzone|",
+  "ModelKey": "brunswick|dangerzone",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "1996-01",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
   "BallName": "Danger Zone 2 Carbide",
   "CatalogID": "brunswick-danger-zone-2-carbide",
   "Colorway": null,
@@ -14401,6 +14446,51 @@
  },
  {
   "Aliases": [],
+  "BallName": "Maxxx Zone Evolution+",
+  "CatalogID": "brunswick-maxxx-zone-evolutionplus",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Brunswick",
+  "MatchKey": "brunswick|maxxxzoneevolutionplus|",
+  "ModelKey": "brunswick|maxxxzoneevolutionplus",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2011-04",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
   "BallName": "Meanstreak",
   "CatalogID": "brunswick-meanstreak",
   "Colorway": null,
@@ -16336,51 +16426,6 @@
  },
  {
   "Aliases": [],
-  "BallName": "NeXus f(P+F) Solid",
-  "CatalogID": "brunswick-nexus-f-p-f-solid",
-  "Colorway": null,
-  "Core": {
-   "Name": null,
-   "Type": null
-  },
-  "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
-  },
-  "DateReleased": null,
-  "FieldSources": {
-   "BallName": "usbc",
-   "USBC": "usbc"
-  },
-  "Images": {
-   "Core": null,
-   "Cover": null,
-   "Thumb": null
-  },
-  "MFG": "Brunswick",
-  "MatchKey": "brunswick|nexusfpfsolid|",
-  "ModelKey": "brunswick|nexusfpfsolid",
-  "Ratings": {
-   "HookRating": null,
-   "PerfectScaleVal": null
-  },
-  "SpecsByWeight": {},
-  "USBC": {
-   "Approved": true,
-   "ApprovedDate": "2011-10",
-   "ApprovedDateRaw": null,
-   "Ineligible": {
-    "NoSlowOil": false,
-    "SlowOil78D": false
-   },
-   "ListVersion": "2026-09-20",
-   "NonConforming": false
-  },
-  "WeightLimit": null
- },
- {
-  "Aliases": [],
   "BallName": "NeXus f(P) Pearl",
   "CatalogID": "brunswick-nexus-f-p-pearl",
   "Colorway": null,
@@ -16471,6 +16516,51 @@
  },
  {
   "Aliases": [],
+  "BallName": "NeXus f(P+F) Solid",
+  "CatalogID": "brunswick-nexus-f-pplusf-solid",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Brunswick",
+  "MatchKey": "brunswick|nexusfpplusfsolid|",
+  "ModelKey": "brunswick|nexusfpplusfsolid",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2011-10",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
   "BallName": "NeXXus AMD",
   "CatalogID": "brunswick-nexxus-amd",
   "Colorway": null,
@@ -16517,7 +16607,7 @@
  {
   "Aliases": [],
   "BallName": "NeXXus f(P+H) Solid",
-  "CatalogID": "brunswick-nexxus-f-p-h-solid",
+  "CatalogID": "brunswick-nexxus-f-pplush-solid",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -16539,8 +16629,8 @@
    "Thumb": null
   },
   "MFG": "Brunswick",
-  "MatchKey": "brunswick|nexxusfphsolid|",
-  "ModelKey": "brunswick|nexxusfphsolid",
+  "MatchKey": "brunswick|nexxusfpplushsolid|",
+  "ModelKey": "brunswick|nexxusfpplushsolid",
   "Ratings": {
    "HookRating": null,
    "PerfectScaleVal": null
@@ -16562,7 +16652,7 @@
  {
   "Aliases": [],
   "BallName": "NeXXus f(P+R) LE Solid",
-  "CatalogID": "brunswick-nexxus-f-p-r-le-solid",
+  "CatalogID": "brunswick-nexxus-f-pplusr-le-solid",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -16584,8 +16674,8 @@
    "Thumb": null
   },
   "MFG": "Brunswick",
-  "MatchKey": "brunswick|nexxusfprlesolid|",
-  "ModelKey": "brunswick|nexxusfprlesolid",
+  "MatchKey": "brunswick|nexxusfpplusrlesolid|",
+  "ModelKey": "brunswick|nexxusfpplusrlesolid",
   "Ratings": {
    "HookRating": null,
    "PerfectScaleVal": null
@@ -16607,7 +16697,7 @@
  {
   "Aliases": [],
   "BallName": "NeXXus f(P+R) Pearl",
-  "CatalogID": "brunswick-nexxus-f-p-r-pearl",
+  "CatalogID": "brunswick-nexxus-f-pplusr-pearl",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -16629,8 +16719,8 @@
    "Thumb": null
   },
   "MFG": "Brunswick",
-  "MatchKey": "brunswick|nexxusfprpearl|",
-  "ModelKey": "brunswick|nexxusfprpearl",
+  "MatchKey": "brunswick|nexxusfpplusrpearl|",
+  "ModelKey": "brunswick|nexxusfpplusrpearl",
   "Ratings": {
    "HookRating": null,
    "PerfectScaleVal": null
@@ -16652,7 +16742,7 @@
  {
   "Aliases": [],
   "BallName": "NeXXus f(P+R) Solid",
-  "CatalogID": "brunswick-nexxus-f-p-r-solid",
+  "CatalogID": "brunswick-nexxus-f-pplusr-solid",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -16674,8 +16764,8 @@
    "Thumb": null
   },
   "MFG": "Brunswick",
-  "MatchKey": "brunswick|nexxusfprsolid|",
-  "ModelKey": "brunswick|nexxusfprsolid",
+  "MatchKey": "brunswick|nexxusfpplusrsolid|",
+  "ModelKey": "brunswick|nexxusfpplusrsolid",
   "Ratings": {
    "HookRating": null,
    "PerfectScaleVal": null
@@ -16697,7 +16787,7 @@
  {
   "Aliases": [],
   "BallName": "NeXXus f(P+S) Solid",
-  "CatalogID": "brunswick-nexxus-f-p-s-solid",
+  "CatalogID": "brunswick-nexxus-f-ppluss-solid",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -16719,8 +16809,8 @@
    "Thumb": null
   },
   "MFG": "Brunswick",
-  "MatchKey": "brunswick|nexxusfpssolid|",
-  "ModelKey": "brunswick|nexxusfpssolid",
+  "MatchKey": "brunswick|nexxusfpplusssolid|",
+  "ModelKey": "brunswick|nexxusfpplusssolid",
   "Ratings": {
    "HookRating": null,
    "PerfectScaleVal": null
@@ -16742,7 +16832,7 @@
  {
   "Aliases": [],
   "BallName": "NeXXus Fusion Ω",
-  "CatalogID": "brunswick-nexxus-fusion",
+  "CatalogID": "brunswick-nexxus-fusion-omega",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -16764,8 +16854,8 @@
    "Thumb": null
   },
   "MFG": "Brunswick",
-  "MatchKey": "brunswick|nexxusfusion|",
-  "ModelKey": "brunswick|nexxusfusion",
+  "MatchKey": "brunswick|nexxusfusionomega|",
+  "ModelKey": "brunswick|nexxusfusionomega",
   "Ratings": {
    "HookRating": null,
    "PerfectScaleVal": null
@@ -16922,7 +17012,7 @@
  {
   "Aliases": [],
   "BallName": "NeXXXus f(P+A) Solid",
-  "CatalogID": "brunswick-nexxxus-f-p-a-solid",
+  "CatalogID": "brunswick-nexxxus-f-pplusa-solid",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -16944,8 +17034,8 @@
    "Thumb": null
   },
   "MFG": "Brunswick",
-  "MatchKey": "brunswick|nexxxusfpasolid|",
-  "ModelKey": "brunswick|nexxxusfpasolid",
+  "MatchKey": "brunswick|nexxxusfpplusasolid|",
+  "ModelKey": "brunswick|nexxxusfpplusasolid",
   "Ratings": {
    "HookRating": null,
    "PerfectScaleVal": null
@@ -16967,7 +17057,7 @@
  {
   "Aliases": [],
   "BallName": "NeXXXus f(P+B) Solid",
-  "CatalogID": "brunswick-nexxxus-f-p-b-solid",
+  "CatalogID": "brunswick-nexxxus-f-pplusb-solid",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -16989,8 +17079,8 @@
    "Thumb": null
   },
   "MFG": "Brunswick",
-  "MatchKey": "brunswick|nexxxusfpbsolid|",
-  "ModelKey": "brunswick|nexxxusfpbsolid",
+  "MatchKey": "brunswick|nexxxusfpplusbsolid|",
+  "ModelKey": "brunswick|nexxxusfpplusbsolid",
   "Ratings": {
    "HookRating": null,
    "PerfectScaleVal": null
@@ -17012,7 +17102,7 @@
  {
   "Aliases": [],
   "BallName": "NeXXXus f(P+S)",
-  "CatalogID": "brunswick-nexxxus-f-p-s",
+  "CatalogID": "brunswick-nexxxus-f-ppluss",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -17034,8 +17124,8 @@
    "Thumb": null
   },
   "MFG": "Brunswick",
-  "MatchKey": "brunswick|nexxxusfps|",
-  "ModelKey": "brunswick|nexxxusfps",
+  "MatchKey": "brunswick|nexxxusfppluss|",
+  "ModelKey": "brunswick|nexxxusfppluss",
   "Ratings": {
    "HookRating": null,
    "PerfectScaleVal": null
@@ -17057,7 +17147,7 @@
  {
   "Aliases": [],
   "BallName": "NeXXXus f(P+S) SE",
-  "CatalogID": "brunswick-nexxxus-f-p-s-se",
+  "CatalogID": "brunswick-nexxxus-f-ppluss-se",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -17079,8 +17169,8 @@
    "Thumb": null
   },
   "MFG": "Brunswick",
-  "MatchKey": "brunswick|nexxxusfpsse|",
-  "ModelKey": "brunswick|nexxxusfpsse",
+  "MatchKey": "brunswick|nexxxusfpplussse|",
+  "ModelKey": "brunswick|nexxxusfpplussse",
   "Ratings": {
    "HookRating": null,
    "PerfectScaleVal": null
@@ -27902,7 +27992,7 @@
  {
   "Aliases": [],
   "BallName": "T Zone (All Colors)",
-  "CatalogID": "brunswick-t-zone",
+  "CatalogID": "brunswick-t-zone-all-colors",
   "Colorway": null,
   "Core": {
    "Name": null,

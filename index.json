@@ -451,8 +451,8 @@
  },
  {
   "c": null,
-  "i": "900-global-boost-christmas-green-red-silver-12-lbs-under",
-  "k": "900global|boostchristmasgreenredsilver12lbsunder",
+  "i": "900-global-boost-christmas-green-red-silver-12-lbs-and-under-u13",
+  "k": "900global|boostchristmasgreenredsilver12lbsandunder",
   "m": "900 Global",
   "n": "Boost Christmas (Green/Red/Silver) 12 Lbs. & Under",
   "t": false,
@@ -1144,8 +1144,8 @@
  },
  {
   "c": null,
-  "i": "900-global-eternity-pi",
-  "k": "900global|eternitypi",
+  "i": "900-global-eternity-pi-pi",
+  "k": "900global|eternitypipi",
   "m": "900 Global",
   "n": "Eternity Π (Pi)",
   "t": false,
@@ -2449,7 +2449,7 @@
  },
  {
   "c": null,
-  "i": "900-global-pow",
+  "i": "900-global-pow-all-colors",
   "k": "900global|pow",
   "m": "900 Global",
   "n": "Pow (All Colors)",
@@ -2908,7 +2908,7 @@
  },
  {
   "c": null,
-  "i": "900-global-the-nuts-black-11m",
+  "i": "900-global-the-nuts-black-11m-u13",
   "k": "900global|thenutsblack11m",
   "m": "900 Global",
   "n": "The Nuts Black (11M)",
@@ -3238,6 +3238,15 @@
   "n": "X",
   "t": false,
   "y": "2016"
+ },
+ {
+  "c": null,
+  "i": "900-global-x2",
+  "k": "900global|x2",
+  "m": "900 Global",
+  "n": "X²",
+  "t": false,
+  "y": "2017"
  },
  {
   "c": null,
@@ -3601,8 +3610,8 @@
  },
  {
   "c": null,
-  "i": "abs-absolution-eight",
-  "k": "abs|absolutioneight",
+  "i": "abs-absolution-eight-eight",
+  "k": "abs|absolutioneighteight",
   "m": "ABS",
   "n": "ABSolution ∞ Eight",
   "t": false,
@@ -3745,7 +3754,7 @@
  },
  {
   "c": null,
-  "i": "abs-barbapapa",
+  "i": "abs-barbapapa-all-colors",
   "k": "abs|barbapapa",
   "m": "ABS",
   "n": "BARBAPAPA (All Colors)",
@@ -4204,8 +4213,8 @@
  },
  {
   "c": null,
-  "i": "abs-kuwata-cup-2020-2021",
-  "k": "abs|kuwatacup20202021",
+  "i": "abs-kuwata-cup-2020-to-2021",
+  "k": "abs|kuwatacup2020to2021",
   "m": "ABS",
   "n": "Kuwata Cup 2020 → 2021",
   "t": false,
@@ -4213,7 +4222,7 @@
  },
  {
   "c": null,
-  "i": "abs-la-vie",
+  "i": "abs-la-vie-all-colors",
   "k": "abs|lavie",
   "m": "ABS",
   "n": "La Vie (All Colors)",
@@ -4240,7 +4249,7 @@
  },
  {
   "c": null,
-  "i": "abs-laser-hard",
+  "i": "abs-laser-hard-all-colors",
   "k": "abs|laserhard",
   "m": "ABS",
   "n": "Laser Hard (All Colors)",
@@ -4843,7 +4852,7 @@
  },
  {
   "c": null,
-  "i": "abs-nanodesu-accu-spare",
+  "i": "abs-nanodesu-accu-spare-all-colors",
   "k": "abs|nanodesuaccuspare",
   "m": "ABS",
   "n": "Nanodesu Accu-Spare (All Colors)",
@@ -5842,8 +5851,8 @@
  },
  {
   "c": null,
-  "i": "abs-pure-rise-74d-nanodesu-eight",
-  "k": "abs|purerise74dnanodesueight",
+  "i": "abs-pure-rise-74d-nanodesu-eight-eight",
+  "k": "abs|purerise74dnanodesueighteight",
   "m": "ABS",
   "n": "Pure Rise 74D Nanodesu ∞ Eight",
   "t": false,
@@ -5851,8 +5860,8 @@
  },
  {
   "c": null,
-  "i": "abs-pure-rise-74d-nanodesu-eight-pearl",
-  "k": "abs|purerise74dnanodesueightpearl",
+  "i": "abs-pure-rise-74d-nanodesu-eight-eight-pearl",
+  "k": "abs|purerise74dnanodesueighteightpearl",
   "m": "ABS",
   "n": "Pure Rise 74D Nanodesu ∞ Eight Pearl",
   "t": false,
@@ -6148,8 +6157,8 @@
  },
  {
   "c": null,
-  "i": "abs-ultra-break-55",
-  "k": "abs|ultrabreak55",
+  "i": "abs-ultra-break-55plus",
+  "k": "abs|ultrabreak55plus",
   "m": "ABS",
   "n": "Ultra Break 55+",
   "t": false,
@@ -7228,6 +7237,15 @@
  },
  {
   "c": null,
+  "i": "amf-night-hawk-2",
+  "k": "amf|nighthawk",
+  "m": "AMF",
+  "n": "Night Hawk",
+  "t": false,
+  "y": "1998"
+ },
+ {
+  "c": null,
   "i": "amf-night-hawk-m-2",
   "k": "amf|nighthawkm2",
   "m": "AMF",
@@ -7327,7 +7345,7 @@
  },
  {
   "c": null,
-  "i": "amf-ninja-fury-black-11-med",
+  "i": "amf-ninja-fury-black-11-med-u13",
   "k": "amf|ninjafuryblack11med",
   "m": "AMF",
   "n": "Ninja Fury Black 11 Med",
@@ -7336,7 +7354,7 @@
  },
  {
   "c": null,
-  "i": "amf-ninja-fury-black-blue-11-med",
+  "i": "amf-ninja-fury-black-blue-11-med-u13",
   "k": "amf|ninjafuryblackblue11med",
   "m": "AMF",
   "n": "Ninja Fury Black/Blue 11 Med",
@@ -7345,7 +7363,7 @@
  },
  {
   "c": null,
-  "i": "amf-ninja-fury-spin",
+  "i": "amf-ninja-fury-spin-u13",
   "k": "amf|ninjafuryspin",
   "m": "AMF",
   "n": "Ninja Fury Spin",
@@ -7363,7 +7381,7 @@
  },
  {
   "c": null,
-  "i": "amf-ninja-master-ex",
+  "i": "amf-ninja-master-ex-u13",
   "k": "amf|ninjamasterex",
   "m": "AMF",
   "n": "Ninja Master EX",
@@ -7831,7 +7849,7 @@
  },
  {
   "c": null,
-  "i": "amf-terminal-velocity-black",
+  "i": "amf-terminal-velocity-black-u13",
   "k": "amf|terminalvelocityblack",
   "m": "AMF",
   "n": "Terminal Velocity Black",
@@ -7840,7 +7858,7 @@
  },
  {
   "c": null,
-  "i": "amf-terminal-velocity-ii",
+  "i": "amf-terminal-velocity-ii-u13",
   "k": "amf|terminalvelocityii",
   "m": "AMF",
   "n": "Terminal Velocity II",
@@ -9937,7 +9955,7 @@
  },
  {
   "c": null,
-  "i": "ballmaker-net-insider-r",
+  "i": "ballmaker-net-insider-r-all-colors",
   "k": "ballmakernet|insiderr",
   "m": "Ballmaker.net",
   "n": "Insider-R (All Colors)",
@@ -10270,7 +10288,7 @@
  },
  {
   "c": null,
-  "i": "bowling-mania-bowling-mania-spare",
+  "i": "bowling-mania-bowling-mania-spare-all-colors",
   "k": "bowlingmania|bowlingmaniaspare",
   "m": "Bowling Mania",
   "n": "Bowling Mania (Spare) (All Colors)",
@@ -10279,7 +10297,7 @@
  },
  {
   "c": null,
-  "i": "bowling-mania-thumbless-spare",
+  "i": "bowling-mania-thumbless-spare-all-colors",
   "k": "bowlingmania|thumblessspare",
   "m": "Bowling Mania",
   "n": "Thumbless Spare (All Colors)",
@@ -10288,7 +10306,7 @@
  },
  {
   "c": null,
-  "i": "bowling-mania-two-hand-spare",
+  "i": "bowling-mania-two-hand-spare-all-colors",
   "k": "bowlingmania|twohandspare",
   "m": "Bowling Mania",
   "n": "Two Hand Spare (All Colors)",
@@ -11374,6 +11392,15 @@
   "n": "(Danger) Zone",
   "t": false,
   "y": "2025"
+ },
+ {
+  "c": null,
+  "i": "brunswick-danger-zone-2",
+  "k": "brunswick|dangerzone",
+  "m": "Brunswick",
+  "n": "Danger Zone",
+  "t": false,
+  "y": "1996"
  },
  {
   "c": null,
@@ -13186,6 +13213,15 @@
  },
  {
   "c": null,
+  "i": "brunswick-maxxx-zone-evolutionplus",
+  "k": "brunswick|maxxxzoneevolutionplus",
+  "m": "Brunswick",
+  "n": "Maxxx Zone Evolution+",
+  "t": false,
+  "y": "2011"
+ },
+ {
+  "c": null,
   "i": "brunswick-meanstreak",
   "k": "brunswick|meanstreak",
   "m": "Brunswick",
@@ -13573,15 +13609,6 @@
  },
  {
   "c": null,
-  "i": "brunswick-nexus-f-p-f-solid",
-  "k": "brunswick|nexusfpfsolid",
-  "m": "Brunswick",
-  "n": "NeXus f(P+F) Solid",
-  "t": false,
-  "y": "2011"
- },
- {
-  "c": null,
   "i": "brunswick-nexus-f-p-pearl",
   "k": "brunswick|nexusfppearl",
   "m": "Brunswick",
@@ -13600,6 +13627,15 @@
  },
  {
   "c": null,
+  "i": "brunswick-nexus-f-pplusf-solid",
+  "k": "brunswick|nexusfpplusfsolid",
+  "m": "Brunswick",
+  "n": "NeXus f(P+F) Solid",
+  "t": false,
+  "y": "2011"
+ },
+ {
+  "c": null,
   "i": "brunswick-nexxus-amd",
   "k": "brunswick|nexxusamd",
   "m": "Brunswick",
@@ -13609,8 +13645,8 @@
  },
  {
   "c": null,
-  "i": "brunswick-nexxus-f-p-h-solid",
-  "k": "brunswick|nexxusfphsolid",
+  "i": "brunswick-nexxus-f-pplush-solid",
+  "k": "brunswick|nexxusfpplushsolid",
   "m": "Brunswick",
   "n": "NeXXus f(P+H) Solid",
   "t": false,
@@ -13618,8 +13654,8 @@
  },
  {
   "c": null,
-  "i": "brunswick-nexxus-f-p-r-le-solid",
-  "k": "brunswick|nexxusfprlesolid",
+  "i": "brunswick-nexxus-f-pplusr-le-solid",
+  "k": "brunswick|nexxusfpplusrlesolid",
   "m": "Brunswick",
   "n": "NeXXus f(P+R) LE Solid",
   "t": false,
@@ -13627,8 +13663,8 @@
  },
  {
   "c": null,
-  "i": "brunswick-nexxus-f-p-r-pearl",
-  "k": "brunswick|nexxusfprpearl",
+  "i": "brunswick-nexxus-f-pplusr-pearl",
+  "k": "brunswick|nexxusfpplusrpearl",
   "m": "Brunswick",
   "n": "NeXXus f(P+R) Pearl",
   "t": false,
@@ -13636,8 +13672,8 @@
  },
  {
   "c": null,
-  "i": "brunswick-nexxus-f-p-r-solid",
-  "k": "brunswick|nexxusfprsolid",
+  "i": "brunswick-nexxus-f-pplusr-solid",
+  "k": "brunswick|nexxusfpplusrsolid",
   "m": "Brunswick",
   "n": "NeXXus f(P+R) Solid",
   "t": false,
@@ -13645,8 +13681,8 @@
  },
  {
   "c": null,
-  "i": "brunswick-nexxus-f-p-s-solid",
-  "k": "brunswick|nexxusfpssolid",
+  "i": "brunswick-nexxus-f-ppluss-solid",
+  "k": "brunswick|nexxusfpplusssolid",
   "m": "Brunswick",
   "n": "NeXXus f(P+S) Solid",
   "t": false,
@@ -13654,8 +13690,8 @@
  },
  {
   "c": null,
-  "i": "brunswick-nexxus-fusion",
-  "k": "brunswick|nexxusfusion",
+  "i": "brunswick-nexxus-fusion-omega",
+  "k": "brunswick|nexxusfusionomega",
   "m": "Brunswick",
   "n": "NeXXus Fusion Ω",
   "t": false,
@@ -13690,8 +13726,8 @@
  },
  {
   "c": null,
-  "i": "brunswick-nexxxus-f-p-a-solid",
-  "k": "brunswick|nexxxusfpasolid",
+  "i": "brunswick-nexxxus-f-pplusa-solid",
+  "k": "brunswick|nexxxusfpplusasolid",
   "m": "Brunswick",
   "n": "NeXXXus f(P+A) Solid",
   "t": false,
@@ -13699,8 +13735,8 @@
  },
  {
   "c": null,
-  "i": "brunswick-nexxxus-f-p-b-solid",
-  "k": "brunswick|nexxxusfpbsolid",
+  "i": "brunswick-nexxxus-f-pplusb-solid",
+  "k": "brunswick|nexxxusfpplusbsolid",
   "m": "Brunswick",
   "n": "NeXXXus f(P+B) Solid",
   "t": false,
@@ -13708,8 +13744,8 @@
  },
  {
   "c": null,
-  "i": "brunswick-nexxxus-f-p-s",
-  "k": "brunswick|nexxxusfps",
+  "i": "brunswick-nexxxus-f-ppluss",
+  "k": "brunswick|nexxxusfppluss",
   "m": "Brunswick",
   "n": "NeXXXus f(P+S)",
   "t": false,
@@ -13717,8 +13753,8 @@
  },
  {
   "c": null,
-  "i": "brunswick-nexxxus-f-p-s-se",
-  "k": "brunswick|nexxxusfpsse",
+  "i": "brunswick-nexxxus-f-ppluss-se",
+  "k": "brunswick|nexxxusfpplussse",
   "m": "Brunswick",
   "n": "NeXXXus f(P+S) SE",
   "t": false,
@@ -15886,7 +15922,7 @@
  },
  {
   "c": null,
-  "i": "brunswick-t-zone",
+  "i": "brunswick-t-zone-all-colors",
   "k": "brunswick|tzone",
   "m": "Brunswick",
   "n": "T Zone (All Colors)",
@@ -17389,6 +17425,15 @@
  },
  {
   "c": null,
+  "i": "circle-athletics-hard-core-2",
+  "k": "circleathletics|hardcore",
+  "m": "Circle Athletics",
+  "n": "Hard Core",
+  "t": false,
+  "y": "2006"
+ },
+ {
+  "c": null,
   "i": "circle-athletics-hard-core-fanatic-green-purple",
   "k": "circleathletics|hardcorefanaticgreenpurple",
   "m": "Circle Athletics",
@@ -18397,7 +18442,7 @@
  },
  {
   "c": null,
-  "i": "columbia-300-enigma-black-blue-light-blue",
+  "i": "columbia-300-enigma-black-blue-light-blue-u13",
   "k": "columbia300|enigmablackbluelightblue",
   "m": "Columbia 300",
   "n": "Enigma Black/Blue/Light Blue",
@@ -18424,7 +18469,7 @@
  },
  {
   "c": null,
-  "i": "columbia-300-enigma-red-orange-yellow",
+  "i": "columbia-300-enigma-red-orange-yellow-u13",
   "k": "columbia300|enigmaredorangeyellow",
   "m": "Columbia 300",
   "n": "Enigma Red/Orange/Yellow",
@@ -20791,6 +20836,15 @@
  },
  {
   "c": null,
+  "i": "columbia-300-rock-and-ricochet",
+  "k": "columbia300|rockandricochet",
+  "m": "Columbia 300",
+  "n": "Rock & Ricochet",
+  "t": false,
+  "y": "2006"
+ },
+ {
+  "c": null,
   "i": "columbia-300-rock-black",
   "k": "columbia300|rockblack",
   "m": "Columbia 300",
@@ -20905,15 +20959,6 @@
   "n": "Rock Pearl",
   "t": false,
   "y": "2000"
- },
- {
-  "c": null,
-  "i": "columbia-300-rock-ricochet",
-  "k": "columbia300|rockricochet",
-  "m": "Columbia 300",
-  "n": "Rock & Ricochet",
-  "t": false,
-  "y": "2006"
  },
  {
   "c": null,
@@ -22078,7 +22123,7 @@
  },
  {
   "c": null,
-  "i": "columbia-300-throw-down-black",
+  "i": "columbia-300-throw-down-black-u13",
   "k": "columbia300|throwdownblack",
   "m": "Columbia 300",
   "n": "Throw Down Black",
@@ -22393,7 +22438,7 @@
  },
  {
   "c": null,
-  "i": "columbia-300-white-dot",
+  "i": "columbia-300-white-dot-all-colors",
   "k": "columbia300|whitedot",
   "m": "Columbia 300",
   "n": "White Dot (All Colors)",
@@ -22546,8 +22591,8 @@
  },
  {
   "c": null,
-  "i": "comet-co-obsidian",
-  "k": "cometco|obsidian",
+  "i": "cometandco-obsidian",
+  "k": "cometandco|obsidian",
   "m": "Comet&Co.",
   "n": "Obsidian",
   "t": false,
@@ -24274,8 +24319,8 @@
  },
  {
   "c": null,
-  "i": "dyno-thane-d-c-sa",
-  "k": "dynothane|dcsa",
+  "i": "dyno-thane-dandc-sa",
+  "k": "dynothane|dandcsa",
   "m": "Dyno-Thane",
   "n": "D&C SA",
   "t": false,
@@ -24283,8 +24328,8 @@
  },
  {
   "c": null,
-  "i": "dyno-thane-d-c-ss",
-  "k": "dynothane|dcss",
+  "i": "dyno-thane-dandc-ss",
+  "k": "dynothane|dandcss",
   "m": "Dyno-Thane",
   "n": "D&C SS",
   "t": false,
@@ -24859,7 +24904,7 @@
  },
  {
   "c": null,
-  "i": "dyno-thane-turbine-black-blue",
+  "i": "dyno-thane-turbine-black-blue-u13",
   "k": "dynothane|turbineblackblue",
   "m": "Dyno-Thane",
   "n": "Turbine Black/Blue",
@@ -24868,7 +24913,7 @@
  },
  {
   "c": null,
-  "i": "dyno-thane-turbine-ii-black-gold",
+  "i": "dyno-thane-turbine-ii-black-gold-u13",
   "k": "dynothane|turbineiiblackgold",
   "m": "Dyno-Thane",
   "n": "Turbine II Black/Gold",
@@ -25228,7 +25273,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-apache-6-star-hunter-green",
+  "i": "ebonite-apache-6-star-hunter-green-u13",
   "k": "ebonite|apache6starhuntergreen",
   "m": "Ebonite",
   "n": "Apache 6 Star Hunter Green",
@@ -25255,7 +25300,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-apex-addiction-spinner",
+  "i": "ebonite-apex-addiction-spinner-u13",
   "k": "ebonite|apexaddictionspinner",
   "m": "Ebonite",
   "n": "Apex Addiction Spinner",
@@ -25309,7 +25354,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-apex-black",
+  "i": "ebonite-apex-black-u13",
   "k": "ebonite|apexblack",
   "m": "Ebonite",
   "n": "Apex Black",
@@ -25318,7 +25363,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-apex-ii-blue",
+  "i": "ebonite-apex-ii-blue-u13",
   "k": "ebonite|apexiiblue",
   "m": "Ebonite",
   "n": "Apex II Blue",
@@ -25327,7 +25372,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-apex-ii-hunter-green",
+  "i": "ebonite-apex-ii-hunter-green-u13",
   "k": "ebonite|apexiihuntergreen",
   "m": "Ebonite",
   "n": "Apex II Hunter Green",
@@ -25336,7 +25381,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-apex-iii-blood-red-white",
+  "i": "ebonite-apex-iii-blood-red-white-u13",
   "k": "ebonite|apexiiibloodredwhite",
   "m": "Ebonite",
   "n": "Apex III Blood Red/White",
@@ -25372,7 +25417,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-apex-reflex-export",
+  "i": "ebonite-apex-reflex-export-u13",
   "k": "ebonite|apexreflexexport",
   "m": "Ebonite",
   "n": "Apex Reflex Export",
@@ -25381,7 +25426,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-apex-rpm",
+  "i": "ebonite-apex-rpm-u13",
   "k": "ebonite|apexrpm",
   "m": "Ebonite",
   "n": "Apex RPM",
@@ -25498,7 +25543,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-black-wolf-11-m",
+  "i": "ebonite-black-wolf-11-m-u13",
   "k": "ebonite|blackwolf11m",
   "m": "Ebonite",
   "n": "Black Wolf (11 M)",
@@ -25534,7 +25579,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-blue-wolf-11-m",
+  "i": "ebonite-blue-wolf-11-m-u13",
   "k": "ebonite|bluewolf11m",
   "m": "Ebonite",
   "n": "Blue Wolf (11 M)",
@@ -25921,7 +25966,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-crush-r-new-red-sanded",
+  "i": "ebonite-crush-r-new-red-sanded-u13",
   "k": "ebonite|crushrnewredsanded",
   "m": "Ebonite",
   "n": "Crush/R New Red Sanded",
@@ -25939,21 +25984,21 @@
  },
  {
   "c": null,
-  "i": "ebonite-crush-r-red",
-  "k": "ebonite|crushrred",
-  "m": "Ebonite",
-  "n": "Crush/R Red",
-  "t": false,
-  "y": "2015"
- },
- {
-  "c": null,
   "i": "ebonite-crush-r-red-purple-gold",
   "k": "ebonite|crushrredpurplegold",
   "m": "Ebonite",
   "n": "Crush/R Red/Purple/Gold",
   "t": false,
   "y": "2017"
+ },
+ {
+  "c": null,
+  "i": "ebonite-crush-r-red-u13",
+  "k": "ebonite|crushrred",
+  "m": "Ebonite",
+  "n": "Crush/R Red",
+  "t": false,
+  "y": "2015"
  },
  {
   "c": null,
@@ -26803,7 +26848,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-game-time-red",
+  "i": "ebonite-game-time-red-u13",
   "k": "ebonite|gametimered",
   "m": "Ebonite",
   "n": "Game Time Red",
@@ -27055,7 +27100,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-honor-blue",
+  "i": "ebonite-honor-blue-u13",
   "k": "ebonite|honorblue",
   "m": "Ebonite",
   "n": "Honor Blue",
@@ -27064,7 +27109,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-honor-burgundy-ey-below-13-only",
+  "i": "ebonite-honor-burgundy-ey-below-13-only-u13",
   "k": "ebonite|honorburgundyeybelow13only",
   "m": "Ebonite",
   "n": "Honor Burgundy (EY Below 13 Only)",
@@ -27073,7 +27118,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-honor-deep-navy-11-lb-only",
+  "i": "ebonite-honor-deep-navy-11-lb-only-u13",
   "k": "ebonite|honordeepnavy11lbonly",
   "m": "Ebonite",
   "n": "Honor Deep Navy (11 Lb. Only)",
@@ -27082,7 +27127,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-honor-purple-11m",
+  "i": "ebonite-honor-purple-11m-u13",
   "k": "ebonite|honorpurple11m",
   "m": "Ebonite",
   "n": "Honor Purple (11M)",
@@ -27226,15 +27271,6 @@
  },
  {
   "c": null,
-  "i": "ebonite-killer-instinct",
-  "k": "ebonite|killerinstinct",
-  "m": "Ebonite",
-  "n": "Killer Instinct",
-  "t": false,
-  "y": "2005"
- },
- {
-  "c": null,
   "i": "ebonite-killer-instinct-pearl",
   "k": "ebonite|killerinstinctpearl",
   "m": "Ebonite",
@@ -27250,6 +27286,15 @@
   "n": "Killer Instinct Sanded",
   "t": false,
   "y": "2003"
+ },
+ {
+  "c": null,
+  "i": "ebonite-killer-instinct-u13",
+  "k": "ebonite|killerinstinct",
+  "m": "Ebonite",
+  "n": "Killer Instinct",
+  "t": false,
+  "y": "2005"
  },
  {
   "c": null,
@@ -27289,7 +27334,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-legacy-7-stars-hunter-green",
+  "i": "ebonite-legacy-7-stars-hunter-green-u13",
   "k": "ebonite|legacy7starshuntergreen",
   "m": "Ebonite",
   "n": "Legacy 7 Stars Hunter Green",
@@ -27451,7 +27496,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-magnum",
+  "i": "ebonite-magnum-all-colors",
   "k": "ebonite|magnum",
   "m": "Ebonite",
   "n": "Magnum (All Colors)",
@@ -27541,7 +27586,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-matrix-fx-export",
+  "i": "ebonite-matrix-fx-export-u13",
   "k": "ebonite|matrixfxexport",
   "m": "Ebonite",
   "n": "Matrix FX Export",
@@ -27631,7 +27676,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-matrix-tps-3-hunter-green",
+  "i": "ebonite-matrix-tps-3-hunter-green-u13",
   "k": "ebonite|matrixtps3huntergreen",
   "m": "Ebonite",
   "n": "Matrix TPS 3 Hunter Green",
@@ -27658,7 +27703,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-matrix-trimax-3-burgundy-purple",
+  "i": "ebonite-matrix-trimax-3-burgundy-purple-u13",
   "k": "ebonite|matrixtrimax3burgundypurple",
   "m": "Ebonite",
   "n": "Matrix Trimax 3 Burgundy/Purple",
@@ -27730,7 +27775,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-maxim-beauty-rest",
+  "i": "ebonite-maxim-beauty-rest-u13",
   "k": "ebonite|maximbeautyrest",
   "m": "Ebonite",
   "n": "Maxim Beauty Rest",
@@ -27748,7 +27793,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-maxim-comforpedic",
+  "i": "ebonite-maxim-comforpedic-u13",
   "k": "ebonite|maximcomforpedic",
   "m": "Ebonite",
   "n": "Maxim Comforpedic",
@@ -27829,7 +27874,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-mission-2-0-black-11-m",
+  "i": "ebonite-mission-2-0-black-11-m-u13",
   "k": "ebonite|mission20black11m",
   "m": "Ebonite",
   "n": "Mission 2.0 Black (11 M)",
@@ -28036,7 +28081,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-mission-red-black",
+  "i": "ebonite-mission-red-black-u13",
   "k": "ebonite|missionredblack",
   "m": "Ebonite",
   "n": "Mission Red/Black",
@@ -28144,7 +28189,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-mission-x-black-purple",
+  "i": "ebonite-mission-x-black-purple-u13",
   "k": "ebonite|missionxblackpurple",
   "m": "Ebonite",
   "n": "Mission X Black/Purple",
@@ -28153,7 +28198,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-mission-x-black-silver",
+  "i": "ebonite-mission-x-black-silver-u13",
   "k": "ebonite|missionxblacksilver",
   "m": "Ebonite",
   "n": "Mission X Black/Silver",
@@ -28162,7 +28207,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-mission-x-deep-purple",
+  "i": "ebonite-mission-x-deep-purple-u13",
   "k": "ebonite|missionxdeeppurple",
   "m": "Ebonite",
   "n": "Mission X Deep Purple",
@@ -28171,7 +28216,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-mission-x-silver-purple",
+  "i": "ebonite-mission-x-silver-purple-u13",
   "k": "ebonite|missionxsilverpurple",
   "m": "Ebonite",
   "n": "Mission X Silver/Purple",
@@ -28180,7 +28225,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-mission-x-wine",
+  "i": "ebonite-mission-x-wine-u13",
   "k": "ebonite|missionxwine",
   "m": "Ebonite",
   "n": "Mission X Wine",
@@ -28414,7 +28459,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-nitro-x-squared-red-sanded",
+  "i": "ebonite-nitro-x-squared-red-sanded-u13",
   "k": "ebonite|nitroxsquaredredsanded",
   "m": "Ebonite",
   "n": "Nitro/X Squared Red Sanded",
@@ -29287,6 +29332,15 @@
  },
  {
   "c": null,
+  "i": "ebonite-puma-2",
+  "k": "ebonite|puma",
+  "m": "Ebonite",
+  "n": "Puma",
+  "t": false,
+  "y": "2021"
+ },
+ {
+  "c": null,
   "i": "ebonite-puma-classic",
   "k": "ebonite|pumaclassic",
   "m": "Ebonite",
@@ -29296,7 +29350,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-puma-hazel-pearl",
+  "i": "ebonite-puma-hazel-pearl-u13",
   "k": "ebonite|pumahazelpearl",
   "m": "Ebonite",
   "n": "Puma Hazel Pearl",
@@ -29467,7 +29521,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-red-wolf-special-edition",
+  "i": "ebonite-red-wolf-special-edition-u13",
   "k": "ebonite|redwolfspecialedition",
   "m": "Ebonite",
   "n": "Red Wolf Special Edition",
@@ -30538,7 +30592,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-timberwolf-apple-pearl-export",
+  "i": "ebonite-timberwolf-apple-pearl-export-u13",
   "k": "ebonite|timberwolfapplepearlexport",
   "m": "Ebonite",
   "n": "Timberwolf Apple Pearl Export",
@@ -30556,7 +30610,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-timberwolf-pine-green",
+  "i": "ebonite-timberwolf-pine-green-u13",
   "k": "ebonite|timberwolfpinegreen",
   "m": "Ebonite",
   "n": "Timberwolf Pine Green",
@@ -30565,7 +30619,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-timberwolf-red-pearl-export",
+  "i": "ebonite-timberwolf-red-pearl-export-u13",
   "k": "ebonite|timberwolfredpearlexport",
   "m": "Ebonite",
   "n": "Timberwolf Red Pearl Export",
@@ -30601,7 +30655,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-tomahawk-low-torque-black-blue",
+  "i": "ebonite-tomahawk-low-torque-black-blue-u13",
   "k": "ebonite|tomahawklowtorqueblackblue",
   "m": "Ebonite",
   "n": "Tomahawk Low Torque Black/Blue",
@@ -30610,7 +30664,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-tomahawk-low-torque-black-burgundy",
+  "i": "ebonite-tomahawk-low-torque-black-burgundy-u13",
   "k": "ebonite|tomahawklowtorqueblackburgundy",
   "m": "Ebonite",
   "n": "Tomahawk Low Torque Black/Burgundy",
@@ -30619,7 +30673,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-tomahawk-low-torque-blue",
+  "i": "ebonite-tomahawk-low-torque-blue-u13",
   "k": "ebonite|tomahawklowtorqueblue",
   "m": "Ebonite",
   "n": "Tomahawk Low Torque Blue",
@@ -30637,7 +30691,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-tomahawk-low-torque-merlot",
+  "i": "ebonite-tomahawk-low-torque-merlot-u13",
   "k": "ebonite|tomahawklowtorquemerlot",
   "m": "Ebonite",
   "n": "Tomahawk Low Torque Merlot",
@@ -30646,7 +30700,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-tomahawk-low-torque-purple",
+  "i": "ebonite-tomahawk-low-torque-purple-u13",
   "k": "ebonite|tomahawklowtorquepurple",
   "m": "Ebonite",
   "n": "Tomahawk Low Torque Purple",
@@ -30655,7 +30709,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-tomahawk-low-torque-rpm",
+  "i": "ebonite-tomahawk-low-torque-rpm-u13",
   "k": "ebonite|tomahawklowtorquerpm",
   "m": "Ebonite",
   "n": "Tomahawk Low Torque RPM",
@@ -30664,7 +30718,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-tomahawk-low-torque-rubine-red",
+  "i": "ebonite-tomahawk-low-torque-rubine-red-u13",
   "k": "ebonite|tomahawklowtorquerubinered",
   "m": "Ebonite",
   "n": "Tomahawk Low Torque Rubine Red",
@@ -30682,7 +30736,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-tomahawk-low-torque-tps-3-hunter-green",
+  "i": "ebonite-tomahawk-low-torque-tps-3-hunter-green-u13",
   "k": "ebonite|tomahawklowtorquetps3huntergreen",
   "m": "Ebonite",
   "n": "Tomahawk Low Torque TPS 3 Hunter Green",
@@ -30691,7 +30745,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-tomahawk-pro-high-torque",
+  "i": "ebonite-tomahawk-pro-high-torque-u13",
   "k": "ebonite|tomahawkprohightorque",
   "m": "Ebonite",
   "n": "Tomahawk Pro High Torque",
@@ -30700,7 +30754,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-tomahawk-pro-low-torque",
+  "i": "ebonite-tomahawk-pro-low-torque-u13",
   "k": "ebonite|tomahawkprolowtorque",
   "m": "Ebonite",
   "n": "Tomahawk Pro Low Torque",
@@ -30709,7 +30763,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-tomahawk-tps-navy",
+  "i": "ebonite-tomahawk-tps-navy-u13",
   "k": "ebonite|tomahawktpsnavy",
   "m": "Ebonite",
   "n": "Tomahawk TPS Navy",
@@ -30718,7 +30772,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-tomahawk-tpsgoldstone",
+  "i": "ebonite-tomahawk-tpsgoldstone-u13",
   "k": "ebonite|tomahawktpsgoldstone",
   "m": "Ebonite",
   "n": "Tomahawk TPSGoldstone",
@@ -30745,16 +30799,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-tomahawk-x-plosion-export-black",
-  "k": "ebonite|tomahawkxplosionexportblack",
-  "m": "Ebonite",
-  "n": "Tomahawk X-Plosion Export Black",
-  "t": false,
-  "y": "2004"
- },
- {
-  "c": null,
-  "i": "ebonite-tomahawk-x-plosion-export-black-blue",
+  "i": "ebonite-tomahawk-x-plosion-export-black-blue-u13",
   "k": "ebonite|tomahawkxplosionexportblackblue",
   "m": "Ebonite",
   "n": "Tomahawk X-Plosion Export Black/Blue",
@@ -30763,7 +30808,16 @@
  },
  {
   "c": null,
-  "i": "ebonite-tomahawk-x-plosion-green",
+  "i": "ebonite-tomahawk-x-plosion-export-black-u13",
+  "k": "ebonite|tomahawkxplosionexportblack",
+  "m": "Ebonite",
+  "n": "Tomahawk X-Plosion Export Black",
+  "t": false,
+  "y": "2004"
+ },
+ {
+  "c": null,
+  "i": "ebonite-tomahawk-x-plosion-green-u13",
   "k": "ebonite|tomahawkxplosiongreen",
   "m": "Ebonite",
   "n": "Tomahawk X-Plosion Green",
@@ -30773,6 +30827,15 @@
  {
   "c": null,
   "i": "ebonite-tomahawk-x-plosion-tour",
+  "k": "ebonite|tomahawkxplosiontour",
+  "m": "Ebonite",
+  "n": "Tomahawk X-plosion Tour",
+  "t": false,
+  "y": "1999"
+ },
+ {
+  "c": null,
+  "i": "ebonite-tomahawk-x-plosion-tour-2",
   "k": "ebonite|tomahawkxplosiontour",
   "m": "Ebonite",
   "n": "Tomahawk X-plosion Tour",
@@ -30898,7 +30961,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-tornado-blue-violet-sparkle",
+  "i": "ebonite-tornado-blue-violet-sparkle-u13",
   "k": "ebonite|tornadobluevioletsparkle",
   "m": "Ebonite",
   "n": "Tornado Blue/Violet Sparkle",
@@ -31150,7 +31213,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-tpc-player-black-red",
+  "i": "ebonite-tpc-player-black-red-u13",
   "k": "ebonite|tpcplayerblackred",
   "m": "Ebonite",
   "n": "TPC Player Black/Red",
@@ -31159,7 +31222,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-tpc-player-black-silver",
+  "i": "ebonite-tpc-player-black-silver-u13",
   "k": "ebonite|tpcplayerblacksilver",
   "m": "Ebonite",
   "n": "TPC Player Black/Silver",
@@ -31177,7 +31240,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-tpc-shooter-spinner",
+  "i": "ebonite-tpc-shooter-spinner-u13",
   "k": "ebonite|tpcshooterspinner",
   "m": "Ebonite",
   "n": "TPC Shooter Spinner",
@@ -31204,7 +31267,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-tpc-warrior-blue-swirl",
+  "i": "ebonite-tpc-warrior-blue-swirl-u13",
   "k": "ebonite|tpcwarriorblueswirl",
   "m": "Ebonite",
   "n": "TPC Warrior Blue Swirl",
@@ -31222,7 +31285,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-tpc-warrior-red",
+  "i": "ebonite-tpc-warrior-red-u13",
   "k": "ebonite|tpcwarriorred",
   "m": "Ebonite",
   "n": "TPC Warrior Red",
@@ -31384,8 +31447,8 @@
  },
  {
   "c": null,
-  "i": "ebonite-turbo-r-purple-pink-13-lb-under",
-  "k": "ebonite|turborpurplepink13lbunder",
+  "i": "ebonite-turbo-r-purple-pink-13-lb-and-under",
+  "k": "ebonite|turborpurplepink13lbandunder",
   "m": "Ebonite",
   "n": "Turbo-R Purple-Pink (13 Lb & Under)",
   "t": false,
@@ -31429,6 +31492,24 @@
  },
  {
   "c": null,
+  "i": "ebonite-turbo-x-2",
+  "k": "ebonite|turbox",
+  "m": "Ebonite",
+  "n": "Turbo X",
+  "t": false,
+  "y": "2003"
+ },
+ {
+  "c": null,
+  "i": "ebonite-turbo-x-3",
+  "k": "ebonite|turbox",
+  "m": "Ebonite",
+  "n": "Turbo X",
+  "t": false,
+  "y": "2025"
+ },
+ {
+  "c": null,
   "i": "ebonite-turbo-x-black-15-lb-only",
   "k": "ebonite|turboxblack15lbonly",
   "m": "Ebonite",
@@ -31461,11 +31542,20 @@
   "m": "Ebonite",
   "n": "Turbo XL",
   "t": false,
+  "y": "1994"
+ },
+ {
+  "c": null,
+  "i": "ebonite-turbo-xl-u13",
+  "k": "ebonite|turboxl",
+  "m": "Ebonite",
+  "n": "Turbo XL",
+  "t": false,
   "y": "2015"
  },
  {
   "c": null,
-  "i": "ebonite-turbo-xl-wine",
+  "i": "ebonite-turbo-xl-wine-u13",
   "k": "ebonite|turboxlwine",
   "m": "Ebonite",
   "n": "Turbo XL Wine",
@@ -31564,7 +31654,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-v2-particle-blue",
+  "i": "ebonite-v2-particle-blue-u13",
   "k": "ebonite|v2particleblue",
   "m": "Ebonite",
   "n": "V2 Particle Blue",
@@ -31582,7 +31672,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-v2-rpm",
+  "i": "ebonite-v2-rpm-u13",
   "k": "ebonite|v2rpm",
   "m": "Ebonite",
   "n": "V2 RPM",
@@ -31708,7 +31798,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-vortex-1-purple-teal",
+  "i": "ebonite-vortex-1-purple-teal-u13",
   "k": "ebonite|vortex1purpleteal",
   "m": "Ebonite",
   "n": "Vortex 1 Purple/Teal",
@@ -31735,7 +31825,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-vortex-2-black-blue-sanded",
+  "i": "ebonite-vortex-2-black-blue-sanded-u13",
   "k": "ebonite|vortex2blackbluesanded",
   "m": "Ebonite",
   "n": "Vortex 2 Black/Blue Sanded",
@@ -31762,7 +31852,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-vortex-3-royal-blue-sanded",
+  "i": "ebonite-vortex-3-royal-blue-sanded-u13",
   "k": "ebonite|vortex3royalbluesanded",
   "m": "Ebonite",
   "n": "Vortex 3 Royal Blue Sanded",
@@ -31834,7 +31924,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-warrior-black-silver-blue-under-13-lb-only",
+  "i": "ebonite-warrior-black-silver-blue-under-13-lb-only-u13",
   "k": "ebonite|warriorblacksilverblueunder13lbonly",
   "m": "Ebonite",
   "n": "Warrior Black/Silver/Blue (Under 13-Lb. Only)",
@@ -32028,11 +32118,20 @@
   "m": "Ebonite",
   "n": "Wolf",
   "t": false,
-  "y": "2006"
+  "y": "1996"
  },
  {
   "c": null,
   "i": "ebonite-wolf-black",
+  "k": "ebonite|wolfblack",
+  "m": "Ebonite",
+  "n": "Wolf Black",
+  "t": false,
+  "y": "2021"
+ },
+ {
+  "c": null,
+  "i": "ebonite-wolf-black-u13",
   "k": "ebonite|wolfblack",
   "m": "Ebonite",
   "n": "Wolf Black",
@@ -32059,7 +32158,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-wolf-export-navy-green",
+  "i": "ebonite-wolf-export-navy-green-u13",
   "k": "ebonite|wolfexportnavygreen",
   "m": "Ebonite",
   "n": "Wolf Export Navy/Green",
@@ -32068,7 +32167,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-wolf-gold",
+  "i": "ebonite-wolf-gold-u13",
   "k": "ebonite|wolfgold",
   "m": "Ebonite",
   "n": "Wolf Gold",
@@ -32100,7 +32199,7 @@
   "m": "Ebonite",
   "n": "Wolf Purple",
   "t": false,
-  "y": "2012"
+  "y": "2022"
  },
  {
   "c": null,
@@ -32113,7 +32212,16 @@
  },
  {
   "c": null,
-  "i": "ebonite-wolf-reactive-export-red",
+  "i": "ebonite-wolf-purple-u13",
+  "k": "ebonite|wolfpurple",
+  "m": "Ebonite",
+  "n": "Wolf Purple",
+  "t": false,
+  "y": "2012"
+ },
+ {
+  "c": null,
+  "i": "ebonite-wolf-reactive-export-red-u13",
   "k": "ebonite|wolfreactiveexportred",
   "m": "Ebonite",
   "n": "Wolf Reactive Export Red",
@@ -32128,6 +32236,15 @@
   "n": "Wolf Red Pearl",
   "t": false,
   "y": "2019"
+ },
+ {
+  "c": null,
+  "i": "ebonite-wolf-u13",
+  "k": "ebonite|wolf",
+  "m": "Ebonite",
+  "n": "Wolf",
+  "t": false,
+  "y": "2006"
  },
  {
   "c": null,
@@ -32149,7 +32266,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-xcel-blue",
+  "i": "ebonite-xcel-blue-u13",
   "k": "ebonite|xcelblue",
   "m": "Ebonite",
   "n": "Xcel (Blue)",
@@ -32203,7 +32320,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-xxxcel-navy",
+  "i": "ebonite-xxxcel-navy-u13",
   "k": "ebonite|xxxcelnavy",
   "m": "Ebonite",
   "n": "XXXcel Navy",
@@ -32221,7 +32338,7 @@
  },
  {
   "c": null,
-  "i": "ebonite-xxxcel-red",
+  "i": "ebonite-xxxcel-red-u13",
   "k": "ebonite|xxxcelred",
   "m": "Ebonite",
   "n": "XXXcel Red",
@@ -32662,6 +32779,15 @@
  },
  {
   "c": null,
+  "i": "elite-bowlers-paradise-elite-skull-and-crossbones",
+  "k": "elitebowlersparadise|eliteskullandcrossbones",
+  "m": "Elite (Bowlers Paradise)",
+  "n": "Elite Skull & Crossbones",
+  "t": false,
+  "y": "2009"
+ },
+ {
+  "c": null,
   "i": "elite-bowlers-paradise-elite-skull-blue-red",
   "k": "elitebowlersparadise|eliteskullbluered",
   "m": "Elite (Bowlers Paradise)",
@@ -32677,15 +32803,6 @@
   "n": "Elite Skull Clear",
   "t": false,
   "y": "2010"
- },
- {
-  "c": null,
-  "i": "elite-bowlers-paradise-elite-skull-crossbones",
-  "k": "elitebowlersparadise|eliteskullcrossbones",
-  "m": "Elite (Bowlers Paradise)",
-  "n": "Elite Skull & Crossbones",
-  "t": false,
-  "y": "2009"
  },
  {
   "c": null,
@@ -32887,7 +33004,7 @@
  },
  {
   "c": null,
-  "i": "elite-bowlers-paradise-star",
+  "i": "elite-bowlers-paradise-star-all-colors",
   "k": "elitebowlersparadise|star",
   "m": "Elite (Bowlers Paradise)",
   "n": "Star (All Colors)",
@@ -32941,7 +33058,7 @@
  },
  {
   "c": null,
-  "i": "epic-bowling-be-epic",
+  "i": "epic-bowling-be-epic-all-colors",
   "k": "epicbowling|beepic",
   "m": "Epic Bowling",
   "n": "Be Epic (All Colors)",
@@ -33031,7 +33148,7 @@
  },
  {
   "c": null,
-  "i": "epic-bowling-unruly",
+  "i": "epic-bowling-unruly-all-colors",
   "k": "epicbowling|unruly",
   "m": "Epic Bowling",
   "n": "Unruly (All Colors)",
@@ -34579,6 +34696,15 @@
  },
  {
   "c": null,
+  "i": "hammer-black-widow-assassin-red-navy-purple-u13",
+  "k": "hammer|blackwidowassassinrednavypurple",
+  "m": "Hammer",
+  "n": "Black Widow Assassin Red/Navy/Purple",
+  "t": false,
+  "y": "2014"
+ },
+ {
+  "c": null,
   "i": "hammer-black-widow-bite",
   "k": "hammer|blackwidowbite",
   "m": "Hammer",
@@ -34633,7 +34759,7 @@
  },
  {
   "c": null,
-  "i": "hammer-black-widow-black-orange",
+  "i": "hammer-black-widow-black-orange-u13",
   "k": "hammer|blackwidowblackorange",
   "m": "Hammer",
   "n": "Black Widow Black/Orange",
@@ -34651,7 +34777,7 @@
  },
  {
   "c": null,
-  "i": "hammer-black-widow-blue",
+  "i": "hammer-black-widow-blue-u13",
   "k": "hammer|blackwidowblue",
   "m": "Hammer",
   "n": "Black Widow Blue",
@@ -34711,6 +34837,15 @@
   "n": "Black Widow Clear (12-Hedron) All Colors",
   "t": false,
   "y": "2024"
+ },
+ {
+  "c": null,
+  "i": "hammer-black-widow-clear-all-colors",
+  "k": "hammer|blackwidowclear",
+  "m": "Hammer",
+  "n": "Black Widow Clear (All Colors)",
+  "t": false,
+  "y": "2021"
  },
  {
   "c": null,
@@ -34921,6 +35056,15 @@
  },
  {
   "c": null,
+  "i": "hammer-black-widow-legend-2",
+  "k": "hammer|blackwidowlegend",
+  "m": "Hammer",
+  "n": "Black Widow Legend",
+  "t": false,
+  "y": "2021"
+ },
+ {
+  "c": null,
   "i": "hammer-black-widow-legend-black-pearl",
   "k": "hammer|blackwidowlegendblackpearl",
   "m": "Hammer",
@@ -34939,7 +35083,7 @@
  },
  {
   "c": null,
-  "i": "hammer-black-widow-legend-blue-blue-pearl-light-blue",
+  "i": "hammer-black-widow-legend-blue-blue-pearl-light-blue-u13",
   "k": "hammer|blackwidowlegendbluebluepearllightblue",
   "m": "Hammer",
   "n": "Black Widow Legend Blue/Blue Pearl/Light Blue",
@@ -35074,8 +35218,8 @@
  },
  {
   "c": null,
-  "i": "hammer-black-widow-omega",
-  "k": "hammer|blackwidowomega",
+  "i": "hammer-black-widow-omega-omega",
+  "k": "hammer|blackwidowomegaomega",
   "m": "Hammer",
   "n": "Black Widow Ω (Omega)",
   "t": false,
@@ -35236,7 +35380,7 @@
  },
  {
   "c": null,
-  "i": "hammer-black-widow-purple-11-m",
+  "i": "hammer-black-widow-purple-11-m-u13",
   "k": "hammer|blackwidowpurple11m",
   "m": "Hammer",
   "n": "Black Widow Purple (11 M)",
@@ -35254,7 +35398,7 @@
  },
  {
   "c": null,
-  "i": "hammer-black-widow-purple-red-gold",
+  "i": "hammer-black-widow-purple-red-gold-u13",
   "k": "hammer|blackwidowpurpleredgold",
   "m": "Hammer",
   "n": "Black Widow Purple/Red/Gold",
@@ -35299,7 +35443,7 @@
  },
  {
   "c": null,
-  "i": "hammer-black-widow-red-black-silver",
+  "i": "hammer-black-widow-red-black-silver-u13",
   "k": "hammer|blackwidowredblacksilver",
   "m": "Hammer",
   "n": "Black Widow Red/Black/Silver",
@@ -35326,7 +35470,7 @@
  },
  {
   "c": null,
-  "i": "hammer-black-widow-red-nh",
+  "i": "hammer-black-widow-red-nh-u13",
   "k": "hammer|blackwidowrednh",
   "m": "Hammer",
   "n": "Black Widow Red NH",
@@ -35335,7 +35479,7 @@
  },
  {
   "c": null,
-  "i": "hammer-black-widow-red-turquoise",
+  "i": "hammer-black-widow-red-turquoise-u13",
   "k": "hammer|blackwidowredturquoise",
   "m": "Hammer",
   "n": "Black Widow Red/Turquoise",
@@ -35353,7 +35497,7 @@
  },
  {
   "c": null,
-  "i": "hammer-black-widow-rpm-under-13-lb-only",
+  "i": "hammer-black-widow-rpm-under-13-lb-only-u13",
   "k": "hammer|blackwidowrpmunder13lbonly",
   "m": "Hammer",
   "n": "Black Widow RPM (Under 13 Lb. Only)",
@@ -35371,12 +35515,12 @@
  },
  {
   "c": null,
-  "i": "hammer-black-widow-spare",
+  "i": "hammer-black-widow-spare-all-colors",
   "k": "hammer|blackwidowspare",
   "m": "Hammer",
-  "n": "Black Widow Spare +",
+  "n": "Black Widow Spare (All Colors)",
   "t": false,
-  "y": "2026"
+  "y": "2007"
  },
  {
   "c": null,
@@ -35398,6 +35542,15 @@
  },
  {
   "c": null,
+  "i": "hammer-black-widow-spare-plus",
+  "k": "hammer|blackwidowspareplus",
+  "m": "Hammer",
+  "n": "Black Widow Spare +",
+  "t": false,
+  "y": "2026"
+ },
+ {
+  "c": null,
   "i": "hammer-black-widow-sting",
   "k": "hammer|blackwidowsting",
   "m": "Hammer",
@@ -35416,7 +35569,7 @@
  },
  {
   "c": null,
-  "i": "hammer-black-widow-t",
+  "i": "hammer-black-widow-t-u13",
   "k": "hammer|blackwidowt",
   "m": "Hammer",
   "n": "Black Widow T",
@@ -35800,6 +35953,15 @@
   "n": "Burgundy Hammer",
   "t": false,
   "y": "1992"
+ },
+ {
+  "c": null,
+  "i": "hammer-burgundy-hammer-2",
+  "k": "hammer|burgundyhammer",
+  "m": "Hammer",
+  "n": "Burgundy Hammer",
+  "t": false,
+  "y": "2014"
  },
  {
   "c": null,
@@ -36397,7 +36559,7 @@
  },
  {
   "c": null,
-  "i": "hammer-gauntlet-fury-blue-red",
+  "i": "hammer-gauntlet-fury-blue-red-u13",
   "k": "hammer|gauntletfurybluered",
   "m": "Hammer",
   "n": "Gauntlet Fury Blue/Red",
@@ -37090,8 +37252,8 @@
  },
  {
   "c": null,
-  "i": "hammer-nail-smoke-fire",
-  "k": "hammer|nailsmokefire",
+  "i": "hammer-nail-smoke-and-fire",
+  "k": "hammer|nailsmokeandfire",
   "m": "Hammer",
   "n": "Nail Smoke & Fire",
   "t": false,
@@ -38341,19 +38503,10 @@
  },
  {
   "c": null,
-  "i": "hammer-switch-blade-black-silver-green",
+  "i": "hammer-switch-blade-black-silver-green-u13",
   "k": "hammer|switchbladeblacksilvergreen",
   "m": "Hammer",
   "n": "Switch Blade Black/Silver/Green",
-  "t": false,
-  "y": "2006"
- },
- {
-  "c": null,
-  "i": "hammer-switch-blade-blue-black",
-  "k": "hammer|switchbladeblueblack",
-  "m": "Hammer",
-  "n": "Switch Blade Blue/Black",
   "t": false,
   "y": "2006"
  },
@@ -38365,6 +38518,15 @@
   "n": "Switch Blade Blue/Black/Gold",
   "t": false,
   "y": "2011"
+ },
+ {
+  "c": null,
+  "i": "hammer-switch-blade-blue-black-u13",
+  "k": "hammer|switchbladeblueblack",
+  "m": "Hammer",
+  "n": "Switch Blade Blue/Black",
+  "t": false,
+  "y": "2006"
  },
  {
   "c": null,
@@ -40006,7 +40168,7 @@
  },
  {
   "c": null,
-  "i": "hero-looney-tunes",
+  "i": "hero-looney-tunes-all-colors",
   "k": "hero|looneytunes",
   "m": "Hero",
   "n": "Looney Tunes (All Colors)",
@@ -40447,16 +40609,7 @@
  },
  {
   "c": null,
-  "i": "iwei-the-great-king",
-  "k": "iwei|thegreatking",
-  "m": "IWEI",
-  "n": "The Great King",
-  "t": false,
-  "y": "2011"
- },
- {
-  "c": null,
-  "i": "iwei-the-great-king-navy-blue",
+  "i": "iwei-the-great-king-navy-blue-u13",
   "k": "iwei|thegreatkingnavyblue",
   "m": "IWEI",
   "n": "The Great King Navy Blue",
@@ -40465,8 +40618,17 @@
  },
  {
   "c": null,
-  "i": "j-k-international-atom",
-  "k": "jkinternational|atom",
+  "i": "iwei-the-great-king-u13",
+  "k": "iwei|thegreatking",
+  "m": "IWEI",
+  "n": "The Great King",
+  "t": false,
+  "y": "2011"
+ },
+ {
+  "c": null,
+  "i": "j-and-k-international-atom",
+  "k": "jandkinternational|atom",
   "m": "J & K International",
   "n": "Atom",
   "t": false,
@@ -40672,7 +40834,7 @@
  },
  {
   "c": null,
-  "i": "keff-blaze-ii",
+  "i": "keff-blaze-ii-all-colors",
   "k": "keff|blazeii",
   "m": "Keff",
   "n": "Blaze II (All Colors)",
@@ -40717,7 +40879,7 @@
  },
  {
   "c": null,
-  "i": "krsf-bowlero-polyester",
+  "i": "krsf-bowlero-polyester-all-colors",
   "k": "krsf|bowleropolyester",
   "m": "KRSF",
   "n": "Bowlero Polyester (All Colors)",
@@ -40744,7 +40906,7 @@
  },
  {
   "c": null,
-  "i": "krsf-strikeforce-poly",
+  "i": "krsf-strikeforce-poly-all-colors",
   "k": "krsf|strikeforcepoly",
   "m": "KRSF",
   "n": "Strikeforce Poly (All Colors)",
@@ -41011,6 +41173,15 @@
   "n": "Buzzsaw XXXL",
   "t": false,
   "y": "2003"
+ },
+ {
+  "c": null,
+  "i": "lane-1-buzzsaw-xxxl-2",
+  "k": "lane1|buzzsawxxxl",
+  "m": "Lane #1",
+  "n": "Buzzsaw XXXL",
+  "t": false,
+  "y": "2006"
  },
  {
   "c": null,
@@ -41653,6 +41824,15 @@
  },
  {
   "c": null,
+  "i": "lane-1-viper-pearl-2",
+  "k": "lane1|viperpearl",
+  "m": "Lane #1",
+  "n": "Viper Pearl",
+  "t": false,
+  "y": "2002"
+ },
+ {
+  "c": null,
   "i": "lane-concepts-wmd",
   "k": "laneconcepts|wmd",
   "m": "Lane Concepts",
@@ -42022,7 +42202,7 @@
  },
  {
   "c": null,
-  "i": "lane-masters-legends",
+  "i": "lane-masters-legends-all-colors",
   "k": "lanemasters|legends",
   "m": "Lane Masters",
   "n": "Legends (All Colors)",
@@ -42193,7 +42373,7 @@
  },
  {
   "c": null,
-  "i": "lane-masters-saver",
+  "i": "lane-masters-saver-all-colors",
   "k": "lanemasters|saver",
   "m": "Lane Masters",
   "n": "Saver (All Colors)",
@@ -43327,7 +43507,16 @@
  },
  {
   "c": null,
-  "i": "linds-laser-pink-and-blue",
+  "i": "linds-laser-2",
+  "k": "linds|laser",
+  "m": "Linds",
+  "n": "Laser",
+  "t": false,
+  "y": "2006"
+ },
+ {
+  "c": null,
+  "i": "linds-laser-pink-and-blue-u13",
   "k": "linds|laserpinkandblue",
   "m": "Linds",
   "n": "Laser (Pink and Blue)",
@@ -44173,8 +44362,8 @@
  },
  {
   "c": null,
-  "i": "m-t-associates-black-myth",
-  "k": "mtassociates|blackmyth",
+  "i": "m-and-t-associates-black-myth",
+  "k": "mandtassociates|blackmyth",
   "m": "M & T Associates",
   "n": "Black Myth",
   "t": false,
@@ -44335,7 +44524,7 @@
  },
  {
   "c": null,
-  "i": "milo-champions",
+  "i": "milo-champions-all-colors",
   "k": "milo|champions",
   "m": "Milo",
   "n": "Champions (All Colors)",
@@ -44542,8 +44731,8 @@
  },
  {
   "c": null,
-  "i": "morich-ez-lev-rg-ml-l",
-  "k": "morich|ezlevrgmll",
+  "i": "morich-ez-lev-rg-mlandl",
+  "k": "morich|ezlevrgmlandl",
   "m": "MoRich",
   "n": "EZ Lev RG ML&L",
   "t": false,
@@ -44560,8 +44749,8 @@
  },
  {
   "c": null,
-  "i": "morich-grand-shock-awe",
-  "k": "morich|grandshockawe",
+  "i": "morich-grand-shock-and-awe",
+  "k": "morich|grandshockandawe",
   "m": "MoRich",
   "n": "Grand Shock & Awe",
   "t": false,
@@ -44614,8 +44803,8 @@
  },
  {
   "c": null,
-  "i": "morich-lane-magic-revival-ml-l",
-  "k": "morich|lanemagicrevivalmll",
+  "i": "morich-lane-magic-revival-ml-and-l",
+  "k": "morich|lanemagicrevivalmlandl",
   "m": "MoRich",
   "n": "Lane Magic Revival ML & L",
   "t": false,
@@ -44695,8 +44884,8 @@
  },
  {
   "c": null,
-  "i": "morich-maximum-shock-awe-black-red",
-  "k": "morich|maximumshockaweblackred",
+  "i": "morich-maximum-shock-and-awe-black-red",
+  "k": "morich|maximumshockandaweblackred",
   "m": "MoRich",
   "n": "Maximum Shock & Awe Black/Red",
   "t": false,
@@ -44704,8 +44893,8 @@
  },
  {
   "c": null,
-  "i": "morich-maximum-shock-awe-black-red-pearl",
-  "k": "morich|maximumshockaweblackredpearl",
+  "i": "morich-maximum-shock-and-awe-black-red-pearl",
+  "k": "morich|maximumshockandaweblackredpearl",
   "m": "MoRich",
   "n": "Maximum Shock & Awe Black/Red Pearl",
   "t": false,
@@ -45055,8 +45244,8 @@
  },
  {
   "c": null,
-  "i": "morich-seek-destroy",
-  "k": "morich|seekdestroy",
+  "i": "morich-seek-and-destroy",
+  "k": "morich|seekanddestroy",
   "m": "MoRich",
   "n": "Seek & Destroy",
   "t": false,
@@ -45064,8 +45253,8 @@
  },
  {
   "c": null,
-  "i": "morich-shock-awe",
-  "k": "morich|shockawe",
+  "i": "morich-shock-and-awe",
+  "k": "morich|shockandawe",
   "m": "MoRich",
   "n": "Shock & Awe",
   "t": false,
@@ -45109,8 +45298,8 @@
  },
  {
   "c": null,
-  "i": "morich-total-shock-awe",
-  "k": "morich|totalshockawe",
+  "i": "morich-total-shock-and-awe",
+  "k": "morich|totalshockandawe",
   "m": "MoRich",
   "n": "Total Shock & Awe",
   "t": false,
@@ -45316,7 +45505,7 @@
  },
  {
   "c": null,
-  "i": "motiv-aspire",
+  "i": "motiv-aspire-all-colors",
   "k": "motiv|aspire",
   "m": "Motiv",
   "n": "Aspire (All Colors)",
@@ -46207,7 +46396,7 @@
  },
  {
   "c": null,
-  "i": "motiv-propel",
+  "i": "motiv-propel-all-colors",
   "k": "motiv|propel",
   "m": "Motiv",
   "n": "Propel (All Colors)",
@@ -47044,6 +47233,15 @@
  },
  {
   "c": null,
+  "i": "motiv-venom-spare-all-colors",
+  "k": "motiv|venomspare",
+  "m": "Motiv",
+  "n": "Venom Spare (All Colors)",
+  "t": false,
+  "y": "2024"
+ },
+ {
+  "c": null,
   "i": "motiv-venom-strike",
   "k": "motiv|venomstrike",
   "m": "Motiv",
@@ -47359,7 +47557,7 @@
  },
  {
   "c": null,
-  "i": "nl-bowling-star-depart",
+  "i": "nl-bowling-star-depart-all-colors",
   "k": "nlbowlingstar|depart",
   "m": "NL-Bowling Star",
   "n": "Depart (All Colors)",
@@ -47557,6 +47755,15 @@
  },
  {
   "c": null,
+  "i": "pbs-dragon-ball-all-colors",
+  "k": "pbs|dragonball",
+  "m": "PBS",
+  "n": "Dragon Ball (All Colors)",
+  "t": false,
+  "y": "2018"
+ },
+ {
+  "c": null,
   "i": "pbs-dragon-ball-blue-white",
   "k": "pbs|dragonballbluewhite",
   "m": "PBS",
@@ -47584,7 +47791,7 @@
  },
  {
   "c": null,
-  "i": "pbs-frenzied",
+  "i": "pbs-frenzied-all-colors",
   "k": "pbs|frenzied",
   "m": "PBS",
   "n": "Frenzied (All Colors)",
@@ -47638,7 +47845,7 @@
  },
  {
   "c": null,
-  "i": "pbs-mustang",
+  "i": "pbs-mustang-all-colors",
   "k": "pbs|mustang",
   "m": "PBS",
   "n": "Mustang (All Colors)",
@@ -47647,7 +47854,7 @@
  },
  {
   "c": null,
-  "i": "pbs-pbs",
+  "i": "pbs-pbs-all-colors",
   "k": "pbs|pbs",
   "m": "PBS",
   "n": "PBS (All Colors)",
@@ -47719,7 +47926,7 @@
  },
  {
   "c": null,
-  "i": "pbs-sniper-l96a1-aw",
+  "i": "pbs-sniper-l96a1-aw-u13",
   "k": "pbs|sniperl96a1aw",
   "m": "PBS",
   "n": "Sniper L96A1 AW",
@@ -48106,7 +48313,7 @@
  },
  {
   "c": null,
-  "i": "pro-bowl-forta",
+  "i": "pro-bowl-forta-all-colors",
   "k": "probowl|forta",
   "m": "Pro Bowl",
   "n": "Forta (All Colors)",
@@ -48556,8 +48763,8 @@
  },
  {
   "c": null,
-  "i": "profi-shop-skull-crossbones",
-  "k": "profishop|skullcrossbones",
+  "i": "profi-shop-skull-and-crossbones",
+  "k": "profishop|skullandcrossbones",
   "m": "Profi Shop",
   "n": "Skull & Crossbones",
   "t": false,
@@ -48979,7 +49186,7 @@
  },
  {
   "c": null,
-  "i": "pyramid-bowling-path",
+  "i": "pyramid-bowling-path-all-colors",
   "k": "pyramidbowling|path",
   "m": "Pyramid Bowling",
   "n": "Path (All Colors)",
@@ -49159,6 +49366,15 @@
  },
  {
   "c": null,
+  "i": "pyramid-bowling-pathogen-x2",
+  "k": "pyramidbowling|pathogenx2",
+  "m": "Pyramid Bowling",
+  "n": "Pathogen X²",
+  "t": false,
+  "y": "2020"
+ },
+ {
+  "c": null,
   "i": "pyramid-bowling-pink-moon",
   "k": "pyramidbowling|pinkmoon",
   "m": "Pyramid Bowling",
@@ -49249,7 +49465,7 @@
  },
  {
   "c": null,
-  "i": "qmr-coord-polyester",
+  "i": "qmr-coord-polyester-all-colors",
   "k": "qmr|coordpolyester",
   "m": "QMR",
   "n": "Coord Polyester (All Colors)",
@@ -50329,6 +50545,15 @@
  },
  {
   "c": null,
+  "i": "radical-resultsplus",
+  "k": "radical|resultsplus",
+  "m": "Radical",
+  "n": "Results+",
+  "t": false,
+  "y": "2020"
+ },
+ {
+  "c": null,
   "i": "radical-revenge-pearl",
   "k": "radical|revengepearl",
   "m": "Radical",
@@ -50824,6 +51049,15 @@
  },
  {
   "c": null,
+  "i": "radical-zing-and-zing",
+  "k": "radical|zingandzing",
+  "m": "Radical",
+  "n": "Zing! & Zing",
+  "t": false,
+  "y": "2020"
+ },
+ {
+  "c": null,
   "i": "radical-zing-hybrid",
   "k": "radical|zinghybrid",
   "m": "Radical",
@@ -50837,15 +51071,6 @@
   "k": "radical|zingpearl",
   "m": "Radical",
   "n": "Zing! Pearl",
-  "t": false,
-  "y": "2020"
- },
- {
-  "c": null,
-  "i": "radical-zing-zing",
-  "k": "radical|zingzing",
-  "m": "Radical",
-  "n": "Zing! & Zing",
   "t": false,
   "y": "2020"
  },
@@ -51769,6 +51994,15 @@
  },
  {
   "c": null,
+  "i": "revolution-revolution-vengeance-2",
+  "k": "revolution|revolutionvengeance",
+  "m": "Revolution",
+  "n": "Revolution Vengeance",
+  "t": false,
+  "y": "2000"
+ },
+ {
+  "c": null,
   "i": "revolution-revsolution",
   "k": "revolution|revsolution",
   "m": "Revolution",
@@ -52315,6 +52549,15 @@
   "n": "Cosmos",
   "t": false,
   "y": "2002"
+ },
+ {
+  "c": null,
+  "i": "roto-grip-cosmos-all-colors",
+  "k": "rotogrip|cosmos",
+  "m": "Roto Grip",
+  "n": "Cosmos (All Colors)",
+  "t": false,
+  "y": "2025"
  },
  {
   "c": null,
@@ -53344,21 +53587,21 @@
  },
  {
   "c": null,
-  "i": "roto-grip-hustle-m-m",
-  "k": "rotogrip|hustlemm",
-  "m": "Roto Grip",
-  "n": "Hustle M+M",
-  "t": false,
-  "y": "2023"
- },
- {
-  "c": null,
   "i": "roto-grip-hustle-metal",
   "k": "rotogrip|hustlemetal",
   "m": "Roto Grip",
   "n": "Hustle Metal",
   "t": false,
   "y": "2020"
+ },
+ {
+  "c": null,
+  "i": "roto-grip-hustle-mplusm",
+  "k": "rotogrip|hustlemplusm",
+  "m": "Roto Grip",
+  "n": "Hustle M+M",
+  "t": false,
+  "y": "2023"
  },
  {
   "c": null,
@@ -56620,7 +56863,7 @@
  },
  {
   "c": null,
-  "i": "sports-tec-accura",
+  "i": "sports-tec-accura-all-colors",
   "k": "sportstec|accura",
   "m": "Sports Tec",
   "n": "Accura (All Colors)",
@@ -59644,16 +59887,7 @@
  },
  {
   "c": null,
-  "i": "storm-ice",
-  "k": "storm|ice",
-  "m": "Storm",
-  "n": "Ice (All Colors)",
-  "t": false,
-  "y": "2016"
- },
- {
-  "c": null,
-  "i": "storm-ice-30",
+  "i": "storm-ice-30-all-colors",
   "k": "storm|ice30",
   "m": "Storm",
   "n": "Ice 30 (All Colors)",
@@ -59662,7 +59896,16 @@
  },
  {
   "c": null,
-  "i": "storm-ice-storm",
+  "i": "storm-ice-all-colors",
+  "k": "storm|ice",
+  "m": "Storm",
+  "n": "Ice (All Colors)",
+  "t": false,
+  "y": "2016"
+ },
+ {
+  "c": null,
+  "i": "storm-ice-storm-all-colors",
   "k": "storm|icestorm",
   "m": "Storm",
   "n": "Ice Storm (All Colors)",
@@ -59914,7 +60157,7 @@
  },
  {
   "c": null,
-  "i": "storm-jopo-grips-clear-poly",
+  "i": "storm-jopo-grips-clear-poly-all-colors",
   "k": "storm|jopogripsclearpoly",
   "m": "Storm",
   "n": "JOPO Grips Clear Poly (All Colors)",
@@ -60247,8 +60490,8 @@
  },
  {
   "c": null,
-  "i": "storm-marvel-impact",
-  "k": "storm|marvelimpact",
+  "i": "storm-marvel-impact-plus",
+  "k": "storm|marvelimpactplus",
   "m": "Storm",
   "n": "Marvel Impact +",
   "t": false,
@@ -60787,7 +61030,7 @@
  },
  {
   "c": null,
-  "i": "storm-mix",
+  "i": "storm-mix-all-colors",
   "k": "storm|mix",
   "m": "Storm",
   "n": "Mix (All Colors)",
@@ -60940,7 +61183,7 @@
  },
  {
   "c": null,
-  "i": "storm-nano-spin",
+  "i": "storm-nano-spin-u13",
   "k": "storm|nanospin",
   "m": "Storm",
   "n": "Nano Spin",
@@ -63001,7 +63244,7 @@
  },
  {
   "c": null,
-  "i": "storm-spi-clear",
+  "i": "storm-spi-clear-all-colors",
   "k": "storm|spiclear",
   "m": "Storm",
   "n": "SPI Clear (All Colors)",
@@ -63010,7 +63253,7 @@
  },
  {
   "c": null,
-  "i": "storm-spi-cube",
+  "i": "storm-spi-cube-all-colors",
   "k": "storm|spicube",
   "m": "Storm",
   "n": "SPI Cube (All Colors)",
@@ -63028,7 +63271,7 @@
  },
  {
   "c": null,
-  "i": "storm-spin-mode",
+  "i": "storm-spin-mode-u13",
   "k": "storm|spinmode",
   "m": "Storm",
   "n": "Spin Mode",
@@ -63082,7 +63325,7 @@
  },
  {
   "c": null,
-  "i": "storm-spot-on",
+  "i": "storm-spot-on-all-colors",
   "k": "storm|spoton",
   "m": "Storm",
   "n": "Spot On (All Colors)",
@@ -63208,7 +63451,7 @@
  },
  {
   "c": null,
-  "i": "storm-striking-out-breast-cancer-clear-poly",
+  "i": "storm-striking-out-breast-cancer-clear-poly-all-colors",
   "k": "storm|strikingoutbreastcancerclearpoly",
   "m": "Storm",
   "n": "Striking Out Breast Cancer Clear Poly (All Colors)",
@@ -63460,7 +63703,7 @@
  },
  {
   "c": null,
-  "i": "storm-super-spin",
+  "i": "storm-super-spin-u13",
   "k": "storm|superspin",
   "m": "Storm",
   "n": "Super Spin",
@@ -63568,8 +63811,8 @@
  },
  {
   "c": null,
-  "i": "storm-sword-c",
-  "k": "storm|swordc",
+  "i": "storm-sword-c3",
+  "k": "storm|swordc3",
   "m": "Storm",
   "n": "Sword C³",
   "t": false,
@@ -63736,6 +63979,15 @@
   "n": "Team Storm",
   "t": false,
   "y": "2004"
+ },
+ {
+  "c": null,
+  "i": "storm-team-storm-2",
+  "k": "storm|teamstorm",
+  "m": "Storm",
+  "n": "Team Storm",
+  "t": false,
+  "y": "2008"
  },
  {
   "c": null,
@@ -64495,12 +64747,30 @@
  },
  {
   "c": null,
+  "i": "storm-tropical-storm-blue-orange-2",
+  "k": "storm|tropicalstormblueorange",
+  "m": "Storm",
+  "n": "Tropical Storm Blue/Orange",
+  "t": false,
+  "y": "2007"
+ },
+ {
+  "c": null,
   "i": "storm-tropical-storm-blue-yellow",
   "k": "storm|tropicalstormblueyellow",
   "m": "Storm",
   "n": "Tropical Storm Blue/Yellow",
   "t": false,
   "y": "2005"
+ },
+ {
+  "c": null,
+  "i": "storm-tropical-storm-blue-yellow-2",
+  "k": "storm|tropicalstormblueyellow",
+  "m": "Storm",
+  "n": "Tropical Storm Blue/Yellow",
+  "t": false,
+  "y": "2006"
  },
  {
   "c": null,
@@ -64537,6 +64807,15 @@
   "n": "Tropical Storm Green/Yellow",
   "t": false,
   "y": "2005"
+ },
+ {
+  "c": null,
+  "i": "storm-tropical-storm-green-yellow-2",
+  "k": "storm|tropicalstormgreenyellow",
+  "m": "Storm",
+  "n": "Tropical Storm Green/Yellow",
+  "t": false,
+  "y": "2006"
  },
  {
   "c": null,
@@ -64603,12 +64882,30 @@
  },
  {
   "c": null,
+  "i": "storm-tropical-storm-red-black-2",
+  "k": "storm|tropicalstormredblack",
+  "m": "Storm",
+  "n": "Tropical Storm Red/Black",
+  "t": false,
+  "y": "2006"
+ },
+ {
+  "c": null,
   "i": "storm-tropical-storm-red-purple",
   "k": "storm|tropicalstormredpurple",
   "m": "Storm",
   "n": "Tropical Storm Red/Purple",
   "t": false,
   "y": "2005"
+ },
+ {
+  "c": null,
+  "i": "storm-tropical-storm-red-purple-2",
+  "k": "storm|tropicalstormredpurple",
+  "m": "Storm",
+  "n": "Tropical Storm Red/Purple",
+  "t": false,
+  "y": "2006"
  },
  {
   "c": null,
@@ -65710,7 +66007,7 @@
  },
  {
   "c": null,
-  "i": "sunbridge-co-ltd-dio",
+  "i": "sunbridge-co-ltd-dio-all-colors",
   "k": "sunbridgecoltd|dio",
   "m": "Sunbridge Co., Ltd.",
   "n": "Dio (All Colors)",
@@ -66961,7 +67258,7 @@
  },
  {
   "c": null,
-  "i": "swag-wiper",
+  "i": "swag-wiper-all-colors",
   "k": "swag|wiper",
   "m": "Swag",
   "n": "Wiper (All Colors)",
@@ -67246,6 +67543,15 @@
   "n": "505C Special Edition",
   "t": false,
   "y": "2012"
+ },
+ {
+  "c": null,
+  "i": "track-inc-505c2",
+  "k": "trackinc|505c2",
+  "m": "Track Inc.",
+  "n": "505C²",
+  "t": false,
+  "y": "2013"
  },
  {
   "c": null,
@@ -68500,7 +68806,7 @@
  },
  {
   "c": null,
-  "i": "track-inc-mako-attack-red-black-magenta-under-13-lb-only",
+  "i": "track-inc-mako-attack-red-black-magenta-under-13-lb-only-u13",
   "k": "trackinc|makoattackredblackmagentaunder13lbonly",
   "m": "Track Inc.",
   "n": "Mako Attack Red/Black/Magenta (Under 13 Lb. Only)",
@@ -69445,8 +69751,8 @@
  },
  {
   "c": null,
-  "i": "track-inc-spare",
-  "k": "trackinc|spare",
+  "i": "track-inc-spare-plus",
+  "k": "trackinc|spareplus",
   "m": "Track Inc.",
   "n": "Spare +",
   "t": false,
@@ -69454,8 +69760,8 @@
  },
  {
   "c": null,
-  "i": "track-inc-spare-purple-black-blue",
-  "k": "trackinc|sparepurpleblackblue",
+  "i": "track-inc-spare-plus-purple-black-blue",
+  "k": "trackinc|sparepluspurpleblackblue",
   "m": "Track Inc.",
   "n": "Spare + Purple/Black/Blue",
   "t": false,
@@ -71992,7 +72298,7 @@
  },
  {
   "c": null,
-  "i": "yue-an-las-vegas",
+  "i": "yue-an-las-vegas-all-colors",
   "k": "yuean|lasvegas",
   "m": "Yue An",
   "n": "Las Vegas (All Colors)",
@@ -72010,7 +72316,7 @@
  },
  {
   "c": null,
-  "i": "yue-an-new-york-new-york",
+  "i": "yue-an-new-york-new-york-all-colors",
   "k": "yuean|newyorknewyork",
   "m": "Yue An",
   "n": "New York, New York (All Colors)",

@@ -3736,6 +3736,51 @@
  },
  {
   "Aliases": [],
+  "BallName": "Night Hawk",
+  "CatalogID": "amf-night-hawk-2",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "AMF",
+  "MatchKey": "amf|nighthawk|",
+  "ModelKey": "amf|nighthawk",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "1998-06",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
   "BallName": "Night Hawk M^2",
   "CatalogID": "amf-night-hawk-m-2",
   "Colorway": null,
@@ -4232,7 +4277,7 @@
  {
   "Aliases": [],
   "BallName": "Ninja Fury Black 11 Med",
-  "CatalogID": "amf-ninja-fury-black-11-med",
+  "CatalogID": "amf-ninja-fury-black-11-med-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -4277,7 +4322,7 @@
  {
   "Aliases": [],
   "BallName": "Ninja Fury Black/Blue 11 Med",
-  "CatalogID": "amf-ninja-fury-black-blue-11-med",
+  "CatalogID": "amf-ninja-fury-black-blue-11-med-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -4322,7 +4367,7 @@
  {
   "Aliases": [],
   "BallName": "Ninja Fury Spin",
-  "CatalogID": "amf-ninja-fury-spin",
+  "CatalogID": "amf-ninja-fury-spin-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -4412,7 +4457,7 @@
  {
   "Aliases": [],
   "BallName": "Ninja Master EX",
-  "CatalogID": "amf-ninja-master-ex",
+  "CatalogID": "amf-ninja-master-ex-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -6752,7 +6797,7 @@
  {
   "Aliases": [],
   "BallName": "Terminal Velocity Black",
-  "CatalogID": "amf-terminal-velocity-black",
+  "CatalogID": "amf-terminal-velocity-black-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -6797,7 +6842,7 @@
  {
   "Aliases": [],
   "BallName": "Terminal Velocity II",
-  "CatalogID": "amf-terminal-velocity-ii",
+  "CatalogID": "amf-terminal-velocity-ii-u13",
   "Colorway": null,
   "Core": {
    "Name": null,

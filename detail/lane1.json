@@ -1306,6 +1306,51 @@
  },
  {
   "Aliases": [],
+  "BallName": "Buzzsaw XXXL",
+  "CatalogID": "lane-1-buzzsaw-xxxl-2",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Lane #1",
+  "MatchKey": "lane1|buzzsawxxxl|",
+  "ModelKey": "lane1|buzzsawxxxl",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2006-10",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
   "BallName": "Buzzsaw XXXL Red Pearl",
   "CatalogID": "lane-1-buzzsaw-xxxl-red-pearl",
   "Colorway": null,
@@ -4489,6 +4534,51 @@
   "USBC": {
    "Approved": true,
    "ApprovedDate": "1996-12",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Viper Pearl",
+  "CatalogID": "lane-1-viper-pearl-2",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Lane #1",
+  "MatchKey": "lane1|viperpearl|",
+  "ModelKey": "lane1|viperpearl",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2002-04",
    "ApprovedDateRaw": null,
    "Ineligible": {
     "NoSlowOil": false,

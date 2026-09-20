@@ -3318,6 +3318,51 @@
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
+   "ApprovedDate": "2014-01",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Black Widow Assassin Red/Navy/Purple",
+  "CatalogID": "hammer-black-widow-assassin-red-navy-purple-u13",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Hammer",
+  "MatchKey": "hammer|blackwidowassassinrednavypurple|",
+  "ModelKey": "hammer|blackwidowassassinrednavypurple",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
    "ApprovedDate": "2014-02",
    "ApprovedDateRaw": null,
    "Ineligible": {
@@ -3602,7 +3647,7 @@
  {
   "Aliases": [],
   "BallName": "Black Widow Black/Orange",
-  "CatalogID": "hammer-black-widow-black-orange",
+  "CatalogID": "hammer-black-widow-black-orange-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3692,7 +3737,7 @@
  {
   "Aliases": [],
   "BallName": "Black Widow Blue",
-  "CatalogID": "hammer-black-widow-blue",
+  "CatalogID": "hammer-black-widow-blue-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3994,6 +4039,51 @@
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2024-09-24",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Black Widow Clear (All Colors)",
+  "CatalogID": "hammer-black-widow-clear-all-colors",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Hammer",
+  "MatchKey": "hammer|blackwidowclear|",
+  "ModelKey": "hammer|blackwidowclear",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2021-05-04",
    "ApprovedDateRaw": null,
    "Ineligible": {
     "NoSlowOil": false,
@@ -5041,6 +5131,51 @@
  },
  {
   "Aliases": [],
+  "BallName": "Black Widow Legend",
+  "CatalogID": "hammer-black-widow-legend-2",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Hammer",
+  "MatchKey": "hammer|blackwidowlegend|",
+  "ModelKey": "hammer|blackwidowlegend",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2021-06-15",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
   "BallName": "Black Widow Legend Black Pearl",
   "CatalogID": "hammer-black-widow-legend-black-pearl",
   "Colorway": null,
@@ -5132,7 +5267,7 @@
  {
   "Aliases": [],
   "BallName": "Black Widow Legend Blue/Blue Pearl/Light Blue",
-  "CatalogID": "hammer-black-widow-legend-blue-blue-pearl-light-blue",
+  "CatalogID": "hammer-black-widow-legend-blue-blue-pearl-light-blue-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -5807,7 +5942,7 @@
  {
   "Aliases": [],
   "BallName": "Black Widow Ω (Omega)",
-  "CatalogID": "hammer-black-widow-omega",
+  "CatalogID": "hammer-black-widow-omega-omega",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -5829,8 +5964,8 @@
    "Thumb": null
   },
   "MFG": "Hammer",
-  "MatchKey": "hammer|blackwidowomega|",
-  "ModelKey": "hammer|blackwidowomega",
+  "MatchKey": "hammer|blackwidowomegaomega|",
+  "ModelKey": "hammer|blackwidowomegaomega",
   "Ratings": {
    "HookRating": null,
    "PerfectScaleVal": null
@@ -6617,7 +6752,7 @@
  {
   "Aliases": [],
   "BallName": "Black Widow Purple (11 M)",
-  "CatalogID": "hammer-black-widow-purple-11-m",
+  "CatalogID": "hammer-black-widow-purple-11-m-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -6707,7 +6842,7 @@
  {
   "Aliases": [],
   "BallName": "Black Widow Purple/Red/Gold",
-  "CatalogID": "hammer-black-widow-purple-red-gold",
+  "CatalogID": "hammer-black-widow-purple-red-gold-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -6932,7 +7067,7 @@
  {
   "Aliases": [],
   "BallName": "Black Widow Red/Black/Silver",
-  "CatalogID": "hammer-black-widow-red-black-silver",
+  "CatalogID": "hammer-black-widow-red-black-silver-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -7067,7 +7202,7 @@
  {
   "Aliases": [],
   "BallName": "Black Widow Red NH",
-  "CatalogID": "hammer-black-widow-red-nh",
+  "CatalogID": "hammer-black-widow-red-nh-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -7112,7 +7247,7 @@
  {
   "Aliases": [],
   "BallName": "Black Widow Red/Turquoise",
-  "CatalogID": "hammer-black-widow-red-turquoise",
+  "CatalogID": "hammer-black-widow-red-turquoise-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -7202,7 +7337,7 @@
  {
   "Aliases": [],
   "BallName": "Black Widow RPM (Under 13 Lb. Only)",
-  "CatalogID": "hammer-black-widow-rpm-under-13-lb-only",
+  "CatalogID": "hammer-black-widow-rpm-under-13-lb-only-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -7291,8 +7426,8 @@
  },
  {
   "Aliases": [],
-  "BallName": "Black Widow Spare +",
-  "CatalogID": "hammer-black-widow-spare",
+  "BallName": "Black Widow Spare (All Colors)",
+  "CatalogID": "hammer-black-widow-spare-all-colors",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -7323,7 +7458,7 @@
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
-   "ApprovedDate": "2026-09-08",
+   "ApprovedDate": "2007-02",
    "ApprovedDateRaw": null,
    "Ineligible": {
     "NoSlowOil": false,
@@ -7414,6 +7549,51 @@
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2008-04",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Black Widow Spare +",
+  "CatalogID": "hammer-black-widow-spare-plus",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Hammer",
+  "MatchKey": "hammer|blackwidowspareplus|",
+  "ModelKey": "hammer|blackwidowspareplus",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2026-09-08",
    "ApprovedDateRaw": null,
    "Ineligible": {
     "NoSlowOil": false,
@@ -7517,7 +7697,7 @@
  {
   "Aliases": [],
   "BallName": "Black Widow T",
-  "CatalogID": "hammer-black-widow-t",
+  "CatalogID": "hammer-black-widow-t-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -9439,6 +9619,51 @@
   "USBC": {
    "Approved": true,
    "ApprovedDate": "1992-10",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Burgundy Hammer",
+  "CatalogID": "hammer-burgundy-hammer-2",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Hammer",
+  "MatchKey": "hammer|burgundyhammer|",
+  "ModelKey": "hammer|burgundyhammer",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2014-10",
    "ApprovedDateRaw": null,
    "Ineligible": {
     "NoSlowOil": false,
@@ -12422,7 +12647,7 @@
  {
   "Aliases": [],
   "BallName": "Gauntlet Fury Blue/Red",
-  "CatalogID": "hammer-gauntlet-fury-blue-red",
+  "CatalogID": "hammer-gauntlet-fury-blue-red-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -15887,7 +16112,7 @@
  {
   "Aliases": [],
   "BallName": "Nail Smoke & Fire",
-  "CatalogID": "hammer-nail-smoke-fire",
+  "CatalogID": "hammer-nail-smoke-and-fire",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -15909,8 +16134,8 @@
    "Thumb": null
   },
   "MFG": "Hammer",
-  "MatchKey": "hammer|nailsmokefire|",
-  "ModelKey": "hammer|nailsmokefire",
+  "MatchKey": "hammer|nailsmokeandfire|",
+  "ModelKey": "hammer|nailsmokeandfire",
   "Ratings": {
    "HookRating": null,
    "PerfectScaleVal": null
@@ -22142,7 +22367,7 @@
  {
   "Aliases": [],
   "BallName": "Switch Blade Black/Silver/Green",
-  "CatalogID": "hammer-switch-blade-black-silver-green",
+  "CatalogID": "hammer-switch-blade-black-silver-green-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -22174,51 +22399,6 @@
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2006-05",
-   "ApprovedDateRaw": null,
-   "Ineligible": {
-    "NoSlowOil": false,
-    "SlowOil78D": false
-   },
-   "ListVersion": "2026-09-20",
-   "NonConforming": false
-  },
-  "WeightLimit": "under 13 lb"
- },
- {
-  "Aliases": [],
-  "BallName": "Switch Blade Blue/Black",
-  "CatalogID": "hammer-switch-blade-blue-black",
-  "Colorway": null,
-  "Core": {
-   "Name": null,
-   "Type": null
-  },
-  "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
-  },
-  "DateReleased": null,
-  "FieldSources": {
-   "BallName": "usbc",
-   "USBC": "usbc"
-  },
-  "Images": {
-   "Core": null,
-   "Cover": null,
-   "Thumb": null
-  },
-  "MFG": "Hammer",
-  "MatchKey": "hammer|switchbladeblueblack|",
-  "ModelKey": "hammer|switchbladeblueblack",
-  "Ratings": {
-   "HookRating": null,
-   "PerfectScaleVal": null
-  },
-  "SpecsByWeight": {},
-  "USBC": {
-   "Approved": true,
-   "ApprovedDate": "2006-02",
    "ApprovedDateRaw": null,
    "Ineligible": {
     "NoSlowOil": false,
@@ -22273,6 +22453,51 @@
    "NonConforming": false
   },
   "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Switch Blade Blue/Black",
+  "CatalogID": "hammer-switch-blade-blue-black-u13",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Hammer",
+  "MatchKey": "hammer|switchbladeblueblack|",
+  "ModelKey": "hammer|switchbladeblueblack",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2006-02",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": "under 13 lb"
  },
  {
   "Aliases": [],

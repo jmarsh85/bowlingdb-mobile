@@ -946,6 +946,51 @@
  },
  {
   "Aliases": [],
+  "BallName": "505C²",
+  "CatalogID": "track-inc-505c2",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Track Inc.",
+  "MatchKey": "trackinc|505c2|",
+  "ModelKey": "trackinc|505c2",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2013-06",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
   "BallName": "505T",
   "CatalogID": "track-inc-505t",
   "Colorway": null,
@@ -7202,7 +7247,7 @@
  {
   "Aliases": [],
   "BallName": "Mako Attack Red/Black/Magenta (Under 13 Lb. Only)",
-  "CatalogID": "track-inc-mako-attack-red-black-magenta-under-13-lb-only",
+  "CatalogID": "track-inc-mako-attack-red-black-magenta-under-13-lb-only-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -11927,7 +11972,7 @@
  {
   "Aliases": [],
   "BallName": "Spare +",
-  "CatalogID": "track-inc-spare",
+  "CatalogID": "track-inc-spare-plus",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -11949,8 +11994,8 @@
    "Thumb": null
   },
   "MFG": "Track Inc.",
-  "MatchKey": "trackinc|spare|",
-  "ModelKey": "trackinc|spare",
+  "MatchKey": "trackinc|spareplus|",
+  "ModelKey": "trackinc|spareplus",
   "Ratings": {
    "HookRating": null,
    "PerfectScaleVal": null
@@ -11972,7 +12017,7 @@
  {
   "Aliases": [],
   "BallName": "Spare + Purple/Black/Blue",
-  "CatalogID": "track-inc-spare-purple-black-blue",
+  "CatalogID": "track-inc-spare-plus-purple-black-blue",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -11994,8 +12039,8 @@
    "Thumb": null
   },
   "MFG": "Track Inc.",
-  "MatchKey": "trackinc|sparepurpleblackblue|",
-  "ModelKey": "trackinc|sparepurpleblackblue",
+  "MatchKey": "trackinc|sparepluspurpleblackblue|",
+  "ModelKey": "trackinc|sparepluspurpleblackblue",
   "Ratings": {
    "HookRating": null,
    "PerfectScaleVal": null

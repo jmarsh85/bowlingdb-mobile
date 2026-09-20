@@ -2072,7 +2072,7 @@
  {
   "Aliases": [],
   "BallName": "Boost Christmas (Green/Red/Silver) 12 Lbs. & Under",
-  "CatalogID": "900-global-boost-christmas-green-red-silver-12-lbs-under",
+  "CatalogID": "900-global-boost-christmas-green-red-silver-12-lbs-and-under-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2094,8 +2094,8 @@
    "Thumb": null
   },
   "MFG": "900 Global",
-  "MatchKey": "900global|boostchristmasgreenredsilver12lbsunder|",
-  "ModelKey": "900global|boostchristmasgreenredsilver12lbsunder",
+  "MatchKey": "900global|boostchristmasgreenredsilver12lbsandunder|",
+  "ModelKey": "900global|boostchristmasgreenredsilver12lbsandunder",
   "Ratings": {
    "HookRating": null,
    "PerfectScaleVal": null
@@ -5537,7 +5537,7 @@
  {
   "Aliases": [],
   "BallName": "Eternity Π (Pi)",
-  "CatalogID": "900-global-eternity-pi",
+  "CatalogID": "900-global-eternity-pi-pi",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -5559,8 +5559,8 @@
    "Thumb": null
   },
   "MFG": "900 Global",
-  "MatchKey": "900global|eternitypi|",
-  "ModelKey": "900global|eternitypi",
+  "MatchKey": "900global|eternitypipi|",
+  "ModelKey": "900global|eternitypipi",
   "Ratings": {
    "HookRating": null,
    "PerfectScaleVal": null
@@ -12062,7 +12062,7 @@
  {
   "Aliases": [],
   "BallName": "Pow (All Colors)",
-  "CatalogID": "900-global-pow",
+  "CatalogID": "900-global-pow-all-colors",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -14357,7 +14357,7 @@
  {
   "Aliases": [],
   "BallName": "The Nuts Black (11M)",
-  "CatalogID": "900-global-the-nuts-black-11m",
+  "CatalogID": "900-global-the-nuts-black-11m-u13",
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -16009,6 +16009,51 @@
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2016-02-23",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "X²",
+  "CatalogID": "900-global-x2",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "900 Global",
+  "MatchKey": "900global|x2|",
+  "ModelKey": "900global|x2",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2017-09-05",
    "ApprovedDateRaw": null,
    "Ineligible": {
     "NoSlowOil": false,
