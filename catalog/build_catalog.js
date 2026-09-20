@@ -43,12 +43,28 @@ const slug = s => N.norm(s) || 'unknown';
  * -------------------------------------------------------------- */
 function catalogID(row) {
   const parts = [row.mfg, row.ballName, row.colorway].filter(Boolean);
-  let id = parts.join(' ')
+  let id = N.translit(parts.join(' '))
     .toLowerCase()
-    .replace(/\(all colors?\)/g, '')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '');
+    .replace(/[^a-z0-9]+/g, '-')        // (All Colors) is KEPT here — it
+    .replace(/^-|-$/g, '');             // distinguishes a real USBC row
+  /* The ** marker is part of identity: USBC lists "**Wolf" (under 13 lb)
+   * and "Wolf" as separate approvals. Strip it from the name and they
+   * collide, and one real ball gets dropped. */
+  if (row.weightLimit) id += '-u13';
   return id || 'unknown';
+}
+
+/* Deterministic disambiguation. Some USBC rows are genuinely
+ * indistinguishable after normalization — "(Danger) Zone" and
+ * "Danger Zone" are different balls with the same reduction. Suffix
+ * rather than drop: a duplicate ID is recoverable, a missing ball is not. */
+function uniqueID(base, taken) {
+  if (!taken.has(base)) return base;
+  for (let n = 2; n < 100; n++) {
+    const cand = `${base}-${n}`;
+    if (!taken.has(cand)) return cand;
+  }
+  return `${base}-${taken.size}`;
 }
 
 /* -------------------------------------------------------------- */
@@ -67,12 +83,17 @@ function build(rows, specsByKey, listVersion) {
   const models = new Map();
 
   for (const r of rows) {
-    const id = catalogID(r);
+    let id = catalogID(r);
     const mk = r.modelKey || N.modelKey(r.mfg, r.ballName);
 
+    const baseID = id;
     if (byID.has(id)) {
-      review.idCollisions.push({ id, a: byID.get(id).BallName, b: r.ballName });
-      continue;                                   // never merge silently (§4)
+      id = uniqueID(baseID, byID);
+      review.idCollisions.push({
+        base: baseID, assigned: id,
+        a: byID.get(baseID).BallName, b: r.ballName,
+        identical: byID.get(baseID).BallName === r.ballName,
+      });
     }
     if (!r.approvalDateOK) {
       review.badDates.push({ id, raw: r.approvalDate, line: r.raw });
@@ -219,4 +240,3 @@ function main() {
 
 if (require.main === module) main();
 module.exports = { build, catalogID, stable, sha };
-
