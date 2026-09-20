@@ -1,0 +1,137 @@
+[
+ {
+  "Aliases": [],
+  "BallName": "Angry Bird Black Bird",
+  "CatalogID": "angry-birds-angry-bird-black-bird",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Angry Birds",
+  "MatchKey": "angrybirds|angrybirdblackbird|",
+  "ModelKey": "angrybirds|angrybirdblackbird",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2012-10",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Angry Bird Green Pig",
+  "CatalogID": "angry-birds-angry-bird-green-pig",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Angry Birds",
+  "MatchKey": "angrybirds|angrybirdgreenpig|",
+  "ModelKey": "angrybirds|angrybirdgreenpig",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2012-10",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Angry Bird Red Bird",
+  "CatalogID": "angry-birds-angry-bird-red-bird",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Angry Birds",
+  "MatchKey": "angrybirds|angrybirdredbird|",
+  "ModelKey": "angrybirds|angrybirdredbird",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2012-10",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ }
+]

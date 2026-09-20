@@ -1,0 +1,137 @@
+[
+ {
+  "Aliases": [],
+  "BallName": "Bowling Mania (Spare) (All Colors)",
+  "CatalogID": "bowling-mania-bowling-mania-spare",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Bowling Mania",
+  "MatchKey": "bowlingmania|bowlingmaniaspare|",
+  "ModelKey": "bowlingmania|bowlingmaniaspare",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2025-09-02",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Thumbless Spare (All Colors)",
+  "CatalogID": "bowling-mania-thumbless-spare",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Bowling Mania",
+  "MatchKey": "bowlingmania|thumblessspare|",
+  "ModelKey": "bowlingmania|thumblessspare",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2025-09-16",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Two Hand Spare (All Colors)",
+  "CatalogID": "bowling-mania-two-hand-spare",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Bowling Mania",
+  "MatchKey": "bowlingmania|twohandspare|",
+  "ModelKey": "bowlingmania|twohandspare",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2025-09-16",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ }
+]

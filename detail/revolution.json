@@ -1,0 +1,4547 @@
+[
+ {
+  "Aliases": [],
+  "BallName": "Cyber Gear",
+  "CatalogID": "revolution-cyber-gear",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|cybergear|",
+  "ModelKey": "revolution|cybergear",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2011-03",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "R-One Plasma",
+  "CatalogID": "revolution-r-one-plasma",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|roneplasma|",
+  "ModelKey": "revolution|roneplasma",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2007-01",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Rev AGL Danger",
+  "CatalogID": "revolution-rev-agl-danger",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revagldanger|",
+  "ModelKey": "revolution|revagldanger",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2007-05",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Rev-Asroc Orange/Red Pearl",
+  "CatalogID": "revolution-rev-asroc-orange-red-pearl",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revasrocorangeredpearl|",
+  "ModelKey": "revolution|revasrocorangeredpearl",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2007-02",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Rev-Asroc Purple/Silver Pearl",
+  "CatalogID": "revolution-rev-asroc-purple-silver-pearl",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revasrocpurplesilverpearl|",
+  "ModelKey": "revolution|revasrocpurplesilverpearl",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2007-02",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Rev Gear 10th Anniversary",
+  "CatalogID": "revolution-rev-gear-10th-anniversary",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revgear10thanniversary|",
+  "ModelKey": "revolution|revgear10thanniversary",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2008-03",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Rev Pro Extreme Gear RX",
+  "CatalogID": "revolution-rev-pro-extreme-gear-rx",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revproextremegearrx|",
+  "ModelKey": "revolution|revproextremegearrx",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2009-11",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Rev Pro Winning Speed",
+  "CatalogID": "revolution-rev-pro-winning-speed",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revprowinningspeed|",
+  "ModelKey": "revolution|revprowinningspeed",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2009-09",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Rev Speed Drift",
+  "CatalogID": "revolution-rev-speed-drift",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revspeeddrift|",
+  "ModelKey": "revolution|revspeeddrift",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2007-05",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Rev Up Green Sparkle",
+  "CatalogID": "revolution-rev-up-green-sparkle",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revupgreensparkle|",
+  "ModelKey": "revolution|revupgreensparkle",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2000-01",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Clash",
+  "CatalogID": "revolution-revolution-clash",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionclash|",
+  "ModelKey": "revolution|revolutionclash",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2000-12",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Danny Wiseman Pro Series",
+  "CatalogID": "revolution-revolution-danny-wiseman-pro-series",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutiondannywisemanproseries|",
+  "ModelKey": "revolution|revolutiondannywisemanproseries",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2001-08",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Death Blow",
+  "CatalogID": "revolution-revolution-death-blow",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutiondeathblow|",
+  "ModelKey": "revolution|revolutiondeathblow",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2005-08",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Defiance ECX",
+  "CatalogID": "revolution-revolution-defiance-ecx",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutiondefianceecx|",
+  "ModelKey": "revolution|revolutiondefianceecx",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2001-08",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Defiance ECX Proactive",
+  "CatalogID": "revolution-revolution-defiance-ecx-proactive",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutiondefianceecxproactive|",
+  "ModelKey": "revolution|revolutiondefianceecxproactive",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2001-12",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Defiance ECX Silver Sparkle",
+  "CatalogID": "revolution-revolution-defiance-ecx-silver-sparkle",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutiondefianceecxsilversparkle|",
+  "ModelKey": "revolution|revolutiondefianceecxsilversparkle",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2002-04",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution IST 2000 LE",
+  "CatalogID": "revolution-revolution-ist-2000-le",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionist2000le|",
+  "ModelKey": "revolution|revolutionist2000le",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2000-01",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution IST 200X Limited",
+  "CatalogID": "revolution-revolution-ist-200x-limited",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionist200xlimited|",
+  "ModelKey": "revolution|revolutionist200xlimited",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2000-12",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution IST AGL",
+  "CatalogID": "revolution-revolution-ist-agl",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionistagl|",
+  "ModelKey": "revolution|revolutionistagl",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2004-06",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution IST Black Pearl",
+  "CatalogID": "revolution-revolution-ist-black-pearl",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionistblackpearl|",
+  "ModelKey": "revolution|revolutionistblackpearl",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2000-04",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution IST Black TE1",
+  "CatalogID": "revolution-revolution-ist-black-te1",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionistblackte1|",
+  "ModelKey": "revolution|revolutionistblackte1",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2000-01",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution IST Blue/Orange",
+  "CatalogID": "revolution-revolution-ist-blue-orange",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionistblueorange|",
+  "ModelKey": "revolution|revolutionistblueorange",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2000-01",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution IST Blue Pearl",
+  "CatalogID": "revolution-revolution-ist-blue-pearl",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionistbluepearl|",
+  "ModelKey": "revolution|revolutionistbluepearl",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2000-01",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution IST Burgundy Sparkle",
+  "CatalogID": "revolution-revolution-ist-burgundy-sparkle",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionistburgundysparkle|",
+  "ModelKey": "revolution|revolutionistburgundysparkle",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2000-01",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution IST Command",
+  "CatalogID": "revolution-revolution-ist-command",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionistcommand|",
+  "ModelKey": "revolution|revolutionistcommand",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2004-09",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution IST Deep AGL",
+  "CatalogID": "revolution-revolution-ist-deep-agl",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionistdeepagl|",
+  "ModelKey": "revolution|revolutionistdeepagl",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2008-02",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution IST Green TE1",
+  "CatalogID": "revolution-revolution-ist-green-te1",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionistgreente1|",
+  "ModelKey": "revolution|revolutionistgreente1",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2000-01",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution IST Navy",
+  "CatalogID": "revolution-revolution-ist-navy",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionistnavy|",
+  "ModelKey": "revolution|revolutionistnavy",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2000-01",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution IST Plum Pearl",
+  "CatalogID": "revolution-revolution-ist-plum-pearl",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionistplumpearl|",
+  "ModelKey": "revolution|revolutionistplumpearl",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2000-01",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution IST Purple",
+  "CatalogID": "revolution-revolution-ist-purple",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionistpurple|",
+  "ModelKey": "revolution|revolutionistpurple",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2000-01",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution IST Tour Copper",
+  "CatalogID": "revolution-revolution-ist-tour-copper",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionisttourcopper|",
+  "ModelKey": "revolution|revolutionisttourcopper",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2002-08",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution IZE Black Pearl",
+  "CatalogID": "revolution-revolution-ize-black-pearl",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionizeblackpearl|",
+  "ModelKey": "revolution|revolutionizeblackpearl",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2000-01",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution IZE Falcon",
+  "CatalogID": "revolution-revolution-ize-falcon",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionizefalcon|",
+  "ModelKey": "revolution|revolutionizefalcon",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2004-02",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution IZE Purple Pearl",
+  "CatalogID": "revolution-revolution-ize-purple-pearl",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionizepurplepearl|",
+  "ModelKey": "revolution|revolutionizepurplepearl",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2000-01",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Jupiter X",
+  "CatalogID": "revolution-revolution-jupiter-x",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionjupiterx|",
+  "ModelKey": "revolution|revolutionjupiterx",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2003-02",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Perfection",
+  "CatalogID": "revolution-revolution-perfection",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionperfection|",
+  "ModelKey": "revolution|revolutionperfection",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2010-02",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Pro R'Z",
+  "CatalogID": "revolution-revolution-pro-r-z",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionprorz|",
+  "ModelKey": "revolution|revolutionprorz",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2007-11",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Pro Speed Master",
+  "CatalogID": "revolution-revolution-pro-speed-master",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionprospeedmaster|",
+  "ModelKey": "revolution|revolutionprospeedmaster",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2010-08",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Progress C",
+  "CatalogID": "revolution-revolution-progress-c",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionprogressc|",
+  "ModelKey": "revolution|revolutionprogressc",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2002-12",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Progress ISM",
+  "CatalogID": "revolution-revolution-progress-ism",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionprogressism|",
+  "ModelKey": "revolution|revolutionprogressism",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2007-08",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Progress Master",
+  "CatalogID": "revolution-revolution-progress-master",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionprogressmaster|",
+  "ModelKey": "revolution|revolutionprogressmaster",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2005-01",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Raiders Blue/Magenta",
+  "CatalogID": "revolution-revolution-raiders-blue-magenta",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionraidersbluemagenta|",
+  "ModelKey": "revolution|revolutionraidersbluemagenta",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2003-10",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Raiders Blue/Silver",
+  "CatalogID": "revolution-revolution-raiders-blue-silver",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionraidersbluesilver|",
+  "ModelKey": "revolution|revolutionraidersbluesilver",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2003-10",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Rebel",
+  "CatalogID": "revolution-revolution-rebel",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrebel|",
+  "ModelKey": "revolution|revolutionrebel",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2000-03",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Rebel Black Pearl",
+  "CatalogID": "revolution-revolution-rebel-black-pearl",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrebelblackpearl|",
+  "ModelKey": "revolution|revolutionrebelblackpearl",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2000-11",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Rebel Blood",
+  "CatalogID": "revolution-revolution-rebel-blood",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrebelblood|",
+  "ModelKey": "revolution|revolutionrebelblood",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2006-04",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Rebel DNA",
+  "CatalogID": "revolution-revolution-rebel-dna",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrebeldna|",
+  "ModelKey": "revolution|revolutionrebeldna",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2010-04",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Rebel ECX",
+  "CatalogID": "revolution-revolution-rebel-ecx",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrebelecx|",
+  "ModelKey": "revolution|revolutionrebelecx",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2000-06",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Rebel ECX 2",
+  "CatalogID": "revolution-revolution-rebel-ecx-2",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrebelecx2|",
+  "ModelKey": "revolution|revolutionrebelecx2",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2000-07",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Rebel ECX Pro",
+  "CatalogID": "revolution-revolution-rebel-ecx-pro",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrebelecxpro|",
+  "ModelKey": "revolution|revolutionrebelecxpro",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2000-11",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Rebel ECX Purple Pearl",
+  "CatalogID": "revolution-revolution-rebel-ecx-purple-pearl",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrebelecxpurplepearl|",
+  "ModelKey": "revolution|revolutionrebelecxpurplepearl",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2001-02",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Rebel Egoist",
+  "CatalogID": "revolution-revolution-rebel-egoist",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrebelegoist|",
+  "ModelKey": "revolution|revolutionrebelegoist",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2007-06",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Rebel Fixer",
+  "CatalogID": "revolution-revolution-rebel-fixer",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrebelfixer|",
+  "ModelKey": "revolution|revolutionrebelfixer",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2004-11",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Rebel Proactive",
+  "CatalogID": "revolution-revolution-rebel-proactive",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrebelproactive|",
+  "ModelKey": "revolution|revolutionrebelproactive",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2000-11",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Rebel Tradition",
+  "CatalogID": "revolution-revolution-rebel-tradition",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrebeltradition|",
+  "ModelKey": "revolution|revolutionrebeltradition",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2007-11",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Rebel X",
+  "CatalogID": "revolution-revolution-rebel-x",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrebelx|",
+  "ModelKey": "revolution|revolutionrebelx",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2002-01",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Renegade",
+  "CatalogID": "revolution-revolution-renegade",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrenegade|",
+  "ModelKey": "revolution|revolutionrenegade",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2000-04",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Rev-Command Soldier",
+  "CatalogID": "revolution-revolution-rev-command-soldier",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrevcommandsoldier|",
+  "ModelKey": "revolution|revolutionrevcommandsoldier",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2005-12",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Rev-Cruise",
+  "CatalogID": "revolution-revolution-rev-cruise",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrevcruise|",
+  "ModelKey": "revolution|revolutionrevcruise",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2004-09",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Rev-Cruise Survivor",
+  "CatalogID": "revolution-revolution-rev-cruise-survivor",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrevcruisesurvivor|",
+  "ModelKey": "revolution|revolutionrevcruisesurvivor",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2005-07",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Rev-Cyclone",
+  "CatalogID": "revolution-revolution-rev-cyclone",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrevcyclone|",
+  "ModelKey": "revolution|revolutionrevcyclone",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2005-09",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Rev-Force",
+  "CatalogID": "revolution-revolution-rev-force",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrevforce|",
+  "ModelKey": "revolution|revolutionrevforce",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2004-03",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Rev Gear Arrows",
+  "CatalogID": "revolution-revolution-rev-gear-arrows",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrevgeararrows|",
+  "ModelKey": "revolution|revolutionrevgeararrows",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2007-06",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Rev Gear Neo",
+  "CatalogID": "revolution-revolution-rev-gear-neo",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrevgearneo|",
+  "ModelKey": "revolution|revolutionrevgearneo",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2004-05",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Rev Gear Pro",
+  "CatalogID": "revolution-revolution-rev-gear-pro",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrevgearpro|",
+  "ModelKey": "revolution|revolutionrevgearpro",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2003-10",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Rev Gear Revive",
+  "CatalogID": "revolution-revolution-rev-gear-revive",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrevgearrevive|",
+  "ModelKey": "revolution|revolutionrevgearrevive",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2005-01",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Rev-Hit Charisma Black",
+  "CatalogID": "revolution-revolution-rev-hit-charisma-black",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrevhitcharismablack|",
+  "ModelKey": "revolution|revolutionrevhitcharismablack",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2003-07",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Rev-Hit Charisma Black Ice",
+  "CatalogID": "revolution-revolution-rev-hit-charisma-black-ice",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrevhitcharismablackice|",
+  "ModelKey": "revolution|revolutionrevhitcharismablackice",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2005-04",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Rev-Hit Charisma Black Pearl",
+  "CatalogID": "revolution-revolution-rev-hit-charisma-black-pearl",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrevhitcharismablackpearl|",
+  "ModelKey": "revolution|revolutionrevhitcharismablackpearl",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2003-07",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Rev-Hit Charisma Plum Pearl",
+  "CatalogID": "revolution-revolution-rev-hit-charisma-plum-pearl",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrevhitcharismaplumpearl|",
+  "ModelKey": "revolution|revolutionrevhitcharismaplumpearl",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2005-01",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Rev-IST Over Rev",
+  "CatalogID": "revolution-revolution-rev-ist-over-rev",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrevistoverrev|",
+  "ModelKey": "revolution|revolutionrevistoverrev",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2006-06",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Rev-IST Progress EX",
+  "CatalogID": "revolution-revolution-rev-ist-progress-ex",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrevistprogressex|",
+  "ModelKey": "revolution|revolutionrevistprogressex",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2004-02",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Rev-Ize Gear",
+  "CatalogID": "revolution-revolution-rev-ize-gear",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrevizegear|",
+  "ModelKey": "revolution|revolutionrevizegear",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2003-06",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Rev-Ize Titan",
+  "CatalogID": "revolution-revolution-rev-ize-titan",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrevizetitan|",
+  "ModelKey": "revolution|revolutionrevizetitan",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2003-05",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Rev Max C",
+  "CatalogID": "revolution-revolution-rev-max-c",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrevmaxc|",
+  "ModelKey": "revolution|revolutionrevmaxc",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2003-01",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Rev Max Control",
+  "CatalogID": "revolution-revolution-rev-max-control",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrevmaxcontrol|",
+  "ModelKey": "revolution|revolutionrevmaxcontrol",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2006-10",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Rev Mission",
+  "CatalogID": "revolution-revolution-rev-mission",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrevmission|",
+  "ModelKey": "revolution|revolutionrevmission",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2005-04",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Rev Pro Excite Gear",
+  "CatalogID": "revolution-revolution-rev-pro-excite-gear",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrevproexcitegear|",
+  "ModelKey": "revolution|revolutionrevproexcitegear",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2009-05",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Rev Pro Extreme Gear",
+  "CatalogID": "revolution-revolution-rev-pro-extreme-gear",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrevproextremegear|",
+  "ModelKey": "revolution|revolutionrevproextremegear",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2008-11",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Rev Pro Real Speed",
+  "CatalogID": "revolution-revolution-rev-pro-real-speed",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrevprorealspeed|",
+  "ModelKey": "revolution|revolutionrevprorealspeed",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2008-05",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Rev Pro Stage",
+  "CatalogID": "revolution-revolution-rev-pro-stage",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrevprostage|",
+  "ModelKey": "revolution|revolutionrevprostage",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2005-02",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Rev Rebel Egoist Black",
+  "CatalogID": "revolution-revolution-rev-rebel-egoist-black",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrevrebelegoistblack|",
+  "ModelKey": "revolution|revolutionrevrebelegoistblack",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2009-01",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Rev Rebel Overcome",
+  "CatalogID": "revolution-revolution-rev-rebel-overcome",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrevrebelovercome|",
+  "ModelKey": "revolution|revolutionrevrebelovercome",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2008-08",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Rev Remix",
+  "CatalogID": "revolution-revolution-rev-remix",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrevremix|",
+  "ModelKey": "revolution|revolutionrevremix",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2005-04",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Rev Speed",
+  "CatalogID": "revolution-revolution-rev-speed",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrevspeed|",
+  "ModelKey": "revolution|revolutionrevspeed",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2004-07",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Rev Speed Breaker",
+  "CatalogID": "revolution-revolution-rev-speed-breaker",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrevspeedbreaker|",
+  "ModelKey": "revolution|revolutionrevspeedbreaker",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2005-06",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Rev Speed Checker",
+  "CatalogID": "revolution-revolution-rev-speed-checker",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrevspeedchecker|",
+  "ModelKey": "revolution|revolutionrevspeedchecker",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2005-04",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Rev Speed GS",
+  "CatalogID": "revolution-revolution-rev-speed-gs",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrevspeedgs|",
+  "ModelKey": "revolution|revolutionrevspeedgs",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2006-08",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Rev Speed Winner",
+  "CatalogID": "revolution-revolution-rev-speed-winner",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrevspeedwinner|",
+  "ModelKey": "revolution|revolutionrevspeedwinner",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2006-03",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Rev-Succeed",
+  "CatalogID": "revolution-revolution-rev-succeed",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrevsucceed|",
+  "ModelKey": "revolution|revolutionrevsucceed",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2006-11",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Rev-Sword",
+  "CatalogID": "revolution-revolution-rev-sword",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrevsword|",
+  "ModelKey": "revolution|revolutionrevsword",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2005-05",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Rev-Traction",
+  "CatalogID": "revolution-revolution-rev-traction",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrevtraction|",
+  "ModelKey": "revolution|revolutionrevtraction",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2004-11",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Revolver",
+  "CatalogID": "revolution-revolution-revolver",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrevolver|",
+  "ModelKey": "revolution|revolutionrevolver",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2003-12",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Rex",
+  "CatalogID": "revolution-revolution-rex",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrex|",
+  "ModelKey": "revolution|revolutionrex",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2003-07",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Rex Gaia",
+  "CatalogID": "revolution-revolution-rex-gaia",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrexgaia|",
+  "ModelKey": "revolution|revolutionrexgaia",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2003-12",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Rex Helios",
+  "CatalogID": "revolution-revolution-rex-helios",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionrexhelios|",
+  "ModelKey": "revolution|revolutionrexhelios",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2003-09",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Speed Star",
+  "CatalogID": "revolution-revolution-speed-star",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionspeedstar|",
+  "ModelKey": "revolution|revolutionspeedstar",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2011-05",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Sunrich Rebel",
+  "CatalogID": "revolution-revolution-sunrich-rebel",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionsunrichrebel|",
+  "ModelKey": "revolution|revolutionsunrichrebel",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2001-07",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revolution Vengeance",
+  "CatalogID": "revolution-revolution-vengeance",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revolutionvengeance|",
+  "ModelKey": "revolution|revolutionvengeance",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2005-05",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Revsolution",
+  "CatalogID": "revolution-revsolution",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|revsolution|",
+  "ModelKey": "revolution|revsolution",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2000-01",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Zest Rebel",
+  "CatalogID": "revolution-zest-rebel",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "Revolution",
+  "MatchKey": "revolution|zestrebel|",
+  "ModelKey": "revolution|zestrebel",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2007-03",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ }
+]

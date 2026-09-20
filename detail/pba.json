@@ -1,0 +1,182 @@
+[
+ {
+  "Aliases": [],
+  "BallName": "PBA 50th Anniversary",
+  "CatalogID": "pba-pba-50th-anniversary",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "PBA",
+  "MatchKey": "pba|pba50thanniversary|",
+  "ModelKey": "pba|pba50thanniversary",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2008-10",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Skill 2.0",
+  "CatalogID": "pba-skill-2-0",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "PBA",
+  "MatchKey": "pba|skill20|",
+  "ModelKey": "pba|skill20",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2013-06",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Skill 3.0",
+  "CatalogID": "pba-skill-3-0",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "PBA",
+  "MatchKey": "pba|skill30|",
+  "ModelKey": "pba|skill30",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2013-06",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ },
+ {
+  "Aliases": [],
+  "BallName": "Skill 3.02",
+  "CatalogID": "pba-skill-3-02",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "PBA",
+  "MatchKey": "pba|skill302|",
+  "ModelKey": "pba|skill302",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2017-02-14",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ }
+]

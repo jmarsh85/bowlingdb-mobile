@@ -1,0 +1,47 @@
+[
+ {
+  "Aliases": [],
+  "BallName": "Redline",
+  "CatalogID": "asb-redline",
+  "Colorway": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Finish": null,
+   "Name": null,
+   "Type": null
+  },
+  "DateReleased": null,
+  "FieldSources": {
+   "BallName": "usbc",
+   "USBC": "usbc"
+  },
+  "Images": {
+   "Core": null,
+   "Cover": null,
+   "Thumb": null
+  },
+  "MFG": "ASB",
+  "MatchKey": "asb|redline|",
+  "ModelKey": "asb|redline",
+  "Ratings": {
+   "HookRating": null,
+   "PerfectScaleVal": null
+  },
+  "SpecsByWeight": {},
+  "USBC": {
+   "Approved": true,
+   "ApprovedDate": "2010-08",
+   "ApprovedDateRaw": null,
+   "Ineligible": {
+    "NoSlowOil": false,
+    "SlowOil78D": false
+   },
+   "ListVersion": "2026-09-20",
+   "NonConforming": false
+  },
+  "WeightLimit": null
+ }
+]
