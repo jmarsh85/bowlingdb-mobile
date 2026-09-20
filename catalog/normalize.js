@@ -46,11 +46,31 @@ const DATE_MIN = 1960;
 const DATE_MAX = new Date().getFullYear() + 2;
 
 /* --------------------------------------------------------------
+ * Transliteration. Characters that carry meaning but are not
+ * alphanumeric must survive the strip, or distinct balls collide:
+ * "X" vs "X\u00b2", "505C" vs "505C\u00b2", "Results" vs "Results+".
+ * ------------------------------------------------------------ */
+const TRANSLIT = [
+  [/\u00b2/g, '2'], [/\u00b3/g, '3'], [/\u00b9/g, '1'],       // superscripts
+  [/[\u221e\ua70f]/g, 'eight'],                             // infinity glyphs
+  [/\u03a0|\u03c0/g, 'pi'], [/\u03a9/g, 'omega'],              // greek
+  [/\+/g, 'plus'],
+  [/&/g, 'and'],
+  [/\u2192|\u2190/g, 'to'],
+];
+
+function translit(s) {
+  let out = String(s);
+  for (const [re, rep] of TRANSLIT) out = out.replace(re, rep);
+  return out;
+}
+
+/* --------------------------------------------------------------
  * norm(s) — the core reduction
  * ------------------------------------------------------------ */
 function norm(s) {
   if (s == null) return '';
-  return String(s)
+  return translit(s)
     .toLowerCase()
     .replace(/\(all colors?\)/g, '')      // colourway-agnostic marker
     .replace(/[^a-z0-9]/g, '');
@@ -169,10 +189,9 @@ function lookup(idx, mfg, name, colorway) {
 }
 
 module.exports = {
-  norm, cleanBallName, canonicalMfg,
+  norm, translit, cleanBallName, canonicalMfg,
   modelKey, matchKey, parseApprovalDate,
   buildIndex, lookup,
   MFG_ALIASES, NAME_ALIASES,
   WEIGHT_LIMIT_UNDER_13, DATE_MIN, DATE_MAX,
 };
-
