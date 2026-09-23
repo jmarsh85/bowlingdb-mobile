@@ -106,6 +106,8 @@ padding-top: 5px; padding-bottom: 5px; min-height: 30px;
 .scope-bar-sticky.docked .scope-chip {
 font-size: 11px; padding: 3px 9px;
 }
+.scope-bar-sticky .perf-strip { transition: padding 0.18s ease; }
+.scope-bar-sticky.docked .perf-strip { padding-top:6px !important; padding-bottom:6px !important; }
 .scope-bar-sticky.docked .scope-toggle {
 width: 22px; height: 22px; font-size: 12px;
 }
@@ -1656,10 +1658,11 @@ font-size:10px; font-weight:700; color:var(--t3);
 letter-spacing:0.8px; text-transform:uppercase;
 margin-bottom:6px;
 }
-.mini-sc-scroll { overflow-x:auto; -webkit-overflow-scrolling:touch; }
+.mini-sc-scroll { overflow-x:auto; -webkit-overflow-scrolling:touch; max-width:100%; overscroll-behavior-x:contain; }
 .mini-sc-grid {
 display:grid;
-grid-template-columns:repeat(9,28px) 54px;
+grid-template-columns:repeat(9,30px) minmax(30px,auto);
+width:max-content;
 gap:1px;
 background:var(--border1);
 min-width:fit-content;
@@ -1671,9 +1674,11 @@ overflow:hidden;
 .mini-sc-grid .sc-fn {
 font-size:8px; padding:3px 1px;
 }
-.mini-sc-grid .sc-bsk { height:auto; min-height:30px; padding:3px 1px; }
-.mini-sc-grid .sc-bsk.f10 { height:auto; min-height:30px; padding:2px 1px; }
-.mini-sc-grid .sc-atts { height:auto; min-height:16px; }
+/* v30.153 SC-1: fixed row heights so leave text never pushes attempts/totals out of line */
+.mini-sc-grid .sc-bsk { height:44px; min-height:0; padding:3px 1px; box-sizing:border-box; overflow:hidden; justify-content:flex-start; }
+.mini-sc-grid .sc-bsk.f10 { height:44px; min-height:0; padding:0; gap:0; justify-content:center; align-items:flex-start; }
+.mini-sc-grid .f10-cell { flex:0 0 30px; width:30px; display:flex; flex-direction:column; align-items:center; padding:3px 1px; box-sizing:border-box; }
+.mini-sc-grid .sc-atts { height:20px; min-height:0; box-sizing:border-box; overflow:hidden; }
 .mini-sc-grid .sc-beer { height:auto; min-height:0; }
 .mini-sc-grid .bsk-tri.tiny { transform:scale(0.7); }
 .mini-sc-grid .sc-atts { padding:1px; gap:1px; }
@@ -1684,7 +1689,7 @@ font-size:9px; border-radius:3px;
 .mini-sc-grid .sc-balls { min-height:0; padding:1px 2px; gap:2px; display:none; } 
 .mini-sc-grid .sc-tot {
 font-size:11px; font-weight:800; padding:3px 1px;
-height:auto; min-height:22px;
+height:22px; min-height:0; box-sizing:border-box;
 }
 .ld-hero {
 position:relative;
@@ -2573,7 +2578,7 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
     </div>
     <div id="hdr-title" onclick="hdrTitleTap()"><span class="brand">Bowling</span>DB</div>
     <div id="hdr-title-popover"></div>
-    <span id="hdr-build-ref">v30.152 · 2026-09-17</span>
+    <span id="hdr-build-ref">v30.153 · 2026-09-22</span>
     <div id="hdr-right">
       <div class="hdr-icon-btn" id="hdr-delete-game-btn" onclick="confirmDeleteGame(G.gameID)" title="Delete Game" style="display:none">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -4091,6 +4096,11 @@ const _delBtn = document.getElementById('hdr-delete-game-btn');
 if (_delBtn) _delBtn.style.display = (screenId === 's-scoring') ? 'flex': 'none';
 const _practiceBtn = document.getElementById('hdr-practice-btn');
 if (_practiceBtn) _practiceBtn.style.display = (screenId === 's-scoring') ? 'flex': 'none';
+/* v30.153 HDR-1: Focus + Move Frames are live-scoring controls only; Export/Settings stay global. */
+if (screenId !== 's-scoring') {
+const _fb = document.getElementById('hdr-focus-btn'); if (_fb) _fb.style.display = 'none';
+const _mb = document.getElementById('hdr-move-btn');  if (_mb) _mb.style.display = 'none';
+}
 
 try {
 ({
@@ -6790,6 +6800,7 @@ navTo('s-games');
 function renderSeriesList() {
 const el = document.getElementById('series-list');
 const currentLeague = db.leagues.find(l=>l.LeagueID===G.leagueID);
+if (currentLeague) { const _st = document.getElementById('series-title'); if (_st) _st.textContent = currentLeague.LeagueName; document.getElementById('hdr-title').textContent = currentLeague.LeagueName; }
 
 
 const bakerHistBtn = document.getElementById('series-baker-hist-btn');
@@ -6882,7 +6893,7 @@ return buildScoreRingBadge({ arcColor, score:g.FinalScore, hasFrames, gameID:g.G
 const anyAttempt = db.attempts.some(a=>a.GameID===g.GameID && a.Pinfall!=null);
 if (anyAttempt) {
 const inprogFrames = db.frames.filter(f=>f.GameID===g.GameID);
-const inprogScore  = inprogFrames.reduce((acc,f)=>acc+(f.RunningTotal||0), 0) ||
+const inprogScore  = inprogFrames.reduce((acc,f)=>Math.max(acc,f.RunningTotal||0), 0) ||
 db.attempts.filter(a=>a.GameID===g.GameID&&a.Pinfall!=null).reduce((acc,a)=>acc+a.Pinfall,0);
 return buildScoreRingBadge({ arcColor, score:inprogScore||0, inprog:true });
 }
@@ -7073,9 +7084,10 @@ html += `<div class="sc-fn">${fr.FrameNumber}</div>`;
 
 html += `<div class="sc-bsk${isF10?' f10':''}">`;
 if (isF10) {
+/* v30.153 SC-2: F10 grows by one frame-width cell per rack; triangles stay full size */
 const slots = getF10BSKSlots(atts, null);
-if (slots.length) { const tiny=slots.length>=2; slots.forEach(b=>{ html+=bskTriangleHTML(b,tiny); }); }
-else html += '<div style="height:24px"></div>';
+if (slots.length) slots.forEach(b=>{ html+=`<div class="f10-cell">${bskTriangleHTML(b,false)}</div>`; });
+else html += '<div class="f10-cell"><div style="height:24px"></div></div>';
 } else {
 const a1=atts.find(a=>a.Attempt===1), a2=atts.find(a=>a.Attempt===2);
 let bsk = null;
@@ -12326,8 +12338,24 @@ createAndStartGame();
 }
 }
 function endSeries() {
+/* v30.153 NAV-1: 'View Series' lands on the Games list for this series and
+   rewrites history so Back walks Games -> Series -> Leagues. Scoring and
+   Game Complete entries are dropped: re-entering them after G.gameID is
+   cleared rendered a blank 0 'phantom' game and a blank F10 form in a loop. */
 G.gameID = null;
-navTo('s-series');
+const DROP = new Set(['s-scoring','s-game-complete','s-game-select']);
+const h = [];
+for (const s of (G.screenHistory || [])) {
+if (DROP.has(s)) continue;
+if (h[h.length-1] === s) continue;
+h.push(s);
+}
+if (G.leagueID > 0 && h[h.length-1] !== 's-series') {
+if (!h.includes('s-leagues')) h.push('s-leagues');
+h.push('s-series');
+}
+G.screenHistory = h;
+navTo('s-game-select', { back:true });
 }
 
 
@@ -13614,14 +13642,14 @@ return cls === 'up'? 'var(--teal)': cls === 'dn'? 'var(--red)': 'var(--t3)';
 }
  
 function _perfEntryCardHTML() {
-return `<div onclick="navTo('s-performance')" style="margin:14px 14px 0;padding:14px 16px;border-radius:14px;
-    background:linear-gradient(135deg, rgba(0,217,217,0.10), rgba(157,78,221,0.10));
-    border:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;cursor:pointer">
-    <div>
-      <div style="font-size:14px;font-weight:700;color:var(--t1)">Performance ✦</div>
-      <div style="font-size:11px;color:var(--t2);margin-top:2px">Trends, projections &amp; season comparisons</div>
-    </div>
-    <span style="color:var(--teal);font-size:18px">›</span>
+/* v30.153 STA-1: thin full-width strip, flush on top of the scope bar */
+/* v30.153 STA-3: rendered inside the sticky scope bar so both stay pinned together */
+return `<div class="perf-strip" onclick="navTo('s-performance')" style="margin:0;padding:9px 14px;border-radius:12px 12px 0 0;
+    background:linear-gradient(90deg, rgba(0,217,217,0.10), rgba(157,78,221,0.10)), var(--bg2);
+    border-bottom:1px solid var(--border1);display:flex;align-items:center;gap:8px;cursor:pointer;-webkit-tap-highlight-color:transparent">
+    <span style="font-size:13px;font-weight:700;color:var(--t1);flex-shrink:0">Performance ✦</span>
+    <span style="font-size:11px;color:var(--t3);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Trends · projections · season comparisons</span>
+    <span style="color:var(--teal);font-size:18px;line-height:1;flex-shrink:0">›</span>
   </div>`;
 }
  
@@ -14884,7 +14912,8 @@ const condBar = hasSport ? pill(
 sc.condition, '_statsSetCondition'
 ) : '';
 const scopeBarHTML = `
-    <div id="stats-scope-bar" class="scope-bar-sticky" style="background:var(--bg2);position:sticky;top:0;z-index:10">
+    <div id="stats-scope-bar" class="scope-bar-sticky" style="background:var(--bg2);position:sticky;top:0;z-index:10;margin-top:10px;border-radius:12px 12px 0 0">
+      ${_perfEntryCardHTML()}
       <!-- Collapsed summary row — always visible, tap to toggle. Shrinks via
            .docked (toggled by a scroll listener, see bottom of this function)
            instead of holding full height while the person reads tab content. -->
@@ -14900,7 +14929,7 @@ const scopeBarHTML = `
       </div>
       <!-- Expanded panel — own scroll, never bleeds to page -->
       ${scopeOpen ? `
-      <div style="max-height:50vh;overflow-y:auto;-webkit-overflow-scrolling:touch;
+      <div id="stats-scope-panel" style="max-height:50vh;overflow-y:auto;-webkit-overflow-scrolling:touch;
         overscroll-behavior:contain;padding:6px 14px 12px;border-top:1px solid var(--border1)">
         <div style="font-size:10px;font-weight:700;color:var(--t3);letter-spacing:0.6px;
           text-transform:uppercase;margin-bottom:6px">Center</div>
@@ -14997,7 +15026,7 @@ tabContent = _statsTabSpares(scopedGames, hasFrames);
 } else if (tab === 'balls') {
 tabContent = _statsTabBalls(scopedGames, sc);
 }
-el.innerHTML = _perfEntryCardHTML() + scopeBarHTML + heroHTML + tabBarHTML +
+el.innerHTML = scopeBarHTML + heroHTML + tabBarHTML +
 `<div style="padding:14px;padding-bottom:80px">${tabContent}</div>`;
 
 
@@ -15012,8 +15041,18 @@ _scopeScrollHost.addEventListener('scroll', () => {
 const bar = document.getElementById('stats-scope-bar');
 if (!bar) return;
 bar.classList.toggle('docked', _scopeScrollHost.scrollTop > 24);
+/* v30.153 STA-2: an open filter panel folds away once the page scrolls,
+   without a re-render (which would jump the scroll position). */
+const panel = document.getElementById('stats-scope-panel');
+if (panel && Math.abs(_scopeScrollHost.scrollTop - (_scopeScrollHost._scopeOpenAt || 0)) > 16) {
+panel.remove();
+const tg = bar.querySelector('.scope-toggle');
+if (tg) tg.style.transform = 'rotate(0deg)';
+const _sc = _statsGetScope(); _sc.scopeOpen = false; _statsSaveScope(_sc);
+}
 }, { passive: true });
 }
+if (_scopeScrollHost) _scopeScrollHost._scopeOpenAt = _scopeScrollHost.scrollTop;
 }
  
 function _statsTabOverview(games, core, allStdGames, sc, hasFrames) {
@@ -15739,11 +15778,15 @@ return `<div style="display:grid;grid-template-columns:44px 1fr 40px;gap:8px;
       <div style="text-align:right;font-size:16px;font-weight:800;color:${barColor}">${pct}%</div>
     </div>`;
 }
+/* v30.153 SPR-1: splits grouped into their own section at the bottom */
+const _isSplitE = e => e.lv.LeaveType === 'Split';
+const nonSplits = allLeavesSorted.filter(e => !_isSplitE(e));
+const splitsOnly = allLeavesSorted.filter(_isSplitE);
 const CAP = 20;
-const rows = allLeavesSorted.slice(0, CAP).map(buildLeaveRow).join('');
-const hiddenCount = allLeavesSorted.length - Math.min(CAP, allLeavesSorted.length);
+const rows = nonSplits.slice(0, CAP).map(buildLeaveRow).join('');
+const hiddenCount = nonSplits.length - Math.min(CAP, nonSplits.length);
 
-window._spareDetailAllLeaves = allLeavesSorted;
+window._spareDetailAllLeaves = nonSplits;
 window._spareDetailBuildRow  = buildLeaveRow;
 const loadMoreBtn = hiddenCount > 0
 ? `<button class="btn btn-ghost btn-sm"
@@ -15756,12 +15799,19 @@ const loadMoreBtn = hiddenCount > 0
           btn.remove();
         })(this)">Show ${hiddenCount} more leaves ▾</button>`
 : '';
-return `<div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border1)">
-    <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:1px;
-      text-transform:uppercase;margin-bottom:10px">Leaves (${allLeavesSorted.length})</div>
+const _secHdr = (label, color) => `<div style="font-size:11px;font-weight:700;color:${color};letter-spacing:1px;
+      text-transform:uppercase;margin-bottom:10px">${label}</div>`;
+const splitsHTML = splitsOnly.length
+? `<div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border1)">
+    ${_secHdr(`Splits (${splitsOnly.length})`, 'var(--sedona)')}
+    <div>${splitsOnly.map(buildLeaveRow).join('')}</div>
+  </div>`
+: '';
+return `${nonSplits.length ? `<div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border1)">
+    ${_secHdr(`Leaves (${nonSplits.length})`, 'var(--t3)')}
     <div id="modal-leaves-list">${rows}</div>
     ${loadMoreBtn}
-  </div>`;
+  </div>` : ''}${splitsHTML}`;
 }
 
 
@@ -16383,6 +16433,14 @@ return true;
 });
 }
 
+/* v30.153 DRILL-1: dashboard focus — count stats restrict to qualifying games/series */
+const _focusKey = filter.focus && ldDrillFor(filter.focus) ? filter.focus : null;
+const _focusDrill = _focusKey ? ldDrillFor(_focusKey) : null;
+if (_focusDrill && _focusDrill.kind === 'count') {
+filtered = filtered.filter(g => _focusDrill.unit === 'game'
+? _focusDrill.qualifies(g) : _ldSeriesQualifies(_focusDrill, g.SeriesID));
+}
+const _focusPerRow = !!(_focusDrill && _focusDrill.kind === 'rate' && LD_TILE_META[_focusKey].frameBased && filtered.length <= 150);
 if (filter.sort === 'date-asc') {
 filtered.sort((a, b) => new Date(a.series?.DateBowled || 0) - new Date(b.series?.DateBowled || 0));
 } else if (filter.sort === 'score-desc') {
@@ -16403,7 +16461,17 @@ const avg = scores.length ? (scores.reduce((a,b) => a+b, 0) / scores.length).toF
 const high = scores.length ? Math.max(...scores) : '—';
 const low = scores.length ? Math.min(...scores) : '—';
 
+const _focusMeta = _focusKey ? LD_TILE_META[_focusKey] : null;
+const _focusAgg = _focusKey ? _ldFmtStat(_focusKey, _ldRowForGameIDs(filtered.map(g => g.GameID))) : null;
+const _focusBanner = _focusKey ? `<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;padding:8px 12px;
+      border:1px solid rgba(0,217,217,0.3);background:rgba(0,217,217,0.06);border-radius:12px">
+      <div style="flex:1;min-width:0;font-size:12px;color:var(--t2)">Focus: <b style="color:var(--teal)">${_focusMeta.label}</b>
+        <span style="color:var(--t3)"> · ${_focusDrill.kind === 'count' ? 'qualifying ' + (_focusDrill.unit === 'series' ? 'series' : 'games') + ' only' : 'from League Dashboard'}</span>
+        ${_focusDrill.kind === 'rate' && _focusMeta.frameBased && !_focusPerRow ? `<div style="font-size:10px;color:var(--t3);margin-top:2px">Narrow to 150 games or fewer for per-game values</div>` : ''}</div>
+      <button onclick="setGamesFilter('focus', null)" style="background:none;border:none;color:var(--t3);font-size:18px;cursor:pointer;padding:0 2px">×</button>
+    </div>` : '';
 listEl.innerHTML = `
+    ${_focusBanner}
     <!-- Summary stats for filtered games -->
     <div class="stat-card" style="padding:10px 14px;margin-bottom:12px">
       <div style="display:flex;justify-content:space-between;align-items:center">
@@ -16423,6 +16491,10 @@ listEl.innerHTML = `
           <div style="font-size:11px;color:var(--t3);text-transform:uppercase;letter-spacing:0.5px">Low</div>
           <div style="font-size:18px;font-weight:700;color:rgba(157,78,221,0.65)">${low}</div>
         </div>
+        ${_focusKey ? `<div style="text-align:center;flex:1.2;border-left:1px solid var(--border1)">
+          <div style="font-size:11px;color:var(--teal);text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${_focusMeta.label}</div>
+          <div style="font-size:18px;font-weight:700;color:var(--teal)">${_focusAgg}</div>
+        </div>` : ''}
       </div>
     </div>
 
@@ -16469,6 +16541,7 @@ return `
               </div>
               <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
                 <div style="font-size:26px;font-weight:800;color:${scoreColor};line-height:1">${g.FinalScore}</div>
+                ${_focusPerRow ? `<div style="font-size:11px;font-weight:700;color:var(--teal);background:rgba(0,217,217,0.1);border-radius:999px;padding:1px 7px;white-space:nowrap">${_focusMeta.label} ${_ldFocusGameVal(_focusKey, g.GameID)}</div>` : ''}
                 ${primaryBall ? `<img src="${getBallImgSrc(primaryBall.BallID,'cover')||''}" alt="${primaryBall.BallName}"
                   style="width:28px;height:28px;border-radius:50%;object-fit:cover${getBallImgSrc(primaryBall.BallID,'cover')?'':';display:none'}"
                   onerror="this.style.display='none'">`: ''}
@@ -16567,7 +16640,8 @@ const _o = opts || {};
 const leagueSeries = _o.seriesOverride || db.series.filter(s => s.LeagueID === league.LeagueID);
 const seriesIDSet = new Set(leagueSeries.map(s => s.SeriesID));
 const games = db.games.filter(g =>
-seriesIDSet.has(g.SeriesID) && g.FinalScore != null && g.FinalScore > 0 && !g.IsTeammate && !g.NoTap);
+seriesIDSet.has(g.SeriesID) && g.FinalScore != null && g.FinalScore > 0 && !g.IsTeammate && !g.NoTap
+&& (!_o.gameIDSet || _o.gameIDSet.has(g.GameID)));
 if (!games.length) return null;
 const gameIDs = games.map(g => g.GameID);
 const advStats = calculateAdvancedStats(gameIDs);
@@ -16743,6 +16817,125 @@ count250Games:  { label: '250+ Games',   pick: r => r.count250Games,            
 count600Series: { label: '600+ Series',  pick: r => r.count600Series,                 decimals: 0, heat: false },
 count700Series: { label: '700+ Series',  pick: r => r.count700Series,                 decimals: 0, heat: false }
 };
+/*
+   DASHBOARD DRILL-INS (v30.153, DRILL-1) — decisions locked 2026-09-22.
+   Every dashboard stat routes through ldDrill(key). Three kinds:
+     session — achieved in one sitting (High/Low Game/Series): opens that
+               series' Games list; ties open a picker listing every tie.
+     rate    — average/percentage over the window: opens All Games filtered
+               to the league, with the stat as a "focus" (summary cell plus
+               per-game value). Filters stay editable after landing.
+     count   — tally of qualifying games/series: same as rate, but the list
+               is restricted to the qualifying games/series.
+   Extending: any LD_TILE_META key with no LD_DRILL entry is a rate stat
+   automatically — values come from meta.pick() over a row recomputed for
+   the shown games (_ldRowForGameIDs), so a new tile drills with no extra
+   code. Add an LD_DRILL entry only for session or count semantics.
+   */
+const LD_DRILL = {
+highGame:       { kind: 'session', unit: 'game',   extreme: 'max' },
+lowGame:        { kind: 'session', unit: 'game',   extreme: 'min' },
+highSeries:     { kind: 'session', unit: 'series', extreme: 'max' },
+lowSeries:      { kind: 'session', unit: 'series', extreme: 'min' },
+count250Games:  { kind: 'count', unit: 'game',   qualifies: g => g.FinalScore >= 250 },
+cleanGames:     { kind: 'count', unit: 'game',   qualifies: g => isGameClean(g.GameID) },
+count600Series: { kind: 'count', unit: 'series', qualifies: (tot) => tot > 600 },
+count700Series: { kind: 'count', unit: 'series', qualifies: (tot) => tot >= 700 },
+cleanSeries:    { kind: 'count', unit: 'series', qualifies: (tot, sg) => sg.length > 0 && sg.every(g => isGameClean(g.GameID)) }
+};
+function ldDrillFor(key) {
+if (!key || !LD_TILE_META[key]) return null;
+return LD_DRILL[key] || { kind: 'rate' };
+}
+function _ldStdGame(g) { return g.FinalScore != null && g.FinalScore > 0 && !g.IsTeammate && !g.NoTap; }
+function _ldRowForGameIDs(ids) {
+if (!ids || !ids.length) return null;
+const idSet = new Set(ids);
+const sids = new Set(db.games.filter(g => idSet.has(g.GameID)).map(g => g.SeriesID));
+return _leagueReportComputeRow({ LeagueID: null, LeagueName: '' },
+{ seriesOverride: db.series.filter(s => sids.has(s.SeriesID)), gameIDSet: idSet });
+}
+function _ldFmtStat(key, row) {
+const m = LD_TILE_META[key];
+if (!m || !row) return '—';
+const v = m.pick(row);
+if (v == null || !isFinite(v)) return '—';
+return v.toFixed(m.decimals != null ? m.decimals : 0) + (m.suffix || '');
+}
+function _ldSeriesQualifies(d, seriesID) {
+const sg = db.games.filter(g => g.SeriesID === seriesID && _ldStdGame(g));
+return d.qualifies(sg.reduce((a, g) => a + g.FinalScore, 0), sg);
+}
+let _ldLpTimer = null, _ldLpFired = false;
+function _ldLpStart(key) {
+_ldLpFired = false; clearTimeout(_ldLpTimer);
+_ldLpTimer = setTimeout(() => { _ldLpFired = true; openHeatInspector(key); }, 550);
+}
+function _ldLpEnd() { clearTimeout(_ldLpTimer); }
+function ldDrill(key) {
+if (_ldLpFired) { _ldLpFired = false; return; }
+const d = ldDrillFor(key);
+const league = db.leagues.find(l => l.LeagueID === _ldCurrentLeagueID);
+if (!d || !league) return;
+if (d.kind === 'session') { _ldDrillSession(d, league); return; }
+_ldFocusCache.clear();
+window._gamesFilter = { league: league.LeagueID, center: 'all', sort: 'date-desc', lane: '',
+dateFrom: '', dateTo: '', focus: key };
+navTo('s-games');
+}
+function _ldDrillSession(d, league) {
+const sids = new Set(db.series.filter(s => s.LeagueID === league.LeagueID).map(s => s.SeriesID));
+const games = db.games.filter(g => sids.has(g.SeriesID) && _ldStdGame(g));
+if (!games.length) return;
+let cands = [];
+if (d.unit === 'game') {
+const vals = games.map(g => g.FinalScore);
+const target = d.extreme === 'max' ? Math.max(...vals) : Math.min(...vals);
+games.filter(g => g.FinalScore === target).forEach(g => {
+const ex = cands.find(c => c.seriesID === g.SeriesID);
+if (ex) ex.games.push(g.GameNumber); else cands.push({ seriesID: g.SeriesID, score: target, games: [g.GameNumber] });
+});
+} else {
+const tot = {};
+games.forEach(g => { tot[g.SeriesID] = (tot[g.SeriesID] || 0) + g.FinalScore; });
+const vals = Object.values(tot);
+const target = d.extreme === 'max' ? Math.max(...vals) : Math.min(...vals);
+cands = Object.keys(tot).filter(k => tot[k] === target).map(k => ({ seriesID: +k, score: target, games: [] }));
+}
+if (cands.length === 1) { _ldOpenSeries(cands[0].seriesID); return; }
+const rows = cands.map(c => {
+const s = db.series.find(x => x.SeriesID === c.seriesID);
+const ctr = s ? db.centers.find(x => x.CenterID === s.CenterID) : null;
+const dt = s?.DateBowled ? fmtDate(s.DateBowled, { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
+return `<div class="list-row" style="padding:12px 14px;display:flex;justify-content:space-between;align-items:center"
+      onclick="closeModal();_ldOpenSeries(${c.seriesID})">
+      <div style="min-width:0"><div style="font-size:14px;font-weight:600;color:var(--t1)">${dt}${c.games.length ? ' · G' + c.games.join(', G') : ''}</div>
+      <div style="font-size:11px;color:var(--t3);margin-top:2px">${ctr ? _escHtml(ctr.CenterName) : ''}</div></div>
+      <div style="font-size:20px;font-weight:800;color:var(--teal)">${c.score}</div></div>`;
+}).join('');
+openModal(`<div class="modal-title">${cands.length} tied at ${cands[0].score}</div>
+    <div style="font-size:12px;color:var(--t3);margin-bottom:10px">Pick a series to open</div>
+    <div style="border:1px solid var(--border1);border-radius:12px;overflow:hidden">${rows}</div>
+    <button class="btn btn-secondary" onclick="closeModal()" style="margin-top:14px;width:100%">Cancel</button>`);
+}
+function _ldOpenSeries(seriesID) {
+const s = db.series.find(x => x.SeriesID === seriesID);
+if (!s) return;
+G.leagueID = s.LeagueID;
+G.seriesID = seriesID;
+G.gameID = null;
+navTo('s-game-select');
+}
+const _ldFocusCache = new Map();
+function _ldFocusGameVal(key, gameID) {
+const ck = key + ':' + gameID;
+if (!_ldFocusCache.has(ck)) {
+const m = LD_TILE_META[key];
+const hasFrames = db.frames.some(f => f.GameID === gameID);
+_ldFocusCache.set(ck, (m && m.frameBased && !hasFrames) ? '—' : _ldFmtStat(key, _ldRowForGameIDs([gameID])));
+}
+return _ldFocusCache.get(ck);
+}
 /*
    DYNAMIC STAT HEAT MAP (v30.132) — decisions locked 2026-09-06
    Q1 ten decile bands · Q2 robust p10..p90, clamped · Q3 on-palette AND
@@ -17391,7 +17584,8 @@ deltaHTML = `<div style="display:inline-flex;align-items:center;gap:3px;font-siz
 
 
 if (size === 'hero') {
-return `<div style="text-align:left">
+const heroTap = !!(opts.statKey && ldDrillFor(opts.statKey));
+return `<div style="text-align:left${heroTap ? ';cursor:pointer' : ''}"${heroTap ? ` onclick="ldDrill('${opts.statKey}')"` : ''}>
       <div style="font-size:${valPx}px;font-weight:800;color:var(--t1);
         font-variant-numeric:tabular-nums;letter-spacing:-1.5px;line-height:1">${curVal.toFixed(decimals)}${suffix}</div>
       <div style="font-size:${labPx}px;color:var(--t2);margin-top:3px;white-space:nowrap">${label}</div>
@@ -17420,8 +17614,9 @@ tileBorder = good ? 'rgba(0,217,217,0.28)': 'rgba(232,93,76,0.26)';
 tileBg     = good ? 'rgba(0,217,217,0.045)': 'rgba(232,93,76,0.04)';
 }
 }
-const tap = !!(opts.statKey && heatStyle);
-return `<div${tap ? ` onclick="openHeatInspector('${opts.statKey}')"`: ''}
+const tap = !!(opts.statKey && ldDrillFor(opts.statKey));
+const lp = !!(tap && heatStyle);
+return `<div${tap ? ` onclick="ldDrill('${opts.statKey}')"`: ''}${lp ? ` ontouchstart="_ldLpStart('${opts.statKey}')" ontouchend="_ldLpEnd()" ontouchmove="_ldLpEnd()" oncontextmenu="event.preventDefault()"`: ''}
       style="text-align:center;min-width:0;border:1px solid ${tileBorder};
       background:${tileBg};border-radius:11px;padding:9px 6px 8px${tap ? ';cursor:pointer': ''}">
     <div style="font-size:${valPx}px;font-weight:900;color:var(--t1);
@@ -17746,7 +17941,7 @@ const _spark = _trend.length >= 2
 const heroRow = `<div class="stat-card ld-hero" style="margin-bottom:10px">
     <div style="display:flex;align-items:stretch;gap:12px">
       <div style="flex:0 0 40%;min-width:0;display:flex;flex-direction:column;justify-content:center">
-        ${_ldDeltaChip('Average', row.avg, cmpRow ? cmpRow.avg : null, { size: 'hero', decimals: 0 })}
+        ${_ldDeltaChip('Average', row.avg, cmpRow ? cmpRow.avg : null, { size: 'hero', decimals: 0, statKey: 'avg' })}
         ${cmpRow ? `<div style="font-size:10px;color:var(--t3);margin-top:4px">${activeIsGlobal ? 'vs all leagues': 'vs last season'}</div>`: ''}
       </div>
       <div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center">
@@ -17782,10 +17977,10 @@ return heatBandFor(val, ldHeatScaleFor(league, _heatMode, key), !!meta.invert);
 
 const extremesRow = `<div class="stat-card ld-accent" style="margin-bottom:10px">
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:7px">
-      ${_ldDeltaChip('High Game', row.highGame, cmpRow ? cmpRow.highGame : null)}
-      ${_ldDeltaChip('High Series', row.highSeries, cmpRow ? cmpRow.highSeries : null)}
-      ${_ldDeltaChip('Low Game', row.lowGame, cmpRow ? cmpRow.lowGame : null)}
-      ${_ldDeltaChip('Low Series', row.lowSeries, cmpRow ? cmpRow.lowSeries : null)}
+      ${_ldDeltaChip('High Game', row.highGame, cmpRow ? cmpRow.highGame : null, { statKey: 'highGame' })}
+      ${_ldDeltaChip('High Series', row.highSeries, cmpRow ? cmpRow.highSeries : null, { statKey: 'highSeries' })}
+      ${_ldDeltaChip('Low Game', row.lowGame, cmpRow ? cmpRow.lowGame : null, { statKey: 'lowGame' })}
+      ${_ldDeltaChip('Low Series', row.lowSeries, cmpRow ? cmpRow.lowSeries : null, { statKey: 'lowSeries' })}
     </div>
   </div>`;
 
@@ -18611,7 +18806,7 @@ if (g.FinalScore!=null) return buildScoreRingBadge({ arcColor:openArcColor, scor
 const anyAtt = db.attempts?.some(a=>a.GameID===g.GameID&&a.Pinfall!=null);
 if (anyAtt) {
 const cur = (db.frames||[]).filter(f=>f.GameID===g.GameID)
-.reduce((acc,f)=>acc+(f.RunningTotal||0),0);
+.reduce((acc,f)=>Math.max(acc,f.RunningTotal||0),0);
 return buildScoreRingBadge({ arcColor:openArcColor, score:cur||0, inprog:true });
 }
 return buildScoreRingBadge({ arcColor:openArcColor, empty:true });
@@ -19077,7 +19272,7 @@ const hasFrames = db.frames.some(f=>f.GameID===g.GameID);
 return buildScoreRingBadge({ arcColor:tournArcColor, score:g.FinalScore, hasFrames, gameID:g.GameID, seriesID:s.SeriesID, gameNum:i+1 });
 }
 if (db.attempts.some(a=>a.GameID===g.GameID&&a.Pinfall!=null)) {
-const cur = db.frames.filter(f=>f.GameID===g.GameID).reduce((acc,f)=>acc+(f.RunningTotal||0),0);
+const cur = db.frames.filter(f=>f.GameID===g.GameID).reduce((acc,f)=>Math.max(acc,f.RunningTotal||0),0);
 return buildScoreRingBadge({ arcColor:tournArcColor, score:cur||0, inprog:true });
 }
 return '';
@@ -22560,8 +22755,7 @@ html += '<div class="sc-frame"><div class="sc-fn">'+fr+'</div>';
 html += '<div class="sc-bsk'+(isF10?' f10':'')+'">';
 if (atts.length) {
 if (isF10) {
-var tiny = atts.length >= 2;
-atts.forEach(function(a){ html += bskTriangleHTML(a.bsk, tiny) || ''; });
+atts.forEach(function(a){ html += '<div class="f10-cell">' + (bskTriangleHTML(a.bsk, false) || '') + '</div>'; });
 } else {
 var shown = atts.length > 1 ? atts[1] : atts[0];
 html += bskTriangleHTML(shown.bsk, false) || '<div style="height:24px"></div>';
@@ -26092,7 +26286,7 @@ meta: {
 kind: 'bowlingdb-snapshot',
 snapshotVersion: 1,
 exportDate: new Date().toISOString(),
-exportSource: 'BowlingDB PWA v30.152',
+exportSource: 'BowlingDB PWA v30.153',
 includesBallImages: !!includeBallImages,
 excluded: Array.from(SNAPSHOT_LS_SKIP)
 },
@@ -29834,7 +30028,7 @@ return buildScoreRingBadge({ arcColor:ntArcColor, score:g.FinalScore, hasFrames 
 const anyAttempt = db.attempts.some(a=>a.GameID===g.GameID&&a.Pinfall!=null);
 if (anyAttempt) {
 const inprogScore = db.frames.filter(f=>f.GameID===g.GameID)
-.reduce((acc,f)=>acc+(f.RunningTotal||0),0) ||
+.reduce((acc,f)=>Math.max(acc,f.RunningTotal||0),0) ||
 db.attempts.filter(a=>a.GameID===g.GameID&&a.Pinfall!=null).reduce((acc,a)=>acc+a.Pinfall,0);
 return buildScoreRingBadge({ arcColor:ntArcColor, score:inprogScore||0, inprog:true });
 }
