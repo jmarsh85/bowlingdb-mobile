@@ -1658,7 +1658,15 @@ font-size:10px; font-weight:700; color:var(--t3);
 letter-spacing:0.8px; text-transform:uppercase;
 margin-bottom:6px;
 }
-.mini-sc-scroll { overflow-x:auto; -webkit-overflow-scrolling:touch; max-width:100%; overscroll-behavior-x:contain; }
+.mini-sc-scroll { display:block; width:100%; min-width:0; max-width:100%; overflow-x:auto; overflow-y:hidden;
+-webkit-overflow-scrolling:touch; overscroll-behavior-x:contain; touch-action:pan-x pan-y; }
+/* v30.153 SC-3: the card's :active scale transform re-layers the card mid-gesture on iOS
+   WebKit, which cancels the nested horizontal scroll before it starts. Suppress it
+   while the touch is inside the scorecard. */
+.series-card.sc-touching, .series-card.sc-touching:active { transform:none !important; background:var(--bg2) !important; transition:none !important; }
+.mini-sc-grid .sc-frame, .mini-sc-grid .sc-frame:active { background:var(--bg1) !important; cursor:default; transition:none; }
+.series-mini-sc { -webkit-tap-highlight-color:transparent; }
+.series-mini-sc, .series-mini-sc * { -webkit-user-select:none; user-select:none; }
 .mini-sc-grid {
 display:grid;
 grid-template-columns:repeat(9,30px) minmax(30px,auto);
@@ -6954,7 +6962,7 @@ return `<div style="padding:7px 2px 4px;border-top:1px solid var(--border1);marg
           </div>`;
 })() : ''}
         <div class="series-games">${badges}${emptyBadges}</div>
-        <div class="series-mini-sc" id="mini-sc-${s.SeriesID}"></div>
+        <div class="series-mini-sc" id="mini-sc-${s.SeriesID}" onclick="event.stopPropagation()"></div>
       </div>
       <div class="series-card-actions">
         <div class="sc-act-btn stats-btn" onclick="openSeriesStatsModal(${s.SeriesID});event.stopPropagation()">📊 Stats</div>
@@ -7060,9 +7068,23 @@ return;
 selectSeries(seriesID);
 }
  
+/* v30.153 SC-4: while a finger is on the scorecard, freeze the parent card's press
+   state (scale/highlight) so the nested horizontal scroll isn't cancelled. */
+function _miniScBindTouch(wrap) {
+if (wrap._scTouchBound) return;
+wrap._scTouchBound = true;
+const card = wrap.closest('.series-card');
+if (!card) return;
+const on  = () => card.classList.add('sc-touching');
+const off = () => setTimeout(() => card.classList.remove('sc-touching'), 60);
+wrap.addEventListener('touchstart', on,  { passive: true });
+wrap.addEventListener('touchend',   off, { passive: true });
+wrap.addEventListener('touchcancel',off, { passive: true });
+}
 function toggleMiniScorecard(seriesID, gameID, gameNum) {
 const wrap = document.getElementById(`mini-sc-${seriesID}`);
 if (!wrap) return;
+_miniScBindTouch(wrap);
 
 if (wrap.classList.contains('open') && wrap.dataset.gameID == gameID) {
 wrap.classList.remove('open');
@@ -19296,7 +19318,7 @@ return `<div class="series-card-wrap">
           <span class="series-total">${total||'...'}</span>
         </div>
         <div class="series-games">${badges}${emptyBadges}</div>
-        <div class="series-mini-sc" id="mini-sc-${s.SeriesID}"></div>
+        <div class="series-mini-sc" id="mini-sc-${s.SeriesID}" onclick="event.stopPropagation()"></div>
       </div>
       <div class="series-card-actions">
         <div class="sc-act-btn stats-btn" onclick="openSeriesStatsModal(${s.SeriesID});event.stopPropagation()">📊 Stats</div>
