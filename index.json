@@ -15949,6 +15949,15 @@
  },
  {
   "c": null,
+  "i": "brunswick-team-brunswick",
+  "k": "brunswick|teambrunswick",
+  "m": "Brunswick",
+  "n": "Team Brunswick",
+  "t": false,
+  "y": "2026"
+ },
+ {
+  "c": null,
   "i": "brunswick-tenacity",
   "k": "brunswick|tenacity",
   "m": "Brunswick",
@@ -16385,6 +16394,15 @@
   "k": "brunswick|vaporizesepurplepearl",
   "m": "Brunswick",
   "n": "Vaporize S.E. Purple Pearl",
+  "t": false,
+  "y": "2026"
+ },
+ {
+  "c": null,
+  "i": "brunswick-vaporize-x",
+  "k": "brunswick|vaporizex",
+  "m": "Brunswick",
+  "n": "Vaporize X",
   "t": false,
   "y": "2026"
  },
@@ -34669,6 +34687,15 @@
  },
  {
   "c": null,
+  "i": "hammer-black-widow-3-0-ruby",
+  "k": "hammer|blackwidow30ruby",
+  "m": "Hammer",
+  "n": "Black Widow 3.0 Ruby",
+  "t": false,
+  "y": "2026"
+ },
+ {
+  "c": null,
   "i": "hammer-black-widow-3-0-silver-pearl",
   "k": "hammer|blackwidow30silverpearl",
   "m": "Hammer",
@@ -46492,6 +46519,15 @@
   "n": "Raptor P7",
   "t": false,
   "y": "2011"
+ },
+ {
+  "c": null,
+  "i": "motiv-raptor-pursuit",
+  "k": "motiv|raptorpursuit",
+  "m": "Motiv",
+  "n": "Raptor (Pursuit)",
+  "t": false,
+  "y": "2026"
  },
  {
   "c": null,
@@ -60121,12 +60157,30 @@
  },
  {
   "c": null,
+  "i": "storm-ion-max-veil",
+  "k": "storm|ionmaxveil",
+  "m": "Storm",
+  "n": "Ion Max (Veil)",
+  "t": false,
+  "y": "2026"
+ },
+ {
+  "c": null,
   "i": "storm-ion-pro",
   "k": "storm|ionpro",
   "m": "Storm",
   "n": "Ion Pro",
   "t": false,
   "y": "2024"
+ },
+ {
+  "c": null,
+  "i": "storm-ion-pro-pearl-ptlp",
+  "k": "storm|ionpropearlptlp",
+  "m": "Storm",
+  "n": "Ion Pro Pearl PTLP",
+  "t": false,
+  "y": "2026"
  },
  {
   "c": null,
@@ -62395,6 +62449,15 @@
   "n": "!Q 300",
   "t": false,
   "y": "2012"
+ },
+ {
+  "c": null,
+  "i": "storm-q-focus",
+  "k": "storm|qfocus",
+  "m": "Storm",
+  "n": "!Q Focus",
+  "t": false,
+  "y": "2026"
  },
  {
   "c": null,

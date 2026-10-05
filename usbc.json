@@ -1,6 +1,6 @@
 {
  "Counts": {
-  "approved": 8039
+  "approved": 8046
  },
  "Eligibility": {
   "3g-galaxy-black": {
@@ -7091,6 +7091,10 @@
    "NoSlowOil": false,
    "SlowOil78D": false
   },
+  "brunswick-team-brunswick": {
+   "NoSlowOil": false,
+   "SlowOil78D": false
+  },
   "brunswick-tenacity": {
    "NoSlowOil": false,
    "SlowOil78D": false
@@ -7284,6 +7288,10 @@
    "SlowOil78D": false
   },
   "brunswick-vaporize-s-e-purple-pearl": {
+   "NoSlowOil": false,
+   "SlowOil78D": false
+  },
+  "brunswick-vaporize-x": {
    "NoSlowOil": false,
    "SlowOil78D": false
   },
@@ -15411,6 +15419,10 @@
    "NoSlowOil": false,
    "SlowOil78D": false
   },
+  "hammer-black-widow-3-0-ruby": {
+   "NoSlowOil": false,
+   "SlowOil78D": false
+  },
   "hammer-black-widow-3-0-silver-pearl": {
    "NoSlowOil": false,
    "SlowOil78D": false
@@ -20664,6 +20676,10 @@
    "SlowOil78D": false
   },
   "motiv-raptor-p7": {
+   "NoSlowOil": false,
+   "SlowOil78D": false
+  },
+  "motiv-raptor-pursuit": {
    "NoSlowOil": false,
    "SlowOil78D": false
   },
@@ -26723,7 +26739,15 @@
    "NoSlowOil": false,
    "SlowOil78D": false
   },
+  "storm-ion-max-veil": {
+   "NoSlowOil": false,
+   "SlowOil78D": false
+  },
   "storm-ion-pro": {
+   "NoSlowOil": false,
+   "SlowOil78D": false
+  },
+  "storm-ion-pro-pearl-ptlp": {
    "NoSlowOil": false,
    "SlowOil78D": false
   },
@@ -27732,6 +27756,10 @@
    "SlowOil78D": false
   },
   "storm-q-300": {
+   "NoSlowOil": false,
+   "SlowOil78D": false
+  },
+  "storm-q-focus": {
    "NoSlowOil": false,
    "SlowOil78D": false
   },
@@ -32160,5 +32188,5 @@
    "SlowOil78D": false
   }
  },
- "ListVersion": "2026-09-28"
+ "ListVersion": "2026-10-05"
 }
