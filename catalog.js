@@ -1,5 +1,5 @@
 /* =====================================================================
-   BowlingDB catalog.js  -  NEW-11 Ball Catalog, step 4: manifest + cache
+   BowlingDB catalog.js  -  NEW-11 Ball Catalog, steps 4-5: cache + picker
    Same-origin module loaded after index.html's main script, like
    devkit.js and report.js.
 
@@ -27,6 +27,8 @@
    more than 5% versus the installed catalog.
 
    Public (window): catCheck(opts), catLoad(), catStatus(), catClear()
+   Step 5: catPickerMount(b), catPickValue(), catLinkLabel(b), catReviewOpen(),
+           catLookup(mfg,name), catSearch(q,n)  (+ inline handlers)
    ===================================================================== */
 (function (root) {
 'use strict';
@@ -233,6 +235,289 @@ function catClear() {
     rq.onerror = rq.onblocked = function () { resolve(false); };
   });
 }
+
+/* =====================================================================
+   STEP 5 (v30.157): matcher, picker, link status, legacy-link review.
+   Locked: picker on Add Ball and Edit Ball; legacy linking ALWAYS asks
+   (no auto-link, no link-all); offline/no-catalog leaves manual entry
+   unchanged. CatalogID on the owned ball is nullable; absent == unlinked.
+
+   Prefill rule: on Add, choosing a catalog entry fills Ball Name and
+   Manufacturer with USBC's spelling (an explicit user choice on an empty
+   form). On Edit, choosing only links: the user's own name/mfg text is
+   never overwritten. The index carries no specs and USBC approval year
+   is not a release date, so nothing else is prefilled.
+   ===================================================================== */
+
+/* ---- Normalizer: VERBATIM port of catalog/normalize.js (modelKey path).
+   catalog_test.js asserts parity on all 8,046 index rows. Keep in sync. */
+var MFG_ALIASES = {
+  track: 'Track Inc.', trackinc: 'Track Inc.', columbia: 'Columbia 300',
+  columbia300: 'Columbia 300', rotogrip: 'Roto Grip', '900global': '900 Global',
+  storm: 'Storm', brunswick: 'Brunswick', hammer: 'Hammer', radical: 'Radical',
+  motiv: 'Motiv', dv8: 'DV8', ebonite: 'Ebonite',
+};
+var NAME_ALIASES = { 'storm|hyroad': 'Hy-Road', 'brunswick|tzone': 'T Zone' };
+var TRANSLIT = [
+  [/\u00b2/g, '2'], [/\u00b3/g, '3'], [/\u00b9/g, '1'],
+  [/[\u221e\ua70f]/g, 'eight'],
+  [/\u03a0|\u03c0/g, 'pi'], [/\u03a9/g, 'omega'],
+  [/\+/g, 'plus'], [/&/g, 'and'], [/\u2192|\u2190/g, 'to'],
+];
+function norm(s) {
+  if (s == null) return '';
+  var out = String(s);
+  for (var i = 0; i < TRANSLIT.length; i++) out = out.replace(TRANSLIT[i][0], TRANSLIT[i][1]);
+  return out.toLowerCase().replace(/\(all colors?\)/g, '').replace(/[^a-z0-9]/g, '');
+}
+function canonicalMfg(raw) {
+  return MFG_ALIASES[norm(raw)] || String(raw == null ? '' : raw).trim();
+}
+function modelKey(mfg, ballName) {
+  var m = norm(canonicalMfg(mfg));
+  var name = String(ballName == null ? '' : ballName).trim().replace(/^\*+\s*/, '').trim();
+  var aliased = NAME_ALIASES[m + '|' + norm(name)];
+  return m + '|' + norm(aliased || name);
+}
+
+/* ---- lookups over the loaded index ---- */
+var _byK = null, _byI = null;
+function ensureMaps(rows) {
+  if (_byK && _byK._src === rows) return;
+  _byK = new Map(); _byI = new Map(); _byK._src = rows;
+  for (var i = 0; i < rows.length; i++) {
+    var r = rows[i];
+    if (!_byK.has(r.k)) _byK.set(r.k, []);
+    _byK.get(r.k).push(r);
+    _byI.set(r.i, r);
+  }
+}
+/* -> { status:'match'|'ambiguous'|'miss', candidates } (exact ModelKey only) */
+function lookupIn(rows, mfg, name) {
+  ensureMaps(rows);
+  var hits = _byK.get(modelKey(mfg, name)) || [];
+  return { status: hits.length === 1 ? 'match' : hits.length ? 'ambiguous' : 'miss', candidates: hits };
+}
+function byIdIn(rows, id) { ensureMaps(rows); return id ? (_byI.get(id) || null) : null; }
+
+/* Search: every query token must appear in norm(mfg)+norm(name).
+   Rank: name starts with first token, then shorter name, then newer. */
+function searchIn(rows, q, limit) {
+  var toks = String(q || '').split(/\s+/).map(norm).filter(Boolean);
+  if (!toks.length || toks.join('').length < 2) return [];
+  var out = [];
+  for (var i = 0; i < rows.length; i++) {
+    var r = rows[i];
+    var hay = r._h || (r._h = norm(r.m) + '|' + norm(r.n));
+    var okAll = true;
+    for (var j = 0; j < toks.length; j++) if (hay.indexOf(toks[j]) < 0) { okAll = false; break; }
+    if (okAll) out.push(r);
+  }
+  var t0 = toks[0];
+  out.sort(function (a, b) {
+    var sa = norm(a.n).indexOf(t0) === 0 ? 0 : 1, sb = norm(b.n).indexOf(t0) === 0 ? 0 : 1;
+    if (sa !== sb) return sa - sb;
+    if (a.n.length !== b.n.length) return a.n.length - b.n.length;
+    return (b.y || '').localeCompare(a.y || '');
+  });
+  return out.slice(0, limit || 25);
+}
+
+/* Legacy-link review model. Pure. */
+function reviewModel(balls, rows, skips) {
+  var skip = {}; (skips || []).forEach(function (id) { skip[id] = 1; });
+  var suggest = [], ambiguous = [], miss = [], linked = 0, skipped = 0;
+  (balls || []).forEach(function (b) {
+    if (b.CatalogID) { linked++; return; }
+    if (skip[b.BallID]) { skipped++; return; }
+    var L = lookupIn(rows, b.MFG, b.BallName);
+    if (L.status === 'match') suggest.push({ ball: b, entry: L.candidates[0] });
+    else if (L.status === 'ambiguous') ambiguous.push({ ball: b, candidates: L.candidates });
+    else miss.push({ ball: b });
+  });
+  return { suggest: suggest, ambiguous: ambiguous, miss: miss, linked: linked, skipped: skipped };
+}
+
+/* ---- presentation helpers ---- */
+function esc(v) {
+  return String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+function entryLine(e) {
+  var tags = [];
+  if (e.y) tags.push('USBC ' + e.y);
+  if (/-u13$/.test(e.i)) tags.push('under 13 lb');
+  return '<b>' + esc(e.m) + '</b> ' + esc(e.n) +
+    (tags.length ? ' <span style="color:var(--t3);font-size:11px">· ' + esc(tags.join(' · ')) + '</span>' : '');
+}
+var BTN = 'padding:6px 10px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;';
+var BTN_P = BTN + 'background:rgba(0,217,217,0.12);color:var(--teal);border:1px solid rgba(0,217,217,0.3);';
+var BTN_G = BTN + 'background:var(--bg3);color:var(--t2);border:1px solid var(--border1);';
+var LS_SKIPS = 'bowlingdb_catalog_skips';
+function readSkips() { try { return JSON.parse(env.ls().getItem(LS_SKIPS) || '[]') || []; } catch (e) { return []; } }
+function writeSkips(a) { try { env.ls().setItem(LS_SKIPS, JSON.stringify(a)); } catch (e) {} }
+
+/* ---- picker (lives at the top of the ball edit form) ---- */
+var _pick = { ball: null, isNew: true, touched: false, id: null };
+
+/* Only meaningful while this picker is on screen: a stale pick from an
+   earlier form must never be applied to a different ball. */
+function catPickValue() {
+  var live = typeof document !== 'undefined' && !!document.getElementById('cat-pick-group');
+  return { touched: live && _pick.touched, id: _pick.id };
+}
+
+function pickerBodyHTML(rows) {
+  if (!rows.length) {
+    return '<div style="font-size:12px;color:var(--t3);line-height:1.5">Catalog not downloaded yet. ' +
+      'Enter details below as usual, or download it in Settings → Ball Catalog.</div>';
+  }
+  var cur = byIdIn(rows, _pick.id);
+  if (_pick.id) {
+    return '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">' +
+      '<div style="flex:1;min-width:0;font-size:13px;color:var(--t1)">✓ ' +
+        (cur ? entryLine(cur) : '<span style="color:var(--t3)">' + esc(_pick.id) + ' (not in current catalog)</span>') + '</div>' +
+      '<button style="' + BTN_G + '" onclick="catUnlink()">Unlink</button></div>';
+  }
+  var sug = '';
+  if (!_pick.isNew && _pick.ball) {
+    var L = lookupIn(rows, _pick.ball.MFG, _pick.ball.BallName);
+    if (L.status === 'match') {
+      sug = '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;padding:8px;border-radius:9px;background:var(--bg3)">' +
+        '<div style="flex:1;min-width:0;font-size:12px;color:var(--t2)">Suggested: ' + entryLine(L.candidates[0]) + '</div>' +
+        '<button style="' + BTN_P + '" onclick="catPick(\'' + esc(L.candidates[0].i) + '\')">Link</button></div>';
+    }
+  }
+  return sug +
+    '<input class="bdet-field-input" id="cat-pick-q" type="search" placeholder="Search USBC list, e.g. storm hy-road"' +
+    ' autocomplete="off" autocorrect="off" autocapitalize="off" oninput="catPickerSearch(this.value)">' +
+    '<div id="cat-pick-results" style="margin-top:6px"></div>';
+}
+
+function resultsHTML(list, q) {
+  if (!q || q.replace(/\s/g, '').length < 2) return '';
+  if (!list.length) return '<div style="font-size:12px;color:var(--t3);padding:4px 2px">No match in the USBC list. Enter details below as usual.</div>';
+  return list.map(function (e) {
+    return '<div onclick="catPick(\'' + esc(e.i) + '\')" style="padding:8px 6px;border-bottom:1px solid var(--border1);font-size:13px;color:var(--t1);cursor:pointer">' +
+      entryLine(e) + '</div>';
+  }).join('');
+}
+
+function renderPicker() {
+  var body = document.getElementById('cat-pick-body');
+  if (!body) return;
+  catLoad().then(function (rows) { body.innerHTML = pickerBodyHTML(rows); });
+}
+
+/* Called by index.html right after the edit form renders. b is null on Add. */
+function catPickerMount(b) {
+  var pane = document.getElementById('bdet-pane-specs');
+  if (!pane || document.getElementById('cat-pick-group')) return;
+  _pick = { ball: b || null, isNew: !b, touched: false, id: (b && b.CatalogID) || null };
+  var g = document.createElement('div');
+  g.className = 'bdet-field-group';
+  g.id = 'cat-pick-group';
+  g.innerHTML = '<div class="bdet-field-label">USBC Catalog</div><div id="cat-pick-body"></div>';
+  pane.insertBefore(g, pane.firstChild);
+  renderPicker();
+}
+
+function catPickerSearch(q) {
+  var box = document.getElementById('cat-pick-results');
+  if (!box) return;
+  catLoad().then(function (rows) { box.innerHTML = resultsHTML(searchIn(rows, q, 25), q); });
+}
+
+function catPick(id) {
+  catLoad().then(function (rows) {
+    var e = byIdIn(rows, id);
+    if (!e) return;
+    _pick.touched = true; _pick.id = e.i;
+    if (_pick.isNew) {
+      var n = document.getElementById('bef-name'), m = document.getElementById('bef-mfg');
+      if (n) n.value = e.n;
+      if (m) m.value = e.m;
+    }
+    renderPicker();
+  });
+}
+
+function catUnlink() { _pick.touched = true; _pick.id = null; renderPicker(); }
+
+/* Read-view label for Ball Detail. Sync placeholder, filled after load. */
+function catLinkLabel(b) {
+  if (!b || !b.CatalogID) return '<span style="color:var(--t3)">Not linked</span>';
+  var slot = 'cat-lbl-' + String(b.BallID).replace(/[^0-9a-z_-]/gi, '');
+  catLoad().then(function (rows) {
+    var el = document.getElementById(slot);
+    if (!el) return;
+    var e = byIdIn(rows, b.CatalogID);
+    el.innerHTML = e ? entryLine(e) : (rows.length ? 'Linked (not in current catalog)' : 'Linked');
+  });
+  return '<span id="' + slot + '">Linked</span>';
+}
+
+/* ---- legacy-link review (modal, from Settings) ---- */
+/* index.html declares `let db` (global lexical, not a window property),
+   so it is reached by bare name, like report.js does. */
+function appBalls() {
+  try { return (typeof db !== 'undefined' && db && db.balls) || []; } catch (e) { return []; }
+}
+function reviewHTML(model) {
+  var h = '<div style="font-size:16px;font-weight:700;color:var(--t1);margin-bottom:4px">Suggested catalog matches</div>' +
+    '<div style="font-size:12px;color:var(--t3);margin-bottom:12px;line-height:1.5">Exact name matches against the USBC list. ' +
+    'Check each one is the right generation before linking; nothing is linked automatically. Your own ball names are not changed.</div>';
+  if (!model.suggest.length) h += '<div style="font-size:13px;color:var(--t2);margin-bottom:10px">No suggestions waiting.</div>';
+  model.suggest.forEach(function (s) {
+    var b = s.ball;
+    h += '<div style="padding:10px 0;border-bottom:1px solid var(--border1)">' +
+      '<div style="font-size:12px;color:var(--t3)">Your ball: ' + esc(b.MFG) + ' · ' + esc(b.BallName) +
+        (b.DateReleased ? ' · ' + esc(String(b.DateReleased).slice(0, 10)) : '') + (b.Archived ? ' · archived' : '') + '</div>' +
+      '<div style="font-size:13px;color:var(--t1);margin:3px 0 6px">→ ' + entryLine(s.entry) + '</div>' +
+      '<div style="display:flex;gap:6px"><button style="' + BTN_P + 'flex:1" onclick="catReviewLink(' + Number(b.BallID) + ',\'' + esc(s.entry.i) + '\')">Link</button>' +
+      '<button style="' + BTN_G + '" onclick="catReviewSkip(' + Number(b.BallID) + ')">Skip</button></div></div>';
+  });
+  var notes = [];
+  if (model.ambiguous.length) notes.push(model.ambiguous.length + ' with several possible matches (link from Edit Ball)');
+  if (model.miss.length) notes.push(model.miss.length + ' with no catalog match: ' + model.miss.map(function (x) { return esc(x.ball.BallName); }).join(', '));
+  if (model.linked) notes.push(model.linked + ' already linked');
+  if (model.skipped) notes.push(model.skipped + ' skipped (<span style="color:var(--teal);cursor:pointer" onclick="catReviewResetSkips()">show again</span>)');
+  if (notes.length) h += '<div style="font-size:11px;color:var(--t3);margin-top:10px;line-height:1.6">' + notes.join('<br>') + '</div>';
+  h += '<button class="btn btn-secondary" style="margin-top:12px" onclick="closeModal()">Done</button>';
+  return h;
+}
+
+function catReviewOpen() {
+  catLoad().then(function (rows) {
+    if (!rows.length) { if (root.toast) root.toast('Download the catalog first (Check for updates)'); return; }
+    var balls = appBalls();
+    var html = reviewHTML(reviewModel(balls, rows, readSkips()));
+    if (document.getElementById('modal-bg') && document.getElementById('modal-bg').classList.contains('open') && root.swapModal) root.swapModal(html);
+    else if (root.openModal) root.openModal(html);
+  });
+}
+function catReviewLink(ballID, id) {
+  var b = appBalls().find(function (x) { return x.BallID == ballID; });
+  if (!b) return;
+  b.CatalogID = id;
+  if (root.saveDB) root.saveDB();
+  catReviewOpen();
+}
+function catReviewSkip(ballID) {
+  var s = readSkips(); if (s.indexOf(ballID) < 0) s.push(ballID); writeSkips(s); catReviewOpen();
+}
+function catReviewResetSkips() { writeSkips([]); catReviewOpen(); }
+
+root.catPickerMount = catPickerMount; root.catPickerSearch = catPickerSearch;
+root.catPick = catPick; root.catUnlink = catUnlink; root.catPickValue = catPickValue;
+root.catLinkLabel = catLinkLabel; root.catReviewOpen = catReviewOpen;
+root.catReviewLink = catReviewLink; root.catReviewSkip = catReviewSkip;
+root.catReviewResetSkips = catReviewResetSkips;
+root.catLookup = function (mfg, name) { return catLoad().then(function (rows) { return lookupIn(rows, mfg, name); }); };
+root.catSearch = function (q, n) { return catLoad().then(function (rows) { return searchIn(rows, q, n); }); };
+root._catStep5 = { norm: norm, modelKey: modelKey, lookupIn: lookupIn, searchIn: searchIn, reviewModel: reviewModel,
+                   pickerBodyHTML: pickerBodyHTML, reviewHTML: reviewHTML, resultsHTML: resultsHTML,
+                   setPick: function (p) { _pick = p; } };
 
 root.catCheck = catCheck;
 root.catLoad = catLoad;
