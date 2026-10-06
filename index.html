@@ -28139,6 +28139,7 @@ return `
                     : `<div style="font-size:12px;color:var(--t2);margin-bottom:6px">Not downloaded yet. Adding balls works the same without it.</div>`}
           ${line('Last check', when(s.lastAttemptAt))}
           ${s.lastError ? `<div style="font-size:11px;color:var(--red);margin:4px 0 6px;line-height:1.4">Last check failed: ${String(s.lastError).replace(/[<>&]/g,'')}</div>` : ''}
+          ${s.count ? `<button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="catReviewOpen()">Review suggested matches</button>` : ''}
           <button class="btn btn-ghost btn-sm" style="margin-top:6px" id="cat-check-btn"
             onclick="this.disabled=true;this.textContent='Checking…';catCheck({force:true}).then(r=>{toast(r.status==='updated'?('Catalog updated: '+r.count.toLocaleString()+' balls'):r.status==='current'?'Catalog is up to date':('Catalog check failed: '+r.error),3500);openSettingsModal();})">Check for updates</button>
         `;
@@ -33947,6 +33948,8 @@ if (!pane) return;
 const b = _bdet.isNew ? null : db.balls.find(x => x.BallID == _bdet.ballID);
 if (_bdet.editMode) {
 pane.innerHTML = _bdetSpecsEditHTML(b);
+/* v30.157 NEW-11 step 5: USBC catalog picker at the top of Add/Edit (catalog.js). */
+if (typeof catPickerMount === 'function') catPickerMount(b);
 
 } else {
 pane.innerHTML = _bdetSpecsReadHTML(b);
@@ -33969,6 +33972,7 @@ const rows = [
 ['Differential',   fmt(b.Differential)],
 ['RG Category',    fmt(b.RGDiff)],
 ['Released',       fmt(b.DateReleased?.slice(0,10))],
+['Catalog',        typeof catLinkLabel === 'function' ? catLinkLabel(b) : fmt(null)],
 ['Active',         b.Active === false ? 'No': 'Yes'],
 ];
 const specsHTML = rows.map(([k,v]) => `
@@ -36309,6 +36313,9 @@ DateReleased:   readStr('bef-released') || null,
 SpecsURL:       (document.getElementById('bdet-url-input')?.value || '').trim() || null,
 Active:         document.getElementById('bef-active')?.checked !== false,
 };
+/* v30.157 NEW-11: catalog link from the picker. Untouched leaves CatalogID as it was. */
+const _catPick = (typeof catPickValue === 'function') ? catPickValue() : null;
+if (_catPick && _catPick.touched) fields.CatalogID = _catPick.id || null;
 if (_bdet.isNew) {
 const id = db.ids.ball++;
 const newBall = {
