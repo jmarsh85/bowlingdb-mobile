@@ -2599,7 +2599,7 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
     </div>
     <div id="hdr-title" onclick="hdrTitleTap()"><span class="brand">Bowling</span>DB</div>
     <div id="hdr-title-popover"></div>
-    <span id="hdr-build-ref">v30.156 · 2026-10-06</span>
+    <span id="hdr-build-ref">v30.157 · 2026-10-06</span>
     <div id="hdr-right">
       <div class="hdr-icon-btn" id="hdr-delete-game-btn" onclick="confirmDeleteGame(G.gameID)" title="Delete Game" style="display:none">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -25142,6 +25142,9 @@ swapModal(`
 
 
 function renderBallsScreen() {
+/* v30.157 NEW-11: background catalog refresh on Balls open. Throttled to once/24h inside
+   catCheck(); never awaited, never blocks render, no-op if catalog.js is absent. */
+if (typeof catCheck === 'function') catCheck();
 const filterEl = document.getElementById('balls-filter-bar');
 const listEl   = document.getElementById('balls-screen-list');
 if (!filterEl || !listEl) return;
@@ -26403,7 +26406,7 @@ meta: {
 kind: 'bowlingdb-snapshot',
 snapshotVersion: 1,
 exportDate: new Date().toISOString(),
-exportSource: 'BowlingDB PWA v30.156',
+exportSource: 'BowlingDB PWA v30.157',
 includesBallImages: !!includeBallImages,
 excluded: Array.from(SNAPSHOT_LS_SKIP)
 },
@@ -28117,6 +28120,27 @@ return `<div style="display:flex;align-items:center;justify-content:space-betwee
             </div>
           </div>
           `: ''}
+        `;
+})()}
+    </div>
+
+    <!-- ── Ball Catalog (v30.157 NEW-11) ─────────────────────── -->
+    <div class="settings-section">
+      <div class="settings-section-hdr">Ball Catalog
+        <span class="settings-section-hint">USBC approved-ball list, used to prefill new balls</span>
+      </div>
+      ${(() => {
+if (typeof catStatus !== 'function') return `<div style="font-size:11px;color:var(--t3)">catalog.js not loaded. Upload it next to index.html.</div>`;
+const s = catStatus();
+const when = t => t ? new Date(t).toLocaleString([], {month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}) : '—';
+const line = (k,v) => `<div style="display:flex;justify-content:space-between;font-size:12px;color:var(--t2);margin-bottom:3px"><span>${k}</span><span style="color:var(--t1)">${v}</span></div>`;
+return `
+          ${s.count ? line('Balls', s.count.toLocaleString()) + line('USBC list', s.listVersion || '—') + line('Downloaded', when(s.installedAt))
+                    : `<div style="font-size:12px;color:var(--t2);margin-bottom:6px">Not downloaded yet. Adding balls works the same without it.</div>`}
+          ${line('Last check', when(s.lastAttemptAt))}
+          ${s.lastError ? `<div style="font-size:11px;color:var(--red);margin:4px 0 6px;line-height:1.4">Last check failed: ${String(s.lastError).replace(/[<>&]/g,'')}</div>` : ''}
+          <button class="btn btn-ghost btn-sm" style="margin-top:6px" id="cat-check-btn"
+            onclick="this.disabled=true;this.textContent='Checking…';catCheck({force:true}).then(r=>{toast(r.status==='updated'?('Catalog updated: '+r.count.toLocaleString()+' balls'):r.status==='current'?'Catalog is up to date':('Catalog check failed: '+r.error),3500);openSettingsModal();})">Check for updates</button>
         `;
 })()}
     </div>
@@ -36903,5 +36927,7 @@ var _DKM_STATUS_LABELS = {ok:'🟢 Working',partial:'🟡 Partial',broken:'🔴 
 </script>
 <script src="devkit.js"></script>
 <script src="report.js"></script>
+<!-- v30.157 NEW-11 step 4: ball catalog manifest check + IDB cache (same-origin, like devkit.js/report.js). Optional: if missing, the app behaves exactly as before. -->
+<script src="catalog.js"></script>
 </body>
 </html>
