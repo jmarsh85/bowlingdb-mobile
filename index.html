@@ -2599,7 +2599,7 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
     </div>
     <div id="hdr-title" onclick="hdrTitleTap()"><span class="brand">Bowling</span>DB</div>
     <div id="hdr-title-popover"></div>
-    <span id="hdr-build-ref">v30.157 · 2026-10-06</span>
+    <span id="hdr-build-ref">v30.158 · 2026-10-06</span>
     <div id="hdr-right">
       <div class="hdr-icon-btn" id="hdr-delete-game-btn" onclick="confirmDeleteGame(G.gameID)" title="Delete Game" style="display:none">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -25192,6 +25192,11 @@ const wtNext   = F.sort==='weight-desc'? 'weight-asc': 'weight-desc';
 const thrOn    = F.sort==='thrown-desc'|| F.sort==='thrown-asc';
 const thrLbl   = thrOn ? (F.sort==='thrown-asc'? 'Used ↑': 'Used ↓') : 'Most Used';
 const thrNext  = F.sort==='thrown-desc'? 'thrown-asc': 'thrown-desc';
+/* v30.158 MET-1: Strength sort (catalog.js). Balls without enough specs sort last. */
+const _hasMet  = typeof catMetric === 'function';
+const strOn    = F.sort==='str-desc'|| F.sort==='str-asc';
+const strLbl   = strOn ? (F.sort==='str-asc'? 'Strength ↑': 'Strength ↓') : 'Strength';
+const strNext  = F.sort==='str-desc'? 'str-asc': 'str-desc';
 filterEl.innerHTML = `
     <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;-webkit-overflow-scrolling:touch;scrollbar-width:none;align-items:center">
       <button class="ball-filter-chip${hookOn?' on':''}"
@@ -25202,6 +25207,8 @@ filterEl.innerHTML = `
         onclick="window._ballsScreenFilter.sort='${wtNext}';renderBallsScreen()">${wtLbl}</button>
       <button class="ball-filter-chip${thrOn?' on':''}"
         onclick="window._ballsScreenFilter.sort='${thrNext}';renderBallsScreen()">${thrLbl}</button>
+      ${_hasMet?`<button class="ball-filter-chip${strOn?' on':''}"
+        onclick="window._ballsScreenFilter.sort='${strNext}';renderBallsScreen()">${strLbl}</button>`:''}
       ${brands.length>1?`<select class="ball-filter-chip" style="padding:5px 8px;background:var(--bg3);color:var(--t2);border:1px solid var(--border2);border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;flex-shrink:0" onchange="window._ballsScreenFilter.brand=this.value;renderBallsScreen()"><option value="">All Brands</option>${brands.map(o=>`<option value="${o}"${o===F.brand?' selected':''}>${o}</option>`).join('')}</select>`:''}
       ${coverstocks.length>1?`<select class="ball-filter-chip" style="padding:5px 8px;background:var(--bg3);color:var(--t2);border:1px solid var(--border2);border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;flex-shrink:0" onchange="window._ballsScreenFilter.coverstock=this.value;renderBallsScreen()"><option value="">All Covers</option>${coverstocks.map(o=>`<option value="${o}"${o===F.coverstock?' selected':''}>${o}</option>`).join('')}</select>`:''}
       ${coreTypes.length>1?`<select class="ball-filter-chip" style="padding:5px 8px;background:var(--bg3);color:var(--t2);border:1px solid var(--border2);border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;flex-shrink:0" onchange="window._ballsScreenFilter.coreType=this.value;renderBallsScreen()"><option value="">All Cores</option>${coreTypes.map(o=>`<option value="${o}"${o===F.coreType?' selected':''}>${o}</option>`).join('')}</select>`:''}
@@ -25227,6 +25234,11 @@ else if (F.sort === 'weight-desc') balls.sort((a,b) => (b.Weight||0) - (a.Weight
 else if (F.sort === 'weight-asc')  balls.sort((a,b) => (a.Weight||0) - (b.Weight||0));
 else if (F.sort === 'thrown-desc') balls.sort((a,b) => (ballUsage[b.BallID]?.count||0) - (ballUsage[a.BallID]?.count||0));
 else if (F.sort === 'thrown-asc')  balls.sort((a,b) => (ballUsage[a.BallID]?.count||0) - (ballUsage[b.BallID]?.count||0));
+else if ((F.sort === 'str-desc' || F.sort === 'str-asc') && _hasMet) {
+const _sv = {}; balls.forEach(b => { const m = catMetric(b); _sv[b.BallID] = m ? m.strength : null; });
+const dir = F.sort === 'str-desc' ? -1 : 1;
+balls.sort((a,b) => (_sv[a.BallID]==null) - (_sv[b.BallID]==null) || dir * ((_sv[a.BallID]||0) - (_sv[b.BallID]||0)));
+}
 if (!balls.length) {
 listEl.innerHTML = `<div class="empty-state"><div class="empty-icon">🎳</div>
       <div class="empty-label">${F.showArchived?'No archived balls':'No active balls'}</div>
@@ -25247,13 +25259,15 @@ const hookLabel = b.PerfectScaleVal != null
 ? `PS ${b.PerfectScaleVal}`
 : b.HookRating != null ? `Hook ${b.HookRating}/10`: null;
 const coreAbbrev = abbrevCore(b.CoreType);
+const _metChip = typeof catMetricChip === 'function' ? catMetricChip(b) : '';
 const chips = [
+_metChip     ? { label:_metChip,           cls:'teal'} : null,
 hookLabel    ? { label:hookLabel,          cls:'teal'} : null,
 b.Coverstock ? { label:b.Coverstock,       cls:'purple'} : null,
 b.Weight     ? { label:`${b.Weight}lb`,    cls:''} : null,
 coreAbbrev   ? { label:coreAbbrev,         cls:''} : null,
 b.BoxFinish  ? { label:b.BoxFinish,        cls:'gold'} : null,
-].filter(Boolean).slice(0,5);
+].filter(Boolean).slice(0,6);
 const chipHTML = chips.map(c=>`<span class="ball-chip-pill${c.cls?' '+c.cls:''}">${c.label}</span>`).join('');
 const prepLabel = lastPrep ? `Last prep: ${lastPrep.DateSurfaced?.slice(0,10)||'—'}`: 'No prep logged';
 const usageHTML = usage.count > 0 ? `
@@ -26406,7 +26420,7 @@ meta: {
 kind: 'bowlingdb-snapshot',
 snapshotVersion: 1,
 exportDate: new Date().toISOString(),
-exportSource: 'BowlingDB PWA v30.157',
+exportSource: 'BowlingDB PWA v30.158',
 includesBallImages: !!includeBallImages,
 excluded: Array.from(SNAPSHOT_LS_SKIP)
 },
@@ -33645,9 +33659,8 @@ _bdetRender();
  
 function openBallDetailModal(ballID) { navToBall(ballID); }
 function openEditBallModal(ballID)   { navToBall(ballID); }
-/* v30.157 NEW-11: Add Ball is search-first when a catalog is installed
-   (catalog.js full-screen USBC search, then the form prefilled). With no
-   catalog, or no catalog.js, it opens the plain form exactly as before. */
+/* v30.158 NEW-11: Add a Ball (catalog.js): search -> detail sheet -> Add to Arsenal.
+   With no catalog, or no catalog.js, it opens the plain form exactly as before. */
 function openAddBallModal() {
 if (typeof catOpenAddSearch === 'function' && catOpenAddSearch()) return;
 navToBall(null);
@@ -33976,6 +33989,8 @@ const rows = [
 ['Core Name',      fmt(b.CoreShort && b.CoreShort !== b.CoreType ? b.CoreShort : null)],
 ['RG',             fmt(b.RG)],
 ['Differential',   fmt(b.Differential)],
+['Int. Diff',      fmt(b.IntDiff)],
+['Strength',       typeof catMetricHTML === 'function' ? catMetricHTML(b) : fmt(null)],
 ['RG Category',    fmt(b.RGDiff)],
 ['Released',       fmt(b.DateReleased?.slice(0,10))],
 ['Catalog',        typeof catLinkLabel === 'function' ? catLinkLabel(b) : fmt(null)],
@@ -34014,55 +34029,7 @@ const fi = (id, field, type='text', placeholder='') =>
        type="${type}" value="${v(field)}" placeholder="${placeholder}"
        autocomplete="off" autocorrect="off" autocapitalize="off">`;
 return `
-    <!-- Fetch mode toggle + inputs -->
-    <div class="bdet-field-group">
-      <div class="bdet-field-label">Spec Source</div>
-      <div class="bdet-fetch-mode-row">
-        <button class="bdet-fetch-mode-btn on" id="bdet-mode-url"
-          onclick="_bdetSetFetchMode('url')">🤖 Name / URL</button>
-        <button class="bdet-fetch-mode-btn" id="bdet-mode-paste"
-          onclick="_bdetSetFetchMode('paste')">📋 Paste Specs</button>
-      </div>
-
-      <!-- URL mode -->
-      <div id="bdet-url-area" style="margin-bottom:6px">
-        <div id="bdet-url-row">
-          <input id="bdet-url-input" type="url" value="${_escHtml(b?.SpecsURL||'')}"
-                 placeholder="https://www.bowlingball.com/products/…"
-                 autocomplete="off" autocorrect="off" autocapitalize="off">
-          <button id="bdet-fetch-btn" onclick="_bdetFetchFromName()">🤖 Fetch</button>
-        </div>
-        <div style="font-size:11px;color:var(--t3);margin-top:5px;line-height:1.4">
-          Fetches from AI training data — approximate, good for quick fill
-        </div>
-      </div>
-
-      <!-- Paste mode -->
-      <div id="bdet-paste-area">
-        <textarea id="bdet-paste-text"
-          placeholder="Copy the Specs table text from bowlingball.com and paste it here…&#10;&#10;e.g. Perfect Scale Hook Rating  205.5&#10;RG  2.473&#10;Coverstock  Hybrid Reactive&#10;…"></textarea>
-        <div style="display:flex;gap:6px;margin-top:6px">
-          <button id="bdet-paste-btn" onclick="_bdetPasteSpecs()"
-            style="flex:1;padding:8px;border-radius:9px;background:rgba(0,217,217,0.12);color:var(--teal);border:1px solid rgba(0,217,217,0.3);font-size:12px;font-weight:700;cursor:pointer">
-            📋 Extract Specs
-          </button>
-          <button onclick="document.getElementById('bdet-paste-text').value=''"
-            style="padding:8px 12px;border-radius:9px;background:var(--bg3);color:var(--t3);border:1px solid var(--border1);font-size:12px;font-weight:700;cursor:pointer">
-            Clear
-          </button>
-        </div>
-        <div style="font-size:11px;color:var(--t3);margin-top:5px;line-height:1.4">
-          Paste raw spec text → AI maps every field exactly. Most accurate method.
-        </div>
-      </div>
-    </div>
-
-    <div id="bdet-fetch-legend">
-      <span style="color:#3ddc84">🟢 High</span> ·
-      <span style="color:var(--gold)">🟡 Medium</span> ·
-      <span style="color:var(--red)">🔴 Low</span> confidence — review before saving
-    </div>
-
+    <!-- v30.158 SRC-3: AI spec fetch / paste removed. Specs come from the catalog (Fill from catalog in the picker above) or are typed. -->
     <!-- Grid fields -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
       <div class="bdet-field-group">
@@ -34123,6 +34090,13 @@ return `
         <div class="bdet-field-label">Differential</div>
         ${fi('diff','Differential','number','')}
       </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+      <div class="bdet-field-group">
+        <div class="bdet-field-label">Int. Diff</div>
+        ${fi('intdiff','IntDiff','number','')}
+      </div>
+      <div></div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
       <div class="bdet-field-group">
@@ -36317,6 +36291,7 @@ CoreType:       readStr('bef-coretype'),
 CoreShort:      readStr('bef-corename'),
 RG:             readNum('bef-rg'),
 Differential:   readNum('bef-diff'),
+IntDiff:        readNum('bef-intdiff'),
 RGDiff:         readStr('bef-rgdiff'),
 DateReleased:   readStr('bef-released') || null,
 SpecsURL:       (document.getElementById('bdet-url-input')?.value || '').trim() || null,
@@ -36325,6 +36300,13 @@ Active:         document.getElementById('bef-active')?.checked !== false,
 /* v30.157 NEW-11: catalog link from the picker. Untouched leaves CatalogID as it was. */
 const _catPick = (typeof catPickValue === 'function') ? catPickValue() : null;
 if (_catPick && _catPick.touched) fields.CatalogID = _catPick.id || null;
+/* v30.158: the URL input left with the AI fetch; never blank an existing SpecsURL. */
+if (!document.getElementById('bdet-url-input')) delete fields.SpecsURL;
+/* v30.158 NEW-11: per-field provenance (catalog / user). Tiers only move up. */
+if (typeof catSpecSource === 'function') {
+const _old = _bdet.isNew ? null : db.balls.find(x => x.BallID == _bdet.ballID);
+fields.SpecSource = catSpecSource(_old, fields);
+}
 if (_bdet.isNew) {
 const id = db.ids.ball++;
 const newBall = {
