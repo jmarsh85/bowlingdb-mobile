@@ -373,6 +373,15 @@ function pickerBodyHTML(rows) {
       'Enter details below as usual, or download it in Settings → Ball Catalog.</div>';
   }
   var cur = byIdIn(rows, _pick.id);
+  if (_pick.isNew) {
+    if (_pick.id && cur) {
+      return '<div style="display:flex;align-items:center;gap:8px">' +
+        '<div style="flex:1;min-width:0;font-size:13px;color:var(--t1)">✓ From USBC list: ' + entryLine(cur) + '</div>' +
+        '<button style="' + BTN_G + '" onclick="catOpenAddSearch(true)">Change</button></div>' +
+        '<div id="cat-spec-note" style="font-size:11px;color:var(--t3);margin-top:6px;line-height:1.5">' + esc(_specNote) + '</div>';
+    }
+    return '<button style="' + BTN_P + 'width:100%;padding:9px" onclick="catOpenAddSearch(true)">🔎 Search USBC list</button>';
+  }
   if (_pick.id) {
     return '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">' +
       '<div style="flex:1;min-width:0;font-size:13px;color:var(--t1)">✓ ' +
@@ -419,7 +428,121 @@ function catPickerMount(b) {
   g.id = 'cat-pick-group';
   g.innerHTML = '<div class="bdet-field-label">USBC Catalog</div><div id="cat-pick-body"></div>';
   pane.insertBefore(g, pane.firstChild);
-  renderPicker();
+  if (_pick.isNew && _pendingAdd) {
+    var pid = _pendingAdd; _pendingAdd = null;
+    applyAddPick(pid);
+  } else {
+    renderPicker();
+  }
+}
+
+/* ---- search-first Add (v30.157 redesign) ---- */
+var _pendingAdd = null;
+var _specNote = '';
+
+function applyAddPick(id) {
+  catLoad().then(function (rows) {
+    var e = byIdIn(rows, id);
+    if (!e) { renderPicker(); return; }
+    _pick.touched = true; _pick.id = e.i;
+    var n = document.getElementById('bef-name'), m = document.getElementById('bef-mfg');
+    if (n) n.value = e.n;
+    if (m) m.value = e.m;
+    var hasKey = false;
+    try { hasKey = !!env.ls().getItem('bowlingdb_ai_key'); } catch (x) {}
+    var canFetch = hasKey && typeof root._bdetFetchFromName === 'function';
+    _specNote = canFetch ? 'Fetching specs with AI…'
+                         : 'Specs not auto-filled: add an AI key in Settings, or use Paste Specs below.';
+    renderPicker();
+    if (!canFetch) return;
+    Promise.resolve(root._bdetFetchFromName()).then(function () {
+      _specNote = 'Specs below are AI-fetched and approximate. Check the confidence colours (and the bowlingball.com page) before saving.';
+      var el = document.getElementById('cat-spec-note');
+      if (el) el.textContent = _specNote;
+    });
+  });
+}
+
+/* While a USBC entry is chosen on a NEW ball, name/mfg come from the
+   catalog and AI spec fills must not overwrite them. */
+function catIdentityLocked() {
+  var live = typeof document !== 'undefined' && !!document.getElementById('cat-pick-group');
+  return live && _pick.isNew && !!_pick.id;
+}
+
+function ownedIndex(rows) {
+  var linked = {}, keyed = {};
+  appBalls().forEach(function (b) {
+    if (b.CatalogID) linked[b.CatalogID] = 1;
+    keyed[modelKey(b.MFG, b.BallName)] = 1;
+  });
+  return { linked: linked, keyed: keyed };
+}
+
+function addResultsHTML(list, q, owned) {
+  if (!q || q.replace(/\s/g, '').length < 2) {
+    return '<div style="font-size:12px;color:var(--t3);padding:14px 4px;line-height:1.6">Type a ball name, optionally with the brand ' +
+      '(e.g. <i>hy road</i>, <i>storm phaze</i>, <i>track theorem</i>).</div>';
+  }
+  if (!list.length) return '<div style="font-size:13px;color:var(--t2);padding:14px 4px">No match in the USBC list.</div>';
+  return list.map(function (e) {
+    var mine = owned && (owned.linked[e.i] || owned.keyed[e.k]);
+    var meta = [esc(e.m)];
+    if (e.y) meta.push('USBC ' + esc(e.y));
+    if (/-u13$/.test(e.i)) meta.push('under 13 lb');
+    return '<div onclick="catAddPick(\'' + esc(e.i) + '\')" style="padding:11px 4px;border-bottom:1px solid var(--border1);cursor:pointer">' +
+      '<div style="font-size:15px;font-weight:600;color:var(--t1)">' + esc(e.n) +
+        (mine ? ' <span style="font-size:10px;font-weight:700;color:var(--teal);border:1px solid rgba(0,217,217,0.35);border-radius:6px;padding:1px 5px;margin-left:4px">IN YOUR ARSENAL</span>' : '') + '</div>' +
+      '<div style="font-size:12px;color:var(--t2);margin-top:2px">' + meta.join(' · ') + '</div></div>';
+  }).join('');
+}
+
+/* Opens the full-screen search. Returns false (caller falls back to the
+   plain form) when no catalog is installed: the catalog is never a gate. */
+function catOpenAddSearch(fromForm) {
+  if (typeof document === 'undefined') return false;
+  if (!fromForm && !(catStatus().count > 0)) return false;
+  catCloseAddSearch();
+  var s = catStatus();
+  var ov = document.createElement('div');
+  ov.id = 'cat-search-ov';
+  ov.setAttribute('style', 'position:fixed;inset:0;z-index:900;background:var(--bg0);display:flex;flex-direction:column;' +
+    'padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)');
+  ov.innerHTML =
+    '<div style="display:flex;align-items:center;gap:10px;padding:12px 14px 8px">' +
+      '<button onclick="catCloseAddSearch()" style="background:none;border:none;color:var(--teal);font-size:24px;cursor:pointer;padding:0 6px">‹</button>' +
+      '<div style="font-size:18px;font-weight:700;color:var(--t1)">Add Ball</div></div>' +
+    '<div style="padding:0 14px 6px">' +
+      '<input id="cat-add-q" class="bdet-field-input" type="search" placeholder="Search USBC-approved balls"' +
+      ' autocomplete="off" autocorrect="off" autocapitalize="off" oninput="catAddSearch(this.value)" style="width:100%;font-size:16px">' +
+      '<div style="font-size:11px;color:var(--t3);margin-top:5px">' +
+        (s.count ? esc(s.count.toLocaleString()) + ' balls · USBC list ' + esc(s.listVersion || '') : 'Catalog not downloaded yet') + '</div></div>' +
+    '<div id="cat-add-results" style="flex:1;overflow-y:auto;padding:0 14px;-webkit-overflow-scrolling:touch">' + addResultsHTML([], '') + '</div>' +
+    '<div style="padding:10px 14px;border-top:1px solid var(--border1)">' +
+      '<button onclick="catAddManual()" style="' + BTN_G + 'width:100%;padding:11px;font-size:13px">Can\'t find it? Enter manually</button></div>';
+  document.body.appendChild(ov);
+  setTimeout(function () { var q = document.getElementById('cat-add-q'); if (q) q.focus(); }, 50);
+  return true;
+}
+function catCloseAddSearch() {
+  var ov = typeof document !== 'undefined' && document.getElementById('cat-search-ov');
+  if (ov) ov.parentNode.removeChild(ov);
+}
+function catAddSearch(q) {
+  catLoad().then(function (rows) {
+    var box = document.getElementById('cat-add-results');
+    if (box) box.innerHTML = addResultsHTML(searchIn(rows, q, 40), q, ownedIndex(rows));
+  });
+}
+function catAddPick(id) {
+  catCloseAddSearch();
+  _pendingAdd = id;
+  if (root.navToBall) root.navToBall(null);
+}
+function catAddManual() {
+  catCloseAddSearch();
+  _pendingAdd = null;
+  if (root.navToBall) root.navToBall(null);
 }
 
 function catPickerSearch(q) {
@@ -508,16 +631,82 @@ function catReviewSkip(ballID) {
 }
 function catReviewResetSkips() { writeSkips([]); catReviewOpen(); }
 
+/* ---- accuracy check: every owned ball vs the catalog. Pure model. ---- */
+function yearOf(d) { var m = /^(\d{4})/.exec(String(d || '')); return m ? +m[1] : null; }
+function auditModel(balls, rows) {
+  ensureMaps(rows);
+  var byEntry = {};
+  balls.forEach(function (b) { if (b.CatalogID) (byEntry[b.CatalogID] = byEntry[b.CatalogID] || []).push(b); });
+  var items = balls.map(function (b) {
+    var flags = [], e = null, status;
+    if (b.CatalogID) {
+      e = byIdIn(rows, b.CatalogID);
+      if (!e) { status = 'stale'; flags.push('Linked entry is not in the current catalog'); }
+      else {
+        status = 'linked';
+        if (modelKey(b.MFG, b.BallName) !== e.k) flags.push('Your name differs from USBC\'s (fine if intended)');
+        var yb = yearOf(b.DateReleased), ye = e.y ? +e.y : null;
+        if (yb && ye && Math.abs(yb - ye) > 1) flags.push('Release ' + yb + ' vs USBC ' + ye + ': check generation, or fix the date');
+        if (byEntry[b.CatalogID].length > 1) flags.push('Same entry linked by ' + byEntry[b.CatalogID].length + ' of your balls (duplicate record?)');
+      }
+    } else {
+      var L = lookupIn(rows, b.MFG, b.BallName);
+      status = L.status === 'match' ? 'suggest' : L.status === 'ambiguous' ? 'ambiguous' : 'unmatched';
+      if (L.status === 'match') e = L.candidates[0];
+    }
+    return { ball: b, entry: e, status: status, flags: flags };
+  });
+  var c = { linked: 0, flagged: 0, suggest: 0, ambiguous: 0, unmatched: 0, stale: 0 };
+  items.forEach(function (it) { c[it.status]++; if (it.flags.length) c.flagged++; });
+  return { items: items, counts: c };
+}
+function auditHTML(model) {
+  var c = model.counts;
+  var order = { stale: 0, linked: 1, suggest: 2, ambiguous: 3, unmatched: 4 };
+  var items = model.items.slice().sort(function (a, b) {
+    return (b.flags.length ? 1 : 0) - (a.flags.length ? 1 : 0) || order[a.status] - order[b.status];
+  });
+  var label = { linked: 'Linked', stale: 'Linked', suggest: 'Not linked · suggestion waiting', ambiguous: 'Not linked · several matches', unmatched: 'Not linked · no USBC match' };
+  var h = '<div style="font-size:16px;font-weight:700;color:var(--t1);margin-bottom:4px">Check linked balls</div>' +
+    '<div style="font-size:12px;color:var(--t2);margin-bottom:12px;line-height:1.6">' +
+      c.linked + ' linked · ' + c.flagged + ' flagged · ' + c.suggest + ' suggestion' + (c.suggest === 1 ? '' : 's') + ' waiting · ' +
+      (c.unmatched + c.ambiguous) + ' without a single match</div>';
+  items.forEach(function (it) {
+    var b = it.ball, e = it.entry;
+    h += '<div style="padding:9px 0;border-bottom:1px solid var(--border1)">' +
+      '<div style="font-size:11px;color:var(--t3)">' + esc(label[it.status]) + '</div>' +
+      '<div style="font-size:13px;color:var(--t1);margin-top:2px">Yours: ' + esc(b.MFG) + ' · ' + esc(b.BallName) +
+        (b.DateReleased ? ' · ' + esc(String(b.DateReleased).slice(0, 10)) : '') + '</div>' +
+      (e ? '<div style="font-size:13px;color:var(--t2)">USBC: ' + entryLine(e) + '</div>' : '') +
+      it.flags.map(function (f) { return '<div style="font-size:11px;color:var(--gold);margin-top:3px">⚠ ' + esc(f) + '</div>'; }).join('') +
+      '</div>';
+  });
+  h += '<button class="btn btn-secondary" style="margin-top:12px" onclick="closeModal()">Done</button>';
+  return h;
+}
+function catAuditOpen() {
+  catLoad().then(function (rows) {
+    if (!rows.length) { if (root.toast) root.toast('Download the catalog first (Check for updates)'); return; }
+    var html = auditHTML(auditModel(appBalls(), rows));
+    var bg = document.getElementById('modal-bg');
+    if (bg && bg.classList.contains('open') && root.swapModal) root.swapModal(html); else if (root.openModal) root.openModal(html);
+  });
+}
+
 root.catPickerMount = catPickerMount; root.catPickerSearch = catPickerSearch;
 root.catPick = catPick; root.catUnlink = catUnlink; root.catPickValue = catPickValue;
 root.catLinkLabel = catLinkLabel; root.catReviewOpen = catReviewOpen;
 root.catReviewLink = catReviewLink; root.catReviewSkip = catReviewSkip;
 root.catReviewResetSkips = catReviewResetSkips;
+root.catOpenAddSearch = catOpenAddSearch; root.catCloseAddSearch = catCloseAddSearch;
+root.catAddSearch = catAddSearch; root.catAddPick = catAddPick; root.catAddManual = catAddManual;
+root.catIdentityLocked = catIdentityLocked; root.catAuditOpen = catAuditOpen;
 root.catLookup = function (mfg, name) { return catLoad().then(function (rows) { return lookupIn(rows, mfg, name); }); };
 root.catSearch = function (q, n) { return catLoad().then(function (rows) { return searchIn(rows, q, n); }); };
 root._catStep5 = { norm: norm, modelKey: modelKey, lookupIn: lookupIn, searchIn: searchIn, reviewModel: reviewModel,
                    pickerBodyHTML: pickerBodyHTML, reviewHTML: reviewHTML, resultsHTML: resultsHTML,
-                   setPick: function (p) { _pick = p; } };
+                   setPick: function (p) { _pick = p; }, auditModel: auditModel, auditHTML: auditHTML,
+                   addResultsHTML: addResultsHTML };
 
 root.catCheck = catCheck;
 root.catLoad = catLoad;
