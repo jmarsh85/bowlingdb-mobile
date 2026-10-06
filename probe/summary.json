@@ -1,0 +1,1546 @@
+{
+  "generated": "2026-10-06T19:51:51.599Z",
+  "since": 2023,
+  "indexRows": 8046,
+  "recentRows": 989,
+  "sources": [
+    {
+      "id": "storm",
+      "kind": "manufacturer",
+      "base": "https://www.stormbowling.com",
+      "robots": {
+        "status": 200,
+        "disallow": [
+          "/ajax",
+          "/*?*filter%5B",
+          "/*?*filter["
+        ],
+        "sitemaps": []
+      },
+      "sitemaps": [
+        {
+          "url": "https://www.stormbowling.com/sitemap.xml",
+          "status": 404
+        }
+      ],
+      "urlCount": 0,
+      "discovery": {
+        "total": 334,
+        "found": 0,
+        "rate": 0,
+        "missesSample": [
+          "Alibi",
+          "Auto Gear Matic",
+          "Cove",
+          "Cruise 78D Urethane",
+          "Cruise Control",
+          "Cruise GPT",
+          "Cruise (PC) Purple/Copper",
+          "Cruise Sapphire",
+          "Cruise Wine Pearl",
+          "Duty Majesty",
+          "Duty Pearl",
+          "Duty Solid",
+          "Ember",
+          "Eternity",
+          "Eternity Fusion",
+          "Eternity Pearl",
+          "Eternity Π (Pi)",
+          "Extreme Reality",
+          "Gear 300 Formula",
+          "Gear Mark",
+          "Global Onyx Clear",
+          "Harsh Reality",
+          "Harsh Reality Pearl",
+          "HB (Honey Badger) BE (Black Edition)",
+          "HB (Honey Badger) Blameless",
+          "HB (Honey Badger) Dark Out",
+          "HB (Honey Badger) Extreme 2024",
+          "HB (Honey Badger) Extreme Tour Edition",
+          "HB (Honey Badger) Ocean Pearl",
+          "HB (Honey Badger) Renewal",
+          "HB (Honey Badger) Ruddy",
+          "HB (Honey Badger) Wine Pearl",
+          "Honey Badger Black U78",
+          "Honey Badger II Urethane",
+          "Lumen",
+          "Mach Cruise",
+          "Origin",
+          "Origin Black Pearl",
+          "Origin EX",
+          "Perfect Reality"
+        ]
+      },
+      "samples": [],
+      "errors": []
+    },
+    {
+      "id": "brunswick",
+      "kind": "manufacturer",
+      "base": "https://www.brunswickbowling.com",
+      "robots": {
+        "status": 200,
+        "disallow": [
+          "/cpresources/",
+          "/vendor/",
+          "/.env"
+        ],
+        "sitemaps": [
+          "https://brunswickbowling.com/sitemaps-1-sitemap.xml"
+        ]
+      },
+      "sitemaps": [
+        {
+          "url": "https://brunswickbowling.com/sitemaps-1-sitemap.xml",
+          "status": 200,
+          "index": true,
+          "locs": 44
+        },
+        {
+          "url": "https://brunswickbowling.com/sitemaps-1-section-fourOhFour-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 1
+        },
+        {
+          "url": "https://brunswickbowling.com/sitemaps-1-section-apparel-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 1
+        },
+        {
+          "url": "https://brunswickbowling.com/sitemaps-1-section-blogLanding-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 1
+        },
+        {
+          "url": "https://brunswickbowling.com/sitemaps-1-categorygroup-blogCategories-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 5
+        },
+        {
+          "url": "https://brunswickbowling.com/sitemaps-1-categorygroup-blogProductType-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 5
+        },
+        {
+          "url": "https://brunswickbowling.com/sitemaps-1-section-blogPost-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 29
+        },
+        {
+          "url": "https://brunswickbowling.com/sitemaps-1-section-bowlersProductContentPages-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 9
+        },
+        {
+          "url": "https://brunswickbowling.com/sitemaps-1-categorygroup-bowlerCategory-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 13
+        },
+        {
+          "url": "https://brunswickbowling.com/sitemaps-1-section-bowlerProducts-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 416
+        },
+        {
+          "url": "https://brunswickbowling.com/sitemaps-1-section-bowlingCenterProductContentPages-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 2
+        },
+        {
+          "url": "https://brunswickbowling.com/sitemaps-1-section-centerProducts-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 461
+        },
+        {
+          "url": "https://brunswickbowling.com/sitemaps-1-section-theProsLanding-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 1
+        },
+        {
+          "url": "https://brunswickbowling.com/sitemaps-1-section-sectionBuildACenter-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 11
+        },
+        {
+          "url": "https://brunswickbowling.com/sitemaps-1-section-buildACenter-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 1
+        },
+        {
+          "url": "https://brunswickbowling.com/sitemaps-1-section-company-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 1
+        },
+        {
+          "url": "https://brunswickbowling.com/sitemaps-1-section-contactBowler-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 1
+        },
+        {
+          "url": "https://brunswickbowling.com/sitemaps-1-section-contactCenter-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 1
+        },
+        {
+          "url": "https://brunswickbowling.com/sitemaps-1-section-cookieNotice-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 1
+        },
+        {
+          "url": "https://brunswickbowling.com/sitemaps-1-section-documentLibraryLanding-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 1
+        },
+        {
+          "url": "https://brunswickbowling.com/sitemaps-1-categorygroup-centerCategory-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 78
+        },
+        {
+          "url": "https://brunswickbowling.com/sitemaps-1-section-equipmentProductsSupplies-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 1
+        },
+        {
+          "url": "https://brunswickbowling.com/sitemaps-1-section-findASalesRepResults-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 1
+        },
+        {
+          "url": "https://brunswickbowling.com/sitemaps-1-section-findAProShop-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 1
+        },
+        {
+          "url": "https://brunswickbowling.com/sitemaps-1-section-galleries-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 291
+        }
+      ],
+      "urlCount": 1333,
+      "discovery": {
+        "total": 74,
+        "found": 39,
+        "rate": 0.527,
+        "missesSample": [
+          "Attitude Control Black",
+          "Black Titan Nirvana",
+          "Crimson Rhino Pro",
+          "Defender Aegis",
+          "Defender Pearl",
+          "Ethos Penetrate",
+          "Hyperize",
+          "Johnny Petraglia BVL Blue-Purple",
+          "Johnny Petraglia BVL Purple Pearl",
+          "Johnny Petraglia BVL Red/White/Blue",
+          "Johnny Petraglia LT-48 Hybrid",
+          "LT-48 Pro Obsidian",
+          "LT-48 Pro Purple",
+          "LT-48 Pro Ruby",
+          "LT-48 Pro Sapphire",
+          "Melee Jab Aqua",
+          "Melee Jab Emerald Green",
+          "Melee Jab HK22",
+          "Melee Jab Lunatic Purple",
+          "Melee Jab Void Black",
+          "Melee (Redaholic-X)",
+          "Onyx Soul Nirvana",
+          "Purple Titan Nirvana",
+          "Rhino Pro Black (2024)",
+          "Rhino Pro Ivory",
+          "The House Viz-A-Ball",
+          "The House Viz-A-Ball Yellow",
+          "V-Mesmerize",
+          "Vapor Zone Red",
+          "Vaporize S.E.",
+          "Vaporize S.E. Purple Pearl",
+          "Vaporize X",
+          "Vintage Teal Rhino Pro",
+          "(X-Mas Vintage) Rhino Pro",
+          "Zone Extreme"
+        ]
+      },
+      "samples": [
+        {
+          "catalogId": "brunswick-alert",
+          "name": "Alert",
+          "url": "https://brunswickbowling.com/products/balls/current/warning-alert",
+          "status": 200,
+          "file": "brunswick_brunswick-alert.html"
+        },
+        {
+          "catalogId": "brunswick-beyond-infinity",
+          "name": "Beyond Infinity",
+          "url": "https://brunswickbowling.com/products/balls/retired/beyond-infinity",
+          "status": 200,
+          "file": "brunswick_brunswick-beyond-infinity.html"
+        },
+        {
+          "catalogId": "brunswick-combat",
+          "name": "Combat",
+          "url": "https://brunswickbowling.com/products/balls/current/combat-solid",
+          "status": 200,
+          "file": "brunswick_brunswick-combat.html"
+        },
+        {
+          "catalogId": "brunswick-combat-hybrid",
+          "name": "Combat Hybrid",
+          "url": "https://brunswickbowling.com/products/balls/current/combat-hybrid",
+          "status": 200,
+          "file": "brunswick_brunswick-combat-hybrid.html"
+        },
+        {
+          "catalogId": "brunswick-combat-solid",
+          "name": "Combat Solid",
+          "url": "https://brunswickbowling.com/products/balls/current/combat-solid",
+          "status": 200,
+          "file": "brunswick_brunswick-combat-solid.html"
+        },
+        {
+          "catalogId": "brunswick-crown-78u",
+          "name": "Crown 78U",
+          "url": "https://brunswickbowling.com/products/balls/current/crown-78u",
+          "status": 200,
+          "file": "brunswick_brunswick-crown-78u.html"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "id": "hammer",
+      "kind": "manufacturer",
+      "base": "https://www.hammerbowling.com",
+      "robots": {
+        "status": 200,
+        "disallow": [
+          "/admin",
+          "/cart/",
+          "/*/cart/",
+          "/checkout",
+          "/*/checkout",
+          "/checkouts/",
+          "/*/checkouts/",
+          "/orders",
+          "/*/orders",
+          "/account",
+          "/*/account",
+          "/3033301104",
+          "/cdn/wpm/*.js",
+          "/services",
+          "/sf_*",
+          "/cart.js",
+          "/*/cart.js",
+          "/recommendations/products",
+          "/*/recommendations/products",
+          "/collections/*sort_by*",
+          "/*/collections/*sort_by*",
+          "/collections/*+*",
+          "/collections/*%2B*",
+          "/collections/*%2b*",
+          "/*/collections/*+*",
+          "/*/collections/*%2B*",
+          "/*/collections/*%2b*",
+          "/collections/*filter*&*filter*",
+          "/*/collections/*filter*&*filter*",
+          "/blogs/*+*",
+          "/blogs/*%2B*",
+          "/blogs/*%2b*",
+          "/*/blogs/*+*",
+          "/*/blogs/*%2B*",
+          "/*/blogs/*%2b*",
+          "/*?*ls=*&ls=*",
+          "/*?*ls%3*ls%3*",
+          "/*?*oseid=*",
+          "/*?*preview_theme_id=*",
+          "/*?*preview_script_id=*"
+        ],
+        "sitemaps": [
+          "https://hammerbowling.com/sitemap.xml"
+        ]
+      },
+      "sitemaps": [
+        {
+          "url": "https://hammerbowling.com/sitemap.xml",
+          "status": 200,
+          "index": true,
+          "locs": 5
+        },
+        {
+          "url": "https://hammerbowling.com/sitemap_agentic_discovery.xml",
+          "status": 200,
+          "index": false,
+          "locs": 1
+        },
+        {
+          "url": "https://hammerbowling.com/sitemap_products_1.xml?from=1423408431216&to=7707004272727",
+          "status": 200,
+          "index": false,
+          "locs": 367
+        },
+        {
+          "url": "https://hammerbowling.com/sitemap_pages_1.xml?from=20422951024&to=108162121815",
+          "status": 200,
+          "index": false,
+          "locs": 18
+        },
+        {
+          "url": "https://hammerbowling.com/sitemap_collections_1.xml?from=75521622128&to=296415002711",
+          "status": 200,
+          "index": false,
+          "locs": 23
+        },
+        {
+          "url": "https://hammerbowling.com/sitemap_blogs_1.xml",
+          "status": 200,
+          "index": false,
+          "locs": 27
+        }
+      ],
+      "urlCount": 436,
+      "discovery": {
+        "total": 114,
+        "found": 47,
+        "rate": 0.412,
+        "missesSample": [
+          "3D Offset Hybrid",
+          "Anger Black-Red-Caramel",
+          "Black Pearl Urethane Hammer (78D)",
+          "Black Urethane Solid",
+          "Black Widow 2.0 Hybrid Alan Chan",
+          "Black Widow 2.0 Hybrid Black/Gold",
+          "Black Widow 2.0 La Raza",
+          "Black Widow 2.0 Pearl",
+          "Black Widow 3.0 Black-Sapphire",
+          "Black Widow 3.0 Platinum",
+          "Black Widow 3.0 Poison",
+          "Black Widow 3.0 Poison Black",
+          "Black Widow 3.0 Ruby",
+          "Black Widow 3.0 Silver Pearl",
+          "Black Widow Clear (12-Hedron) All Colors",
+          "Black Widow Dark Night",
+          "Black Widow Legend Black Pearl",
+          "Black Widow Legend Black Solid",
+          "Black Widow (Mania) Hybrid",
+          "Black Widow (Mania) Solid",
+          "Black Widow Night Breaker",
+          "Black Widow Night Breaker Hybrid",
+          "(Black Widow) Nightmare",
+          "Black Widow Purple Pearl Urethane 78D",
+          "Black Widow RPM",
+          "Black Widow Toxin",
+          "Black Widow Toxin Hybrid",
+          "Black Widow Toxin Hybrid Scarlet/Purple/Black",
+          "Black Widow Toxin Pearl",
+          "Black Widow Toxin Pearl Red/Black",
+          "Black Widow Urethane Black Pearl",
+          "Black Widow Urethane Blue (2024)",
+          "Black Widow Urethane Grey Solid",
+          "Black Widow Urethane Mint Solid",
+          "Black Widow Urethane Orange Solid",
+          "Black Widow Urethane Purple Solid",
+          "Black Widow XR Pearl",
+          "Blue Solid Urethane Hammer",
+          "Effect Attack Hybrid",
+          "Effect Attack Red Solid"
+        ]
+      },
+      "samples": [
+        {
+          "catalogId": "hammer-3d-offset-assault",
+          "name": "3D Offset Assault",
+          "url": "https://hammerbowling.com/products/3-d-offset-assault",
+          "status": 200,
+          "file": "hammer_hammer-3d-offset-assault.html"
+        },
+        {
+          "catalogId": "hammer-anger-solid",
+          "name": "Anger Solid",
+          "url": "https://hammerbowling.com/products/anger-solid",
+          "status": 200,
+          "file": "hammer_hammer-anger-solid.html"
+        },
+        {
+          "catalogId": "hammer-arctic-vibe",
+          "name": "Arctic Vibe",
+          "url": "https://hammerbowling.com/products/arctic-vibe",
+          "status": 200,
+          "file": "hammer_hammer-arctic-vibe.html"
+        },
+        {
+          "catalogId": "hammer-axe-black-smoke",
+          "name": "Axe Black/Smoke",
+          "url": "https://hammerbowling.com/products/axe-black-smoke",
+          "status": 200,
+          "file": "hammer_hammer-axe-black-smoke.html"
+        },
+        {
+          "catalogId": "hammer-axe-green-smoke",
+          "name": "Axe Green-Smoke",
+          "url": "https://hammerbowling.com/products/axe-green-smoke",
+          "status": 200,
+          "file": "hammer_hammer-axe-green-smoke.html"
+        },
+        {
+          "catalogId": "hammer-axe-pink-smoke",
+          "name": "Axe Pink/Smoke",
+          "url": "https://hammerbowling.com/products/axe-pink-smoke",
+          "status": 200,
+          "file": "hammer_hammer-axe-pink-smoke.html"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "id": "dv8",
+      "kind": "manufacturer",
+      "base": "https://www.dv8bowling.com",
+      "robots": {
+        "status": 200,
+        "disallow": [
+          "/cpresources/",
+          "/vendor/",
+          "/.env"
+        ],
+        "sitemaps": [
+          "https://dv8bowling.com/sitemaps-1-sitemap.xml"
+        ]
+      },
+      "sitemaps": [
+        {
+          "url": "https://dv8bowling.com/sitemaps-1-sitemap.xml",
+          "status": 200,
+          "index": true,
+          "locs": 16
+        },
+        {
+          "url": "https://dv8bowling.com/sitemaps-1-section-fourOhFour-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 1
+        },
+        {
+          "url": "https://dv8bowling.com/sitemaps-1-section-apparel-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 1
+        },
+        {
+          "url": "https://dv8bowling.com/sitemaps-1-section-theProsLanding-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 1
+        },
+        {
+          "url": "https://dv8bowling.com/sitemaps-1-categorygroup-bowlerCategory-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 8
+        },
+        {
+          "url": "https://dv8bowling.com/sitemaps-1-section-contact-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 1
+        },
+        {
+          "url": "https://dv8bowling.com/sitemaps-1-section-cookieNotice-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 1
+        },
+        {
+          "url": "https://dv8bowling.com/sitemaps-1-section-dv8Manifesto-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 1
+        },
+        {
+          "url": "https://dv8bowling.com/sitemaps-1-section-sectionDeviants-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 1
+        },
+        {
+          "url": "https://dv8bowling.com/sitemaps-1-section-findAProShop-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 1
+        },
+        {
+          "url": "https://dv8bowling.com/sitemaps-1-section-homepage-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 1
+        },
+        {
+          "url": "https://dv8bowling.com/sitemaps-1-section-privacyPolicy-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 1
+        },
+        {
+          "url": "https://dv8bowling.com/sitemaps-1-section-productContentPages-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 5
+        },
+        {
+          "url": "https://dv8bowling.com/sitemaps-1-section-bowlerProducts-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 133
+        },
+        {
+          "url": "https://dv8bowling.com/sitemaps-1-section-products-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 1
+        },
+        {
+          "url": "https://dv8bowling.com/sitemaps-1-section-bowlers-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 129
+        },
+        {
+          "url": "https://dv8bowling.com/sitemaps-1-categorygroup-warranties-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 5
+        }
+      ],
+      "urlCount": 291,
+      "discovery": {
+        "total": 24,
+        "found": 22,
+        "rate": 0.917,
+        "missesSample": [
+          "Collision Disastrous",
+          "Primitiv8"
+        ]
+      },
+      "samples": [
+        {
+          "catalogId": "dv8-captiv8",
+          "name": "Captiv8",
+          "url": "https://dv8bowling.com/products/balls/retired/captiv8",
+          "status": 200,
+          "file": "dv8_dv8-captiv8.html"
+        },
+        {
+          "catalogId": "dv8-chill",
+          "name": "Chill",
+          "url": "https://dv8bowling.com/products/balls/retired/chill-pearl",
+          "status": 200,
+          "file": "dv8_dv8-chill.html"
+        },
+        {
+          "catalogId": "dv8-chill-pearl",
+          "name": "Chill Pearl",
+          "url": "https://dv8bowling.com/products/balls/retired/chill-pearl",
+          "status": 200,
+          "file": "dv8_dv8-chill-pearl.html"
+        },
+        {
+          "catalogId": "dv8-dark-side",
+          "name": "Dark Side",
+          "url": "https://dv8bowling.com/products/balls/current/dark-side-curse",
+          "status": 200,
+          "file": "dv8_dv8-dark-side.html"
+        },
+        {
+          "catalogId": "dv8-dark-side-curse",
+          "name": "Dark Side Curse",
+          "url": "https://dv8bowling.com/products/balls/current/dark-side-curse",
+          "status": 200,
+          "file": "dv8_dv8-dark-side-curse.html"
+        },
+        {
+          "catalogId": "dv8-double-trouble",
+          "name": "Double Trouble",
+          "url": "https://dv8bowling.com/products/balls/current/double-trouble",
+          "status": 200,
+          "file": "dv8_dv8-double-trouble.html"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "id": "radical",
+      "kind": "manufacturer",
+      "base": "https://www.radicalbowling.com",
+      "robots": {
+        "status": 200,
+        "disallow": [
+          "/cpresources/",
+          "/vendor/",
+          "/.env"
+        ],
+        "sitemaps": [
+          "https://radicalbowling.com/sitemaps-1-sitemap.xml"
+        ]
+      },
+      "sitemaps": [
+        {
+          "url": "https://radicalbowling.com/sitemaps-1-sitemap.xml",
+          "status": 200,
+          "index": true,
+          "locs": 18
+        },
+        {
+          "url": "https://radicalbowling.com/sitemaps-1-section-fourOhFour-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 1
+        },
+        {
+          "url": "https://radicalbowling.com/sitemaps-1-section-apparel-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 1
+        },
+        {
+          "url": "https://radicalbowling.com/sitemaps-1-categorygroup-bowlerCategory-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 8
+        },
+        {
+          "url": "https://radicalbowling.com/sitemaps-1-section-contact-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 1
+        },
+        {
+          "url": "https://radicalbowling.com/sitemaps-1-section-cookieNotice-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 1
+        },
+        {
+          "url": "https://radicalbowling.com/sitemaps-1-section-findAProShop-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 1
+        },
+        {
+          "url": "https://radicalbowling.com/sitemaps-1-section-homepage-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 1
+        },
+        {
+          "url": "https://radicalbowling.com/sitemaps-1-section-singlePages-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 1
+        },
+        {
+          "url": "https://radicalbowling.com/sitemaps-1-section-privacyPolicy-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 1
+        },
+        {
+          "url": "https://radicalbowling.com/sitemaps-1-section-productContentPages-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 5
+        },
+        {
+          "url": "https://radicalbowling.com/sitemaps-1-section-bowlerProducts-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 138
+        },
+        {
+          "url": "https://radicalbowling.com/sitemaps-1-section-products-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 1
+        },
+        {
+          "url": "https://radicalbowling.com/sitemaps-1-section-theProsLanding-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 1
+        },
+        {
+          "url": "https://radicalbowling.com/sitemaps-1-categorygroup-newsCategories-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 1
+        },
+        {
+          "url": "https://radicalbowling.com/sitemaps-1-section-news-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 9
+        },
+        {
+          "url": "https://radicalbowling.com/sitemaps-1-section-newsLanding-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 1
+        },
+        {
+          "url": "https://radicalbowling.com/sitemaps-1-section-bowlers-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 184
+        },
+        {
+          "url": "https://radicalbowling.com/sitemaps-1-categorygroup-warranties-1-sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 5
+        }
+      ],
+      "urlCount": 361,
+      "discovery": {
+        "total": 43,
+        "found": 36,
+        "rate": 0.837,
+        "missesSample": [
+          "(Prime) Power Hitter",
+          "RS-67 Evolution HK22",
+          "RS-79",
+          "Sneak Attack HK22 Hybrid",
+          "Sneak Attack HK22 Pearl",
+          "Sneak Attack Hybrid",
+          "Sneak Attack V.S.A."
+        ]
+      },
+      "samples": [
+        {
+          "catalogId": "radical-break-away",
+          "name": "Break Away",
+          "url": "https://radicalbowling.com/products/balls/retired/breakaway",
+          "status": 200,
+          "file": "radical_radical-break-away.html"
+        },
+        {
+          "catalogId": "radical-crypto-boom",
+          "name": "Crypto Boom",
+          "url": "https://radicalbowling.com/products/balls/retired/crypto-boom",
+          "status": 200,
+          "file": "radical_radical-crypto-boom.html"
+        },
+        {
+          "catalogId": "radical-deadly-rattler",
+          "name": "Deadly Rattler",
+          "url": "https://radicalbowling.com/products/balls/retired/deadly-rattler",
+          "status": 200,
+          "file": "radical_radical-deadly-rattler.html"
+        },
+        {
+          "catalogId": "radical-deep-impact",
+          "name": "Deep Impact",
+          "url": "https://radicalbowling.com/products/balls/current/deep-impact",
+          "status": 200,
+          "file": "radical_radical-deep-impact.html"
+        },
+        {
+          "catalogId": "radical-evil-eye",
+          "name": "Evil Eye",
+          "url": "https://radicalbowling.com/products/balls/current/evil-eye-pearl",
+          "status": 200,
+          "file": "radical_radical-evil-eye.html"
+        },
+        {
+          "catalogId": "radical-evil-eye-pearl",
+          "name": "Evil Eye Pearl",
+          "url": "https://radicalbowling.com/products/balls/current/evil-eye-pearl",
+          "status": 200,
+          "file": "radical_radical-evil-eye-pearl.html"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "id": "track",
+      "kind": "manufacturer",
+      "base": "https://www.trackbowling.com",
+      "robots": {
+        "status": 200,
+        "disallow": [
+          "/admin",
+          "/cart/",
+          "/*/cart/",
+          "/checkout",
+          "/*/checkout",
+          "/checkouts/",
+          "/*/checkouts/",
+          "/orders",
+          "/*/orders",
+          "/account",
+          "/*/account",
+          "/60975907033",
+          "/cdn/wpm/*.js",
+          "/services",
+          "/sf_*",
+          "/cart.js",
+          "/*/cart.js",
+          "/recommendations/products",
+          "/*/recommendations/products",
+          "/collections/*sort_by*",
+          "/*/collections/*sort_by*",
+          "/collections/*+*",
+          "/collections/*%2B*",
+          "/collections/*%2b*",
+          "/*/collections/*+*",
+          "/*/collections/*%2B*",
+          "/*/collections/*%2b*",
+          "/collections/*filter*&*filter*",
+          "/*/collections/*filter*&*filter*",
+          "/blogs/*+*",
+          "/blogs/*%2B*",
+          "/blogs/*%2b*",
+          "/*/blogs/*+*",
+          "/*/blogs/*%2B*",
+          "/*/blogs/*%2b*",
+          "/*?*ls=*&ls=*",
+          "/*?*ls%3*ls%3*",
+          "/*?*oseid=*",
+          "/*?*preview_theme_id=*",
+          "/*?*preview_script_id=*"
+        ],
+        "sitemaps": [
+          "https://trackbowling.com/sitemap.xml"
+        ]
+      },
+      "sitemaps": [
+        {
+          "url": "https://trackbowling.com/sitemap.xml",
+          "status": 200,
+          "index": true,
+          "locs": 6
+        },
+        {
+          "url": "https://trackbowling.com/sitemap_agentic_discovery.xml",
+          "status": 200,
+          "index": false,
+          "locs": 1
+        },
+        {
+          "url": "https://trackbowling.com/sitemap_products_1.xml?from=7460529832153&to=9767175422169",
+          "status": 200,
+          "index": false,
+          "locs": 182
+        },
+        {
+          "url": "https://trackbowling.com/sitemap_pages_1.xml?from=92413165785&to=130552430809",
+          "status": 200,
+          "index": false,
+          "locs": 13
+        },
+        {
+          "url": "https://trackbowling.com/sitemap_collections_1.xml?from=373689221337&to=398094565593",
+          "status": 200,
+          "index": false,
+          "locs": 14
+        },
+        {
+          "url": "https://trackbowling.com/sitemap_blogs_1.xml",
+          "status": 200,
+          "index": false,
+          "locs": 1
+        },
+        {
+          "url": "https://trackbowling.com/sitemap_metaobject_pages_1.xml",
+          "status": 200,
+          "index": false,
+          "locs": 0
+        }
+      ],
+      "urlCount": 211,
+      "discovery": {
+        "total": 46,
+        "found": 24,
+        "rate": 0.522,
+        "missesSample": [
+          "Archetype Red-Blue",
+          "Archetype Rose/Sea",
+          "Paragon (Battle)",
+          "Paragon Black Pearl",
+          "Paragon (Charger)",
+          "Paragon (Impact)",
+          "Paragon (SE)",
+          "Paragon (Weapon)",
+          "Stealth (Armor)",
+          "Stealth Red",
+          "Stealth Scarlet",
+          "Synthesis Xenon",
+          "T-Shark Black/Purple/Mint",
+          "T-Shark Purple",
+          "Theorem 78D Urethane",
+          "Theorem Black Pearl",
+          "Theorem Black Pearl Urethane",
+          "Theorem Black/Smoke",
+          "Theorem Black Urethane",
+          "Theorem Purple-Black",
+          "Theorem Red Pearl",
+          "Theorem Violet"
+        ]
+      },
+      "samples": [
+        {
+          "catalogId": "track-inc-archetype",
+          "name": "Archetype",
+          "url": "https://trackbowling.com/products/archetype",
+          "status": 200,
+          "file": "track_track-inc-archetype.html"
+        },
+        {
+          "catalogId": "track-inc-archetype-hybrid",
+          "name": "Archetype Hybrid",
+          "url": "https://trackbowling.com/products/archetype-hybrid",
+          "status": 200,
+          "file": "track_track-inc-archetype-hybrid.html"
+        },
+        {
+          "catalogId": "track-inc-criterion",
+          "name": "Criterion",
+          "url": "https://trackbowling.com/products/criterion",
+          "status": 200,
+          "file": "track_track-inc-criterion.html"
+        },
+        {
+          "catalogId": "track-inc-criterion-hybrid",
+          "name": "Criterion Hybrid",
+          "url": "https://trackbowling.com/products/criterion-hybrid",
+          "status": 200,
+          "file": "track_track-inc-criterion-hybrid.html"
+        },
+        {
+          "catalogId": "track-inc-criterion-inverse",
+          "name": "Criterion Inverse",
+          "url": "https://trackbowling.com/products/criterion-inverse",
+          "status": 200,
+          "file": "track_track-inc-criterion-inverse.html"
+        },
+        {
+          "catalogId": "track-inc-cypher",
+          "name": "Cypher",
+          "url": "https://trackbowling.com/products/cypher",
+          "status": 200,
+          "file": "track_track-inc-cypher.html"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "id": "ebonite",
+      "kind": "manufacturer",
+      "base": "https://www.ebonite.com",
+      "robots": {
+        "status": 200,
+        "disallow": [
+          "/admin",
+          "/cart/",
+          "/*/cart/",
+          "/checkout",
+          "/*/checkout",
+          "/checkouts/",
+          "/*/checkouts/",
+          "/orders",
+          "/*/orders",
+          "/account",
+          "/*/account",
+          "/60987900156",
+          "/cdn/wpm/*.js",
+          "/services",
+          "/sf_*",
+          "/cart.js",
+          "/*/cart.js",
+          "/recommendations/products",
+          "/*/recommendations/products",
+          "/collections/*sort_by*",
+          "/*/collections/*sort_by*",
+          "/collections/*+*",
+          "/collections/*%2B*",
+          "/collections/*%2b*",
+          "/*/collections/*+*",
+          "/*/collections/*%2B*",
+          "/*/collections/*%2b*",
+          "/collections/*filter*&*filter*",
+          "/*/collections/*filter*&*filter*",
+          "/blogs/*+*",
+          "/blogs/*%2B*",
+          "/blogs/*%2b*",
+          "/*/blogs/*+*",
+          "/*/blogs/*%2B*",
+          "/*/blogs/*%2b*",
+          "/*?*ls=*&ls=*",
+          "/*?*ls%3*ls%3*",
+          "/*?*oseid=*",
+          "/*?*preview_theme_id=*",
+          "/*?*preview_script_id=*"
+        ],
+        "sitemaps": [
+          "https://ebonite.com/sitemap.xml"
+        ]
+      },
+      "sitemaps": [
+        {
+          "url": "https://ebonite.com/sitemap.xml",
+          "status": 200,
+          "index": true,
+          "locs": 5
+        },
+        {
+          "url": "https://ebonite.com/sitemap_agentic_discovery.xml",
+          "status": 200,
+          "index": false,
+          "locs": 1
+        },
+        {
+          "url": "https://ebonite.com/sitemap_products_1.xml?from=7560185151740&to=9396861305084",
+          "status": 200,
+          "index": false,
+          "locs": 216
+        },
+        {
+          "url": "https://ebonite.com/sitemap_pages_1.xml?from=92563144956&to=130659254524",
+          "status": 200,
+          "index": false,
+          "locs": 11
+        },
+        {
+          "url": "https://ebonite.com/sitemap_collections_1.xml?from=388106322172&to=393129492732",
+          "status": 200,
+          "index": false,
+          "locs": 15
+        },
+        {
+          "url": "https://ebonite.com/sitemap_blogs_1.xml",
+          "status": 200,
+          "index": false,
+          "locs": 1
+        }
+      ],
+      "urlCount": 244,
+      "discovery": {
+        "total": 61,
+        "found": 21,
+        "rate": 0.344,
+        "missesSample": [
+          "Blood Angular One",
+          "Crush Navy Urethane",
+          "Crush Red Urethane",
+          "Extreme Angular One Black-Blue-Light Blue",
+          "Flare Angular One",
+          "GB4 (Game Breaker 4) Hybrid",
+          "GB5 (Game Breaker 5)",
+          "GB5 (Game Breaker 5) Hybrid",
+          "GB5 (Game Breaker 5) Pearl",
+          "Iron Angular One",
+          "Mission 1.0",
+          "Mission 4.5",
+          "Mission Possible",
+          "Mission Reload Red-Black-White",
+          "Mission Signal",
+          "Pivot Apex",
+          "Pivot Black Ice",
+          "Pivot Dark",
+          "Pivot Planet",
+          "Pivot Rotation",
+          "Pivot Vortex",
+          "Prime Angular One",
+          "Royal Angular One",
+          "Shadow Angular One",
+          "Spartan (Melas)",
+          "The One Black Urethane",
+          "The One (Connect)",
+          "The One Deep Marine",
+          "The One Giant",
+          "The One (Optimus)",
+          "The One Pluto",
+          "The One Ultramarine",
+          "The One Urethane 78D",
+          "The One Urethane 78D Navy",
+          "The One (Vector)",
+          "Thunderbolt Urethane Blue",
+          "Titan Angular One",
+          "Turbo-R Purple-Pink (13 Lb & Under)",
+          "Turbo-R Ruby",
+          "Wolf Blaze"
+        ]
+      },
+      "samples": [
+        {
+          "catalogId": "ebonite-big-time-special-edition",
+          "name": "Big Time Special Edition",
+          "url": "https://ebonite.com/products/big-time-special-edition",
+          "status": 200,
+          "file": "ebonite_ebonite-big-time-special-edition.html"
+        },
+        {
+          "catalogId": "ebonite-crusher",
+          "name": "Crusher",
+          "url": "https://ebonite.com/products/crusher",
+          "status": 200,
+          "file": "ebonite_ebonite-crusher.html"
+        },
+        {
+          "catalogId": "ebonite-crusher-hybrid",
+          "name": "Crusher Hybrid",
+          "url": "https://ebonite.com/products/crusher-hybrid",
+          "status": 200,
+          "file": "ebonite_ebonite-crusher-hybrid.html"
+        },
+        {
+          "catalogId": "ebonite-emerge",
+          "name": "Emerge",
+          "url": "https://ebonite.com/products/emerge",
+          "status": 200,
+          "file": "ebonite_ebonite-emerge.html"
+        },
+        {
+          "catalogId": "ebonite-emerge-hybrid",
+          "name": "Emerge Hybrid",
+          "url": "https://ebonite.com/products/emerge-hybrid",
+          "status": 200,
+          "file": "ebonite_ebonite-emerge-hybrid.html"
+        },
+        {
+          "catalogId": "ebonite-entity",
+          "name": "Entity",
+          "url": "https://ebonite.com/products/entity",
+          "status": 200,
+          "file": "ebonite_ebonite-entity.html"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "id": "columbia",
+      "kind": "manufacturer",
+      "base": "https://www.columbia300.com",
+      "robots": {
+        "status": 200,
+        "disallow": [
+          "/admin",
+          "/cart/",
+          "/*/cart/",
+          "/checkout",
+          "/*/checkout",
+          "/checkouts/",
+          "/*/checkouts/",
+          "/orders",
+          "/*/orders",
+          "/account",
+          "/*/account",
+          "/6202261619",
+          "/cdn/wpm/*.js",
+          "/services",
+          "/sf_*",
+          "/cart.js",
+          "/*/cart.js",
+          "/recommendations/products",
+          "/*/recommendations/products",
+          "/collections/*sort_by*",
+          "/*/collections/*sort_by*",
+          "/collections/*+*",
+          "/collections/*%2B*",
+          "/collections/*%2b*",
+          "/*/collections/*+*",
+          "/*/collections/*%2B*",
+          "/*/collections/*%2b*",
+          "/collections/*filter*&*filter*",
+          "/*/collections/*filter*&*filter*",
+          "/blogs/*+*",
+          "/blogs/*%2B*",
+          "/blogs/*%2b*",
+          "/*/blogs/*+*",
+          "/*/blogs/*%2B*",
+          "/*/blogs/*%2b*",
+          "/*?*ls=*&ls=*",
+          "/*?*ls%3*ls%3*",
+          "/*?*oseid=*",
+          "/*?*preview_theme_id=*",
+          "/*?*preview_script_id=*"
+        ],
+        "sitemaps": [
+          "https://columbia300.com/sitemap.xml"
+        ]
+      },
+      "sitemaps": [
+        {
+          "url": "https://columbia300.com/sitemap.xml",
+          "status": 200,
+          "index": true,
+          "locs": 5
+        },
+        {
+          "url": "https://columbia300.com/sitemap_agentic_discovery.xml",
+          "status": 200,
+          "index": false,
+          "locs": 1
+        },
+        {
+          "url": "https://columbia300.com/sitemap_products_1.xml?from=1989847842931&to=8166012059763",
+          "status": 200,
+          "index": false,
+          "locs": 405
+        },
+        {
+          "url": "https://columbia300.com/sitemap_pages_1.xml?from=9810903155&to=120992792691",
+          "status": 200,
+          "index": false,
+          "locs": 7
+        },
+        {
+          "url": "https://columbia300.com/sitemap_collections_1.xml?from=45692616819&to=263498334323",
+          "status": 200,
+          "index": false,
+          "locs": 24
+        },
+        {
+          "url": "https://columbia300.com/sitemap_blogs_1.xml",
+          "status": 200,
+          "index": false,
+          "locs": 23
+        }
+      ],
+      "urlCount": 460,
+      "discovery": {
+        "total": 20,
+        "found": 15,
+        "rate": 0.75,
+        "missesSample": [
+          "Max Speed",
+          "Messenger PowerCOR Pearl Black-Gold",
+          "Pulse (2025)",
+          "Pulse Hybrid",
+          "XTech (11 Lb. Only)"
+        ]
+      },
+      "samples": [
+        {
+          "catalogId": "columbia-300-atlas",
+          "name": "Atlas",
+          "url": "https://columbia300.com/products/atlas",
+          "status": 200,
+          "file": "columbia_columbia-300-atlas.html"
+        },
+        {
+          "catalogId": "columbia-300-atlas-hybrid",
+          "name": "Atlas Hybrid",
+          "url": "https://columbia300.com/products/atlas-hybrid",
+          "status": 200,
+          "file": "columbia_columbia-300-atlas-hybrid.html"
+        },
+        {
+          "catalogId": "columbia-300-cuda-powercor-pearl",
+          "name": "Cuda PowerCOR Pearl",
+          "url": "https://columbia300.com/products/cuda-powercor-pearl",
+          "status": 200,
+          "file": "columbia_columbia-300-cuda-powercor-pearl.html"
+        },
+        {
+          "catalogId": "columbia-300-high-speed",
+          "name": "High Speed",
+          "url": "https://columbia300.com/products/high-speed",
+          "status": 200,
+          "file": "columbia_columbia-300-high-speed.html"
+        },
+        {
+          "catalogId": "columbia-300-kaboom",
+          "name": "Kaboom",
+          "url": "https://columbia300.com/products/kaboom",
+          "status": 200,
+          "file": "columbia_columbia-300-kaboom.html"
+        },
+        {
+          "catalogId": "columbia-300-madness",
+          "name": "Madness",
+          "url": "https://columbia300.com/products/madness",
+          "status": 200,
+          "file": "columbia_columbia-300-madness.html"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "id": "motiv",
+      "kind": "manufacturer",
+      "base": "https://www.motivbowling.com",
+      "robots": {
+        "status": 200,
+        "disallow": [],
+        "sitemaps": [
+          "https://www.motivbowling.com/sitemap.xml"
+        ]
+      },
+      "sitemaps": [
+        {
+          "url": "https://www.motivbowling.com/sitemap.xml",
+          "status": 200,
+          "index": false,
+          "locs": 1136
+        }
+      ],
+      "urlCount": 1119,
+      "discovery": {
+        "total": 57,
+        "found": 50,
+        "rate": 0.877,
+        "missesSample": [
+          "Ascend Black/Green/Teal",
+          "Frenzy Blue/Navy/Teal",
+          "Frenzy Red/Dark Red/Black",
+          "(Max) Thrill Pearl Lime/Orange",
+          "Propel (All Colors)",
+          "(Royal) Venom",
+          "Venom Spare (All Colors)"
+        ]
+      },
+      "samples": [
+        {
+          "catalogId": "motiv-apex-jackal",
+          "name": "(Apex) Jackal",
+          "url": "https://www.motivbowling.com/products/balls/heavy-oil/apex-jackal.html",
+          "status": 200,
+          "file": "motiv_motiv-apex-jackal.html"
+        },
+        {
+          "catalogId": "motiv-ascend-dark-purple-purple-blue",
+          "name": "Ascend Dark Purple/Purple/Blue",
+          "url": "https://www.motivbowling.com/products/balls/entry-level/ascend-dark-purple-purple-blue.html",
+          "status": 200,
+          "file": "motiv_motiv-ascend-dark-purple-purple-blue.html"
+        },
+        {
+          "catalogId": "motiv-ascend-navy-teal-yellow",
+          "name": "Ascend Navy/Teal/Yellow",
+          "url": "https://www.motivbowling.com/products/balls/entry-level/ascend-navy-teal-yellow.html",
+          "status": 200,
+          "file": "motiv_motiv-ascend-navy-teal-yellow.html"
+        },
+        {
+          "catalogId": "motiv-ascend-red-black-tangerine",
+          "name": "Ascend Red/Black/Tangerine",
+          "url": "https://www.motivbowling.com/products/balls/entry-level/ascend-red-black-tangerine.html",
+          "status": 200,
+          "file": "motiv_motiv-ascend-red-black-tangerine.html"
+        },
+        {
+          "catalogId": "motiv-black-venom",
+          "name": "Black Venom",
+          "url": "https://www.motivbowling.com/products/balls/light-medium-oil/black-venom.html",
+          "status": 200,
+          "file": "motiv_motiv-black-venom.html"
+        },
+        {
+          "catalogId": "motiv-covert-vip-exj",
+          "name": "(Covert) VIP ExJ",
+          "url": "https://www.motivbowling.com/products/balls/retired-balls/covert-vip-exj.html",
+          "status": 200,
+          "file": "motiv_motiv-covert-vip-exj.html"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "id": "bowwwl",
+      "kind": "aggregator",
+      "base": "https://www.bowwwl.com",
+      "robots": {
+        "status": 200,
+        "disallow": [
+          "/core/",
+          "/profiles/",
+          "/README.md",
+          "/composer/Metapackage/README.txt",
+          "/composer/Plugin/ProjectMessage/README.md",
+          "/composer/Plugin/Scaffold/README.md",
+          "/composer/Plugin/VendorHardening/README.txt",
+          "/composer/Template/README.txt",
+          "/modules/README.txt",
+          "/sites/README.txt",
+          "/themes/README.txt",
+          "/admin/",
+          "/comment/reply/",
+          "/filter/tips",
+          "/node/add/",
+          "/search/",
+          "/search?",
+          "/user/register",
+          "/user/password",
+          "/user/login",
+          "/user/logout",
+          "/media/oembed",
+          "/*/media/oembed",
+          "/index.php/admin/",
+          "/index.php/comment/reply/",
+          "/index.php/filter/tips",
+          "/index.php/node/add/",
+          "/index.php/search/",
+          "/index.php/search?",
+          "/index.php/user/password",
+          "/index.php/user/register",
+          "/index.php/user/login",
+          "/index.php/user/logout",
+          "/index.php/media/oembed",
+          "/index.php/*/media/oembed"
+        ],
+        "sitemaps": []
+      },
+      "sitemaps": [
+        {
+          "url": "https://www.bowwwl.com/sitemap.xml",
+          "status": 200,
+          "index": true,
+          "locs": 3
+        },
+        {
+          "url": "https://www.bowwwl.com/sitemap.xml?page=1",
+          "status": 200,
+          "index": false,
+          "locs": 2000
+        },
+        {
+          "url": "https://www.bowwwl.com/sitemap.xml?page=2",
+          "status": 200,
+          "index": false,
+          "locs": 2000
+        },
+        {
+          "url": "https://www.bowwwl.com/sitemap.xml?page=3",
+          "status": 200,
+          "index": false,
+          "locs": 1314
+        }
+      ],
+      "urlCount": 5314,
+      "discovery": null,
+      "samples": [],
+      "errors": []
+    }
+  ]
+}
