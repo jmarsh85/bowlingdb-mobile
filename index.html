@@ -3302,7 +3302,7 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
     <div id="s-balls" class="screen" data-title="Balls">
       <div class="sec-header">
         <span class="sec-title">Balls</span>
-        <button class="add-btn" onclick="navToBall(null)" title="Add Ball"></button>
+        <button class="add-btn" onclick="openAddBallModal()" title="Add Ball"></button>
       </div>
       <!-- Filter/Sort bar -->
       <div id="balls-filter-bar" style="margin-bottom:12px"></div>
@@ -28139,7 +28139,7 @@ return `
                     : `<div style="font-size:12px;color:var(--t2);margin-bottom:6px">Not downloaded yet. Adding balls works the same without it.</div>`}
           ${line('Last check', when(s.lastAttemptAt))}
           ${s.lastError ? `<div style="font-size:11px;color:var(--red);margin:4px 0 6px;line-height:1.4">Last check failed: ${String(s.lastError).replace(/[<>&]/g,'')}</div>` : ''}
-          ${s.count ? `<button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="catReviewOpen()">Review suggested matches</button>` : ''}
+          ${s.count ? `<button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="catReviewOpen()">Review suggested matches</button><button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="catAuditOpen()">Check linked balls</button>` : ''}
           <button class="btn btn-ghost btn-sm" style="margin-top:6px" id="cat-check-btn"
             onclick="this.disabled=true;this.textContent='Checking…';catCheck({force:true}).then(r=>{toast(r.status==='updated'?('Catalog updated: '+r.count.toLocaleString()+' balls'):r.status==='current'?'Catalog is up to date':('Catalog check failed: '+r.error),3500);openSettingsModal();})">Check for updates</button>
         `;
@@ -33645,7 +33645,13 @@ _bdetRender();
  
 function openBallDetailModal(ballID) { navToBall(ballID); }
 function openEditBallModal(ballID)   { navToBall(ballID); }
-function openAddBallModal()          { navToBall(null); }
+/* v30.157 NEW-11: Add Ball is search-first when a catalog is installed
+   (catalog.js full-screen USBC search, then the form prefilled). With no
+   catalog, or no catalog.js, it opens the plain form exactly as before. */
+function openAddBallModal() {
+if (typeof catOpenAddSearch === 'function' && catOpenAddSearch()) return;
+navToBall(null);
+}
  
 function _bdetRender() {
 const root = document.getElementById('bdet-root');
@@ -34168,7 +34174,10 @@ const fieldMap = {
 'bef-released':  'DateReleased',
 };
 let filled = 0;
+/* v30.157 NEW-11: a USBC-chosen identity on a new ball is not overwritten by AI fills. */
+const _catLocked = (typeof catIdentityLocked === 'function') && catIdentityLocked();
 Object.entries(fieldMap).forEach(([elId, field]) => {
+if (_catLocked && (field === 'BallName' || field === 'MFG')) return;
 const el  = document.getElementById(elId);
 const val = parsed[field];
 if (!el || val == null || val === '') return;
