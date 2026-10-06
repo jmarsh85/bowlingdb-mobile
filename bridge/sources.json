@@ -1,0 +1,18 @@
+{
+  "_note": "Spec bridge probe sources. kind=manufacturer may be crawled for facts; kind=aggregator is probed for robots/sitemap only (D9 c: prototype tier, permission preferred).",
+  "userAgent": "BowlingDB-SpecBridge/0.1 (+https://github.com/jmarsh85/bowlingdb-mobile; personal catalog, 1 req/s)",
+  "delayMs": 1000,
+  "samplePages": 6,
+  "sources": [
+    { "id": "storm",     "kind": "manufacturer", "base": "https://www.stormbowling.com",   "brands": ["Storm", "Roto Grip", "900 Global"] },
+    { "id": "brunswick", "kind": "manufacturer", "base": "https://www.brunswickbowling.com","brands": ["Brunswick"] },
+    { "id": "hammer",    "kind": "manufacturer", "base": "https://www.hammerbowling.com",  "brands": ["Hammer"] },
+    { "id": "dv8",       "kind": "manufacturer", "base": "https://www.dv8bowling.com",     "brands": ["DV8"] },
+    { "id": "radical",   "kind": "manufacturer", "base": "https://www.radicalbowling.com", "brands": ["Radical"] },
+    { "id": "track",     "kind": "manufacturer", "base": "https://www.trackbowling.com",   "brands": ["Track Inc."] },
+    { "id": "ebonite",   "kind": "manufacturer", "base": "https://www.ebonite.com",        "brands": ["Ebonite"] },
+    { "id": "columbia",  "kind": "manufacturer", "base": "https://www.columbia300.com",    "brands": ["Columbia 300"] },
+    { "id": "motiv",     "kind": "manufacturer", "base": "https://www.motivbowling.com",   "brands": ["Motiv"] },
+    { "id": "bowwwl",    "kind": "aggregator",   "base": "https://www.bowwwl.com",         "brands": [] }
+  ]
+}
