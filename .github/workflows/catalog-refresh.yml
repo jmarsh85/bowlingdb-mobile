@@ -30,7 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Code comes from the branch this ran on.
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       # Published artifacts live on their own branch, checked out beside it.
       # Same reasoning as the `balls` branch: a catalog that rewrites weekly
@@ -41,7 +41,7 @@ jobs:
           ref: dist
           path: published
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: '20'
 
