@@ -793,6 +793,10 @@ opacity:1;
 100% { transform:scale(1); opacity:1; }
 }
 .sc-frame.cur .dot.K { animation:scDotPop 0.25s ease; }
+/* v30.156 STK-1: strike racks - hollow pins outlined in the spare/open fill colour */
+.bsk-tri.strike .dot { background:transparent !important; border:1.5px solid var(--teal) !important; box-shadow:none !important; opacity:1 !important; }
+/* v30.156 SC-5: live / Game Complete F10 triangles sit on the same top line as frames 1-9 */
+.sc-grid .sc-bsk.f10 { align-items:flex-start; padding:5px 2px; }
 .sc-atts {
 display:flex; justify-content:center; align-items:center;
 gap:2px; padding:4px 2px;
@@ -2094,6 +2098,15 @@ cursor:pointer; -webkit-tap-highlight-color:transparent;
 transition:background 0.12s;
 }
 .card-del-corner:active { background:rgba(232,93,76,0.28); }
+/* v30.156 LG-1/LG-2: league card meta + right-hand avg/games stack */
+.lg-meta { font-size:12px; color:var(--t2); font-weight:600; margin-top:2px; }
+.lg-stats { display:flex; flex-direction:column; align-items:flex-end; flex-shrink:0; line-height:1.1; }
+.lg-avg { font-size:20px; font-weight:800; color:var(--t1); font-variant-numeric:tabular-nums; }
+.lg-avg small { font-size:11px; font-weight:600; color:var(--t2); margin-left:3px; }
+.lg-games { font-size:11px; font-weight:600; color:var(--t2); margin-top:3px; }
+/* v30.156 RPT-1: per-game Print entry on the Games list */
+.gl-print-chip { font-size:10px; font-weight:700; color:var(--t2); border:1px solid var(--border2); border-radius:8px; padding:2px 8px; cursor:pointer; }
+.gl-print-chip:active { background:var(--bg3); }
 .series-card-actions {
 display:flex; gap:8px; padding:0 0 6px;
 justify-content:flex-end;
@@ -2586,7 +2599,7 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
     </div>
     <div id="hdr-title" onclick="hdrTitleTap()"><span class="brand">Bowling</span>DB</div>
     <div id="hdr-title-popover"></div>
-    <span id="hdr-build-ref">v30.153 · 2026-09-22</span>
+    <span id="hdr-build-ref">v30.156 · 2026-10-06</span>
     <div id="hdr-right">
       <div class="hdr-icon-btn" id="hdr-delete-game-btn" onclick="confirmDeleteGame(G.gameID)" title="Delete Game" style="display:none">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -2782,7 +2795,7 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
             style="display:none;background:transparent;border:none;
             cursor:pointer;padding:4px 6px;border-radius:8px;
             font-size:12px;font-weight:700;color:var(--gold);
-            border:1px solid rgba(255,215,0,0.3)">↺ H</button>
+            border:1px solid rgba(255,215,0,0.3)">↺ HC</button>
           <button id="series-baker-hist-btn" title="Baker Game History" onclick="bakerViewHistory()"
             style="display:none;background:transparent;border:1px solid var(--border2);
             cursor:pointer;padding:5px 8px;border-radius:8px;
@@ -5323,7 +5336,7 @@ const allSeries = (db.series || [])
 .filter(s => s.LeagueID === leagueID)
 .sort((a, b) => (a.DateBowled || '').localeCompare(b.DateBowled || ''));
 if (!allSeries.length) {
-if (btn) { btn.textContent = '↺ H'; btn.disabled = false; }
+if (btn) { btn.textContent = '↺ HC'; btn.disabled = false; }
 toast('No series found');
 return;
 }
@@ -5357,7 +5370,7 @@ cumulativePins  += seriesGames.reduce((sum, g) => sum + g.FinalScore, 0);
 await idbPutAll('series', allSeries);
 saveDB();
 renderSeriesList();
-if (btn) { btn.textContent = '↺ H'; btn.disabled = false; }
+if (btn) { btn.textContent = '↺ HC'; btn.disabled = false; }
 toast(`Handicap updated — ${snapshotCount} series`);
 }
 
@@ -6492,6 +6505,15 @@ window._homeHighSeriesID = highSeriesID;
 let G_showArchived = false; 
 function renderLeagues() {
 const el = document.getElementById('leagues-list');
+/* v30.156 LG-1: s-leagues is not a SCORING_SCREEN, so games may not be in
+   memory yet. Load once in the background and re-render; the card renders
+   without the avg/games stack until then. */
+if (!_scoringLoaded) {
+  loadScoringData().then(() => {
+    if (document.getElementById('s-leagues')?.classList.contains('active')) renderLeagues();
+  });
+}
+const _lgPool = (_scoringLoaded && db.games.length) ? standardGamePool() : [];
 const all = db.leagues;
 const visible = all.filter(l => !l._virtual && (G_showArchived || !l.Archived));
 let html = `<div class="show-archived-row">
@@ -6517,12 +6539,16 @@ return b.LeagueID - a.LeagueID;
 sorted.forEach(l => {
 const center = db.centers.find(c=>c.CenterID===l.CenterID);
 const sCount = db.series.filter(s=>s.LeagueID===l.LeagueID).length;
+/* v30.156 LG-1: Nwk / N series dropped from the meta line. */
 const meta = [
 center?.CenterName,
-l.DayOfBowling,
-l.Weeks ? `${l.Weeks}wk`: null,
-sCount ? `${sCount} series`: null
+l.DayOfBowling
 ].filter(Boolean).join(' · ');
+/* v30.156 LG-1: season-to-date league avg over the standard game pool
+   (same pool as the dashboard), Math.floor, plus completed-game count. */
+const _lgSids = new Set(db.series.filter(s=>s.LeagueID===l.LeagueID).map(s=>s.SeriesID));
+const _lgGames = _lgPool.filter(g => _lgSids.has(g.SeriesID));
+const _lgAvg = _lgGames.length ? Math.floor(_lgGames.reduce((a,g)=>a+g.FinalScore,0)/_lgGames.length) : null;
 
 const leagueSeries = db.series.filter(s=>s.LeagueID===l.LeagueID)
 .sort((a,b)=>(b.DateBowled||'').localeCompare(a.DateBowled||''));
@@ -6540,7 +6566,6 @@ const leagueBarClass  = l.Archived ? 'card-neutral'
 : leagueHasSeries ? '' 
 : 'card-neutral';
 html += `<div class="series-card-wrap">
-      <button class="card-del-corner" onclick="confirmDeleteLeague(${l.LeagueID});event.stopPropagation()" title="Delete">−</button>
       <div class="series-card${l.Archived?' league-archived':''}${leagueBarClass?' '+leagueBarClass:''}" onclick="selectLeague(${l.LeagueID})">
         <div class="series-hdr" style="align-items:flex-start">
           <div>
@@ -6548,17 +6573,18 @@ html += `<div class="series-card-wrap">
               ${l.LeagueName}
               ${l.Archived?'<span class="archived-badge">archived</span>':''}
             </div>
-            <div class="list-row-meta" style="margin-top:2px">${meta}</div>
+            <div class="lg-meta">${meta}</div>
           </div>
-          <div style="display:flex;gap:8px;align-items:center">
-            ${l.GamesPerSeries ? `<span class="pill pill-teal" style="font-size:10px">${l.GamesPerSeries}G</span>`: ''}
-          </div>
+          ${_lgGames.length ? `<div class="lg-stats">
+            <div class="lg-avg">${_lgAvg}<small>avg</small></div>
+            <div class="lg-games">${_lgGames.length} game${_lgGames.length===1?'':'s'}</div>
+          </div>`: ''}
         </div>
       </div>
       <div class="series-card-actions">
-        <div class="sc-act-btn stats-btn" onclick="openLeagueStatsModal(${l.LeagueID})">📊 Stats</div>
+        <div class="sc-act-btn stats-btn" onclick="openLeagueStatsModal(${l.LeagueID})">Stats</div>
         ${(()=>{ const hasBeer = db.series.filter(s=>s.LeagueID===l.LeagueID).some(s=>(s.beerLog||[]).length>0) || grpLoadAll().some(sess=>sess.leagueID===l.LeagueID && sess.games.some(g=>g.beerFrames?.length)); return hasBeer ? `<div class="sc-act-btn" onclick="openLeagueBeerModal(${l.LeagueID});event.stopPropagation()" style="color:var(--gold);border-color:rgba(255,215,0,0.3)">🍺</div>`: ''; })()}
-        <div class="sc-act-btn" onclick="openLeagueHandicap(${l.LeagueID});event.stopPropagation()" style="color:var(--gold);border-color:rgba(255,215,0,0.3)">H</div>
+        <div class="sc-act-btn" onclick="openLeagueHandicap(${l.LeagueID});event.stopPropagation()" style="color:var(--gold);border-color:rgba(255,215,0,0.3)">HC</div>
         <div class="sc-act-btn edit" onclick="openEditLeagueModal(${l.LeagueID})">⋯</div>
         <div class="sc-act-btn" onclick="toggleArchiveLeague(${l.LeagueID})">${l.Archived?'Unarchive':'Archive'}</div>
       </div>
@@ -6578,9 +6604,42 @@ openModal(`
       <span style="color:var(--t3)">${seriesCount} series · ${gameIDs.length} games and all frame/attempt records</span><br><br>
       <strong>This cannot be undone.</strong>
     </div>
-    <button class="btn" style="background:var(--red);color:#fff;font-weight:700;margin-bottom:8px" onclick="deleteLeague(${leagueID})">Delete ${l.LeagueName}</button>
+    <div class="fgroup"><label class="flabel">Type the league name to confirm</label>
+      <input class="finput" id="dl-confirm" type="text" autocomplete="off" autocapitalize="off" spellcheck="false"
+        placeholder="${l.LeagueName}" oninput="_dlConfirmCheck(${leagueID})"></div>
+    <button class="btn" id="dl-go" disabled style="background:var(--red);color:#fff;font-weight:700;margin-bottom:8px;opacity:.35" onclick="if(!this.disabled)deleteLeague(${leagueID})">Delete ${l.LeagueName}</button>
     <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
   `);
+}
+/* v30.156 LG-3: league delete cascades every series, so it is gated on
+   typing the league name (trimmed, case-insensitive). */
+function _dlConfirmCheck(leagueID) {
+const l = db.leagues.find(x=>x.LeagueID===leagueID);
+const inp = document.getElementById('dl-confirm');
+const btn = document.getElementById('dl-go');
+if (!l || !inp || !btn) return;
+const ok = inp.value.trim().toLowerCase() === String(l.LeagueName||'').trim().toLowerCase();
+btn.disabled = !ok; btn.style.opacity = ok ? '1' : '.35';
+}
+/* v30.156 RPT-1: Game/Series Print-Export lives in report.js (same-origin,
+   like devkit.js). Phase 1 coverage: League, Open, Tournament; NoTap and
+   Baker are excluded until phase 2. */
+function rptEligible(seriesID) {
+const open = (db.openSessions||[]).find(x=>x.SessionID===seriesID);
+const s = open || db.series.find(x=>x.SeriesID===seriesID);
+if (!s || s.NoTap) return false;
+if (!open) {
+  const lg = db.leagues.find(l=>l.LeagueID===s.LeagueID);
+  if (lg?.BakerFormat) return false;
+  const tn = s.TournamentID != null ? (db.tournaments||[]).find(x=>x.TournamentID===s.TournamentID) : null;
+  if (tn?.BakerFormat) return false;
+}
+return db.games.some(g=>g.SeriesID===seriesID && !g.IsTeammate && !g.NoTap);
+}
+function rptLaunch(seriesID, gameID) {
+if (typeof rptOpen !== 'function') { toast('Report unavailable: report.js did not load. Upload it next to index.html.'); return; }
+closeModal();
+rptOpen(seriesID, { gameID: gameID || null });
 }
 async function deleteLeague(leagueID) {
 
@@ -6965,12 +7024,12 @@ return `<div style="padding:7px 2px 4px;border-top:1px solid var(--border1);marg
         <div class="series-mini-sc" id="mini-sc-${s.SeriesID}" onclick="event.stopPropagation()"></div>
       </div>
       <div class="series-card-actions">
-        <div class="sc-act-btn stats-btn" onclick="openSeriesStatsModal(${s.SeriesID});event.stopPropagation()">📊 Stats</div>
+        <div class="sc-act-btn stats-btn" onclick="openSeriesStatsModal(${s.SeriesID});event.stopPropagation()">Stats</div>
         ${scores.length ? `<div class="sc-act-btn reflect-split">
-          <span class="reflect-half" onclick="openReflectSessionModal(${s.SeriesID});event.stopPropagation()">🗒️ Session</span>
+          <span class="reflect-half" onclick="openReflectSessionModal(${s.SeriesID});event.stopPropagation()">Session</span>
           <span class="reflect-half" onclick="openReflectFramesModal(${s.SeriesID});event.stopPropagation()">Frames</span>
         </div>`: ''}
-        ${scores.length ? `<div class="sc-act-btn ai-btn" onclick="openSeriesDebriefModal(${s.SeriesID});event.stopPropagation()">🤖 Debrief</div>`: ''}
+        ${scores.length ? `<div class="sc-act-btn ai-btn" onclick="openSeriesDebriefModal(${s.SeriesID});event.stopPropagation()">Debrief</div>`: ''}
         <div class="sc-act-btn edit" onclick="openEditSeriesModal(${s.SeriesID});event.stopPropagation()">⋯</div>
       </div>
     </div>`;
@@ -7113,12 +7172,11 @@ else html += '<div class="f10-cell"><div style="height:24px"></div></div>';
 } else {
 const a1=atts.find(a=>a.Attempt===1), a2=atts.find(a=>a.Attempt===2);
 let bsk = null;
-if (fr.Strike && a1) bsk = a1.BSK_Progressive;
-else if (a2) bsk = a2.BSK_Progressive;
+if (fr.Strike && a1) bsk = a1.BSK_Progressive ? BSK_STRIKE : null;
+else if (a2) bsk = bskShow(a2.BSK_Progressive, false);
 else if (a1) bsk = a1.BSK_Progressive;
 html += bsk ? bskTriangleHTML(bsk,false) : '<div style="height:24px"></div>';
-
-if (!fr.Strike) html += frameLeaveTextHTML(fr, atts);
+/* v30.156 SC-6: leave text removed from every scorecard */
 }
 html += `</div>`;
 
@@ -7458,8 +7516,8 @@ function selectFrameBSKStatic(fr, atts) {
 const a1 = atts.find(a=>a.Attempt===1);
 const a2 = atts.find(a=>a.Attempt===2);
 if (!a1 || a1.Pinfall===null) return null;
-if (fr.Strike) return a1.BSK_Progressive ? 'BBBBBBBBBB': null; 
-if (a2?.Pinfall!=null) return a2.BSK_Progressive; 
+if (fr.Strike) return a1.BSK_Progressive ? BSK_STRIKE : null; 
+if (a2?.Pinfall!=null) return bskShow(a2.BSK_Progressive, false); 
 return a1.BSK_Progressive;                        
 }
 function openEditGameModal(gameID) {
@@ -11540,8 +11598,11 @@ lblEl.textContent = `Pins Knocked This Attempt`;
 
 
 
-function _bskStrikeTri(bsk) { return bsk ? 'BBBBBBBBBB': bsk; }
+function _bskStrikeTri(bsk) { return bsk ? BSK_STRIKE : bsk; }
 function getF10BSKSlots(atts, _unused) {
+return _getF10BSKSlotsRaw(atts, _unused).map(b => b === BSK_STRIKE ? b : bskShow(b, false));
+}
+function _getF10BSKSlotsRaw(atts, _unused) {
 const a1 = atts.find(a => a.Attempt === 1);
 const a2 = atts.find(a => a.Attempt === 2);
 const a3 = atts.find(a => a.Attempt === 3);
@@ -11696,7 +11757,7 @@ html += `<div class="sc-bsk">`;
 const bskToShow = selectFrameBSK(fr, atts, isCur, isComplete);
 html += bskToShow ? bskTriangleHTML(bskToShow, false) : '<div style="height:32px"></div>';
 
-if (!fr.Strike && !isCur) html += frameLeaveTextHTML(fr, atts);
+/* v30.156 SC-5: leave text removed from the live / Game Complete scorecard */
 html += `</div>`;
 }
 
@@ -11787,10 +11848,10 @@ if (fr.Strike) {
 
 
 
-return a1.BSK_Progressive ? 'BBBBBBBBBB': null;
+return a1.BSK_Progressive ? BSK_STRIKE : null;
 }
 if (a2 && a2.Pinfall !== null && a2.BSK_Progressive) {
-return a2.BSK_Progressive;
+return bskShow(a2.BSK_Progressive, false);
 }
 
 return a1.BSK_Progressive || null;
@@ -11853,6 +11914,7 @@ return standing.join('·');
 }
  
 function frameLeaveTextHTML(fr, atts) {
+return ''; /* v30.156 SC-6: leave text retired from all scorecards */
 if (!fr || fr.Strike) return ''; 
 const a1 = atts.find(a=>a.Attempt===1);
 if (!a1 || a1.Pinfall === null) return '';
@@ -11865,11 +11927,38 @@ return `<div style="font-size:8px;font-weight:700;color:${color};
     text-align:center;line-height:1.2;padding:1px 0;
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${text}</div>`;
 }
+/* v30.156 STK-2: display-only BSK forms, resolved by callers that know the
+   ball's role. BSK_STRIKE = strike rack. A non-strike ball whose string says
+   all ten fell (gutter then spare: 0 then 10) shows as ten converted pins,
+   so it can never be mistaken for a strike or an empty rack.
+     strike          -> hollow outlined rack
+     gutter + spare  -> ten converted pins (K)
+     double gutter   -> ten standing pins (S), filled */
+var BSK_STRIKE = 'XXXXXXXXXX';
+function bskShow(bsk, isStrike) {
+if (!bsk) return bsk;
+if (isStrike) return BSK_STRIKE;
+if (/^(B{10}|K{10})$/.test(bsk)) return 'KKKKKKKKKK';
+return bsk;
+}
+/* F10 / Baker / team-bowl helper: is ball i (0-based) a strike on a fresh rack? */
+function bskBallIsStrike(pins, i) {
+if (pins[i] !== 10) return false;
+if (i === 0) return true;
+if (i === 1) return pins[0] === 10;
+if (i === 2) return (pins[0] === 10 && pins[1] === 10) || (pins[0] !== 10 && (pins[0] + pins[1]) === 10);
+return false;
+}
 function bskTriangleHTML(bsk, tiny) {
 if (!bsk || bsk.length < 10) return '';
 const p = bsk.split('');
 const d = c => `<div class="dot ${c}"></div>`;
-return `<div class="bsk-tri${tiny?' tiny':''}">
+/* v30.156 STK-1: strikes render from the display-only BSK_STRIKE token
+   (never stored): every pin hollow, outlined in the leave-fill colour.
+   Stored strike strings (BBBBBBBBBB / KKKKKKKKKK) are NOT detected here,
+   because a gutter-then-spare second ball stores the same string. */
+const isStrikeRack = bsk === BSK_STRIKE;
+return `<div class="bsk-tri${tiny?' tiny':''}${isStrikeRack?' strike':''}">
     <div class="bsk-row-m">${d(p[6])}${d(p[7])}${d(p[8])}${d(p[9])}</div>
     <div class="bsk-row-m">${d(p[3])}${d(p[4])}${d(p[5])}</div>
     <div class="bsk-row-m">${d(p[1])}${d(p[2])}</div>
@@ -16563,6 +16652,7 @@ return `
               </div>
               <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
                 <div style="font-size:26px;font-weight:800;color:${scoreColor};line-height:1">${g.FinalScore}</div>
+                ${hasFrameData && !g.league?.BakerFormat ? `<div class="gl-print-chip" onclick="event.stopPropagation();rptLaunch(${g.SeriesID}, ${g.GameID})">Print</div>`: ''}
                 ${_focusPerRow ? `<div style="font-size:11px;font-weight:700;color:var(--teal);background:rgba(0,217,217,0.1);border-radius:999px;padding:1px 7px;white-space:nowrap">${_focusMeta.label} ${_ldFocusGameVal(_focusKey, g.GameID)}</div>` : ''}
                 ${primaryBall ? `<img src="${getBallImgSrc(primaryBall.BallID,'cover')||''}" alt="${primaryBall.BallName}"
                   style="width:28px;height:28px;border-radius:50%;object-fit:cover${getBallImgSrc(primaryBall.BallID,'cover')?'':';display:none'}"
@@ -18846,7 +18936,7 @@ return `<div class="series-card-wrap">
         <div class="open-session-games">${badges}</div>
       </div>
       <div class="series-card-actions">
-        ${hasGames ? `<div class="sc-act-btn stats-btn" onclick="openOpenSessionStatsModal(${s.SessionID});event.stopPropagation()">📊 Stats</div>`: ''}
+        ${hasGames ? `<div class="sc-act-btn stats-btn" onclick="openOpenSessionStatsModal(${s.SessionID});event.stopPropagation()">Stats</div>`: ''}
         <div class="sc-act-btn edit" onclick="openEditOpenSessionModal(${s.SessionID});event.stopPropagation()">⋯</div>
       </div>
     </div>`;
@@ -18914,6 +19004,7 @@ openModal(`
     <div class="fgroup"><label class="flabel">Notes</label>
       <input class="finput" id="eos-notes" type="text" value="${s.Notes||''}"></div>
     <button class="btn btn-primary" onclick="saveOpenSessionEdits(${sessionID})">Save Changes</button>
+    ${rptEligible(sessionID) ? `<button class="btn btn-ghost btn-sm" style="width:100%;margin-top:8px" onclick="rptLaunch(${sessionID})">Print / export report</button>`: ''}
     <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
   `);
 }
@@ -19321,8 +19412,8 @@ return `<div class="series-card-wrap">
         <div class="series-mini-sc" id="mini-sc-${s.SeriesID}" onclick="event.stopPropagation()"></div>
       </div>
       <div class="series-card-actions">
-        <div class="sc-act-btn stats-btn" onclick="openSeriesStatsModal(${s.SeriesID});event.stopPropagation()">📊 Stats</div>
-        ${scores.length ? `<div class="sc-act-btn ai-btn" onclick="openSeriesDebriefModal(${s.SeriesID});event.stopPropagation()">🤖 Debrief</div>`: ''}
+        <div class="sc-act-btn stats-btn" onclick="openSeriesStatsModal(${s.SeriesID});event.stopPropagation()">Stats</div>
+        ${scores.length ? `<div class="sc-act-btn ai-btn" onclick="openSeriesDebriefModal(${s.SeriesID});event.stopPropagation()">Debrief</div>`: ''}
         <div class="sc-act-btn edit"      onclick="openEditSeriesModal(${s.SeriesID});event.stopPropagation()">⋯</div>
       </div>
     </div>`;
@@ -19610,6 +19701,7 @@ openModal(`
     <button class="btn btn-primary" onclick="saveLeague(${id||'null'})">${isEdit?'Save Changes':'Create League'}</button>
     ${isEdit?'':'<button class="btn btn-secondary" onclick="closeModal()">Cancel</button>'}
     ${isEdit?`<button class="btn btn-secondary" onclick="closeModal()">Cancel</button>`:''}
+    ${isEdit?`<button class="btn" style="background:transparent;color:var(--red);border:1px solid rgba(232,93,76,0.35);margin-top:18px" onclick="confirmDeleteLeague(${id})">Delete league</button>`:''}
   `);
 setTimeout(()=>document.getElementById('ml-name')?.focus(), 350);
 }
@@ -19749,6 +19841,7 @@ openModal(`
       border-color:rgba(255,215,0,0.3)" onclick="transferSeriesToNoTap(${id})">
       ✦ Move to NoTap Games list
     </button>`: ''}
+    ${isEdit && rptEligible(id) ? `<button class="btn btn-ghost btn-sm" style="width:100%;margin-top:8px" onclick="rptLaunch(${id})">Print / export report</button>`: ''}
     <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
   `);
 setTimeout(()=>{
@@ -22777,10 +22870,12 @@ html += '<div class="sc-frame"><div class="sc-fn">'+fr+'</div>';
 html += '<div class="sc-bsk'+(isF10?' f10':'')+'">';
 if (atts.length) {
 if (isF10) {
-atts.forEach(function(a){ html += '<div class="f10-cell">' + (bskTriangleHTML(a.bsk, false) || '') + '</div>'; });
+var _bkPins = atts.map(function(a){ return a.pins; });
+atts.forEach(function(a, i){ html += '<div class="f10-cell">' + (bskTriangleHTML(bskShow(a.bsk, bskBallIsStrike(_bkPins, i)), false) || '') + '</div>'; });
 } else {
 var shown = atts.length > 1 ? atts[1] : atts[0];
-html += bskTriangleHTML(shown.bsk, false) || '<div style="height:24px"></div>';
+var _bkShow = atts[0].pins === 10 ? bskShow(atts[0].bsk, true) : bskShow(shown.bsk, false);
+html += bskTriangleHTML(_bkShow, false) || '<div style="height:24px"></div>';
 }
 } else {
 html += '<div style="height:24px"></div>';
@@ -26308,7 +26403,7 @@ meta: {
 kind: 'bowlingdb-snapshot',
 snapshotVersion: 1,
 exportDate: new Date().toISOString(),
-exportSource: 'BowlingDB PWA v30.153',
+exportSource: 'BowlingDB PWA v30.156',
 includesBallImages: !!includeBallImages,
 excluded: Array.from(SNAPSHOT_LS_SKIP)
 },
@@ -28199,6 +28294,7 @@ rules.push(`.dot.B { background:${cp.B} !important; border-color:${cp.B} !import
 }
 if (isColor(cp.S)) {
 rules.push(`.dot.S { background:${cp.S} !important; border-color:${cp.S} !important; box-shadow:0 0 3px ${cp.S}80; }`);
+rules.push(`.bsk-tri.strike .dot { border-color:${cp.S} !important; }`);
 }
 
 const kFill = isColor(cp.K)  ? cp.K  : null;
@@ -29903,7 +29999,8 @@ if (fr && atts.length > 0) {
 if (isF10) {
 
 const slots = [];
-atts.forEach(att => { if (att.bsk && att.bsk.length===10 && !att.numericEntry) slots.push(att.bsk); });
+const _tbPins = atts.map(att => att.pins);
+atts.forEach((att, i) => { if (att.bsk && att.bsk.length===10 && !att.numericEntry) slots.push(bskShow(att.bsk, bskBallIsStrike(_tbPins, i))); });
 if (slots.length) {
 const tiny = slots.length >= 2;
 bskHtml = slots.map(b=>bskTriangleHTML(b,tiny)).join('');
@@ -29917,7 +30014,7 @@ const color = isSpare ? 'var(--teal)': 'var(--red)';
 leaveHtml = `<div class="gs-leave" style="color:${color}">${remaining} left</div>`;
 }
 } else if (a1?.bsk && a1.bsk.length===10) {
-bskHtml = bskTriangleHTML(a1.bsk, false);
+bskHtml = bskTriangleHTML(bskShow(a1.bsk, isStrike), false);
 
 const lt = bskLeaveText(a1.bsk);
 if (lt && !isStrike) {
@@ -29955,7 +30052,6 @@ const ballHtml = ball?.ImagePath
 return `<div class="gs-frame${isF10?' style=\"grid-column:span 2\"':''}">
       <div class="gs-fn">${fn}</div>
       <div class="gs-bsk${isF10?' f10':''}">${bskHtml}</div>
-      ${leaveHtml}
       <div class="gs-atts">${attHtml}</div>
       ${ballHtml}
       <div class="gs-tot${rt==null?' pend':''}">${rt??'—'}</div>
@@ -30082,7 +30178,7 @@ const card = `<div class="series-card-wrap">
         <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">${badges}</div>
       </div>
       <div class="series-card-actions">
-        ${scores.length ? `<div class="sc-act-btn stats-btn" onclick="openSeriesStatsModal(${s.SeriesID});event.stopPropagation()">📊 Stats</div>`: ''}
+        ${scores.length ? `<div class="sc-act-btn stats-btn" onclick="openSeriesStatsModal(${s.SeriesID});event.stopPropagation()">Stats</div>`: ''}
         <div class="sc-act-btn edit" onclick="openEditSeriesModal(${s.SeriesID});event.stopPropagation()">⋯</div>
       </div>
     </div>`;
@@ -36806,5 +36902,6 @@ _editStatus:'', _editPriority:1, _newSnap:null, _newStatus:'tbd', _editCat:'note
 var _DKM_STATUS_LABELS = {ok:'🟢 Working',partial:'🟡 Partial',broken:'🔴 Broken',tbd:'⚪ TBD'};
 </script>
 <script src="devkit.js"></script>
+<script src="report.js"></script>
 </body>
 </html>
