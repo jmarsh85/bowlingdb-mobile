@@ -1,0 +1,48 @@
+name: specs-probe
+# Spec bridge stage 0: source survey. Manual only. Writes probe/ to the
+# orphan `specs` branch (created on first run). Never touches main or dist.
+on:
+  workflow_dispatch:
+    inputs:
+      since:
+        description: 'Measure discovery against USBC approvals from this year'
+        default: '2023'
+      only:
+        description: 'Probe one source id only (blank = all)'
+        default: ''
+permissions:
+  contents: write
+concurrency: { group: specs-branch, cancel-in-progress: false }
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/checkout@v5
+        with: { ref: dist, path: published }
+      - uses: actions/setup-node@v5
+        with: { node-version: 22 }
+      - name: Tests
+        run: node catalog/bridge/probe_test.js
+      - name: Probe
+        run: |
+          ARGS="--index published/index.json --out out --since ${{ inputs.since }}"
+          if [ -n "${{ inputs.only }}" ]; then ARGS="$ARGS --only ${{ inputs.only }}"; fi
+          node catalog/bridge/probe.js $ARGS
+          cat out/SUMMARY.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Commit to specs branch
+        run: |
+          git config --global user.name  "specs-bridge"
+          git config --global user.email "specs-bridge@users.noreply.github.com"
+          if git ls-remote --exit-code --heads origin specs >/dev/null; then
+            git clone --depth 1 --branch specs "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" specs
+          else
+            mkdir specs && cd specs && git init -b specs && \
+              git remote add origin "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" && cd ..
+          fi
+          rm -rf specs/probe && mkdir -p specs/probe && cp -r out/. specs/probe/
+          cd specs && git add -A
+          if git diff --cached --quiet; then echo "No change"; exit 0; fi
+          git commit -m "probe: $(date -u +%F) since ${{ inputs.since }}"
+          git push origin specs
