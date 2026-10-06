@@ -1,5 +1,7 @@
 /* =====================================================================
-   BowlingDB catalog.js  -  NEW-11 Ball Catalog, steps 4-5: cache + picker
+   BowlingDB catalog.js  -  NEW-11 Ball Catalog: cache, picker, linking,
+   v30.158: Add a Ball (search -> detail sheet -> Add to Arsenal), detail
+   shards (CAT-6), Fill from catalog, MET-1 Strength/Shape.
    Same-origin module loaded after index.html's main script, like
    devkit.js and report.js.
 
@@ -33,7 +35,7 @@
 (function (root) {
 'use strict';
 
-var CAT_VERSION  = 'v30.157';
+var CAT_VERSION  = 'v30.158';
 var CAT_BASE     = 'https://raw.githubusercontent.com/jmarsh85/bowlingdb-mobile/dist/';
 var CAT_DB       = 'BowlingDB_Catalog';
 var CAT_DB_VER   = 1;
@@ -189,6 +191,7 @@ function catCheck(opts) {
     })
     .then(function (manifest) {
       if (!manifest || !manifest.build || !manifest.files) throw new Error('manifest is malformed');
+      writeMeta({ files: detailFiles(manifest) });   /* CAT-6: shard hashes for catDetail() */
       if (manifest.build === meta.build && meta.count > 0) {
         writeMeta({ lastError: null, listVersion: manifest.listVersion || meta.listVersion });
         return { status: 'current', build: manifest.build };
@@ -373,20 +376,12 @@ function pickerBodyHTML(rows) {
       'Enter details below as usual, or download it in Settings → Ball Catalog.</div>';
   }
   var cur = byIdIn(rows, _pick.id);
-  if (_pick.isNew) {
-    if (_pick.id && cur) {
-      return '<div style="display:flex;align-items:center;gap:8px">' +
-        '<div style="flex:1;min-width:0;font-size:13px;color:var(--t1)">✓ From USBC list: ' + entryLine(cur) + '</div>' +
-        '<button style="' + BTN_G + '" onclick="catOpenAddSearch(true)">Change</button></div>' +
-        '<div id="cat-spec-note" style="font-size:11px;color:var(--t3);margin-top:6px;line-height:1.5">' + esc(_specNote) + '</div>';
-    }
-    return '<button style="' + BTN_P + 'width:100%;padding:9px" onclick="catOpenAddSearch(true)">🔎 Search USBC list</button>';
-  }
   if (_pick.id) {
     return '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">' +
       '<div style="flex:1;min-width:0;font-size:13px;color:var(--t1)">✓ ' +
         (cur ? entryLine(cur) : '<span style="color:var(--t3)">' + esc(_pick.id) + ' (not in current catalog)</span>') + '</div>' +
-      '<button style="' + BTN_G + '" onclick="catUnlink()">Unlink</button></div>';
+      '<button style="' + BTN_G + '" onclick="catUnlink()">Unlink</button></div>' +
+      '<div id="cat-fill-row"></div>';
   }
   var sug = '';
   if (!_pick.isNew && _pick.ball) {
@@ -415,7 +410,7 @@ function resultsHTML(list, q) {
 function renderPicker() {
   var body = document.getElementById('cat-pick-body');
   if (!body) return;
-  catLoad().then(function (rows) { body.innerHTML = pickerBodyHTML(rows); });
+  catLoad().then(function (rows) { body.innerHTML = pickerBodyHTML(rows); renderFillRow(); });
 }
 
 /* Called by index.html right after the edit form renders. b is null on Add. */
@@ -428,41 +423,12 @@ function catPickerMount(b) {
   g.id = 'cat-pick-group';
   g.innerHTML = '<div class="bdet-field-label">USBC Catalog</div><div id="cat-pick-body"></div>';
   pane.insertBefore(g, pane.firstChild);
-  if (_pick.isNew && _pendingAdd) {
-    var pid = _pendingAdd; _pendingAdd = null;
-    applyAddPick(pid);
-  } else {
-    renderPicker();
-  }
+  _filled = {};
+  renderPicker();
 }
 
-/* ---- search-first Add (v30.157 redesign) ---- */
-var _pendingAdd = null;
-var _specNote = '';
-
-function applyAddPick(id) {
-  catLoad().then(function (rows) {
-    var e = byIdIn(rows, id);
-    if (!e) { renderPicker(); return; }
-    _pick.touched = true; _pick.id = e.i;
-    var n = document.getElementById('bef-name'), m = document.getElementById('bef-mfg');
-    if (n) n.value = e.n;
-    if (m) m.value = e.m;
-    var hasKey = false;
-    try { hasKey = !!env.ls().getItem('bowlingdb_ai_key'); } catch (x) {}
-    var canFetch = hasKey && typeof root._bdetFetchFromName === 'function';
-    _specNote = canFetch ? 'Fetching specs with AI…'
-                         : 'Specs not auto-filled: add an AI key in Settings, or use Paste Specs below.';
-    renderPicker();
-    if (!canFetch) return;
-    Promise.resolve(root._bdetFetchFromName()).then(function () {
-      _specNote = 'Specs below are AI-fetched and approximate. Check the confidence colours (and the bowlingball.com page) before saving.';
-      var el = document.getElementById('cat-spec-note');
-      if (el) el.textContent = _specNote;
-    });
-  });
-}
-
+/* v30.158: CAT-5d (search-first into the old form + automatic AI fetch) removed;
+   Add a Ball lives in the ADD-1..3 block below. */
 /* While a USBC entry is chosen on a NEW ball, name/mfg come from the
    catalog and AI spec fills must not overwrite them. */
 function catIdentityLocked() {
@@ -477,72 +443,6 @@ function ownedIndex(rows) {
     keyed[modelKey(b.MFG, b.BallName)] = 1;
   });
   return { linked: linked, keyed: keyed };
-}
-
-function addResultsHTML(list, q, owned) {
-  if (!q || q.replace(/\s/g, '').length < 2) {
-    return '<div style="font-size:12px;color:var(--t3);padding:14px 4px;line-height:1.6">Type a ball name, optionally with the brand ' +
-      '(e.g. <i>hy road</i>, <i>storm phaze</i>, <i>track theorem</i>).</div>';
-  }
-  if (!list.length) return '<div style="font-size:13px;color:var(--t2);padding:14px 4px">No match in the USBC list.</div>';
-  return list.map(function (e) {
-    var mine = owned && (owned.linked[e.i] || owned.keyed[e.k]);
-    var meta = [esc(e.m)];
-    if (e.y) meta.push('USBC ' + esc(e.y));
-    if (/-u13$/.test(e.i)) meta.push('under 13 lb');
-    return '<div onclick="catAddPick(\'' + esc(e.i) + '\')" style="padding:11px 4px;border-bottom:1px solid var(--border1);cursor:pointer">' +
-      '<div style="font-size:15px;font-weight:600;color:var(--t1)">' + esc(e.n) +
-        (mine ? ' <span style="font-size:10px;font-weight:700;color:var(--teal);border:1px solid rgba(0,217,217,0.35);border-radius:6px;padding:1px 5px;margin-left:4px">IN YOUR ARSENAL</span>' : '') + '</div>' +
-      '<div style="font-size:12px;color:var(--t2);margin-top:2px">' + meta.join(' · ') + '</div></div>';
-  }).join('');
-}
-
-/* Opens the full-screen search. Returns false (caller falls back to the
-   plain form) when no catalog is installed: the catalog is never a gate. */
-function catOpenAddSearch(fromForm) {
-  if (typeof document === 'undefined') return false;
-  if (!fromForm && !(catStatus().count > 0)) return false;
-  catCloseAddSearch();
-  var s = catStatus();
-  var ov = document.createElement('div');
-  ov.id = 'cat-search-ov';
-  ov.setAttribute('style', 'position:fixed;inset:0;z-index:900;background:var(--bg0);display:flex;flex-direction:column;' +
-    'padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)');
-  ov.innerHTML =
-    '<div style="display:flex;align-items:center;gap:10px;padding:12px 14px 8px">' +
-      '<button onclick="catCloseAddSearch()" style="background:none;border:none;color:var(--teal);font-size:24px;cursor:pointer;padding:0 6px">‹</button>' +
-      '<div style="font-size:18px;font-weight:700;color:var(--t1)">Add Ball</div></div>' +
-    '<div style="padding:0 14px 6px">' +
-      '<input id="cat-add-q" class="bdet-field-input" type="search" placeholder="Search USBC-approved balls"' +
-      ' autocomplete="off" autocorrect="off" autocapitalize="off" oninput="catAddSearch(this.value)" style="width:100%;font-size:16px">' +
-      '<div style="font-size:11px;color:var(--t3);margin-top:5px">' +
-        (s.count ? esc(s.count.toLocaleString()) + ' balls · USBC list ' + esc(s.listVersion || '') : 'Catalog not downloaded yet') + '</div></div>' +
-    '<div id="cat-add-results" style="flex:1;overflow-y:auto;padding:0 14px;-webkit-overflow-scrolling:touch">' + addResultsHTML([], '') + '</div>' +
-    '<div style="padding:10px 14px;border-top:1px solid var(--border1)">' +
-      '<button onclick="catAddManual()" style="' + BTN_G + 'width:100%;padding:11px;font-size:13px">Can\'t find it? Enter manually</button></div>';
-  document.body.appendChild(ov);
-  setTimeout(function () { var q = document.getElementById('cat-add-q'); if (q) q.focus(); }, 50);
-  return true;
-}
-function catCloseAddSearch() {
-  var ov = typeof document !== 'undefined' && document.getElementById('cat-search-ov');
-  if (ov) ov.parentNode.removeChild(ov);
-}
-function catAddSearch(q) {
-  catLoad().then(function (rows) {
-    var box = document.getElementById('cat-add-results');
-    if (box) box.innerHTML = addResultsHTML(searchIn(rows, q, 40), q, ownedIndex(rows));
-  });
-}
-function catAddPick(id) {
-  catCloseAddSearch();
-  _pendingAdd = id;
-  if (root.navToBall) root.navToBall(null);
-}
-function catAddManual() {
-  catCloseAddSearch();
-  _pendingAdd = null;
-  if (root.navToBall) root.navToBall(null);
 }
 
 function catPickerSearch(q) {
@@ -693,20 +593,573 @@ function catAuditOpen() {
   });
 }
 
+/* =====================================================================
+   v30.158 NEW-11: ADD-1..3 standalone Add a Ball, CAT-6 detail shards,
+   MET-1 Strength/Shape. Locked: DESIGN_add_ball_flow.md rev 5.
+   - Search -> detail sheet -> Add to Arsenal. Replaces CAT-5d (the
+     search-into-old-form path and its automatic AI spec fetch).
+   - The old form is Edit Ball + "Enter manually" only.
+   - Specs come only from the published catalog shards. Nothing here
+     guesses: a missing value is shown as a dash and stored as null.
+   ===================================================================== */
+
+/* ---------- CAT-6: detail shards ---------- */
+function detailFiles(manifest) {
+  var out = {};
+  var f = (manifest && manifest.files) || {};
+  for (var k in f) if (/^detail\//.test(k) && f[k] && f[k].hash) out[k] = { hash: f[k].hash };
+  return out;
+}
+/* manufacturer -> shard key, matched on the normalized file stem */
+function shardKeyFor(files, mfg) {
+  var want = norm(canonicalMfg(mfg));
+  for (var k in files) {
+    var stem = k.replace(/^detail\//, '').replace(/\.json$/i, '');
+    if (norm(stem) === want) return k;
+  }
+  return null;
+}
+/* tolerant shard shape: [entries] | {balls:[...]} | {id: entry} -> {id: entry} */
+function shardMap(data) {
+  var m = {};
+  var arr = Array.isArray(data) ? data : (data && Array.isArray(data.balls)) ? data.balls : null;
+  if (arr) { arr.forEach(function (e) { var id = e && (e.CatalogID || e.i); if (id) m[id] = e; }); return m; }
+  if (data && typeof data === 'object') { for (var k in data) if (data[k] && typeof data[k] === 'object') m[k] = data[k]; }
+  return m;
+}
+function kvPut(key, val) {
+  return openDB().then(function (db) {
+    return new Promise(function (resolve, reject) {
+      var tx = db.transaction('kv', 'readwrite');
+      tx.objectStore('kv').put(val, key);
+      tx.oncomplete = function () { db.close(); resolve(true); };
+      tx.onerror = tx.onabort = function () { db.close(); reject(tx.error || new Error('kv put failed')); };
+    });
+  });
+}
+var _shards = {};          // key -> {hash, map}
+var _manifestOnce = null;  // one manifest fetch per session when meta predates v30.158
+function filesKnown() {
+  var m = readMeta();
+  if (m.files) return Promise.resolve(m.files);
+  if (_manifestOnce) return _manifestOnce;
+  _manifestOnce = env.fetch(CAT_BASE + 'manifest.json', { cache: 'no-store' })
+    .then(function (r) { if (!r.ok) throw new Error('manifest HTTP ' + r.status); return r.json(); })
+    .then(function (mf) { var f = detailFiles(mf); writeMeta({ files: f }); return f; })
+    .catch(function () { _manifestOnce = null; return {}; });
+  return _manifestOnce;
+}
+/* Resolves the detail entry for a CatalogID, or null. Never rejects. */
+function catDetail(entry) {
+  if (!entry) return Promise.resolve(null);
+  return filesKnown().then(function (files) {
+    var key = shardKeyFor(files, entry.m);
+    if (!key) return null;
+    var want = files[key].hash;
+    var mem = _shards[key];
+    if (mem && mem.hash === want) return mem.map[entry.i] || null;
+    return kvGet('detail:' + key).catch(function () { return null; }).then(function (cached) {
+      if (cached && cached.hash === want && cached.map) { _shards[key] = cached; return cached.map[entry.i] || null; }
+      return env.fetch(CAT_BASE + key, { cache: 'no-store' })
+        .then(function (r) { if (!r.ok) throw new Error('shard HTTP ' + r.status); return r.text(); })
+        .then(function (text) {
+          return sha16(text).then(function (h) {
+            if (h !== want) throw new Error('shard hash mismatch');
+            var rec = { hash: want, map: shardMap(JSON.parse(text)) };
+            _shards[key] = rec;
+            kvPut('detail:' + key, rec).catch(function () {});
+            return rec.map[entry.i] || null;
+          });
+        })
+        .catch(function () {
+          /* degrade: a stale cached shard beats nothing; none -> index-level only */
+          if (cached && cached.map) { _shards[key] = cached; return cached.map[entry.i] || null; }
+          return null;
+        });
+    });
+  }).catch(function () { return null; });
+}
+
+/* Normalized specs for one weight. Never borrows another weight's numbers. */
+function numOrNull(v) { var n = parseFloat(v); return isFinite(n) ? n : null; }
+function specsOf(d, weight) {
+  var out = { coverName: null, coverType: null, finish: null, coreName: null, coreType: null,
+              rg: null, diff: null, intDiff: null, released: null, src: null, checked: null, weights: [] };
+  if (!d) return out;
+  var cv = d.Cover || {}, co = d.Core || {};
+  out.coverName = cv.Name || null; out.coverType = cv.Type || null; out.finish = cv.Finish || null;
+  out.coreName = co.Name || null; out.coreType = co.Type || null;
+  out.released = d.DateReleased || null;
+  var sbw = d.SpecsByWeight || {};
+  out.weights = Object.keys(sbw).map(Number).filter(isFinite).sort(function (a, b) { return b - a; });
+  var w = sbw[String(weight)];
+  if (w) { out.rg = numOrNull(w.RG); out.diff = numOrNull(w.Diff); out.intDiff = numOrNull(w.IntDiff); }
+  var fs = d.FieldSources || d.Sources || {};
+  out.src = d.Source || fs.src || fs.RG || null;
+  out.checked = d.Checked || fs.checked || null;
+  return out;
+}
+function hasAnySpec(s) {
+  return !!(s.coverName || s.coverType || s.finish || s.coreName || s.coreType || s.weights.length || s.released);
+}
+
+/* ---------- MET-1: Strength 0-100, Shape -50..+50 (facts only) ---------- */
+var MET_W  = { cover: 0.30, diff: 0.30, surface: 0.20, rg: 0.20 };
+var MET_SW = { surface: 0.35, rg: 0.25, asym: 0.20, pearl: 0.20 };
+var MET_COVER = { solid: 1.0, hybrid: 0.9, reactive: 0.85, pearl: 0.85, urethane: 0.4, plastic: 0.05 };
+function clamp(x, a, b) { return Math.max(a, Math.min(b, x)); }
+function coverClass(type, name) {
+  var t = ((type || '') + ' ' + (name || '')).toLowerCase();
+  if (/polyester|plastic|spare/.test(t)) return 'plastic';
+  if (/urethane/.test(t) && !/reactive/.test(t)) return 'urethane';
+  if (/hybrid/.test(t)) return 'hybrid';
+  if (/pearl/.test(t)) return 'pearl';
+  if (/solid/.test(t)) return 'solid';
+  if (/reactive/.test(t)) return 'reactive';
+  return null;
+}
+/* "500/1000 Polished", "4K Fast", "Reacta Gloss" -> {grit, polished}; unparseable -> null */
+function parseFinish(s) {
+  if (s == null || s === '') return null;
+  var t = String(s).toLowerCase(), nums = [], re = /(\d+(?:\.\d+)?)\s*(k)?/g, m;
+  while ((m = re.exec(t))) { var n = +m[1] * (m[2] ? 1000 : 1); if (n >= 100 && n <= 30000) nums.push(n); }
+  var polished = /polish|gloss|compound|crown|shine/.test(t);
+  var grit = nums.length ? nums[nums.length - 1] : (polished ? 1500 : null);
+  return grit == null ? null : { grit: grit, polished: polished };
+}
+function surfaceFriction(f) {
+  if (!f) return null;
+  var x = clamp((Math.log(6000) - Math.log(f.grit)) / (Math.log(6000) - Math.log(360)), 0, 1);
+  return f.polished ? x * 0.6 : x;
+}
+/* ball: owned-ball fields (Coverstock, CoverName, RG, Differential, IntDiff, CoreType); fin: {grit,polished}|null */
+function metricScore(ball, fin) {
+  var cc = coverClass(ball.Coverstock, ball.CoverName);
+  var S = surfaceFriction(fin), C = cc ? MET_COVER[cc] : null;
+  if (C == null || S == null) return null;
+  var D = ball.Differential != null && ball.Differential !== '' ? clamp(+ball.Differential / 0.060, 0, 1) : null;
+  var R = ball.RG != null && ball.RG !== '' ? clamp((2.60 - +ball.RG) / 0.14, 0, 1) : null;
+  var asym = ball.IntDiff != null && ball.IntDiff !== '' ? clamp(+ball.IntDiff / 0.020, 0, 1)
+           : (/asym/i.test(ball.CoreType || '') ? 0.5 : (ball.CoreType ? 0 : null));
+  var parts = { cover: C, surface: S, diff: D, rg: R }, num = 0, den = 0, k;
+  for (k in MET_W) if (parts[k] != null) { num += MET_W[k] * parts[k]; den += MET_W[k]; }
+  var pearl = cc === 'pearl' ? 1 : cc === 'hybrid' ? 0.5 : (cc === 'urethane' || cc === 'plastic') ? 0 : 0.2;
+  var sp = { surface: 1 - S, rg: R == null ? null : 1 - R, asym: asym, pearl: pearl }, sn = 0, sd = 0;
+  for (k in MET_SW) if (sp[k] != null) { sn += MET_SW[k] * sp[k]; sd += MET_SW[k]; }
+  return { strength: Math.floor(100 * num / den), shape: Math.floor(100 * (sn / sd) - 50) };
+}
+/* Latest surfacing record for an owned ball (ties on date -> highest id). */
+function latestSurface(ballID) {
+  var list = [];
+  try { list = ((typeof db !== 'undefined' && db && db.surfaceDetails) || []).filter(function (s) { return s.BallID == ballID; }); } catch (e) {}
+  list.sort(function (a, b) {
+    var da = String(a.DateSurfaced || ''), dbb = String(b.DateSurfaced || '');
+    return da < dbb ? 1 : da > dbb ? -1 : (b.SurfacedDetailID || 0) - (a.SurfacedDetailID || 0);
+  });
+  var s = list[0];
+  return s && s.GritSimple ? { grit: +s.GritSimple, polished: !!s.Polished } : null;
+}
+/* -> { strength, shape, factory:{strength,shape}|null, current:boolean } | null */
+function catMetric(ball) {
+  if (!ball) return null;
+  var fac = metricScore(ball, parseFinish(ball.BoxFinish));
+  var surf = ball.BallID != null ? latestSurface(ball.BallID) : null;
+  var cur = surf ? metricScore(ball, surf) : null;
+  var use = cur || fac;
+  if (!use) return null;
+  return { strength: use.strength, shape: use.shape, factory: fac, current: !!cur };
+}
+function signed(n) { return (n > 0 ? '+' : '') + n; }
+function catMetricChip(ball) {
+  var m = catMetric(ball);
+  return m ? 'S' + m.strength + ' · ' + signed(m.shape) : '';
+}
+function catMetricHTML(ball) {
+  var m = catMetric(ball);
+  if (!m) return '<span style="color:var(--t3)">Not enough specs</span>';
+  var h = 'Strength <b>' + m.strength + '</b> · Shape <b>' + signed(m.shape) + '</b>';
+  if (m.current && m.factory && (m.factory.strength !== m.strength || m.factory.shape !== m.shape))
+    h += '<div style="font-size:11px;color:var(--t3);margin-top:2px">Current surface · factory ' + m.factory.strength + ' · ' + signed(m.factory.shape) + '</div>';
+  return h;
+}
+
+/* ---------- presentation helpers for the add flow ---------- */
+var BRAND_COLORS = ['#e2504c', '#3a7bd5', '#8e44ad', '#16a085', '#d35400', '#2c3e50', '#c0392b', '#27ae60', '#b7950b', '#5d6d7e'];
+function brandColor(m) { var s = norm(m), h = 0; for (var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0; return BRAND_COLORS[h % BRAND_COLORS.length]; }
+function ownedFor(e) {
+  return appBalls().filter(function (b) { return b.CatalogID === e.i; });
+}
+function thumbHTML(e, size) {
+  var px = size || 40;
+  var mine = ownedFor(e)[0], src = null;
+  try { if (mine && typeof root.getBallImgSrc === 'function') src = root.getBallImgSrc(mine.BallID, 'cover'); } catch (x) {}
+  if (src) return '<img src="' + esc(src) + '" alt="" style="width:' + px + 'px;height:' + px + 'px;border-radius:50%;object-fit:cover;flex-shrink:0">';
+  var c = brandColor(e.m), ini = esc(String(e.m || '?').trim().charAt(0).toUpperCase());
+  return '<div style="width:' + px + 'px;height:' + px + 'px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;' +
+    'background:radial-gradient(circle at 32% 28%,rgba(255,255,255,0.35),' + c + ' 45%,rgba(0,0,0,0.55));color:#fff;font-weight:800;font-size:' + Math.round(px * 0.4) + 'px">' + ini + '</div>';
+}
+function cleanName(n) { return String(n == null ? '' : n).replace(/^\*+\s*/, '').trim(); }
+function monthYear(d) {
+  var m = /^(\d{4})-(\d{2})/.exec(String(d || ''));
+  if (!m) return d ? esc(String(d)) : null;
+  return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+m[2] - 1] + ' ' + m[1];
+}
+var CHIP = 'font-size:10px;font-weight:700;border-radius:6px;padding:1px 6px;margin-left:4px;';
+var CHIP_T = CHIP + 'color:var(--teal);border:1px solid rgba(0,217,217,0.35)';
+var CHIP_G = CHIP + 'color:var(--t2);border:1px solid var(--border1)';
+
+/* ---------- ADD-1: search screen ---------- */
+var LS_RECENT = 'bowlingdb_catalog_recent';
+function readRecent() { try { return JSON.parse(env.ls().getItem(LS_RECENT) || '[]') || []; } catch (e) { return []; } }
+function pushRecent(id) {
+  var a = readRecent().filter(function (x) { return x !== id; }); a.unshift(id);
+  try { env.ls().setItem(LS_RECENT, JSON.stringify(a.slice(0, 10))); } catch (e) {}
+}
+function newest(rows, n) {
+  return rows.slice().sort(function (a, b) {
+    return String(b.d || b.y || '').localeCompare(String(a.d || a.y || '')) || a.n.localeCompare(b.n);
+  }).slice(0, n);
+}
+/* brand-only query ("storm") -> that brand, newest first; otherwise normal search */
+function addSearchIn(rows, q, limit) {
+  var qn = norm(q);
+  if (qn.length >= 2) {
+    var brandRows = rows.filter(function (r) { return norm(r.m) === qn || norm(canonicalMfg(q)) === norm(r.m); });
+    if (brandRows.length) return newest(brandRows, limit || 60);
+  }
+  return searchIn(rows, q, limit || 60);
+}
+function addRowHTML(e, owned) {
+  var mine = owned && (owned.linked[e.i] || owned.keyed[e.k]);
+  var meta = [esc(e.m)]; if (e.y) meta.push('USBC ' + esc(e.y));
+  return '<div class="cat-add-row" onclick="catAddDetail(\'' + esc(e.i) + '\')" style="display:flex;align-items:center;gap:12px;padding:10px 2px;border-bottom:1px solid var(--border1);cursor:pointer">' +
+    thumbHTML(e, 40) +
+    '<div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:600;color:var(--t1)">' + esc(cleanName(e.n)) +
+      (mine ? '<span style="' + CHIP_T + '">IN YOUR ARSENAL</span>' : '') +
+      (/-u13$/.test(e.i) ? '<span style="' + CHIP_G + '">UNDER 13 LB</span>' : '') + '</div>' +
+    '<div style="font-size:12px;color:var(--t2);margin-top:2px">' + meta.join(' · ') +
+      (e.s ? ' · <span style="color:var(--teal)">● specs</span>' : '') + '</div></div></div>';
+}
+function sectionHTML(title, body) {
+  return '<div style="font-size:13px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:0.5px;margin:16px 2px 4px">' + title + '</div>' + body;
+}
+function emptyStateHTML(rows, owned) {
+  ensureMaps(rows);
+  var h = '';
+  var brands = {}; appBalls().forEach(function (b) { if (b.MFG) brands[canonicalMfg(b.MFG)] = 1; });
+  var bl = Object.keys(brands).sort();
+  if (bl.length) h += sectionHTML('Your brands', '<div style="display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 4px">' +
+    bl.map(function (b) { return '<button class="ball-filter-chip" onclick="catAddBrand(\'' + esc(b).replace(/&#39;/g, "\\'") + '\')">' + esc(b) + '</button>'; }).join('') + '</div>');
+  var rec = readRecent().map(function (id) { return byIdIn(rows, id); }).filter(Boolean);
+  if (rec.length) h += sectionHTML('Recently viewed', rec.map(function (e) { return addRowHTML(e, owned); }).join(''));
+  h += sectionHTML('New on the USBC list', newest(rows, 20).map(function (e) { return addRowHTML(e, owned); }).join(''));
+  return h;
+}
+function addListHTML(rows, q, owned) {
+  if (!q || q.replace(/\s/g, '').length < 2) return emptyStateHTML(rows, owned);
+  var list = addSearchIn(rows, q, 60);
+  if (!list.length) return '<div style="font-size:13px;color:var(--t2);padding:16px 2px;line-height:1.6">No match in the USBC list.<br>Use <b>Enter manually</b> below.</div>';
+  return list.map(function (e) { return addRowHTML(e, owned); }).join('');
+}
+function overlay(id, z) {
+  var ov = document.createElement('div');
+  ov.id = id;
+  ov.setAttribute('style', 'position:fixed;inset:0;z-index:' + z + ';background:var(--bg0);display:flex;flex-direction:column;' +
+    'padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)');
+  return ov;
+}
+var BACK = 'background:var(--bg2);border:1px solid var(--border1);color:var(--t1);width:40px;height:40px;border-radius:50%;font-size:20px;cursor:pointer;flex-shrink:0';
+
+/* Opens Add a Ball. Returns false (caller opens the plain form) with no catalog. */
+function catOpenAddSearch() {
+  if (typeof document === 'undefined') return false;
+  var s = catStatus();
+  if (!(s.count > 0)) return false;
+  catCloseAddSearch();
+  var ov = overlay('cat-search-ov', 900);
+  ov.innerHTML =
+    '<div style="padding:12px 16px 4px"><button onclick="catCloseAddSearch()" style="' + BACK + '" aria-label="Back">‹</button></div>' +
+    '<div style="padding:4px 16px 0;font-size:30px;font-weight:800;color:var(--t1)">Add a Ball</div>' +
+    '<div style="padding:10px 16px 4px"><input id="cat-add-q" class="bdet-field-input" type="search" placeholder="Search brands, names…"' +
+      ' autocomplete="off" autocorrect="off" autocapitalize="off" oninput="catAddSearch(this.value)" style="width:100%;font-size:16px">' +
+      '<div style="font-size:11px;color:var(--t3);margin-top:5px">' + esc(s.count.toLocaleString()) + ' USBC-approved balls · list ' + esc(s.listVersion || '') + '</div></div>' +
+    '<div id="cat-add-results" style="flex:1;overflow-y:auto;padding:0 16px 12px;-webkit-overflow-scrolling:touch"><div style="font-size:12px;color:var(--t3);padding:14px 2px">Loading…</div></div>' +
+    '<div style="padding:10px 16px;border-top:1px solid var(--border1)">' +
+      '<button onclick="catAddManual()" style="' + BTN_G + 'width:100%;padding:11px;font-size:13px">Can\'t find it? Enter manually</button></div>';
+  document.body.appendChild(ov);
+  catAddSearch('');
+  return true;
+}
+function catCloseAddSearch() {
+  if (typeof document === 'undefined') return;
+  ['cat-sheet-ov', 'cat-search-ov'].forEach(function (id) { var el = document.getElementById(id); if (el) el.parentNode.removeChild(el); });
+}
+function catAddSearch(q) {
+  catLoad().then(function (rows) {
+    var box = document.getElementById('cat-add-results');
+    if (box) box.innerHTML = addListHTML(rows, q, ownedIndex(rows));
+  });
+}
+function catAddBrand(b) {
+  var q = document.getElementById('cat-add-q');
+  if (q) q.value = b;
+  catAddSearch(b);
+}
+function catAddManual() {
+  catCloseAddSearch();
+  if (root.navToBall) root.navToBall(null);
+}
+
+/* ---------- ADD-2: detail sheet ---------- */
+var _sheet = { id: null, weight: null, detail: null, loaded: false };
+var WEIGHTS = [16, 15, 14, 13, 12, 11, 10];
+
+function specRows(e, s) {
+  var dash = '<span style="color:var(--t3)">—</span>';
+  var f = function (v, d) { return v != null && v !== '' ? esc(d != null ? Number(v).toFixed(d) : v) : dash; };
+  return [
+    ['Coverstock', f(s.coverName)], ['Cover type', f(s.coverType)], ['Factory finish', f(s.finish)],
+    ['Core', f(s.coreName)], ['Core type', f(s.coreType)],
+    ['RG', f(s.rg, 3)], ['Differential', f(s.diff, 3)], ['Int. Diff', f(s.intDiff, 3)],
+    ['Release date', s.released ? (monthYear(s.released) || dash) : dash],
+  ];
+}
+/* owned-ball shape of the catalog specs (also used by Add to Arsenal and Fill) */
+function ballFromSpecs(s) {
+  var cc = coverClass(s.coverType, s.coverName);
+  var coreT = s.coreType ? (/asym/i.test(s.coreType) ? 'Asymmetrical' : /sym/i.test(s.coreType) ? 'Symmetrical' : s.coreType) : null;
+  return {
+    BoxFinish: s.finish || null,
+    Coverstock: cc ? cc.charAt(0).toUpperCase() + cc.slice(1) : (s.coverType || null),
+    CoverName: s.coverName || null, CoreType: coreT, CoreShort: s.coreName || null,
+    RG: s.rg, Differential: s.diff, IntDiff: s.intDiff,
+    DateReleased: s.released ? String(s.released).slice(0, 10) : null,
+  };
+}
+function sheetHTML(e, rows) {
+  var s = specsOf(_sheet.detail, _sheet.weight || 15);
+  var owned = ownedFor(e);
+  var chips = '';
+  if (e.y) chips += '<span style="' + CHIP_G + '">USBC APPROVED ' + esc(e.d ? (monthYear(e.d) || e.y).toUpperCase() : e.y) + '</span>';
+  if (/-u13$/.test(e.i)) chips += '<span style="' + CHIP_G + '">UNDER 13 LB</span>';
+  if (owned.length) chips += '<span style="' + CHIP_T + '">IN YOUR ARSENAL' + (owned.length > 1 ? ' ×' + owned.length : '') + '</span>';
+  var body;
+  if (!_sheet.loaded) body = '<div style="font-size:12px;color:var(--t3);padding:10px 0">Loading specs…</div>';
+  else if (!hasAnySpec(s)) body = '<div style="font-size:13px;color:var(--t2);padding:6px 0 10px;line-height:1.55">Specs aren\'t in the catalog for this ball yet. You can add them after adding it.</div>';
+  else {
+    body = specRows(e, s).map(function (r) {
+      return '<div style="display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--border1);font-size:14px">' +
+        '<span style="color:var(--t2)">' + r[0] + '</span><span style="color:var(--t1);text-align:right">' + r[1] + '</span></div>';
+    }).join('');
+    var wt = _sheet.weight || 15;
+    body += '<div style="font-size:11px;color:var(--t3);margin-top:8px;line-height:1.5">RG and Diff shown for ' + wt + ' lb' +
+      (s.weights.length && s.weights.indexOf(wt) < 0 ? ' (not published for this weight)' : '') + '.' +
+      (s.src ? ' Specs: ' + (/^https?:/.test(s.src) ? 'manufacturer' : esc(s.src)) + (s.checked ? ', checked ' + esc(s.checked) : '') + '.' : '') + '</div>';
+    var met = metricScore(ballFromSpecs(s), parseFinish(s.finish));
+    if (met) body += '<div style="margin-top:12px;padding:10px 12px;border-radius:10px;background:var(--bg3);font-size:13px;color:var(--t1)">' +
+      'Strength <b>' + met.strength + '</b> · Shape <b>' + signed(met.shape) + '</b><span style="color:var(--t3);font-size:11px"> · factory finish</span></div>';
+  }
+  var w = _sheet.weight;
+  return '<div style="padding:12px 16px 4px;display:flex"><button onclick="catSheetClose()" style="' + BACK + '" aria-label="Back">‹</button></div>' +
+    '<div style="flex:1;overflow-y:auto;padding:0 16px 16px;-webkit-overflow-scrolling:touch">' +
+      '<div style="display:flex;justify-content:center;margin:6px 0 12px">' + thumbHTML(e, 150) + '</div>' +
+      '<div style="text-align:center;font-size:26px;font-weight:800;color:var(--t1)">' + esc(cleanName(e.n)) + '</div>' +
+      '<div style="text-align:center;font-size:17px;color:var(--t2);margin-top:2px">' + esc(e.m) + '</div>' +
+      '<div style="text-align:center;margin-top:8px">' + chips + '</div>' +
+      '<div style="background:var(--bg2);border-radius:14px;padding:14px 16px;margin-top:16px">' +
+        '<div style="font-size:18px;font-weight:700;color:var(--t1);margin-bottom:4px">Specifications</div>' + body + '</div>' +
+    '</div>' +
+    '<div style="padding:12px 16px;border-top:1px solid var(--border1);background:var(--bg1)">' +
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">' +
+        '<span style="font-size:16px;font-weight:700;color:var(--t1)">Weight</span>' +
+        '<span id="cat-sheet-wt" style="font-size:15px;font-weight:600;color:' + (w ? 'var(--t1)' : 'var(--red)') + '">' + (w ? w + ' lb' : 'Not set') + '</span></div>' +
+      '<div style="display:flex;gap:6px;overflow-x:auto;margin-bottom:10px">' +
+        WEIGHTS.map(function (x) {
+          return '<button onclick="catSheetWeight(' + x + ')" style="' + (x === w ? BTN_P : BTN_G) + 'flex:1;min-width:38px;padding:8px 0;font-size:13px">' + x + '</button>';
+        }).join('') + '</div>' +
+      '<button id="cat-sheet-add" onclick="catAddToArsenal()" ' + (w ? '' : 'disabled ') +
+        'style="width:100%;padding:13px;border-radius:12px;border:none;font-size:16px;font-weight:800;cursor:pointer;' +
+        (w ? 'background:var(--teal);color:#001314' : 'background:var(--bg3);color:var(--t3)') + '">Add to Arsenal</button>' +
+    '</div>';
+}
+function renderSheet() {
+  var ov = document.getElementById('cat-sheet-ov');
+  if (!ov) return;
+  catLoad().then(function (rows) {
+    var e = byIdIn(rows, _sheet.id);
+    if (!e) return;
+    var sc = ov.querySelector('[style*="overflow-y:auto"]'), top = sc ? sc.scrollTop : 0;
+    ov.innerHTML = sheetHTML(e, rows);
+    var sc2 = ov.querySelector('[style*="overflow-y:auto"]'); if (sc2) sc2.scrollTop = top;
+  });
+}
+function catAddDetail(id) {
+  if (typeof document === 'undefined') return;
+  catLoad().then(function (rows) {
+    var e = byIdIn(rows, id);
+    if (!e) return;
+    pushRecent(e.i);
+    var old = document.getElementById('cat-sheet-ov'); if (old) old.parentNode.removeChild(old);
+    _sheet = { id: e.i, weight: null, detail: null, loaded: false };
+    document.body.appendChild(overlay('cat-sheet-ov', 910));
+    renderSheet();
+    catDetail(e).then(function (d) {
+      if (_sheet.id !== e.i) return;
+      _sheet.detail = d; _sheet.loaded = true; renderSheet();
+    });
+  });
+}
+function catSheetClose() {
+  var el = document.getElementById('cat-sheet-ov'); if (el) el.parentNode.removeChild(el);
+  var q = document.getElementById('cat-add-q'); if (q) catAddSearch(q.value);   // refresh arsenal tags / recents
+}
+function catSheetWeight(w) { _sheet.weight = w; renderSheet(); }
+
+/* ---------- ADD-3: Add to Arsenal ---------- */
+var SPEC_FIELDS = ['BoxFinish', 'Coverstock', 'CoverName', 'CoreType', 'CoreShort', 'RG', 'Differential', 'IntDiff', 'DateReleased'];
+/* Pure: the owned-ball record. Exposed for the harness. */
+function buildOwnedBall(e, detail, weight, id) {
+  var s = specsOf(detail, weight), spec = ballFromSpecs(s), src = {};
+  SPEC_FIELDS.forEach(function (f) { if (spec[f] != null && spec[f] !== '') src[f] = 'catalog'; });
+  return {
+    BallID: id, ImagePath: null, CoreImagePath: null,
+    BallName: cleanName(e.n), MFG: e.m, Weight: weight,
+    HookRating: null, PerfectScaleVal: null,
+    BoxFinish: spec.BoxFinish || '', Coverstock: spec.Coverstock || '', CoverName: spec.CoverName || '',
+    CoreType: spec.CoreType || '', CoreShort: spec.CoreShort || '',
+    RG: spec.RG, Differential: spec.Differential, IntDiff: spec.IntDiff,
+    RGDiff: '', DateReleased: spec.DateReleased,      // never the USBC approval date
+    SpecsURL: null, Active: true, CatalogID: e.i, SpecSource: src,
+  };
+}
+function catAddToArsenal() {
+  if (!_sheet.weight) { if (root.toast) root.toast('Choose a weight first'); return; }
+  catLoad().then(function (rows) {
+    var e = byIdIn(rows, _sheet.id);
+    if (!e || typeof db === 'undefined' || !db || !Array.isArray(db.balls)) return;
+    var dup = ownedFor(e);
+    if (dup.length && !(root.confirm ? root.confirm('You already have ' + (dup.length > 1 ? dup.length + ' of these' : 'one') + '. Add another?') : true)) return;
+    if (!db.ids) db.ids = {};
+    /* never reuse an id: the counter is trusted only if it is past every existing BallID */
+    var maxId = db.balls.reduce(function (m, b) { return Math.max(m, +b.BallID || 0); }, 0);
+    if (!(db.ids.ball > maxId)) db.ids.ball = maxId + 1;
+    var id = db.ids.ball++;
+    var rec = buildOwnedBall(e, _sheet.detail, _sheet.weight, id);
+    db.balls.push(rec);
+    if (root.saveDB) root.saveDB();
+    catCloseAddSearch();
+    if (root.navToBall) root.navToBall(id);
+    if (root.toast) root.toast('Added to your arsenal');
+  });
+}
+
+/* ---------- Edit Ball: Fill from catalog / Apply updates (SRC-3, D6) ---------- */
+var FIELD_INPUT = { BoxFinish: 'bef-finish', Coverstock: 'bef-cover', CoverName: 'bef-covername', CoreType: 'bef-coretype',
+                    CoreShort: 'bef-corename', RG: 'bef-rg', Differential: 'bef-diff', IntDiff: 'bef-intdiff', DateReleased: 'bef-released' };
+var _filled = {};     // field -> value written by Fill/Apply during this form session
+function sameVal(a, b) {
+  var e = function (v) { return v == null || v === ''; };
+  if (e(a) && e(b)) return true;
+  if (e(a) || e(b)) return false;
+  var na = parseFloat(a), nb = parseFloat(b);
+  if (isFinite(na) && isFinite(nb) && /^[\d.\s-]+$/.test(String(a)) && /^[\d.\s-]+$/.test(String(b))) return Math.abs(na - nb) < 1e-9;
+  return String(a).trim().toLowerCase() === String(b).trim().toLowerCase();
+}
+/* Pure: what Fill and Apply would do. owned = current form values, tags = SpecSource. */
+function fillPlan(owned, tags, spec) {
+  var fill = [], apply = [];
+  SPEC_FIELDS.forEach(function (f) {
+    var c = spec[f];
+    if (c == null || c === '') return;
+    var cur = owned[f];
+    if (cur == null || cur === '') fill.push(f);
+    else if (tags && tags[f] === 'catalog' && !sameVal(cur, c)) apply.push(f);
+  });
+  return { fill: fill, apply: apply };
+}
+function formValues() {
+  var o = {};
+  for (var f in FIELD_INPUT) { var el = document.getElementById(FIELD_INPUT[f]); o[f] = el ? el.value : null; }
+  return o;
+}
+function renderFillRow() {
+  var slot = document.getElementById('cat-fill-row');
+  if (!slot || !_pick.id) { if (slot) slot.innerHTML = ''; return; }
+  var want = _pick.id;
+  catLoad().then(function (rows) {
+    var e = byIdIn(rows, want);
+    if (!e) return null;
+    return catDetail(e);
+  }).then(function (d) {
+    if (_pick.id !== want || !document.getElementById('cat-fill-row')) return;
+    var wEl = document.getElementById('bef-wt');
+    var wt = (wEl && parseInt(wEl.value, 10)) || 15;
+    var s = specsOf(d, wt);
+    if (!hasAnySpec(s)) { slot.innerHTML = ''; return; }
+    var plan = fillPlan(formValues(), (_pick.ball && _pick.ball.SpecSource) || {}, ballFromSpecs(s));
+    var h = '';
+    if (plan.fill.length) h += '<button style="' + BTN_P + '" onclick="catFillFromCatalog(\'fill\')">Fill from catalog (' + plan.fill.length + ')</button> ';
+    if (plan.apply.length) h += '<button style="' + BTN_G + '" onclick="catFillFromCatalog(\'apply\')">Catalog has updated specs → Apply (' + plan.apply.length + ')</button>';
+    slot.innerHTML = h ? '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">' + h + '</div>' : '';
+  }).catch(function () {});
+}
+function catFillFromCatalog(mode) {
+  catLoad().then(function (rows) { return catDetail(byIdIn(rows, _pick.id)); }).then(function (d) {
+    var wEl = document.getElementById('bef-wt');
+    var s = specsOf(d, (wEl && parseInt(wEl.value, 10)) || 15), spec = ballFromSpecs(s);
+    var plan = fillPlan(formValues(), (_pick.ball && _pick.ball.SpecSource) || {}, spec);
+    var list = mode === 'apply' ? plan.apply : plan.fill;
+    if (mode === 'apply' && list.length && root.confirm && !root.confirm('Replace ' + list.length + ' catalog-sourced value(s) with the catalog\'s current specs?')) return;
+    list.forEach(function (f) {
+      var el = document.getElementById(FIELD_INPUT[f]);
+      if (!el) return;
+      el.value = spec[f]; _filled[f] = spec[f];
+    });
+    if (root.toast) root.toast(list.length + ' field' + (list.length === 1 ? '' : 's') + ' filled from catalog. Save to keep.');
+    renderFillRow();
+  });
+}
+/* Called by _bdetSave. Tiers only move up: a value the user changes becomes 'user';
+   one written by Fill/Apply and saved unchanged is 'catalog'; untouched keeps its tag. */
+function catSpecSource(oldBall, fields) {
+  var live = typeof document !== 'undefined' && !!document.getElementById('cat-pick-group');
+  var filled = live ? _filled : {};
+  var src = {}, k;
+  var prev = (oldBall && oldBall.SpecSource) || {};
+  for (k in prev) src[k] = prev[k];
+  SPEC_FIELDS.forEach(function (f) {
+    if (!(f in fields)) return;
+    var nv = fields[f], empty = nv == null || nv === '';
+    if (f in filled && sameVal(nv, filled[f])) { src[f] = 'catalog'; return; }
+    if (!oldBall) { if (!empty) src[f] = 'user'; return; }
+    if (!sameVal(oldBall[f], nv)) { if (empty) delete src[f]; else src[f] = 'user'; }
+  });
+  return src;
+}
+
 root.catPickerMount = catPickerMount; root.catPickerSearch = catPickerSearch;
 root.catPick = catPick; root.catUnlink = catUnlink; root.catPickValue = catPickValue;
 root.catLinkLabel = catLinkLabel; root.catReviewOpen = catReviewOpen;
 root.catReviewLink = catReviewLink; root.catReviewSkip = catReviewSkip;
 root.catReviewResetSkips = catReviewResetSkips;
 root.catOpenAddSearch = catOpenAddSearch; root.catCloseAddSearch = catCloseAddSearch;
-root.catAddSearch = catAddSearch; root.catAddPick = catAddPick; root.catAddManual = catAddManual;
+root.catAddSearch = catAddSearch; root.catAddManual = catAddManual; root.catAddBrand = catAddBrand;
+root.catAddDetail = catAddDetail; root.catSheetClose = catSheetClose; root.catSheetWeight = catSheetWeight;
+root.catAddToArsenal = catAddToArsenal; root.catFillFromCatalog = catFillFromCatalog;
+root.catSpecSource = catSpecSource; root.catDetail = catDetail;
+root.catMetric = catMetric; root.catMetricChip = catMetricChip; root.catMetricHTML = catMetricHTML;
 root.catIdentityLocked = catIdentityLocked; root.catAuditOpen = catAuditOpen;
 root.catLookup = function (mfg, name) { return catLoad().then(function (rows) { return lookupIn(rows, mfg, name); }); };
 root.catSearch = function (q, n) { return catLoad().then(function (rows) { return searchIn(rows, q, n); }); };
 root._catStep5 = { norm: norm, modelKey: modelKey, lookupIn: lookupIn, searchIn: searchIn, reviewModel: reviewModel,
                    pickerBodyHTML: pickerBodyHTML, reviewHTML: reviewHTML, resultsHTML: resultsHTML,
                    setPick: function (p) { _pick = p; }, auditModel: auditModel, auditHTML: auditHTML,
-                   addResultsHTML: addResultsHTML };
+                   addListHTML: addListHTML, addSearchIn: addSearchIn, newest: newest,
+                   specsOf: specsOf, shardMap: shardMap, shardKeyFor: shardKeyFor, detailFiles: detailFiles,
+                   buildOwnedBall: buildOwnedBall, ballFromSpecs: ballFromSpecs, fillPlan: fillPlan,
+                   catSpecSource: catSpecSource, setFilled: function (f) { _filled = f; },
+                   metricScore: metricScore, parseFinish: parseFinish, coverClass: coverClass,
+                   catMetric: catMetric, sheetHTML: sheetHTML, setSheet: function (x) { _sheet = x; } };
 
 root.catCheck = catCheck;
 root.catLoad = catLoad;
