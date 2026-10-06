@@ -24,12 +24,12 @@ jobs:
       - uses: actions/setup-node@v5
         with: { node-version: 22 }
       - name: Tests
-        run: node catalog/bridge/probe_test.js
+        run: node bridge/probe_test.js
       - name: Probe
         run: |
           ARGS="--index published/index.json --out out --since ${{ inputs.since }}"
           if [ -n "${{ inputs.only }}" ]; then ARGS="$ARGS --only ${{ inputs.only }}"; fi
-          node catalog/bridge/probe.js $ARGS
+          node bridge/probe.js $ARGS
           cat out/SUMMARY.md >> "$GITHUB_STEP_SUMMARY"
       - name: Commit to specs branch
         run: |
