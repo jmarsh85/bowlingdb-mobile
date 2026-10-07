@@ -318,7 +318,7 @@
  {
   "source": "ebonite",
   "reason": "no-weight-specs",
-  "n": 43,
+  "n": 42,
   "samples": [
    {
     "title": "Big Time Special Edition",
@@ -816,7 +816,7 @@
  {
   "source": "ebonite",
   "reason": "no-usbc",
-  "n": 21,
+  "n": 22,
   "samples": [
    {
     "title": "Angry Birds",
@@ -1181,57 +1181,67 @@
   ]
  },
  {
-  "source": "motiv",
-  "reason": "out-of-range",
+  "source": "ebonite",
+  "reason": "variant",
   "n": 7,
   "samples": [
    {
-    "title": "Aspire - Black/Red/Gold",
-    "url": "https://www.motivbowling.com/products/balls/spare/apire-black-red-gold.html",
+    "title": "Big One",
+    "url": "https://ebonite.com/products/big-one",
     "candidates": [
-     "motiv-aspire-all-colors"
+     "ebonite-big-one-2017",
+     "ebonite-big-one-j-limited"
     ]
    },
    {
-    "title": "Aspire - Navy/Red/Blue",
-    "url": "https://www.motivbowling.com/products/balls/spare/aspire-navy-red-blue.html",
+    "title": "Cyclone - Fireball",
+    "url": "https://ebonite.com/products/cyclone-fireball",
     "candidates": [
-     "motiv-aspire-all-colors"
+     "ebonite-cyclone-fireball-red-gold"
     ]
    },
    {
-    "title": "Aspire - Purple/Silver/Black",
-    "url": "https://www.motivbowling.com/products/balls/spare/aspire-purple-silver-black.html",
+    "title": "Destiny Pearl - Black / Red / Blue",
+    "url": "https://ebonite.com/products/destiny-pearl-black-red-blue",
     "candidates": [
-     "motiv-aspire-all-colors"
+     "ebonite-destiny-pearl-black-red-blue-red-pin"
     ]
    },
    {
-    "title": "Aspire - Sky Blue/Silver/White",
-    "url": "https://www.motivbowling.com/products/balls/spare/aspire-sky-silver-white.html",
+    "title": "Magic Touch",
+    "url": "https://ebonite.com/products/magic-touch",
     "candidates": [
-     "motiv-aspire-all-colors"
+     "ebonite-magic-touch-black-red-green",
+     "ebonite-magic-touch-black-red-silver"
     ]
    },
    {
-    "title": "Covert VIP EXJ",
-    "url": "https://www.motivbowling.com/products/balls/retired-balls/covert-vip-exj.html",
+    "title": "Mission Unknown",
+    "url": "https://ebonite.com/products/mission-unknown",
     "candidates": [
-     "motiv-covert-vip-exj"
+     "ebonite-mission-unknown-black",
+     "ebonite-mission-unknown-gold",
+     "ebonite-mission-unknown-red"
     ]
    },
    {
-    "title": "TR2",
-    "url": "https://www.motivbowling.com/products/balls/retired-balls/tr2.html",
+    "title": "Omni",
+    "url": "https://ebonite.com/products/omni",
     "candidates": [
-     "motiv-tr2"
+     "ebonite-omni-black-blue",
+     "ebonite-omni-hybrid",
+     "ebonite-omni-pearl",
+     "ebonite-omni-solid"
     ]
    },
    {
-    "title": "Tribal Fire",
-    "url": "https://www.motivbowling.com/products/balls/retired-balls/tribal-fire.html",
+    "title": "Smash",
+    "url": "https://ebonite.com/products/smash",
     "candidates": [
-     "motiv-tribal-fire"
+     "ebonite-smash-blue-black-purple",
+     "ebonite-smash-blue-pearl",
+     "ebonite-smash-time",
+     "ebonite-smash-time-pearl"
     ]
    }
   ]
@@ -1329,63 +1339,6 @@
     "url": "https://brunswickbowling.com/products/balls/retired/uppercut",
     "candidates": [
      "brunswick-uppercut-pearl"
-    ]
-   }
-  ]
- },
- {
-  "source": "ebonite",
-  "reason": "variant",
-  "n": 6,
-  "samples": [
-   {
-    "title": "Big One",
-    "url": "https://ebonite.com/products/big-one",
-    "candidates": [
-     "ebonite-big-one-2017",
-     "ebonite-big-one-j-limited"
-    ]
-   },
-   {
-    "title": "Cyclone - Fireball",
-    "url": "https://ebonite.com/products/cyclone-fireball",
-    "candidates": [
-     "ebonite-cyclone-fireball-red-gold"
-    ]
-   },
-   {
-    "title": "Destiny Pearl - Black / Red / Blue",
-    "url": "https://ebonite.com/products/destiny-pearl-black-red-blue",
-    "candidates": [
-     "ebonite-destiny-pearl-black-red-blue-red-pin"
-    ]
-   },
-   {
-    "title": "Magic Touch",
-    "url": "https://ebonite.com/products/magic-touch",
-    "candidates": [
-     "ebonite-magic-touch-black-red-green",
-     "ebonite-magic-touch-black-red-silver"
-    ]
-   },
-   {
-    "title": "Omni",
-    "url": "https://ebonite.com/products/omni",
-    "candidates": [
-     "ebonite-omni-black-blue",
-     "ebonite-omni-hybrid",
-     "ebonite-omni-pearl",
-     "ebonite-omni-solid"
-    ]
-   },
-   {
-    "title": "Smash",
-    "url": "https://ebonite.com/products/smash",
-    "candidates": [
-     "ebonite-smash-blue-black-purple",
-     "ebonite-smash-blue-pearl",
-     "ebonite-smash-time",
-     "ebonite-smash-time-pearl"
     ]
    }
   ]
@@ -1576,41 +1529,6 @@
   ]
  },
  {
-  "source": "hammer",
-  "reason": "conflicting-sources",
-  "n": 4,
-  "samples": [
-   {
-    "title": "Black Widow Urethane",
-    "url": "https://hammerbowling.com/products/black-widow-urethane",
-    "candidates": [
-     "hammer-black-widow-urethane"
-    ]
-   },
-   {
-    "title": "Black Widow Urethane - Original",
-    "url": "https://hammerbowling.com/products/black-widow-urethane-original",
-    "candidates": [
-     "hammer-black-widow-urethane"
-    ]
-   },
-   {
-    "title": "Web Pearl",
-    "url": "https://hammerbowling.com/products/web-pearl",
-    "candidates": [
-     "hammer-web-pearl"
-    ]
-   },
-   {
-    "title": "Web Pearl - Original",
-    "url": "https://hammerbowling.com/products/web-pearl-original",
-    "candidates": [
-     "hammer-web-pearl"
-    ]
-   }
-  ]
- },
- {
   "source": "storm",
   "reason": "variant",
   "n": 4,
@@ -1641,6 +1559,34 @@
     "url": "https://www.stormbowling.com/roto-grip-hustle-vp-bowling-ball",
     "candidates": [
      "roto-grip-hustle-vp-vanilla-popsicle"
+    ]
+   }
+  ]
+ },
+ {
+  "source": "motiv",
+  "reason": "out-of-range",
+  "n": 3,
+  "samples": [
+   {
+    "title": "Covert VIP EXJ",
+    "url": "https://www.motivbowling.com/products/balls/retired-balls/covert-vip-exj.html",
+    "candidates": [
+     "motiv-covert-vip-exj"
+    ]
+   },
+   {
+    "title": "TR2",
+    "url": "https://www.motivbowling.com/products/balls/retired-balls/tr2.html",
+    "candidates": [
+     "motiv-tr2"
+    ]
+   },
+   {
+    "title": "Tribal Fire",
+    "url": "https://www.motivbowling.com/products/balls/retired-balls/tribal-fire.html",
+    "candidates": [
+     "motiv-tribal-fire"
     ]
    }
   ]
@@ -1720,6 +1666,27 @@
     "candidates": [
      "hammer-burgundy-hammer",
      "hammer-burgundy-hammer-2"
+    ]
+   }
+  ]
+ },
+ {
+  "source": "hammer",
+  "reason": "conflicting-sources",
+  "n": 2,
+  "samples": [
+   {
+    "title": "Web Pearl",
+    "url": "https://hammerbowling.com/products/web-pearl",
+    "candidates": [
+     "hammer-web-pearl"
+    ]
+   },
+   {
+    "title": "Web Pearl - Original",
+    "url": "https://hammerbowling.com/products/web-pearl-original",
+    "candidates": [
+     "hammer-web-pearl"
     ]
    }
   ]
