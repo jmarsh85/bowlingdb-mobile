@@ -1,6 +1,7 @@
 name: specs-extract
 # Spec bridge stages 1-5: discover -> extract -> match -> verify -> decide.
 # STAGING ONLY: writes staging/ to the `specs` branch. Never touches main or dist.
+# A site that returns nothing keeps its rows from the previous run (--previous).
 on:
   workflow_dispatch:
     inputs:
@@ -24,6 +25,8 @@ jobs:
       - uses: actions/checkout@v5
       - uses: actions/checkout@v5
         with: { ref: dist, path: published }
+      - uses: actions/checkout@v5
+        with: { ref: specs, path: specs }
       - uses: actions/setup-node@v5
         with: { node-version: 22 }
       - name: Tests
@@ -31,16 +34,17 @@ jobs:
       - name: Extract
         run: |
           ARGS="--index published/index.json --out out --since ${{ inputs.since }} --limit ${{ inputs.limit }}"
+          if [ -f specs/staging/specs_staging.json ]; then ARGS="$ARGS --previous specs/staging/specs_staging.json"; fi
           if [ -n "${{ inputs.only }}" ]; then ARGS="$ARGS --only ${{ inputs.only }}"; fi
           node bridge/extract.js $ARGS
           cat out/SUMMARY.md >> "$GITHUB_STEP_SUMMARY"
       - name: Commit to specs branch
+        working-directory: specs
         run: |
-          git config --global user.name  "specs-bridge"
-          git config --global user.email "specs-bridge@users.noreply.github.com"
-          git clone --depth 1 --branch specs "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" specs
-          rm -rf specs/staging && mkdir -p specs/staging && cp -r out/. specs/staging/
-          cd specs && git add -A
+          git config user.name  "specs-bridge"
+          git config user.email "specs-bridge@users.noreply.github.com"
+          rm -rf staging && mkdir -p staging && cp -r ../out/. staging/
+          git add -A
           if git diff --cached --quiet; then echo "No change"; exit 0; fi
           git commit -m "extract: $(date -u +%F) only=${{ inputs.only }} limit=${{ inputs.limit }}"
-          git push origin specs
+          git push origin HEAD:specs
