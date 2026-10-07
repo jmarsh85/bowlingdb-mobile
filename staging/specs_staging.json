@@ -11248,61 +11248,6 @@
   "source": "columbia",
   "platform": "shopify",
   "brand": "Columbia 300",
-  "title": "BEAST - BLUE PEARL",
-  "url": "https://columbia300.com/products/beast-blue-pearl",
-  "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
-  "decision": "pending",
-  "reason": "no-usbc",
-  "flags": [],
-  "specs": {
-   "core": "Beast",
-   "coverName": "Bend-It",
-   "coverType": "Pearl Reactive",
-   "finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish",
-   "released": null,
-   "weights": {
-    "10": {
-     "RG": 2.8,
-     "Diff": 0.002
-    },
-    "11": {
-     "RG": 2.769,
-     "Diff": 0.002
-    },
-    "12": {
-     "RG": 2.62,
-     "Diff": 0.033
-    },
-    "13": {
-     "RG": 2.59,
-     "Diff": 0.033
-    },
-    "14": {
-     "RG": 2.54,
-     "Diff": 0.033
-    },
-    "15": {
-     "RG": 2.54,
-     "Diff": 0.033
-    },
-    "16": {
-     "RG": 2.54,
-     "Diff": 0.033
-    }
-   }
-  },
-  "mfgScales": {},
-  "imageUrl": "https://cdn.shopify.com/s/files/1/0062/0226/1619/files/Beast_Blue_Pearl_1600x1707_website.png?v=1755704508",
-  "fetched": "2026-10-07",
-  "method": "parser"
- },
- {
-  "source": "columbia",
-  "platform": "shopify",
-  "brand": "Columbia 300",
   "title": "BEAST - CHERRY / GOLD / WHITE",
   "url": "https://columbia300.com/products/beast-cherry-gold-white",
   "sku": null,
@@ -14595,58 +14540,6 @@
   "source": "columbia",
   "platform": "shopify",
   "brand": "Columbia 300",
-  "title": "Freeze - Navy / Purple / Yellow",
-  "url": "https://columbia300.com/products/freeze-navy-purple-yellow",
-  "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
-  "decision": "pending",
-  "reason": "no-usbc",
-  "flags": [],
-  "specs": {
-   "core": "Symmetric",
-   "coverName": "NE2",
-   "coverType": null,
-   "finish": null,
-   "released": null,
-   "weights": {
-    "12": {
-     "RG": 2.6,
-     "Diff": 0.039,
-     "IntDiff": null
-    },
-    "13": {
-     "RG": 2.53,
-     "Diff": 0.055,
-     "IntDiff": null
-    },
-    "14": {
-     "RG": 2.56,
-     "Diff": 0.049,
-     "IntDiff": null
-    },
-    "15": {
-     "RG": 2.56,
-     "Diff": 0.047,
-     "IntDiff": null
-    },
-    "16": {
-     "RG": 2.56,
-     "Diff": 0.045,
-     "IntDiff": null
-    }
-   }
-  },
-  "mfgScales": {},
-  "imageUrl": "https://cdn.shopify.com/s/files/1/0062/0226/1619/files/Freeze_Navy_Purple_Yellow_1600x1707_website.png?v=1700249832",
-  "fetched": "2026-10-07",
-  "method": "parser"
- },
- {
-  "source": "columbia",
-  "platform": "shopify",
-  "brand": "Columbia 300",
   "title": "Freeze - Neon Orange / Green",
   "url": "https://columbia300.com/products/freeze-neon-orange-green",
   "sku": null,
@@ -15662,6 +15555,40 @@
   },
   "mfgScales": {},
   "imageUrl": "https://cdn.shopify.com/s/files/1/0062/0226/1619/files/Jazz_Red_Blue_1600x1707_website.png?v=1700254329",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "columbia",
+  "platform": "shopify",
+  "brand": "Columbia 300",
+  "title": "Jekyll",
+  "url": "https://columbia300.com/products/jekyll",
+  "sku": null,
+  "catalogId": "columbia-300-jekyll",
+  "match": "match",
+  "candidates": [
+   "columbia-300-jekyll"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "2-Piece",
+   "coverName": "Reactive Pearl",
+   "coverType": null,
+   "finish": null,
+   "released": null,
+   "weights": {
+    "16": {
+     "RG": 2.49,
+     "Diff": 0.045,
+     "IntDiff": null
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": "https://cdn.shopify.com/s/files/1/0062/0226/1619/files/Jekyll_1600x1707_website.png?v=1700254382",
   "fetched": "2026-10-07",
   "method": "parser"
  },
@@ -20390,50 +20317,6 @@
   "source": "columbia",
   "platform": "shopify",
   "brand": "Columbia 300",
-  "title": "Scout Reactive - Blue / Gold",
-  "url": "https://columbia300.com/products/scout-reactive-blue-gold",
-  "sku": null,
-  "catalogId": "columbia-300-scout-reactive-blue-gold",
-  "match": "match",
-  "candidates": [
-   "columbia-300-scout-reactive-blue-gold"
-  ],
-  "decision": "auto",
-  "reason": "exact-match+gates",
-  "flags": [],
-  "specs": {
-   "core": "Pancake",
-   "coverName": "Super-Flex",
-   "coverType": null,
-   "finish": null,
-   "released": null,
-   "weights": {
-    "14": {
-     "RG": 2.69,
-     "Diff": 0.02,
-     "IntDiff": null
-    },
-    "15": {
-     "RG": 2.65,
-     "Diff": 0.02,
-     "IntDiff": null
-    },
-    "16": {
-     "RG": 2.64,
-     "Diff": 0.02,
-     "IntDiff": null
-    }
-   }
-  },
-  "mfgScales": {},
-  "imageUrl": "https://cdn.shopify.com/s/files/1/0062/0226/1619/files/Scout_Reactive_Blue_Gold_1600x1707_website.png?v=1700600367",
-  "fetched": "2026-10-07",
-  "method": "parser"
- },
- {
-  "source": "columbia",
-  "platform": "shopify",
-  "brand": "Columbia 300",
   "title": "Scout Reactive - Green / Silver",
   "url": "https://columbia300.com/products/scout-reactive-green-silver",
   "sku": null,
@@ -21715,6 +21598,36 @@
   "source": "columbia",
   "platform": "shopify",
   "brand": "Columbia 300",
+  "title": "Super Beast Ti",
+  "url": "https://columbia300.com/products/super-beast-ti",
+  "sku": null,
+  "catalogId": "columbia-300-super-beast-ti",
+  "match": "match",
+  "candidates": [
+   "columbia-300-super-beast-ti"
+  ],
+  "decision": "pending",
+  "reason": "no-weight-specs",
+  "flags": [
+   "no-weight-specs"
+  ],
+  "specs": {
+   "core": "2-Piece",
+   "coverName": "Reactive Pearl",
+   "coverType": null,
+   "finish": null,
+   "released": null,
+   "weights": {}
+  },
+  "mfgScales": {},
+  "imageUrl": "https://cdn.shopify.com/s/files/1/0062/0226/1619/files/Super_Beast_Ti_1600x1707_website.png?v=1700603061",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "columbia",
+  "platform": "shopify",
+  "brand": "Columbia 300",
   "title": "Super Cuda PowerCOR",
   "url": "https://columbia300.com/products/super-cuda-powercor",
   "sku": null,
@@ -21954,6 +21867,60 @@
   },
   "mfgScales": {},
   "imageUrl": "https://cdn.shopify.com/s/files/1/0062/0226/1619/files/Surge_1600x1707_website.png?v=1700603311",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "columbia",
+  "platform": "shopify",
+  "brand": "Columbia 300",
+  "title": "Swerve",
+  "url": "https://columbia300.com/products/swerve",
+  "sku": null,
+  "catalogId": "columbia-300-swerve",
+  "match": "match",
+  "candidates": [
+   "columbia-300-swerve"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Swerve",
+   "coverName": "Reflex Solid",
+   "coverType": null,
+   "finish": null,
+   "released": null,
+   "weights": {
+    "12": {
+     "RG": 2.6,
+     "Diff": 0.039,
+     "IntDiff": null
+    },
+    "13": {
+     "RG": 2.53,
+     "Diff": 0.055,
+     "IntDiff": null
+    },
+    "14": {
+     "RG": 2.48,
+     "Diff": 0.057,
+     "IntDiff": null
+    },
+    "15": {
+     "RG": 2.47,
+     "Diff": 0.052,
+     "IntDiff": null
+    },
+    "16": {
+     "RG": 2.47,
+     "Diff": 0.048,
+     "IntDiff": null
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": "https://cdn.shopify.com/s/files/1/0062/0226/1619/files/Swerve_1600x1707_website.png?v=1700603371",
   "fetched": "2026-10-07",
   "method": "parser"
  },
@@ -32466,6 +32433,60 @@
   "source": "ebonite",
   "platform": "shopify",
   "brand": "Ebonite",
+  "title": "Entity Pearl",
+  "url": "https://ebonite.com/products/entity-pearl",
+  "sku": null,
+  "catalogId": "ebonite-entity-pearl",
+  "match": "match",
+  "candidates": [
+   "ebonite-entity-pearl"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Entity",
+   "coverName": "HK22C - Optimize Pearl",
+   "coverType": "Pearl Reactive",
+   "finish": "500, 1000, 1500 Siaair / Factory Compound",
+   "released": "2025-11-20",
+   "weights": {
+    "12": {
+     "RG": 2.593,
+     "Diff": 0.041,
+     "IntDiff": 0.014
+    },
+    "13": {
+     "RG": 2.597,
+     "Diff": 0.041,
+     "IntDiff": 0.014
+    },
+    "14": {
+     "RG": 2.532,
+     "Diff": 0.052,
+     "IntDiff": 0.02
+    },
+    "15": {
+     "RG": 2.515,
+     "Diff": 0.052,
+     "IntDiff": 0.02
+    },
+    "16": {
+     "RG": 2.525,
+     "Diff": 0.047,
+     "IntDiff": 0.017
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": "https://cdn.shopify.com/s/files/1/0609/8790/0156/files/Entity_Pearl_1600x1600_4896a673-c608-4a92-ba01-1723ea3b92cf.png?v=1760380380",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "ebonite",
+  "platform": "shopify",
+  "brand": "Ebonite",
   "title": "Envision",
   "url": "https://ebonite.com/products/envision",
   "sku": null,
@@ -34705,60 +34726,6 @@
   "source": "ebonite",
   "platform": "shopify",
   "brand": "Ebonite",
-  "title": "Maverick",
-  "url": "https://ebonite.com/products/maverick",
-  "sku": null,
-  "catalogId": "ebonite-maverick",
-  "match": "match",
-  "candidates": [
-   "ebonite-maverick"
-  ],
-  "decision": "auto",
-  "reason": "exact-match+gates",
-  "flags": [],
-  "specs": {
-   "core": "Maverick",
-   "coverName": "GB 14.0 Solid",
-   "coverType": null,
-   "finish": null,
-   "released": null,
-   "weights": {
-    "12": {
-     "RG": 2.62,
-     "Diff": 0.046,
-     "IntDiff": null
-    },
-    "13": {
-     "RG": 2.59,
-     "Diff": 0.043,
-     "IntDiff": null
-    },
-    "14": {
-     "RG": 2.5,
-     "Diff": 0.055,
-     "IntDiff": null
-    },
-    "15": {
-     "RG": 2.48,
-     "Diff": 0.056,
-     "IntDiff": null
-    },
-    "16": {
-     "RG": 2.49,
-     "Diff": 0.049,
-     "IntDiff": null
-    }
-   }
-  },
-  "mfgScales": {},
-  "imageUrl": "https://cdn.shopify.com/s/files/1/0609/8790/0156/products/Maverick_1600x1600_cbac33b2-5f2e-4b91-bf42-4c6292d083d1.png?v=1656609648",
-  "fetched": "2026-10-07",
-  "method": "parser"
- },
- {
-  "source": "ebonite",
-  "platform": "shopify",
-  "brand": "Ebonite",
   "title": "Maverick Pearl",
   "url": "https://ebonite.com/products/maverick-pearl",
   "sku": null,
@@ -35534,6 +35501,34 @@
   },
   "mfgScales": {},
   "imageUrl": "https://cdn.shopify.com/s/files/1/0609/8790/0156/products/Maxim_Purple_Bronze_1600x1600_2cbd8fe2-9569-4fe8-bb45-87b3477be18f.png?v=1656521395",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "ebonite",
+  "platform": "shopify",
+  "brand": "Ebonite",
+  "title": "Maxim - Purple / Green / Silver",
+  "url": "https://ebonite.com/products/maxim-purple-green-silver",
+  "sku": null,
+  "catalogId": null,
+  "match": "no-usbc",
+  "candidates": [],
+  "decision": "pending",
+  "reason": "no-usbc",
+  "flags": [
+   "no-weight-specs"
+  ],
+  "specs": {
+   "core": "Full size 3-piece Pancake",
+   "coverName": "Polyester / Plastic",
+   "coverType": null,
+   "finish": null,
+   "released": null,
+   "weights": {}
+  },
+  "mfgScales": {},
+  "imageUrl": "https://cdn.shopify.com/s/files/1/0609/8790/0156/products/Maxim_Purple_Green_Silver_1600x1600_cdb2d437-4999-4a21-bfa3-fff393934fe3.png?v=1656518942",
   "fetched": "2026-10-07",
   "method": "parser"
  },
@@ -41590,6 +41585,60 @@
   "source": "hammer",
   "platform": "shopify",
   "brand": "Hammer",
+  "title": "Dark Web",
+  "url": "https://hammerbowling.com/products/dark-web",
+  "sku": null,
+  "catalogId": "hammer-dark-web",
+  "match": "match",
+  "candidates": [
+   "hammer-dark-web"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Modified Spheroid",
+   "coverName": "Aggression Solid",
+   "coverType": "Solid Reactive",
+   "finish": "500, 1500 Siaair Micro Pad",
+   "released": "2022-07-08",
+   "weights": {
+    "12": {
+     "RG": 2.608,
+     "Diff": 0.04,
+     "IntDiff": null
+    },
+    "13": {
+     "RG": 2.585,
+     "Diff": 0.04,
+     "IntDiff": null
+    },
+    "14": {
+     "RG": 2.541,
+     "Diff": 0.048,
+     "IntDiff": null
+    },
+    "15": {
+     "RG": 2.514,
+     "Diff": 0.048,
+     "IntDiff": null
+    },
+    "16": {
+     "RG": 2.522,
+     "Diff": 0.042,
+     "IntDiff": null
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": "https://cdn.shopify.com/s/files/1/0030/3330/1104/files/Dark_Web_1600x1707_website.png?v=1721933371",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "hammer",
+  "platform": "shopify",
+  "brand": "Hammer",
   "title": "Dark Web Hybrid",
   "url": "https://hammerbowling.com/products/dark-web-hybrid",
   "sku": null,
@@ -42750,6 +42799,60 @@
   "source": "hammer",
   "platform": "shopify",
   "brand": "Hammer",
+  "title": "Hammerhead Pearl",
+  "url": "https://hammerbowling.com/products/hammerhead-pearl",
+  "sku": null,
+  "catalogId": "hammer-hammerhead-pearl",
+  "match": "match",
+  "candidates": [
+   "hammer-hammerhead-pearl"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Spheroid",
+   "coverName": "HK22 - Aggression Pearl",
+   "coverType": "Pearl Reactive",
+   "finish": "500, 1000, 1500 Siaair / Factory Compound",
+   "released": "2026-01-15",
+   "weights": {
+    "12": {
+     "RG": 2.608,
+     "Diff": 0.04,
+     "IntDiff": null
+    },
+    "13": {
+     "RG": 2.585,
+     "Diff": 0.04,
+     "IntDiff": null
+    },
+    "14": {
+     "RG": 2.51,
+     "Diff": 0.048,
+     "IntDiff": null
+    },
+    "15": {
+     "RG": 2.481,
+     "Diff": 0.048,
+     "IntDiff": null
+    },
+    "16": {
+     "RG": 2.5,
+     "Diff": 0.039,
+     "IntDiff": null
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": "https://cdn.shopify.com/s/files/1/0030/3330/1104/files/Hammerhead_Pearl_1600x1600_71c42bf4-c9b0-40ec-bfec-3c33d60afe24.png?v=1765292164",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "hammer",
+  "platform": "shopify",
+  "brand": "Hammer",
   "title": "Hardcore Hammer Brawl",
   "url": "https://hammerbowling.com/products/hardcore-hammer-brawl",
   "sku": null,
@@ -43777,68 +43880,6 @@
   },
   "mfgScales": {},
   "imageUrl": "https://cdn.shopify.com/s/files/1/0030/3330/1104/files/Pure_Envy_1600x1707_website.png?v=1723140130",
-  "fetched": "2026-10-07",
-  "method": "parser"
- },
- {
-  "source": "hammer",
-  "platform": "shopify",
-  "brand": "Hammer",
-  "title": "Pure Hammer - Black",
-  "url": "https://hammerbowling.com/products/pure-hammer-black",
-  "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
-  "decision": "pending",
-  "reason": "no-usbc",
-  "flags": [],
-  "specs": {
-   "core": "2-piece",
-   "coverName": "Urethane",
-   "coverType": null,
-   "finish": null,
-   "released": null,
-   "weights": {
-    "10": {
-     "RG": 2.72,
-     "Diff": 0.031,
-     "IntDiff": null
-    },
-    "11": {
-     "RG": 2.62,
-     "Diff": 0.032,
-     "IntDiff": null
-    },
-    "12": {
-     "RG": 2.59,
-     "Diff": 0.044,
-     "IntDiff": null
-    },
-    "13": {
-     "RG": 2.53,
-     "Diff": 0.056,
-     "IntDiff": null
-    },
-    "14": {
-     "RG": 2.48,
-     "Diff": 0.049,
-     "IntDiff": null
-    },
-    "15": {
-     "RG": 2.48,
-     "Diff": 0.039,
-     "IntDiff": null
-    },
-    "16": {
-     "RG": 2.49,
-     "Diff": 0.037,
-     "IntDiff": null
-    }
-   }
-  },
-  "mfgScales": {},
-  "imageUrl": "https://cdn.shopify.com/s/files/1/0030/3330/1104/files/Pure_Hammer_Black_1600x1707_website.png?v=1755194132",
   "fetched": "2026-10-07",
   "method": "parser"
  },
@@ -64058,6 +64099,51 @@
   "source": "storm",
   "platform": "storm",
   "brand": "Roto Grip",
+  "title": "CLONE",
+  "url": "https://www.stormbowling.com/roto-grip-clone-bowling-ball",
+  "sku": null,
+  "catalogId": "roto-grip-clone",
+  "match": "match",
+  "candidates": [
+   "roto-grip-clone"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Cloned ET Asymmetric",
+   "coreType": "Asymmetrical",
+   "coverName": "Based on years of testing and research, we found this direct",
+   "coverType": null,
+   "finish": "Reacta Gloss",
+   "released": "2023-07-28",
+   "weights": {
+    "14": {
+     "RG": 2.53,
+     "Diff": 0.056,
+     "IntDiff": 0.016
+    },
+    "15": {
+     "RG": 2.51,
+     "Diff": 0.056,
+     "IntDiff": 0.016
+    },
+    "16": {
+     "RG": 2.5,
+     "Diff": 0.054,
+     "IntDiff": 0.016
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": "https://assets.1.commercebuild.com/d186dcd2044cf54d8e48876defef4907/contents/BBMRCJ/BBMRCJ.png",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "storm",
+  "platform": "storm",
+  "brand": "Roto Grip",
   "title": "Cosmos",
   "url": "https://www.stormbowling.com/roto-grip-cosmos-bowling-ball",
   "sku": "BBPRCY",
@@ -64087,6 +64173,51 @@
   },
   "mfgScales": {},
   "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "storm",
+  "platform": "storm",
+  "brand": "Roto Grip",
+  "title": "EXOTIC GEM",
+  "url": "https://www.stormbowling.com/roto-grip-exotic-gem-bowling-ball",
+  "sku": null,
+  "catalogId": "roto-grip-exotic-gem",
+  "match": "match",
+  "candidates": [
+   "roto-grip-exotic-gem"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Sometimes evolution can spark new life into technology from ",
+   "coreType": null,
+   "coverName": "Bottom line, this coverstock technology just flat out crushe",
+   "coverType": null,
+   "finish": "Reacta Gloss",
+   "released": "2015-12",
+   "weights": {
+    "14": {
+     "RG": 2.5,
+     "Diff": 0.052,
+     "IntDiff": 0.015
+    },
+    "15": {
+     "RG": 2.47,
+     "Diff": 0.053,
+     "IntDiff": 0.016
+    },
+    "16": {
+     "RG": 2.47,
+     "Diff": 0.051,
+     "IntDiff": 0.016
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": "https://assets.1.commercebuild.com/d186dcd2044cf54d8e48876defef4907/contents/BBMRXG/BBMRXG.png",
   "fetched": "2026-10-07",
   "method": "parser"
  },
@@ -64374,6 +64505,51 @@
   "source": "storm",
   "platform": "storm",
   "brand": "Roto Grip",
+  "title": "HYPED PEARL",
+  "url": "https://www.stormbowling.com/roto-grip-hyped-pearl-bowling-ball",
+  "sku": null,
+  "catalogId": "roto-grip-hyped-pearl",
+  "match": "match",
+  "candidates": [
+   "roto-grip-hyped-pearl"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "From the beginning, the end goal for the Hyped Core was to c",
+   "coreType": null,
+   "coverName": "Versatile Traction Control (VTC) was formulated with durabil",
+   "coverType": null,
+   "finish": "Reacta Gloss",
+   "released": "2021-08",
+   "weights": {
+    "14": {
+     "RG": 2.52,
+     "Diff": 0.036,
+     "IntDiff": null
+    },
+    "15": {
+     "RG": 2.52,
+     "Diff": 0.036,
+     "IntDiff": null
+    },
+    "16": {
+     "RG": 2.51,
+     "Diff": 0.037,
+     "IntDiff": null
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": "https://assets.1.commercebuild.com/d186dcd2044cf54d8e48876defef4907/contents/BBMRYP/BBMRYP.png",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "storm",
+  "platform": "storm",
+  "brand": "Roto Grip",
   "title": "hyped UP!",
   "url": "https://www.stormbowling.com/roto-grip-hyped-up-bowling-ball",
   "sku": "BBMRYY",
@@ -64402,6 +64578,96 @@
   },
   "mfgScales": {},
   "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "storm",
+  "platform": "storm",
+  "brand": "Roto Grip",
+  "title": "IDOL COSMOS",
+  "url": "https://www.stormbowling.com/roto-grip-idol-cosmos-bowling-ball",
+  "sku": null,
+  "catalogId": "roto-grip-idol-cosmos",
+  "match": "match",
+  "candidates": [
+   "roto-grip-idol-cosmos"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Ikon Symmetric",
+   "coreType": "Symmetrical",
+   "coverName": "Derived from countless hours of mixing, formulating, and tes",
+   "coverType": null,
+   "finish": "4000-Grit Abralon",
+   "released": "2022-07-08",
+   "weights": {
+    "14": {
+     "RG": 2.54,
+     "Diff": 0.049,
+     "IntDiff": null
+    },
+    "15": {
+     "RG": 2.49,
+     "Diff": 0.052,
+     "IntDiff": null
+    },
+    "16": {
+     "RG": 2.49,
+     "Diff": 0.049,
+     "IntDiff": null
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": "https://assets.1.commercebuild.com/d186dcd2044cf54d8e48876defef4907/contents/BBMRDC/BBMRDC.png",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "storm",
+  "platform": "storm",
+  "brand": "Roto Grip",
+  "title": "IDOL HELIOS",
+  "url": "https://www.stormbowling.com/roto-grip-idol-helios-bowling-ball",
+  "sku": null,
+  "catalogId": "roto-grip-idol-helios",
+  "match": "match",
+  "candidates": [
+   "roto-grip-idol-helios"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Ikon Symmetric",
+   "coreType": "Symmetrical",
+   "coverName": "Derived from countless hours of mixing, formulating, and tes",
+   "coverType": null,
+   "finish": "2000-Grit Abralon",
+   "released": "2021-11-19",
+   "weights": {
+    "14": {
+     "RG": 2.54,
+     "Diff": 0.049,
+     "IntDiff": null
+    },
+    "15": {
+     "RG": 2.49,
+     "Diff": 0.052,
+     "IntDiff": null
+    },
+    "16": {
+     "RG": 2.49,
+     "Diff": 0.049,
+     "IntDiff": null
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": "https://assets.1.commercebuild.com/d186dcd2044cf54d8e48876defef4907/contents/BBMRDH/BBMRDH.png",
   "fetched": "2026-10-07",
   "method": "parser"
  },
@@ -64505,6 +64771,51 @@
   },
   "mfgScales": {},
   "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "storm",
+  "platform": "storm",
+  "brand": "Roto Grip",
+  "title": "TNT",
+  "url": "https://www.stormbowling.com/roto-grip-tnt-bowling-ball",
+  "sku": null,
+  "catalogId": "roto-grip-tnt",
+  "match": "match",
+  "candidates": [
+   "roto-grip-tnt"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "By placing the TORQUE SPHERE just above the inner equator of",
+   "coreType": null,
+   "coverName": "First used in a pearlized form on the RST X-2, we felt there",
+   "coverType": null,
+   "finish": "2000-Grit Abralon",
+   "released": "2023-01-16",
+   "weights": {
+    "14": {
+     "RG": 2.54,
+     "Diff": 0.051,
+     "IntDiff": null
+    },
+    "15": {
+     "RG": 2.47,
+     "Diff": 0.052,
+     "IntDiff": null
+    },
+    "16": {
+     "RG": 2.47,
+     "Diff": 0.05,
+     "IntDiff": null
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": "https://assets.1.commercebuild.com/d186dcd2044cf54d8e48876defef4907/contents/BBMRNT/BBMRNT.png",
   "fetched": "2026-10-07",
   "method": "parser"
  },
@@ -64722,6 +65033,51 @@
   "source": "storm",
   "platform": "storm",
   "brand": "Storm",
+  "title": "ABSOLUTE",
+  "url": "https://www.stormbowling.com/storm-absolute-bowling-ball",
+  "sku": null,
+  "catalogId": "storm-absolute",
+  "match": "match",
+  "candidates": [
+   "storm-absolute"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "In most cases, an extra slug, or weighted disk, is needed to",
+   "coreType": null,
+   "coverName": "R2S Deep is cleaner through the front compared to the flagsh",
+   "coverType": null,
+   "finish": "Reacta Gloss",
+   "released": "2023-01",
+   "weights": {
+    "14": {
+     "RG": 2.54,
+     "Diff": 0.045,
+     "IntDiff": 0.018
+    },
+    "15": {
+     "RG": 2.48,
+     "Diff": 0.05,
+     "IntDiff": 0.021
+    },
+    "16": {
+     "RG": 2.48,
+     "Diff": 0.048,
+     "IntDiff": 0.02
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": "https://assets.1.commercebuild.com/d186dcd2044cf54d8e48876defef4907/contents/BBMVBS/BBMVBS.png",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "storm",
+  "platform": "storm",
+  "brand": "Storm",
   "title": "Alpha Crux",
   "url": "https://www.stormbowling.com/storm-alpha-crux-bowling-ball",
   "sku": "BBMVXA",
@@ -64932,6 +65288,51 @@
   "source": "storm",
   "platform": "storm",
   "brand": "Storm",
+  "title": "FATE",
+  "url": "https://www.stormbowling.com/storm-fate-bowling-ball",
+  "sku": null,
+  "catalogId": "storm-fate",
+  "match": "match",
+  "candidates": [
+   "storm-fate"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Compared to the Dual-Drive, Piston, and Piston LD, the F-8 C",
+   "coreType": null,
+   "coverName": "Traditionally, the term “hybrid” suggests that both solid an",
+   "coverType": null,
+   "finish": "Reacta Gloss",
+   "released": "2022-11",
+   "weights": {
+    "14": {
+     "RG": 2.54,
+     "Diff": 0.052,
+     "IntDiff": null
+    },
+    "15": {
+     "RG": 2.52,
+     "Diff": 0.053,
+     "IntDiff": null
+    },
+    "16": {
+     "RG": 2.52,
+     "Diff": 0.052,
+     "IntDiff": null
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": "https://assets.1.commercebuild.com/d186dcd2044cf54d8e48876defef4907/contents/BBMVFA/BBMVFA.png",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "storm",
+  "platform": "storm",
+  "brand": "Storm",
   "title": "HY-ROAD",
   "url": "https://www.stormbowling.com/storm-hy-road-bowling-ball",
   "sku": "BBMTTY",
@@ -65133,6 +65534,51 @@
   },
   "mfgScales": {},
   "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "storm",
+  "platform": "storm",
+  "brand": "Storm",
+  "title": "INFINITE PHYSIX",
+  "url": "https://www.stormbowling.com/storm-infinite-physix-bowling-ball",
+  "sku": null,
+  "catalogId": "storm-infinite-physix",
+  "match": "match",
+  "candidates": [
+   "storm-infinite-physix"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Firmly ensconced at the top of the Storm performance heap is",
+   "coreType": null,
+   "coverName": "Traditionally, the term “hybrid” suggests that both solid an",
+   "coverType": null,
+   "finish": "4000-grit Abralon",
+   "released": "2022-07",
+   "weights": {
+    "14": {
+     "RG": 2.53,
+     "Diff": 0.052,
+     "IntDiff": 0.015
+    },
+    "15": {
+     "RG": 2.48,
+     "Diff": 0.053,
+     "IntDiff": 0.017
+    },
+    "16": {
+     "RG": 2.48,
+     "Diff": 0.054,
+     "IntDiff": 0.017
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": "https://assets.1.commercebuild.com/d186dcd2044cf54d8e48876defef4907/contents/BBMVIX/BBMVIX.png",
   "fetched": "2026-10-07",
   "method": "parser"
  },
@@ -65550,6 +65996,96 @@
   "source": "storm",
   "platform": "storm",
   "brand": "Storm",
+  "title": "NOVA",
+  "url": "https://www.stormbowling.com/storm-nova-bowling-ball",
+  "sku": null,
+  "catalogId": "storm-nova",
+  "match": "match",
+  "candidates": [
+   "storm-nova"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Weight blocks like the Ignition Core rev up fast and finish ",
+   "coreType": null,
+   "coverName": "Slightly more aggressive than the famed R2S coverstock mater",
+   "coverType": null,
+   "finish": "3000-grit Abralon",
+   "released": "2022-01",
+   "weights": {
+    "14": {
+     "RG": 2.53,
+     "Diff": 0.049,
+     "IntDiff": 0.018
+    },
+    "15": {
+     "RG": 2.49,
+     "Diff": 0.052,
+     "IntDiff": 0.019
+    },
+    "16": {
+     "RG": 2.5,
+     "Diff": 0.051,
+     "IntDiff": 0.018
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": "https://assets.1.commercebuild.com/d186dcd2044cf54d8e48876defef4907/contents/BBMVNV/BBMVNV.png",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "storm",
+  "platform": "storm",
+  "brand": "Storm",
+  "title": "PHAZE 4",
+  "url": "https://www.stormbowling.com/storm-phaze-4-bowling-ball",
+  "sku": null,
+  "catalogId": "storm-phaze-4",
+  "match": "match",
+  "candidates": [
+   "storm-phaze-4"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "This low RG gem has a strong heart. Being one of the most ag",
+   "coreType": null,
+   "coverName": "The Phaze series’ aggressive nature has carried over to the ",
+   "coverType": null,
+   "finish": "1500-grit Polished",
+   "released": "2022-02",
+   "weights": {
+    "14": {
+     "RG": 2.53,
+     "Diff": 0.05,
+     "IntDiff": null
+    },
+    "15": {
+     "RG": 2.48,
+     "Diff": 0.051,
+     "IntDiff": null
+    },
+    "16": {
+     "RG": 2.48,
+     "Diff": 0.051,
+     "IntDiff": null
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": "https://assets.1.commercebuild.com/d186dcd2044cf54d8e48876defef4907/contents/BBMVIV/BBMVIV.png",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "storm",
+  "platform": "storm",
+  "brand": "Storm",
   "title": "Phaze II",
   "url": "https://www.stormbowling.com/storm-phaze-ii-bowling-ball",
   "sku": "BBMTZA",
@@ -65615,6 +66151,51 @@
   },
   "mfgScales": {},
   "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "storm",
+  "platform": "storm",
+  "brand": "Storm",
+  "title": "PHAZE V",
+  "url": "https://www.stormbowling.com/storm-phaze-v-bowling-ball",
+  "sku": null,
+  "catalogId": "storm-phaze-v",
+  "match": "match",
+  "candidates": [
+   "storm-phaze-v"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "This low RG gem has a strong heart. Being one of the most ag",
+   "coreType": null,
+   "coverName": "The Phaze series’ aggressive nature has carried over to the ",
+   "coverType": null,
+   "finish": null,
+   "released": "2022-10",
+   "weights": {
+    "14": {
+     "RG": 2.53,
+     "Diff": 0.05,
+     "IntDiff": null
+    },
+    "15": {
+     "RG": 2.48,
+     "Diff": 0.051,
+     "IntDiff": null
+    },
+    "16": {
+     "RG": 2.48,
+     "Diff": 0.051,
+     "IntDiff": null
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": "https://assets.1.commercebuild.com/d186dcd2044cf54d8e48876defef4907/contents/BBMVVV/BBMVVV.png",
   "fetched": "2026-10-07",
   "method": "parser"
  },
@@ -65718,6 +66299,51 @@
   },
   "mfgScales": {},
   "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "storm",
+  "platform": "storm",
+  "brand": "Storm",
+  "title": "SUN STORM LIMITED EDITION",
+  "url": "https://www.stormbowling.com/storm-sun-storm-limited-edition-bowling-ball",
+  "sku": null,
+  "catalogId": "storm-sun-storm-limited-edition",
+  "match": "match",
+  "candidates": [
+   "storm-sun-storm-limited-edition"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Workable and forgiving, the C3 Centripetal Control Core is a",
+   "coreType": null,
+   "coverName": "SPEC stands for “Storm Performance Enhanced Coverstock”. The",
+   "coverType": null,
+   "finish": "4K-Fast",
+   "released": "2022-12",
+   "weights": {
+    "14": {
+     "RG": 2.54,
+     "Diff": 0.034,
+     "IntDiff": null
+    },
+    "15": {
+     "RG": 2.49,
+     "Diff": 0.029,
+     "IntDiff": null
+    },
+    "16": {
+     "RG": 2.49,
+     "Diff": 0.035,
+     "IntDiff": null
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": "https://assets.1.commercebuild.com/d186dcd2044cf54d8e48876defef4907/contents/BBMVSS/BBMVSS.png",
   "fetched": "2026-10-07",
   "method": "parser"
  },
@@ -67832,36 +68458,6 @@
   "source": "track",
   "platform": "shopify",
   "brand": "Track Inc.",
-  "title": "Arsenal Reactive",
-  "url": "https://trackbowling.com/products/arsenal-reactive",
-  "sku": null,
-  "catalogId": "track-inc-arsenal-reactive",
-  "match": "match",
-  "candidates": [
-   "track-inc-arsenal-reactive"
-  ],
-  "decision": "pending",
-  "reason": "no-weight-specs",
-  "flags": [
-   "no-weight-specs"
-  ],
-  "specs": {
-   "core": "Morpheus Radical Symmetric",
-   "coverName": "Power Pack Reactive",
-   "coverType": null,
-   "finish": "1500 Smooth Sanded / Polished (Magic Shine)",
-   "released": null,
-   "weights": {}
-  },
-  "mfgScales": {},
-  "imageUrl": "https://cdn.shopify.com/s/files/1/0609/7590/7033/products/Arsenal_Reactive_1600x1600_6ead53b5-9da4-43b9-8ec0-634a26d369ad.png?v=1663957536",
-  "fetched": "2026-10-07",
-  "method": "parser"
- },
- {
-  "source": "track",
-  "platform": "shopify",
-  "brand": "Track Inc.",
   "title": "Blue Heat",
   "url": "https://trackbowling.com/products/blue-heat",
   "sku": null,
@@ -68952,6 +69548,60 @@
   },
   "mfgScales": {},
   "imageUrl": "https://cdn.shopify.com/s/files/1/0609/7590/7033/products/HX10_1600x1600_e8398ad1-b57f-445e-b8fa-1d47c914cde1.png?v=1658852928",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "track",
+  "platform": "shopify",
+  "brand": "Track Inc.",
+  "title": "Hx16",
+  "url": "https://trackbowling.com/products/hx16",
+  "sku": null,
+  "catalogId": "track-inc-hx16",
+  "match": "match",
+  "candidates": [
+   "track-inc-hx16"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "I-Core (Dual Density)",
+   "coverName": "DR-8 Hybrid",
+   "coverType": null,
+   "finish": "500, 1000 Abralon® Polished with Factory Finish Polish",
+   "released": null,
+   "weights": {
+    "12": {
+     "RG": 2.6,
+     "Diff": 0.039,
+     "IntDiff": null
+    },
+    "13": {
+     "RG": 2.53,
+     "Diff": 0.055,
+     "IntDiff": null
+    },
+    "14": {
+     "RG": 2.52,
+     "Diff": 0.052,
+     "IntDiff": null
+    },
+    "15": {
+     "RG": 2.49,
+     "Diff": 0.053,
+     "IntDiff": null
+    },
+    "16": {
+     "RG": 2.5,
+     "Diff": 0.047,
+     "IntDiff": null
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": "https://cdn.shopify.com/s/files/1/0609/7590/7033/products/HX16_1600x1600_f12ab3a7-4259-4f18-8dd1-d38bee7c82ea.png?v=1658851669",
   "fetched": "2026-10-07",
   "method": "parser"
  },
