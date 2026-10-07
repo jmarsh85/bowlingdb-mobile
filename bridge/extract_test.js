@@ -70,6 +70,37 @@ ok(hy.specs.core === 'Inverted Fe2' && hy.specs.coverName === 'R2S Hybrid' && hy
 ok(hy.specs.released === '2008-11-18' && hy.mfgScales.stormMatchMaker === 56, 'storm 2-digit year + matchmaker');
 ok(st[1].url === 'https://www.stormbowling.com/storm-monsoon-bowling-ball', 'relative link resolved');
 
+
+/* ---- regressions from the 2026-10-06 test run ---- */
+const TRACK = `<h3>Specifications</h3><table><tbody><tr><td><p>Performance</p></td><td><p>High</p></td></tr>
+<tr><td><p>Core</p></td><td><p>I-Core 3.0 Slim</p></td></tr><tr><td><p>Coverstock</p></td><td><p>QR-11 Solid</p></td></tr>
+<tr><td><p>Cover Type</p></td><td><p>Solid Reactive</p></td></tr><tr><td><p>Finish</p></td><td><p>500, 1500 Siaair</p></td></tr>
+<tr><td><p>Release Date</p></td><td><p>February 23, 2023</p></td></tr></tbody></table>
+<h3>Core Numbers</h3><table><tbody><tr><th><p>Weight</p></th><th><p>RG</p></th><th><p>DIFF</p></th><th><p>ASY</p></th></tr>
+<tr><td><p>16 lb</p></td><td><p>2.526</p></td><td><p>0.046</p></td><td><p>0.018</p></td></tr>
+<tr><td><p>15 lb</p></td><td><p>2.518</p></td><td><p>0.053</p></td><td><p>0.020</p></td></tr>
+<tr><td><p>12 lb</p></td><td><p>2.593</p></td><td><p>0.041</p></td><td><p>0.014</p></td></tr></tbody></table>`;
+const tr = X.parseShopifyBody(TRACK, 'Archetype', 'https://trackbowling.com/products/archetype', 'Track Inc.', null)[0];
+ok(tr.specs.weights[15].RG === 2.518 && tr.specs.weights[15].Diff === 0.053 && tr.specs.weights[15].IntDiff === 0.02, 'track: transposed table with <p> cells');
+ok(tr.specs.weights[16].IntDiff === 0.018 && tr.specs.weights[12].RG === 2.593, 'track: all weight rows');
+ok(tr.specs.core === 'I-Core 3.0 Slim' && tr.specs.coverType === 'Solid Reactive' && tr.specs.released === '2023-02-23', 'track: kv table fallback');
+const CRAFT_P = CRAFT.replace(/<td>([^<]*)<\/td>/g, '<td><p>$1</p></td>').replace(/<th>/g, '<th><div>').replace(/<\/th>/g, '</div></th>');
+const cp = X.parseCraft(CRAFT_P, 'u', 'Brunswick')[0];
+ok(cp.specs.weights[15].RG === 2.502 && cp.specs.core === 'Rampart', 'craft: cells wrapped in <p>/<div>');
+const STORM_SPANS = `<div class="list"><h2 class="t"><a href="/storm-phaze-ii-bowling-ball">Phaze II</a> <span>SKU: BBMTZA</span></h2>
+<div class="attrs"><span><strong>Brand:</strong> Storm</span> <span><strong>Weight Block:</strong> S_Velocity</span> <span><strong>Finish:</strong> S_3000 Grit</span>
+<span><strong>Symmetry:</strong> S_Symmetrical</span> <span><strong>Differential:</strong> 0.051</span> <span><strong>Radius of Gyration:</strong> 2.48</span>
+<span><strong>Weight:</strong> 16</span> <span><strong>Coverstock:</strong> S_TX-16 Solid</span> <span><strong>Release Date:</strong> 10/04/16</span>
+<span><strong>PSA:</strong></span> <span><strong>MatchMaker App:</strong> Yes</span> <span><strong>MatchMaker:</strong> 55</span></div>
+<h2 class="t"><a href="/storm-rocket-ai-bowling-ball">ROCKET A.I.</a> <span>SKU: BBMVRC</span></h2><div><span><strong>Brand:</strong> Storm</span>
+<span><strong>Differential:</strong> 0.046</span><span><strong>Radius of Gyration:</strong> 2.52</span><span><strong>Weight:</strong> 16</span></div>
+<h2>Shop by Brand</h2></div>`;
+const ss = X.parseStormListing(STORM_SPANS, 'https://www.stormbowling.com');
+ok(ss.length === 2 && ss[0].title === 'Phaze II' && ss[0].sku === 'BBMTZA', 'storm: inline spans segmented by heading');
+ok(ss[0].specs.weights[16].RG === 2.48 && ss[0].specs.weights[16].Diff === 0.051 && ss[0].specs.weights[16].IntDiff === null, 'storm: label tokenizer values');
+ok(ss[0].specs.core === 'Velocity' && ss[0].specs.finish === '3000 Grit' && ss[0].specs.released === '2016-10-04' && ss[0].mfgScales.stormMatchMaker === 55, 'storm: fields + MatchMaker (not "MatchMaker App")');
+ok(ss[1].url === 'https://www.stormbowling.com/storm-rocket-ai-bowling-ball' && ss[1].specs.weights[16].Diff === 0.046, 'storm: second item');
+
 /* verify / match / decide */
 const rows = [{ i: 'storm-hy-road', k: 'storm|hyroad', m: 'Storm', n: 'Hy-Road', y: '2008' },
   { i: 'storm-monsoon', k: 'storm|monsoon', m: 'Storm', n: 'Monsoon', y: '2026' },
