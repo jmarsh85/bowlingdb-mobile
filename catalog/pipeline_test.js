@@ -114,6 +114,12 @@ ok('shard per manufacturer',
    Object.keys(shards).length === new Set(entries.map(e => e.MFG)).size);
 ok('index is search-level only',
    Object.keys(index[0]).sort().join(',') === 'c,i,k,m,n,t,y');
+{ /* v30.159: s:1 only on entries that have published specs */
+  const id0 = entries[0].CatalogID;
+  const ix = B.build(rows, { [id0]: { SpecsByWeight: { 15: { RG: 2.5, Diff: 0.05, IntDiff: null } } } }, '2026-09-15').index;
+  ok('index flags entries with specs', ix.find(x => x.i === id0).s === 1 &&
+     ix.filter(x => x.i !== id0).every(x => !('s' in x)));
+}
 ok('usbc.json versioned', usbc.ListVersion === '2026-09-15');
 ok('every entry carries ListVersion',
    entries.every(e => e.USBC.ListVersion === '2026-09-15'));
