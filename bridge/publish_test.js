@@ -17,7 +17,13 @@ r = P.publish([rec({ specs: { weights: {} } })]); ok(r.report.skippedNoWeights =
 r = P.publish([rec({}), rec({ url: 'other', specs: { weights: { 15: { RG: 2.6, Diff: 0.04 } } } })]);
 ok(r.report.conflicts[0] === 'brunswick-combat' && !r.specs['brunswick-combat'], 'two sources disagree -> neither published');
 r = P.publish([rec({ decision: 'pending', catalogId: null, url: 'v' })], [{ url: 'v', catalogId: 'brunswick-combat', action: 'approve' }]);
-ok(r.specs['brunswick-combat'] && r.report.approved === 1, 'approval-page decision publishes a pending row');
+ok(r.specs['brunswick-combat'] && r.report.approved === 1, 'ticked box publishes a pending row');
+r = P.publish([rec({ decision: 'pending', catalogId: null, url: 'fam', candidates: ['x-black', 'x-cherry'] })],
+  [{ url: 'fam', catalogId: 'x-black', action: 'approve' }, { url: 'fam', catalogId: 'x-cherry', action: 'approve' }]);
+ok(r.specs['x-black'] && r.specs['x-cherry'], 'one family page, two ticked colourways');
+r = P.publish([rec({}), rec({ url: 'mine', decision: 'pending', specs: { weights: { 15: { RG: 2.6, Diff: 0.04 } } } })],
+  [{ url: 'mine', catalogId: 'brunswick-combat', action: 'approve' }]);
+ok(r.specs['brunswick-combat'].SpecsByWeight['15'].RG === 2.6, 'your approval beats auto');
 r = P.publish([rec({})], [{ url: 'https://b/combat', action: 'reject' }]); ok(r.report.published === 0, 'reject wins over auto');
 /* end to end through the real build_catalog.js */
 const rows = [{ mfg: 'Brunswick', ballName: 'Combat', approvalISO: '2025-08-01', approvalDateOK: true },
