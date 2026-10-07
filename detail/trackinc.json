@@ -6440,17 +6440,20 @@
   "CatalogID": "track-inc-hx16",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "I-Core (Dual Density)",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "500, 1000 Abralon® Polished with Factory Finish Polish",
+   "Name": "DR-8 Hybrid",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -6465,7 +6468,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.039,
+    "IntDiff": null,
+    "RG": 2.6
+   },
+   "13": {
+    "Diff": 0.055,
+    "IntDiff": null,
+    "RG": 2.53
+   },
+   "14": {
+    "Diff": 0.052,
+    "IntDiff": null,
+    "RG": 2.52
+   },
+   "15": {
+    "Diff": 0.053,
+    "IntDiff": null,
+    "RG": 2.49
+   },
+   "16": {
+    "Diff": 0.047,
+    "IntDiff": null,
+    "RG": 2.5
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2015-01",

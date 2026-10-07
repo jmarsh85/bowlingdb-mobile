@@ -10505,17 +10505,20 @@
   "CatalogID": "hammer-dark-web",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Modified Spheroid",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1500 Siaair Micro Pad",
+   "Name": "Aggression Solid",
+   "Type": "Solid Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2022-07-08",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -10530,7 +10533,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.04,
+    "IntDiff": null,
+    "RG": 2.608
+   },
+   "13": {
+    "Diff": 0.04,
+    "IntDiff": null,
+    "RG": 2.585
+   },
+   "14": {
+    "Diff": 0.048,
+    "IntDiff": null,
+    "RG": 2.541
+   },
+   "15": {
+    "Diff": 0.048,
+    "IntDiff": null,
+    "RG": 2.514
+   },
+   "16": {
+    "Diff": 0.042,
+    "IntDiff": null,
+    "RG": 2.522
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2022-06-07",
@@ -14222,17 +14251,20 @@
   "CatalogID": "hammer-hammerhead-pearl",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Spheroid",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000, 1500 Siaair / Factory Compound",
+   "Name": "HK22 - Aggression Pearl",
+   "Type": "Pearl Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2026-01-15",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -14247,7 +14279,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.04,
+    "IntDiff": null,
+    "RG": 2.608
+   },
+   "13": {
+    "Diff": 0.04,
+    "IntDiff": null,
+    "RG": 2.585
+   },
+   "14": {
+    "Diff": 0.048,
+    "IntDiff": null,
+    "RG": 2.51
+   },
+   "15": {
+    "Diff": 0.048,
+    "IntDiff": null,
+    "RG": 2.481
+   },
+   "16": {
+    "Diff": 0.039,
+    "IntDiff": null,
+    "RG": 2.5
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2026-01-06",

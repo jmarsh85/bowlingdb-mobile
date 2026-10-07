@@ -185,17 +185,20 @@
   "CatalogID": "storm-absolute",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "In most cases, an extra slug, or weighted disk, is needed to",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "Reacta Gloss",
+   "Name": "R2S Deep is cleaner through the front compared to the flagsh",
    "Type": null
   },
-  "DateReleased": null,
+  "DateReleased": "2023-01",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -210,7 +213,23 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "14": {
+    "Diff": 0.045,
+    "IntDiff": 0.018,
+    "RG": 2.54
+   },
+   "15": {
+    "Diff": 0.05,
+    "IntDiff": 0.021,
+    "RG": 2.48
+   },
+   "16": {
+    "Diff": 0.048,
+    "IntDiff": 0.02,
+    "RG": 2.48
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2022-11-22",
@@ -9644,17 +9663,20 @@
   "CatalogID": "storm-fate",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Compared to the Dual-Drive, Piston, and Piston LD, the F-8 C",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "Reacta Gloss",
+   "Name": "Traditionally, the term “hybrid” suggests that both solid an",
    "Type": null
   },
-  "DateReleased": null,
+  "DateReleased": "2022-11",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -9669,7 +9691,23 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "14": {
+    "Diff": 0.052,
+    "IntDiff": null,
+    "RG": 2.54
+   },
+   "15": {
+    "Diff": 0.053,
+    "IntDiff": null,
+    "RG": 2.52
+   },
+   "16": {
+    "Diff": 0.052,
+    "IntDiff": null,
+    "RG": 2.52
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2022-08-23",
@@ -15080,17 +15118,20 @@
   "CatalogID": "storm-infinite-physix",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Firmly ensconced at the top of the Storm performance heap is",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "4000-grit Abralon",
+   "Name": "Traditionally, the term “hybrid” suggests that both solid an",
    "Type": null
   },
-  "DateReleased": null,
+  "DateReleased": "2022-07",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -15105,7 +15146,23 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "14": {
+    "Diff": 0.052,
+    "IntDiff": 0.015,
+    "RG": 2.53
+   },
+   "15": {
+    "Diff": 0.053,
+    "IntDiff": 0.017,
+    "RG": 2.48
+   },
+   "16": {
+    "Diff": 0.054,
+    "IntDiff": 0.017,
+    "RG": 2.48
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2022-05-03",
@@ -21866,17 +21923,20 @@
   "CatalogID": "storm-nova",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Weight blocks like the Ignition Core rev up fast and finish ",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "3000-grit Abralon",
+   "Name": "Slightly more aggressive than the famed R2S coverstock mater",
    "Type": null
   },
-  "DateReleased": null,
+  "DateReleased": "2022-01",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -21891,7 +21951,23 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "14": {
+    "Diff": 0.049,
+    "IntDiff": 0.018,
+    "RG": 2.53
+   },
+   "15": {
+    "Diff": 0.052,
+    "IntDiff": 0.019,
+    "RG": 2.49
+   },
+   "16": {
+    "Diff": 0.051,
+    "IntDiff": 0.018,
+    "RG": 2.5
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2021-12-07",
@@ -23621,17 +23697,20 @@
   "CatalogID": "storm-phaze-4",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "This low RG gem has a strong heart. Being one of the most ag",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "1500-grit Polished",
+   "Name": "The Phaze series’ aggressive nature has carried over to the ",
    "Type": null
   },
-  "DateReleased": null,
+  "DateReleased": "2022-02",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -23646,7 +23725,23 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "14": {
+    "Diff": 0.05,
+    "IntDiff": null,
+    "RG": 2.53
+   },
+   "15": {
+    "Diff": 0.051,
+    "IntDiff": null,
+    "RG": 2.48
+   },
+   "16": {
+    "Diff": 0.051,
+    "IntDiff": null,
+    "RG": 2.48
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2021-10-12",
@@ -24449,17 +24544,20 @@
   "CatalogID": "storm-phaze-v",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "This low RG gem has a strong heart. Being one of the most ag",
    "Type": null
   },
   "Cover": {
    "Finish": null,
-   "Name": null,
+   "Name": "The Phaze series’ aggressive nature has carried over to the ",
    "Type": null
   },
-  "DateReleased": null,
+  "DateReleased": "2022-10",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -24474,7 +24572,23 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "14": {
+    "Diff": 0.05,
+    "IntDiff": null,
+    "RG": 2.53
+   },
+   "15": {
+    "Diff": 0.051,
+    "IntDiff": null,
+    "RG": 2.48
+   },
+   "16": {
+    "Diff": 0.051,
+    "IntDiff": null,
+    "RG": 2.48
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2022-09-20",
@@ -33170,17 +33284,20 @@
   "CatalogID": "storm-sun-storm-limited-edition",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Workable and forgiving, the C3 Centripetal Control Core is a",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "4K-Fast",
+   "Name": "SPEC stands for “Storm Performance Enhanced Coverstock”. The",
    "Type": null
   },
-  "DateReleased": null,
+  "DateReleased": "2022-12",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -33195,7 +33312,23 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "14": {
+    "Diff": 0.034,
+    "IntDiff": null,
+    "RG": 2.54
+   },
+   "15": {
+    "Diff": 0.029,
+    "IntDiff": null,
+    "RG": 2.49
+   },
+   "16": {
+    "Diff": 0.035,
+    "IntDiff": null,
+    "RG": 2.49
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2022-09-20",

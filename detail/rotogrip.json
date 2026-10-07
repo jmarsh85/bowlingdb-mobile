@@ -2030,17 +2030,20 @@
   "CatalogID": "roto-grip-clone",
   "Colorway": null,
   "Core": {
-   "Name": null,
-   "Type": null
+   "Name": "Cloned ET Asymmetric",
+   "Type": "Asymmetrical"
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "Reacta Gloss",
+   "Name": "Based on years of testing and research, we found this direct",
    "Type": null
   },
-  "DateReleased": null,
+  "DateReleased": "2023-07-28",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -2055,7 +2058,23 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "14": {
+    "Diff": 0.056,
+    "IntDiff": 0.016,
+    "RG": 2.53
+   },
+   "15": {
+    "Diff": 0.056,
+    "IntDiff": 0.016,
+    "RG": 2.51
+   },
+   "16": {
+    "Diff": 0.054,
+    "IntDiff": 0.016,
+    "RG": 2.5
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2023-02-07",
@@ -4325,17 +4344,20 @@
   "CatalogID": "roto-grip-exotic-gem",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Sometimes evolution can spark new life into technology from ",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "Reacta Gloss",
+   "Name": "Bottom line, this coverstock technology just flat out crushe",
    "Type": null
   },
-  "DateReleased": null,
+  "DateReleased": "2015-12",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -4350,7 +4372,23 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "14": {
+    "Diff": 0.052,
+    "IntDiff": 0.015,
+    "RG": 2.5
+   },
+   "15": {
+    "Diff": 0.053,
+    "IntDiff": 0.016,
+    "RG": 2.47
+   },
+   "16": {
+    "Diff": 0.051,
+    "IntDiff": 0.016,
+    "RG": 2.47
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2022-09-13",
@@ -8942,17 +8980,20 @@
   "CatalogID": "roto-grip-hyped-pearl",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "From the beginning, the end goal for the Hyped Core was to c",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "Reacta Gloss",
+   "Name": "Versatile Traction Control (VTC) was formulated with durabil",
    "Type": null
   },
-  "DateReleased": null,
+  "DateReleased": "2021-08",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -8967,7 +9008,23 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "14": {
+    "Diff": 0.036,
+    "IntDiff": null,
+    "RG": 2.52
+   },
+   "15": {
+    "Diff": 0.036,
+    "IntDiff": null,
+    "RG": 2.52
+   },
+   "16": {
+    "Diff": 0.037,
+    "IntDiff": null,
+    "RG": 2.51
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2021-03-16",
@@ -9491,17 +9548,20 @@
   "CatalogID": "roto-grip-idol-cosmos",
   "Colorway": null,
   "Core": {
-   "Name": null,
-   "Type": null
+   "Name": "Ikon Symmetric",
+   "Type": "Symmetrical"
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "4000-Grit Abralon",
+   "Name": "Derived from countless hours of mixing, formulating, and tes",
    "Type": null
   },
-  "DateReleased": null,
+  "DateReleased": "2022-07-08",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -9516,7 +9576,23 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "14": {
+    "Diff": 0.049,
+    "IntDiff": null,
+    "RG": 2.54
+   },
+   "15": {
+    "Diff": 0.052,
+    "IntDiff": null,
+    "RG": 2.49
+   },
+   "16": {
+    "Diff": 0.049,
+    "IntDiff": null,
+    "RG": 2.49
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2022-05-03",
@@ -9581,17 +9657,20 @@
   "CatalogID": "roto-grip-idol-helios",
   "Colorway": null,
   "Core": {
-   "Name": null,
-   "Type": null
+   "Name": "Ikon Symmetric",
+   "Type": "Symmetrical"
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "2000-Grit Abralon",
+   "Name": "Derived from countless hours of mixing, formulating, and tes",
    "Type": null
   },
-  "DateReleased": null,
+  "DateReleased": "2021-11-19",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -9606,7 +9685,23 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "14": {
+    "Diff": 0.049,
+    "IntDiff": null,
+    "RG": 2.54
+   },
+   "15": {
+    "Diff": 0.052,
+    "IntDiff": null,
+    "RG": 2.49
+   },
+   "16": {
+    "Diff": 0.049,
+    "IntDiff": null,
+    "RG": 2.49
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2021-10-05",
@@ -19184,17 +19279,20 @@
   "CatalogID": "roto-grip-tnt",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "By placing the TORQUE SPHERE just above the inner equator of",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "2000-Grit Abralon",
+   "Name": "First used in a pearlized form on the RST X-2, we felt there",
    "Type": null
   },
-  "DateReleased": null,
+  "DateReleased": "2023-01-16",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -19209,7 +19307,23 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "14": {
+    "Diff": 0.051,
+    "IntDiff": null,
+    "RG": 2.54
+   },
+   "15": {
+    "Diff": 0.052,
+    "IntDiff": null,
+    "RG": 2.47
+   },
+   "16": {
+    "Diff": 0.05,
+    "IntDiff": null,
+    "RG": 2.47
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2023-01-10",

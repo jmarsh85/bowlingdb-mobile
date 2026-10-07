@@ -9323,17 +9323,20 @@
   "CatalogID": "columbia-300-jekyll",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "2-Piece",
    "Type": null
   },
   "Cover": {
    "Finish": null,
-   "Name": null,
+   "Name": "Reactive Pearl",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -9348,7 +9351,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "16": {
+    "Diff": 0.045,
+    "IntDiff": null,
+    "RG": 2.49
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2003-03",
@@ -20918,20 +20927,17 @@
   "CatalogID": "columbia-300-scout-reactive-blue-gold",
   "Colorway": null,
   "Core": {
-   "Name": "Pancake",
+   "Name": null,
    "Type": null
   },
   "Cover": {
    "Finish": null,
-   "Name": "Super-Flex",
+   "Name": null,
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
-   "Core": "mfg",
-   "Cover": "mfg",
-   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -20946,23 +20952,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {
-   "14": {
-    "Diff": 0.02,
-    "IntDiff": null,
-    "RG": 2.69
-   },
-   "15": {
-    "Diff": 0.02,
-    "IntDiff": null,
-    "RG": 2.65
-   },
-   "16": {
-    "Diff": 0.02,
-    "IntDiff": null,
-    "RG": 2.64
-   }
-  },
+  "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2007-04",
@@ -23524,17 +23514,20 @@
   "CatalogID": "columbia-300-swerve",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Swerve",
    "Type": null
   },
   "Cover": {
    "Finish": null,
-   "Name": null,
+   "Name": "Reflex Solid",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -23549,7 +23542,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.039,
+    "IntDiff": null,
+    "RG": 2.6
+   },
+   "13": {
+    "Diff": 0.055,
+    "IntDiff": null,
+    "RG": 2.53
+   },
+   "14": {
+    "Diff": 0.057,
+    "IntDiff": null,
+    "RG": 2.48
+   },
+   "15": {
+    "Diff": 0.052,
+    "IntDiff": null,
+    "RG": 2.47
+   },
+   "16": {
+    "Diff": 0.048,
+    "IntDiff": null,
+    "RG": 2.47
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2015-08",
