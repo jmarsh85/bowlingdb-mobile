@@ -3169,6 +3169,57 @@
   "Source": "https://brunswickbowling.com/products/balls/retired/revolver",
   "Checked": "2026-10-07"
  },
+ "brunswick-rhino": {
+  "DateReleased": null,
+  "Core": {
+   "Name": "Light Bulb",
+   "Type": null
+  },
+  "Cover": {
+   "Name": "R-16",
+   "Type": "Pearl Reactive",
+   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish"
+  },
+  "SpecsByWeight": {
+   "10": {
+    "RG": 2.8,
+    "Diff": 0.002,
+    "IntDiff": null
+   },
+   "11": {
+    "RG": 2.769,
+    "Diff": 0.002,
+    "IntDiff": null
+   },
+   "12": {
+    "RG": 2.579,
+    "Diff": 0.03,
+    "IntDiff": null
+   },
+   "13": {
+    "RG": 2.558,
+    "Diff": 0.03,
+    "IntDiff": null
+   },
+   "14": {
+    "RG": 2.54,
+    "Diff": 0.03,
+    "IntDiff": null
+   },
+   "15": {
+    "RG": 2.524,
+    "Diff": 0.03,
+    "IntDiff": null
+   },
+   "16": {
+    "RG": 2.511,
+    "Diff": 0.03,
+    "IntDiff": null
+   }
+  },
+  "Source": "https://brunswickbowling.com/products/balls/retired/rhino-metallic-blue-black",
+  "Checked": "2026-10-07"
+ },
  "brunswick-rhino-black-blue-silver-pearl": {
   "DateReleased": null,
   "Core": {
@@ -8349,52 +8400,6 @@
   "Source": "https://columbia300.com/products/nitrous-red-silver",
   "Checked": "2026-10-07"
  },
- "columbia-300-nitrous-red-smoke-white": {
-  "DateReleased": null,
-  "Core": {
-   "Name": "Nitrous",
-   "Type": null
-  },
-  "Cover": {
-   "Name": "Boost/R",
-   "Type": null,
-   "Finish": null
-  },
-  "SpecsByWeight": {
-   "11": {
-    "RG": 2.69,
-    "Diff": 0.02,
-    "IntDiff": null
-   },
-   "12": {
-    "RG": 2.63,
-    "Diff": 0.03,
-    "IntDiff": null
-   },
-   "13": {
-    "RG": 2.6,
-    "Diff": 0.03,
-    "IntDiff": null
-   },
-   "14": {
-    "RG": 2.58,
-    "Diff": 0.031,
-    "IntDiff": null
-   },
-   "15": {
-    "RG": 2.55,
-    "Diff": 0.033,
-    "IntDiff": null
-   },
-   "16": {
-    "RG": 2.55,
-    "Diff": 0.03,
-    "IntDiff": null
-   }
-  },
-  "Source": "https://columbia300.com/products/nitrous-red-smoke-white",
-  "Checked": "2026-10-07"
- },
  "columbia-300-nitrous-silver-black": {
   "DateReleased": null,
   "Core": {
@@ -9407,6 +9412,37 @@
   "Source": "https://columbia300.com/products/reaction-roll",
   "Checked": "2026-10-07"
  },
+ "columbia-300-resurgence": {
+  "DateReleased": null,
+  "Core": {
+   "Name": "Resurgence",
+   "Type": null
+  },
+  "Cover": {
+   "Name": "New Era",
+   "Type": null,
+   "Finish": null
+  },
+  "SpecsByWeight": {
+   "14": {
+    "RG": 2.5,
+    "Diff": 0.038,
+    "IntDiff": null
+   },
+   "15": {
+    "RG": 2.46,
+    "Diff": 0.043,
+    "IntDiff": null
+   },
+   "16": {
+    "RG": 2.47,
+    "Diff": 0.04,
+    "IntDiff": null
+   }
+  },
+  "Source": "https://columbia300.com/products/rival",
+  "Checked": "2026-10-07"
+ },
  "columbia-300-ricochet-pearl": {
   "DateReleased": "2024-11-21",
   "Core": {
@@ -9643,6 +9679,37 @@
    }
   },
   "Source": "https://columbia300.com/products/scout-r-particle-hi-flare",
+  "Checked": "2026-10-07"
+ },
+ "columbia-300-scout-reactive-blue-gold": {
+  "DateReleased": null,
+  "Core": {
+   "Name": "Pancake",
+   "Type": null
+  },
+  "Cover": {
+   "Name": "Super-Flex",
+   "Type": null,
+   "Finish": null
+  },
+  "SpecsByWeight": {
+   "14": {
+    "RG": 2.69,
+    "Diff": 0.02,
+    "IntDiff": null
+   },
+   "15": {
+    "RG": 2.65,
+    "Diff": 0.02,
+    "IntDiff": null
+   },
+   "16": {
+    "RG": 2.64,
+    "Diff": 0.02,
+    "IntDiff": null
+   }
+  },
+  "Source": "https://columbia300.com/products/scout-reactive-blue-gold",
   "Checked": "2026-10-07"
  },
  "columbia-300-scout-reactive-green-silver": {
@@ -10255,37 +10322,6 @@
    }
   },
   "Source": "https://columbia300.com/products/take-down",
-  "Checked": "2026-10-07"
- },
- "columbia-300-the-classic-u2": {
-  "DateReleased": null,
-  "Core": {
-   "Name": "Resurgance",
-   "Type": null
-  },
-  "Cover": {
-   "Name": "Urethane",
-   "Type": null,
-   "Finish": null
-  },
-  "SpecsByWeight": {
-   "14": {
-    "RG": 2.5,
-    "Diff": 0.038,
-    "IntDiff": null
-   },
-   "15": {
-    "RG": 2.46,
-    "Diff": 0.043,
-    "IntDiff": null
-   },
-   "16": {
-    "RG": 2.47,
-    "Diff": 0.04,
-    "IntDiff": null
-   }
-  },
-  "Source": "https://columbia300.com/products/the-classic-u2",
   "Checked": "2026-10-07"
  },
  "columbia-300-throttle": {
@@ -13378,6 +13414,57 @@
   "Source": "https://ebonite.com/products/choice-solid",
   "Checked": "2026-10-07"
  },
+ "ebonite-clash": {
+  "DateReleased": null,
+  "Core": {
+   "Name": "Predator",
+   "Type": null
+  },
+  "Cover": {
+   "Name": "Modified Phazed Bomber Reactive",
+   "Type": null,
+   "Finish": null
+  },
+  "SpecsByWeight": {
+   "10": {
+    "RG": 2.72,
+    "Diff": 0.031,
+    "IntDiff": null
+   },
+   "11": {
+    "RG": 2.62,
+    "Diff": 0.032,
+    "IntDiff": null
+   },
+   "12": {
+    "RG": 2.57,
+    "Diff": 0.032,
+    "IntDiff": null
+   },
+   "13": {
+    "RG": 2.5,
+    "Diff": 0.03,
+    "IntDiff": null
+   },
+   "14": {
+    "RG": 2.51,
+    "Diff": 0.05,
+    "IntDiff": null
+   },
+   "15": {
+    "RG": 2.47,
+    "Diff": 0.045,
+    "IntDiff": null
+   },
+   "16": {
+    "RG": 2.49,
+    "Diff": 0.043,
+    "IntDiff": null
+   }
+  },
+  "Source": "https://ebonite.com/products/clash-blue-yellow",
+  "Checked": "2026-10-07"
+ },
  "ebonite-clash-turquoise-purple": {
   "DateReleased": null,
   "Core": {
@@ -14305,6 +14392,108 @@
    }
   },
   "Source": "https://ebonite.com/products/destiny-hybrid",
+  "Checked": "2026-10-07"
+ },
+ "ebonite-destiny-pearl": {
+  "DateReleased": null,
+  "Core": {
+   "Name": "Cyclone Torque",
+   "Type": null
+  },
+  "Cover": {
+   "Name": "GB 11.2 Pearl",
+   "Type": null,
+   "Finish": null
+  },
+  "SpecsByWeight": {
+   "10": {
+    "RG": 2.73,
+    "Diff": 0.02,
+    "IntDiff": null
+   },
+   "11": {
+    "RG": 2.66,
+    "Diff": 0.059,
+    "IntDiff": null
+   },
+   "12": {
+    "RG": 2.6,
+    "Diff": 0.053,
+    "IntDiff": null
+   },
+   "13": {
+    "RG": 2.55,
+    "Diff": 0.058,
+    "IntDiff": null
+   },
+   "14": {
+    "RG": 2.54,
+    "Diff": 0.053,
+    "IntDiff": null
+   },
+   "15": {
+    "RG": 2.53,
+    "Diff": 0.053,
+    "IntDiff": null
+   },
+   "16": {
+    "RG": 2.52,
+    "Diff": 0.047,
+    "IntDiff": null
+   }
+  },
+  "Source": "https://ebonite.com/products/destiny-pearl-green-orange-smoke",
+  "Checked": "2026-10-07"
+ },
+ "ebonite-destiny-solid": {
+  "DateReleased": null,
+  "Core": {
+   "Name": "Cyclone Torque",
+   "Type": null
+  },
+  "Cover": {
+   "Name": "GB 11.2 Solid",
+   "Type": null,
+   "Finish": null
+  },
+  "SpecsByWeight": {
+   "10": {
+    "RG": 2.73,
+    "Diff": 0.02,
+    "IntDiff": null
+   },
+   "11": {
+    "RG": 2.66,
+    "Diff": 0.059,
+    "IntDiff": null
+   },
+   "12": {
+    "RG": 2.6,
+    "Diff": 0.053,
+    "IntDiff": null
+   },
+   "13": {
+    "RG": 2.55,
+    "Diff": 0.058,
+    "IntDiff": null
+   },
+   "14": {
+    "RG": 2.54,
+    "Diff": 0.053,
+    "IntDiff": null
+   },
+   "15": {
+    "RG": 2.53,
+    "Diff": 0.053,
+    "IntDiff": null
+   },
+   "16": {
+    "RG": 2.52,
+    "Diff": 0.047,
+    "IntDiff": null
+   }
+  },
+  "Source": "https://ebonite.com/products/destiny-solid-blue-black",
   "Checked": "2026-10-07"
  },
  "ebonite-destiny-solid-magenta": {
@@ -15780,6 +15969,47 @@
   "Source": "https://ebonite.com/products/matrix-solid",
   "Checked": "2026-10-07"
  },
+ "ebonite-maverick": {
+  "DateReleased": null,
+  "Core": {
+   "Name": "Maverick",
+   "Type": null
+  },
+  "Cover": {
+   "Name": "GB 14.0 Solid",
+   "Type": null,
+   "Finish": null
+  },
+  "SpecsByWeight": {
+   "12": {
+    "RG": 2.62,
+    "Diff": 0.046,
+    "IntDiff": null
+   },
+   "13": {
+    "RG": 2.59,
+    "Diff": 0.043,
+    "IntDiff": null
+   },
+   "14": {
+    "RG": 2.5,
+    "Diff": 0.055,
+    "IntDiff": null
+   },
+   "15": {
+    "RG": 2.48,
+    "Diff": 0.056,
+    "IntDiff": null
+   },
+   "16": {
+    "RG": 2.49,
+    "Diff": 0.049,
+    "IntDiff": null
+   }
+  },
+  "Source": "https://ebonite.com/products/maverick",
+  "Checked": "2026-10-07"
+ },
  "ebonite-maverick-pearl": {
   "DateReleased": null,
   "Core": {
@@ -16260,47 +16490,6 @@
    }
   },
   "Source": "https://ebonite.com/products/real-one",
-  "Checked": "2026-10-07"
- },
- "ebonite-real-time": {
-  "DateReleased": "2024-11-21",
-  "Core": {
-   "Name": "Big Time",
-   "Type": null
-  },
-  "Cover": {
-   "Name": "HK22 - GB 13.7 Solid",
-   "Type": "Solid Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
-  },
-  "SpecsByWeight": {
-   "12": {
-    "RG": 2.597,
-    "Diff": 0.04,
-    "IntDiff": null
-   },
-   "13": {
-    "RG": 2.574,
-    "Diff": 0.04,
-    "IntDiff": null
-   },
-   "14": {
-    "RG": 2.538,
-    "Diff": 0.054,
-    "IntDiff": null
-   },
-   "15": {
-    "RG": 2.508,
-    "Diff": 0.054,
-    "IntDiff": null
-   },
-   "16": {
-    "RG": 2.517,
-    "Diff": 0.047,
-    "IntDiff": null
-   }
-  },
-  "Source": "https://ebonite.com/products/real-time",
   "Checked": "2026-10-07"
  },
  "ebonite-salute": {
@@ -17664,47 +17853,6 @@
   "Source": "https://hammerbowling.com/products/3-d-offset-attack",
   "Checked": "2026-10-07"
  },
- "hammer-anger-solid": {
-  "DateReleased": "2025-07-10",
-  "Core": {
-   "Name": "Modified Infamous",
-   "Type": null
-  },
-  "Cover": {
-   "Name": "Semtex Solid",
-   "Type": "Solid Reactive",
-   "Finish": "500, 2000 Siaair Micro Pad"
-  },
-  "SpecsByWeight": {
-   "12": {
-    "RG": 2.608,
-    "Diff": 0.04,
-    "IntDiff": null
-   },
-   "13": {
-    "RG": 2.585,
-    "Diff": 0.04,
-    "IntDiff": null
-   },
-   "14": {
-    "RG": 2.603,
-    "Diff": 0.049,
-    "IntDiff": null
-   },
-   "15": {
-    "RG": 2.567,
-    "Diff": 0.049,
-    "IntDiff": null
-   },
-   "16": {
-    "RG": 2.572,
-    "Diff": 0.041,
-    "IntDiff": null
-   }
-  },
-  "Source": "https://hammerbowling.com/products/anger-solid",
-  "Checked": "2026-10-07"
- },
  "hammer-arctic-vibe": {
   "DateReleased": "2024-05-16",
   "Core": {
@@ -18095,44 +18243,44 @@
   "Checked": "2026-10-07"
  },
  "hammer-black-widow-urethane": {
-  "DateReleased": "2022-02-25",
+  "DateReleased": null,
   "Core": {
    "Name": "Gas Mask",
    "Type": null
   },
   "Cover": {
-   "Name": "Urethane Pearl",
-   "Type": "Pearl Urethane",
-   "Finish": "360, 800 Siaair Micro Pad"
+   "Name": "Urethane",
+   "Type": null,
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
-    "RG": 2.612,
-    "Diff": 0.043,
-    "IntDiff": 0.011
+    "RG": 2.65,
+    "Diff": 0.045,
+    "IntDiff": null
    },
    "13": {
-    "RG": 2.589,
-    "Diff": 0.043,
-    "IntDiff": 0.011
+    "RG": 2.58,
+    "Diff": 0.048,
+    "IntDiff": null
    },
    "14": {
     "RG": 2.5,
     "Diff": 0.056,
-    "IntDiff": 0.016
+    "IntDiff": null
    },
    "15": {
     "RG": 2.5,
     "Diff": 0.058,
-    "IntDiff": 0.016
+    "IntDiff": null
    },
    "16": {
     "RG": 2.51,
     "Diff": 0.048,
-    "IntDiff": 0.015
+    "IntDiff": null
    }
   },
-  "Source": "https://hammerbowling.com/products/black-widow-urethane",
+  "Source": "https://hammerbowling.com/products/black-widow-urethane-original",
   "Checked": "2026-10-07"
  },
  "hammer-black-widow-viz-a-ball": {
@@ -19311,6 +19459,57 @@
    }
   },
   "Source": "https://hammerbowling.com/products/pure-envy",
+  "Checked": "2026-10-07"
+ },
+ "hammer-pure-hammer": {
+  "DateReleased": null,
+  "Core": {
+   "Name": "2-piece",
+   "Type": null
+  },
+  "Cover": {
+   "Name": "Urethane",
+   "Type": null,
+   "Finish": null
+  },
+  "SpecsByWeight": {
+   "10": {
+    "RG": 2.72,
+    "Diff": 0.031,
+    "IntDiff": null
+   },
+   "11": {
+    "RG": 2.62,
+    "Diff": 0.032,
+    "IntDiff": null
+   },
+   "12": {
+    "RG": 2.59,
+    "Diff": 0.044,
+    "IntDiff": null
+   },
+   "13": {
+    "RG": 2.53,
+    "Diff": 0.056,
+    "IntDiff": null
+   },
+   "14": {
+    "RG": 2.48,
+    "Diff": 0.049,
+    "IntDiff": null
+   },
+   "15": {
+    "RG": 2.48,
+    "Diff": 0.039,
+    "IntDiff": null
+   },
+   "16": {
+    "RG": 2.49,
+    "Diff": 0.037,
+    "IntDiff": null
+   }
+  },
+  "Source": "https://hammerbowling.com/products/pure-hammer-black",
   "Checked": "2026-10-07"
  },
  "hammer-purple-pearl-urethane-78d": {
@@ -20520,47 +20719,6 @@
   "Source": "https://hammerbowling.com/products/web-m-b",
   "Checked": "2026-10-07"
  },
- "hammer-web-pearl": {
-  "DateReleased": "2021-07-16",
-  "Core": {
-   "Name": "Spheroid",
-   "Type": null
-  },
-  "Cover": {
-   "Name": "Aggression Pearl",
-   "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound"
-  },
-  "SpecsByWeight": {
-   "12": {
-    "RG": 2.608,
-    "Diff": 0.04,
-    "IntDiff": null
-   },
-   "13": {
-    "RG": 2.585,
-    "Diff": 0.04,
-    "IntDiff": null
-   },
-   "14": {
-    "RG": 2.51,
-    "Diff": 0.048,
-    "IntDiff": null
-   },
-   "15": {
-    "RG": 2.481,
-    "Diff": 0.048,
-    "IntDiff": null
-   },
-   "16": {
-    "RG": 2.5,
-    "Diff": 0.039,
-    "IntDiff": null
-   }
-  },
-  "Source": "https://hammerbowling.com/products/web-pearl",
-  "Checked": "2026-10-07"
- },
  "hammer-web-tour-edition": {
   "DateReleased": null,
   "Core": {
@@ -21230,6 +21388,52 @@
    }
   },
   "Source": "https://www.motivbowling.com/products/balls/retired-balls/ascent-pearl-red-black.html",
+  "Checked": "2026-10-07"
+ },
+ "motiv-aspire-all-colors": {
+  "DateReleased": null,
+  "Core": {
+   "Name": "Tyro™",
+   "Type": null
+  },
+  "Cover": {
+   "Name": "Polyester",
+   "Type": null,
+   "Finish": "6000 Grit LSP"
+  },
+  "SpecsByWeight": {
+   "10": {
+    "RG": 2.87,
+    "Diff": 0.026,
+    "IntDiff": null
+   },
+   "11": {
+    "RG": 2.84,
+    "Diff": 0.026,
+    "IntDiff": null
+   },
+   "12": {
+    "RG": 2.81,
+    "Diff": 0.025,
+    "IntDiff": null
+   },
+   "13": {
+    "RG": 2.78,
+    "Diff": 0.03,
+    "IntDiff": null
+   },
+   "14": {
+    "RG": 2.75,
+    "Diff": 0.024,
+    "IntDiff": null
+   },
+   "15": {
+    "RG": 2.75,
+    "Diff": 0.028,
+    "IntDiff": null
+   }
+  },
+  "Source": "https://www.motivbowling.com/products/balls/spare/aspire-purple-silver-black.html",
   "Checked": "2026-10-07"
  },
  "motiv-black-jackal": {
@@ -24732,6 +24936,47 @@
   "Source": "https://www.motivbowling.com/products/balls/retired-balls/raptor-talon.html",
   "Checked": "2026-10-07"
  },
+ "motiv-revolt-uprising": {
+  "DateReleased": null,
+  "Core": {
+   "Name": "Vanquish™ Symmetric",
+   "Type": null
+  },
+  "Cover": {
+   "Name": "Helix™ MXC Solid Reactive",
+   "Type": null,
+   "Finish": "1000 Grit LSS"
+  },
+  "SpecsByWeight": {
+   "12": {
+    "RG": 2.63,
+    "Diff": 0.03,
+    "IntDiff": null
+   },
+   "13": {
+    "RG": 2.56,
+    "Diff": 0.044,
+    "IntDiff": null
+   },
+   "14": {
+    "RG": 2.5,
+    "Diff": 0.056,
+    "IntDiff": null
+   },
+   "15": {
+    "RG": 2.47,
+    "Diff": 0.056,
+    "IntDiff": null
+   },
+   "16": {
+    "RG": 2.46,
+    "Diff": 0.057,
+    "IntDiff": null
+   }
+  },
+  "Source": "https://www.motivbowling.com/products/balls/retired-balls/revolt-uprising-limited-edition.html",
+  "Checked": "2026-10-07"
+ },
  "motiv-revolt-vengeance": {
   "DateReleased": null,
   "Core": {
@@ -25848,6 +26093,37 @@
    }
   },
   "Source": "https://www.motivbowling.com/products/balls/retired-balls/sx1.html",
+  "Checked": "2026-10-07"
+ },
+ "motiv-t10": {
+  "DateReleased": null,
+  "Core": {
+   "Name": "Thrust™",
+   "Type": null
+  },
+  "Cover": {
+   "Name": "Coercion™ MFS Reactive",
+   "Type": null,
+   "Finish": "3000 LSS"
+  },
+  "SpecsByWeight": {
+   "14": {
+    "RG": 2.57,
+    "Diff": 0.048,
+    "IntDiff": null
+   },
+   "15": {
+    "RG": 2.54,
+    "Diff": 0.052,
+    "IntDiff": null
+   },
+   "16": {
+    "RG": 2.53,
+    "Diff": 0.048,
+    "IntDiff": null
+   }
+  },
+  "Source": "https://www.motivbowling.com/products/balls/retired-balls/t10-limited-edition.html",
   "Checked": "2026-10-07"
  },
  "motiv-tank": {
@@ -27140,6 +27416,37 @@
    }
   },
   "Source": "https://www.motivbowling.com/products/balls/retired-balls/villain-scorn.html",
+  "Checked": "2026-10-07"
+ },
+ "motiv-vip-affliction": {
+  "DateReleased": null,
+  "Core": {
+   "Name": "Affliction™ Symmetric",
+   "Type": null
+  },
+  "Cover": {
+   "Name": "Infusion™ HV Hybrid Reactive",
+   "Type": null,
+   "Finish": "4000 Grit LSS"
+  },
+  "SpecsByWeight": {
+   "14": {
+    "RG": 2.52,
+    "Diff": 0.052,
+    "IntDiff": null
+   },
+   "15": {
+    "RG": 2.5,
+    "Diff": 0.052,
+    "IntDiff": null
+   },
+   "16": {
+    "RG": 2.49,
+    "Diff": 0.052,
+    "IntDiff": null
+   }
+  },
+  "Source": "https://www.motivbowling.com/products/balls/retired-balls/vip-affliction-limited-edition.html",
   "Checked": "2026-10-07"
  },
  "motiv-vip-exj-sigma": {
@@ -33476,37 +33783,6 @@
   "Source": "https://trackbowling.com/products/kinetic-obsidian",
   "Checked": "2026-10-07"
  },
- "track-inc-kinetic-pearl": {
-  "DateReleased": null,
-  "Core": {
-   "Name": "Shuttle",
-   "Type": null
-  },
-  "Cover": {
-   "Name": "UMP Gen 2 Pearl",
-   "Type": null,
-   "Finish": "Shuttle"
-  },
-  "SpecsByWeight": {
-   "14": {
-    "RG": 2.46,
-    "Diff": 0.046,
-    "IntDiff": null
-   },
-   "15": {
-    "RG": 2.46,
-    "Diff": 0.044,
-    "IntDiff": null
-   },
-   "16": {
-    "RG": 2.49,
-    "Diff": 0.042,
-    "IntDiff": null
-   }
-  },
-  "Source": "https://trackbowling.com/products/kinetic-pearl",
-  "Checked": "2026-10-07"
- },
  "track-inc-kinetic-platinum": {
   "DateReleased": null,
   "Core": {
@@ -33712,6 +33988,47 @@
   "Source": "https://trackbowling.com/products/latitude-pearl",
   "Checked": "2026-10-07"
  },
+ "track-inc-legion": {
+  "DateReleased": null,
+  "Core": {
+   "Name": "LT-2",
+   "Type": null
+  },
+  "Cover": {
+   "Name": "MR-6 Hybrid",
+   "Type": null,
+   "Finish": "500 / 1000 Abralon® Polished with Power House Factory Finish Polish"
+  },
+  "SpecsByWeight": {
+   "12": {
+    "RG": 2.6,
+    "Diff": 0.039,
+    "IntDiff": null
+   },
+   "13": {
+    "RG": 2.53,
+    "Diff": 0.055,
+    "IntDiff": null
+   },
+   "14": {
+    "RG": 2.51,
+    "Diff": 0.048,
+    "IntDiff": null
+   },
+   "15": {
+    "RG": 2.5,
+    "Diff": 0.046,
+    "IntDiff": null
+   },
+   "16": {
+    "RG": 2.51,
+    "Diff": 0.04,
+    "IntDiff": null
+   }
+  },
+  "Source": "https://trackbowling.com/products/legion-original",
+  "Checked": "2026-10-07"
+ },
  "track-inc-legion-pearl": {
   "DateReleased": null,
   "Core": {
@@ -33751,47 +34068,6 @@
    }
   },
   "Source": "https://trackbowling.com/products/legion-pearl",
-  "Checked": "2026-10-07"
- },
- "track-inc-legion-solid": {
-  "DateReleased": null,
-  "Core": {
-   "Name": "LT-2",
-   "Type": null
-  },
-  "Cover": {
-   "Name": "Prime Response Solid",
-   "Type": "Solid Reactive",
-   "Finish": "500, 2000 Siaair Micro Pad"
-  },
-  "SpecsByWeight": {
-   "12": {
-    "RG": 2.593,
-    "Diff": 0.041,
-    "IntDiff": 0.014
-   },
-   "13": {
-    "RG": 2.597,
-    "Diff": 0.041,
-    "IntDiff": 0.014
-   },
-   "14": {
-    "RG": 2.51,
-    "Diff": 0.046,
-    "IntDiff": 0.012
-   },
-   "15": {
-    "RG": 2.5,
-    "Diff": 0.046,
-    "IntDiff": 0.011
-   },
-   "16": {
-    "RG": 2.51,
-    "Diff": 0.04,
-    "IntDiff": 0.01
-   }
-  },
-  "Source": "https://trackbowling.com/products/legion-solid",
   "Checked": "2026-10-07"
  },
  "track-inc-logix": {
