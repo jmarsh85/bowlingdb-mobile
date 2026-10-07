@@ -2599,7 +2599,7 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
     </div>
     <div id="hdr-title" onclick="hdrTitleTap()"><span class="brand">Bowling</span>DB</div>
     <div id="hdr-title-popover"></div>
-    <span id="hdr-build-ref">v30.158 · 2026-10-06</span>
+    <span id="hdr-build-ref">v30.159 · 2026-10-07</span>
     <div id="hdr-right">
       <div class="hdr-icon-btn" id="hdr-delete-game-btn" onclick="confirmDeleteGame(G.gameID)" title="Delete Game" style="display:none">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -26420,7 +26420,7 @@ meta: {
 kind: 'bowlingdb-snapshot',
 snapshotVersion: 1,
 exportDate: new Date().toISOString(),
-exportSource: 'BowlingDB PWA v30.158',
+exportSource: 'BowlingDB PWA v30.159',
 includesBallImages: !!includeBallImages,
 excluded: Array.from(SNAPSHOT_LS_SKIP)
 },
@@ -33991,7 +33991,7 @@ const rows = [
 ['Differential',   fmt(b.Differential)],
 ['Int. Diff',      fmt(b.IntDiff)],
 ['Strength',       typeof catMetricHTML === 'function' ? catMetricHTML(b) : fmt(null)],
-['RG Category',    fmt(b.RGDiff)],
+['RG / Diff band', (typeof catRGBand === 'function' && catRGBand(b.RG, b.Differential)) || fmt(b.RGDiff)],   /* v30.159 MET-3: computed from James's bands */
 ['Released',       fmt(b.DateReleased?.slice(0,10))],
 ['Catalog',        typeof catLinkLabel === 'function' ? catLinkLabel(b) : fmt(null)],
 ['Active',         b.Active === false ? 'No': 'Yes'],
