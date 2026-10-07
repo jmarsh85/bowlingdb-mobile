@@ -6683,11 +6683,13 @@
   "title": "Rhino - Metallic Blue / Black",
   "url": "https://brunswickbowling.com/products/balls/retired/rhino-metallic-blue-black",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
-  "decision": "pending",
-  "reason": "no-usbc",
+  "catalogId": "brunswick-rhino",
+  "match": "match",
+  "candidates": [
+   "brunswick-rhino"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
   "flags": [],
   "specs": {
    "core": "Light Bulb",
@@ -8883,11 +8885,13 @@
   "title": "TZone - Arctic Blast",
   "url": "https://brunswickbowling.com/products/balls/retired/tzone-arctic-blast",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "brunswick-t-zone-all-colors",
+  "match": "match",
+  "candidates": [
+   "brunswick-t-zone-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -8914,11 +8918,13 @@
   "title": "TZone - Berry Blast",
   "url": "https://brunswickbowling.com/products/balls/current/tzone-berry-blast",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "brunswick-t-zone-all-colors",
+  "match": "match",
+  "candidates": [
+   "brunswick-t-zone-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -8945,11 +8951,13 @@
   "title": "TZone - Black / Purple / Silver",
   "url": "https://brunswickbowling.com/products/balls/current/tzone-black-purple-silver",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "brunswick-t-zone-all-colors",
+  "match": "match",
+  "candidates": [
+   "brunswick-t-zone-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -8976,11 +8984,13 @@
   "title": "TZone - Caribbean Blue",
   "url": "https://brunswickbowling.com/products/balls/current/tzone-caribbean-blue",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "brunswick-t-zone-all-colors",
+  "match": "match",
+  "candidates": [
+   "brunswick-t-zone-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -9007,11 +9017,13 @@
   "title": "TZone - Deep Space",
   "url": "https://brunswickbowling.com/products/balls/current/tzone-deep-space",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "brunswick-t-zone-all-colors",
+  "match": "match",
+  "candidates": [
+   "brunswick-t-zone-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -9038,11 +9050,13 @@
   "title": "TZone - Frozen Bliss",
   "url": "https://brunswickbowling.com/products/balls/current/tzone-frozen-bliss",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "brunswick-t-zone-all-colors",
+  "match": "match",
+  "candidates": [
+   "brunswick-t-zone-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -9069,11 +9083,13 @@
   "title": "TZone - Galactic Sparkle",
   "url": "https://brunswickbowling.com/products/balls/retired/tzone-galactic-sparkle",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "brunswick-t-zone-all-colors",
+  "match": "match",
+  "candidates": [
+   "brunswick-t-zone-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -9100,11 +9116,13 @@
   "title": "TZone - Gold Envy",
   "url": "https://brunswickbowling.com/products/balls/retired/tzone-gold-envy",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "brunswick-t-zone-all-colors",
+  "match": "match",
+  "candidates": [
+   "brunswick-t-zone-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -9131,11 +9149,13 @@
   "title": "TZone - Indigo Swirl",
   "url": "https://brunswickbowling.com/products/balls/current/tzone-indigo-swirl",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "brunswick-t-zone-all-colors",
+  "match": "match",
+  "candidates": [
+   "brunswick-t-zone-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -9162,11 +9182,13 @@
   "title": "TZone - Night Sky",
   "url": "https://brunswickbowling.com/products/balls/current/tzone-night-sky",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "brunswick-t-zone-all-colors",
+  "match": "match",
+  "candidates": [
+   "brunswick-t-zone-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -9193,11 +9215,13 @@
   "title": "TZone - Ocean Reef",
   "url": "https://brunswickbowling.com/products/balls/current/tzone-ocean-reef",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "brunswick-t-zone-all-colors",
+  "match": "match",
+  "candidates": [
+   "brunswick-t-zone-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -9224,11 +9248,13 @@
   "title": "TZone - Patriot Blaze",
   "url": "https://brunswickbowling.com/products/balls/retired/tzone-patriot-blaze",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "brunswick-t-zone-all-colors",
+  "match": "match",
+  "candidates": [
+   "brunswick-t-zone-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -9255,11 +9281,13 @@
   "title": "TZone - Peek-A-Boo Berry",
   "url": "https://brunswickbowling.com/products/balls/current/tzone-peek-a-boo-berry",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "brunswick-t-zone-all-colors",
+  "match": "match",
+  "candidates": [
+   "brunswick-t-zone-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -9286,11 +9314,13 @@
   "title": "TZone - Pink Bliss",
   "url": "https://brunswickbowling.com/products/balls/retired/tzone-pink-bliss",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "brunswick-t-zone-all-colors",
+  "match": "match",
+  "candidates": [
+   "brunswick-t-zone-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -9317,11 +9347,13 @@
   "title": "TZone - Razzle Dazzle",
   "url": "https://brunswickbowling.com/products/balls/retired/tzone-razzle-dazzle",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "brunswick-t-zone-all-colors",
+  "match": "match",
+  "candidates": [
+   "brunswick-t-zone-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -9348,11 +9380,13 @@
   "title": "TZone - Scarlet / Gold / Black",
   "url": "https://brunswickbowling.com/products/balls/current/tzone-scarlet-gold-black",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "brunswick-t-zone-all-colors",
+  "match": "match",
+  "candidates": [
+   "brunswick-t-zone-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -9379,11 +9413,13 @@
   "title": "TZone - Scarlet Shadow",
   "url": "https://brunswickbowling.com/products/balls/current/tzone-scarlet-shadow",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "brunswick-t-zone-all-colors",
+  "match": "match",
+  "candidates": [
+   "brunswick-t-zone-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -9410,11 +9446,13 @@
   "title": "TZone - Ultraviolet Sunrise",
   "url": "https://brunswickbowling.com/products/balls/retired/tzone-ultraviolet-sunrise",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "brunswick-t-zone-all-colors",
+  "match": "match",
+  "candidates": [
+   "brunswick-t-zone-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -9441,11 +9479,13 @@
   "title": "TZone - Wild Orchid",
   "url": "https://brunswickbowling.com/products/balls/current/tzone-wild-orchid",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "brunswick-t-zone-all-colors",
+  "match": "match",
+  "candidates": [
+   "brunswick-t-zone-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -16327,6 +16367,40 @@
   "source": "columbia",
   "platform": "shopify",
   "brand": "Columbia 300",
+  "title": "Messenger - Blue",
+  "url": "https://columbia300.com/products/messenger-blue",
+  "sku": null,
+  "catalogId": "columbia-300-messenger",
+  "match": "match",
+  "candidates": [
+   "columbia-300-messenger"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "2-Piece",
+   "coverName": "Super Flex Reactive",
+   "coverType": null,
+   "finish": null,
+   "released": null,
+   "weights": {
+    "16": {
+     "RG": 2.577,
+     "Diff": 0.047,
+     "IntDiff": null
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": "https://cdn.shopify.com/s/files/1/0062/0226/1619/files/Messenger_Blue_1600x1707_website.png?v=1700255842",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "columbia",
+  "platform": "shopify",
+  "brand": "Columbia 300",
   "title": "Messenger - Cherry",
   "url": "https://columbia300.com/products/messenger-cherry",
   "sku": null,
@@ -16364,11 +16438,13 @@
   "title": "Messenger - Green",
   "url": "https://columbia300.com/products/messenger-green",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "columbia-300-messenger",
+  "match": "match",
+  "candidates": [
+   "columbia-300-messenger"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -16392,11 +16468,13 @@
   "title": "Messenger - Orange Flame",
   "url": "https://columbia300.com/products/messenger-orange-flame",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "columbia-300-messenger",
+  "match": "match",
+  "candidates": [
+   "columbia-300-messenger"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -16639,40 +16717,6 @@
   },
   "mfgScales": {},
   "imageUrl": "https://cdn.shopify.com/s/files/1/0062/0226/1619/files/Messenger_POWERCOR_Solid_1600x1707_website.png?v=1699988130",
-  "fetched": "2026-10-07",
-  "method": "parser"
- },
- {
-  "source": "columbia",
-  "platform": "shopify",
-  "brand": "Columbia 300",
-  "title": "Messenger TEC",
-  "url": "https://columbia300.com/products/messenger-tec",
-  "sku": null,
-  "catalogId": "columbia-300-messenger-tec",
-  "match": "match",
-  "candidates": [
-   "columbia-300-messenger-tec"
-  ],
-  "decision": "auto",
-  "reason": "exact-match+gates",
-  "flags": [],
-  "specs": {
-   "core": "2-Piece",
-   "coverName": "TEC Particle",
-   "coverType": null,
-   "finish": null,
-   "released": null,
-   "weights": {
-    "16": {
-     "RG": 2.547,
-     "Diff": 0.042,
-     "IntDiff": null
-    }
-   }
-  },
-  "mfgScales": {},
-  "imageUrl": "https://cdn.shopify.com/s/files/1/0062/0226/1619/files/Messenger_TEC_1600x1707_website.png?v=1700514837",
   "fetched": "2026-10-07",
   "method": "parser"
  },
@@ -17330,13 +17374,13 @@
   "source": "columbia",
   "platform": "shopify",
   "brand": "Columbia 300",
-  "title": "Nitrous - Silver / Black",
-  "url": "https://columbia300.com/products/nitrous-silver-black",
+  "title": "Nitrous - Red / Smoke / White",
+  "url": "https://columbia300.com/products/nitrous-red-smoke-white",
   "sku": null,
-  "catalogId": "columbia-300-nitrous-silver-black",
+  "catalogId": "columbia-300-nitrous-red-smoke-white",
   "match": "match",
   "candidates": [
-   "columbia-300-nitrous-silver-black"
+   "columbia-300-nitrous-red-smoke-white"
   ],
   "decision": "auto",
   "reason": "exact-match+gates",
@@ -17348,11 +17392,6 @@
    "finish": null,
    "released": null,
    "weights": {
-    "10": {
-     "RG": 2.75,
-     "Diff": 0.017,
-     "IntDiff": null
-    },
     "11": {
      "RG": 2.69,
      "Diff": 0.02,
@@ -17386,7 +17425,7 @@
    }
   },
   "mfgScales": {},
-  "imageUrl": "https://cdn.shopify.com/s/files/1/0062/0226/1619/files/Nitrous_Silver_Black_1600x1707_website.png?v=1700516204",
+  "imageUrl": "https://cdn.shopify.com/s/files/1/0062/0226/1619/files/Nitrous_Red_Smoke_White_1600x1707_website.png?v=1700591751",
   "fetched": "2026-10-07",
   "method": "parser"
  },
@@ -19506,11 +19545,13 @@
   "title": "Resurgence - Original",
   "url": "https://columbia300.com/products/rival",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
-  "decision": "pending",
-  "reason": "no-usbc",
+  "catalogId": "columbia-300-resurgence",
+  "match": "match",
+  "candidates": [
+   "columbia-300-resurgence"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
   "flags": [],
   "specs": {
    "core": "Resurgence",
@@ -22178,6 +22219,50 @@
   "source": "columbia",
   "platform": "shopify",
   "brand": "Columbia 300",
+  "title": "The Classic U2",
+  "url": "https://columbia300.com/products/the-classic-u2",
+  "sku": null,
+  "catalogId": "columbia-300-the-classic-u2",
+  "match": "match",
+  "candidates": [
+   "columbia-300-the-classic-u2"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Resurgance",
+   "coverName": "Urethane",
+   "coverType": null,
+   "finish": null,
+   "released": null,
+   "weights": {
+    "14": {
+     "RG": 2.5,
+     "Diff": 0.038,
+     "IntDiff": null
+    },
+    "15": {
+     "RG": 2.46,
+     "Diff": 0.043,
+     "IntDiff": null
+    },
+    "16": {
+     "RG": 2.47,
+     "Diff": 0.04,
+     "IntDiff": null
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": "https://cdn.shopify.com/s/files/1/0062/0226/1619/files/The_Classic_U2_1600x1707_website.png?v=1755712328",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "columbia",
+  "platform": "shopify",
+  "brand": "Columbia 300",
   "title": "Throttle",
   "url": "https://columbia300.com/products/throttle",
   "sku": null,
@@ -22273,60 +22358,6 @@
   },
   "mfgScales": {},
   "imageUrl": "https://cdn.shopify.com/s/files/1/0062/0226/1619/files/Throttle-R_1600x1707_website.png?v=1755713618",
-  "fetched": "2026-10-07",
-  "method": "parser"
- },
- {
-  "source": "columbia",
-  "platform": "shopify",
-  "brand": "Columbia 300",
-  "title": "Throw Down",
-  "url": "https://columbia300.com/products/throw-down",
-  "sku": null,
-  "catalogId": "columbia-300-throw-down",
-  "match": "match",
-  "candidates": [
-   "columbia-300-throw-down"
-  ],
-  "decision": "auto",
-  "reason": "exact-match+gates",
-  "flags": [],
-  "specs": {
-   "core": "SD Medium RG",
-   "coverName": "Bring-It Solid",
-   "coverType": null,
-   "finish": null,
-   "released": null,
-   "weights": {
-    "12": {
-     "RG": 2.6,
-     "Diff": 0.039,
-     "IntDiff": null
-    },
-    "13": {
-     "RG": 2.53,
-     "Diff": 0.055,
-     "IntDiff": null
-    },
-    "14": {
-     "RG": 2.51,
-     "Diff": 0.053,
-     "IntDiff": 0.005
-    },
-    "15": {
-     "RG": 2.51,
-     "Diff": 0.053,
-     "IntDiff": 0.004
-    },
-    "16": {
-     "RG": 2.52,
-     "Diff": 0.046,
-     "IntDiff": 0.004
-    }
-   }
-  },
-  "mfgScales": {},
-  "imageUrl": "https://cdn.shopify.com/s/files/1/0062/0226/1619/files/Throw_Down_1600x1707_website.png?v=1755716849",
   "fetched": "2026-10-07",
   "method": "parser"
  },
@@ -23255,11 +23286,13 @@
   "title": "White Dot - Americana",
   "url": "https://columbia300.com/products/white-dot-americana",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "columbia-300-white-dot-all-colors",
+  "match": "match",
+  "candidates": [
+   "columbia-300-white-dot-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -23283,11 +23316,13 @@
   "title": "White Dot - Black / Emerald / Silver",
   "url": "https://columbia300.com/products/white-dot-black-emerald-silver",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "columbia-300-white-dot-all-colors",
+  "match": "match",
+  "candidates": [
+   "columbia-300-white-dot-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -23311,11 +23346,13 @@
   "title": "White Dot - Black / Purple / Silver",
   "url": "https://columbia300.com/products/white-dot-black-purple-silver",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "columbia-300-white-dot-all-colors",
+  "match": "match",
+  "candidates": [
+   "columbia-300-white-dot-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -23339,11 +23376,13 @@
   "title": "White Dot - Black / Purple / Yellow",
   "url": "https://columbia300.com/products/white-dot-black-purple-yellow",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "columbia-300-white-dot-all-colors",
+  "match": "match",
+  "candidates": [
+   "columbia-300-white-dot-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -23367,11 +23406,13 @@
   "title": "White Dot - Black / Silver / Caramel",
   "url": "https://columbia300.com/products/white-dot-black-silver-caramel",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "columbia-300-white-dot-all-colors",
+  "match": "match",
+  "candidates": [
+   "columbia-300-white-dot-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -23395,11 +23436,13 @@
   "title": "White Dot - Blackberry",
   "url": "https://columbia300.com/products/white-dot-blackberry",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "columbia-300-white-dot-all-colors",
+  "match": "match",
+  "candidates": [
+   "columbia-300-white-dot-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -23423,11 +23466,13 @@
   "title": "White Dot - Blue / Black / Silver",
   "url": "https://columbia300.com/products/white-dot-blue-black-silver-1",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "columbia-300-white-dot-all-colors",
+  "match": "match",
+  "candidates": [
+   "columbia-300-white-dot-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -23451,11 +23496,13 @@
   "title": "White Dot - Blue / Purple / Orange",
   "url": "https://columbia300.com/products/white-dot-blue-purple-orange",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "columbia-300-white-dot-all-colors",
+  "match": "match",
+  "candidates": [
+   "columbia-300-white-dot-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -23479,11 +23526,13 @@
   "title": "White Dot - Blue / Purple / White",
   "url": "https://columbia300.com/products/white-dot-blue-purple-white",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "columbia-300-white-dot-all-colors",
+  "match": "match",
+  "candidates": [
+   "columbia-300-white-dot-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -23535,11 +23584,13 @@
   "title": "White Dot - Blue Sky",
   "url": "https://columbia300.com/products/white-dot-blue-sky",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "columbia-300-white-dot-all-colors",
+  "match": "match",
+  "candidates": [
+   "columbia-300-white-dot-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -23563,11 +23614,13 @@
   "title": "White Dot - Cotton Candy",
   "url": "https://columbia300.com/products/white-dot-cotton-candy",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "columbia-300-white-dot-all-colors",
+  "match": "match",
+  "candidates": [
+   "columbia-300-white-dot-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -23591,11 +23644,13 @@
   "title": "White Dot - Diamond",
   "url": "https://columbia300.com/products/white-dot-diamond",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "columbia-300-white-dot-all-colors",
+  "match": "match",
+  "candidates": [
+   "columbia-300-white-dot-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -23619,11 +23674,13 @@
   "title": "White Dot - Emerald Ice",
   "url": "https://columbia300.com/products/white-dot-emerald-ice",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "columbia-300-white-dot-all-colors",
+  "match": "match",
+  "candidates": [
+   "columbia-300-white-dot-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -23647,11 +23704,13 @@
   "title": "White Dot - Jester",
   "url": "https://columbia300.com/products/white-dot-jester",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "columbia-300-white-dot-all-colors",
+  "match": "match",
+  "candidates": [
+   "columbia-300-white-dot-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -23675,11 +23734,13 @@
   "title": "White Dot - Lava",
   "url": "https://columbia300.com/products/white-dot-lava",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "columbia-300-white-dot-all-colors",
+  "match": "match",
+  "candidates": [
+   "columbia-300-white-dot-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -23703,11 +23764,13 @@
   "title": "White Dot - Lava Fire",
   "url": "https://columbia300.com/products/white-dot-lava-fire",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "columbia-300-white-dot-all-colors",
+  "match": "match",
+  "candidates": [
+   "columbia-300-white-dot-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -23731,11 +23794,13 @@
   "title": "White Dot - Lime / Slime",
   "url": "https://columbia300.com/products/white-dot-lime-slime",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "columbia-300-white-dot-all-colors",
+  "match": "match",
+  "candidates": [
+   "columbia-300-white-dot-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -23759,11 +23824,13 @@
   "title": "White Dot - Lime Swirl",
   "url": "https://columbia300.com/products/white-dot-lime-swirl",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "columbia-300-white-dot-all-colors",
+  "match": "match",
+  "candidates": [
+   "columbia-300-white-dot-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -23787,11 +23854,13 @@
   "title": "White Dot - Magenta Sky",
   "url": "https://columbia300.com/products/white-dot-magenta-sky",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "columbia-300-white-dot-all-colors",
+  "match": "match",
+  "candidates": [
+   "columbia-300-white-dot-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -23815,11 +23884,13 @@
   "title": "White Dot - Mint Frost",
   "url": "https://columbia300.com/products/white-dot-mint-frost",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "columbia-300-white-dot-all-colors",
+  "match": "match",
+  "candidates": [
+   "columbia-300-white-dot-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -23843,11 +23914,13 @@
   "title": "White Dot - Patriot Sparkle",
   "url": "https://columbia300.com/products/white-dot-patriot-sparkle",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "columbia-300-white-dot-all-colors",
+  "match": "match",
+  "candidates": [
+   "columbia-300-white-dot-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -23871,11 +23944,13 @@
   "title": "White Dot - Peek-A-Boo Berry",
   "url": "https://columbia300.com/products/white-dot-peek-a-boo-berry",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "columbia-300-white-dot-all-colors",
+  "match": "match",
+  "candidates": [
+   "columbia-300-white-dot-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -23899,11 +23974,13 @@
   "title": "White Dot - Pink / Black",
   "url": "https://columbia300.com/products/white-dot-pink-black",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "columbia-300-white-dot-all-colors",
+  "match": "match",
+  "candidates": [
+   "columbia-300-white-dot-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -23955,11 +24032,13 @@
   "title": "White Dot - Purple / Silver",
   "url": "https://columbia300.com/products/white-dot-purple-silver",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "columbia-300-white-dot-all-colors",
+  "match": "match",
+  "candidates": [
+   "columbia-300-white-dot-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -23983,11 +24062,13 @@
   "title": "White Dot - Purple Sparkle",
   "url": "https://columbia300.com/products/white-dot-purple-sparkle",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "columbia-300-white-dot-all-colors",
+  "match": "match",
+  "candidates": [
+   "columbia-300-white-dot-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -24011,11 +24092,13 @@
   "title": "White Dot - Red / Green / White",
   "url": "https://columbia300.com/products/white-dot-red-green-white",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "columbia-300-white-dot-all-colors",
+  "match": "match",
+  "candidates": [
+   "columbia-300-white-dot-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -24039,11 +24122,13 @@
   "title": "White Dot - Royalty",
   "url": "https://columbia300.com/products/white-dot-royalty",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "columbia-300-white-dot-all-colors",
+  "match": "match",
+  "candidates": [
+   "columbia-300-white-dot-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -24067,11 +24152,13 @@
   "title": "White Dot - Scarlet",
   "url": "https://columbia300.com/products/white-dot-scarlet",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "columbia-300-white-dot-all-colors",
+  "match": "match",
+  "candidates": [
+   "columbia-300-white-dot-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -24095,11 +24182,13 @@
   "title": "White Dot - Scarlet / Gold / Black",
   "url": "https://columbia300.com/products/white-dot-scarlet-gold-black",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "columbia-300-white-dot-all-colors",
+  "match": "match",
+  "candidates": [
+   "columbia-300-white-dot-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -24123,11 +24212,13 @@
   "title": "White Dot - Scarlet / Gold / Black Original",
   "url": "https://columbia300.com/products/white-dot-scarlet-gold-black-original",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "columbia-300-white-dot-all-colors",
+  "match": "match",
+  "candidates": [
+   "columbia-300-white-dot-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -24151,11 +24242,13 @@
   "title": "White Dot - Sunburst",
   "url": "https://columbia300.com/products/white-dot-sunburst",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "columbia-300-white-dot-all-colors",
+  "match": "match",
+  "candidates": [
+   "columbia-300-white-dot-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -24179,11 +24272,13 @@
   "title": "White Dot - Tie Dye",
   "url": "https://columbia300.com/products/white-dot-tie-dye",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "columbia-300-white-dot-all-colors",
+  "match": "match",
+  "candidates": [
+   "columbia-300-white-dot-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -24207,11 +24302,13 @@
   "title": "White Dot - Wild Orchid",
   "url": "https://columbia300.com/products/white-dot-wild-orchid",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "columbia-300-white-dot-all-colors",
+  "match": "match",
+  "candidates": [
+   "columbia-300-white-dot-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -24235,11 +24332,13 @@
   "title": "White Dot - Wolverine",
   "url": "https://columbia300.com/products/white-dot-wolverine",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "columbia-300-white-dot-all-colors",
+  "match": "match",
+  "candidates": [
+   "columbia-300-white-dot-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -30436,11 +30535,13 @@
   "title": "Clash - Blue / Yellow",
   "url": "https://ebonite.com/products/clash-blue-yellow",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
-  "decision": "pending",
-  "reason": "no-usbc",
+  "catalogId": "ebonite-clash",
+  "match": "match",
+  "candidates": [
+   "ebonite-clash"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
   "flags": [],
   "specs": {
    "core": "Predator",
@@ -31956,11 +32057,13 @@
   "title": "Destiny Pearl - Green / Orange / Smoke",
   "url": "https://ebonite.com/products/destiny-pearl-green-orange-smoke",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
-  "decision": "pending",
-  "reason": "no-usbc",
+  "catalogId": "ebonite-destiny-pearl",
+  "match": "match",
+  "candidates": [
+   "ebonite-destiny-pearl"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
   "flags": [],
   "specs": {
    "core": "Cyclone Torque",
@@ -32018,11 +32121,13 @@
   "title": "Destiny Solid - Blue / Black",
   "url": "https://ebonite.com/products/destiny-solid-blue-black",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
-  "decision": "pending",
-  "reason": "no-usbc",
+  "catalogId": "ebonite-destiny-solid",
+  "match": "match",
+  "candidates": [
+   "ebonite-destiny-solid"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
   "flags": [],
   "specs": {
    "core": "Cyclone Torque",
@@ -33587,68 +33692,6 @@
   "source": "ebonite",
   "platform": "shopify",
   "brand": "Ebonite",
-  "title": "Game Breaker 5",
-  "url": "https://ebonite.com/products/game-breaker-5",
-  "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
-  "decision": "pending",
-  "reason": "no-usbc",
-  "flags": [],
-  "specs": {
-   "core": "Enhanced V2",
-   "coverName": "GB 12.7 Solid",
-   "coverType": "Solid Reactive",
-   "finish": "500, 1500 Siaair Micro Pad",
-   "released": "2024-03-21",
-   "weights": {
-    "10": {
-     "RG": 2.8,
-     "Diff": 0.002,
-     "IntDiff": null
-    },
-    "11": {
-     "RG": 2.769,
-     "Diff": 0.002,
-     "IntDiff": null
-    },
-    "12": {
-     "RG": 2.597,
-     "Diff": 0.04,
-     "IntDiff": null
-    },
-    "13": {
-     "RG": 2.574,
-     "Diff": 0.04,
-     "IntDiff": null
-    },
-    "14": {
-     "RG": 2.517,
-     "Diff": 0.048,
-     "IntDiff": null
-    },
-    "15": {
-     "RG": 2.48,
-     "Diff": 0.048,
-     "IntDiff": null
-    },
-    "16": {
-     "RG": 2.491,
-     "Diff": 0.041,
-     "IntDiff": null
-    }
-   }
-  },
-  "mfgScales": {},
-  "imageUrl": "https://cdn.shopify.com/s/files/1/0609/8790/0156/files/Game_Breaker_5_1600x1600_9227e42c-7180-4cce-9c26-d7837d5e6b7a.png?v=1708357939",
-  "fetched": "2026-10-07",
-  "method": "parser"
- },
- {
-  "source": "ebonite",
-  "platform": "shopify",
-  "brand": "Ebonite",
   "title": "Game Breaker 5 Hybrid",
   "url": "https://ebonite.com/products/game-breaker-5-hybrid",
   "sku": null,
@@ -34853,11 +34896,13 @@
   "title": "Maxim - Black / Orange / Yellow",
   "url": "https://ebonite.com/products/maxim-black-orange-yellow",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "ebonite-maxim",
+  "match": "match",
+  "candidates": [
+   "ebonite-maxim"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -34881,11 +34926,13 @@
   "title": "Maxim - Black / Purple / Gold",
   "url": "https://ebonite.com/products/maxim-black-purple-gold",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "ebonite-maxim",
+  "match": "match",
+  "candidates": [
+   "ebonite-maxim"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -34937,11 +34984,13 @@
   "title": "Maxim - Black / Red Sparkle",
   "url": "https://ebonite.com/products/maxim-black-red-sparkle",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "ebonite-maxim",
+  "match": "match",
+  "candidates": [
+   "ebonite-maxim"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -34965,11 +35014,13 @@
   "title": "Maxim - Black / Royal / Yellow",
   "url": "https://ebonite.com/products/maxim-black-royal-yellow",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "ebonite-maxim",
+  "match": "match",
+  "candidates": [
+   "ebonite-maxim"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -34993,11 +35044,13 @@
   "title": "Maxim - Bumble Bee",
   "url": "https://ebonite.com/products/maxim-bumble-bee",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "ebonite-maxim",
+  "match": "match",
+  "candidates": [
+   "ebonite-maxim"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -35021,11 +35074,13 @@
   "title": "Maxim - Captain Fireball",
   "url": "https://ebonite.com/products/maxim-captain-fireball",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "ebonite-maxim",
+  "match": "match",
+  "candidates": [
+   "ebonite-maxim"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -35049,11 +35104,13 @@
   "title": "Maxim - Captain Galaxy",
   "url": "https://ebonite.com/products/maxim-captain-galaxy",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "ebonite-maxim",
+  "match": "match",
+  "candidates": [
+   "ebonite-maxim"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -35077,11 +35134,13 @@
   "title": "Maxim - Captain Midnight",
   "url": "https://ebonite.com/products/maxim-captain-midnight",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "ebonite-maxim",
+  "match": "match",
+  "candidates": [
+   "ebonite-maxim"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -35105,11 +35164,13 @@
   "title": "Maxim - Captain Odyssey",
   "url": "https://ebonite.com/products/maxim-captain-odyssey",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "ebonite-maxim",
+  "match": "match",
+  "candidates": [
+   "ebonite-maxim"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -35133,11 +35194,13 @@
   "title": "Maxim - Captain Planet",
   "url": "https://ebonite.com/products/maxim-captain-planet",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "ebonite-maxim",
+  "match": "match",
+  "candidates": [
+   "ebonite-maxim"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -35161,11 +35224,13 @@
   "title": "Maxim - Captain Sting",
   "url": "https://ebonite.com/products/maxim-captain-sting",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "ebonite-maxim",
+  "match": "match",
+  "candidates": [
+   "ebonite-maxim"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -35189,11 +35254,13 @@
   "title": "Maxim - Emerald Glitz",
   "url": "https://ebonite.com/products/maxim-emerald-glitz",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "ebonite-maxim",
+  "match": "match",
+  "candidates": [
+   "ebonite-maxim"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -35217,11 +35284,13 @@
   "title": "Maxim - Hot Pink",
   "url": "https://ebonite.com/products/maxim-hot-pink",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "ebonite-maxim",
+  "match": "match",
+  "candidates": [
+   "ebonite-maxim"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -35245,11 +35314,13 @@
   "title": "Maxim - Navy / Purple / Silver",
   "url": "https://ebonite.com/products/maxim-navy-purple-silver",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "ebonite-maxim",
+  "match": "match",
+  "candidates": [
+   "ebonite-maxim"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -35273,11 +35344,13 @@
   "title": "Maxim - Neon Orange",
   "url": "https://ebonite.com/products/maxim-neon-orange",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "ebonite-maxim",
+  "match": "match",
+  "candidates": [
+   "ebonite-maxim"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -35301,11 +35374,13 @@
   "title": "Maxim - Night Sky",
   "url": "https://ebonite.com/products/maxim-night-sky",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "ebonite-maxim",
+  "match": "match",
+  "candidates": [
+   "ebonite-maxim"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -35329,11 +35404,13 @@
   "title": "Maxim - Northern Lights",
   "url": "https://ebonite.com/products/maxim-northern-lights",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "ebonite-maxim",
+  "match": "match",
+  "candidates": [
+   "ebonite-maxim"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -35357,11 +35434,13 @@
   "title": "Maxim - Orange / Crystal",
   "url": "https://ebonite.com/products/maxim-orange-crystal",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "ebonite-maxim",
+  "match": "match",
+  "candidates": [
+   "ebonite-maxim"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -35385,11 +35464,13 @@
   "title": "Maxim - Peacock",
   "url": "https://ebonite.com/products/maxim-peacock",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "ebonite-maxim",
+  "match": "match",
+  "candidates": [
+   "ebonite-maxim"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -35413,11 +35494,13 @@
   "title": "Maxim - Peek-A-Boo Berry",
   "url": "https://ebonite.com/products/maxim-peek-a-boo-berry",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "ebonite-maxim",
+  "match": "match",
+  "candidates": [
+   "ebonite-maxim"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -35441,11 +35524,13 @@
   "title": "Maxim - Peek-A-Boo Blue",
   "url": "https://ebonite.com/products/maxim-peek-a-boo-blue",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "ebonite-maxim",
+  "match": "match",
+  "candidates": [
+   "ebonite-maxim"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -35469,11 +35554,13 @@
   "title": "Maxim - Peppermint",
   "url": "https://ebonite.com/products/maxim-peppermint",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "ebonite-maxim",
+  "match": "match",
+  "candidates": [
+   "ebonite-maxim"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -35497,11 +35584,13 @@
   "title": "Maxim - Pink Limeade",
   "url": "https://ebonite.com/products/maxim-pink-limeade",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "ebonite-maxim",
+  "match": "match",
+  "candidates": [
+   "ebonite-maxim"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -35525,11 +35614,13 @@
   "title": "Maxim - Pumpkin Spice",
   "url": "https://ebonite.com/products/maxim-pumpkin-spice",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "ebonite-maxim",
+  "match": "match",
+  "candidates": [
+   "ebonite-maxim"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -35553,11 +35644,13 @@
   "title": "Maxim - Purple / Bronze",
   "url": "https://ebonite.com/products/maxim-purple-bronze",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "ebonite-maxim",
+  "match": "match",
+  "candidates": [
+   "ebonite-maxim"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -35581,11 +35674,13 @@
   "title": "Maxim - Purple / Green / Silver",
   "url": "https://ebonite.com/products/maxim-purple-green-silver",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "ebonite-maxim",
+  "match": "match",
+  "candidates": [
+   "ebonite-maxim"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -35609,11 +35704,13 @@
   "title": "Maxim - Purple / Royal / Silver",
   "url": "https://ebonite.com/products/maxim-purple-royal-silver",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "ebonite-maxim",
+  "match": "match",
+  "candidates": [
+   "ebonite-maxim"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -35667,11 +35764,13 @@
   "title": "Maxim - Red / Blue / Silver",
   "url": "https://ebonite.com/products/maxim-red-blue-silver",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "ebonite-maxim",
+  "match": "match",
+  "candidates": [
+   "ebonite-maxim"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -35695,11 +35794,13 @@
   "title": "Maxim - Red / Gold / Blue",
   "url": "https://ebonite.com/products/maxim-red-gold-blue",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "ebonite-maxim",
+  "match": "match",
+  "candidates": [
+   "ebonite-maxim"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -35723,11 +35824,13 @@
   "title": "Maxim - Red / Purple / Blue",
   "url": "https://ebonite.com/products/maxim-red-purple-blue",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "ebonite-maxim",
+  "match": "match",
+  "candidates": [
+   "ebonite-maxim"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -35779,11 +35882,13 @@
   "title": "Maxim - Seafoam",
   "url": "https://ebonite.com/products/maxim-seafoam",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "ebonite-maxim",
+  "match": "match",
+  "candidates": [
+   "ebonite-maxim"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -35807,11 +35912,13 @@
   "title": "Maxim - Turquoise / Onyx",
   "url": "https://ebonite.com/products/maxim-turquoise-onyx",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "ebonite-maxim",
+  "match": "match",
+  "candidates": [
+   "ebonite-maxim"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -35825,6 +35932,60 @@
   },
   "mfgScales": {},
   "imageUrl": "https://cdn.shopify.com/s/files/1/0609/8790/0156/products/Maxim_Turquoise_Onyx_1600x1600_c8f405ca-ae6b-461b-a2fe-6e16de469c06.png?v=1656506454",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "ebonite",
+  "platform": "shopify",
+  "brand": "Ebonite",
+  "title": "Mission",
+  "url": "https://ebonite.com/products/mission",
+  "sku": null,
+  "catalogId": "ebonite-mission",
+  "match": "match",
+  "candidates": [
+   "ebonite-mission"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Mission 1.0",
+   "coverName": "XL1200 Reactive",
+   "coverType": null,
+   "finish": null,
+   "released": null,
+   "weights": {
+    "12": {
+     "RG": 2.62,
+     "Diff": 0.046,
+     "IntDiff": null
+    },
+    "13": {
+     "RG": 2.59,
+     "Diff": 0.043,
+     "IntDiff": null
+    },
+    "14": {
+     "RG": 2.5,
+     "Diff": 0.052,
+     "IntDiff": null
+    },
+    "15": {
+     "RG": 2.49,
+     "Diff": 0.05,
+     "IntDiff": null
+    },
+    "16": {
+     "RG": 2.48,
+     "Diff": 0.049,
+     "IntDiff": null
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": "https://cdn.shopify.com/s/files/1/0609/8790/0156/products/Mission_1600x1600_d132a18c-849a-4377-b0db-30edc0ba11cf.png?v=1656506036",
   "fetched": "2026-10-07",
   "method": "parser"
  },
@@ -35923,52 +36084,6 @@
   },
   "mfgScales": {},
   "imageUrl": "https://cdn.shopify.com/s/files/1/0609/8790/0156/products/Mission_2_0_1600x1600_6abc976b-3063-4a05-b663-227486b35c06.png?v=1656422615",
-  "fetched": "2026-10-07",
-  "method": "parser"
- },
- {
-  "source": "ebonite",
-  "platform": "shopify",
-  "brand": "Ebonite",
-  "title": "Mission Unknown",
-  "url": "https://ebonite.com/products/mission-unknown",
-  "sku": null,
-  "catalogId": null,
-  "match": "variant",
-  "candidates": [
-   "ebonite-mission-unknown-black",
-   "ebonite-mission-unknown-gold",
-   "ebonite-mission-unknown-red"
-  ],
-  "decision": "pending",
-  "reason": "variant",
-  "flags": [],
-  "specs": {
-   "core": "Mission 1.0",
-   "coverName": "GB 12.7",
-   "coverType": null,
-   "finish": null,
-   "released": null,
-   "weights": {
-    "14": {
-     "RG": 2.5,
-     "Diff": 0.052,
-     "IntDiff": null
-    },
-    "15": {
-     "RG": 2.49,
-     "Diff": 0.05,
-     "IntDiff": null
-    },
-    "16": {
-     "RG": 2.48,
-     "Diff": 0.049,
-     "IntDiff": null
-    }
-   }
-  },
-  "mfgScales": {},
-  "imageUrl": "https://cdn.shopify.com/s/files/1/0609/8790/0156/products/Mission_Unknown_Black_1600x1600_d6dde228-4450-4694-bc32-135b8cd2912e.png?v=1656422002",
   "fetched": "2026-10-07",
   "method": "parser"
  },
@@ -37269,11 +37384,13 @@
   "title": "Tornado - Black / Hot Pink / Silver",
   "url": "https://ebonite.com/products/tornado-black-hot-pink-silver",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "ebonite-tornado",
+  "match": "match",
+  "candidates": [
+   "ebonite-tornado"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "conflicting-sources",
   "flags": [],
   "specs": {
    "core": "Full size core w/offset flip puck",
@@ -37321,11 +37438,13 @@
   "title": "Tornado - Black / Orange / Red",
   "url": "https://ebonite.com/products/tornado-black-orange-red",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "ebonite-tornado",
+  "match": "match",
+  "candidates": [
+   "ebonite-tornado"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "conflicting-sources",
   "flags": [],
   "specs": {
    "core": "Full Pancake with Offset Flip Puck",
@@ -37501,11 +37620,13 @@
   "title": "Tornado - Green / Purple / Navy",
   "url": "https://ebonite.com/products/tornado-green-purple-navy",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "ebonite-tornado",
+  "match": "match",
+  "candidates": [
+   "ebonite-tornado"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "conflicting-sources",
   "flags": [],
   "specs": {
    "core": "Full-sized pancake with offset high-tech flip block",
@@ -37563,11 +37684,13 @@
   "title": "Tornado - Navy / Gold / Red",
   "url": "https://ebonite.com/products/tornado-navy-gold-red",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "ebonite-tornado",
+  "match": "match",
+  "candidates": [
+   "ebonite-tornado"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "conflicting-sources",
   "flags": [],
   "specs": {
    "core": "Full Pancake with Offset Flip Puck",
@@ -37687,11 +37810,13 @@
   "title": "Tornado - Navy / Silver / Gold",
   "url": "https://ebonite.com/products/tornado-navy-silver-gold",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "ebonite-tornado",
+  "match": "match",
+  "candidates": [
+   "ebonite-tornado"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "conflicting-sources",
   "flags": [],
   "specs": {
    "core": "Medium RG, low flare elliptical core",
@@ -37749,11 +37874,13 @@
   "title": "Tornado - Navy / Turquoise / Silver",
   "url": "https://ebonite.com/products/tornado-navy-turquoise-silver",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "ebonite-tornado",
+  "match": "match",
+  "candidates": [
+   "ebonite-tornado"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "conflicting-sources",
   "flags": [],
   "specs": {
    "core": "Full Pancake with Offset Flip Puck",
@@ -39545,6 +39672,60 @@
   "source": "hammer",
   "platform": "shopify",
   "brand": "Hammer",
+  "title": "Anger Solid",
+  "url": "https://hammerbowling.com/products/anger-solid",
+  "sku": null,
+  "catalogId": "hammer-anger-solid",
+  "match": "match",
+  "candidates": [
+   "hammer-anger-solid"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Modified Infamous",
+   "coverName": "Semtex Solid",
+   "coverType": "Solid Reactive",
+   "finish": "500, 2000 Siaair Micro Pad",
+   "released": "2025-07-10",
+   "weights": {
+    "12": {
+     "RG": 2.608,
+     "Diff": 0.04,
+     "IntDiff": null
+    },
+    "13": {
+     "RG": 2.585,
+     "Diff": 0.04,
+     "IntDiff": null
+    },
+    "14": {
+     "RG": 2.603,
+     "Diff": 0.049,
+     "IntDiff": null
+    },
+    "15": {
+     "RG": 2.567,
+     "Diff": 0.049,
+     "IntDiff": null
+    },
+    "16": {
+     "RG": 2.572,
+     "Diff": 0.041,
+     "IntDiff": null
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": "https://cdn.shopify.com/s/files/1/0030/3330/1104/files/Anger_Solid_1600x1707_website.png?v=1749478723",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "hammer",
+  "platform": "shopify",
+  "brand": "Hammer",
   "title": "Arctic Vibe",
   "url": "https://hammerbowling.com/products/arctic-vibe",
   "sku": null,
@@ -39972,11 +40153,13 @@
   "title": "Axe - Steel Sparkle",
   "url": "https://hammerbowling.com/products/axe",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "hammer-axe",
+  "match": "match",
+  "candidates": [
+   "hammer-axe"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -40204,11 +40387,13 @@
   "title": "Black Urethane - Original",
   "url": "https://hammerbowling.com/products/black-urethane",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "hammer-black-urethane",
+  "match": "match",
+  "candidates": [
+   "hammer-black-urethane"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -40565,36 +40750,6 @@
   "source": "hammer",
   "platform": "shopify",
   "brand": "Hammer",
-  "title": "Black Widow Bite",
-  "url": "https://hammerbowling.com/products/black-widow-bit",
-  "sku": null,
-  "catalogId": "hammer-black-widow-bite",
-  "match": "match",
-  "candidates": [
-   "hammer-black-widow-bite"
-  ],
-  "decision": "pending",
-  "reason": "no-weight-specs",
-  "flags": [
-   "no-weight-specs"
-  ],
-  "specs": {
-   "core": "High Mass Bias Gas Mask w/Flip Block",
-   "coverName": "Violent Bite Reactive",
-   "coverType": null,
-   "finish": null,
-   "released": null,
-   "weights": {}
-  },
-  "mfgScales": {},
-  "imageUrl": "https://cdn.shopify.com/s/files/1/0030/3330/1104/files/Black_Widow_Bite_1600x1707_website_2d4a3e67-2472-4eec-a447-cad740699bd0.png?v=1756231145",
-  "fetched": "2026-10-07",
-  "method": "parser"
- },
- {
-  "source": "hammer",
-  "platform": "shopify",
-  "brand": "Hammer",
   "title": "Black Widow Death Blow",
   "url": "https://hammerbowling.com/products/black-widow-death-blow",
   "sku": null,
@@ -40618,60 +40773,6 @@
   },
   "mfgScales": {},
   "imageUrl": "https://cdn.shopify.com/s/files/1/0030/3330/1104/files/Black_Widow_Death_Blow_1600x1707_website.png?v=1756406622",
-  "fetched": "2026-10-07",
-  "method": "parser"
- },
- {
-  "source": "hammer",
-  "platform": "shopify",
-  "brand": "Hammer",
-  "title": "Black Widow Ghost Pearl",
-  "url": "https://hammerbowling.com/products/black-widow-ghost-pearl",
-  "sku": null,
-  "catalogId": "hammer-black-widow-ghost-pearl",
-  "match": "match",
-  "candidates": [
-   "hammer-black-widow-ghost-pearl"
-  ],
-  "decision": "auto",
-  "reason": "exact-match+gates",
-  "flags": [],
-  "specs": {
-   "core": "Gas Mask",
-   "coverName": "Aggression Pearl",
-   "coverType": "Pearl Reactive",
-   "finish": "500, 1000, 1500 Siaair / Crown Factory Compound",
-   "released": "2021-11-19",
-   "weights": {
-    "12": {
-     "RG": 2.612,
-     "Diff": 0.043,
-     "IntDiff": 0.011
-    },
-    "13": {
-     "RG": 2.589,
-     "Diff": 0.043,
-     "IntDiff": 0.011
-    },
-    "14": {
-     "RG": 2.5,
-     "Diff": 0.056,
-     "IntDiff": 0.016
-    },
-    "15": {
-     "RG": 2.5,
-     "Diff": 0.058,
-     "IntDiff": 0.016
-    },
-    "16": {
-     "RG": 2.51,
-     "Diff": 0.048,
-     "IntDiff": 0.015
-    }
-   }
-  },
-  "mfgScales": {},
-  "imageUrl": "https://cdn.shopify.com/s/files/1/0030/3330/1104/files/Black_Widow_Ghost_Pearl_1600x1707_website.png?v=1709760086",
   "fetched": "2026-10-07",
   "method": "parser"
  },
@@ -40948,6 +41049,36 @@
   "source": "hammer",
   "platform": "shopify",
   "brand": "Hammer",
+  "title": "Black Widow Sting",
+  "url": "https://hammerbowling.com/products/black-widow-sting",
+  "sku": null,
+  "catalogId": "hammer-black-widow-sting",
+  "match": "match",
+  "candidates": [
+   "hammer-black-widow-sting"
+  ],
+  "decision": "pending",
+  "reason": "no-weight-specs",
+  "flags": [
+   "no-weight-specs"
+  ],
+  "specs": {
+   "core": null,
+   "coverName": "Violent Flip Reactive",
+   "coverType": null,
+   "finish": null,
+   "released": null,
+   "weights": {}
+  },
+  "mfgScales": {},
+  "imageUrl": "https://cdn.shopify.com/s/files/1/0030/3330/1104/files/Black_Widow_Sting_1600x1707_website.png?v=1721923337",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "hammer",
+  "platform": "shopify",
+  "brand": "Hammer",
   "title": "Black Widow Tour V1",
   "url": "https://hammerbowling.com/products/black-widow-tour-v1",
   "sku": null,
@@ -41002,14 +41133,70 @@
   "source": "hammer",
   "platform": "shopify",
   "brand": "Hammer",
+  "title": "Black Widow Urethane",
+  "url": "https://hammerbowling.com/products/black-widow-urethane",
+  "sku": null,
+  "catalogId": "hammer-black-widow-urethane",
+  "match": "match",
+  "candidates": [
+   "hammer-black-widow-urethane"
+  ],
+  "decision": "pending",
+  "reason": "conflicting-sources",
+  "flags": [],
+  "specs": {
+   "core": "Gas Mask",
+   "coverName": "Urethane Pearl",
+   "coverType": "Pearl Urethane",
+   "finish": "360, 800 Siaair Micro Pad",
+   "released": "2022-02-25",
+   "weights": {
+    "12": {
+     "RG": 2.612,
+     "Diff": 0.043,
+     "IntDiff": 0.011
+    },
+    "13": {
+     "RG": 2.589,
+     "Diff": 0.043,
+     "IntDiff": 0.011
+    },
+    "14": {
+     "RG": 2.5,
+     "Diff": 0.056,
+     "IntDiff": 0.016
+    },
+    "15": {
+     "RG": 2.5,
+     "Diff": 0.058,
+     "IntDiff": 0.016
+    },
+    "16": {
+     "RG": 2.51,
+     "Diff": 0.048,
+     "IntDiff": 0.015
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": "https://cdn.shopify.com/s/files/1/0030/3330/1104/files/Black_Widow_Urethane_1600x1707_website.png?v=1721923391",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "hammer",
+  "platform": "shopify",
+  "brand": "Hammer",
   "title": "Black Widow Urethane - Original",
   "url": "https://hammerbowling.com/products/black-widow-urethane-original",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "hammer-black-widow-urethane",
+  "match": "match",
+  "candidates": [
+   "hammer-black-widow-urethane"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "conflicting-sources",
   "flags": [],
   "specs": {
    "core": "Gas Mask",
@@ -43768,11 +43955,13 @@
   "title": "Pure Hammer - Black",
   "url": "https://hammerbowling.com/products/pure-hammer-black",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
-  "decision": "pending",
-  "reason": "no-usbc",
+  "catalogId": "hammer-pure-hammer",
+  "match": "match",
+  "candidates": [
+   "hammer-pure-hammer"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
   "flags": [],
   "specs": {
    "core": "2-piece",
@@ -44845,11 +45034,13 @@
   "title": "Razyr - Black / Red",
   "url": "https://hammerbowling.com/products/razyr-black-red",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "hammer-razyr",
+  "match": "match",
+  "candidates": [
+   "hammer-razyr"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -44873,11 +45064,13 @@
   "title": "Razyr - Purple",
   "url": "https://hammerbowling.com/products/razyr-purple",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "hammer-razyr",
+  "match": "match",
+  "candidates": [
+   "hammer-razyr"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -46169,11 +46362,13 @@
   "title": "Taboo - Blue / Silver",
   "url": "https://hammerbowling.com/products/taboo-blue-silver",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "hammer-taboo",
+  "match": "match",
+  "candidates": [
+   "hammer-taboo"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -46287,11 +46482,13 @@
   "title": "The Sauce - Black / Violet / Gold",
   "url": "https://hammerbowling.com/products/the-sauce-black-violet-gold",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "hammer-the-sauce",
+  "match": "match",
+  "candidates": [
+   "hammer-the-sauce"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -46315,11 +46512,13 @@
   "title": "The Sauce - Red / Black / Magenta",
   "url": "https://hammerbowling.com/products/the-sauce-red-black-magenta",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "hammer-the-sauce",
+  "match": "match",
+  "candidates": [
+   "hammer-the-sauce"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -46693,8 +46892,8 @@
   "candidates": [
    "hammer-web-pearl"
   ],
-  "decision": "auto",
-  "reason": "exact-match+gates",
+  "decision": "pending",
+  "reason": "conflicting-sources",
   "flags": [],
   "specs": {
    "core": "Spheroid",
@@ -46742,11 +46941,13 @@
   "title": "Web Pearl - Original",
   "url": "https://hammerbowling.com/products/web-pearl-original",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "hammer-web-pearl",
+  "match": "match",
+  "candidates": [
+   "hammer-web-pearl"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "conflicting-sources",
   "flags": [],
   "specs": {
    "core": "Spheroid",
@@ -46902,11 +47103,13 @@
   "title": "Web Tour Edition Hybrid - International",
   "url": "https://hammerbowling.com/products/web-tour-edition-hybrid-1",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "hammer-web-tour-edition-hybrid",
+  "match": "match",
+  "candidates": [
+   "hammer-web-tour-edition-hybrid"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "no-weight-specs",
   "flags": [
    "no-weight-specs"
   ],
@@ -47804,11 +48007,13 @@
   "title": "Ascent Apex - Blue",
   "url": "https://www.motivbowling.com/products/balls/retired-balls/ascent-apex-blue.html",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "motiv-ascent-apex",
+  "match": "match",
+  "candidates": [
+   "motiv-ascent-apex"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "conflicting-sources",
   "flags": [],
   "specs": {
    "core": "Recon",
@@ -47870,11 +48075,13 @@
   "title": "Ascent Apex - Pink / Green",
   "url": "https://www.motivbowling.com/products/balls/retired-balls/ascent-apex-pink-green.html",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "motiv-ascent-apex",
+  "match": "match",
+  "candidates": [
+   "motiv-ascent-apex"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "conflicting-sources",
   "flags": [],
   "specs": {
    "core": "Recon",
@@ -48204,11 +48411,13 @@
   "title": "Aspire - Black/Red/Gold",
   "url": "https://www.motivbowling.com/products/balls/spare/apire-black-red-gold.html",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "motiv-aspire-all-colors",
+  "match": "match",
+  "candidates": [
+   "motiv-aspire-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "out-of-range:10:RG=2.87",
   "flags": [
    "out-of-range:10:RG=2.87"
   ],
@@ -48267,11 +48476,13 @@
   "title": "Aspire - Navy/Red/Blue",
   "url": "https://www.motivbowling.com/products/balls/spare/aspire-navy-red-blue.html",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "motiv-aspire-all-colors",
+  "match": "match",
+  "candidates": [
+   "motiv-aspire-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "out-of-range:10:RG=2.87",
   "flags": [
    "out-of-range:10:RG=2.87"
   ],
@@ -48330,11 +48541,13 @@
   "title": "Aspire - Purple/Silver/Black",
   "url": "https://www.motivbowling.com/products/balls/spare/aspire-purple-silver-black.html",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "motiv-aspire-all-colors",
+  "match": "match",
+  "candidates": [
+   "motiv-aspire-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "out-of-range:10:RG=2.87",
   "flags": [
    "out-of-range:10:RG=2.87"
   ],
@@ -48393,11 +48606,13 @@
   "title": "Aspire - Sky Blue/Silver/White",
   "url": "https://www.motivbowling.com/products/balls/spare/aspire-sky-silver-white.html",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "motiv-aspire-all-colors",
+  "match": "match",
+  "candidates": [
+   "motiv-aspire-all-colors"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "out-of-range:10:RG=2.87",
   "flags": [
    "out-of-range:10:RG=2.87"
   ],
@@ -54669,11 +54884,13 @@
   "title": "Revolt Uprising - LIMITED EDITION",
   "url": "https://www.motivbowling.com/products/balls/retired-balls/revolt-uprising-limited-edition.html",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
-  "decision": "pending",
-  "reason": "no-usbc",
+  "catalogId": "motiv-revolt-uprising",
+  "match": "match",
+  "candidates": [
+   "motiv-revolt-uprising"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
   "flags": [],
   "specs": {
    "core": "Vanquish™ Symmetric",
@@ -56372,11 +56589,13 @@
   "title": "T10 - Limited Edition",
   "url": "https://www.motivbowling.com/products/balls/retired-balls/t10-limited-edition.html",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
-  "decision": "pending",
-  "reason": "no-usbc",
+  "catalogId": "motiv-t10",
+  "match": "match",
+  "candidates": [
+   "motiv-t10"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
   "flags": [],
   "specs": {
    "core": "Thrust™",
@@ -58778,11 +58997,13 @@
   "title": "VIP Affliction - LIMITED EDITION",
   "url": "https://www.motivbowling.com/products/balls/retired-balls/vip-affliction-limited-edition.html",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
-  "decision": "pending",
-  "reason": "no-usbc",
+  "catalogId": "motiv-vip-affliction",
+  "match": "match",
+  "candidates": [
+   "motiv-vip-affliction"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
   "flags": [],
   "specs": {
    "core": "Affliction™ Symmetric",
@@ -70061,6 +70282,60 @@
   "source": "track",
   "platform": "shopify",
   "brand": "Track Inc.",
+  "title": "Kinetic Ruby",
+  "url": "https://trackbowling.com/products/kinetic-ruby",
+  "sku": null,
+  "catalogId": "track-inc-kinetic-ruby",
+  "match": "match",
+  "candidates": [
+   "track-inc-kinetic-ruby"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Modified Kinetic",
+   "coverName": "QR-6 Solid",
+   "coverType": null,
+   "finish": "500, 2000 Abralon®",
+   "released": null,
+   "weights": {
+    "12": {
+     "RG": 2.6,
+     "Diff": 0.039,
+     "IntDiff": null
+    },
+    "13": {
+     "RG": 2.53,
+     "Diff": 0.055,
+     "IntDiff": null
+    },
+    "14": {
+     "RG": 2.48,
+     "Diff": 0.041,
+     "IntDiff": null
+    },
+    "15": {
+     "RG": 2.49,
+     "Diff": 0.038,
+     "IntDiff": null
+    },
+    "16": {
+     "RG": 2.51,
+     "Diff": 0.036,
+     "IntDiff": null
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": "https://cdn.shopify.com/s/files/1/0609/7590/7033/products/Kinetic_Ruby_1600x1600_d4afb0a0-9d7f-4b0c-b5a2-2d1d50af65e9.png?v=1658511917",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "track",
+  "platform": "shopify",
+  "brand": "Track Inc.",
   "title": "Kinetic Sapphire Ice",
   "url": "https://trackbowling.com/products/kinetic-sapphire-ice",
   "sku": null,
@@ -70223,58 +70498,6 @@
   "source": "track",
   "platform": "shopify",
   "brand": "Track Inc.",
-  "title": "Legion - Original",
-  "url": "https://trackbowling.com/products/legion-original",
-  "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
-  "decision": "pending",
-  "reason": "no-usbc",
-  "flags": [],
-  "specs": {
-   "core": "LT-2",
-   "coverName": "MR-6 Hybrid",
-   "coverType": null,
-   "finish": "500 / 1000 Abralon® Polished with Power House Factory Finish Polish",
-   "released": null,
-   "weights": {
-    "12": {
-     "RG": 2.6,
-     "Diff": 0.039,
-     "IntDiff": null
-    },
-    "13": {
-     "RG": 2.53,
-     "Diff": 0.055,
-     "IntDiff": null
-    },
-    "14": {
-     "RG": 2.51,
-     "Diff": 0.048,
-     "IntDiff": null
-    },
-    "15": {
-     "RG": 2.5,
-     "Diff": 0.046,
-     "IntDiff": null
-    },
-    "16": {
-     "RG": 2.51,
-     "Diff": 0.04,
-     "IntDiff": null
-    }
-   }
-  },
-  "mfgScales": {},
-  "imageUrl": "https://cdn.shopify.com/s/files/1/0609/7590/7033/products/Legion_1600x1600_dde67dd3-7313-43eb-8dff-64308e2c4274.png?v=1658495036",
-  "fetched": "2026-10-07",
-  "method": "parser"
- },
- {
-  "source": "track",
-  "platform": "shopify",
-  "brand": "Track Inc.",
   "title": "Legion Pearl",
   "url": "https://trackbowling.com/products/legion-pearl",
   "sku": null,
@@ -70337,8 +70560,8 @@
   "candidates": [
    "track-inc-legion-solid"
   ],
-  "decision": "auto",
-  "reason": "exact-match+gates",
+  "decision": "pending",
+  "reason": "conflicting-sources",
   "flags": [],
   "specs": {
    "core": "LT-2",
@@ -70386,11 +70609,13 @@
   "title": "Legion Solid - Original",
   "url": "https://trackbowling.com/products/legion-solid-original",
   "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
+  "catalogId": "track-inc-legion-solid",
+  "match": "match",
+  "candidates": [
+   "track-inc-legion-solid"
+  ],
   "decision": "pending",
-  "reason": "no-usbc",
+  "reason": "conflicting-sources",
   "flags": [],
   "specs": {
    "core": "LT-2",
