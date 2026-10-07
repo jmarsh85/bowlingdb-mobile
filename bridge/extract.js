@@ -354,10 +354,9 @@ async function extractSource(src, cfg, fetchImpl, limit, log, ctx) {
       const cands = stormCandidates(ctx.rows, have, learnStormPrefixes(recs), ctx.stormSince);
       let hit = 0, tried = 0;
       for (const c of cands) {
-        let u = src.base + '/' + c.path;
+        const u = src.base + '/' + c.path;
         if (!allowed(robots, u)) continue;
-        let r = await get(u); tried++; pagesSeen++;
-        if (r.status !== 200 && c.alt) { u = src.base + '/' + c.alt; r = await get(u); pagesSeen++; }
+        const r = await get(u); tried++; pagesSeen++;
         if (r.status !== 200) continue;            // retired page gone: expected, not an error
         const items = parseStormProduct(r.text, u, c.brand).filter(x => Object.keys(x.specs.weights).length);
         if (items.length) { recs.push(...items); hit++; }
@@ -437,6 +436,16 @@ async function main(argv, fetchImpl, log = s => process.stdout.write(s + '\n')) 
   for (const b in cov) { const c = cov[b]; L.push(`| ${b} | ${c.all} | ${c.auto} | ${c.pending} | ${c.recent} | ${c.recentAuto} |`); }
   const reasons = {}; staged.filter(s => s.decision === 'pending').forEach(s => { reasons[s.reason] = (reasons[s.reason] || 0) + 1; });
   L.push('', 'Pending reasons: ' + (Object.entries(reasons).map(([k, v]) => k + ' ' + v).join(', ') || 'none'));
+  const bySrc = {};
+  staged.filter(x => x.decision === 'pending').forEach(x => {
+    const r = x.reason.replace(/:.*/, ''); const k = x.source + '|' + r;
+    (bySrc[k] = bySrc[k] || { source: x.source, reason: r, n: 0, samples: [] }).n++;
+    if (bySrc[k].samples.length < 12) bySrc[k].samples.push({ title: x.title, url: x.url, candidates: (x.candidates || []).slice(0, 4) });
+  });
+  const diag = Object.values(bySrc).sort((a, b) => b.n - a.n);
+  fs.writeFileSync(path.join(out, 'pending_samples.json'), JSON.stringify(diag, null, 1));
+  L.push('', '| source | pending reason | count | e.g. |', '|---|---|---|---|');
+  diag.slice(0, 25).forEach(d => L.push(`| ${d.source} | ${d.reason} | ${d.n} | ${d.samples.slice(0, 3).map(x => String(x.title).replace(/\|/g, '/')).join('; ')} |`));
   fs.writeFileSync(path.join(out, 'SUMMARY.md'), L.join('\n') + '\n');
   return { staged, coverage: cov, perSource };
 }
