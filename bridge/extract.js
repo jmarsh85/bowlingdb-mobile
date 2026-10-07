@@ -220,9 +220,11 @@ function parseStormProduct(html, url, brand) {
              released: parseDate(f['release date'] && f['release date'].split(/\s{2,}|\s(?=[A-Z][a-z]+:)/)[0]), weights } }];
 }
 /* "!Q Tour A.I." -> "iq-tour-ai" */
-function stormSlug(name) {
-  return String(name || '').replace(/^\*+\s*/, '').toLowerCase().replace(/!/g, 'i').replace(/&/g, 'and').replace(/[.'\u2019]/g, '')
-    .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+function stormSlug(name, keepCase) {
+  const s0 = String(name || '').replace(/^\*+\s*/, '');
+  return (keepCase ? s0 : s0.toLowerCase()).replace(/!/g, keepCase ? 'I' : 'i').replace(/&/g, 'and').replace(/[.'\u2019]/g, '')
+    
+    .replace(/[^A-Za-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
 /* Learn each brand's URL prefix from the current listing ("/storm-hy-road-bowling-ball" -> "storm-"). */
 function learnStormPrefixes(listed) {
@@ -247,7 +249,9 @@ function stormCandidates(rows, haveIds, prefixes, since) {
     const pre = prefixes[b] != null ? prefixes[b] : STORM_DEFAULT_PREFIX[b];
     const path = pre + sl + '-bowling-ball';
     if (seen.has(path)) continue; seen.add(path);
-    out.push({ path, brand: b, catalogId: r.i });
+    /* Storm's server is case-sensitive ("storm-phaze-V-bowling-ball"): try the name's own casing too */
+    const cased = pre + stormSlug(r.n, true) + '-bowling-ball';
+    out.push({ path, alt: cased !== path ? cased : null, brand: b, catalogId: r.i });
   }
   return out;
 }
@@ -350,9 +354,10 @@ async function extractSource(src, cfg, fetchImpl, limit, log, ctx) {
       const cands = stormCandidates(ctx.rows, have, learnStormPrefixes(recs), ctx.stormSince);
       let hit = 0, tried = 0;
       for (const c of cands) {
-        const u = src.base + '/' + c.path;
+        let u = src.base + '/' + c.path;
         if (!allowed(robots, u)) continue;
-        const r = await get(u); tried++; pagesSeen++;
+        let r = await get(u); tried++; pagesSeen++;
+        if (r.status !== 200 && c.alt) { u = src.base + '/' + c.alt; r = await get(u); pagesSeen++; }
         if (r.status !== 200) continue;            // retired page gone: expected, not an error
         const items = parseStormProduct(r.text, u, c.brand).filter(x => Object.keys(x.specs.weights).length);
         if (items.length) { recs.push(...items); hit++; }
