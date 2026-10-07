@@ -149,6 +149,15 @@ const cands = X.stormCandidates([{ i: 'storm-phaze-v', m: 'Storm', n: 'Phaze V',
   { i: 'storm-old', m: 'Storm', n: 'Old', y: '1995' }, { i: 'hammer-x', m: 'Hammer', n: 'X', y: '2022' }], new Set(['storm-hy-road']), pre, 2000);
 ok(cands.length === 1 && cands[0].path === 'storm-phaze-v-bowling-ball', 'candidates: storm group only, not already found, since year');
 
+
+/* ---- colourway suffix + carry-over ---- */
+const cw = [{ i: 'ebonite-bash', k: 'x', m: 'Ebonite', n: 'Bash', y: '2024' }, { i: 'dv8-misfit', k: 'x', m: 'DV8', n: 'Misfit', y: '2024' }];
+const cwb = X.indexByBrand(cw);
+let mm = X.matchRec({ title: 'Bash - Purple / Yellow', brand: 'Ebonite' }, cwb);
+ok(mm.status === 'match' && mm.catalogId === 'ebonite-bash' && mm.via === 'colourway', 'colour suffix -> base model');
+ok(X.matchRec({ title: 'Bash - Silver Pearl', brand: 'Ebonite' }, cwb).status === 'no-usbc', 'cover-type suffix never collapsed');
+ok(X.matchRec({ title: 'Misfit - Magenta/Yellow', brand: 'DV8' }, cwb).catalogId === 'dv8-misfit', 'slash colours');
+
 /* verify / match / decide */
 const rows = [{ i: 'storm-hy-road', k: 'storm|hyroad', m: 'Storm', n: 'Hy-Road', y: '2008' },
   { i: 'storm-monsoon', k: 'storm|monsoon', m: 'Storm', n: 'Monsoon', y: '2026' },
@@ -215,6 +224,10 @@ X.resolveConflicts(same); ok(same[0].decision === 'auto' && same[1].decision ===
   pages['https://s.com/products/equipment/bowling-balls/'] = '<html><body><div>unrecognised layout</div></body></html>';
   delete pages['https://s.com/storm-phaze-v-bowling-ball'];
   const r2 = await X.main(['--index', path.join(tmp, 'index.json'), '--out', path.join(tmp, 'st2'), '--sources', path.join(tmp, 'src.json'), '--only', 'storm'], mock, () => {});
+  const r3 = await X.main(['--index', path.join(tmp, 'index.json'), '--out', path.join(tmp, 'st3'), '--sources', path.join(tmp, 'src.json'), '--only', 'storm',
+    '--previous', path.join(tmp, 'st', 'specs_staging.json')], mock, () => {});
+  ok(r3.staged.some(x => x.source === 'hammer'), '--only run keeps the other sources');
+  ok(r3.perSource.storm.carriedOver > 0 && r3.staged.some(x => x.source === 'storm' && x.decision === 'auto'), 'source returning nothing keeps last run rows');
   ok(r2.perSource.storm.debug === 'debug/storm.html' && fs.existsSync(path.join(tmp, 'st2', 'debug', 'storm.html')), 'zero-parse source writes a debug page');
   console.log('extract_test: ' + n + ' checks passed');
 })().catch(e => { console.error('FAIL', e.message); process.exit(1); });
