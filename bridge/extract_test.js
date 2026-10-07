@@ -179,6 +179,7 @@ const mon = st[1]; const fl = X.verify(mon);
 ok(fl.some(f => f.startsWith('out-of-range')) && mon.specs.weights[16].IntDiff === null, 'PSA 0.2 rejected by gate, value nulled');
 ok(X.decide(mon, X.matchRec(mon, by), fl).decision === 'pending', 'out-of-range -> pending');
 ok(X.decide(hy, X.matchRec(hy, by), X.verify(hy)).decision === 'auto', 'clean exact -> auto');
+const light = { specs: { weights: { 10: { RG: 2.87, Diff: 0.01 } } } }; ok(X.verify(light).length === 0, '10 lb RG 2.87 passes');
 const bad = { specs: { weights: {}, released: '3024-09-03' } }; X.verify(bad); ok(bad.specs.released === null, 'source typo date dropped');
 const dup = [{ decision: 'auto', catalogId: 'a', specs: { weights: { 15: { RG: 2.5 } } } }, { decision: 'auto', catalogId: 'a', specs: { weights: { 15: { RG: 2.6 } } } }];
 X.resolveConflicts(dup); ok(dup.every(d => d.decision === 'pending'), 'two sources disagree -> both pending');
