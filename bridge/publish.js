@@ -25,28 +25,40 @@ function toSpecsEntry(r) {
     Checked: r.fetched || null,
   };
 }
-/* decisions (from the approval page, later): [{catalogId, url, action:'approve'|'reject'}] */
+/* decisions (from the approvals issue): [{url, catalogId, action:'approve'|'reject'}]
+   Precedence per CatalogID: your approvals > auto. Within a tier, sources must agree or nothing publishes. */
 function publish(staged, decisions) {
-  const dec = {}; (decisions || []).forEach(d => { dec[(d.url || '') + '|' + (d.catalogId || '')] = d; });
-  const out = {}, report = { auto: 0, approved: 0, rejected: 0, skippedNoWeights: 0, conflicts: [] };
-  for (const r of staged) {
-    let id = r.decision === 'auto' ? r.catalogId : null;
-    const d = (decisions || []).find(x => x.url === r.url);
-    if (d && d.action === 'reject') { report.rejected++; continue; }
-    if (d && d.action === 'approve' && d.catalogId) { id = d.catalogId; report.approved++; }
-    else if (id) report.auto++;
-    if (!id) continue;
+  decisions = decisions || [];
+  const report = { auto: 0, approved: 0, rejected: 0, skippedNoWeights: 0, conflicts: [] };
+  const rejectUrl = new Set(decisions.filter(d => d.action === 'reject').map(d => d.url));
+  const byUrl = {}; staged.forEach(r => { if (r.url) (byUrl[r.url] = byUrl[r.url] || []).push(r); });
+  const tiers = {};   // id -> {approved:[entry], auto:[entry]}
+  const add = (id, tier, r) => {
     const e = toSpecsEntry(r);
-    if (!Object.keys(e.SpecsByWeight).length) { report.skippedNoWeights++; continue; }
-    if (out[id] && JSON.stringify(out[id].SpecsByWeight) !== JSON.stringify(e.SpecsByWeight)) {
-      report.conflicts.push(id); delete out[id]; out['__conflict__' + id] = true; continue;
-    }
-    if (out['__conflict__' + id]) continue;
-    out[id] = e;
+    if (!Object.keys(e.SpecsByWeight).length) { report.skippedNoWeights++; return; }
+    ((tiers[id] = tiers[id] || { approved: [], auto: [] })[tier]).push(e);
+  };
+  for (const d of decisions) {
+    if (d.action !== 'approve' || !d.catalogId) continue;
+    const rows = byUrl[d.url] || [];
+    if (!rows.length) continue;            // page no longer staged: approval waits
+    report.approved++; add(d.catalogId, 'approved', rows[0]);
   }
-  Object.keys(out).forEach(k => { if (k.startsWith('__conflict__')) delete out[k]; });
-  report.published = Object.keys(out).length;
-  return { specs: out, report };
+  for (const r of staged) {
+    if (r.decision !== 'auto' || !r.catalogId) continue;
+    if (rejectUrl.has(r.url)) { report.rejected++; continue; }
+    report.auto++; add(r.catalogId, 'auto', r);
+  }
+  const specs = {};
+  for (const id in tiers) {
+    const list = tiers[id].approved.length ? tiers[id].approved : tiers[id].auto;
+    if (!list.length) continue;
+    const sig = e => JSON.stringify(e.SpecsByWeight);
+    if (new Set(list.map(sig)).size > 1) { report.conflicts.push(id); continue; }
+    specs[id] = list[0];
+  }
+  report.published = Object.keys(specs).length;
+  return { specs, report };
 }
 function main(argv) {
   const arg = k => { const i = argv.indexOf('--' + k); return i >= 0 ? argv[i + 1] : null; };
