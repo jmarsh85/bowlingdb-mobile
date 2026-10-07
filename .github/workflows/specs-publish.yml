@@ -7,6 +7,7 @@ on:
 permissions:
   contents: write
   actions: write
+  issues: read
 concurrency: { group: specs-branch, cancel-in-progress: false }
 jobs:
   publish:
@@ -18,11 +19,20 @@ jobs:
       - uses: actions/setup-node@v5
         with: { node-version: 22 }
       - name: Tests
-        run: node bridge/publish_test.js
+        run: |
+          node bridge/publish_test.js
+          node bridge/approvals_test.js
+      - name: Read ticked approvals
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          NUM=$(gh issue list --label spec-approvals --state open --json number --jq '.[0].number')
+          if [ -n "$NUM" ]; then gh issue view "$NUM" --json body --jq .body > approvals.md; fi
+          node bridge/approvals.js parse --body approvals.md --out decisions.json
       - name: Build catalog/specs.json
         run: |
           node bridge/publish.js --staging specs/staging/specs_staging.json \
-            --decisions specs/staging/decisions.json --out catalog/specs.json | tee report.json
+            --decisions decisions.json --out catalog/specs.json | tee report.json
           echo "## Spec publish" >> "$GITHUB_STEP_SUMMARY"
           echo '```' >> "$GITHUB_STEP_SUMMARY"; cat report.json >> "$GITHUB_STEP_SUMMARY"; echo '```' >> "$GITHUB_STEP_SUMMARY"
       - name: Commit to main
