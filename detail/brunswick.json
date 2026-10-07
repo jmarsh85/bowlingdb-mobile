@@ -25219,17 +25219,20 @@
   "CatalogID": "brunswick-rhino",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Light Bulb",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish",
+   "Name": "R-16",
+   "Type": "Pearl Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -25244,7 +25247,43 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "10": {
+    "Diff": 0.002,
+    "IntDiff": null,
+    "RG": 2.8
+   },
+   "11": {
+    "Diff": 0.002,
+    "IntDiff": null,
+    "RG": 2.769
+   },
+   "12": {
+    "Diff": 0.03,
+    "IntDiff": null,
+    "RG": 2.579
+   },
+   "13": {
+    "Diff": 0.03,
+    "IntDiff": null,
+    "RG": 2.558
+   },
+   "14": {
+    "Diff": 0.03,
+    "IntDiff": null,
+    "RG": 2.54
+   },
+   "15": {
+    "Diff": 0.03,
+    "IntDiff": null,
+    "RG": 2.524
+   },
+   "16": {
+    "Diff": 0.03,
+    "IntDiff": null,
+    "RG": 2.511
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2002-04",

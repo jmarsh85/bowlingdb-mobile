@@ -1030,17 +1030,20 @@
   "CatalogID": "motiv-aspire-all-colors",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Tyro™",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "6000 Grit LSP",
+   "Name": "Polyester",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -1055,7 +1058,38 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "10": {
+    "Diff": 0.026,
+    "IntDiff": null,
+    "RG": 2.87
+   },
+   "11": {
+    "Diff": 0.026,
+    "IntDiff": null,
+    "RG": 2.84
+   },
+   "12": {
+    "Diff": 0.025,
+    "IntDiff": null,
+    "RG": 2.81
+   },
+   "13": {
+    "Diff": 0.03,
+    "IntDiff": null,
+    "RG": 2.78
+   },
+   "14": {
+    "Diff": 0.024,
+    "IntDiff": null,
+    "RG": 2.75
+   },
+   "15": {
+    "Diff": 0.028,
+    "IntDiff": null,
+    "RG": 2.75
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2019-09-10",
@@ -8850,17 +8884,20 @@
   "CatalogID": "motiv-revolt-uprising",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Vanquish™ Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "1000 Grit LSS",
+   "Name": "Helix™ MXC Solid Reactive",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -8875,7 +8912,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.03,
+    "IntDiff": null,
+    "RG": 2.63
+   },
+   "13": {
+    "Diff": 0.044,
+    "IntDiff": null,
+    "RG": 2.56
+   },
+   "14": {
+    "Diff": 0.056,
+    "IntDiff": null,
+    "RG": 2.5
+   },
+   "15": {
+    "Diff": 0.056,
+    "IntDiff": null,
+    "RG": 2.47
+   },
+   "16": {
+    "Diff": 0.057,
+    "IntDiff": null,
+    "RG": 2.46
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2022-05-17",
@@ -11117,17 +11180,20 @@
   "CatalogID": "motiv-t10",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Thrust™",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "3000 LSS",
+   "Name": "Coercion™ MFS Reactive",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -11142,7 +11208,23 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "14": {
+    "Diff": 0.048,
+    "IntDiff": null,
+    "RG": 2.57
+   },
+   "15": {
+    "Diff": 0.052,
+    "IntDiff": null,
+    "RG": 2.54
+   },
+   "16": {
+    "Diff": 0.048,
+    "IntDiff": null,
+    "RG": 2.53
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2018-10-09",
@@ -14095,17 +14177,20 @@
   "CatalogID": "motiv-vip-affliction",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Affliction™ Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "4000 Grit LSS",
+   "Name": "Infusion™ HV Hybrid Reactive",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -14120,7 +14205,23 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "14": {
+    "Diff": 0.052,
+    "IntDiff": null,
+    "RG": 2.52
+   },
+   "15": {
+    "Diff": 0.052,
+    "IntDiff": null,
+    "RG": 2.5
+   },
+   "16": {
+    "Diff": 0.052,
+    "IntDiff": null,
+    "RG": 2.49
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2021-04-20",

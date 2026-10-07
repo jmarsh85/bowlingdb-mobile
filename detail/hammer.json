@@ -873,20 +873,17 @@
   "CatalogID": "hammer-anger-solid",
   "Colorway": null,
   "Core": {
-   "Name": "Modified Infamous",
+   "Name": null,
    "Type": null
   },
   "Cover": {
-   "Finish": "500, 2000 Siaair Micro Pad",
-   "Name": "Semtex Solid",
-   "Type": "Solid Reactive"
+   "Finish": null,
+   "Name": null,
+   "Type": null
   },
-  "DateReleased": "2025-07-10",
+  "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
-   "Core": "mfg",
-   "Cover": "mfg",
-   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -901,33 +898,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {
-   "12": {
-    "Diff": 0.04,
-    "IntDiff": null,
-    "RG": 2.608
-   },
-   "13": {
-    "Diff": 0.04,
-    "IntDiff": null,
-    "RG": 2.585
-   },
-   "14": {
-    "Diff": 0.049,
-    "IntDiff": null,
-    "RG": 2.603
-   },
-   "15": {
-    "Diff": 0.049,
-    "IntDiff": null,
-    "RG": 2.567
-   },
-   "16": {
-    "Diff": 0.041,
-    "IntDiff": null,
-    "RG": 2.572
-   }
-  },
+  "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2025-06-24",
@@ -8477,11 +8448,11 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "360, 800 Siaair Micro Pad",
-   "Name": "Urethane Pearl",
-   "Type": "Pearl Urethane"
+   "Finish": null,
+   "Name": "Urethane",
+   "Type": null
   },
-  "DateReleased": "2022-02-25",
+  "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
    "Core": "mfg",
@@ -8503,28 +8474,28 @@
   },
   "SpecsByWeight": {
    "12": {
-    "Diff": 0.043,
-    "IntDiff": 0.011,
-    "RG": 2.612
+    "Diff": 0.045,
+    "IntDiff": null,
+    "RG": 2.65
    },
    "13": {
-    "Diff": 0.043,
-    "IntDiff": 0.011,
-    "RG": 2.589
+    "Diff": 0.048,
+    "IntDiff": null,
+    "RG": 2.58
    },
    "14": {
     "Diff": 0.056,
-    "IntDiff": 0.016,
+    "IntDiff": null,
     "RG": 2.5
    },
    "15": {
     "Diff": 0.058,
-    "IntDiff": 0.016,
+    "IntDiff": null,
     "RG": 2.5
    },
    "16": {
     "Diff": 0.048,
-    "IntDiff": 0.015,
+    "IntDiff": null,
     "RG": 2.51
    }
   },
@@ -19019,17 +18990,20 @@
   "CatalogID": "hammer-pure-hammer",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "2-piece",
    "Type": null
   },
   "Cover": {
    "Finish": null,
-   "Name": null,
+   "Name": "Urethane",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -19044,7 +19018,43 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "10": {
+    "Diff": 0.031,
+    "IntDiff": null,
+    "RG": 2.72
+   },
+   "11": {
+    "Diff": 0.032,
+    "IntDiff": null,
+    "RG": 2.62
+   },
+   "12": {
+    "Diff": 0.044,
+    "IntDiff": null,
+    "RG": 2.59
+   },
+   "13": {
+    "Diff": 0.056,
+    "IntDiff": null,
+    "RG": 2.53
+   },
+   "14": {
+    "Diff": 0.049,
+    "IntDiff": null,
+    "RG": 2.48
+   },
+   "15": {
+    "Diff": 0.039,
+    "IntDiff": null,
+    "RG": 2.48
+   },
+   "16": {
+    "Diff": 0.037,
+    "IntDiff": null,
+    "RG": 2.49
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2004-04",
@@ -29757,20 +29767,17 @@
   "CatalogID": "hammer-web-pearl",
   "Colorway": null,
   "Core": {
-   "Name": "Spheroid",
+   "Name": null,
    "Type": null
   },
   "Cover": {
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound",
-   "Name": "Aggression Pearl",
-   "Type": "Pearl Reactive"
+   "Finish": null,
+   "Name": null,
+   "Type": null
   },
-  "DateReleased": "2021-07-16",
+  "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
-   "Core": "mfg",
-   "Cover": "mfg",
-   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -29785,33 +29792,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {
-   "12": {
-    "Diff": 0.04,
-    "IntDiff": null,
-    "RG": 2.608
-   },
-   "13": {
-    "Diff": 0.04,
-    "IntDiff": null,
-    "RG": 2.585
-   },
-   "14": {
-    "Diff": 0.048,
-    "IntDiff": null,
-    "RG": 2.51
-   },
-   "15": {
-    "Diff": 0.048,
-    "IntDiff": null,
-    "RG": 2.481
-   },
-   "16": {
-    "Diff": 0.039,
-    "IntDiff": null,
-    "RG": 2.5
-   }
-  },
+  "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2019-08-13",

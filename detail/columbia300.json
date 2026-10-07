@@ -13463,20 +13463,17 @@
   "CatalogID": "columbia-300-nitrous-red-smoke-white",
   "Colorway": null,
   "Core": {
-   "Name": "Nitrous",
+   "Name": null,
    "Type": null
   },
   "Cover": {
    "Finish": null,
-   "Name": "Boost/R",
+   "Name": null,
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
-   "Core": "mfg",
-   "Cover": "mfg",
-   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -13491,38 +13488,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {
-   "11": {
-    "Diff": 0.02,
-    "IntDiff": null,
-    "RG": 2.69
-   },
-   "12": {
-    "Diff": 0.03,
-    "IntDiff": null,
-    "RG": 2.63
-   },
-   "13": {
-    "Diff": 0.03,
-    "IntDiff": null,
-    "RG": 2.6
-   },
-   "14": {
-    "Diff": 0.031,
-    "IntDiff": null,
-    "RG": 2.58
-   },
-   "15": {
-    "Diff": 0.033,
-    "IntDiff": null,
-    "RG": 2.55
-   },
-   "16": {
-    "Diff": 0.03,
-    "IntDiff": null,
-    "RG": 2.55
-   }
-  },
+  "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2016-09-22",
@@ -17635,17 +17601,20 @@
   "CatalogID": "columbia-300-resurgence",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Resurgence",
    "Type": null
   },
   "Cover": {
    "Finish": null,
-   "Name": null,
+   "Name": "New Era",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -17660,7 +17629,23 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "14": {
+    "Diff": 0.038,
+    "IntDiff": null,
+    "RG": 2.5
+   },
+   "15": {
+    "Diff": 0.043,
+    "IntDiff": null,
+    "RG": 2.46
+   },
+   "16": {
+    "Diff": 0.04,
+    "IntDiff": null,
+    "RG": 2.47
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2007-06",
@@ -20927,17 +20912,20 @@
   "CatalogID": "columbia-300-scout-reactive-blue-gold",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Pancake",
    "Type": null
   },
   "Cover": {
    "Finish": null,
-   "Name": null,
+   "Name": "Super-Flex",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -20952,7 +20940,23 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "14": {
+    "Diff": 0.02,
+    "IntDiff": null,
+    "RG": 2.69
+   },
+   "15": {
+    "Diff": 0.02,
+    "IntDiff": null,
+    "RG": 2.65
+   },
+   "16": {
+    "Diff": 0.02,
+    "IntDiff": null,
+    "RG": 2.64
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2007-04",
@@ -24980,20 +24984,17 @@
   "CatalogID": "columbia-300-the-classic-u2",
   "Colorway": null,
   "Core": {
-   "Name": "Resurgance",
+   "Name": null,
    "Type": null
   },
   "Cover": {
    "Finish": null,
-   "Name": "Urethane",
+   "Name": null,
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
-   "Core": "mfg",
-   "Cover": "mfg",
-   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -25008,23 +25009,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {
-   "14": {
-    "Diff": 0.038,
-    "IntDiff": null,
-    "RG": 2.5
-   },
-   "15": {
-    "Diff": 0.043,
-    "IntDiff": null,
-    "RG": 2.46
-   },
-   "16": {
-    "Diff": 0.04,
-    "IntDiff": null,
-    "RG": 2.47
-   }
-  },
+  "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2012-05",

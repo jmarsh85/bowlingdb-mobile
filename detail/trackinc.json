@@ -7498,20 +7498,17 @@
   "CatalogID": "track-inc-kinetic-pearl",
   "Colorway": null,
   "Core": {
-   "Name": "Shuttle",
+   "Name": null,
    "Type": null
   },
   "Cover": {
-   "Finish": "Shuttle",
-   "Name": "UMP Gen 2 Pearl",
+   "Finish": null,
+   "Name": null,
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
-   "Core": "mfg",
-   "Cover": "mfg",
-   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -7526,23 +7523,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {
-   "14": {
-    "Diff": 0.046,
-    "IntDiff": null,
-    "RG": 2.46
-   },
-   "15": {
-    "Diff": 0.044,
-    "IntDiff": null,
-    "RG": 2.46
-   },
-   "16": {
-    "Diff": 0.042,
-    "IntDiff": null,
-    "RG": 2.49
-   }
-  },
+  "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2008-06",
@@ -8067,17 +8048,20 @@
   "CatalogID": "track-inc-legion",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "LT-2",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "500 / 1000 Abralon® Polished with Power House Factory Finish Polish",
+   "Name": "MR-6 Hybrid",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -8092,7 +8076,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.039,
+    "IntDiff": null,
+    "RG": 2.6
+   },
+   "13": {
+    "Diff": 0.055,
+    "IntDiff": null,
+    "RG": 2.53
+   },
+   "14": {
+    "Diff": 0.048,
+    "IntDiff": null,
+    "RG": 2.51
+   },
+   "15": {
+    "Diff": 0.046,
+    "IntDiff": null,
+    "RG": 2.5
+   },
+   "16": {
+    "Diff": 0.04,
+    "IntDiff": null,
+    "RG": 2.51
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2006-11",
@@ -8366,20 +8376,17 @@
   "CatalogID": "track-inc-legion-solid",
   "Colorway": null,
   "Core": {
-   "Name": "LT-2",
+   "Name": null,
    "Type": null
   },
   "Cover": {
-   "Finish": "500, 2000 Siaair Micro Pad",
-   "Name": "Prime Response Solid",
-   "Type": "Solid Reactive"
+   "Finish": null,
+   "Name": null,
+   "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
-   "Core": "mfg",
-   "Cover": "mfg",
-   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -8394,33 +8401,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {
-   "12": {
-    "Diff": 0.041,
-    "IntDiff": 0.014,
-    "RG": 2.593
-   },
-   "13": {
-    "Diff": 0.041,
-    "IntDiff": 0.014,
-    "RG": 2.597
-   },
-   "14": {
-    "Diff": 0.046,
-    "IntDiff": 0.012,
-    "RG": 2.51
-   },
-   "15": {
-    "Diff": 0.046,
-    "IntDiff": 0.011,
-    "RG": 2.5
-   },
-   "16": {
-    "Diff": 0.04,
-    "IntDiff": 0.01,
-    "RG": 2.51
-   }
-  },
+  "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2015-10-22",
