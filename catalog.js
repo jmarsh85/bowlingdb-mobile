@@ -35,7 +35,7 @@
 (function (root) {
 'use strict';
 
-var CAT_VERSION  = 'v30.158';
+var CAT_VERSION  = 'v30.159';
 var CAT_BASE     = 'https://raw.githubusercontent.com/jmarsh85/bowlingdb-mobile/dist/';
 var CAT_DB       = 'BowlingDB_Catalog';
 var CAT_DB_VER   = 1;
@@ -696,6 +696,7 @@ function specsOf(d, weight) {
   if (w) { out.rg = numOrNull(w.RG); out.diff = numOrNull(w.Diff); out.intDiff = numOrNull(w.IntDiff); }
   var fs = d.FieldSources || d.Sources || {};
   out.src = d.Source || fs.src || fs.RG || null;
+  if (out.src === 'mfg') out.src = 'manufacturer';
   out.checked = d.Checked || fs.checked || null;
   return out;
 }
@@ -782,6 +783,13 @@ function catMetricHTML(ball) {
     h += '<div style="font-size:11px;color:var(--t3);margin-top:2px">Current surface · factory ' + m.factory.strength + ' · ' + signed(m.factory.shape) + '</div>';
   return h;
 }
+
+/* ---------- MET-3: RG / Diff bands (James's ranges, locked 2026-10-06) ----------
+   RG   Low 2.460-<2.570 (earlier hook) | Med 2.570-<2.680 | High >=2.680 (more length)
+   Diff Low <=.025 (low flare) | Med .026-.050 | High >=.051 (high flare). Boundaries go to the higher band. */
+function rgBand(rg) { var v = parseFloat(rg); if (!isFinite(v)) return null; return v < 2.570 ? 'Low' : v < 2.680 ? 'Med' : 'High'; }
+function diffBand(d) { var v = parseFloat(d); if (!isFinite(v)) return null; v = Math.round(v * 1000) / 1000; return v <= 0.025 ? 'Low' : v <= 0.050 ? 'Med' : 'High'; }
+function catRGBand(rg, diff) { var a = rgBand(rg), b = diffBand(diff); return a && b ? a + '/' + b : null; }
 
 /* ---------- presentation helpers for the add flow ---------- */
 var BRAND_COLORS = ['#e2504c', '#3a7bd5', '#8e44ad', '#16a085', '#d35400', '#2c3e50', '#c0392b', '#27ae60', '#b7950b', '#5d6d7e'];
@@ -921,6 +929,7 @@ function specRows(e, s) {
     ['Coverstock', f(s.coverName)], ['Cover type', f(s.coverType)], ['Factory finish', f(s.finish)],
     ['Core', f(s.coreName)], ['Core type', f(s.coreType)],
     ['RG', f(s.rg, 3)], ['Differential', f(s.diff, 3)], ['Int. Diff', f(s.intDiff, 3)],
+    ['RG / Diff band', catRGBand(s.rg, s.diff) ? esc(catRGBand(s.rg, s.diff)) : dash],
     ['Release date', s.released ? (monthYear(s.released) || dash) : dash],
   ];
 }
@@ -954,7 +963,7 @@ function sheetHTML(e, rows) {
     var wt = _sheet.weight || 15;
     body += '<div style="font-size:11px;color:var(--t3);margin-top:8px;line-height:1.5">RG and Diff shown for ' + wt + ' lb' +
       (s.weights.length && s.weights.indexOf(wt) < 0 ? ' (not published for this weight)' : '') + '.' +
-      (s.src ? ' Specs: ' + (/^https?:/.test(s.src) ? 'manufacturer' : esc(s.src)) + (s.checked ? ', checked ' + esc(s.checked) : '') + '.' : '') + '</div>';
+      (s.src ? ' Specs: ' + (/^https?:|^manufacturer$/.test(s.src) ? 'manufacturer' : esc(s.src)) + (s.checked ? ', checked ' + esc(s.checked) : '') + '.' : '') + '</div>';
     var met = metricScore(ballFromSpecs(s), parseFinish(s.finish));
     if (met) body += '<div style="margin-top:12px;padding:10px 12px;border-radius:10px;background:var(--bg3);font-size:13px;color:var(--t1)">' +
       'Strength <b>' + met.strength + '</b> · Shape <b>' + signed(met.shape) + '</b><span style="color:var(--t3);font-size:11px"> · factory finish</span></div>';
@@ -1028,7 +1037,7 @@ function buildOwnedBall(e, detail, weight, id) {
     BoxFinish: spec.BoxFinish || '', Coverstock: spec.Coverstock || '', CoverName: spec.CoverName || '',
     CoreType: spec.CoreType || '', CoreShort: spec.CoreShort || '',
     RG: spec.RG, Differential: spec.Differential, IntDiff: spec.IntDiff,
-    RGDiff: '', DateReleased: spec.DateReleased,      // never the USBC approval date
+    RGDiff: catRGBand(spec.RG, spec.Differential) || '', DateReleased: spec.DateReleased,      // never the USBC approval date
     SpecsURL: null, Active: true, CatalogID: e.i, SpecSource: src,
   };
 }
@@ -1147,7 +1156,7 @@ root.catAddSearch = catAddSearch; root.catAddManual = catAddManual; root.catAddB
 root.catAddDetail = catAddDetail; root.catSheetClose = catSheetClose; root.catSheetWeight = catSheetWeight;
 root.catAddToArsenal = catAddToArsenal; root.catFillFromCatalog = catFillFromCatalog;
 root.catSpecSource = catSpecSource; root.catDetail = catDetail;
-root.catMetric = catMetric; root.catMetricChip = catMetricChip; root.catMetricHTML = catMetricHTML;
+root.catMetric = catMetric; root.catRGBand = catRGBand; root.catMetricChip = catMetricChip; root.catMetricHTML = catMetricHTML;
 root.catIdentityLocked = catIdentityLocked; root.catAuditOpen = catAuditOpen;
 root.catLookup = function (mfg, name) { return catLoad().then(function (rows) { return lookupIn(rows, mfg, name); }); };
 root.catSearch = function (q, n) { return catLoad().then(function (rows) { return searchIn(rows, q, n); }); };
@@ -1158,7 +1167,7 @@ root._catStep5 = { norm: norm, modelKey: modelKey, lookupIn: lookupIn, searchIn:
                    specsOf: specsOf, shardMap: shardMap, shardKeyFor: shardKeyFor, detailFiles: detailFiles,
                    buildOwnedBall: buildOwnedBall, ballFromSpecs: ballFromSpecs, fillPlan: fillPlan,
                    catSpecSource: catSpecSource, setFilled: function (f) { _filled = f; },
-                   metricScore: metricScore, parseFinish: parseFinish, coverClass: coverClass,
+                   metricScore: metricScore, parseFinish: parseFinish, rgBand: rgBand, diffBand: diffBand, coverClass: coverClass,
                    catMetric: catMetric, sheetHTML: sheetHTML, setSheet: function (x) { _sheet = x; } };
 
 root.catCheck = catCheck;
