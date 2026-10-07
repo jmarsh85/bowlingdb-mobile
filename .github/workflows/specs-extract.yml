@@ -16,6 +16,7 @@ on:
         default: '2023'
 permissions:
   contents: write
+  issues: write
 concurrency: { group: specs-branch, cancel-in-progress: false }
 jobs:
   extract:
@@ -30,7 +31,9 @@ jobs:
       - uses: actions/setup-node@v5
         with: { node-version: 22 }
       - name: Tests
-        run: node bridge/extract_test.js
+        run: |
+          node bridge/extract_test.js
+          node bridge/approvals_test.js
       - name: Extract
         run: |
           ARGS="--index published/index.json --out out --since ${{ inputs.since }} --limit ${{ inputs.limit }}"
@@ -48,3 +51,14 @@ jobs:
           if git diff --cached --quiet; then echo "No change"; exit 0; fi
           git commit -m "extract: $(date -u +%F) only=${{ inputs.only }} limit=${{ inputs.limit }}"
           git push origin HEAD:specs
+      - name: Update approvals issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh label create spec-approvals --color 5319e7 --description "Spec bridge approvals" --force
+          NUM=$(gh issue list --label spec-approvals --state open --json number --jq '.[0].number')
+          if [ -n "$NUM" ]; then gh issue view "$NUM" --json body --jq .body > current.md; fi
+          node bridge/approvals.js render --staging out/specs_staging.json --current current.md --out body.md
+          if [ -n "$NUM" ]; then gh issue edit "$NUM" --body-file body.md
+          else gh issue create --title "Spec approvals" --label spec-approvals --body-file body.md; fi
+          echo "Approvals issue updated: tick boxes there, then run specs-publish." >> "$GITHUB_STEP_SUMMARY"
