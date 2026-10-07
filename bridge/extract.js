@@ -294,19 +294,76 @@ function matchRec(rec, byBrand) {
   }
   return { status: 'no-usbc', candidates: [] };
 }
+/* ---------- auto-selection rules (v30.159, James 2026-10-07: minimise manual picks) ----------
+   R1 same-name re-approval: USBC lists one name twice (Puma + Puma 2nd row) -> same ball, apply to all.
+   R2 colour-only colourway: family page "Messenger" -> USBC "Messenger Black", "Messenger Cherry";
+      only when every extra word is a colour word. Cover words (Pearl, Solid, Hybrid...) or model
+      words (Pro, Tour, 2, II, Max...) keep it manual.
+   R3 rounding: sources within 0.002 RG / 0.001 Diff agree; keep the most precise.
+   R4 majority: 3+ sources and one value held by >= 2/3 -> that value; the rest recorded as outvoted. */
+const COLOUR_WORDS = new Set(('black white red blue green yellow orange purple pink violet magenta cyan teal turquoise aqua navy ' +
+  'royal sky lime mint olive maroon burgundy wine cherry ruby crimson scarlet gold golden silver bronze copper grey gray ' +
+  'charcoal smoke smoky slate onyx ivory cream tan brown amber coral lavender lilac plum indigo cobalt sapphire emerald jade ' +
+  'clear crystal glow neon fluorescent sparkle sparkles glitter swirl marble marbled camo camouflage ' +
+  'dark light bright hot electric deep pastel matte metallic translucent transparent frost frosted ice icy ' +
+  'platinum pewter rose champagne chrome jet ink blood sea forest army hunter ' +
+  'and with multi multicolor multicolour tie dye rainbow sunset ocean fire flame galaxy cosmic midnight').split(/\s+/));
+const COLOUR_ABBR = /^(blk|wht|grn|blu|prp|pur|pnk|org|ylw|yel|slv|gld|nvy|rd|bl|gr|wh)$/;
+function colourOnly(extra) {
+  const toks = String(extra || '').toLowerCase().replace(/[()]/g, ' ').split(/[\s\/,&+\-]+/).filter(Boolean);
+  return toks.length > 0 && toks.every(t => COLOUR_WORDS.has(t) || COLOUR_ABBR.test(t));
+}
+function extraWords(fullName, baseTitle) {
+  const base = String(baseTitle || '').toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
+  const words = String(fullName || '').replace(/^\*+\s*/, '').split(/\s+/);
+  for (const b of base) { const i = words.findIndex(w => w.toLowerCase().replace(/[^a-z0-9]/g, '') === b); if (i < 0) return null; words.splice(i, 1); }
+  return words.join(' ');
+}
+function autoTargets(rec, m, idName) {
+  if (m.status === 'ambiguous') return { auto: m.candidates.map(id => ({ catalogId: id, rule: 'same-name-reapproval' })), left: [] };
+  if (m.status !== 'variant') return { auto: [], left: m.candidates || [] };
+  const auto = [], left = [];
+  for (const id of m.candidates) {
+    const ex = extraWords(idName[id], rec.title);
+    if (ex != null && colourOnly(ex)) auto.push({ catalogId: id, rule: 'colourway' }); else left.push(id);
+  }
+  return { auto, left };
+}
 function decide(rec, match, flags) {
   if (match.status !== 'match') return { decision: 'pending', reason: match.status };
   if (flags.some(f => f === 'no-weight-specs' || f.startsWith('out-of-range'))) return { decision: 'pending', reason: flags[0] };
   return { decision: 'auto', reason: 'exact-match+gates' };
 }
-/* multiple pages can claim one CatalogID (e.g. a slug shared by two names): keep auto only if they agree */
+/* multiple pages can claim one CatalogID: R3 rounding, R4 majority, otherwise pending */
+function close(a, b) {
+  const ws = Object.keys(a).filter(w => b[w]);
+  if (!ws.length) return false;
+  const near = (x, y, t) => x == null || y == null || Math.abs(x - y) <= t + 1e-9;
+  return ws.every(w => near(a[w].RG, b[w].RG, 0.002) && near(a[w].Diff, b[w].Diff, 0.001) && near(a[w].IntDiff, b[w].IntDiff, 0.001));
+}
+function precision(s) {
+  let n = Object.keys(s.specs.weights).length * 10;
+  for (const w in s.specs.weights) for (const k in s.specs.weights[w]) { const v = s.specs.weights[w][k]; if (v != null) n += (String(v).split('.')[1] || '').length; }
+  return n;
+}
 function resolveConflicts(staged) {
   const by = {};
   staged.filter(s => s.decision === 'auto').forEach(s => (by[s.catalogId] = by[s.catalogId] || []).push(s));
-  for (const id in by) if (by[id].length > 1) {
-    const sig = s => JSON.stringify(s.specs.weights);
-    if (new Set(by[id].map(sig)).size > 1) by[id].forEach(s => { s.decision = 'pending'; s.reason = 'conflicting-sources'; });
-    else by[id].slice(1).forEach(s => { s.decision = 'duplicate'; s.reason = 'same-values-as-other-source'; });
+  for (const id in by) {
+    const list = by[id]; if (list.length < 2) continue;
+    const clusters = [];
+    for (const s of list) { const c = clusters.find(c => close(c[0].specs.weights, s.specs.weights)); c ? c.push(s) : clusters.push([s]); }
+    let win = null, rule = null;
+    if (clusters.length === 1) { win = clusters[0]; rule = 'rounding'; }
+    else { clusters.sort((x, y) => y.length - x.length);
+      if (list.length >= 3 && clusters[0].length * 3 >= list.length * 2) { win = clusters[0]; rule = 'majority'; } }
+    if (!win) { list.forEach(s => { s.decision = 'pending'; s.reason = 'conflicting-sources'; }); continue; }
+    const best = win.slice().sort((x, y) => precision(y) - precision(x))[0];
+    for (const s of list) {
+      if (s === best) { if (rule === 'majority') { s.rule = 'majority'; s.reason = 'rule:majority'; } continue; }
+      s.decision = win.includes(s) ? 'duplicate' : 'minority';
+      s.reason = win.includes(s) ? 'same-values-as-other-source' : 'outvoted-by-majority';
+    }
   }
 }
 function coverage(rows, staged, since) {
@@ -410,6 +467,7 @@ async function main(argv, fetchImpl, log = s => process.stdout.write(s + '\n')) 
   const out = arg('out') || 'staging', only = arg('only'), limit = +(arg('limit') || 0), since = +(arg('since') || 2023);
   fs.mkdirSync(out, { recursive: true });
   const byBrand = indexByBrand(rows);
+  const idName = {}; rows.forEach(r => { idName[r.i] = r.n; });
   const sources = cfg.sources.filter(s => s.kind === 'manufacturer' && PLATFORM[s.id] && (!only || s.id === only));
   const stormSince = +(arg('storm-since') || 2000);
   const runs = await Promise.all(sources.map(s => extractSource(s, cfg, fetchImpl, limit, log, { rows, stormSince }).catch(e => ({ recs: [], errors: [String(e)], pages: 0 }))));
@@ -421,9 +479,19 @@ async function main(argv, fetchImpl, log = s => process.stdout.write(s + '\n')) 
       if (!hasSpecs) continue;             // not a ball page (bags, shoes, accessories)
       parsed++;
       const flags = verify(rec), m = matchRec(rec, byBrand), d = decide(rec, m, flags);
-      staged.push({ source: s.id, platform: PLATFORM[s.id], brand: canonBrand(rec.brand), title: rec.title, url: rec.url, sku: rec.sku || null,
-        catalogId: m.catalogId || null, match: m.status, candidates: m.candidates, decision: d.decision, reason: d.reason, flags,
-        specs: rec.specs, mfgScales: rec.mfgScales, imageUrl: rec.imageUrl, fetched, method: 'parser' });
+      const base = { source: s.id, platform: PLATFORM[s.id], brand: canonBrand(rec.brand), title: rec.title, url: rec.url, sku: rec.sku || null,
+        flags, specs: rec.specs, mfgScales: rec.mfgScales, imageUrl: rec.imageUrl, fetched, method: 'parser' };
+      const gatesOk = !flags.some(f => f === 'no-weight-specs' || f.startsWith('out-of-range'));
+      const at = autoTargets(rec, m, idName);
+      if (at.auto.length && gatesOk) {
+        at.auto.forEach(t => staged.push(Object.assign({}, base, { catalogId: t.catalogId, match: 'match', candidates: [t.catalogId],
+          decision: 'auto', reason: 'rule:' + t.rule, rule: t.rule })));
+        if (at.left.length) staged.push(Object.assign({}, base, { catalogId: null, match: m.status, candidates: at.left, decision: 'pending', reason: m.status }));
+      } else {
+        staged.push(Object.assign({}, base, { catalogId: m.catalogId || null, match: m.status, candidates: m.candidates, decision: d.decision,
+          reason: d.reason, rule: m.via || null }));
+      }
+
     }
     perSource[s.id] = { pages: r.pages, parsed, errors: r.errors.length, errorSample: r.errors.slice(0, 10) };
     if (!parsed && r.firstPage) {          // nothing parsed: keep one raw page so the parser can be fixed against it
@@ -451,7 +519,9 @@ async function main(argv, fetchImpl, log = s => process.stdout.write(s + '\n')) 
   fs.writeFileSync(path.join(out, 'specs_staging.json'), JSON.stringify(staged, null, 1));
   fs.writeFileSync(path.join(out, 'coverage.json'), JSON.stringify({ generated: new Date().toISOString(), since, perSource, coverage: cov }, null, 2));
   const count = k => staged.filter(s => s.decision === k).length;
-  const L = ['# Spec bridge extract', '', 'Staged ' + staged.length + ' ball pages: **' + count('auto') + ' auto**, ' + count('pending') + ' pending, ' + count('duplicate') + ' duplicate.', '',
+  const ruled = {}; staged.filter(s => s.decision === 'auto' && s.rule).forEach(s => { ruled[s.rule] = (ruled[s.rule] || 0) + 1; });
+  const L = ['# Spec bridge extract', '', 'Staged ' + staged.length + ' ball pages: **' + count('auto') + ' auto**, ' + count('pending') + ' pending, ' + count('duplicate') + ' duplicate, ' + count('minority') + ' outvoted.', '',
+    'Auto-applied by rule: ' + (Object.entries(ruled).map(([k, v]) => k + ' ' + v).join(', ') || 'none') + '.', '',
     '| source | pages | ball pages | auto | pending | errors |', '|---|---|---|---|---|---|'];
   for (const s of sources) { const p = perSource[s.id]; const st = staged.filter(x => x.source === s.id);
     L.push(`| ${s.id}${p.carriedOver ? ' (kept ' + p.carriedOver + ' from last run)' : ''} | ${p.pages} | ${p.parsed} | ${st.filter(x => x.decision === 'auto').length} | ${st.filter(x => x.decision === 'pending').length} | ${p.errors} |`); }
@@ -473,6 +543,6 @@ async function main(argv, fetchImpl, log = s => process.stdout.write(s + '\n')) 
   return { staged, coverage: cov, perSource };
 }
 
-module.exports = { parseStormProduct, stormSlug, learnStormPrefixes, stormCandidates, htmlToText, weightTable, kvLines, parseDate, parseCraft, parseShopifyBody, parseMotiv, parseStormListing,
+module.exports = { colourOnly, extraWords, autoTargets, close, parseStormProduct, stormSlug, learnStormPrefixes, stormCandidates, htmlToText, weightTable, kvLines, parseDate, parseCraft, parseShopifyBody, parseMotiv, parseStormListing,
   verify, matchRec, decide, resolveConflicts, coverage, indexByBrand, titleKey, norm, main };
 if (require.main === module) main(process.argv.slice(2), globalThis.fetch).catch(e => { console.error(e); process.exit(1); });
