@@ -43,10 +43,14 @@ function decode(s) {
 }
 function htmlToText(html) {
   let s = String(html || '').replace(/<(script|style|noscript|svg|template)[\s\S]*?<\/\1>/gi, ' ').replace(/<!--[\s\S]*?-->/g, ' ');
-  s = s.replace(/<\s*(td|th)[^>]*>/gi, ' | ').replace(/<\s*br\s*\/?>/gi, '\n')
+  s = s.replace(/<tr[^>]*>([\s\S]*?)<\/tr>/gi, (m, row) => {
+    const cells = [...row.matchAll(/<t[dh][^>]*>([\s\S]*?)<\/t[dh]>/gi)].map(c => decode(c[1].replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').trim());
+    return '\n' + cells.join(' | ').replace(/\|/g, '\u2502') + '\n';     // placeholder bar survives the tag strip
+  });
+  s = s.replace(/<\s*br\s*\/?>/gi, '\n')
        .replace(/<\/\s*(p|div|li|h[1-6]|tr|table|ul|ol|section|article|dd|dt)\s*>/gi, '\n').replace(/<\s*(li|h[1-6]|tr|p)[^>]*>/gi, '\n');
   s = decode(s.replace(/<[^>]+>/g, ' '));
-  return s.split('\n').map(l => l.replace(/\s+/g, ' ').trim().replace(/^\|\s*/, '').replace(/\s*\|$/, '')).filter(Boolean).join('\n');
+  return s.replace(/\u2502/g, '|').split('\n').map(l => l.replace(/\s+/g, ' ').trim().replace(/^\|\s*/, '').replace(/\s*\|$/, '')).filter(Boolean).join('\n');
 }
 function firstH1(html) { const m = /<h1[^>]*>([\s\S]*?)<\/h1>/i.exec(html || ''); return m ? decode(m[1].replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').trim() : null; }
 function metaContent(html, prop) {
@@ -64,6 +68,19 @@ function kvLines(text) {
 /* Per-weight table: header "16 lb | 15 lb | ..." then "RG | ..", "DIFF | ..", "ASY|INT|MB | .." */
 function weightTable(text) {
   const lines = text.split('\n'), out = {};
+  /* rows orientation: header "Weight | RG | DIFF | ASY", rows "16 lb | 2.526 | 0.046 | 0.018" */
+  for (let i = 0; i < lines.length; i++) {
+    const hdr = lines[i].split(' | ').map(x => x.toLowerCase().replace(/[^a-z]/g, ''));
+    const iRG = hdr.indexOf('rg'), iD = hdr.findIndex(h => /^(diff|totaldiff|differential)$/.test(h));
+    if (iRG < 0 || iD < 0) continue;
+    const iI = hdr.findIndex(h => /^(asy|asym|int|intdiff|mb|mbdiff|massbias|psa)$/.test(h));
+    for (let j = i + 1; j < Math.min(lines.length, i + 10); j++) {
+      const c = lines[j].split(' | '); const w = /^(1[0-6])\s*(?:lb|lbs|#|pounds?)?\.?$/i.exec((c[0] || '').trim());
+      if (!w) break;
+      out[+w[1]] = { RG: num(c[iRG]), Diff: num(c[iD]), IntDiff: iI >= 0 ? num(c[iI]) : null };
+    }
+    if (Object.keys(out).length) return out;
+  }
   for (let i = 0; i < lines.length; i++) {
     const ws = [...lines[i].matchAll(/\b(1[0-6])\s*(?:lb|lbs|#|pounds?)\b/gi)].map(m => +m[1]);
     if (ws.length < 2) continue;
@@ -106,9 +123,12 @@ function parseShopifyBody(bodyHtml, title, url, brand, imageUrl) {
   const re = /\b(1[0-6])\s*lbs?\s*[-\u2013:]?\s*RG\s*\(?\s*([\d.]+)\s*\)?\s*(?:TOTAL\s*)?DIFF\.?\s*\(?\s*([\d.]+)\s*\)?(?:\s*(?:INT\.?\s*DIFF\.?|MB\s*DIFF|MASS BIAS(?:\s*DIFF)?|ASYM?|PSA)\s*\(?\s*([\d.]+)\s*\)?)?/gi;
   let m; while ((m = re.exec(text))) weights[+m[1]] = { RG: num(m[2]), Diff: num(m[3]), IntDiff: num(m[4]) };
   if (!Object.keys(weights).length) Object.assign(weights, weightTable(text));
+  const kv = kvLines(text);
+  const pick = (k, re) => kv[k] || lab(re);
   return [{ title, brand, url, imageUrl, mfgScales: {},
-    specs: { core: lab(/^CORE:?\s+(.+)$/im), coverName: lab(/^COVERSTOCK:?\s+(.+)$/im), coverType: lab(/^COVER TYPE:?\s+(.+)$/im),
-             finish: lab(/^FINISH:?\s+(.+)$/im), released: parseDate(lab(/^RELEASE DATE:?\s+(.+)$/im)), weights } }];
+    specs: { core: pick('core', /^CORE:?\s+(.+)$/im), coverName: pick('coverstock', /^COVERSTOCK:?\s+(.+)$/im),
+             coverType: pick('cover type', /^COVER TYPE:?\s+(.+)$/im), finish: pick('finish', /^FINISH:?\s+(.+)$/im),
+             released: parseDate(pick('release date', /^RELEASE DATE:?\s+(.+)$/im)), weights } }];
 }
 function parseMotiv(html, url) {
   const text = htmlToText(html), kv = kvLines(text), flat = text.replace(/\n/g, ' ');
@@ -124,26 +144,42 @@ function parseMotiv(html, url) {
     specs: { core: kv['weight block'] || null, coverName: kv['cover stock'] || kv['coverstock'] || null, coverType: null,
              finish: kv['finish'] || null, released, weights } }];
 }
-/* Storm listing page: many balls per page, one weight each */
+/* Storm listing page: many balls per page, one weight each.
+   Segments by product heading, then reads "Label: value" pairs by known labels,
+   so it does not depend on how the fields are broken into lines. */
+const STORM_LABELS = ['Avail. for Sales Orders', 'Radius of Gyration', 'MatchMaker App', 'Flare Potential', 'Release Date', 'Weight Block',
+  'Core Image', 'MatchMaker', 'Differential', 'Durometer', 'Coverstock', 'Fragrance', 'Symmetry', 'Finish', 'Weight', 'Brand', 'Color', 'Line', 'Core', 'PSA'];
+const STORM_RE = new RegExp('(' + STORM_LABELS.map(l => l.replace(/[.]/g, '\\.')).join('|') + '):', 'g');
+function stormFields(text) {
+  const f = {}, hits = [...text.matchAll(STORM_RE)];
+  hits.forEach((h, k) => { const end = k + 1 < hits.length ? hits[k + 1].index : text.length;
+    const key = h[1].toLowerCase(); if (!(key in f)) f[key] = text.slice(h.index + h[0].length, end).trim(); });
+  return f;
+}
 function parseStormListing(html, base) {
-  const links = [...String(html).matchAll(/<h2[^>]*>\s*<a[^>]+href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi)]
-    .map(m => ({ url: m[1].startsWith('http') ? m[1] : base + m[1], title: decode(m[2].replace(/<[^>]+>/g, '')).trim() }));
-  const text = htmlToText(html), items = []; let cur = null;
-  const clean = v => v == null ? null : String(v).replace(/^S_/, '').replace(/_/g, ' ').trim() || null;
-  for (const l of text.split('\n')) {
-    const h = /^(.+?)\s*SKU:\s*(\S+)$/.exec(l);
-    if (h) { cur = { title: h[1].trim(), sku: h[2], f: {} }; items.push(cur); continue; }
-    const kv = /^([A-Za-z.' ]{2,30}):\s*(.*)$/.exec(l);
-    if (cur && kv) cur.f[kv[1].trim().toLowerCase()] = kv[2].trim();
-  }
-  return items.filter(it => it.f['radius of gyration'] || it.f['differential']).map(it => {
-    const f = it.f, w = num(f['weight']), link = links.find(x => x.title === it.title);
+  html = String(html || '');
+  const heads = [...html.matchAll(/<h2[^>]*>([\s\S]*?)<\/h2>/gi)].filter(m => /SKU/i.test(m[1]));
+  const clean = v => v == null ? null : (String(v).replace(/^S_/, '').replace(/_/g, ' ').trim() || null);
+  const out = [];
+  heads.forEach((h, k) => {
+    const seg = html.slice(h.index, k + 1 < heads.length ? heads[k + 1].index : html.length);
+    const a = /<a[^>]+href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/i.exec(h[1]);
+    const headText = decode(h[1].replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').trim();
+    const title = a ? decode(a[2].replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').trim() : headText.replace(/\s*SKU:.*$/i, '');
+    const sku = (/SKU:\s*([A-Z0-9-]+)/i.exec(headText) || [])[1] || null;
+    const body = htmlToText(seg.slice(h[0].length)).replace(/\n/g, ' ');
+    const f = stormFields(body);
+    if (!f['radius of gyration'] && !f['differential']) return;
+    const w = num(f['weight']);
     const weights = {}; if (w) weights[w] = { RG: num(f['radius of gyration']), Diff: num(f['differential']), IntDiff: num(f['psa']) };
-    const scales = {}; if (f['matchmaker'] && /^\d+$/.test(f['matchmaker'])) scales.stormMatchMaker = +f['matchmaker'];
-    return { title: it.title, brand: f['brand'] || 'Storm', url: link ? link.url : null, sku: it.sku, imageUrl: null, mfgScales: scales,
+    const scales = {}; if (/^\d+$/.test(f['matchmaker'] || '')) scales.stormMatchMaker = +f['matchmaker'];
+    const href = a ? a[1] : null;
+    out.push({ title, brand: clean(f['brand']) || 'Storm', url: href ? (href.startsWith('http') ? href : base + href) : null, sku,
+      imageUrl: null, mfgScales: scales,
       specs: { core: clean(f['weight block']), coverName: clean(f['coverstock']), coverType: null, finish: clean(f['finish']),
-               coreType: clean(f['symmetry']), released: parseDate(f['release date']), weights } };
+               coreType: clean(f['symmetry']), released: parseDate(f['release date']), weights } });
   });
+  return out;
 }
 
 /* ---------- match + verify + decide (pure) ---------- */
@@ -227,14 +263,16 @@ async function extractSource(src, cfg, fetchImpl, limit, log) {
   const rb = await get(src.base + '/robots.txt'); const robots = rb.status === 200 ? parseRobots(rb.text) : parseRobots('');
   const host = new URL(src.base).host.replace(/^www\./, '');
   if (plat === 'storm') {
+    let pagesSeen = 0;
     for (let p = 1; p <= 30; p++) {
       const u = src.base + '/products/equipment/bowling-balls/' + (p === 1 ? '' : '24/1/' + p + '/');
       if (!allowed(robots, u)) break;
       const r = await get(u); if (r.status !== 200) { errors.push(u + ' ' + r.status); break; }
       const items = parseStormListing(r.text, src.base); if (!items.length) break;
-      recs.push(...items); if (limit && recs.length >= limit) break;
+      recs.push(...items); pagesSeen++; if (limit && recs.length >= limit) break;
     }
-    return { recs, errors, pages: recs.length };
+    log(src.id + ': ' + pagesSeen + ' listing pages, ' + recs.length + ' balls');
+    return { recs, errors, pages: pagesSeen };
   }
   const smStart = robots.sitemaps.length ? robots.sitemaps : [src.base + '/sitemap.xml'];
   let urls = await sitemapUrls(get, robots, smStart);
