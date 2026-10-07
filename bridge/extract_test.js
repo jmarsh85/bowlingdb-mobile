@@ -129,6 +129,26 @@ const G = X.parseStormListing(`<h2><a href="/900-global-portal-bowling-ball">Por
 <span>Weight Block: G_Conduit_AI</span><span>Symmetry: G_Asymmetrical</span><span>Differential: 0.053</span><span>Radius of Gyration: 2.58</span><span>Weight: 16</span></div>`, 'https://s');
 ok(G[0].specs.core === 'Conduit AI' && G[0].specs.coreType === 'Asymmetrical', 'storm: G_ (900 Global) prefix stripped');
 
+
+/* ---- Storm retired product pages ---- */
+const PHAZEV = `<html><head><meta property="og:image" content="https://s/phazev.png"></head><body><h1>PHAZE V</h1><div>SKU: BBMVVV</div>
+<p>Can you feel it? That's power.</p><div><b>Coverstock:</b> R2S&trade; Pearl Reactive</div><div><b>Core:</b> Velocity&trade; Symmetrical Core</div>
+<div><b>Color:</b> Arctic/Sapphire/Slate</div><div><b>Release Date:</b> October 2022</div><div><b>Fragrance:</b> Blueberry Crumble</div>
+<div><h4>16 pounds</h4><p>RG: 2.48</p><p>Diff: 0.051</p></div><div><h4>15 pounds</h4><p>RG: 2.48</p><p>Diff: 0.051</p></div>
+<div><h4>14 pounds</h4><p>RG: 2.53</p><p>Diff: 0.050</p></div></body></html>`;
+const pv = X.parseStormProduct(PHAZEV, 'https://www.stormbowling.com/storm-phaze-V-bowling-ball', 'Storm')[0];
+ok(pv.title === 'PHAZE V' && pv.specs.weights[16].RG === 2.48 && pv.specs.weights[14].RG === 2.53 && pv.specs.weights[15].Diff === 0.051, 'storm product: per-weight specs');
+ok(pv.specs.coverName === 'R2S Pearl Reactive' && pv.specs.core === 'Velocity' && pv.specs.coreType === 'Symmetrical', 'storm product: cover + core (trademarks stripped)');
+ok(pv.specs.released === '2022-10', 'storm product: month-precision release date, no invented day');
+ok(!JSON.stringify(pv).includes('feel it'), 'storm product: no marketing copy');
+ok(X.stormSlug('!Q Tour A.I.') === 'iq-tour-ai' && X.stormSlug('Hy-Road') === 'hy-road' && X.stormSlug('**Phaze V') === 'phaze-v', 'slug rules');
+const pre = X.learnStormPrefixes([{ url: 'https://s/storm-hy-road-bowling-ball', title: 'HY-ROAD', brand: 'Storm' },
+  { url: 'https://s/roto-grip-hustle-ink-bowling-ball', title: 'Hustle INK', brand: 'Roto Grip' }, { url: 'https://s/gem-bbmrgm12', title: 'Gem', brand: 'Roto Grip' }]);
+ok(pre['Storm'] === 'storm-' && pre['Roto Grip'] === 'roto-grip-', 'prefixes learned from listing');
+const cands = X.stormCandidates([{ i: 'storm-phaze-v', m: 'Storm', n: 'Phaze V', y: '2022' }, { i: 'storm-hy-road', m: 'Storm', n: 'Hy-Road', y: '2008' },
+  { i: 'storm-old', m: 'Storm', n: 'Old', y: '1995' }, { i: 'hammer-x', m: 'Hammer', n: 'X', y: '2022' }], new Set(['storm-hy-road']), pre, 2000);
+ok(cands.length === 1 && cands[0].path === 'storm-phaze-v-bowling-ball', 'candidates: storm group only, not already found, since year');
+
 /* verify / match / decide */
 const rows = [{ i: 'storm-hy-road', k: 'storm|hyroad', m: 'Storm', n: 'Hy-Road', y: '2008' },
   { i: 'storm-monsoon', k: 'storm|monsoon', m: 'Storm', n: 'Monsoon', y: '2026' },
@@ -137,7 +157,8 @@ const rows = [{ i: 'storm-hy-road', k: 'storm|hyroad', m: 'Storm', n: 'Hy-Road',
   { i: 'hammer-bw3-ruby', k: 'x', m: 'Hammer', n: 'Black Widow 3.0 Ruby', y: '2025' },
   { i: 'hammer-bw3-plat', k: 'x', m: 'Hammer', n: 'Black Widow 3.0 Platinum', y: '2025' },
   { i: 'motiv-apex-jackal', k: 'x', m: 'Motiv', n: '(Apex) Jackal', y: '2026' },
-  { i: 'track-inc-x', k: 'x', m: 'Track Inc.', n: 'X', y: '2026' }];
+  { i: 'track-inc-x', k: 'x', m: 'Track Inc.', n: 'X', y: '2026' },
+  { i: 'storm-phaze-v', k: 'x', m: 'Storm', n: 'Phaze V', y: '2022' }, { i: 'storm-gone', k: 'x', m: 'Storm', n: 'Gone', y: '2015' }];
 const by = X.indexByBrand(rows);
 let m = X.matchRec(hy, by); ok(m.status === 'match' && m.catalogId === 'storm-hy-road', 'HY-ROAD -> Hy-Road');
 ok(X.matchRec(st[2], by).catalogId === 'roto-grip-iq-tour-sapphire', '!Q -> IQ');
@@ -165,6 +186,7 @@ X.resolveConflicts(same); ok(same[0].decision === 'auto' && same[1].decision ===
     { id: 'bowwwl', kind: 'aggregator', base: 'https://agg.com' }] }));
   const pages = {
     'https://s.com/robots.txt': 'User-agent: *\nDisallow: /ajax', 'https://s.com/products/equipment/bowling-balls/': STORM,
+    'https://s.com/storm-phaze-v-bowling-ball': PHAZEV,
     'https://h.com/robots.txt': 'Sitemap: https://h.com/sitemap.xml', 'https://h.com/sitemap.xml': '<urlset><url><loc>https://h.com/products/anger-solid</loc></url><url><loc>https://h.com/products/towel</loc></url></urlset>',
     'https://h.com/products/anger-solid.json': JSON.stringify({ product: { title: 'Anger Solid', body_html: SHOP_BODY, image: { src: 'img' } } }),
     'https://h.com/products/towel.json': JSON.stringify({ product: { title: 'Towel', body_html: '<p>Soft towel</p>' } }),
@@ -182,12 +204,15 @@ X.resolveConflicts(same); ok(same[0].decision === 'auto' && same[1].decision ===
   ok(!titles.includes('Towel'), 'non-ball shopify product dropped');
   const auto = res.staged.filter(s => s.decision === 'auto').map(s => s.catalogId).sort();
   ok(auto.includes('hammer-anger-solid') && auto.includes('motiv-apex-jackal') && auto.includes('storm-hy-road'), 'auto set ' + auto);
+  ok(auto.includes('storm-phaze-v'), 'retired Storm page found by constructed URL and auto-approved');
+  ok(seen.includes('https://s.com/storm-gone-bowling-ball') && res.perSource.storm.errors === 0, 'missing retired page (and past-the-end listing page) is not an error');
   ok(res.staged.find(s => s.title === 'Combat Hybrid').reason === 'no-usbc', 'no USBC row -> pending no-usbc');
   ok(res.coverage['Hammer'].auto === 1 && res.coverage['Hammer'].all === 3, 'coverage per brand');
   const md = fs.readFileSync(path.join(tmp, 'st', 'SUMMARY.md'), 'utf8');
   ok(/auto\*\*/.test(md) && /Pending reasons:/.test(md), 'summary written');
   ok(!fs.readFileSync(path.join(tmp, 'st', 'specs_staging.json'), 'utf8').includes('Unbeatable'), 'no marketing text in staging');
   pages['https://s.com/products/equipment/bowling-balls/'] = '<html><body><div>unrecognised layout</div></body></html>';
+  delete pages['https://s.com/storm-phaze-v-bowling-ball'];
   const r2 = await X.main(['--index', path.join(tmp, 'index.json'), '--out', path.join(tmp, 'st2'), '--sources', path.join(tmp, 'src.json'), '--only', 'storm'], mock, () => {});
   ok(r2.perSource.storm.debug === 'debug/storm.html' && fs.existsSync(path.join(tmp, 'st2', 'debug', 'storm.html')), 'zero-parse source writes a debug page');
   console.log('extract_test: ' + n + ' checks passed');
