@@ -9,7 +9,9 @@ const staged = [
   { decision: 'pending', reason: 'no-usbc', source: 'storm', title: 'ONYX POLYESTER', url: 'https://s/o', candidates: [], specs: { weights: w } },
   { decision: 'pending', reason: 'no-weight-specs', source: 'hammer', title: 'Absolut Curve', url: 'https://h/a', catalogId: 'hammer-x', specs: { weights: {} } },
   { decision: 'auto', catalogId: 'brunswick-combat', url: 'https://b/c', specs: { weights: w } }];
+staged.push({ decision: 'pending', reason: 'out-of-range:15:Diff=0.2', source: 'motiv', title: 'TR2', url: 'https://m/tr2', catalogId: 'motiv-tr2', specs: { weights: { 15: { RG: 2.54, Diff: null } } } });
 let body = A.render(staged, '');
+ok(!/TR2/.test(body.split('---')[0]), 'box hidden when nothing publishable remains (RG without Diff)');
 ok((body.match(/- \[ \]/g) || []).length === 4, 'boxes: 2 colourways + conflict + out-of-range');
 ok(!/ONYX|Absolut/.test(body.split('---')[0]) && /no-usbc 1/.test(body) && /no-weight-specs 1/.test(body), 'unpublishable rows counted, not boxed');
 ok(/RG 2.53 \/ Diff 0.042 @16 lb/.test(body) && /\[source\]\(https:\/\/s\/m\)/.test(body), 'specs + source link shown');
