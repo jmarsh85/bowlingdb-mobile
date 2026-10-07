@@ -1451,25 +1451,9 @@
   "candidates": [
    "ebonite-omni-hybrid"
   ],
-  "decision": "pending",
-  "reason": "out-of-range:12:RG=12",
-  "flags": [
-   "out-of-range:12:RG=12",
-   "out-of-range:12:Diff=2.612",
-   "out-of-range:12:IntDiff=0.043",
-   "out-of-range:13:RG=13",
-   "out-of-range:13:Diff=2.589",
-   "out-of-range:13:IntDiff=0.043",
-   "out-of-range:14:RG=14",
-   "out-of-range:14:Diff=2.527",
-   "out-of-range:14:IntDiff=0.05",
-   "out-of-range:15:RG=15",
-   "out-of-range:15:Diff=2.501",
-   "out-of-range:15:IntDiff=0.05",
-   "out-of-range:16:RG=16",
-   "out-of-range:16:Diff=2.496",
-   "out-of-range:16:IntDiff=0.05"
-  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
   "specs": {
    "core": "Omni",
    "coverName": "GSV 2.0 Hybrid",
@@ -1478,29 +1462,29 @@
    "released": "2020-10-15",
    "weights": {
     "12": {
-     "RG": null,
-     "Diff": null,
-     "IntDiff": null
+     "RG": 2.612,
+     "Diff": 0.043,
+     "IntDiff": 0.011
     },
     "13": {
-     "RG": null,
-     "Diff": null,
-     "IntDiff": null
+     "RG": 2.589,
+     "Diff": 0.043,
+     "IntDiff": 0.011
     },
     "14": {
-     "RG": null,
-     "Diff": null,
-     "IntDiff": null
+     "RG": 2.527,
+     "Diff": 0.05,
+     "IntDiff": 0.013
     },
     "15": {
-     "RG": null,
-     "Diff": null,
-     "IntDiff": null
+     "RG": 2.501,
+     "Diff": 0.05,
+     "IntDiff": 0.013
     },
     "16": {
-     "RG": null,
-     "Diff": null,
-     "IntDiff": null
+     "RG": 2.496,
+     "Diff": 0.05,
+     "IntDiff": 0.013
     }
    }
   },
@@ -3085,6 +3069,819 @@
   "mfgScales": {
    "level": "Top Shelf"
   },
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "storm",
+  "platform": "storm",
+  "brand": "Storm",
+  "title": "!Q Tour 78/U",
+  "url": "https://www.stormbowling.com/storm-iq-tour-78u-bowling-ball",
+  "sku": "BBMVLL",
+  "catalogId": "storm-q-tour-78-u",
+  "match": "match",
+  "candidates": [
+   "storm-q-tour-78-u"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "C3C",
+   "coverName": "Controll 78 Urethane",
+   "coverType": null,
+   "finish": "500 Grit",
+   "coreType": "Symmetrical",
+   "released": "2023-12-15",
+   "weights": {
+    "12": {
+     "RG": 2.65,
+     "Diff": 0.035,
+     "IntDiff": null
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "storm",
+  "platform": "storm",
+  "brand": "Storm",
+  "title": "!Q Tour Edition",
+  "url": "https://www.stormbowling.com/storm-iq-tour-edition-bowling-ball",
+  "sku": "BBMTQT",
+  "catalogId": null,
+  "match": "no-usbc",
+  "candidates": [],
+  "decision": "pending",
+  "reason": "no-usbc",
+  "flags": [],
+  "specs": {
+   "core": "C3C",
+   "coverName": "R2S Solid",
+   "coverType": null,
+   "finish": "4000 Grit",
+   "coreType": "Symmetrical",
+   "released": "2012-07-10",
+   "weights": {
+    "16": {
+     "RG": 2.49,
+     "Diff": 0.035,
+     "IntDiff": null
+    }
+   }
+  },
+  "mfgScales": {
+   "stormMatchMaker": 46
+  },
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "storm",
+  "platform": "storm",
+  "brand": "Storm",
+  "title": "!Q Tour Sapphire",
+  "url": "https://www.stormbowling.com/storm-iq-tour-sapphire-bowling-ball",
+  "sku": "BBMVQH",
+  "catalogId": "storm-q-tour-sapphire",
+  "match": "match",
+  "candidates": [
+   "storm-q-tour-sapphire"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "C3C",
+   "coverName": "R2S Pearl",
+   "coverType": null,
+   "finish": "Power Edge",
+   "coreType": "Symmetrical",
+   "released": "2026-08-07",
+   "weights": {
+    "16": {
+     "RG": 2.49,
+     "Diff": 0.035,
+     "IntDiff": null
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "storm",
+  "platform": "storm",
+  "brand": "Storm",
+  "title": "Alpha Crux",
+  "url": "https://www.stormbowling.com/storm-alpha-crux-bowling-ball",
+  "sku": "BBMVXA",
+  "catalogId": "storm-alpha-crux",
+  "match": "match",
+  "candidates": [
+   "storm-alpha-crux"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Catalyst AI",
+   "coverName": "GI26 Solid",
+   "coverType": null,
+   "finish": "2000 Grit",
+   "coreType": "Asymmetrical",
+   "released": "2026-05-29",
+   "weights": {
+    "16": {
+     "RG": 2.48,
+     "Diff": 0.052,
+     "IntDiff": 0.017
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "storm",
+  "platform": "storm",
+  "brand": "Storm",
+  "title": "Bionic",
+  "url": "https://www.stormbowling.com/storm-bionic-bowling-ball",
+  "sku": "BBMVBI",
+  "catalogId": "storm-bionic",
+  "match": "match",
+  "candidates": [
+   "storm-bionic"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Torsion AI",
+   "coverName": "NRG Hybrid",
+   "coverType": null,
+   "finish": "4000 Grit",
+   "coreType": "Symmetrical",
+   "released": "2026-02-27",
+   "weights": {
+    "16": {
+     "RG": 2.47,
+     "Diff": 0.05,
+     "IntDiff": null
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "storm",
+  "platform": "storm",
+  "brand": "Storm",
+  "title": "Concept",
+  "url": "https://www.stormbowling.com/storm-concept-bowling-ball",
+  "sku": "BBMVCN",
+  "catalogId": "storm-concept",
+  "match": "match",
+  "candidates": [
+   "storm-concept"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Radius",
+   "coverName": "ARC Pearl",
+   "coverType": null,
+   "finish": "1000 Grit",
+   "coreType": "Symmetrical",
+   "released": "2026-02-27",
+   "weights": {
+    "16": {
+     "RG": 2.59,
+     "Diff": 0.019,
+     "IntDiff": null
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "storm",
+  "platform": "storm",
+  "brand": "Storm",
+  "title": "Equinox Hybrid",
+  "url": "https://www.stormbowling.com/storm-equinox-hybrid-bowling-ball",
+  "sku": "BBMVXY",
+  "catalogId": "storm-equinox-hybrid",
+  "match": "match",
+  "candidates": [
+   "storm-equinox-hybrid"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Solarion AI",
+   "coverName": "A2S Hybrid",
+   "coverType": null,
+   "finish": "Power Edge",
+   "coreType": "Asymmetrical",
+   "released": "2026-09-04",
+   "weights": {
+    "16": {
+     "RG": 2.47,
+     "Diff": 0.054,
+     "IntDiff": 0.016
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "storm",
+  "platform": "storm",
+  "brand": "Storm",
+  "title": "Equinox Solid",
+  "url": "https://www.stormbowling.com/storm-equinox-solid-bowling-ball",
+  "sku": "BBMVXD",
+  "catalogId": "storm-equinox-solid",
+  "match": "match",
+  "candidates": [
+   "storm-equinox-solid"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Solarion AI",
+   "coverName": "A2S Solid",
+   "coverType": null,
+   "finish": "2000 Grit",
+   "coreType": "Asymmetrical",
+   "released": "2025-10-17",
+   "weights": {
+    "16": {
+     "RG": 2.47,
+     "Diff": 0.054,
+     "IntDiff": 0.016
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "storm",
+  "platform": "storm",
+  "brand": "Storm",
+  "title": "HY-ROAD",
+  "url": "https://www.stormbowling.com/storm-hy-road-bowling-ball",
+  "sku": "BBMTTY",
+  "catalogId": "storm-hy-road",
+  "match": "match",
+  "candidates": [
+   "storm-hy-road"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Inverted Fe2",
+   "coverName": "R2S Hybrid",
+   "coverType": null,
+   "finish": "Power Edge",
+   "coreType": "Symmetrical",
+   "released": "2008-11-18",
+   "weights": {
+    "16": {
+     "RG": 2.52,
+     "Diff": 0.058,
+     "IntDiff": null
+    }
+   }
+  },
+  "mfgScales": {
+   "stormMatchMaker": 56
+  },
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "storm",
+  "platform": "storm",
+  "brand": "Storm",
+  "title": "Identity",
+  "url": "https://www.stormbowling.com/storm-identity-bowling-ball",
+  "sku": "BBMVID",
+  "catalogId": "storm-identity",
+  "match": "match",
+  "candidates": [
+   "storm-identity"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "ID AI",
+   "coverName": "REX Pearl",
+   "coverType": null,
+   "finish": "Power Edge",
+   "coreType": "Asymmetrical",
+   "released": "2025-04-02",
+   "weights": {
+    "16": {
+     "RG": 2.5,
+     "Diff": 0.055,
+     "IntDiff": 0.009
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "storm",
+  "platform": "storm",
+  "brand": "Storm",
+  "title": "Identity B/C/P",
+  "url": "https://www.stormbowling.com/storm-identity-bcp-bowling-ball",
+  "sku": "BBMVDB",
+  "catalogId": "storm-identity-b-c-p",
+  "match": "match",
+  "candidates": [
+   "storm-identity-b-c-p"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "ID AI",
+   "coverName": "REX Pearl",
+   "coverType": null,
+   "finish": "Power Edge",
+   "coreType": "Asymmetrical",
+   "released": "2025-07-01",
+   "weights": {
+    "16": {
+     "RG": 2.5,
+     "Diff": 0.055,
+     "IntDiff": 0.009
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "storm",
+  "platform": "storm",
+  "brand": "Storm",
+  "title": "Ion Max",
+  "url": "https://www.stormbowling.com/storm-ion-max-bowling-ball",
+  "sku": "BBMVIO",
+  "catalogId": "storm-ion-max",
+  "match": "match",
+  "candidates": [
+   "storm-ion-max"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Element Max AI",
+   "coverName": "NRG Solid",
+   "coverType": null,
+   "finish": "2000 Grit",
+   "coreType": "Asymmetrical",
+   "released": "2024-09-20",
+   "weights": {
+    "15": {
+     "RG": 2.47,
+     "Diff": 0.055,
+     "IntDiff": 0.014
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "storm",
+  "platform": "storm",
+  "brand": "Storm",
+  "title": "Ion Max Pearl",
+  "url": "https://www.stormbowling.com/storm-ion-max-pearl-bowling-ball",
+  "sku": "BBMVIM",
+  "catalogId": "storm-ion-max-pearl",
+  "match": "match",
+  "candidates": [
+   "storm-ion-max-pearl"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Element Max AI",
+   "coverName": "NRG Pearl",
+   "coverType": null,
+   "finish": "Power Edge",
+   "coreType": "Asymmetrical",
+   "released": "2026-03-13",
+   "weights": {
+    "16": {
+     "RG": 2.47,
+     "Diff": 0.053,
+     "IntDiff": 0.013
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "storm",
+  "platform": "storm",
+  "brand": "Storm",
+  "title": "Ion Pro Solid",
+  "url": "https://www.stormbowling.com/storm-ion-pro-solid-bowling-ball",
+  "sku": "BBMVIS",
+  "catalogId": "storm-ion-pro-solid",
+  "match": "match",
+  "candidates": [
+   "storm-ion-pro-solid"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Element Tour AI",
+   "coverName": "TX-16 Solid",
+   "coverType": null,
+   "finish": "Power Edge",
+   "coreType": "Asymmetrical",
+   "released": "2025-06-20",
+   "weights": {
+    "16": {
+     "RG": 2.47,
+     "Diff": 0.035,
+     "IntDiff": 0.013
+    }
+   }
+  },
+  "mfgScales": {
+   "stormMatchMaker": 72
+  },
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "storm",
+  "platform": "storm",
+  "brand": "Storm",
+  "title": "MONSOON",
+  "url": "https://www.stormbowling.com/storm-monsoon-bowling-ball",
+  "sku": "BBMVMN",
+  "catalogId": "storm-monsoon",
+  "match": "match",
+  "candidates": [
+   "storm-monsoon"
+  ],
+  "decision": "pending",
+  "reason": "out-of-range:16:IntDiff=0.2",
+  "flags": [
+   "out-of-range:16:IntDiff=0.2"
+  ],
+  "specs": {
+   "core": "Atmos AI",
+   "coverName": "Reactor Solid",
+   "coverType": null,
+   "finish": "2000 Grit",
+   "coreType": "Symmetrical",
+   "released": "2026-05-01",
+   "weights": {
+    "16": {
+     "RG": 2.53,
+     "Diff": 0.042,
+     "IntDiff": null
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "storm",
+  "platform": "storm",
+  "brand": "Storm",
+  "title": "Next Factor",
+  "url": "https://www.stormbowling.com/storm-next-factor-bowling-ball",
+  "sku": "BBMVXF",
+  "catalogId": "storm-next-factor",
+  "match": "match",
+  "candidates": [
+   "storm-next-factor"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "RAD-TQ",
+   "coverName": "R3S Pearl",
+   "coverType": null,
+   "finish": "Power Edge",
+   "coreType": "Asymmetrical",
+   "released": "2025-12-19",
+   "weights": {
+    "16": {
+     "RG": 2.54,
+     "Diff": 0.05,
+     "IntDiff": 0.015
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "storm",
+  "platform": "storm",
+  "brand": "Storm",
+  "title": "Phaze II",
+  "url": "https://www.stormbowling.com/storm-phaze-ii-bowling-ball",
+  "sku": "BBMTZA",
+  "catalogId": "storm-phaze-ii",
+  "match": "match",
+  "candidates": [
+   "storm-phaze-ii"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Velocity",
+   "coverName": "TX-16 Solid",
+   "coverType": null,
+   "finish": "3000 Grit",
+   "coreType": "Symmetrical",
+   "released": "2016-10-04",
+   "weights": {
+    "16": {
+     "RG": 2.48,
+     "Diff": 0.051,
+     "IntDiff": null
+    }
+   }
+  },
+  "mfgScales": {
+   "stormMatchMaker": 55
+  },
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "storm",
+  "platform": "storm",
+  "brand": "Storm",
+  "title": "Phaze II Pearl",
+  "url": "https://www.stormbowling.com/storm-phaze-ii-pearl-bowling-ball",
+  "sku": "BBMVZP",
+  "catalogId": "storm-phaze-ii-pearl",
+  "match": "match",
+  "candidates": [
+   "storm-phaze-ii-pearl"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Velocity",
+   "coverName": "TX-25 Pearl",
+   "coverType": null,
+   "finish": "Power Edge",
+   "coreType": "Symmetrical",
+   "released": "2025-11-28",
+   "weights": {
+    "16": {
+     "RG": 2.48,
+     "Diff": 0.051,
+     "IntDiff": null
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "storm",
+  "platform": "storm",
+  "brand": "Storm",
+  "title": "PITCH BLACK",
+  "url": "https://www.stormbowling.com/storm-pitch-black-bowling-ball",
+  "sku": "BBMTUB",
+  "catalogId": "storm-pitch-black",
+  "match": "match",
+  "candidates": [
+   "storm-pitch-black"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Capacitor",
+   "coverName": "Controll Urethane",
+   "coverType": null,
+   "finish": "1000 Grit",
+   "coreType": "Symmetrical",
+   "released": "2014-05-27",
+   "weights": {
+    "16": {
+     "RG": 2.56,
+     "Diff": 0.023,
+     "IntDiff": null
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "storm",
+  "platform": "storm",
+  "brand": "Storm",
+  "title": "ROCKET A.I.",
+  "url": "https://www.stormbowling.com/storm-rocket-ai-bowling-ball",
+  "sku": "BBMVRC",
+  "catalogId": "storm-rocket-a-i",
+  "match": "match",
+  "candidates": [
+   "storm-rocket-a-i"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Booster AI",
+   "coverName": "A1S Pearl",
+   "coverType": null,
+   "finish": "Power Edge",
+   "coreType": "Symmetrical",
+   "released": "2026-05-01",
+   "weights": {
+    "16": {
+     "RG": 2.52,
+     "Diff": 0.046,
+     "IntDiff": null
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "storm",
+  "platform": "storm",
+  "brand": "Storm",
+  "title": "Tropical Surge Gold-Bronze-Medallion",
+  "url": "https://www.stormbowling.com/storm-tropical-surge-gold-bronze-medallion-bowling-ball",
+  "sku": "BBMVGM",
+  "catalogId": "storm-tropical-surge-gold-bronze-medallion",
+  "match": "match",
+  "candidates": [
+   "storm-tropical-surge-gold-bronze-medallion"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Surge Core",
+   "coverName": "Reactor Pearl",
+   "coverType": null,
+   "finish": "Power Edge",
+   "coreType": "Symmetrical",
+   "released": "2026-07-10",
+   "weights": {
+    "15": {
+     "RG": 2.58,
+     "Diff": 0.024,
+     "IntDiff": null
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "storm",
+  "platform": "storm",
+  "brand": "Storm",
+  "title": "Tropical Surge Kiwi-Apple-Avocado",
+  "url": "https://www.stormbowling.com/storm-tropical-surge-kiwi-apple-avocado-bowling-ball",
+  "sku": "BBMVKV",
+  "catalogId": "storm-tropical-surge-kiwi-apple-avocado",
+  "match": "match",
+  "candidates": [
+   "storm-tropical-surge-kiwi-apple-avocado"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Surge Core",
+   "coverName": "Reactor Pearl",
+   "coverType": null,
+   "finish": "Power Edge",
+   "coreType": "Symmetrical",
+   "released": "2026-07-10",
+   "weights": {
+    "15": {
+     "RG": 2.58,
+     "Diff": 0.024,
+     "IntDiff": null
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "storm",
+  "platform": "storm",
+  "brand": "Storm",
+  "title": "TYPHOON",
+  "url": "https://www.stormbowling.com/storm-typhoon-bowling-ball",
+  "sku": "BBMVTY",
+  "catalogId": "storm-typhoon",
+  "match": "match",
+  "candidates": [
+   "storm-typhoon"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Atmos AI",
+   "coverName": "Reactor Pearl",
+   "coverType": null,
+   "finish": "Power Edge",
+   "coreType": "Symmetrical",
+   "released": "2025-04-18",
+   "weights": {
+    "16": {
+     "RG": 2.53,
+     "Diff": 0.042,
+     "IntDiff": null
+    }
+   }
+  },
+  "mfgScales": {},
   "imageUrl": null,
   "fetched": "2026-10-07",
   "method": "parser"

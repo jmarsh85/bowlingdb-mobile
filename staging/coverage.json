@@ -1,10 +1,10 @@
 {
-  "generated": "2026-10-07T00:47:50.673Z",
+  "generated": "2026-10-07T00:57:59.245Z",
   "since": 2023,
   "perSource": {
     "storm": {
-      "pages": 0,
-      "parsed": 0,
+      "pages": 1,
+      "parsed": 23,
       "errors": 0,
       "errorSample": []
     },
@@ -88,8 +88,8 @@
     },
     "Ebonite": {
       "all": 814,
-      "auto": 1,
-      "pending": 2,
+      "auto": 2,
+      "pending": 1,
       "recent": 61,
       "recentAuto": 0
     },
@@ -123,10 +123,10 @@
     },
     "Storm": {
       "all": 997,
-      "auto": 0,
-      "pending": 0,
+      "auto": 21,
+      "pending": 1,
       "recent": 177,
-      "recentAuto": 0
+      "recentAuto": 16
     },
     "Track Inc.": {
       "all": 361,
