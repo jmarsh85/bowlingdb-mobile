@@ -1,5 +1,495 @@
 [
  {
+  "source": "brunswick",
+  "platform": "craft",
+  "brand": "Brunswick",
+  "title": "Combat Solid",
+  "url": "https://brunswickbowling.com/products/balls/current/combat-solid",
+  "sku": null,
+  "catalogId": "brunswick-combat-solid",
+  "match": "match",
+  "candidates": [
+   "brunswick-combat-solid"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Rampart",
+   "coverName": "HK22C² - Alpha Premier Solid",
+   "coverType": "Solid Reactive",
+   "finish": "500, 1500 Siaair Micro Pad",
+   "released": "2026-08-13",
+   "weights": {
+    "12": {
+     "RG": 2.593,
+     "Diff": 0.041,
+     "IntDiff": 0.014
+    },
+    "13": {
+     "RG": 2.597,
+     "Diff": 0.041,
+     "IntDiff": 0.014
+    },
+    "14": {
+     "RG": 2.513,
+     "Diff": 0.051,
+     "IntDiff": 0.019
+    },
+    "15": {
+     "RG": 2.502,
+     "Diff": 0.051,
+     "IntDiff": 0.019
+    },
+    "16": {
+     "RG": 2.515,
+     "Diff": 0.043,
+     "IntDiff": 0.016
+    }
+   }
+  },
+  "mfgScales": {
+   "brunswickStrength": 96,
+   "level": "Pro"
+  },
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "brunswick",
+  "platform": "craft",
+  "brand": "Brunswick",
+  "title": "Fury - Emerald / Black",
+  "url": "https://brunswickbowling.com/products/balls/current/fury-emerald-black",
+  "sku": null,
+  "catalogId": "brunswick-fury-emerald-black",
+  "match": "match",
+  "candidates": [
+   "brunswick-fury-emerald-black"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Fury",
+   "coverName": "PK-26 Hybrid",
+   "coverType": "Hybrid Reactive",
+   "finish": "500, 1000, 2000 Siaair Micro Pad",
+   "released": "2026-07-16",
+   "weights": {
+    "10": {
+     "RG": 2.8,
+     "Diff": 0.002
+    },
+    "11": {
+     "RG": 2.769,
+     "Diff": 0.002
+    },
+    "12": {
+     "RG": 2.582,
+     "Diff": 0.038
+    },
+    "13": {
+     "RG": 2.592,
+     "Diff": 0.03
+    },
+    "14": {
+     "RG": 2.541,
+     "Diff": 0.038
+    },
+    "15": {
+     "RG": 2.524,
+     "Diff": 0.038
+    },
+    "16": {
+     "RG": 2.533,
+     "Diff": 0.033
+    }
+   }
+  },
+  "mfgScales": {
+   "brunswickStrength": 45,
+   "level": "Affordable"
+  },
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "brunswick",
+  "platform": "craft",
+  "brand": "Brunswick",
+  "title": "Fury - Orange / Red",
+  "url": "https://brunswickbowling.com/products/balls/current/fury-orange-red",
+  "sku": null,
+  "catalogId": "brunswick-fury-orange-red",
+  "match": "match",
+  "candidates": [
+   "brunswick-fury-orange-red"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Fury",
+   "coverName": "PK-26 Pearl Reactive",
+   "coverType": "Pearl Reactive",
+   "finish": "500, 1000, 2000 Siaair / Crown Factory Compound",
+   "released": "2026-07-16",
+   "weights": {
+    "10": {
+     "RG": 2.8,
+     "Diff": 0.002
+    },
+    "11": {
+     "RG": 2.769,
+     "Diff": 0.002
+    },
+    "12": {
+     "RG": 2.582,
+     "Diff": 0.038
+    },
+    "13": {
+     "RG": 2.592,
+     "Diff": 0.03
+    },
+    "14": {
+     "RG": 2.541,
+     "Diff": 0.038
+    },
+    "15": {
+     "RG": 2.524,
+     "Diff": 0.038
+    }
+   }
+  },
+  "mfgScales": {
+   "brunswickStrength": 45,
+   "level": "Affordable"
+  },
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "brunswick",
+  "platform": "craft",
+  "brand": "Brunswick",
+  "title": "Fury - Pink / Ice / Silver",
+  "url": "https://brunswickbowling.com/products/balls/current/fury-pink-ice-silver",
+  "sku": null,
+  "catalogId": "brunswick-fury-pink-ice-silver",
+  "match": "match",
+  "candidates": [
+   "brunswick-fury-pink-ice-silver"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Fury",
+   "coverName": "PK-26 Pearl Reactive",
+   "coverType": "Pearl Reactive",
+   "finish": "500, 1000, 2000 Siaair / Crown Factory Compound",
+   "released": "2026-07-16",
+   "weights": {
+    "10": {
+     "RG": 2.8,
+     "Diff": 0.002
+    },
+    "11": {
+     "RG": 2.769,
+     "Diff": 0.002
+    },
+    "12": {
+     "RG": 2.582,
+     "Diff": 0.038
+    },
+    "13": {
+     "RG": 2.592,
+     "Diff": 0.03
+    },
+    "14": {
+     "RG": 2.541,
+     "Diff": 0.038
+    },
+    "15": {
+     "RG": 2.524,
+     "Diff": 0.038
+    }
+   }
+  },
+  "mfgScales": {
+   "brunswickStrength": 45,
+   "level": "Affordable"
+  },
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "brunswick",
+  "platform": "craft",
+  "brand": "Brunswick",
+  "title": "Fury - Purple / Blue",
+  "url": "https://brunswickbowling.com/products/balls/current/fury-purple-blue",
+  "sku": null,
+  "catalogId": "brunswick-fury-purple-blue",
+  "match": "match",
+  "candidates": [
+   "brunswick-fury-purple-blue"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Fury",
+   "coverName": "PK-26 Hybrid Reactive",
+   "coverType": "Hybrid Reactive",
+   "finish": "500, 1000, 2000 Siaair / Crown Factory Compound",
+   "released": "2026-07-16",
+   "weights": {
+    "10": {
+     "RG": 2.8,
+     "Diff": 0.002
+    },
+    "11": {
+     "RG": 2.769,
+     "Diff": 0.002
+    },
+    "12": {
+     "RG": 2.582,
+     "Diff": 0.038
+    },
+    "13": {
+     "RG": 2.592,
+     "Diff": 0.03
+    },
+    "14": {
+     "RG": 2.541,
+     "Diff": 0.038
+    },
+    "15": {
+     "RG": 2.524,
+     "Diff": 0.038
+    }
+   }
+  },
+  "mfgScales": {
+   "brunswickStrength": 45,
+   "level": "Affordable"
+  },
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "brunswick",
+  "platform": "craft",
+  "brand": "Brunswick",
+  "title": "Fury - Red / Blue / Black",
+  "url": "https://brunswickbowling.com/products/balls/current/fury-red-blue-black",
+  "sku": null,
+  "catalogId": "brunswick-fury-red-blue-black",
+  "match": "match",
+  "candidates": [
+   "brunswick-fury-red-blue-black"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Fury",
+   "coverName": "PK-26 Hybrid Reactive",
+   "coverType": "Hybrid Reactive",
+   "finish": "500, 1000, 2000 Siaair / Crown Factory Compound",
+   "released": "2026-07-16",
+   "weights": {
+    "10": {
+     "RG": 2.8,
+     "Diff": 0.002
+    },
+    "11": {
+     "RG": 2.769,
+     "Diff": 0.002
+    },
+    "12": {
+     "RG": 2.582,
+     "Diff": 0.038
+    },
+    "13": {
+     "RG": 2.592,
+     "Diff": 0.03
+    },
+    "14": {
+     "RG": 2.541,
+     "Diff": 0.038
+    },
+    "15": {
+     "RG": 2.524,
+     "Diff": 0.038
+    },
+    "16": {
+     "RG": 2.533,
+     "Diff": 0.033
+    }
+   }
+  },
+  "mfgScales": {
+   "brunswickStrength": 45,
+   "level": "Affordable"
+  },
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "brunswick",
+  "platform": "craft",
+  "brand": "Brunswick",
+  "title": "Retro Flowers",
+  "url": "https://brunswickbowling.com/products/balls/current/retro-flowers",
+  "sku": null,
+  "catalogId": null,
+  "match": "no-usbc",
+  "candidates": [],
+  "decision": "pending",
+  "reason": "no-usbc",
+  "flags": [
+   "no-weight-specs"
+  ],
+  "specs": {
+   "core": null,
+   "coverName": "Polyester",
+   "coverType": "Polyester",
+   "finish": "Crown Factory Polish",
+   "released": "2026-08-13",
+   "weights": {}
+  },
+  "mfgScales": {
+   "brunswickStrength": 99,
+   "level": "Polyester"
+  },
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "brunswick",
+  "platform": "craft",
+  "brand": "Brunswick",
+  "title": "Sea Turtle",
+  "url": "https://brunswickbowling.com/products/balls/current/sea-turtle",
+  "sku": null,
+  "catalogId": null,
+  "match": "no-usbc",
+  "candidates": [],
+  "decision": "pending",
+  "reason": "no-usbc",
+  "flags": [
+   "no-weight-specs"
+  ],
+  "specs": {
+   "core": null,
+   "coverName": "Polyester",
+   "coverType": "Polyester",
+   "finish": "Crown Factory Polish",
+   "released": "2026-08-13",
+   "weights": {}
+  },
+  "mfgScales": {
+   "brunswickStrength": 99,
+   "level": "Polyester"
+  },
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "brunswick",
+  "platform": "craft",
+  "brand": "Brunswick",
+  "title": "Team Brunswick White",
+  "url": "https://brunswickbowling.com/products/balls/current/team-brunswick-white",
+  "sku": null,
+  "catalogId": null,
+  "match": "no-usbc",
+  "candidates": [],
+  "decision": "pending",
+  "reason": "no-usbc",
+  "flags": [
+   "no-weight-specs"
+  ],
+  "specs": {
+   "core": null,
+   "coverName": "Polyester",
+   "coverType": "Polyester",
+   "finish": "Crown Factory Polish",
+   "released": "2026-08-13",
+   "weights": {}
+  },
+  "mfgScales": {
+   "brunswickStrength": 99,
+   "level": "Polyester"
+  },
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "brunswick",
+  "platform": "craft",
+  "brand": "Brunswick",
+  "title": "Warning Alert",
+  "url": "https://brunswickbowling.com/products/balls/current/warning-alert",
+  "sku": null,
+  "catalogId": "brunswick-warning-alert",
+  "match": "match",
+  "candidates": [
+   "brunswick-warning-alert"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Alert",
+   "coverName": "HK22 - Savvy Hook Hybrid",
+   "coverType": "Hybrid Reactive",
+   "finish": "500, 1000, 1500 Siaair / Crown Factory Compound",
+   "released": "2026-08-13",
+   "weights": {
+    "12": {
+     "RG": 2.597,
+     "Diff": 0.04
+    },
+    "13": {
+     "RG": 2.574,
+     "Diff": 0.04
+    },
+    "14": {
+     "RG": 2.493,
+     "Diff": 0.037
+    },
+    "15": {
+     "RG": 2.478,
+     "Diff": 0.037
+    },
+    "16": {
+     "RG": 2.485,
+     "Diff": 0.032
+    }
+   }
+  },
+  "mfgScales": {
+   "brunswickStrength": 74,
+   "level": "High"
+  },
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
   "source": "columbia",
   "platform": "shopify",
   "brand": "Columbia 300",
@@ -232,6 +722,546 @@
   "method": "parser"
  },
  {
+  "source": "dv8",
+  "platform": "craft",
+  "brand": "DV8",
+  "title": "Dark Side",
+  "url": "https://dv8bowling.com/products/balls/retired/dark-side",
+  "sku": null,
+  "catalogId": "dv8-dark-side",
+  "match": "match",
+  "candidates": [
+   "dv8-dark-side"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Duality",
+   "coverName": "Inciter Hybrid",
+   "coverType": "Hybrid Reactive",
+   "finish": "500, 1000, 1500 Siaair / Factory Compound",
+   "released": "2025-03-20",
+   "weights": {
+    "12": {
+     "RG": 2.599,
+     "Diff": 0.043
+    },
+    "13": {
+     "RG": 2.577,
+     "Diff": 0.043
+    },
+    "14": {
+     "RG": 2.503,
+     "Diff": 0.035
+    },
+    "15": {
+     "RG": 2.48,
+     "Diff": 0.036
+    },
+    "16": {
+     "RG": 2.494,
+     "Diff": 0.031
+    }
+   }
+  },
+  "mfgScales": {
+   "level": "$$$$"
+  },
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "dv8",
+  "platform": "craft",
+  "brand": "DV8",
+  "title": "Dark Side Curse",
+  "url": "https://dv8bowling.com/products/balls/current/dark-side-curse",
+  "sku": null,
+  "catalogId": "dv8-dark-side-curse",
+  "match": "match",
+  "candidates": [
+   "dv8-dark-side-curse"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Duality",
+   "coverName": "Inciter Solid",
+   "coverType": "Solid Reactive",
+   "finish": "500, 1000, 1500 Siaair / Factory Compound",
+   "released": "2026-01-15",
+   "weights": {
+    "12": {
+     "RG": 2.599,
+     "Diff": 0.043
+    },
+    "13": {
+     "RG": 2.577,
+     "Diff": 0.043
+    },
+    "14": {
+     "RG": 2.503,
+     "Diff": 0.035
+    },
+    "15": {
+     "RG": 2.48,
+     "Diff": 0.036
+    },
+    "16": {
+     "RG": 2.494,
+     "Diff": 0.031
+    }
+   }
+  },
+  "mfgScales": {
+   "level": "$$$$"
+  },
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "dv8",
+  "platform": "craft",
+  "brand": "DV8",
+  "title": "Double Trouble",
+  "url": "https://dv8bowling.com/products/balls/current/double-trouble",
+  "sku": null,
+  "catalogId": "dv8-double-trouble",
+  "match": "match",
+  "candidates": [
+   "dv8-double-trouble"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Dualistic",
+   "coverName": "HK22 - Havoc Pearl",
+   "coverType": "Pearl Reactive",
+   "finish": "500, 1000, 1500 Siaair / Factory Compound",
+   "released": "2026-03-19",
+   "weights": {
+    "12": {
+     "RG": 2.599,
+     "Diff": 0.043
+    },
+    "13": {
+     "RG": 2.577,
+     "Diff": 0.043
+    },
+    "14": {
+     "RG": 2.52,
+     "Diff": 0.043
+    },
+    "15": {
+     "RG": 2.496,
+     "Diff": 0.045
+    },
+    "16": {
+     "RG": 2.514,
+     "Diff": 0.037
+    }
+   }
+  },
+  "mfgScales": {
+   "level": "$$$$$"
+  },
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "dv8",
+  "platform": "craft",
+  "brand": "DV8",
+  "title": "Hater Pearl",
+  "url": "https://dv8bowling.com/products/balls/retired/hater-pearl",
+  "sku": null,
+  "catalogId": "dv8-hater-pearl",
+  "match": "match",
+  "candidates": [
+   "dv8-hater-pearl"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Hater",
+   "coverName": "HK22C - Havoc Pearl",
+   "coverType": "Pearl Reactive",
+   "finish": "500, 1000, 1500 Siaair / Factory Compound",
+   "released": "2025-05-15",
+   "weights": {
+    "12": {
+     "RG": 2.593,
+     "Diff": 0.041,
+     "IntDiff": 0.014
+    },
+    "13": {
+     "RG": 2.597,
+     "Diff": 0.041,
+     "IntDiff": 0.014
+    },
+    "14": {
+     "RG": 2.556,
+     "Diff": 0.054,
+     "IntDiff": 0.024
+    },
+    "15": {
+     "RG": 2.539,
+     "Diff": 0.054,
+     "IntDiff": 0.024
+    },
+    "16": {
+     "RG": 2.545,
+     "Diff": 0.047,
+     "IntDiff": 0.021
+    }
+   }
+  },
+  "mfgScales": {
+   "level": "$$$$$$"
+  },
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "dv8",
+  "platform": "craft",
+  "brand": "DV8",
+  "title": "Heckler Hybrid",
+  "url": "https://dv8bowling.com/products/balls/current/heckler-hybrid",
+  "sku": null,
+  "catalogId": "dv8-heckler-hybrid",
+  "match": "match",
+  "candidates": [
+   "dv8-heckler-hybrid"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Unholy",
+   "coverName": "HK22C - Maximum Havoc",
+   "coverType": "Hybrid Reactive",
+   "finish": "500, 1000, 1500 Siaair / Factory Compound",
+   "released": "2025-11-20",
+   "weights": {
+    "12": {
+     "RG": 2.602,
+     "Diff": 0.045,
+     "IntDiff": 0.01
+    },
+    "13": {
+     "RG": 2.58,
+     "Diff": 0.045,
+     "IntDiff": 0.01
+    },
+    "14": {
+     "RG": 2.526,
+     "Diff": 0.049,
+     "IntDiff": 0.01
+    },
+    "15": {
+     "RG": 2.504,
+     "Diff": 0.051,
+     "IntDiff": 0.01
+    },
+    "16": {
+     "RG": 2.518,
+     "Diff": 0.043,
+     "IntDiff": 0.009
+    }
+   }
+  },
+  "mfgScales": {
+   "level": "$$$$$$"
+  },
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "dv8",
+  "platform": "craft",
+  "brand": "DV8",
+  "title": "Heckler Taunt",
+  "url": "https://dv8bowling.com/products/balls/current/heckler-taunt",
+  "sku": null,
+  "catalogId": "dv8-heckler-taunt",
+  "match": "match",
+  "candidates": [
+   "dv8-heckler-taunt"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Unholy",
+   "coverName": "Maximum Havoc Hybrid",
+   "coverType": "Hybrid Reactive",
+   "finish": "500, 1000, 2000 Siaair Micro Pad",
+   "released": "2026-06-11",
+   "weights": {
+    "12": {
+     "RG": 2.602,
+     "Diff": 0.045,
+     "IntDiff": 0.01
+    },
+    "13": {
+     "RG": 2.58,
+     "Diff": 0.045,
+     "IntDiff": 0.01
+    },
+    "14": {
+     "RG": 2.526,
+     "Diff": 0.049,
+     "IntDiff": 0.01
+    },
+    "15": {
+     "RG": 2.504,
+     "Diff": 0.051,
+     "IntDiff": 0.01
+    },
+    "16": {
+     "RG": 2.518,
+     "Diff": 0.043,
+     "IntDiff": 0.009
+    }
+   }
+  },
+  "mfgScales": {
+   "level": "$$$$$$"
+  },
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "dv8",
+  "platform": "craft",
+  "brand": "DV8",
+  "title": "Intense Collision",
+  "url": "https://dv8bowling.com/products/balls/current/intense-collision",
+  "sku": null,
+  "catalogId": "dv8-intense-collision",
+  "match": "match",
+  "candidates": [
+   "dv8-intense-collision"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Collision",
+   "coverName": "HK22C² - Havoc Pearl",
+   "coverType": "Pearl Reactive",
+   "finish": "500, 1000, 1500 Siaair / Factory Compound",
+   "released": "2026-08-13",
+   "weights": {
+    "12": {
+     "RG": 2.593,
+     "Diff": 0.041,
+     "IntDiff": 0.014
+    },
+    "13": {
+     "RG": 2.597,
+     "Diff": 0.041,
+     "IntDiff": 0.014
+    },
+    "14": {
+     "RG": 2.479,
+     "Diff": 0.052,
+     "IntDiff": 0.019
+    },
+    "15": {
+     "RG": 2.462,
+     "Diff": 0.052,
+     "IntDiff": 0.019
+    },
+    "16": {
+     "RG": 2.477,
+     "Diff": 0.05,
+     "IntDiff": 0.018
+    }
+   }
+  },
+  "mfgScales": {
+   "level": "$$$$$$"
+  },
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "dv8",
+  "platform": "craft",
+  "brand": "DV8",
+  "title": "Mantra Solid",
+  "url": "https://dv8bowling.com/products/balls/retired/mantra-solid",
+  "sku": null,
+  "catalogId": "dv8-mantra-solid",
+  "match": "match",
+  "candidates": [
+   "dv8-mantra-solid"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Mantra",
+   "coverName": "Inciter Xtreme Solid",
+   "coverType": "Solid Reactive",
+   "finish": "500, 2000 Siaair Micro Pad",
+   "released": "2025-09-18",
+   "weights": {
+    "12": {
+     "RG": 2.593,
+     "Diff": 0.041,
+     "IntDiff": 0.014
+    },
+    "13": {
+     "RG": 2.597,
+     "Diff": 0.041,
+     "IntDiff": 0.014
+    },
+    "14": {
+     "RG": 2.506,
+     "Diff": 0.047,
+     "IntDiff": 0.011
+    },
+    "15": {
+     "RG": 2.498,
+     "Diff": 0.047,
+     "IntDiff": 0.011
+    },
+    "16": {
+     "RG": 2.507,
+     "Diff": 0.041,
+     "IntDiff": 0.011
+    }
+   }
+  },
+  "mfgScales": {
+   "level": "$$$$$"
+  },
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "dv8",
+  "platform": "craft",
+  "brand": "DV8",
+  "title": "Severe Collision",
+  "url": "https://dv8bowling.com/products/balls/retired/severe-collision",
+  "sku": null,
+  "catalogId": "dv8-severe-collision",
+  "match": "match",
+  "candidates": [
+   "dv8-severe-collision"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Collision",
+   "coverName": "HK22C - Havoc Hybrid",
+   "coverType": "Hybrid Reactive",
+   "finish": "500, 1000, 1500 Siaair / Factory Compound",
+   "released": "2025-07-10",
+   "weights": {
+    "12": {
+     "RG": 2.593,
+     "Diff": 0.041,
+     "IntDiff": 0.014
+    },
+    "13": {
+     "RG": 2.597,
+     "Diff": 0.041,
+     "IntDiff": 0.014
+    },
+    "14": {
+     "RG": 2.479,
+     "Diff": 0.052,
+     "IntDiff": 0.019
+    },
+    "15": {
+     "RG": 2.462,
+     "Diff": 0.052,
+     "IntDiff": 0.019
+    },
+    "16": {
+     "RG": 2.477,
+     "Diff": 0.05,
+     "IntDiff": 0.018
+    }
+   }
+  },
+  "mfgScales": {
+   "level": "$$$$$$"
+  },
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "dv8",
+  "platform": "craft",
+  "brand": "DV8",
+  "title": "Trouble Maker Solid",
+  "url": "https://dv8bowling.com/products/balls/retired/trouble-maker-solid",
+  "sku": null,
+  "catalogId": "dv8-trouble-maker-solid",
+  "match": "match",
+  "candidates": [
+   "dv8-trouble-maker-solid"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Dualistic",
+   "coverName": "Havoc Solid",
+   "coverType": "Solid Reactive",
+   "finish": "500, 1500 Siaair Micro Pad",
+   "released": "2025-01-16",
+   "weights": {
+    "12": {
+     "RG": 2.599,
+     "Diff": 0.043
+    },
+    "13": {
+     "RG": 2.577,
+     "Diff": 0.043
+    },
+    "14": {
+     "RG": 2.52,
+     "Diff": 0.043
+    },
+    "15": {
+     "RG": 2.496,
+     "Diff": 0.045
+    },
+    "16": {
+     "RG": 2.514,
+     "Diff": 0.037
+    }
+   }
+  },
+  "mfgScales": {
+   "level": "$$$$$"
+  },
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
   "source": "ebonite",
   "platform": "shopify",
   "brand": "Ebonite",
@@ -243,16 +1273,50 @@
   "candidates": [],
   "decision": "pending",
   "reason": "no-usbc",
-  "flags": [
-   "no-weight-specs"
-  ],
+  "flags": [],
   "specs": {
    "core": "Enhanced V2",
    "coverName": "GB 12.0 Solid",
    "coverType": "Solid Reactive",
    "finish": "500, 1500 Siaair Micro Pad",
    "released": "2021-03-18",
-   "weights": {}
+   "weights": {
+    "10": {
+     "RG": 2.8,
+     "Diff": 0.002,
+     "IntDiff": null
+    },
+    "11": {
+     "RG": 2.769,
+     "Diff": 0.002,
+     "IntDiff": null
+    },
+    "12": {
+     "RG": 2.597,
+     "Diff": 0.04,
+     "IntDiff": null
+    },
+    "13": {
+     "RG": 2.574,
+     "Diff": 0.04,
+     "IntDiff": null
+    },
+    "14": {
+     "RG": 2.517,
+     "Diff": 0.048,
+     "IntDiff": null
+    },
+    "15": {
+     "RG": 2.48,
+     "Diff": 0.048,
+     "IntDiff": null
+    },
+    "16": {
+     "RG": 2.491,
+     "Diff": 0.041,
+     "IntDiff": null
+    }
+   }
   },
   "mfgScales": {},
   "imageUrl": "https://cdn.shopify.com/s/files/1/0609/8790/0156/products/Game_Breaker_4_1600x1600_048c8514-c9aa-409f-9670-ec827c351f7d.png?v=1647030069",
@@ -271,16 +1335,50 @@
   "candidates": [],
   "decision": "pending",
   "reason": "no-usbc",
-  "flags": [
-   "no-weight-specs"
-  ],
+  "flags": [],
   "specs": {
    "core": "Enhanced V2",
    "coverName": "GB 12.0 Pearl",
    "coverType": "Pearl Reactive",
    "finish": "500, 1000, 1500 Siaair / Crown Factory Compound",
    "released": "2022-02-25",
-   "weights": {}
+   "weights": {
+    "10": {
+     "RG": 2.8,
+     "Diff": 0.002,
+     "IntDiff": null
+    },
+    "11": {
+     "RG": 2.769,
+     "Diff": 0.002,
+     "IntDiff": null
+    },
+    "12": {
+     "RG": 2.597,
+     "Diff": 0.04,
+     "IntDiff": null
+    },
+    "13": {
+     "RG": 2.574,
+     "Diff": 0.04,
+     "IntDiff": null
+    },
+    "14": {
+     "RG": 2.517,
+     "Diff": 0.048,
+     "IntDiff": null
+    },
+    "15": {
+     "RG": 2.48,
+     "Diff": 0.048,
+     "IntDiff": null
+    },
+    "16": {
+     "RG": 2.491,
+     "Diff": 0.041,
+     "IntDiff": null
+    }
+   }
   },
   "mfgScales": {},
   "imageUrl": "https://cdn.shopify.com/s/files/1/0609/8790/0156/products/Game_Breaker_4_Pearl_1600x1600_cec27146-950d-409e-aa16-f7951175827c.png?v=1643892336",
@@ -299,18 +1397,42 @@
   "candidates": [
    "ebonite-game-breaker-asym"
   ],
-  "decision": "pending",
-  "reason": "no-weight-specs",
-  "flags": [
-   "no-weight-specs"
-  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
   "specs": {
    "core": "V2 Asymmetrical",
    "coverName": "GB 12.0 Pearl",
    "coverType": "Pearl Reactive",
    "finish": "500, 1000, 2000 Siaair / Crown Factory Polish",
    "released": null,
-   "weights": {}
+   "weights": {
+    "12": {
+     "RG": 2.612,
+     "Diff": 0.043,
+     "IntDiff": 0.011
+    },
+    "13": {
+     "RG": 2.589,
+     "Diff": 0.043,
+     "IntDiff": 0.011
+    },
+    "14": {
+     "RG": 2.502,
+     "Diff": 0.054,
+     "IntDiff": 0.008
+    },
+    "15": {
+     "RG": 2.468,
+     "Diff": 0.054,
+     "IntDiff": 0.008
+    },
+    "16": {
+     "RG": 2.483,
+     "Diff": 0.046,
+     "IntDiff": 0.007
+    }
+   }
   },
   "mfgScales": {},
   "imageUrl": "https://cdn.shopify.com/s/files/1/0609/8790/0156/products/Game_Breaker_ASYM_1600x1600_f8bf4b4f-55c5-4bb8-bf47-b8870f8e9917.png?v=1646874729",
@@ -330,9 +1452,23 @@
    "ebonite-omni-hybrid"
   ],
   "decision": "pending",
-  "reason": "no-weight-specs",
+  "reason": "out-of-range:12:RG=12",
   "flags": [
-   "no-weight-specs"
+   "out-of-range:12:RG=12",
+   "out-of-range:12:Diff=2.612",
+   "out-of-range:12:IntDiff=0.043",
+   "out-of-range:13:RG=13",
+   "out-of-range:13:Diff=2.589",
+   "out-of-range:13:IntDiff=0.043",
+   "out-of-range:14:RG=14",
+   "out-of-range:14:Diff=2.527",
+   "out-of-range:14:IntDiff=0.05",
+   "out-of-range:15:RG=15",
+   "out-of-range:15:Diff=2.501",
+   "out-of-range:15:IntDiff=0.05",
+   "out-of-range:16:RG=16",
+   "out-of-range:16:Diff=2.496",
+   "out-of-range:16:IntDiff=0.05"
   ],
   "specs": {
    "core": "Omni",
@@ -340,7 +1476,33 @@
    "coverType": "Hybrid Reactive",
    "finish": "500, 1000 Siaair / Crown Factory Compound",
    "released": "2020-10-15",
-   "weights": {}
+   "weights": {
+    "12": {
+     "RG": null,
+     "Diff": null,
+     "IntDiff": null
+    },
+    "13": {
+     "RG": null,
+     "Diff": null,
+     "IntDiff": null
+    },
+    "14": {
+     "RG": null,
+     "Diff": null,
+     "IntDiff": null
+    },
+    "15": {
+     "RG": null,
+     "Diff": null,
+     "IntDiff": null
+    },
+    "16": {
+     "RG": null,
+     "Diff": null,
+     "IntDiff": null
+    }
+   }
   },
   "mfgScales": {},
   "imageUrl": "https://cdn.shopify.com/s/files/1/0609/8790/0156/products/Omni_Hybrid_1600x1600_0e6016cf-3705-4938-a61b-353df2d5ad1b.png?v=1646397678",
@@ -1398,6 +2560,536 @@
   "method": "parser"
  },
  {
+  "source": "radical",
+  "platform": "craft",
+  "brand": "Radical",
+  "title": "Deep Impact",
+  "url": "https://radicalbowling.com/products/balls/current/deep-impact",
+  "sku": null,
+  "catalogId": "radical-deep-impact",
+  "match": "match",
+  "candidates": [
+   "radical-deep-impact"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Torpedo Asymmetric",
+   "coverName": "HK22C+ Hybrid",
+   "coverType": "Hybrid Reactive",
+   "finish": "500, 2000 Siaair Micro Pad",
+   "released": "2026-02-12",
+   "weights": {
+    "12": {
+     "RG": 2.612,
+     "Diff": 0.043,
+     "IntDiff": 0.011
+    },
+    "13": {
+     "RG": 2.589,
+     "Diff": 0.043,
+     "IntDiff": 0.011
+    },
+    "14": {
+     "RG": 2.497,
+     "Diff": 0.052,
+     "IntDiff": 0.02
+    },
+    "15": {
+     "RG": 2.48,
+     "Diff": 0.052,
+     "IntDiff": 0.019
+    },
+    "16": {
+     "RG": 2.494,
+     "Diff": 0.045,
+     "IntDiff": 0.017
+    }
+   }
+  },
+  "mfgScales": {
+   "level": "Top Shelf"
+  },
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "radical",
+  "platform": "craft",
+  "brand": "Radical",
+  "title": "Evil Eye Pearl",
+  "url": "https://radicalbowling.com/products/balls/current/evil-eye-pearl",
+  "sku": null,
+  "catalogId": "radical-evil-eye-pearl",
+  "match": "match",
+  "candidates": [
+   "radical-evil-eye-pearl"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Evil Eye Symmetric",
+   "coverName": "HK22C Pearl",
+   "coverType": "Pearl Reactive",
+   "finish": "500, 1000, 1500, Siaair / Factory Compound",
+   "released": "2026-08-13",
+   "weights": {
+    "12": {
+     "RG": 2.597,
+     "Diff": 0.04
+    },
+    "13": {
+     "RG": 2.574,
+     "Diff": 0.04
+    },
+    "14": {
+     "RG": 2.512,
+     "Diff": 0.046
+    },
+    "15": {
+     "RG": 2.495,
+     "Diff": 0.046
+    },
+    "16": {
+     "RG": 2.505,
+     "Diff": 0.041
+    }
+   }
+  },
+  "mfgScales": {
+   "level": "Top Shelf"
+  },
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "radical",
+  "platform": "craft",
+  "brand": "Radical",
+  "title": "Guru Oracle Pearl",
+  "url": "https://radicalbowling.com/products/balls/current/guru-oracle-pearl",
+  "sku": null,
+  "catalogId": "radical-guru-oracle-pearl",
+  "match": "match",
+  "candidates": [
+   "radical-guru-oracle-pearl"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Guru Asymmetric",
+   "coverName": "HK22C+ Pearl",
+   "coverType": "Pearl Reactive",
+   "finish": "500, 1000, 1500 Siaair / Factory Compound",
+   "released": "2026-06-11",
+   "weights": {
+    "12": {
+     "RG": 2.612,
+     "Diff": 0.043,
+     "IntDiff": 0.011
+    },
+    "13": {
+     "RG": 2.589,
+     "Diff": 0.043,
+     "IntDiff": 0.011
+    },
+    "14": {
+     "RG": 2.52,
+     "Diff": 0.044,
+     "IntDiff": 0.018
+    },
+    "15": {
+     "RG": 2.503,
+     "Diff": 0.044,
+     "IntDiff": 0.018
+    },
+    "16": {
+     "RG": 2.512,
+     "Diff": 0.039,
+     "IntDiff": 0.016
+    }
+   }
+  },
+  "mfgScales": {
+   "level": "Top Shelf"
+  },
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "radical",
+  "platform": "craft",
+  "brand": "Radical",
+  "title": "Intel Recon",
+  "url": "https://radicalbowling.com/products/balls/retired/intel-recon",
+  "sku": null,
+  "catalogId": "radical-intel-recon",
+  "match": "match",
+  "candidates": [
+   "radical-intel-recon"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Modified Intel Symmetric",
+   "coverName": "HK22 Pearl",
+   "coverType": "Pearl Reactive",
+   "finish": "500, 1000, 1500 Siaair / Factory Compound",
+   "released": "2025-10-23",
+   "weights": {
+    "12": {
+     "RG": 2.597,
+     "Diff": 0.04
+    },
+    "13": {
+     "RG": 2.574,
+     "Diff": 0.04
+    },
+    "14": {
+     "RG": 2.499,
+     "Diff": 0.032
+    },
+    "15": {
+     "RG": 2.483,
+     "Diff": 0.032
+    },
+    "16": {
+     "RG": 2.495,
+     "Diff": 0.028
+    }
+   }
+  },
+  "mfgScales": {
+   "level": "Reliable"
+  },
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "radical",
+  "platform": "craft",
+  "brand": "Radical",
+  "title": "Intel Tour",
+  "url": "https://radicalbowling.com/products/balls/current/intel-tour",
+  "sku": null,
+  "catalogId": "radical-intel-tour",
+  "match": "match",
+  "candidates": [
+   "radical-intel-tour"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Modified Intel Symmetric",
+   "coverName": "Hyper Control Solid",
+   "coverType": "Solid Reactive",
+   "finish": "500, 1500 Siaair Micro Pad",
+   "released": "2026-08-13",
+   "weights": {
+    "12": {
+     "RG": 2.597,
+     "Diff": 0.04
+    },
+    "13": {
+     "RG": 2.574,
+     "Diff": 0.04
+    },
+    "14": {
+     "RG": 2.499,
+     "Diff": 0.032
+    },
+    "15": {
+     "RG": 2.483,
+     "Diff": 0.032
+    },
+    "16": {
+     "RG": 2.495,
+     "Diff": 0.028
+    }
+   }
+  },
+  "mfgScales": {
+   "level": "Reliable"
+  },
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "radical",
+  "platform": "craft",
+  "brand": "Radical",
+  "title": "No Doubt Hybrid",
+  "url": "https://radicalbowling.com/products/balls/current/no-doubt-hybrid",
+  "sku": null,
+  "catalogId": "radical-no-doubt-hybrid",
+  "match": "match",
+  "candidates": [
+   "radical-no-doubt-hybrid"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "No Doubt Symmetric",
+   "coverName": "Advantage Plus Hybrid",
+   "coverType": "Hybrid Reactive",
+   "finish": "500, 1000, 3000 Siaair Micro Pad",
+   "released": "2026-07-16",
+   "weights": {
+    "12": {
+     "RG": 2.597,
+     "Diff": 0.04
+    },
+    "13": {
+     "RG": 2.574,
+     "Diff": 0.04
+    },
+    "14": {
+     "RG": 2.501,
+     "Diff": 0.051
+    },
+    "15": {
+     "RG": 2.485,
+     "Diff": 0.051
+    },
+    "16": {
+     "RG": 2.496,
+     "Diff": 0.045
+    }
+   }
+  },
+  "mfgScales": {
+   "level": "Reliable Plus"
+  },
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "radical",
+  "platform": "craft",
+  "brand": "Radical",
+  "title": "Outer Limits Black Hole",
+  "url": "https://radicalbowling.com/products/balls/current/outer-limits-black-hole",
+  "sku": null,
+  "catalogId": "radical-outer-limits-black-hole",
+  "match": "match",
+  "candidates": [
+   "radical-outer-limits-black-hole"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Outer Limits Asymmetric",
+   "coverName": "HK22C Solid",
+   "coverType": "Solid Reactive",
+   "finish": "500, 1000, 1500 Siaair / Factory Compound",
+   "released": "2026-01-08",
+   "weights": {
+    "12": {
+     "RG": 2.612,
+     "Diff": 0.043,
+     "IntDiff": 0.011
+    },
+    "13": {
+     "RG": 2.589,
+     "Diff": 0.043,
+     "IntDiff": 0.011
+    },
+    "14": {
+     "RG": 2.515,
+     "Diff": 0.051,
+     "IntDiff": 0.014
+    },
+    "15": {
+     "RG": 2.499,
+     "Diff": 0.051,
+     "IntDiff": 0.014
+    },
+    "16": {
+     "RG": 2.509,
+     "Diff": 0.045,
+     "IntDiff": 0.013
+    }
+   }
+  },
+  "mfgScales": {
+   "level": "Reliable"
+  },
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "radical",
+  "platform": "craft",
+  "brand": "Radical",
+  "title": "Revenge Pearl",
+  "url": "https://radicalbowling.com/products/balls/current/revenge-pearl",
+  "sku": null,
+  "catalogId": "radical-revenge-pearl",
+  "match": "match",
+  "candidates": [
+   "radical-revenge-pearl"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Sneak Attack Symmetric",
+   "coverName": "HK22 Pearl",
+   "coverType": "Pearl Reactive",
+   "finish": "500, 1000, 1500 Siaair / Factory Compound",
+   "released": "2026-04-16",
+   "weights": {
+    "12": {
+     "RG": 2.597,
+     "Diff": 0.04
+    },
+    "13": {
+     "RG": 2.574,
+     "Diff": 0.04
+    },
+    "14": {
+     "RG": 2.561,
+     "Diff": 0.036
+    },
+    "15": {
+     "RG": 2.544,
+     "Diff": 0.036
+    },
+    "16": {
+     "RG": 2.549,
+     "Diff": 0.031
+    }
+   }
+  },
+  "mfgScales": {
+   "level": "EZ-Use"
+  },
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "radical",
+  "platform": "craft",
+  "brand": "Radical",
+  "title": "Revenge Solid",
+  "url": "https://radicalbowling.com/products/balls/current/revenge-solid",
+  "sku": null,
+  "catalogId": "radical-revenge-solid",
+  "match": "match",
+  "candidates": [
+   "radical-revenge-solid"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Sneak Attack Symmetric",
+   "coverName": "HK22 Solid",
+   "coverType": "Solid Reactive",
+   "finish": "500, 1000, 1500 Siaair / Factory Compound",
+   "released": "2026-04-16",
+   "weights": {
+    "12": {
+     "RG": 2.597,
+     "Diff": 0.04
+    },
+    "13": {
+     "RG": 2.574,
+     "Diff": 0.04
+    },
+    "14": {
+     "RG": 2.561,
+     "Diff": 0.036
+    },
+    "15": {
+     "RG": 2.544,
+     "Diff": 0.036
+    },
+    "16": {
+     "RG": 2.549,
+     "Diff": 0.031
+    }
+   }
+  },
+  "mfgScales": {
+   "level": "EZ-Use"
+  },
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "radical",
+  "platform": "craft",
+  "brand": "Radical",
+  "title": "Vexed",
+  "url": "https://radicalbowling.com/products/balls/current/vexed",
+  "sku": null,
+  "catalogId": "radical-vexed",
+  "match": "match",
+  "candidates": [
+   "radical-vexed"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Vexed Asymmetric",
+   "coverName": "HK22C+ Solid",
+   "coverType": "Solid reactive",
+   "finish": "500, 1000, 3000 Siaair Micro Pad",
+   "released": "2026-03-19",
+   "weights": {
+    "12": {
+     "RG": 2.612,
+     "Diff": 0.043,
+     "IntDiff": 0.011
+    },
+    "13": {
+     "RG": 2.589,
+     "Diff": 0.043,
+     "IntDiff": 0.011
+    },
+    "14": {
+     "RG": 2.514,
+     "Diff": 0.036,
+     "IntDiff": 0.012
+    },
+    "15": {
+     "RG": 2.498,
+     "Diff": 0.036,
+     "IntDiff": 0.012
+    },
+    "16": {
+     "RG": 2.508,
+     "Diff": 0.032,
+     "IntDiff": 0.011
+    }
+   }
+  },
+  "mfgScales": {
+   "level": "Top Shelf"
+  },
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
   "source": "track",
   "platform": "shopify",
   "brand": "Track Inc.",
@@ -1421,16 +3113,40 @@
   ],
   "decision": "pending",
   "reason": "variant",
-  "flags": [
-   "no-weight-specs"
-  ],
+  "flags": [],
   "specs": {
    "core": "Modified Tri-Core",
    "coverName": "DR-7 Solid",
    "coverType": "Solid Reactive",
    "finish": "500, 1000, 2000 Siaair Micro Pad",
    "released": null,
-   "weights": {}
+   "weights": {
+    "12": {
+     "RG": 2.597,
+     "Diff": 0.04,
+     "IntDiff": null
+    },
+    "13": {
+     "RG": 2.574,
+     "Diff": 0.04,
+     "IntDiff": null
+    },
+    "14": {
+     "RG": 2.51,
+     "Diff": 0.038,
+     "IntDiff": null
+    },
+    "15": {
+     "RG": 2.5,
+     "Diff": 0.038,
+     "IntDiff": null
+    },
+    "16": {
+     "RG": 2.51,
+     "Diff": 0.033,
+     "IntDiff": null
+    }
+   }
   },
   "mfgScales": {},
   "imageUrl": "https://cdn.shopify.com/s/files/1/0609/7590/7033/products/Heat_1600x1600_bc23b9fc-ffb0-4205-ba35-7780c4cc9a01.png?v=1637610133",
@@ -1449,18 +3165,42 @@
   "candidates": [
    "track-inc-kinetic-platinum"
   ],
-  "decision": "pending",
-  "reason": "no-weight-specs",
-  "flags": [
-   "no-weight-specs"
-  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
   "specs": {
    "core": "Shuttle",
    "coverName": "DR-7 Pearl",
    "coverType": "Pearl Reactive",
    "finish": "500, 1000, 1500 Siaair / Crown Factory Compound",
    "released": null,
-   "weights": {}
+   "weights": {
+    "12": {
+     "RG": 2.612,
+     "Diff": 0.043,
+     "IntDiff": 0.011
+    },
+    "13": {
+     "RG": 2.589,
+     "Diff": 0.043,
+     "IntDiff": 0.011
+    },
+    "14": {
+     "RG": 2.495,
+     "Diff": 0.04,
+     "IntDiff": 0.006
+    },
+    "15": {
+     "RG": 2.48,
+     "Diff": 0.04,
+     "IntDiff": 0.006
+    },
+    "16": {
+     "RG": 2.493,
+     "Diff": 0.038,
+     "IntDiff": 0.006
+    }
+   }
   },
   "mfgScales": {},
   "imageUrl": "https://cdn.shopify.com/s/files/1/0609/7590/7033/products/Kinetic_Platinum_1600x1600_0dc7b1a5-0602-47e7-a678-984477d6923d.png?v=1647561372",
@@ -1479,18 +3219,42 @@
   "candidates": [
    "track-inc-legion-pearl"
   ],
-  "decision": "pending",
-  "reason": "no-weight-specs",
-  "flags": [
-   "no-weight-specs"
-  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
   "specs": {
    "core": "LT-2",
    "coverName": "Prime Response Pearl",
    "coverType": "Pearl Reactive",
    "finish": "500, 1000, 1500 Siaair / Crown Factory Compound",
    "released": null,
-   "weights": {}
+   "weights": {
+    "12": {
+     "RG": 2.593,
+     "Diff": 0.041,
+     "IntDiff": 0.014
+    },
+    "13": {
+     "RG": 2.597,
+     "Diff": 0.041,
+     "IntDiff": 0.014
+    },
+    "14": {
+     "RG": 2.51,
+     "Diff": 0.046,
+     "IntDiff": 0.012
+    },
+    "15": {
+     "RG": 2.5,
+     "Diff": 0.046,
+     "IntDiff": 0.011
+    },
+    "16": {
+     "RG": 2.51,
+     "Diff": 0.04,
+     "IntDiff": 0.01
+    }
+   }
   },
   "mfgScales": {},
   "imageUrl": "https://cdn.shopify.com/s/files/1/0609/7590/7033/products/Legion_Pearl_1600x1600_af8e070f-835c-4ea9-9e30-bcc4987c1556.png?v=1647560123",
@@ -1509,18 +3273,42 @@
   "candidates": [
    "track-inc-paragon"
   ],
-  "decision": "pending",
-  "reason": "no-weight-specs",
-  "flags": [
-   "no-weight-specs"
-  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
   "specs": {
    "core": "I-Core 3.0",
    "coverName": "QR-11 Solid",
    "coverType": "Solid Reactive",
    "finish": "500, 1500 Siaair Micro Pad",
    "released": null,
-   "weights": {}
+   "weights": {
+    "12": {
+     "RG": 2.593,
+     "Diff": 0.041,
+     "IntDiff": 0.014
+    },
+    "13": {
+     "RG": 2.597,
+     "Diff": 0.041,
+     "IntDiff": 0.014
+    },
+    "14": {
+     "RG": 2.49,
+     "Diff": 0.056,
+     "IntDiff": 0.019
+    },
+    "15": {
+     "RG": 2.486,
+     "Diff": 0.056,
+     "IntDiff": 0.015
+    },
+    "16": {
+     "RG": 2.501,
+     "Diff": 0.047,
+     "IntDiff": 0.014
+    }
+   }
   },
   "mfgScales": {},
   "imageUrl": "https://cdn.shopify.com/s/files/1/0609/7590/7033/products/Paragon_1600x1600_88715845-d2e9-4ee3-97e9-bea9cb42f444.png?v=1647559087",

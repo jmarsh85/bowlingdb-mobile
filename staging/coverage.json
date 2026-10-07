@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-07T00:36:37.547Z",
+  "generated": "2026-10-07T00:47:50.673Z",
   "since": 2023,
   "perSource": {
     "storm": {
@@ -10,7 +10,7 @@
     },
     "brunswick": {
       "pages": 10,
-      "parsed": 0,
+      "parsed": 10,
       "errors": 0,
       "errorSample": []
     },
@@ -22,13 +22,13 @@
     },
     "dv8": {
       "pages": 10,
-      "parsed": 0,
+      "parsed": 10,
       "errors": 0,
       "errorSample": []
     },
     "radical": {
       "pages": 10,
-      "parsed": 0,
+      "parsed": 10,
       "errors": 0,
       "errorSample": []
     },
@@ -67,10 +67,10 @@
     },
     "Brunswick": {
       "all": 745,
-      "auto": 0,
+      "auto": 7,
       "pending": 0,
       "recent": 74,
-      "recentAuto": 0
+      "recentAuto": 7
     },
     "Columbia 300": {
       "all": 553,
@@ -81,15 +81,15 @@
     },
     "DV8": {
       "all": 139,
-      "auto": 0,
+      "auto": 10,
       "pending": 0,
       "recent": 24,
-      "recentAuto": 0
+      "recentAuto": 10
     },
     "Ebonite": {
       "all": 814,
-      "auto": 0,
-      "pending": 3,
+      "auto": 1,
+      "pending": 2,
       "recent": 61,
       "recentAuto": 0
     },
@@ -109,10 +109,10 @@
     },
     "Radical": {
       "all": 162,
-      "auto": 0,
+      "auto": 10,
       "pending": 0,
       "recent": 43,
-      "recentAuto": 0
+      "recentAuto": 10
     },
     "Roto Grip": {
       "all": 468,
@@ -130,8 +130,8 @@
     },
     "Track Inc.": {
       "all": 361,
-      "auto": 0,
-      "pending": 14,
+      "auto": 3,
+      "pending": 11,
       "recent": 46,
       "recentAuto": 0
     }
