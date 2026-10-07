@@ -7374,6 +7374,27 @@
   "Source": "https://columbia300.com/products/jazz-red-blue",
   "Checked": "2026-10-07"
  },
+ "columbia-300-jekyll": {
+  "DateReleased": null,
+  "Core": {
+   "Name": "2-Piece",
+   "Type": null
+  },
+  "Cover": {
+   "Name": "Reactive Pearl",
+   "Type": null,
+   "Finish": null
+  },
+  "SpecsByWeight": {
+   "16": {
+    "RG": 2.49,
+    "Diff": 0.045,
+    "IntDiff": null
+   }
+  },
+  "Source": "https://columbia300.com/products/jekyll",
+  "Checked": "2026-10-07"
+ },
  "columbia-300-jinx": {
   "DateReleased": null,
   "Core": {
@@ -9624,37 +9645,6 @@
   "Source": "https://columbia300.com/products/scout-r-particle-hi-flare",
   "Checked": "2026-10-07"
  },
- "columbia-300-scout-reactive-blue-gold": {
-  "DateReleased": null,
-  "Core": {
-   "Name": "Pancake",
-   "Type": null
-  },
-  "Cover": {
-   "Name": "Super-Flex",
-   "Type": null,
-   "Finish": null
-  },
-  "SpecsByWeight": {
-   "14": {
-    "RG": 2.69,
-    "Diff": 0.02,
-    "IntDiff": null
-   },
-   "15": {
-    "RG": 2.65,
-    "Diff": 0.02,
-    "IntDiff": null
-   },
-   "16": {
-    "RG": 2.64,
-    "Diff": 0.02,
-    "IntDiff": null
-   }
-  },
-  "Source": "https://columbia300.com/products/scout-reactive-blue-gold",
-  "Checked": "2026-10-07"
- },
  "columbia-300-scout-reactive-green-silver": {
   "DateReleased": null,
   "Core": {
@@ -10101,6 +10091,47 @@
    }
   },
   "Source": "https://columbia300.com/products/super-trooper",
+  "Checked": "2026-10-07"
+ },
+ "columbia-300-swerve": {
+  "DateReleased": null,
+  "Core": {
+   "Name": "Swerve",
+   "Type": null
+  },
+  "Cover": {
+   "Name": "Reflex Solid",
+   "Type": null,
+   "Finish": null
+  },
+  "SpecsByWeight": {
+   "12": {
+    "RG": 2.6,
+    "Diff": 0.039,
+    "IntDiff": null
+   },
+   "13": {
+    "RG": 2.53,
+    "Diff": 0.055,
+    "IntDiff": null
+   },
+   "14": {
+    "RG": 2.48,
+    "Diff": 0.057,
+    "IntDiff": null
+   },
+   "15": {
+    "RG": 2.47,
+    "Diff": 0.052,
+    "IntDiff": null
+   },
+   "16": {
+    "RG": 2.47,
+    "Diff": 0.048,
+    "IntDiff": null
+   }
+  },
+  "Source": "https://columbia300.com/products/swerve",
   "Checked": "2026-10-07"
  },
  "columbia-300-swerve-fx": {
@@ -14542,6 +14573,47 @@
   "Source": "https://ebonite.com/products/entity",
   "Checked": "2026-10-07"
  },
+ "ebonite-entity-pearl": {
+  "DateReleased": "2025-11-20",
+  "Core": {
+   "Name": "Entity",
+   "Type": null
+  },
+  "Cover": {
+   "Name": "HK22C - Optimize Pearl",
+   "Type": "Pearl Reactive",
+   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+  },
+  "SpecsByWeight": {
+   "12": {
+    "RG": 2.593,
+    "Diff": 0.041,
+    "IntDiff": 0.014
+   },
+   "13": {
+    "RG": 2.597,
+    "Diff": 0.041,
+    "IntDiff": 0.014
+   },
+   "14": {
+    "RG": 2.532,
+    "Diff": 0.052,
+    "IntDiff": 0.02
+   },
+   "15": {
+    "RG": 2.515,
+    "Diff": 0.052,
+    "IntDiff": 0.02
+   },
+   "16": {
+    "RG": 2.525,
+    "Diff": 0.047,
+    "IntDiff": 0.017
+   }
+  },
+  "Source": "https://ebonite.com/products/entity-pearl",
+  "Checked": "2026-10-07"
+ },
  "ebonite-envision": {
   "DateReleased": null,
   "Core": {
@@ -15706,47 +15778,6 @@
    }
   },
   "Source": "https://ebonite.com/products/matrix-solid",
-  "Checked": "2026-10-07"
- },
- "ebonite-maverick": {
-  "DateReleased": null,
-  "Core": {
-   "Name": "Maverick",
-   "Type": null
-  },
-  "Cover": {
-   "Name": "GB 14.0 Solid",
-   "Type": null,
-   "Finish": null
-  },
-  "SpecsByWeight": {
-   "12": {
-    "RG": 2.62,
-    "Diff": 0.046,
-    "IntDiff": null
-   },
-   "13": {
-    "RG": 2.59,
-    "Diff": 0.043,
-    "IntDiff": null
-   },
-   "14": {
-    "RG": 2.5,
-    "Diff": 0.055,
-    "IntDiff": null
-   },
-   "15": {
-    "RG": 2.48,
-    "Diff": 0.056,
-    "IntDiff": null
-   },
-   "16": {
-    "RG": 2.49,
-    "Diff": 0.049,
-    "IntDiff": null
-   }
-  },
-  "Source": "https://ebonite.com/products/maverick",
   "Checked": "2026-10-07"
  },
  "ebonite-maverick-pearl": {
@@ -18196,6 +18227,47 @@
   "Source": "https://hammerbowling.com/products/bubblegum-vibe",
   "Checked": "2026-10-07"
  },
+ "hammer-dark-web": {
+  "DateReleased": "2022-07-08",
+  "Core": {
+   "Name": "Modified Spheroid",
+   "Type": null
+  },
+  "Cover": {
+   "Name": "Aggression Solid",
+   "Type": "Solid Reactive",
+   "Finish": "500, 1500 Siaair Micro Pad"
+  },
+  "SpecsByWeight": {
+   "12": {
+    "RG": 2.608,
+    "Diff": 0.04,
+    "IntDiff": null
+   },
+   "13": {
+    "RG": 2.585,
+    "Diff": 0.04,
+    "IntDiff": null
+   },
+   "14": {
+    "RG": 2.541,
+    "Diff": 0.048,
+    "IntDiff": null
+   },
+   "15": {
+    "RG": 2.514,
+    "Diff": 0.048,
+    "IntDiff": null
+   },
+   "16": {
+    "RG": 2.522,
+    "Diff": 0.042,
+    "IntDiff": null
+   }
+  },
+  "Source": "https://hammerbowling.com/products/dark-web",
+  "Checked": "2026-10-07"
+ },
  "hammer-dark-web-hybrid": {
   "DateReleased": "2023-07-13",
   "Core": {
@@ -18737,6 +18809,47 @@
    }
   },
   "Source": "https://hammerbowling.com/products/hammerhead",
+  "Checked": "2026-10-07"
+ },
+ "hammer-hammerhead-pearl": {
+  "DateReleased": "2026-01-15",
+  "Core": {
+   "Name": "Spheroid",
+   "Type": null
+  },
+  "Cover": {
+   "Name": "HK22 - Aggression Pearl",
+   "Type": "Pearl Reactive",
+   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+  },
+  "SpecsByWeight": {
+   "12": {
+    "RG": 2.608,
+    "Diff": 0.04,
+    "IntDiff": null
+   },
+   "13": {
+    "RG": 2.585,
+    "Diff": 0.04,
+    "IntDiff": null
+   },
+   "14": {
+    "RG": 2.51,
+    "Diff": 0.048,
+    "IntDiff": null
+   },
+   "15": {
+    "RG": 2.481,
+    "Diff": 0.048,
+    "IntDiff": null
+   },
+   "16": {
+    "RG": 2.5,
+    "Diff": 0.039,
+    "IntDiff": null
+   }
+  },
+  "Source": "https://hammerbowling.com/products/hammerhead-pearl",
   "Checked": "2026-10-07"
  },
  "hammer-hazmat": {
@@ -30252,6 +30365,68 @@
   "Source": "https://radicalbowling.com/products/balls/retired/zing-pearl",
   "Checked": "2026-10-07"
  },
+ "roto-grip-clone": {
+  "DateReleased": "2023-07-28",
+  "Core": {
+   "Name": "Cloned ET Asymmetric",
+   "Type": "Asymmetrical"
+  },
+  "Cover": {
+   "Name": "Based on years of testing and research, we found this direct",
+   "Type": null,
+   "Finish": "Reacta Gloss"
+  },
+  "SpecsByWeight": {
+   "14": {
+    "RG": 2.53,
+    "Diff": 0.056,
+    "IntDiff": 0.016
+   },
+   "15": {
+    "RG": 2.51,
+    "Diff": 0.056,
+    "IntDiff": 0.016
+   },
+   "16": {
+    "RG": 2.5,
+    "Diff": 0.054,
+    "IntDiff": 0.016
+   }
+  },
+  "Source": "https://www.stormbowling.com/roto-grip-clone-bowling-ball",
+  "Checked": "2026-10-07"
+ },
+ "roto-grip-exotic-gem": {
+  "DateReleased": "2015-12",
+  "Core": {
+   "Name": "Sometimes evolution can spark new life into technology from ",
+   "Type": null
+  },
+  "Cover": {
+   "Name": "Bottom line, this coverstock technology just flat out crushe",
+   "Type": null,
+   "Finish": "Reacta Gloss"
+  },
+  "SpecsByWeight": {
+   "14": {
+    "RG": 2.5,
+    "Diff": 0.052,
+    "IntDiff": 0.015
+   },
+   "15": {
+    "RG": 2.47,
+    "Diff": 0.053,
+    "IntDiff": 0.016
+   },
+   "16": {
+    "RG": 2.47,
+    "Diff": 0.051,
+    "IntDiff": 0.016
+   }
+  },
+  "Source": "https://www.stormbowling.com/roto-grip-exotic-gem-bowling-ball",
+  "Checked": "2026-10-07"
+ },
  "roto-grip-gremlin": {
   "DateReleased": "2025-07-18",
   "Core": {
@@ -30315,6 +30490,37 @@
   "Source": "https://www.stormbowling.com/roto-grip-hustle-bowling-ball-x-ray",
   "Checked": "2026-10-07"
  },
+ "roto-grip-hyped-pearl": {
+  "DateReleased": "2021-08",
+  "Core": {
+   "Name": "From the beginning, the end goal for the Hyped Core was to c",
+   "Type": null
+  },
+  "Cover": {
+   "Name": "Versatile Traction Control (VTC) was formulated with durabil",
+   "Type": null,
+   "Finish": "Reacta Gloss"
+  },
+  "SpecsByWeight": {
+   "14": {
+    "RG": 2.52,
+    "Diff": 0.036,
+    "IntDiff": null
+   },
+   "15": {
+    "RG": 2.52,
+    "Diff": 0.036,
+    "IntDiff": null
+   },
+   "16": {
+    "RG": 2.51,
+    "Diff": 0.037,
+    "IntDiff": null
+   }
+  },
+  "Source": "https://www.stormbowling.com/roto-grip-hyped-pearl-bowling-ball",
+  "Checked": "2026-10-07"
+ },
  "roto-grip-hyped-up": {
   "DateReleased": "2026-07-10",
   "Core": {
@@ -30334,6 +30540,68 @@
    }
   },
   "Source": "https://www.stormbowling.com/roto-grip-hyped-up-bowling-ball",
+  "Checked": "2026-10-07"
+ },
+ "roto-grip-idol-cosmos": {
+  "DateReleased": "2022-07-08",
+  "Core": {
+   "Name": "Ikon Symmetric",
+   "Type": "Symmetrical"
+  },
+  "Cover": {
+   "Name": "Derived from countless hours of mixing, formulating, and tes",
+   "Type": null,
+   "Finish": "4000-Grit Abralon"
+  },
+  "SpecsByWeight": {
+   "14": {
+    "RG": 2.54,
+    "Diff": 0.049,
+    "IntDiff": null
+   },
+   "15": {
+    "RG": 2.49,
+    "Diff": 0.052,
+    "IntDiff": null
+   },
+   "16": {
+    "RG": 2.49,
+    "Diff": 0.049,
+    "IntDiff": null
+   }
+  },
+  "Source": "https://www.stormbowling.com/roto-grip-idol-cosmos-bowling-ball",
+  "Checked": "2026-10-07"
+ },
+ "roto-grip-idol-helios": {
+  "DateReleased": "2021-11-19",
+  "Core": {
+   "Name": "Ikon Symmetric",
+   "Type": "Symmetrical"
+  },
+  "Cover": {
+   "Name": "Derived from countless hours of mixing, formulating, and tes",
+   "Type": null,
+   "Finish": "2000-Grit Abralon"
+  },
+  "SpecsByWeight": {
+   "14": {
+    "RG": 2.54,
+    "Diff": 0.049,
+    "IntDiff": null
+   },
+   "15": {
+    "RG": 2.49,
+    "Diff": 0.052,
+    "IntDiff": null
+   },
+   "16": {
+    "RG": 2.49,
+    "Diff": 0.049,
+    "IntDiff": null
+   }
+  },
+  "Source": "https://www.stormbowling.com/roto-grip-idol-helios-bowling-ball",
   "Checked": "2026-10-07"
  },
  "roto-grip-perfect-gem": {
@@ -30376,6 +30644,37 @@
    }
   },
   "Source": "https://www.stormbowling.com/roto-grip-rst-hyperdrive-pearl-bowling-ball",
+  "Checked": "2026-10-07"
+ },
+ "roto-grip-tnt": {
+  "DateReleased": "2023-01-16",
+  "Core": {
+   "Name": "By placing the TORQUE SPHERE just above the inner equator of",
+   "Type": null
+  },
+  "Cover": {
+   "Name": "First used in a pearlized form on the RST X-2, we felt there",
+   "Type": null,
+   "Finish": "2000-Grit Abralon"
+  },
+  "SpecsByWeight": {
+   "14": {
+    "RG": 2.54,
+    "Diff": 0.051,
+    "IntDiff": null
+   },
+   "15": {
+    "RG": 2.47,
+    "Diff": 0.052,
+    "IntDiff": null
+   },
+   "16": {
+    "RG": 2.47,
+    "Diff": 0.05,
+    "IntDiff": null
+   }
+  },
+  "Source": "https://www.stormbowling.com/roto-grip-tnt-bowling-ball",
   "Checked": "2026-10-07"
  },
  "roto-grip-transform-pearl": {
@@ -30439,6 +30738,37 @@
    }
   },
   "Source": "https://www.stormbowling.com/roto-grip-wicked-gremlin-bowling-ball",
+  "Checked": "2026-10-07"
+ },
+ "storm-absolute": {
+  "DateReleased": "2023-01",
+  "Core": {
+   "Name": "In most cases, an extra slug, or weighted disk, is needed to",
+   "Type": null
+  },
+  "Cover": {
+   "Name": "R2S Deep is cleaner through the front compared to the flagsh",
+   "Type": null,
+   "Finish": "Reacta Gloss"
+  },
+  "SpecsByWeight": {
+   "14": {
+    "RG": 2.54,
+    "Diff": 0.045,
+    "IntDiff": 0.018
+   },
+   "15": {
+    "RG": 2.48,
+    "Diff": 0.05,
+    "IntDiff": 0.021
+   },
+   "16": {
+    "RG": 2.48,
+    "Diff": 0.048,
+    "IntDiff": 0.02
+   }
+  },
+  "Source": "https://www.stormbowling.com/storm-absolute-bowling-ball",
   "Checked": "2026-10-07"
  },
  "storm-alpha-crux": {
@@ -30567,6 +30897,37 @@
   "Source": "https://www.stormbowling.com/storm-equinox-solid-bowling-ball",
   "Checked": "2026-10-07"
  },
+ "storm-fate": {
+  "DateReleased": "2022-11",
+  "Core": {
+   "Name": "Compared to the Dual-Drive, Piston, and Piston LD, the F-8 C",
+   "Type": null
+  },
+  "Cover": {
+   "Name": "Traditionally, the term “hybrid” suggests that both solid an",
+   "Type": null,
+   "Finish": "Reacta Gloss"
+  },
+  "SpecsByWeight": {
+   "14": {
+    "RG": 2.54,
+    "Diff": 0.052,
+    "IntDiff": null
+   },
+   "15": {
+    "RG": 2.52,
+    "Diff": 0.053,
+    "IntDiff": null
+   },
+   "16": {
+    "RG": 2.52,
+    "Diff": 0.052,
+    "IntDiff": null
+   }
+  },
+  "Source": "https://www.stormbowling.com/storm-fate-bowling-ball",
+  "Checked": "2026-10-07"
+ },
  "storm-hy-road": {
   "DateReleased": "2008-11-18",
   "Core": {
@@ -30649,6 +31010,37 @@
    }
   },
   "Source": "https://www.stormbowling.com/storm-identity-bcp-bowling-ball",
+  "Checked": "2026-10-07"
+ },
+ "storm-infinite-physix": {
+  "DateReleased": "2022-07",
+  "Core": {
+   "Name": "Firmly ensconced at the top of the Storm performance heap is",
+   "Type": null
+  },
+  "Cover": {
+   "Name": "Traditionally, the term “hybrid” suggests that both solid an",
+   "Type": null,
+   "Finish": "4000-grit Abralon"
+  },
+  "SpecsByWeight": {
+   "14": {
+    "RG": 2.53,
+    "Diff": 0.052,
+    "IntDiff": 0.015
+   },
+   "15": {
+    "RG": 2.48,
+    "Diff": 0.053,
+    "IntDiff": 0.017
+   },
+   "16": {
+    "RG": 2.48,
+    "Diff": 0.054,
+    "IntDiff": 0.017
+   }
+  },
+  "Source": "https://www.stormbowling.com/storm-infinite-physix-bowling-ball",
   "Checked": "2026-10-07"
  },
  "storm-ion-max": {
@@ -30735,6 +31127,68 @@
   "Source": "https://www.stormbowling.com/storm-next-factor-bowling-ball",
   "Checked": "2026-10-07"
  },
+ "storm-nova": {
+  "DateReleased": "2022-01",
+  "Core": {
+   "Name": "Weight blocks like the Ignition Core rev up fast and finish ",
+   "Type": null
+  },
+  "Cover": {
+   "Name": "Slightly more aggressive than the famed R2S coverstock mater",
+   "Type": null,
+   "Finish": "3000-grit Abralon"
+  },
+  "SpecsByWeight": {
+   "14": {
+    "RG": 2.53,
+    "Diff": 0.049,
+    "IntDiff": 0.018
+   },
+   "15": {
+    "RG": 2.49,
+    "Diff": 0.052,
+    "IntDiff": 0.019
+   },
+   "16": {
+    "RG": 2.5,
+    "Diff": 0.051,
+    "IntDiff": 0.018
+   }
+  },
+  "Source": "https://www.stormbowling.com/storm-nova-bowling-ball",
+  "Checked": "2026-10-07"
+ },
+ "storm-phaze-4": {
+  "DateReleased": "2022-02",
+  "Core": {
+   "Name": "This low RG gem has a strong heart. Being one of the most ag",
+   "Type": null
+  },
+  "Cover": {
+   "Name": "The Phaze series’ aggressive nature has carried over to the ",
+   "Type": null,
+   "Finish": "1500-grit Polished"
+  },
+  "SpecsByWeight": {
+   "14": {
+    "RG": 2.53,
+    "Diff": 0.05,
+    "IntDiff": null
+   },
+   "15": {
+    "RG": 2.48,
+    "Diff": 0.051,
+    "IntDiff": null
+   },
+   "16": {
+    "RG": 2.48,
+    "Diff": 0.051,
+    "IntDiff": null
+   }
+  },
+  "Source": "https://www.stormbowling.com/storm-phaze-4-bowling-ball",
+  "Checked": "2026-10-07"
+ },
  "storm-phaze-ii": {
   "DateReleased": "2016-10-04",
   "Core": {
@@ -30775,6 +31229,37 @@
    }
   },
   "Source": "https://www.stormbowling.com/storm-phaze-ii-pearl-bowling-ball",
+  "Checked": "2026-10-07"
+ },
+ "storm-phaze-v": {
+  "DateReleased": "2022-10",
+  "Core": {
+   "Name": "This low RG gem has a strong heart. Being one of the most ag",
+   "Type": null
+  },
+  "Cover": {
+   "Name": "The Phaze series’ aggressive nature has carried over to the ",
+   "Type": null,
+   "Finish": null
+  },
+  "SpecsByWeight": {
+   "14": {
+    "RG": 2.53,
+    "Diff": 0.05,
+    "IntDiff": null
+   },
+   "15": {
+    "RG": 2.48,
+    "Diff": 0.051,
+    "IntDiff": null
+   },
+   "16": {
+    "RG": 2.48,
+    "Diff": 0.051,
+    "IntDiff": null
+   }
+  },
+  "Source": "https://www.stormbowling.com/storm-phaze-v-bowling-ball",
   "Checked": "2026-10-07"
  },
  "storm-pitch-black": {
@@ -30859,6 +31344,37 @@
    }
   },
   "Source": "https://www.stormbowling.com/storm-rocket-ai-bowling-ball",
+  "Checked": "2026-10-07"
+ },
+ "storm-sun-storm-limited-edition": {
+  "DateReleased": "2022-12",
+  "Core": {
+   "Name": "Workable and forgiving, the C3 Centripetal Control Core is a",
+   "Type": null
+  },
+  "Cover": {
+   "Name": "SPEC stands for “Storm Performance Enhanced Coverstock”. The",
+   "Type": null,
+   "Finish": "4K-Fast"
+  },
+  "SpecsByWeight": {
+   "14": {
+    "RG": 2.54,
+    "Diff": 0.034,
+    "IntDiff": null
+   },
+   "15": {
+    "RG": 2.49,
+    "Diff": 0.029,
+    "IntDiff": null
+   },
+   "16": {
+    "RG": 2.49,
+    "Diff": 0.035,
+    "IntDiff": null
+   }
+  },
+  "Source": "https://www.stormbowling.com/storm-sun-storm-limited-edition-bowling-ball",
   "Checked": "2026-10-07"
  },
  "storm-tropical-surge-black-cherry": {
@@ -32671,6 +33187,47 @@
    }
   },
   "Source": "https://trackbowling.com/products/hx10",
+  "Checked": "2026-10-07"
+ },
+ "track-inc-hx16": {
+  "DateReleased": null,
+  "Core": {
+   "Name": "I-Core (Dual Density)",
+   "Type": null
+  },
+  "Cover": {
+   "Name": "DR-8 Hybrid",
+   "Type": null,
+   "Finish": "500, 1000 Abralon® Polished with Factory Finish Polish"
+  },
+  "SpecsByWeight": {
+   "12": {
+    "RG": 2.6,
+    "Diff": 0.039,
+    "IntDiff": null
+   },
+   "13": {
+    "RG": 2.53,
+    "Diff": 0.055,
+    "IntDiff": null
+   },
+   "14": {
+    "RG": 2.52,
+    "Diff": 0.052,
+    "IntDiff": null
+   },
+   "15": {
+    "RG": 2.49,
+    "Diff": 0.053,
+    "IntDiff": null
+   },
+   "16": {
+    "RG": 2.5,
+    "Diff": 0.047,
+    "IntDiff": null
+   }
+  },
+  "Source": "https://trackbowling.com/products/hx16",
   "Checked": "2026-10-07"
  },
  "track-inc-in2ition": {
