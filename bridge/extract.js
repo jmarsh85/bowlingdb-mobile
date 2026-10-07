@@ -282,7 +282,15 @@ function matchRec(rec, byBrand) {
   if (exact.length === 1) return { status: 'match', catalogId: exact[0].i, candidates: [exact[0].i] };
   if (exact.length > 1) return { status: 'ambiguous', candidates: exact.map(r => r.i) };
   const variants = pool.filter(r => r._t.startsWith(t) && r._t.length > t.length).slice(0, 12);
-  return { status: variants.length ? 'variant' : 'no-usbc', candidates: variants.map(r => r.i) };
+  if (variants.length) return { status: 'variant', candidates: variants.map(r => r.i) };
+  /* "Bash - Purple / Yellow", "Misfit - Magenta/Yellow": a colourway of a listed model. Only when the
+     suffix is colours, never a cover type (Pearl/Solid/Hybrid change the ball). */
+  const m = /^(.+?)\s+[-\u2013]\s+(.+)$/.exec(String(rec.title || ''));
+  if (m && !/pearl|solid|hybrid|urethane|polyester|plastic|reactive|sanded|polished/i.test(m[2])) {
+    const base = pool.filter(r => r._t === titleKey(m[1]));
+    if (base.length === 1) return { status: 'match', catalogId: base[0].i, candidates: [base[0].i], via: 'colourway' };
+  }
+  return { status: 'no-usbc', candidates: [] };
 }
 function decide(rec, match, flags) {
   if (match.status !== 'match') return { decision: 'pending', reason: match.status };
@@ -422,6 +430,19 @@ async function main(argv, fetchImpl, log = s => process.stdout.write(s + '\n')) 
       perSource[s.id].debug = 'debug/' + s.id + '.html';
     }
   });
+  const prevPath = arg('previous');
+  if (prevPath && fs.existsSync(prevPath)) {
+    const prev = JSON.parse(fs.readFileSync(prevPath, 'utf8'));
+    for (const s of sources) {
+      if (perSource[s.id].parsed > 0) continue;
+      const kept = prev.filter(r => r.source === s.id);
+      if (kept.length) { staged.push(...kept); perSource[s.id].carriedOver = kept.length;
+        log(s.id + ': returned nothing, kept ' + kept.length + ' rows from the previous run'); }
+    }
+    /* --only runs: every other source keeps its previous rows, so a partial run never shrinks staging */
+    const ran = new Set(sources.map(s => s.id));
+    staged.push(...prev.filter(r => !ran.has(r.source)));
+  }
   resolveConflicts(staged);
   staged.sort((a, b) => (a.brand + a.title).localeCompare(b.brand + b.title));
   const cov = coverage(rows, staged, since);
@@ -431,7 +452,7 @@ async function main(argv, fetchImpl, log = s => process.stdout.write(s + '\n')) 
   const L = ['# Spec bridge extract', '', 'Staged ' + staged.length + ' ball pages: **' + count('auto') + ' auto**, ' + count('pending') + ' pending, ' + count('duplicate') + ' duplicate.', '',
     '| source | pages | ball pages | auto | pending | errors |', '|---|---|---|---|---|---|'];
   for (const s of sources) { const p = perSource[s.id]; const st = staged.filter(x => x.source === s.id);
-    L.push(`| ${s.id} | ${p.pages} | ${p.parsed} | ${st.filter(x => x.decision === 'auto').length} | ${st.filter(x => x.decision === 'pending').length} | ${p.errors} |`); }
+    L.push(`| ${s.id}${p.carriedOver ? ' (kept ' + p.carriedOver + ' from last run)' : ''} | ${p.pages} | ${p.parsed} | ${st.filter(x => x.decision === 'auto').length} | ${st.filter(x => x.decision === 'pending').length} | ${p.errors} |`); }
   L.push('', '| brand | USBC rows | specs (auto) | pending | ' + since + '+ rows | ' + since + '+ auto |', '|---|---|---|---|---|---|');
   for (const b in cov) { const c = cov[b]; L.push(`| ${b} | ${c.all} | ${c.auto} | ${c.pending} | ${c.recent} | ${c.recentAuto} |`); }
   const reasons = {}; staged.filter(s => s.decision === 'pending').forEach(s => { reasons[s.reason] = (reasons[s.reason] || 0) + 1; });
