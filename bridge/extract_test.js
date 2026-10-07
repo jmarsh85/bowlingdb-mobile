@@ -114,6 +114,21 @@ const NOWT = `<table><tr><th>RG</th><th>DIFF</th><th>INT DIFF</th></tr><tr><td>1
 const nw = X.weightTable(X.htmlToText(NOWT));
 ok(nw[12].RG === 2.593 && nw[12].Diff === 0.041 && nw[15].IntDiff === 0.02, 'header without Weight column: no RG=12 misread');
 
+
+/* ---- full-run regressions ---- */
+const HERO = `<h1>Hero</h1><table><tr><td>Level</td><td>Advanced</td></tr><tr><td>Core</td><td>Contra</td></tr>
+<tr><td>Coverstock</td><td>Activator Plus 2.0 Pearl</td></tr><tr><td>Cover Type</td><td>Pearl Reactive</td></tr>
+<tr><td>RG</td><td>2.474 (15 lb.)</td></tr><tr><td>DIFF</td><td>0.047 (15 lb.)</td></tr></table>`;
+const he = X.parseCraft(HERO, 'u', 'Brunswick')[0];
+ok(he.specs.weights[15] && he.specs.weights[15].RG === 2.474 && he.specs.weights[15].Diff === 0.047 && Object.keys(he.specs.weights).length === 1, 'retired page: single stated weight');
+const noW = X.parseCraft('<h1>X</h1><table><tr><td>RG</td><td>2.474</td></tr><tr><td>DIFF</td><td>0.047</td></tr></table>', 'u', 'Brunswick')[0];
+ok(Object.keys(noW.specs.weights).length === 0, 'weight not stated -> nothing assumed');
+const trk = X.parseShopifyBody('<p>RG 2.518 (15# ball)</p><p>Differential 0.053 (15# ball)</p>', 'A', 'u', 'Track Inc.', null)[0];
+ok(trk.specs.weights[15].Diff === 0.053, 'shopify single-weight text');
+const G = X.parseStormListing(`<h2><a href="/900-global-portal-bowling-ball">Portal</a></h2><span>SKU: BBMGPL</span><div><span>Brand: 900 Global</span>
+<span>Weight Block: G_Conduit_AI</span><span>Symmetry: G_Asymmetrical</span><span>Differential: 0.053</span><span>Radius of Gyration: 2.58</span><span>Weight: 16</span></div>`, 'https://s');
+ok(G[0].specs.core === 'Conduit AI' && G[0].specs.coreType === 'Asymmetrical', 'storm: G_ (900 Global) prefix stripped');
+
 /* verify / match / decide */
 const rows = [{ i: 'storm-hy-road', k: 'storm|hyroad', m: 'Storm', n: 'Hy-Road', y: '2008' },
   { i: 'storm-monsoon', k: 'storm|monsoon', m: 'Storm', n: 'Monsoon', y: '2026' },
