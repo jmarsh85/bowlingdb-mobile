@@ -1,58 +1,71 @@
 {
-  "generated": "2026-10-07T01:03:09.171Z",
+  "generated": "2026-10-07T01:16:37.518Z",
   "since": 2023,
   "perSource": {
     "storm": {
-      "pages": 1,
-      "parsed": 23,
+      "pages": 3,
+      "parsed": 60,
       "errors": 0,
       "errorSample": []
     },
     "brunswick": {
-      "pages": 10,
-      "parsed": 10,
+      "pages": 258,
+      "parsed": 258,
       "errors": 0,
       "errorSample": []
     },
     "hammer": {
-      "pages": 10,
-      "parsed": 10,
-      "errors": 0,
-      "errorSample": []
+      "pages": 366,
+      "parsed": 198,
+      "errors": 3,
+      "errorSample": [
+        "https://hammerbowling.com/products/black-widow.json 429",
+        "https://hammerbowling.com/products/vincennes-university.json 429",
+        "https://hammerbowling.com/products/black-widow-rubber-shammy-red.json 429"
+      ]
     },
     "dv8": {
-      "pages": 10,
-      "parsed": 10,
+      "pages": 126,
+      "parsed": 126,
       "errors": 0,
       "errorSample": []
     },
     "radical": {
-      "pages": 10,
-      "parsed": 10,
+      "pages": 129,
+      "parsed": 129,
       "errors": 0,
       "errorSample": []
     },
     "track": {
-      "pages": 10,
-      "parsed": 5,
-      "errors": 0,
-      "errorSample": []
+      "pages": 181,
+      "parsed": 163,
+      "errors": 1,
+      "errorSample": [
+        "https://trackbowling.com/products/logix.json 429"
+      ]
     },
     "ebonite": {
-      "pages": 10,
-      "parsed": 5,
-      "errors": 0,
-      "errorSample": []
+      "pages": 215,
+      "parsed": 191,
+      "errors": 2,
+      "errorSample": [
+        "https://ebonite.com/products/omni.json 429",
+        "https://ebonite.com/products/university-of-california.json 429"
+      ]
     },
     "columbia": {
-      "pages": 10,
-      "parsed": 8,
-      "errors": 0,
-      "errorSample": []
+      "pages": 404,
+      "parsed": 386,
+      "errors": 3,
+      "errorSample": [
+        "https://columbia300.com/products/ti-beast.json 429",
+        "https://columbia300.com/products/messenger-ti-low-rg.json 429",
+        "https://columbia300.com/products/scout-r-raspberry-blue.json 429"
+      ]
     },
     "motiv": {
-      "pages": 10,
-      "parsed": 10,
+      "pages": 206,
+      "parsed": 205,
       "errors": 0,
       "errorSample": []
     }
@@ -60,80 +73,80 @@
   "coverage": {
     "900 Global": {
       "all": 376,
-      "auto": 0,
+      "auto": 4,
       "pending": 0,
       "recent": 69,
-      "recentAuto": 0
+      "recentAuto": 4
     },
     "Brunswick": {
       "all": 745,
-      "auto": 7,
-      "pending": 0,
+      "auto": 48,
+      "pending": 144,
       "recent": 74,
-      "recentAuto": 7
+      "recentAuto": 34
     },
     "Columbia 300": {
       "all": 553,
-      "auto": 0,
-      "pending": 4,
+      "auto": 168,
+      "pending": 74,
       "recent": 20,
-      "recentAuto": 0
+      "recentAuto": 15
     },
     "DV8": {
       "all": 139,
-      "auto": 10,
-      "pending": 0,
+      "auto": 17,
+      "pending": 99,
       "recent": 24,
-      "recentAuto": 10
+      "recentAuto": 17
     },
     "Ebonite": {
       "all": 814,
-      "auto": 2,
-      "pending": 1,
+      "auto": 109,
+      "pending": 30,
       "recent": 61,
-      "recentAuto": 0
+      "recentAuto": 15
     },
     "Hammer": {
       "all": 653,
-      "auto": 5,
-      "pending": 3,
+      "auto": 75,
+      "pending": 94,
       "recent": 114,
-      "recentAuto": 0
+      "recentAuto": 39
     },
     "Motiv": {
       "all": 218,
-      "auto": 10,
-      "pending": 0,
+      "auto": 161,
+      "pending": 13,
       "recent": 57,
-      "recentAuto": 10
+      "recentAuto": 49
     },
     "Radical": {
       "all": 162,
-      "auto": 10,
-      "pending": 0,
+      "auto": 33,
+      "pending": 90,
       "recent": 43,
-      "recentAuto": 10
+      "recentAuto": 32
     },
     "Roto Grip": {
       "all": 468,
-      "auto": 0,
-      "pending": 0,
+      "auto": 9,
+      "pending": 6,
       "recent": 88,
-      "recentAuto": 0
+      "recentAuto": 9
     },
     "Storm": {
       "all": 997,
-      "auto": 21,
+      "auto": 27,
       "pending": 1,
       "recent": 177,
-      "recentAuto": 16
+      "recentAuto": 18
     },
     "Track Inc.": {
       "all": 361,
-      "auto": 3,
-      "pending": 11,
+      "auto": 113,
+      "pending": 48,
       "recent": 46,
-      "recentAuto": 0
+      "recentAuto": 24
     }
   }
 }
