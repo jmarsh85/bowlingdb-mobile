@@ -25,7 +25,8 @@ const LABEL = { variant: 'Colourway family: tick the USBC ball(s) this page cove
   'no-usbc': 'No USBC match' };
 /* Only rows that could publish something get boxes; the rest are counted. */
 function actionable(r) {
-  const hasNums = Object.keys(r.specs && r.specs.weights || {}).length > 0;
+  const ws = r.specs && r.specs.weights || {};
+  const hasNums = Object.keys(ws).some(w => ws[w] && ws[w].RG != null && ws[w].Diff != null);   // publish needs both
   if (!hasNums) return [];
   const reason = String(r.reason || '').replace(/:.*/, '');
   if (reason === 'variant' || reason === 'ambiguous') return (r.candidates || []).map(id => ({ id, reason }));
@@ -62,7 +63,11 @@ function render(staged, currentBody) {
     const [reason, src] = key.split('||');
     body.push('### ' + src + ' — ' + (LABEL[reason] || reason) + ' (' + groups[key].length + ')', '', ...groups[key], '');
   }
-  const tail = ['---', 'Not shown (nothing publishable to approve): ' +
+  const ruled = {}; staged.filter(r => r.decision === 'auto' && r.rule).forEach(r => { ruled[r.rule] = (ruled[r.rule] || 0) + 1; });
+  const outvoted = staged.filter(r => r.decision === 'minority').length;
+  const tail = ['---', 'Handled automatically (no box needed): ' + (Object.entries(ruled).map(([k, v]) => k + ' ' + v).join(', ') || 'none') +
+    (outvoted ? '; ' + outvoted + ' outvoted by majority' : '') + '.',
+    'Not shown (nothing publishable to approve): ' +
     (Object.entries(counts).map(([k, v]) => k + ' ' + v).join(', ') || 'none') + '.'];
   let out = head.concat(body, tail).join('\n');
   if (out.length > MAX) {
