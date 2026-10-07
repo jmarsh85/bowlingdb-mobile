@@ -894,6 +894,57 @@
   "Source": "https://brunswickbowling.com/products/balls/retired/damage",
   "Checked": "2026-10-07"
  },
+ "brunswick-danger-zone": {
+  "DateReleased": "2025-12-11",
+  "Core": {
+   "Name": "Danger Zone",
+   "Type": null
+  },
+  "Cover": {
+   "Name": "HK22 - PowerKoil 26",
+   "Type": "Solid Reactive",
+   "Finish": "500, 1000, 2000 Siaair / Crown Factory Compound"
+  },
+  "SpecsByWeight": {
+   "10": {
+    "RG": 2.8,
+    "Diff": 0.002,
+    "IntDiff": null
+   },
+   "11": {
+    "RG": 2.769,
+    "Diff": 0.002,
+    "IntDiff": null
+   },
+   "12": {
+    "RG": 2.597,
+    "Diff": 0.04,
+    "IntDiff": null
+   },
+   "13": {
+    "RG": 2.574,
+    "Diff": 0.04,
+    "IntDiff": null
+   },
+   "14": {
+    "RG": 2.518,
+    "Diff": 0.048,
+    "IntDiff": null
+   },
+   "15": {
+    "RG": 2.501,
+    "Diff": 0.048,
+    "IntDiff": null
+   },
+   "16": {
+    "RG": 2.488,
+    "Diff": 0.048,
+    "IntDiff": null
+   }
+  },
+  "Source": "https://brunswickbowling.com/products/balls/current/danger-zone",
+  "Checked": "2026-10-07"
+ },
  "brunswick-danger-zone-purple-ice": {
   "DateReleased": "2025-12-11",
   "Core": {
