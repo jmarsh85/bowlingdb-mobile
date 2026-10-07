@@ -77,7 +77,8 @@ function weightTable(text) {
     for (let j = i + 1; j < Math.min(lines.length, i + 10); j++) {
       const c = lines[j].split(' | '); const w = /^(1[0-6])\s*(?:lb|lbs|#|pounds?)?\.?$/i.exec((c[0] || '').trim());
       if (!w) break;
-      out[+w[1]] = { RG: num(c[iRG]), Diff: num(c[iD]), IntDiff: iI >= 0 ? num(c[iI]) : null };
+      const off = Math.max(0, c.length - hdr.length);   // header without a "Weight" column
+      out[+w[1]] = { RG: num(c[iRG + off]), Diff: num(c[iD + off]), IntDiff: iI >= 0 ? num(c[iI + off]) : null };
     }
     if (Object.keys(out).length) return out;
   }
@@ -158,7 +159,7 @@ function stormFields(text) {
 }
 function parseStormListing(html, base) {
   html = String(html || '');
-  const heads = [...html.matchAll(/<h2[^>]*>([\s\S]*?)<\/h2>/gi)].filter(m => /SKU/i.test(m[1]));
+  const heads = [...html.matchAll(/<h2[^>]*>([\s\S]*?)<\/h2>/gi)].filter(m => /<a[^>]+href=/i.test(m[1]));
   const clean = v => v == null ? null : (String(v).replace(/^S_/, '').replace(/_/g, ' ').trim() || null);
   const out = [];
   heads.forEach((h, k) => {
@@ -166,8 +167,8 @@ function parseStormListing(html, base) {
     const a = /<a[^>]+href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/i.exec(h[1]);
     const headText = decode(h[1].replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').trim();
     const title = a ? decode(a[2].replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').trim() : headText.replace(/\s*SKU:.*$/i, '');
-    const sku = (/SKU:\s*([A-Z0-9-]+)/i.exec(headText) || [])[1] || null;
     const body = htmlToText(seg.slice(h[0].length)).replace(/\n/g, ' ');
+    const sku = (/SKU:\s*([A-Z0-9-]+)/i.exec(headText + ' ' + body) || [])[1] || null;
     const f = stormFields(body);
     if (!f['radius of gyration'] && !f['differential']) return;
     const w = num(f['weight']);
@@ -259,7 +260,9 @@ const PLATFORM = { storm: 'storm', brunswick: 'craft', dv8: 'craft', radical: 'c
 const SITE_BRAND = { brunswick: 'Brunswick', dv8: 'DV8', radical: 'Radical', hammer: 'Hammer', track: 'Track Inc.', ebonite: 'Ebonite', columbia: 'Columbia 300', motiv: 'Motiv' };
 
 async function extractSource(src, cfg, fetchImpl, limit, log) {
-  const get = getter(cfg, fetchImpl), plat = PLATFORM[src.id], recs = [], errors = [];
+  const get0 = getter(cfg, fetchImpl), plat = PLATFORM[src.id], recs = [], errors = [];
+  let firstPage = null;
+  const get = async u => { const r = await get0(u); if (!firstPage && r.status === 200 && !/robots\.txt|sitemap/i.test(u)) firstPage = { url: u, text: r.text }; return r; };
   const rb = await get(src.base + '/robots.txt'); const robots = rb.status === 200 ? parseRobots(rb.text) : parseRobots('');
   const host = new URL(src.base).host.replace(/^www\./, '');
   if (plat === 'storm') {
@@ -272,7 +275,7 @@ async function extractSource(src, cfg, fetchImpl, limit, log) {
       recs.push(...items); pagesSeen++; if (limit && recs.length >= limit) break;
     }
     log(src.id + ': ' + pagesSeen + ' listing pages, ' + recs.length + ' balls');
-    return { recs, errors, pages: pagesSeen };
+    return { recs, errors, pages: pagesSeen, firstPage };
   }
   const smStart = robots.sitemaps.length ? robots.sitemaps : [src.base + '/sitemap.xml'];
   let urls = await sitemapUrls(get, robots, smStart);
@@ -298,7 +301,7 @@ async function extractSource(src, cfg, fetchImpl, limit, log) {
     } catch (e) { errors.push(u + ' ' + (e.message || e)); }
   }
   log(src.id + ': ' + urls.length + ' candidate urls, ' + pages + ' fetched');
-  return { recs, errors, pages };
+  return { recs, errors, pages, firstPage };
 }
 
 async function main(argv, fetchImpl, log = s => process.stdout.write(s + '\n')) {
@@ -323,6 +326,11 @@ async function main(argv, fetchImpl, log = s => process.stdout.write(s + '\n')) 
         specs: rec.specs, mfgScales: rec.mfgScales, imageUrl: rec.imageUrl, fetched, method: 'parser' });
     }
     perSource[s.id] = { pages: r.pages, parsed, errors: r.errors.length, errorSample: r.errors.slice(0, 10) };
+    if (!parsed && r.firstPage) {          // nothing parsed: keep one raw page so the parser can be fixed against it
+      fs.mkdirSync(path.join(out, 'debug'), { recursive: true });
+      fs.writeFileSync(path.join(out, 'debug', s.id + '.html'), '<!-- ' + r.firstPage.url + ' -->\n' + String(r.firstPage.text).slice(0, 400000));
+      perSource[s.id].debug = 'debug/' + s.id + '.html';
+    }
   });
   resolveConflicts(staged);
   staged.sort((a, b) => (a.brand + a.title).localeCompare(b.brand + b.title));
