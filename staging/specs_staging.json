@@ -11248,6 +11248,61 @@
   "source": "columbia",
   "platform": "shopify",
   "brand": "Columbia 300",
+  "title": "BEAST - BLUE PEARL",
+  "url": "https://columbia300.com/products/beast-blue-pearl",
+  "sku": null,
+  "catalogId": null,
+  "match": "no-usbc",
+  "candidates": [],
+  "decision": "pending",
+  "reason": "no-usbc",
+  "flags": [],
+  "specs": {
+   "core": "Beast",
+   "coverName": "Bend-It",
+   "coverType": "Pearl Reactive",
+   "finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish",
+   "released": null,
+   "weights": {
+    "10": {
+     "RG": 2.8,
+     "Diff": 0.002
+    },
+    "11": {
+     "RG": 2.769,
+     "Diff": 0.002
+    },
+    "12": {
+     "RG": 2.62,
+     "Diff": 0.033
+    },
+    "13": {
+     "RG": 2.59,
+     "Diff": 0.033
+    },
+    "14": {
+     "RG": 2.54,
+     "Diff": 0.033
+    },
+    "15": {
+     "RG": 2.54,
+     "Diff": 0.033
+    },
+    "16": {
+     "RG": 2.54,
+     "Diff": 0.033
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": "https://cdn.shopify.com/s/files/1/0062/0226/1619/files/Beast_Blue_Pearl_1600x1707_website.png?v=1755704508",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "columbia",
+  "platform": "shopify",
+  "brand": "Columbia 300",
   "title": "BEAST - CHERRY / GOLD / WHITE",
   "url": "https://columbia300.com/products/beast-cherry-gold-white",
   "sku": null,
@@ -14540,6 +14595,58 @@
   "source": "columbia",
   "platform": "shopify",
   "brand": "Columbia 300",
+  "title": "Freeze - Navy / Purple / Yellow",
+  "url": "https://columbia300.com/products/freeze-navy-purple-yellow",
+  "sku": null,
+  "catalogId": null,
+  "match": "no-usbc",
+  "candidates": [],
+  "decision": "pending",
+  "reason": "no-usbc",
+  "flags": [],
+  "specs": {
+   "core": "Symmetric",
+   "coverName": "NE2",
+   "coverType": null,
+   "finish": null,
+   "released": null,
+   "weights": {
+    "12": {
+     "RG": 2.6,
+     "Diff": 0.039,
+     "IntDiff": null
+    },
+    "13": {
+     "RG": 2.53,
+     "Diff": 0.055,
+     "IntDiff": null
+    },
+    "14": {
+     "RG": 2.56,
+     "Diff": 0.049,
+     "IntDiff": null
+    },
+    "15": {
+     "RG": 2.56,
+     "Diff": 0.047,
+     "IntDiff": null
+    },
+    "16": {
+     "RG": 2.56,
+     "Diff": 0.045,
+     "IntDiff": null
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": "https://cdn.shopify.com/s/files/1/0062/0226/1619/files/Freeze_Navy_Purple_Yellow_1600x1707_website.png?v=1700249832",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "columbia",
+  "platform": "shopify",
+  "brand": "Columbia 300",
   "title": "Freeze - Neon Orange / Green",
   "url": "https://columbia300.com/products/freeze-neon-orange-green",
   "sku": null,
@@ -16220,38 +16327,6 @@
   "source": "columbia",
   "platform": "shopify",
   "brand": "Columbia 300",
-  "title": "Messenger - Blue",
-  "url": "https://columbia300.com/products/messenger-blue",
-  "sku": null,
-  "catalogId": null,
-  "match": "no-usbc",
-  "candidates": [],
-  "decision": "pending",
-  "reason": "no-usbc",
-  "flags": [],
-  "specs": {
-   "core": "2-Piece",
-   "coverName": "Super Flex Reactive",
-   "coverType": null,
-   "finish": null,
-   "released": null,
-   "weights": {
-    "16": {
-     "RG": 2.577,
-     "Diff": 0.047,
-     "IntDiff": null
-    }
-   }
-  },
-  "mfgScales": {},
-  "imageUrl": "https://cdn.shopify.com/s/files/1/0062/0226/1619/files/Messenger_Blue_1600x1707_website.png?v=1700255842",
-  "fetched": "2026-10-07",
-  "method": "parser"
- },
- {
-  "source": "columbia",
-  "platform": "shopify",
-  "brand": "Columbia 300",
   "title": "Messenger - Cherry",
   "url": "https://columbia300.com/products/messenger-cherry",
   "sku": null,
@@ -17248,65 +17323,6 @@
   },
   "mfgScales": {},
   "imageUrl": "https://cdn.shopify.com/s/files/1/0062/0226/1619/files/Nitrous_Red_Silver_1600x1707_website.png?v=1700516080",
-  "fetched": "2026-10-07",
-  "method": "parser"
- },
- {
-  "source": "columbia",
-  "platform": "shopify",
-  "brand": "Columbia 300",
-  "title": "Nitrous - Red / Smoke / White",
-  "url": "https://columbia300.com/products/nitrous-red-smoke-white",
-  "sku": null,
-  "catalogId": "columbia-300-nitrous-red-smoke-white",
-  "match": "match",
-  "candidates": [
-   "columbia-300-nitrous-red-smoke-white"
-  ],
-  "decision": "auto",
-  "reason": "exact-match+gates",
-  "flags": [],
-  "specs": {
-   "core": "Nitrous",
-   "coverName": "Boost/R",
-   "coverType": null,
-   "finish": null,
-   "released": null,
-   "weights": {
-    "11": {
-     "RG": 2.69,
-     "Diff": 0.02,
-     "IntDiff": null
-    },
-    "12": {
-     "RG": 2.63,
-     "Diff": 0.03,
-     "IntDiff": null
-    },
-    "13": {
-     "RG": 2.6,
-     "Diff": 0.03,
-     "IntDiff": null
-    },
-    "14": {
-     "RG": 2.58,
-     "Diff": 0.031,
-     "IntDiff": null
-    },
-    "15": {
-     "RG": 2.55,
-     "Diff": 0.033,
-     "IntDiff": null
-    },
-    "16": {
-     "RG": 2.55,
-     "Diff": 0.03,
-     "IntDiff": null
-    }
-   }
-  },
-  "mfgScales": {},
-  "imageUrl": "https://cdn.shopify.com/s/files/1/0062/0226/1619/files/Nitrous_Red_Smoke_White_1600x1707_website.png?v=1700591751",
   "fetched": "2026-10-07",
   "method": "parser"
  },
@@ -20317,6 +20333,50 @@
   "source": "columbia",
   "platform": "shopify",
   "brand": "Columbia 300",
+  "title": "Scout Reactive - Blue / Gold",
+  "url": "https://columbia300.com/products/scout-reactive-blue-gold",
+  "sku": null,
+  "catalogId": "columbia-300-scout-reactive-blue-gold",
+  "match": "match",
+  "candidates": [
+   "columbia-300-scout-reactive-blue-gold"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Pancake",
+   "coverName": "Super-Flex",
+   "coverType": null,
+   "finish": null,
+   "released": null,
+   "weights": {
+    "14": {
+     "RG": 2.69,
+     "Diff": 0.02,
+     "IntDiff": null
+    },
+    "15": {
+     "RG": 2.65,
+     "Diff": 0.02,
+     "IntDiff": null
+    },
+    "16": {
+     "RG": 2.64,
+     "Diff": 0.02,
+     "IntDiff": null
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": "https://cdn.shopify.com/s/files/1/0062/0226/1619/files/Scout_Reactive_Blue_Gold_1600x1707_website.png?v=1700600367",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "columbia",
+  "platform": "shopify",
+  "brand": "Columbia 300",
   "title": "Scout Reactive - Green / Silver",
   "url": "https://columbia300.com/products/scout-reactive-green-silver",
   "sku": null,
@@ -22111,50 +22171,6 @@
   },
   "mfgScales": {},
   "imageUrl": "https://cdn.shopify.com/s/files/1/0062/0226/1619/files/Teal_Pearl_Shadow-R_1600x1707_website.png?v=1755712000",
-  "fetched": "2026-10-07",
-  "method": "parser"
- },
- {
-  "source": "columbia",
-  "platform": "shopify",
-  "brand": "Columbia 300",
-  "title": "The Classic U2",
-  "url": "https://columbia300.com/products/the-classic-u2",
-  "sku": null,
-  "catalogId": "columbia-300-the-classic-u2",
-  "match": "match",
-  "candidates": [
-   "columbia-300-the-classic-u2"
-  ],
-  "decision": "auto",
-  "reason": "exact-match+gates",
-  "flags": [],
-  "specs": {
-   "core": "Resurgance",
-   "coverName": "Urethane",
-   "coverType": null,
-   "finish": null,
-   "released": null,
-   "weights": {
-    "14": {
-     "RG": 2.5,
-     "Diff": 0.038,
-     "IntDiff": null
-    },
-    "15": {
-     "RG": 2.46,
-     "Diff": 0.043,
-     "IntDiff": null
-    },
-    "16": {
-     "RG": 2.47,
-     "Diff": 0.04,
-     "IntDiff": null
-    }
-   }
-  },
-  "mfgScales": {},
-  "imageUrl": "https://cdn.shopify.com/s/files/1/0062/0226/1619/files/The_Classic_U2_1600x1707_website.png?v=1755712328",
   "fetched": "2026-10-07",
   "method": "parser"
  },
@@ -34726,6 +34742,60 @@
   "source": "ebonite",
   "platform": "shopify",
   "brand": "Ebonite",
+  "title": "Maverick",
+  "url": "https://ebonite.com/products/maverick",
+  "sku": null,
+  "catalogId": "ebonite-maverick",
+  "match": "match",
+  "candidates": [
+   "ebonite-maverick"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Maverick",
+   "coverName": "GB 14.0 Solid",
+   "coverType": null,
+   "finish": null,
+   "released": null,
+   "weights": {
+    "12": {
+     "RG": 2.62,
+     "Diff": 0.046,
+     "IntDiff": null
+    },
+    "13": {
+     "RG": 2.59,
+     "Diff": 0.043,
+     "IntDiff": null
+    },
+    "14": {
+     "RG": 2.5,
+     "Diff": 0.055,
+     "IntDiff": null
+    },
+    "15": {
+     "RG": 2.48,
+     "Diff": 0.056,
+     "IntDiff": null
+    },
+    "16": {
+     "RG": 2.49,
+     "Diff": 0.049,
+     "IntDiff": null
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": "https://cdn.shopify.com/s/files/1/0609/8790/0156/products/Maverick_1600x1600_cbac33b2-5f2e-4b91-bf42-4c6292d083d1.png?v=1656609648",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "ebonite",
+  "platform": "shopify",
+  "brand": "Ebonite",
   "title": "Maverick Pearl",
   "url": "https://ebonite.com/products/maverick-pearl",
   "sku": null,
@@ -35755,60 +35825,6 @@
   },
   "mfgScales": {},
   "imageUrl": "https://cdn.shopify.com/s/files/1/0609/8790/0156/products/Maxim_Turquoise_Onyx_1600x1600_c8f405ca-ae6b-461b-a2fe-6e16de469c06.png?v=1656506454",
-  "fetched": "2026-10-07",
-  "method": "parser"
- },
- {
-  "source": "ebonite",
-  "platform": "shopify",
-  "brand": "Ebonite",
-  "title": "Mission",
-  "url": "https://ebonite.com/products/mission",
-  "sku": null,
-  "catalogId": "ebonite-mission",
-  "match": "match",
-  "candidates": [
-   "ebonite-mission"
-  ],
-  "decision": "auto",
-  "reason": "exact-match+gates",
-  "flags": [],
-  "specs": {
-   "core": "Mission 1.0",
-   "coverName": "XL1200 Reactive",
-   "coverType": null,
-   "finish": null,
-   "released": null,
-   "weights": {
-    "12": {
-     "RG": 2.62,
-     "Diff": 0.046,
-     "IntDiff": null
-    },
-    "13": {
-     "RG": 2.59,
-     "Diff": 0.043,
-     "IntDiff": null
-    },
-    "14": {
-     "RG": 2.5,
-     "Diff": 0.052,
-     "IntDiff": null
-    },
-    "15": {
-     "RG": 2.49,
-     "Diff": 0.05,
-     "IntDiff": null
-    },
-    "16": {
-     "RG": 2.48,
-     "Diff": 0.049,
-     "IntDiff": null
-    }
-   }
-  },
-  "mfgScales": {},
-  "imageUrl": "https://cdn.shopify.com/s/files/1/0609/8790/0156/products/Mission_1600x1600_d132a18c-849a-4377-b0db-30edc0ba11cf.png?v=1656506036",
   "fetched": "2026-10-07",
   "method": "parser"
  },
@@ -39529,60 +39545,6 @@
   "source": "hammer",
   "platform": "shopify",
   "brand": "Hammer",
-  "title": "Anger Solid",
-  "url": "https://hammerbowling.com/products/anger-solid",
-  "sku": null,
-  "catalogId": "hammer-anger-solid",
-  "match": "match",
-  "candidates": [
-   "hammer-anger-solid"
-  ],
-  "decision": "auto",
-  "reason": "exact-match+gates",
-  "flags": [],
-  "specs": {
-   "core": "Modified Infamous",
-   "coverName": "Semtex Solid",
-   "coverType": "Solid Reactive",
-   "finish": "500, 2000 Siaair Micro Pad",
-   "released": "2025-07-10",
-   "weights": {
-    "12": {
-     "RG": 2.608,
-     "Diff": 0.04,
-     "IntDiff": null
-    },
-    "13": {
-     "RG": 2.585,
-     "Diff": 0.04,
-     "IntDiff": null
-    },
-    "14": {
-     "RG": 2.603,
-     "Diff": 0.049,
-     "IntDiff": null
-    },
-    "15": {
-     "RG": 2.567,
-     "Diff": 0.049,
-     "IntDiff": null
-    },
-    "16": {
-     "RG": 2.572,
-     "Diff": 0.041,
-     "IntDiff": null
-    }
-   }
-  },
-  "mfgScales": {},
-  "imageUrl": "https://cdn.shopify.com/s/files/1/0030/3330/1104/files/Anger_Solid_1600x1707_website.png?v=1749478723",
-  "fetched": "2026-10-07",
-  "method": "parser"
- },
- {
-  "source": "hammer",
-  "platform": "shopify",
-  "brand": "Hammer",
   "title": "Arctic Vibe",
   "url": "https://hammerbowling.com/products/arctic-vibe",
   "sku": null,
@@ -40986,36 +40948,6 @@
   "source": "hammer",
   "platform": "shopify",
   "brand": "Hammer",
-  "title": "Black Widow Sting",
-  "url": "https://hammerbowling.com/products/black-widow-sting",
-  "sku": null,
-  "catalogId": "hammer-black-widow-sting",
-  "match": "match",
-  "candidates": [
-   "hammer-black-widow-sting"
-  ],
-  "decision": "pending",
-  "reason": "no-weight-specs",
-  "flags": [
-   "no-weight-specs"
-  ],
-  "specs": {
-   "core": null,
-   "coverName": "Violent Flip Reactive",
-   "coverType": null,
-   "finish": null,
-   "released": null,
-   "weights": {}
-  },
-  "mfgScales": {},
-  "imageUrl": "https://cdn.shopify.com/s/files/1/0030/3330/1104/files/Black_Widow_Sting_1600x1707_website.png?v=1721923337",
-  "fetched": "2026-10-07",
-  "method": "parser"
- },
- {
-  "source": "hammer",
-  "platform": "shopify",
-  "brand": "Hammer",
   "title": "Black Widow Tour V1",
   "url": "https://hammerbowling.com/products/black-widow-tour-v1",
   "sku": null,
@@ -41063,60 +40995,6 @@
   },
   "mfgScales": {},
   "imageUrl": "https://cdn.shopify.com/s/files/1/0030/3330/1104/files/Black_Widow_Tour_V1_1600x1707_website.png?v=1754663967",
-  "fetched": "2026-10-07",
-  "method": "parser"
- },
- {
-  "source": "hammer",
-  "platform": "shopify",
-  "brand": "Hammer",
-  "title": "Black Widow Urethane",
-  "url": "https://hammerbowling.com/products/black-widow-urethane",
-  "sku": null,
-  "catalogId": "hammer-black-widow-urethane",
-  "match": "match",
-  "candidates": [
-   "hammer-black-widow-urethane"
-  ],
-  "decision": "auto",
-  "reason": "exact-match+gates",
-  "flags": [],
-  "specs": {
-   "core": "Gas Mask",
-   "coverName": "Urethane Pearl",
-   "coverType": "Pearl Urethane",
-   "finish": "360, 800 Siaair Micro Pad",
-   "released": "2022-02-25",
-   "weights": {
-    "12": {
-     "RG": 2.612,
-     "Diff": 0.043,
-     "IntDiff": 0.011
-    },
-    "13": {
-     "RG": 2.589,
-     "Diff": 0.043,
-     "IntDiff": 0.011
-    },
-    "14": {
-     "RG": 2.5,
-     "Diff": 0.056,
-     "IntDiff": 0.016
-    },
-    "15": {
-     "RG": 2.5,
-     "Diff": 0.058,
-     "IntDiff": 0.016
-    },
-    "16": {
-     "RG": 2.51,
-     "Diff": 0.048,
-     "IntDiff": 0.015
-    }
-   }
-  },
-  "mfgScales": {},
-  "imageUrl": "https://cdn.shopify.com/s/files/1/0030/3330/1104/files/Black_Widow_Urethane_1600x1707_website.png?v=1721923391",
   "fetched": "2026-10-07",
   "method": "parser"
  },
@@ -43880,6 +43758,68 @@
   },
   "mfgScales": {},
   "imageUrl": "https://cdn.shopify.com/s/files/1/0030/3330/1104/files/Pure_Envy_1600x1707_website.png?v=1723140130",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "hammer",
+  "platform": "shopify",
+  "brand": "Hammer",
+  "title": "Pure Hammer - Black",
+  "url": "https://hammerbowling.com/products/pure-hammer-black",
+  "sku": null,
+  "catalogId": null,
+  "match": "no-usbc",
+  "candidates": [],
+  "decision": "pending",
+  "reason": "no-usbc",
+  "flags": [],
+  "specs": {
+   "core": "2-piece",
+   "coverName": "Urethane",
+   "coverType": null,
+   "finish": null,
+   "released": null,
+   "weights": {
+    "10": {
+     "RG": 2.72,
+     "Diff": 0.031,
+     "IntDiff": null
+    },
+    "11": {
+     "RG": 2.62,
+     "Diff": 0.032,
+     "IntDiff": null
+    },
+    "12": {
+     "RG": 2.59,
+     "Diff": 0.044,
+     "IntDiff": null
+    },
+    "13": {
+     "RG": 2.53,
+     "Diff": 0.056,
+     "IntDiff": null
+    },
+    "14": {
+     "RG": 2.48,
+     "Diff": 0.049,
+     "IntDiff": null
+    },
+    "15": {
+     "RG": 2.48,
+     "Diff": 0.039,
+     "IntDiff": null
+    },
+    "16": {
+     "RG": 2.49,
+     "Diff": 0.037,
+     "IntDiff": null
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": "https://cdn.shopify.com/s/files/1/0030/3330/1104/files/Pure_Hammer_Black_1600x1707_website.png?v=1755194132",
   "fetched": "2026-10-07",
   "method": "parser"
  },
@@ -68458,6 +68398,36 @@
   "source": "track",
   "platform": "shopify",
   "brand": "Track Inc.",
+  "title": "Arsenal Reactive",
+  "url": "https://trackbowling.com/products/arsenal-reactive",
+  "sku": null,
+  "catalogId": "track-inc-arsenal-reactive",
+  "match": "match",
+  "candidates": [
+   "track-inc-arsenal-reactive"
+  ],
+  "decision": "pending",
+  "reason": "no-weight-specs",
+  "flags": [
+   "no-weight-specs"
+  ],
+  "specs": {
+   "core": "Morpheus Radical Symmetric",
+   "coverName": "Power Pack Reactive",
+   "coverType": null,
+   "finish": "1500 Smooth Sanded / Polished (Magic Shine)",
+   "released": null,
+   "weights": {}
+  },
+  "mfgScales": {},
+  "imageUrl": "https://cdn.shopify.com/s/files/1/0609/7590/7033/products/Arsenal_Reactive_1600x1600_6ead53b5-9da4-43b9-8ec0-634a26d369ad.png?v=1663957536",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "track",
+  "platform": "shopify",
+  "brand": "Track Inc.",
   "title": "Blue Heat",
   "url": "https://trackbowling.com/products/blue-heat",
   "sku": null,
@@ -70084,60 +70054,6 @@
   },
   "mfgScales": {},
   "imageUrl": "https://cdn.shopify.com/s/files/1/0609/7590/7033/products/Kinetic_Platinum_1600x1600_0dc7b1a5-0602-47e7-a678-984477d6923d.png?v=1647561372",
-  "fetched": "2026-10-07",
-  "method": "parser"
- },
- {
-  "source": "track",
-  "platform": "shopify",
-  "brand": "Track Inc.",
-  "title": "Kinetic Ruby",
-  "url": "https://trackbowling.com/products/kinetic-ruby",
-  "sku": null,
-  "catalogId": "track-inc-kinetic-ruby",
-  "match": "match",
-  "candidates": [
-   "track-inc-kinetic-ruby"
-  ],
-  "decision": "auto",
-  "reason": "exact-match+gates",
-  "flags": [],
-  "specs": {
-   "core": "Modified Kinetic",
-   "coverName": "QR-6 Solid",
-   "coverType": null,
-   "finish": "500, 2000 Abralon®",
-   "released": null,
-   "weights": {
-    "12": {
-     "RG": 2.6,
-     "Diff": 0.039,
-     "IntDiff": null
-    },
-    "13": {
-     "RG": 2.53,
-     "Diff": 0.055,
-     "IntDiff": null
-    },
-    "14": {
-     "RG": 2.48,
-     "Diff": 0.041,
-     "IntDiff": null
-    },
-    "15": {
-     "RG": 2.49,
-     "Diff": 0.038,
-     "IntDiff": null
-    },
-    "16": {
-     "RG": 2.51,
-     "Diff": 0.036,
-     "IntDiff": null
-    }
-   }
-  },
-  "mfgScales": {},
-  "imageUrl": "https://cdn.shopify.com/s/files/1/0609/7590/7033/products/Kinetic_Ruby_1600x1600_d4afb0a0-9d7f-4b0c-b5a2-2d1d50af65e9.png?v=1658511917",
   "fetched": "2026-10-07",
   "method": "parser"
  },

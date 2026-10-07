@@ -1,9 +1,9 @@
 {
-  "generated": "2026-10-07T13:27:54.123Z",
+  "generated": "2026-10-07T14:48:30.928Z",
   "since": 2023,
   "perSource": {
     "storm": {
-      "pages": 1728,
+      "pages": 3412,
       "parsed": 73,
       "errors": 0,
       "errorSample": []
@@ -16,12 +16,12 @@
     },
     "hammer": {
       "pages": 366,
-      "parsed": 197,
+      "parsed": 195,
       "errors": 3,
       "errorSample": [
-        "https://hammerbowling.com/products/saw-blade.json 429",
-        "https://hammerbowling.com/products/pure-hammer-black.json 429",
-        "https://hammerbowling.com/products/olivia-farwell.json 429"
+        "https://hammerbowling.com/products/black-widow-sting.json 429",
+        "https://hammerbowling.com/products/black-widow-urethane.json 429",
+        "https://hammerbowling.com/products/anger-solid.json 429"
       ]
     },
     "dv8": {
@@ -41,7 +41,7 @@
       "parsed": 163,
       "errors": 1,
       "errorSample": [
-        "https://trackbowling.com/products/arsenal-reactive.json 429"
+        "https://trackbowling.com/products/kinetic-ruby.json 429"
       ]
     },
     "ebonite": {
@@ -49,7 +49,7 @@
       "parsed": 191,
       "errors": 1,
       "errorSample": [
-        "https://ebonite.com/products/maverick.json 429"
+        "https://ebonite.com/products/mission.json 429"
       ]
     },
     "columbia": {
@@ -57,9 +57,9 @@
       "parsed": 386,
       "errors": 3,
       "errorSample": [
-        "https://columbia300.com/products/scout-reactive-blue-gold.json 429",
-        "https://columbia300.com/products/freeze-navy-purple-yellow.json 429",
-        "https://columbia300.com/products/beast-blue-pearl.json 429"
+        "https://columbia300.com/products/the-classic-u2.json 429",
+        "https://columbia300.com/products/messenger-blue.json 429",
+        "https://columbia300.com/products/nitrous-red-smoke-white.json 429"
       ]
     },
     "motiv": {
@@ -86,7 +86,7 @@
     },
     "Columbia 300": {
       "all": 553,
-      "auto": 168,
+      "auto": 167,
       "pending": 75,
       "recent": 20,
       "recentAuto": 15
@@ -107,10 +107,10 @@
     },
     "Hammer": {
       "all": 653,
-      "auto": 75,
+      "auto": 73,
       "pending": 94,
       "recent": 114,
-      "recentAuto": 39
+      "recentAuto": 38
     },
     "Motiv": {
       "all": 218,
@@ -142,8 +142,8 @@
     },
     "Track Inc.": {
       "all": 361,
-      "auto": 114,
-      "pending": 47,
+      "auto": 113,
+      "pending": 48,
       "recent": 46,
       "recentAuto": 24
     }
