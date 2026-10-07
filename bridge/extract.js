@@ -96,6 +96,19 @@ function weightTable(text) {
   }
   return out;
 }
+/* Older pages: one weight only, e.g. "RG | 2.474 (15 lb.)", "DIFF | 0.047 (15 lb.)", "RG 2.518 (15# ball)".
+   Recorded only when the page states the weight; otherwise nothing (never assumed). */
+function singleWeight(text) {
+  const grab = re => { const m = re.exec(text); return m ? { v: num(m[1]), w: m[2] ? +m[2] : null } : null; };
+  const W = '(?:\\s*\\(\\s*(1[0-6])\\s*(?:lb|lbs|#|pound)[^)]*\\))?';
+  const rg = grab(new RegExp('(?:^|\\n)\\s*(?:RG|Radius of Gyration)\\s*[|:\\-]?\\s*([0-9]*\\.[0-9]+)' + W, 'i'));
+  const df = grab(new RegExp('(?:^|\\n)\\s*(?:Total\\s+)?(?:DIFF|Differential)\\.?\\s*[|:\\-]?\\s*([0-9]*\\.[0-9]+)' + W, 'i'));
+  const id = grab(new RegExp('(?:^|\\n)\\s*(?:Int(?:ermediate)?\\.?\\s*Diff(?:erential)?|Mass Bias(?:\\s*Diff)?|MB\\s*Diff|ASY|PSA)\\.?\\s*[|:\\-]?\\s*([0-9]*\\.[0-9]+)' + W, 'i'));
+  const w = (rg && rg.w) || (df && df.w);
+  if (!w || !rg || !df) return {};
+  return { [w]: { RG: rg.v, Diff: df.v, IntDiff: id ? id.v : null } };
+}
+function withFallback(weights, text) { return Object.keys(weights || {}).length ? weights : singleWeight(text); }
 function parseDate(s) {
   if (!s) return null;
   const t = String(s).trim();
@@ -115,7 +128,7 @@ function parseCraft(html, url, brand) {
   const lvl = /^level \| (.+)$/im.exec(text); if (lvl) scales.level = lvl[1];
   return [{ title, brand, url, imageUrl: metaContent(html, 'og:image'), mfgScales: scales,
     specs: { core: kv['core'] || null, coverName: kv['coverstock'] || null, coverType: kv['cover type'] || null,
-             finish: kv['finish'] || null, released: parseDate(kv['release date']), weights: weightTable(text) } }];
+             finish: kv['finish'] || null, released: parseDate(kv['release date']), weights: withFallback(weightTable(text), text) } }];
 }
 function parseShopifyBody(bodyHtml, title, url, brand, imageUrl) {
   const text = htmlToText(bodyHtml);
@@ -123,7 +136,7 @@ function parseShopifyBody(bodyHtml, title, url, brand, imageUrl) {
   const weights = {};
   const re = /\b(1[0-6])\s*lbs?\s*[-\u2013:]?\s*RG\s*\(?\s*([\d.]+)\s*\)?\s*(?:TOTAL\s*)?DIFF\.?\s*\(?\s*([\d.]+)\s*\)?(?:\s*(?:INT\.?\s*DIFF\.?|MB\s*DIFF|MASS BIAS(?:\s*DIFF)?|ASYM?|PSA)\s*\(?\s*([\d.]+)\s*\)?)?/gi;
   let m; while ((m = re.exec(text))) weights[+m[1]] = { RG: num(m[2]), Diff: num(m[3]), IntDiff: num(m[4]) };
-  if (!Object.keys(weights).length) Object.assign(weights, weightTable(text));
+  if (!Object.keys(weights).length) Object.assign(weights, withFallback(weightTable(text), text));
   const kv = kvLines(text);
   const pick = (k, re) => kv[k] || lab(re);
   return [{ title, brand, url, imageUrl, mfgScales: {},
@@ -143,7 +156,7 @@ function parseMotiv(html, url) {
   const scales = {}; ['length', 'backend', 'hook'].forEach(k => { if (kv[k] && /^\d+$/.test(kv[k])) scales['motiv' + k[0].toUpperCase() + k.slice(1)] = +kv[k]; });
   return [{ title, brand: 'Motiv', url, imageUrl: metaContent(html, 'og:image'), mfgScales: scales,
     specs: { core: kv['weight block'] || null, coverName: kv['cover stock'] || kv['coverstock'] || null, coverType: null,
-             finish: kv['finish'] || null, released, weights } }];
+             finish: kv['finish'] || null, released, weights: withFallback(weights, text) } }];
 }
 /* Storm listing page: many balls per page, one weight each.
    Segments by product heading, then reads "Label: value" pairs by known labels,
@@ -160,7 +173,7 @@ function stormFields(text) {
 function parseStormListing(html, base) {
   html = String(html || '');
   const heads = [...html.matchAll(/<h2[^>]*>([\s\S]*?)<\/h2>/gi)].filter(m => /<a[^>]+href=/i.test(m[1]));
-  const clean = v => v == null ? null : (String(v).replace(/^S_/, '').replace(/_/g, ' ').trim() || null);
+  const clean = v => v == null ? null : (String(v).replace(/^[A-Z]_/, '').replace(/_/g, ' ').trim() || null);
   const out = [];
   heads.forEach((h, k) => {
     const seg = html.slice(h.index, k + 1 < heads.length ? heads[k + 1].index : html.length);
