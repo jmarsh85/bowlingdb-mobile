@@ -1,0 +1,46 @@
+name: specs-extract
+# Spec bridge stages 1-5: discover -> extract -> match -> verify -> decide.
+# STAGING ONLY: writes staging/ to the `specs` branch. Never touches main or dist.
+on:
+  workflow_dispatch:
+    inputs:
+      only:
+        description: 'One source id only (blank = all manufacturers)'
+        default: ''
+      limit:
+        description: 'Max pages per source (0 = no limit; use 10 for a quick test)'
+        default: '0'
+      since:
+        description: 'Year for the "recent" coverage columns'
+        default: '2023'
+permissions:
+  contents: write
+concurrency: { group: specs-branch, cancel-in-progress: false }
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/checkout@v5
+        with: { ref: dist, path: published }
+      - uses: actions/setup-node@v5
+        with: { node-version: 22 }
+      - name: Tests
+        run: node bridge/extract_test.js
+      - name: Extract
+        run: |
+          ARGS="--index published/index.json --out out --since ${{ inputs.since }} --limit ${{ inputs.limit }}"
+          if [ -n "${{ inputs.only }}" ]; then ARGS="$ARGS --only ${{ inputs.only }}"; fi
+          node bridge/extract.js $ARGS
+          cat out/SUMMARY.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Commit to specs branch
+        run: |
+          git config --global user.name  "specs-bridge"
+          git config --global user.email "specs-bridge@users.noreply.github.com"
+          git clone --depth 1 --branch specs "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" specs
+          rm -rf specs/staging && mkdir -p specs/staging && cp -r out/. specs/staging/
+          cd specs && git add -A
+          if git diff --cached --quiet; then echo "No change"; exit 0; fi
+          git commit -m "extract: $(date -u +%F) only=${{ inputs.only }} limit=${{ inputs.limit }}"
+          git push origin specs
