@@ -258,13 +258,15 @@ function stormCandidates(rows, haveIds, prefixes, since) {
 
 /* ---------- match + verify + decide (pure) ---------- */
 const GATES = { RG: [2.40, 2.85], Diff: [0, 0.080], IntDiff: [0, 0.040] };
+const RG_MAX_LIGHT = 2.90;   // 12 lb and under genuinely reach ~2.87
 function verify(rec) {
   const flags = [];
   const ws = rec.specs.weights || {};
   if (!Object.keys(ws).length) flags.push('no-weight-specs');
   for (const w in ws) for (const k in GATES) {
     const v = ws[w][k]; if (v == null) continue;
-    if (v < GATES[k][0] || v > GATES[k][1]) { flags.push('out-of-range:' + w + ':' + k + '=' + v); ws[w][k] = null; }
+    const hi = k === 'RG' && +w <= 12 ? RG_MAX_LIGHT : GATES[k][1];
+    if (v < GATES[k][0] || v > hi) { flags.push('out-of-range:' + w + ':' + k + '=' + v); ws[w][k] = null; }
   }
   const r = rec.specs.released;
   if (r && (r < '1990-01-01' || r > (new Date().getFullYear() + 1) + '-12-31')) { flags.push('bad-date:' + r); rec.specs.released = null; }
