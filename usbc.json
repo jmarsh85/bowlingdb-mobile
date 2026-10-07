@@ -1,6 +1,6 @@
 {
  "Counts": {
-  "approved": 8046
+  "approved": 8051
  },
  "Eligibility": {
   "3g-galaxy-black": {
@@ -2236,6 +2236,10 @@
    "SlowOil78D": false
   },
   "abs-nanodesu-max-grasp": {
+   "NoSlowOil": false,
+   "SlowOil78D": false
+  },
+  "abs-nanodesu-mega-grasp": {
    "NoSlowOil": false,
    "SlowOil78D": false
   },
@@ -21987,6 +21991,10 @@
    "NoSlowOil": false,
    "SlowOil78D": false
   },
+  "pyramid-bowling-scarab": {
+   "NoSlowOil": false,
+   "SlowOil78D": false
+  },
   "pyramid-bowling-supermoon": {
    "NoSlowOil": false,
    "SlowOil78D": false
@@ -24080,6 +24088,10 @@
    "SlowOil78D": false
   },
   "roto-grip-idol-splash": {
+   "NoSlowOil": false,
+   "SlowOil78D": false
+  },
+  "roto-grip-idol-star": {
    "NoSlowOil": false,
    "SlowOil78D": false
   },
@@ -27551,6 +27563,10 @@
    "NoSlowOil": false,
    "SlowOil78D": false
   },
+  "storm-physix-ignition": {
+   "NoSlowOil": false,
+   "SlowOil78D": false
+  },
   "storm-physix-inspire": {
    "NoSlowOil": false,
    "SlowOil78D": false
@@ -29923,6 +29939,10 @@
    "NoSlowOil": false,
    "SlowOil78D": false
   },
+  "swag-valkyrie": {
+   "NoSlowOil": false,
+   "SlowOil78D": false
+  },
   "swag-virtue": {
    "NoSlowOil": false,
    "SlowOil78D": false
@@ -32188,5 +32208,5 @@
    "SlowOil78D": false
   }
  },
- "ListVersion": "2026-10-06"
+ "ListVersion": "2026-10-07"
 }

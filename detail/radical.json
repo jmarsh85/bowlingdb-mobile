@@ -5,17 +5,20 @@
   "CatalogID": "radical-beyond-ridiculous",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Symmetric with Scoop Technology",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500 Siaair / Crown Factory Compound",
+   "Name": "Ai-30",
+   "Type": "Solid Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -30,7 +33,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.05,
+    "IntDiff": null,
+    "RG": 2.541
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2017-12-12",
@@ -39,7 +48,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -50,17 +59,20 @@
   "CatalogID": "radical-beyond-ridiculous-pearl",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Symmetric with Scoop Technology",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500 Siaair / Crown Factory Compound",
+   "Name": "Ai-35",
+   "Type": "Pearl Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -75,7 +87,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.05,
+    "IntDiff": null,
+    "RG": 2.541
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2018-05-24",
@@ -84,7 +102,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -95,17 +113,20 @@
   "CatalogID": "radical-bigfoot",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Symmetric (DynamiCore)",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound",
+   "Name": "TP-1+",
+   "Type": "Pearl Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2022-03-25",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -120,7 +141,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.053,
+    "IntDiff": null,
+    "RG": 2.468
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2022-02-22",
@@ -129,7 +156,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -140,17 +167,20 @@
   "CatalogID": "radical-bigfoot-hybrid",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Bigfoot Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000, 1500 Siaar / Crown Factory Compound",
+   "Name": "HK22 - HyperKinetic",
+   "Type": "Hybrid Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2022-12-02",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -165,7 +195,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.053,
+    "IntDiff": null,
+    "RG": 2.468
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2022-10-18",
@@ -174,7 +210,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -219,7 +255,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -264,7 +300,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -275,17 +311,20 @@
   "CatalogID": "radical-break-away",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Breakaway Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000, 1500 Siaair / Factory Compound",
+   "Name": "HK22 - HyperKinetic+",
+   "Type": "Solid Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2024-01-25",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -300,7 +339,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.04,
+    "IntDiff": null,
+    "RG": 2.597
+   },
+   "13": {
+    "Diff": 0.04,
+    "IntDiff": null,
+    "RG": 2.574
+   },
+   "14": {
+    "Diff": 0.041,
+    "IntDiff": null,
+    "RG": 2.545
+   },
+   "15": {
+    "Diff": 0.041,
+    "IntDiff": null,
+    "RG": 2.528
+   },
+   "16": {
+    "Diff": 0.036,
+    "IntDiff": null,
+    "RG": 2.535
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2024-01-09",
@@ -309,7 +374,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -354,7 +419,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -365,17 +430,20 @@
   "CatalogID": "radical-conspiracy",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Asymmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500 & 3,000 Siaair Micro Pad",
+   "Name": "Forged 2 Solid",
+   "Type": "Solid Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -390,7 +458,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.056,
+    "IntDiff": 0.021,
+    "RG": 2.487
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2018-10-02",
@@ -399,7 +473,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -444,7 +518,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -455,17 +529,20 @@
   "CatalogID": "radical-conspiracy-hybrid",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Asymmetric (DynamiCore)",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000 & 3000 Siaair Micro Pad",
+   "Name": "Forged 2 Hybrid",
+   "Type": "Hybrid Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -480,7 +557,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.056,
+    "IntDiff": 0.021,
+    "RG": 2.487
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2019-05-21",
@@ -489,7 +572,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -500,17 +583,20 @@
   "CatalogID": "radical-conspiracy-pearl",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Asymmetric (Featuring DynamiCore)",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish",
+   "Name": "Forged 2 Pearl",
+   "Type": "Pearl Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -525,7 +611,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.056,
+    "IntDiff": 0.021,
+    "RG": 2.487
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2019-02-07",
@@ -534,7 +626,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -579,7 +671,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -590,17 +682,20 @@
   "CatalogID": "radical-conspiracy-scheme",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Asymmetric (DynamiCore)",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500 Siaair / Crown Factory Compound",
+   "Name": "Motion Magic Solid",
+   "Type": "Solid Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2022-03-25",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -615,7 +710,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.056,
+    "IntDiff": 0.021,
+    "RG": 2.487
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2022-02-22",
@@ -624,7 +725,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -635,17 +736,20 @@
   "CatalogID": "radical-conspiracy-theory",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Asymmetric (DynamiCore)",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000 Siaair / Crown Factory Compound",
+   "Name": "TP-1 (Textured Pearl 1)",
+   "Type": "Pearl Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -660,7 +764,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.054,
+    "IntDiff": 0.023,
+    "RG": 2.49
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2019-09-20",
@@ -669,7 +779,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -680,17 +790,20 @@
   "CatalogID": "radical-counter-attack-pearl",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Rack Attack 2 Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500 & 1000 Siaair / Crown Factory Polish",
+   "Name": "Ai-20 Pearl",
+   "Type": "Pearl Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -705,7 +818,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.023,
+    "IntDiff": null,
+    "RG": 2.575
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2019-05-21",
@@ -714,7 +833,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -725,17 +844,20 @@
   "CatalogID": "radical-counter-attack-solid",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Rack Attack 2 Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000 & 3000 Siaair Micro Pad",
+   "Name": "Ai-20 Solid",
+   "Type": "Solid Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -750,7 +872,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.023,
+    "IntDiff": null,
+    "RG": 2.575
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2019-05-21",
@@ -759,7 +887,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -770,17 +898,20 @@
   "CatalogID": "radical-crypto",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Symmetric (DynamiCore)",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 2000 Siaair",
+   "Name": "Ai-45 Solid",
+   "Type": "Solid Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2022-08-05",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -795,7 +926,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.046,
+    "IntDiff": null,
+    "RG": 2.481
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2022-06-21",
@@ -804,7 +941,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -815,17 +952,20 @@
   "CatalogID": "radical-crypto-boom",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Crypto Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000, 1500, Siaair / Factory Compound",
+   "Name": "HK22 - HyperKinetic",
+   "Type": "Pearl Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2023-06-22",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -840,7 +980,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.046,
+    "IntDiff": null,
+    "RG": 2.481
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2023-05-23",
@@ -849,7 +995,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -860,17 +1006,20 @@
   "CatalogID": "radical-cyclops",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Spindle Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
+   "Finish": "500 Siaair / Crown Factory Compound",
    "Name": null,
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -885,7 +1034,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.048,
+    "IntDiff": null,
+    "RG": 2.538
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2017-03-21",
@@ -894,7 +1049,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -905,17 +1060,20 @@
   "CatalogID": "radical-cyclops-pearl",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Spindle Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
+   "Finish": "500 Siaair / Crown Factory Compound",
    "Name": null,
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -930,7 +1088,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.048,
+    "IntDiff": null,
+    "RG": 2.538
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2017-08-08",
@@ -939,7 +1103,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -984,7 +1148,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -995,17 +1159,20 @@
   "CatalogID": "radical-deadly-rattler",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Rattler Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000, 1500 Siaair / Factory Compound",
+   "Name": "HK22 - HyperKinetic",
+   "Type": "Pearl Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2023-10-19",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -1020,7 +1187,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.04,
+    "IntDiff": null,
+    "RG": 2.597
+   },
+   "13": {
+    "Diff": 0.04,
+    "IntDiff": null,
+    "RG": 2.574
+   },
+   "14": {
+    "Diff": 0.035,
+    "IntDiff": null,
+    "RG": 2.496
+   },
+   "15": {
+    "Diff": 0.035,
+    "IntDiff": null,
+    "RG": 2.48
+   },
+   "16": {
+    "Diff": 0.03,
+    "IntDiff": null,
+    "RG": 2.493
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2023-09-19",
@@ -1029,7 +1222,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1040,17 +1233,20 @@
   "CatalogID": "radical-deep-impact",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Torpedo Asymmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 2000 Siaair Micro Pad",
+   "Name": "HK22C+ Hybrid",
+   "Type": "Hybrid Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2026-02-12",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -1065,7 +1261,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.043,
+    "IntDiff": 0.011,
+    "RG": 2.612
+   },
+   "13": {
+    "Diff": 0.043,
+    "IntDiff": 0.011,
+    "RG": 2.589
+   },
+   "14": {
+    "Diff": 0.052,
+    "IntDiff": 0.02,
+    "RG": 2.497
+   },
+   "15": {
+    "Diff": 0.052,
+    "IntDiff": 0.019,
+    "RG": 2.48
+   },
+   "16": {
+    "Diff": 0.045,
+    "IntDiff": 0.017,
+    "RG": 2.494
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2026-02-03",
@@ -1074,7 +1296,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1085,17 +1307,20 @@
   "CatalogID": "radical-double-cross",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Symmetric (DynamiCore)",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1500 Siaair Micro Pad",
+   "Name": "U73 Pearl",
+   "Type": "Pearl Urethane"
   },
-  "DateReleased": null,
+  "DateReleased": "2022-01-28",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -1110,7 +1335,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.035,
+    "IntDiff": null,
+    "RG": 2.528
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2021-12-14",
@@ -1119,7 +1350,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1130,17 +1361,20 @@
   "CatalogID": "radical-evil-eye",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Evil Eye Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1500 Siaair Micro Pad",
+   "Name": "HK22C Solid",
+   "Type": "Solid Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2025-10-23",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -1155,7 +1389,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.04,
+    "IntDiff": null,
+    "RG": 2.597
+   },
+   "13": {
+    "Diff": 0.04,
+    "IntDiff": null,
+    "RG": 2.574
+   },
+   "14": {
+    "Diff": 0.046,
+    "IntDiff": null,
+    "RG": 2.512
+   },
+   "15": {
+    "Diff": 0.046,
+    "IntDiff": null,
+    "RG": 2.495
+   },
+   "16": {
+    "Diff": 0.041,
+    "IntDiff": null,
+    "RG": 2.505
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2025-10-14",
@@ -1164,7 +1424,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1175,17 +1435,20 @@
   "CatalogID": "radical-evil-eye-pearl",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Evil Eye Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000, 1500, Siaair / Factory Compound",
+   "Name": "HK22C Pearl",
+   "Type": "Pearl Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2026-08-13",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -1200,7 +1463,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.04,
+    "IntDiff": null,
+    "RG": 2.597
+   },
+   "13": {
+    "Diff": 0.04,
+    "IntDiff": null,
+    "RG": 2.574
+   },
+   "14": {
+    "Diff": 0.046,
+    "IntDiff": null,
+    "RG": 2.512
+   },
+   "15": {
+    "Diff": 0.046,
+    "IntDiff": null,
+    "RG": 2.495
+   },
+   "16": {
+    "Diff": 0.041,
+    "IntDiff": null,
+    "RG": 2.505
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2026-06-30",
@@ -1209,7 +1498,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1220,17 +1509,20 @@
   "CatalogID": "radical-grease-monkey",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
+   "Finish": "500 Siaair / Royal Compound / Royal Shine",
    "Name": null,
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -1245,7 +1537,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.048,
+    "IntDiff": null,
+    "RG": 2.54
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2013-12",
@@ -1254,7 +1552,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1265,17 +1563,20 @@
   "CatalogID": "radical-grease-monkey-pow",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
+   "Finish": "500 Siaair / Royal Compound",
    "Name": null,
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -1290,7 +1591,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.048,
+    "IntDiff": null,
+    "RG": 2.54
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2014-06",
@@ -1299,7 +1606,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1310,17 +1617,20 @@
   "CatalogID": "radical-grease-monkey-whack",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
+   "Finish": "500 Siaair / Royal Compound / Royal Shine",
    "Name": null,
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -1335,7 +1645,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.048,
+    "IntDiff": null,
+    "RG": 2.54
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2015-01",
@@ -1344,7 +1660,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1355,17 +1671,20 @@
   "CatalogID": "radical-guru",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Asymmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
+   "Finish": "500 & 1,500 Siaair Micro Pad",
    "Name": null,
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -1380,7 +1699,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.044,
+    "IntDiff": 0.018,
+    "RG": 2.501
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2014-10",
@@ -1389,7 +1714,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1434,7 +1759,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1479,7 +1804,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1524,7 +1849,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1569,7 +1894,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1580,17 +1905,20 @@
   "CatalogID": "radical-guru-master",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Asymmetric with Offset and Scoop Technology",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
+   "Finish": "500 & 1,500 Siaair Micro Pad",
    "Name": null,
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -1605,7 +1933,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.044,
+    "IntDiff": 0.018,
+    "RG": 2.501
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2015-06",
@@ -1614,7 +1948,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1625,17 +1959,20 @@
   "CatalogID": "radical-guru-mighty",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Asymmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
+   "Finish": "500 & 4,000 Siaair Micro Pad",
    "Name": null,
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -1650,7 +1987,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.044,
+    "IntDiff": 0.018,
+    "RG": 2.501
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2015-01",
@@ -1659,7 +2002,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1670,17 +2013,20 @@
   "CatalogID": "radical-guru-oracle",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Guru Asymmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 2000 Siaair Micro Pad",
+   "Name": "HK22C Solid",
+   "Type": "Solid Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2025-08-14",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -1695,7 +2041,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.043,
+    "IntDiff": 0.011,
+    "RG": 2.612
+   },
+   "13": {
+    "Diff": 0.043,
+    "IntDiff": 0.011,
+    "RG": 2.589
+   },
+   "14": {
+    "Diff": 0.044,
+    "IntDiff": 0.018,
+    "RG": 2.52
+   },
+   "15": {
+    "Diff": 0.044,
+    "IntDiff": 0.018,
+    "RG": 2.503
+   },
+   "16": {
+    "Diff": 0.039,
+    "IntDiff": 0.016,
+    "RG": 2.512
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2025-06-24",
@@ -1704,7 +2076,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1715,17 +2087,20 @@
   "CatalogID": "radical-guru-oracle-pearl",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Guru Asymmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000, 1500 Siaair / Factory Compound",
+   "Name": "HK22C+ Pearl",
+   "Type": "Pearl Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2026-06-11",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -1740,7 +2115,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.043,
+    "IntDiff": 0.011,
+    "RG": 2.612
+   },
+   "13": {
+    "Diff": 0.043,
+    "IntDiff": 0.011,
+    "RG": 2.589
+   },
+   "14": {
+    "Diff": 0.044,
+    "IntDiff": 0.018,
+    "RG": 2.52
+   },
+   "15": {
+    "Diff": 0.044,
+    "IntDiff": 0.018,
+    "RG": 2.503
+   },
+   "16": {
+    "Diff": 0.039,
+    "IntDiff": 0.016,
+    "RG": 2.512
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2026-06-02",
@@ -1749,7 +2150,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1760,17 +2161,20 @@
   "CatalogID": "radical-guru-pearl-limited",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Asymmetric with Offset and Scoop Technology",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
+   "Finish": "500 Siaair / Royal Compound",
    "Name": null,
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -1785,7 +2189,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.044,
+    "IntDiff": 0.018,
+    "RG": 2.501
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2016-06-14",
@@ -1794,7 +2204,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1805,17 +2215,20 @@
   "CatalogID": "radical-guru-supreme",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Asymmetric with Offset and Scoop Technology",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
+   "Finish": "500 & 1,500 Siaair Micro Pad",
    "Name": null,
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -1830,7 +2243,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.044,
+    "IntDiff": 0.018,
+    "RG": 2.501
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2015-09",
@@ -1839,7 +2258,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1850,17 +2269,20 @@
   "CatalogID": "radical-incognito",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Asymmetric (DynamiCore)",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000, 2000 Siaair Micro Pad",
+   "Name": "S. H. A. R. P.",
+   "Type": "Solid Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -1875,7 +2297,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.053,
+    "IntDiff": 0.017,
+    "RG": 2.487
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2020-11-03",
@@ -1884,7 +2312,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1895,17 +2323,20 @@
   "CatalogID": "radical-incognito-pearl",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Asymmetric (DynamiCore)",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound",
+   "Name": "S. H. A. R. P. Pearl",
+   "Type": "Pearl Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -1920,7 +2351,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.053,
+    "IntDiff": 0.017,
+    "RG": 2.487
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2021-02-02",
@@ -1929,7 +2366,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1974,7 +2411,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1985,17 +2422,20 @@
   "CatalogID": "radical-informer",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Asymmetric (DynamiCore)",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000, 1500 Siaair Micro Pad",
+   "Name": "S. H. A. R. P. / TS-1",
+   "Type": "Solid Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -2010,7 +2450,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.051,
+    "IntDiff": 0.019,
+    "RG": 2.477
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2021-06-15",
@@ -2019,7 +2465,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2064,7 +2510,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2075,17 +2521,20 @@
   "CatalogID": "radical-innovator-solid",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Innovator Asymmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1500 Siaair Micro Pad",
+   "Name": "MOtion Magic Plus",
+   "Type": "Solid Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2023-03-23",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -2100,7 +2549,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.053,
+    "IntDiff": 0.012,
+    "RG": 2.477
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2023-02-21",
@@ -2109,7 +2564,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2120,17 +2575,20 @@
   "CatalogID": "radical-intel",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1,000 & 2,000 Siaair Micro Pad",
+   "Name": "Ai-25",
+   "Type": "Solid Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -2145,7 +2603,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.035,
+    "IntDiff": null,
+    "RG": 2.483
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2017-12-12",
@@ -2154,7 +2618,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2165,17 +2629,20 @@
   "CatalogID": "radical-intel-pearl",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500 & 1,000 Siaair / Crown Factory Compound",
+   "Name": "Ai-27",
+   "Type": "Pearl Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -2190,7 +2657,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.035,
+    "IntDiff": null,
+    "RG": 2.483
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2018-06-14",
@@ -2199,7 +2672,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2210,17 +2683,20 @@
   "CatalogID": "radical-intel-pearl-special-edition",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Symmetric (DynamiCore)",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000 Siaair / Crown Factory Compound",
+   "Name": "TP-1",
+   "Type": "Pearl Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -2235,7 +2711,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.035,
+    "IntDiff": null,
+    "RG": 2.483
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2021-06-15",
@@ -2244,7 +2726,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2255,17 +2737,20 @@
   "CatalogID": "radical-intel-recon",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Modified Intel Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000, 1500 Siaair / Factory Compound",
+   "Name": "HK22 Pearl",
+   "Type": "Pearl Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2025-10-23",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -2280,7 +2765,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.04,
+    "IntDiff": null,
+    "RG": 2.597
+   },
+   "13": {
+    "Diff": 0.04,
+    "IntDiff": null,
+    "RG": 2.574
+   },
+   "14": {
+    "Diff": 0.032,
+    "IntDiff": null,
+    "RG": 2.499
+   },
+   "15": {
+    "Diff": 0.032,
+    "IntDiff": null,
+    "RG": 2.483
+   },
+   "16": {
+    "Diff": 0.028,
+    "IntDiff": null,
+    "RG": 2.495
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2025-10-14",
@@ -2289,7 +2800,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2300,17 +2811,20 @@
   "CatalogID": "radical-intel-tour",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Modified Intel Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1500 Siaair Micro Pad",
+   "Name": "Hyper Control Solid",
+   "Type": "Solid Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2026-08-13",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -2325,7 +2839,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.04,
+    "IntDiff": null,
+    "RG": 2.597
+   },
+   "13": {
+    "Diff": 0.04,
+    "IntDiff": null,
+    "RG": 2.574
+   },
+   "14": {
+    "Diff": 0.032,
+    "IntDiff": null,
+    "RG": 2.499
+   },
+   "15": {
+    "Diff": 0.032,
+    "IntDiff": null,
+    "RG": 2.483
+   },
+   "16": {
+    "Diff": 0.028,
+    "IntDiff": null,
+    "RG": 2.495
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2026-06-30",
@@ -2334,7 +2874,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2345,17 +2885,20 @@
   "CatalogID": "radical-jackpot",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Symmetric with Scoop Technology",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
+   "Finish": "500 Siaair / Royal Compound",
    "Name": null,
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -2370,7 +2913,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.056,
+    "IntDiff": null,
+    "RG": 2.517
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2016-03-15",
@@ -2379,7 +2928,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2390,17 +2939,20 @@
   "CatalogID": "radical-jackpot-solid",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Symmetric with Scoop Technology",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
+   "Finish": "500 & 4,000 Siaair Micro Pad",
    "Name": null,
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -2415,7 +2967,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.056,
+    "IntDiff": null,
+    "RG": 2.517
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2016-10-11",
@@ -2424,7 +2982,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2435,17 +2993,20 @@
   "CatalogID": "radical-katana",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Katana Asymmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500 & 1,000 Siaair / Crown Factory Compound",
+   "Name": "Forged",
+   "Type": "Pearl Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -2460,7 +3021,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.05,
+    "IntDiff": 0.02,
+    "RG": 2.503
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2017-10-03",
@@ -2469,7 +3036,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2480,17 +3047,20 @@
   "CatalogID": "radical-katana-assault",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Katana Assault Asymmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound",
+   "Name": "HK22 - HyperKinetic",
+   "Type": "Pearl Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2023-01-27",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -2505,7 +3075,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.051,
+    "IntDiff": 0.02,
+    "RG": 2.501
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2022-12-27",
@@ -2514,7 +3090,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2525,17 +3101,20 @@
   "CatalogID": "radical-katana-dragon",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Katana Asymmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1,000 & 2,000 Siaair Micro Pad",
+   "Name": "Forged-X",
+   "Type": "Solid Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -2550,7 +3129,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.05,
+    "IntDiff": 0.02,
+    "RG": 2.503
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2018-05-24",
@@ -2559,7 +3144,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2604,7 +3189,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2649,7 +3234,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2694,7 +3279,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2739,7 +3324,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2750,17 +3335,20 @@
   "CatalogID": "radical-katana-legend",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Katana Asymmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500 & 1,000 Siaair / Crown Factory Compound",
+   "Name": "Forged + Pearl",
+   "Type": "Pearl Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -2775,7 +3363,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.05,
+    "IntDiff": 0.02,
+    "RG": 2.503
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2018-12-11",
@@ -2784,7 +3378,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2829,7 +3423,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2874,7 +3468,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2885,17 +3479,20 @@
   "CatalogID": "radical-katana-slash",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Katana Asymmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500 & 1,000 Siaair / Crown Factory Compound",
+   "Name": "Forged-2",
+   "Type": "Hybrid Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -2910,7 +3507,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.05,
+    "IntDiff": 0.02,
+    "RG": 2.503
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2018-02-06",
@@ -2919,7 +3522,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2930,17 +3533,20 @@
   "CatalogID": "radical-katana-strike",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Katana Assault Asymmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1500, 3000 Siaair Micro Pad",
+   "Name": "HK22 - HyperKinetic",
+   "Type": "Hybrid Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2023-08-17",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -2955,7 +3561,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.051,
+    "IntDiff": 0.02,
+    "RG": 2.501
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2023-06-27",
@@ -2964,7 +3576,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3009,7 +3621,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3020,17 +3632,20 @@
   "CatalogID": "radical-ludicrous",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Asymmetric with Scoop Technology",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500 & 1,000 Siaair / Crown Factory Compound",
+   "Name": "Ai-40",
+   "Type": "Pearl Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -3045,7 +3660,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.05,
+    "IntDiff": 0.012,
+    "RG": 2.535
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2018-06-14",
@@ -3054,7 +3675,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3065,17 +3686,20 @@
   "CatalogID": "radical-ludicrous-solid",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Asymmetric with Scoop Technology",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1500 Siaair Micro Pad",
+   "Name": "Ai-43",
+   "Type": "Solid Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -3090,7 +3714,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.05,
+    "IntDiff": 0.012,
+    "RG": 2.535
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2019-02-07",
@@ -3099,7 +3729,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3110,17 +3740,20 @@
   "CatalogID": "radical-max-bias",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Maximum Results Asymmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1500 Siaair Micro Pad",
+   "Name": "HK22+ Textured Hybrid",
+   "Type": "Hybrid Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2024-06-13",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -3135,7 +3768,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.043,
+    "IntDiff": 0.011,
+    "RG": 2.612
+   },
+   "13": {
+    "Diff": 0.043,
+    "IntDiff": 0.011,
+    "RG": 2.589
+   },
+   "14": {
+    "Diff": 0.05,
+    "IntDiff": 0.03,
+    "RG": 2.511
+   },
+   "15": {
+    "Diff": 0.05,
+    "IntDiff": 0.03,
+    "RG": 2.494
+   },
+   "16": {
+    "Diff": 0.043,
+    "IntDiff": 0.026,
+    "RG": 2.506
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2024-05-28",
@@ -3144,7 +3803,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3155,17 +3814,20 @@
   "CatalogID": "radical-maximum-results",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Asymmetric (DynamiCore)",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1500 Siaair Micro Pad",
+   "Name": "TS-1 Solid",
+   "Type": "Solid Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -3180,7 +3842,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.05,
+    "IntDiff": 0.03,
+    "RG": 2.494
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2021-05-04",
@@ -3189,7 +3857,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3234,7 +3902,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3245,17 +3913,20 @@
   "CatalogID": "radical-no-doubt",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "No Doubt Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000, 1500 Siaair / Factory Compound",
+   "Name": "HK22+ Pearl",
+   "Type": "Pearl Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2024-10-24",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -3270,7 +3941,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.04,
+    "IntDiff": null,
+    "RG": 2.597
+   },
+   "13": {
+    "Diff": 0.04,
+    "IntDiff": null,
+    "RG": 2.574
+   },
+   "14": {
+    "Diff": 0.051,
+    "IntDiff": null,
+    "RG": 2.501
+   },
+   "15": {
+    "Diff": 0.051,
+    "IntDiff": null,
+    "RG": 2.485
+   },
+   "16": {
+    "Diff": 0.045,
+    "IntDiff": null,
+    "RG": 2.496
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2024-10-08",
@@ -3279,7 +3976,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3290,17 +3987,20 @@
   "CatalogID": "radical-no-doubt-hybrid",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "No Doubt Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000, 3000 Siaair Micro Pad",
+   "Name": "Advantage Plus Hybrid",
+   "Type": "Hybrid Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2026-07-16",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -3315,7 +4015,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.04,
+    "IntDiff": null,
+    "RG": 2.597
+   },
+   "13": {
+    "Diff": 0.04,
+    "IntDiff": null,
+    "RG": 2.574
+   },
+   "14": {
+    "Diff": 0.051,
+    "IntDiff": null,
+    "RG": 2.501
+   },
+   "15": {
+    "Diff": 0.051,
+    "IntDiff": null,
+    "RG": 2.485
+   },
+   "16": {
+    "Diff": 0.045,
+    "IntDiff": null,
+    "RG": 2.496
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2026-06-30",
@@ -3324,7 +4050,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3335,17 +4061,20 @@
   "CatalogID": "radical-no-doubt-solid",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "No Doubt Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000, 1500 Siaair / Factory Compound",
+   "Name": "HK22C+ Solid",
+   "Type": "Solid Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2025-06-12",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -3360,7 +4089,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.04,
+    "IntDiff": null,
+    "RG": 2.597
+   },
+   "13": {
+    "Diff": 0.04,
+    "IntDiff": null,
+    "RG": 2.574
+   },
+   "14": {
+    "Diff": 0.051,
+    "IntDiff": null,
+    "RG": 2.501
+   },
+   "15": {
+    "Diff": 0.051,
+    "IntDiff": null,
+    "RG": 2.485
+   },
+   "16": {
+    "Diff": 0.045,
+    "IntDiff": null,
+    "RG": 2.496
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2025-05-27",
@@ -3369,7 +4124,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3380,17 +4135,20 @@
   "CatalogID": "radical-outer-limits",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Outer Limits Asymmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000, 2000 Siaair Micro Pad",
+   "Name": "HK22 - HyperKinetic",
+   "Type": "Hybrid Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2023-03-23",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -3405,7 +4163,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.051,
+    "IntDiff": 0.014,
+    "RG": 2.499
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2023-02-21",
@@ -3414,7 +4178,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3425,17 +4189,20 @@
   "CatalogID": "radical-outer-limits-black-hole",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Outer Limits Asymmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000, 1500 Siaair / Factory Compound",
+   "Name": "HK22C Solid",
+   "Type": "Solid Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2026-01-08",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -3450,7 +4217,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.043,
+    "IntDiff": 0.011,
+    "RG": 2.612
+   },
+   "13": {
+    "Diff": 0.043,
+    "IntDiff": 0.011,
+    "RG": 2.589
+   },
+   "14": {
+    "Diff": 0.051,
+    "IntDiff": 0.014,
+    "RG": 2.515
+   },
+   "15": {
+    "Diff": 0.051,
+    "IntDiff": 0.014,
+    "RG": 2.499
+   },
+   "16": {
+    "Diff": 0.045,
+    "IntDiff": 0.013,
+    "RG": 2.509
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2025-12-30",
@@ -3459,7 +4252,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3470,17 +4263,20 @@
   "CatalogID": "radical-outer-limits-pearl",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Outer Limits Asymmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000, 1500 Siaair / Factory Compound",
+   "Name": "HK22 Pearl",
+   "Type": "Pearl Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2024-03-21",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -3495,7 +4291,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.043,
+    "IntDiff": 0.011,
+    "RG": 2.612
+   },
+   "13": {
+    "Diff": 0.043,
+    "IntDiff": 0.011,
+    "RG": 2.589
+   },
+   "14": {
+    "Diff": 0.051,
+    "IntDiff": 0.014,
+    "RG": 2.515
+   },
+   "15": {
+    "Diff": 0.051,
+    "IntDiff": 0.014,
+    "RG": 2.499
+   },
+   "16": {
+    "Diff": 0.045,
+    "IntDiff": 0.013,
+    "RG": 2.509
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2024-03-05",
@@ -3504,7 +4326,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3515,17 +4337,20 @@
   "CatalogID": "radical-outer-limits-solid",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Outer Limits Asymmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 2000 Siaair Micro Pad",
+   "Name": "HK22 Solid",
+   "Type": "Solid Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2025-01-16",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -3540,7 +4365,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.043,
+    "IntDiff": 0.011,
+    "RG": 2.612
+   },
+   "13": {
+    "Diff": 0.043,
+    "IntDiff": 0.011,
+    "RG": 2.589
+   },
+   "14": {
+    "Diff": 0.051,
+    "IntDiff": 0.014,
+    "RG": 2.515
+   },
+   "15": {
+    "Diff": 0.051,
+    "IntDiff": 0.014,
+    "RG": 2.499
+   },
+   "16": {
+    "Diff": 0.045,
+    "IntDiff": 0.013,
+    "RG": 2.509
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2025-01-05",
@@ -3549,7 +4400,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3560,17 +4411,20 @@
   "CatalogID": "radical-pandemonium",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Symmetric (DynamiCore)",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish",
+   "Name": "Forged + Pearl",
+   "Type": "Pearl Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -3585,7 +4439,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.053,
+    "IntDiff": null,
+    "RG": 2.487
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2020-09-22",
@@ -3594,7 +4454,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3605,17 +4465,20 @@
   "CatalogID": "radical-pandemonium-solid",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Symmetric (DynamiCore)",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000, 3000 Siaair Micro Pad",
+   "Name": "Forged + Solid",
+   "Type": "Solid Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -3630,7 +4493,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.053,
+    "IntDiff": null,
+    "RG": 2.487
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2021-02-02",
@@ -3639,7 +4508,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3650,17 +4519,20 @@
   "CatalogID": "radical-payback",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Symmetric (DynamiCore)",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000, 1500 Siaair Micro Pad",
+   "Name": "Ai-27 Pearl Plus",
+   "Type": "Pearl Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -3675,7 +4547,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.041,
+    "IntDiff": null,
+    "RG": 2.528
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2021-09-21",
@@ -3684,7 +4562,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3695,17 +4573,20 @@
   "CatalogID": "radical-power-hitter",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Hitter Asymmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000, 1500 Siaair / Factory Compound",
+   "Name": "HK22C Textured Hybrid",
+   "Type": "Hybrid Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2025-06-12",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -3720,7 +4601,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.043,
+    "IntDiff": 0.011,
+    "RG": 2.612
+   },
+   "13": {
+    "Diff": 0.043,
+    "IntDiff": 0.011,
+    "RG": 2.589
+   },
+   "14": {
+    "Diff": 0.053,
+    "IntDiff": 0.015,
+    "RG": 2.504
+   },
+   "15": {
+    "Diff": 0.053,
+    "IntDiff": 0.015,
+    "RG": 2.488
+   },
+   "16": {
+    "Diff": 0.047,
+    "IntDiff": 0.013,
+    "RG": 2.498
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2025-05-30",
@@ -3729,7 +4636,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3774,7 +4681,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3785,17 +4692,20 @@
   "CatalogID": "radical-primo",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Symmetric with Scoop Technology",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
+   "Finish": "500 Siaair / Royal Compound",
    "Name": null,
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -3810,7 +4720,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.048,
+    "IntDiff": null,
+    "RG": 2.483
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2015-06",
@@ -3819,7 +4735,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3830,17 +4746,20 @@
   "CatalogID": "radical-primo-solid",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Symmetric with Scoop Technology",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
+   "Finish": "500 & 2,000 Siaair Micro pad",
    "Name": null,
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -3855,7 +4774,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.048,
+    "IntDiff": null,
+    "RG": 2.483
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2015-12-08",
@@ -3864,7 +4789,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3875,17 +4800,20 @@
   "CatalogID": "radical-quick-fix",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Shapeshifter Sym / Asym",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
+   "Finish": "500 & 4,000 Siaair Micro Pad",
    "Name": null,
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -3900,7 +4828,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.054,
+    "IntDiff": null,
+    "RG": 2.511
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2017-06-13",
@@ -3909,7 +4843,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3920,17 +4854,20 @@
   "CatalogID": "radical-rack-attack-pearl",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
+   "Finish": "500 Siaair / Royal Compound / Royal Shine",
    "Name": null,
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -3945,7 +4882,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.024,
+    "IntDiff": null,
+    "RG": 2.542
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2015-04",
@@ -3954,7 +4897,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3965,17 +4908,20 @@
   "CatalogID": "radical-rack-attack-solid",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
+   "Finish": "500 & 4,000 Siaair Micro Pad",
    "Name": null,
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -3990,7 +4936,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.024,
+    "IntDiff": null,
+    "RG": 2.542
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2015-04",
@@ -3999,7 +4951,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4010,17 +4962,20 @@
   "CatalogID": "radical-radical-conspiracy",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Conspiracy Asymmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 2000 Siaair Micro Pad",
+   "Name": "HK22+ Solid",
+   "Type": "Solid Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2024-03-21",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -4035,7 +4990,23 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "14": {
+    "Diff": 0.056,
+    "IntDiff": 0.021,
+    "RG": 2.503
+   },
+   "15": {
+    "Diff": 0.056,
+    "IntDiff": 0.021,
+    "RG": 2.487
+   },
+   "16": {
+    "Diff": 0.056,
+    "IntDiff": 0.021,
+    "RG": 2.474
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2024-03-05",
@@ -4044,7 +5015,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4089,7 +5060,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4100,17 +5071,20 @@
   "CatalogID": "radical-rattler",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Rattler Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1500, 4000 Siaair",
+   "Name": "S.H.A.R.P. Solid",
+   "Type": "Solid Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2022-10-21",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -4125,7 +5099,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.035,
+    "IntDiff": null,
+    "RG": 2.48
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2022-09-20",
@@ -4134,7 +5114,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4145,17 +5125,20 @@
   "CatalogID": "radical-rattler-big-bite",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Rattler Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1500, 3000, Siaair Micro Pad",
+   "Name": "S.H.A.R.P. Hybrid",
+   "Type": "Hybrid Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2024-08-15",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -4170,7 +5153,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.04,
+    "IntDiff": null,
+    "RG": 2.597
+   },
+   "13": {
+    "Diff": 0.04,
+    "IntDiff": null,
+    "RG": 2.574
+   },
+   "14": {
+    "Diff": 0.035,
+    "IntDiff": null,
+    "RG": 2.496
+   },
+   "15": {
+    "Diff": 0.035,
+    "IntDiff": null,
+    "RG": 2.48
+   },
+   "16": {
+    "Diff": 0.03,
+    "IntDiff": null,
+    "RG": 2.493
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2024-06-25",
@@ -4179,7 +5188,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4190,17 +5199,20 @@
   "CatalogID": "radical-rattler-nu",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Rattler Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000 Siaair Micro Pad",
+   "Name": "Not Urethane",
+   "Type": "Not Urethane"
   },
-  "DateReleased": null,
+  "DateReleased": "2024-06-13",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -4215,7 +5227,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.04,
+    "IntDiff": null,
+    "RG": 2.597
+   },
+   "13": {
+    "Diff": 0.04,
+    "IntDiff": null,
+    "RG": 2.574
+   },
+   "14": {
+    "Diff": 0.035,
+    "IntDiff": null,
+    "RG": 2.496
+   },
+   "15": {
+    "Diff": 0.035,
+    "IntDiff": null,
+    "RG": 2.48
+   },
+   "16": {
+    "Diff": 0.03,
+    "IntDiff": null,
+    "RG": 2.493
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2024-05-28",
@@ -4224,7 +5262,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4235,17 +5273,20 @@
   "CatalogID": "radical-rave",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Symmetric with Scoop Technology",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
+   "Finish": "500 Siaair / Royal Compound",
    "Name": null,
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -4260,7 +5301,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.049,
+    "IntDiff": null,
+    "RG": 2.522
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2015-06",
@@ -4269,7 +5316,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4280,17 +5327,20 @@
   "CatalogID": "radical-rave-on",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Symmetric with Scoop Technology",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
+   "Finish": "500 Siaair / Royal Compound",
    "Name": null,
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -4305,7 +5355,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.049,
+    "IntDiff": null,
+    "RG": 2.522
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2016-01-19",
@@ -4314,7 +5370,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4325,17 +5381,20 @@
   "CatalogID": "radical-reax",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Asymmetric with Offset Technology",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
+   "Finish": "500 & 1,500 Siaair Micro Pad",
    "Name": null,
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -4350,7 +5409,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.054,
+    "IntDiff": 0.013,
+    "RG": 2.492
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2013-02",
@@ -4359,7 +5424,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4370,17 +5435,20 @@
   "CatalogID": "radical-reax-gusto",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Asymmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
+   "Finish": "500 Siaair / Royal Compound / Royal Shine",
    "Name": null,
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -4395,7 +5463,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.038,
+    "IntDiff": 0.013,
+    "RG": 2.536
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2014-05",
@@ -4404,7 +5478,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4415,17 +5489,20 @@
   "CatalogID": "radical-reax-pearl",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Asymmetric with Offset Technology",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
+   "Finish": "500 & 4,000 Siaair Micro Pad",
    "Name": null,
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -4440,7 +5517,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.054,
+    "IntDiff": 0.013,
+    "RG": 2.492
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2013-06",
@@ -4449,7 +5532,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4460,17 +5543,20 @@
   "CatalogID": "radical-reax-version-2",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Asymmetric with Offset Technology",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
+   "Finish": "500 Siaair / Royal Compound",
    "Name": null,
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -4485,7 +5571,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.048,
+    "IntDiff": 0.016,
+    "RG": 2.508
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2013-10",
@@ -4494,7 +5586,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4505,17 +5597,20 @@
   "CatalogID": "radical-reax-version-2-pearl",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Asymmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
+   "Finish": "500 Siaair / Royal Compound / Royal Shine",
    "Name": null,
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -4530,7 +5625,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.048,
+    "IntDiff": 0.016,
+    "RG": 2.508
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2013-12",
@@ -4539,7 +5640,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4550,17 +5651,20 @@
   "CatalogID": "radical-results",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Asymmetric (DynamiCore)",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000 Siaair / Crown Factory Compound",
+   "Name": "TP-1 (Textured Pearl 1)",
+   "Type": "Pearl Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -4575,7 +5679,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.044,
+    "IntDiff": 0.027,
+    "RG": 2.517
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2020-02-04",
@@ -4584,7 +5694,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4595,17 +5705,20 @@
   "CatalogID": "radical-results-solid",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Asymmetric (DynamiCore)",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 3000 Siaair Micro Pad",
+   "Name": "TS-1 (Textured Solid 1)",
+   "Type": "Solid Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -4620,7 +5733,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.044,
+    "IntDiff": 0.027,
+    "RG": 2.517
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2020-09-22",
@@ -4629,7 +5748,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4640,17 +5759,20 @@
   "CatalogID": "radical-resultsplus",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Asymmetric (DynamiCore)",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000 Siaair / Crown Factory Compound",
+   "Name": "TP-1+",
+   "Type": "Pearl Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -4665,7 +5787,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.044,
+    "IntDiff": 0.027,
+    "RG": 2.517
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2020-12-16",
@@ -4674,7 +5802,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4685,17 +5813,20 @@
   "CatalogID": "radical-revenge-pearl",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Sneak Attack Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000, 1500 Siaair / Factory Compound",
+   "Name": "HK22 Pearl",
+   "Type": "Pearl Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2026-04-16",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -4710,7 +5841,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.04,
+    "IntDiff": null,
+    "RG": 2.597
+   },
+   "13": {
+    "Diff": 0.04,
+    "IntDiff": null,
+    "RG": 2.574
+   },
+   "14": {
+    "Diff": 0.036,
+    "IntDiff": null,
+    "RG": 2.561
+   },
+   "15": {
+    "Diff": 0.036,
+    "IntDiff": null,
+    "RG": 2.544
+   },
+   "16": {
+    "Diff": 0.031,
+    "IntDiff": null,
+    "RG": 2.549
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2026-04-13",
@@ -4719,7 +5876,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4730,17 +5887,20 @@
   "CatalogID": "radical-revenge-solid",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Sneak Attack Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000, 1500 Siaair / Factory Compound",
+   "Name": "HK22 Solid",
+   "Type": "Solid Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2026-04-16",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -4755,7 +5915,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.04,
+    "IntDiff": null,
+    "RG": 2.597
+   },
+   "13": {
+    "Diff": 0.04,
+    "IntDiff": null,
+    "RG": 2.574
+   },
+   "14": {
+    "Diff": 0.036,
+    "IntDiff": null,
+    "RG": 2.561
+   },
+   "15": {
+    "Diff": 0.036,
+    "IntDiff": null,
+    "RG": 2.544
+   },
+   "16": {
+    "Diff": 0.031,
+    "IntDiff": null,
+    "RG": 2.549
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2026-04-13",
@@ -4764,7 +5950,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4775,17 +5961,20 @@
   "CatalogID": "radical-ridiculous",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Symmetric with Scoop Technology",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
+   "Finish": "500 Siaair / Royal Compound",
    "Name": null,
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -4800,7 +5989,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.05,
+    "IntDiff": null,
+    "RG": 2.54
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2015-09",
@@ -4809,7 +6004,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4820,17 +6015,20 @@
   "CatalogID": "radical-ridiculous-asym",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Asymmetric with Scoop Technology",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
+   "Finish": "500 & 4,000 Siaair Micro Pad",
    "Name": null,
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -4845,7 +6043,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.05,
+    "IntDiff": 0.012,
+    "RG": 2.538
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2016-01-19",
@@ -4854,7 +6058,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4865,17 +6069,20 @@
   "CatalogID": "radical-ridiculous-pearl",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Symmetric with Scoop Technology",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
+   "Finish": "500 Siaair / Royal Compound",
    "Name": null,
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -4890,7 +6097,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.05,
+    "IntDiff": null,
+    "RG": 2.54
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2016-06-14",
@@ -4899,7 +6112,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4944,7 +6157,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4989,7 +6202,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5034,7 +6247,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5045,17 +6258,20 @@
   "CatalogID": "radical-score",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Asymmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
+   "Finish": "500 Siaair / Royal Compound",
    "Name": null,
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -5070,7 +6286,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.054,
+    "IntDiff": 0.013,
+    "RG": 2.492
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2014-10",
@@ -5079,7 +6301,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5124,7 +6346,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5169,7 +6391,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5180,17 +6402,20 @@
   "CatalogID": "radical-sizzle",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500 Siaair / Crown Factory Compound",
+   "Name": "Ai-38",
+   "Type": "Solid Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -5205,7 +6430,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.05,
+    "IntDiff": null,
+    "RG": 2.541
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2018-10-02",
@@ -5214,7 +6445,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5259,7 +6490,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5304,7 +6535,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5349,7 +6580,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5394,7 +6625,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5405,17 +6636,20 @@
   "CatalogID": "radical-snap-shot-hybrid",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Snapshot Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 3000 Siaair Micro Pad",
+   "Name": "HK22C+ Hybrid",
+   "Type": "Hybrid Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2025-08-14",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -5430,7 +6664,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.043,
+    "IntDiff": null,
+    "RG": 2.612
+   },
+   "13": {
+    "Diff": 0.043,
+    "IntDiff": null,
+    "RG": 2.589
+   },
+   "14": {
+    "Diff": 0.05,
+    "IntDiff": null,
+    "RG": 2.54
+   },
+   "15": {
+    "Diff": 0.05,
+    "IntDiff": null,
+    "RG": 2.523
+   },
+   "16": {
+    "Diff": 0.044,
+    "IntDiff": null,
+    "RG": 2.531
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2025-06-24",
@@ -5439,7 +6699,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5450,17 +6710,20 @@
   "CatalogID": "radical-snapshot",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Snapshot Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000, 1500 Siaair / Factory Compound",
+   "Name": "HK22C+ Pearl",
+   "Type": "Pearl Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2025-01-16",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -5475,7 +6738,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.043,
+    "IntDiff": null,
+    "RG": 2.612
+   },
+   "13": {
+    "Diff": 0.043,
+    "IntDiff": null,
+    "RG": 2.589
+   },
+   "14": {
+    "Diff": 0.05,
+    "IntDiff": null,
+    "RG": 2.54
+   },
+   "15": {
+    "Diff": 0.05,
+    "IntDiff": null,
+    "RG": 2.523
+   },
+   "16": {
+    "Diff": 0.044,
+    "IntDiff": null,
+    "RG": 2.531
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2025-01-05",
@@ -5484,7 +6773,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5495,17 +6784,20 @@
   "CatalogID": "radical-sneak-attack",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Sneak Attack Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000, 2000 Siaair / Crown Factory Polish",
+   "Name": "MTH-1",
+   "Type": "Hybrid Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2022-05-27",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -5520,7 +6812,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.036,
+    "IntDiff": null,
+    "RG": 2.544
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2022-04-26",
@@ -5529,7 +6827,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5574,7 +6872,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5619,7 +6917,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5664,7 +6962,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5675,17 +6973,20 @@
   "CatalogID": "radical-sneak-attack-solid",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Sneak Attack Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1500, 3000 Siaair Micro Pad",
+   "Name": "MTS-1",
+   "Type": "Solid Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2023-06-22",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -5700,7 +7001,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.04,
+    "IntDiff": null,
+    "RG": 2.597
+   },
+   "13": {
+    "Diff": 0.04,
+    "IntDiff": null,
+    "RG": 2.574
+   },
+   "14": {
+    "Diff": 0.036,
+    "IntDiff": null,
+    "RG": 2.561
+   },
+   "15": {
+    "Diff": 0.036,
+    "IntDiff": null,
+    "RG": 2.544
+   },
+   "16": {
+    "Diff": 0.031,
+    "IntDiff": null,
+    "RG": 2.549
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2023-05-23",
@@ -5709,7 +7036,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5754,7 +7081,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5765,17 +7092,20 @@
   "CatalogID": "radical-squatch",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish",
+   "Name": "Ai-39",
+   "Type": "Pearl Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -5790,7 +7120,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.054,
+    "IntDiff": null,
+    "RG": 2.482
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2018-12-11",
@@ -5799,7 +7135,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5810,17 +7146,20 @@
   "CatalogID": "radical-squatch-hybrid",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Symmetric (DynamiCore)",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500 Siaair / Crown Factory Compound & Polish",
+   "Name": "Ai-39 Hybrid",
+   "Type": "Hybrid Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -5835,7 +7174,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.054,
+    "IntDiff": null,
+    "RG": 2.482
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2019-12-17",
@@ -5844,7 +7189,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5855,17 +7200,20 @@
   "CatalogID": "radical-squatch-solid",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Symmetric (DynamiCore)",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000 & 2000 Siaair Micro Pad",
+   "Name": "Ai-39",
+   "Type": "Solid Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -5880,7 +7228,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.054,
+    "IntDiff": null,
+    "RG": 2.482
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2019-06-11",
@@ -5889,7 +7243,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5934,7 +7288,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5945,17 +7299,20 @@
   "CatalogID": "radical-the-closer",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Symmetric (DynamiCore)",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 3000 Siaair Micro Pad",
+   "Name": "Ai-39",
+   "Type": "Solid Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -5970,7 +7327,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.05,
+    "IntDiff": null,
+    "RG": 2.54
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2019-09-17",
@@ -5979,7 +7342,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5990,17 +7353,20 @@
   "CatalogID": "radical-the-closer-pearl",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Symmetric (DynamiCore)",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000 Siaair / Crown Factory Compound",
+   "Name": "Ai-39",
+   "Type": "Pearl Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -6015,7 +7381,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.05,
+    "IntDiff": null,
+    "RG": 2.54
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2020-02-04",
@@ -6024,7 +7396,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6035,17 +7407,20 @@
   "CatalogID": "radical-the-fix",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Shapeshifter Sym / Asym",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
+   "Finish": "500 & 1,500 Siaair Micro Pad",
    "Name": null,
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -6060,7 +7435,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.054,
+    "IntDiff": null,
+    "RG": 2.511
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2016-10-11",
@@ -6069,7 +7450,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6080,17 +7461,20 @@
   "CatalogID": "radical-the-hitter",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Hitter Asymmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000, 2000 Siaair Micro Pad",
+   "Name": "Utility Solid",
+   "Type": "Solid Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2023-10-19",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -6105,7 +7489,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.043,
+    "IntDiff": 0.011,
+    "RG": 2.612
+   },
+   "13": {
+    "Diff": 0.043,
+    "IntDiff": 0.011,
+    "RG": 2.589
+   },
+   "14": {
+    "Diff": 0.053,
+    "IntDiff": 0.015,
+    "RG": 2.504
+   },
+   "15": {
+    "Diff": 0.053,
+    "IntDiff": 0.015,
+    "RG": 2.488
+   },
+   "16": {
+    "Diff": 0.047,
+    "IntDiff": 0.013,
+    "RG": 2.498
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2023-09-19",
@@ -6114,7 +7524,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6125,17 +7535,20 @@
   "CatalogID": "radical-the-hitter-pearl",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Hitter Asymmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000, 1500 Siaair / Factory Compound",
+   "Name": "HK22 - Utility Pearl",
+   "Type": "Pearl Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2024-08-15",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -6150,7 +7563,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.043,
+    "IntDiff": 0.011,
+    "RG": 2.612
+   },
+   "13": {
+    "Diff": 0.043,
+    "IntDiff": 0.011,
+    "RG": 2.589
+   },
+   "14": {
+    "Diff": 0.053,
+    "IntDiff": 0.015,
+    "RG": 2.504
+   },
+   "15": {
+    "Diff": 0.053,
+    "IntDiff": 0.015,
+    "RG": 2.488
+   },
+   "16": {
+    "Diff": 0.047,
+    "IntDiff": 0.013,
+    "RG": 2.498
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2024-06-25",
@@ -6159,7 +7598,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6170,17 +7609,20 @@
   "CatalogID": "radical-the-spy",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Asymmetric (DynamiCore)",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000 Siaair / Factory Compound / Factory Polish",
+   "Name": "Textured Polyester",
+   "Type": "Polyester"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -6195,7 +7637,23 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "14": {
+    "Diff": 0.053,
+    "IntDiff": 0.017,
+    "RG": 2.53
+   },
+   "15": {
+    "Diff": 0.053,
+    "IntDiff": 0.017,
+    "RG": 2.513
+   },
+   "16": {
+    "Diff": 0.046,
+    "IntDiff": 0.015,
+    "RG": 2.523
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2021-05-18",
@@ -6204,7 +7662,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6249,7 +7707,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6294,7 +7752,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6305,17 +7763,20 @@
   "CatalogID": "radical-torpedo",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Torpedo Asymmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000, 1500 Siaair / Factory Compound",
+   "Name": "HK22C+ Pearl",
+   "Type": "Pearl Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2025-03-20",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -6330,7 +7791,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.043,
+    "IntDiff": 0.011,
+    "RG": 2.612
+   },
+   "13": {
+    "Diff": 0.043,
+    "IntDiff": 0.011,
+    "RG": 2.589
+   },
+   "14": {
+    "Diff": 0.054,
+    "IntDiff": 0.018,
+    "RG": 2.499
+   },
+   "15": {
+    "Diff": 0.054,
+    "IntDiff": 0.017,
+    "RG": 2.482
+   },
+   "16": {
+    "Diff": 0.047,
+    "IntDiff": 0.015,
+    "RG": 2.496
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2025-03-04",
@@ -6339,7 +7826,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6350,17 +7837,20 @@
   "CatalogID": "radical-torpedo-direct-hit",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Torpedo Asymmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000, 2000 Siaair / Factory Compound / Factory Polish",
+   "Name": "Low Friction Reactive",
+   "Type": "Pearl"
   },
-  "DateReleased": null,
+  "DateReleased": "2025-03-20",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -6375,7 +7865,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.043,
+    "IntDiff": 0.011,
+    "RG": 2.612
+   },
+   "13": {
+    "Diff": 0.043,
+    "IntDiff": 0.011,
+    "RG": 2.589
+   },
+   "14": {
+    "Diff": 0.054,
+    "IntDiff": 0.018,
+    "RG": 2.499
+   },
+   "15": {
+    "Diff": 0.054,
+    "IntDiff": 0.017,
+    "RG": 2.482
+   },
+   "16": {
+    "Diff": 0.047,
+    "IntDiff": 0.015,
+    "RG": 2.496
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2025-03-04",
@@ -6384,7 +7900,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6429,7 +7945,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6440,17 +7956,20 @@
   "CatalogID": "radical-torrid-affair",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Low RG Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
+   "Finish": "500, 1,000, & 2,000 Siaair / Rough Buff",
    "Name": null,
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -6465,7 +7984,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.047,
+    "IntDiff": null,
+    "RG": 2.48
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2013-06",
@@ -6474,7 +7999,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6485,17 +8010,20 @@
   "CatalogID": "radical-torrid-elite",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Low RG Symmetric Core",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
+   "Finish": "500 Siaair / Rough Buff",
    "Name": null,
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -6510,7 +8038,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.047,
+    "IntDiff": null,
+    "RG": 2.48
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2013-01",
@@ -6519,7 +8053,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6530,17 +8064,20 @@
   "CatalogID": "radical-trail-blazer",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Asymmetric (DynamiCore)",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound",
+   "Name": "MOtion Magic",
+   "Type": "Hybrid Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -6555,7 +8092,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.052,
+    "IntDiff": 0.02,
+    "RG": 2.484
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2021-09-21",
@@ -6564,7 +8107,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6575,17 +8118,20 @@
   "CatalogID": "radical-trail-blazer-solid",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Asymmetric (DynamiCore)",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 2000 Siaair",
+   "Name": "MOtion Magic Solid",
+   "Type": "Solid Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2022-08-05",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -6600,7 +8146,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.052,
+    "IntDiff": 0.02,
+    "RG": 2.484
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2022-06-21",
@@ -6609,7 +8161,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6620,17 +8172,20 @@
   "CatalogID": "radical-tremendous",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Guru Asymmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
+   "Finish": "500 & 1,500 Siaair Micro Pad",
    "Name": null,
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -6645,7 +8200,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.044,
+    "IntDiff": 0.018,
+    "RG": 2.501
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2017-06-13",
@@ -6654,7 +8215,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6665,17 +8226,20 @@
   "CatalogID": "radical-tremendous-pearl",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Guru Asymmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
+   "Finish": "500 Siaair / Crown Factory Compound",
    "Name": null,
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -6690,7 +8254,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.044,
+    "IntDiff": 0.018,
+    "RG": 2.501
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2017-10-03",
@@ -6699,7 +8269,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6710,17 +8280,20 @@
   "CatalogID": "radical-vexed",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Vexed Asymmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000, 3000 Siaair Micro Pad",
+   "Name": "HK22C+ Solid",
+   "Type": "Solid reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2026-03-19",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -6735,7 +8308,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.043,
+    "IntDiff": 0.011,
+    "RG": 2.612
+   },
+   "13": {
+    "Diff": 0.043,
+    "IntDiff": 0.011,
+    "RG": 2.589
+   },
+   "14": {
+    "Diff": 0.036,
+    "IntDiff": 0.012,
+    "RG": 2.514
+   },
+   "15": {
+    "Diff": 0.036,
+    "IntDiff": 0.012,
+    "RG": 2.498
+   },
+   "16": {
+    "Diff": 0.032,
+    "IntDiff": 0.011,
+    "RG": 2.508
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2026-03-10",
@@ -6744,7 +8343,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6755,17 +8354,20 @@
   "CatalogID": "radical-xeno",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Asymmetric with Scoop Technology",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
+   "Finish": "500 & 4,000 Siaair Micro Pad",
    "Name": null,
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -6780,7 +8382,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.048,
+    "IntDiff": 0.016,
+    "RG": 2.508
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2016-06",
@@ -6789,7 +8397,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6800,17 +8408,20 @@
   "CatalogID": "radical-xeno-pearl",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Asymmetric with Scoop Technology",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
+   "Finish": "500 Siaair / Crown Factory Compound",
    "Name": null,
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -6825,7 +8436,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.048,
+    "IntDiff": 0.016,
+    "RG": 2.508
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2016-12-20",
@@ -6834,7 +8451,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6845,17 +8462,20 @@
   "CatalogID": "radical-yeti",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
+   "Finish": "500 & 1,000 Siaair / Rough Buff",
    "Name": null,
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -6870,7 +8490,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.054,
+    "IntDiff": null,
+    "RG": 2.482
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2013-02",
@@ -6879,7 +8505,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6890,17 +8516,20 @@
   "CatalogID": "radical-yeti-uncaged",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
+   "Finish": "500 Siaair / Royal Compound / Royal Shine",
    "Name": null,
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -6915,7 +8544,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.054,
+    "IntDiff": null,
+    "RG": 2.482
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2014-08",
@@ -6924,7 +8559,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6935,17 +8570,20 @@
   "CatalogID": "radical-yeti-unleashed",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
+   "Finish": "500 & 2,000 Siaair Micro Pad",
    "Name": null,
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -6960,7 +8598,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.054,
+    "IntDiff": null,
+    "RG": 2.482
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2014-02",
@@ -6969,7 +8613,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6980,17 +8624,20 @@
   "CatalogID": "radical-yeti-untamed",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
+   "Finish": "500 Siaair / Royal Compound / Royal Shine",
    "Name": null,
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -7005,7 +8652,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.054,
+    "IntDiff": null,
+    "RG": 2.482
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2013-10",
@@ -7014,7 +8667,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7025,17 +8678,20 @@
   "CatalogID": "radical-zig-zag",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "ZigZag Asymmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000, 1500 Siaair / Factory Compound",
+   "Name": "HK22 - HyperKinetic",
+   "Type": "Hybrid Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2023-12-07",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -7050,7 +8706,23 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "14": {
+    "Diff": 0.045,
+    "IntDiff": 0.015,
+    "RG": 2.517
+   },
+   "15": {
+    "Diff": 0.045,
+    "IntDiff": 0.015,
+    "RG": 2.501
+   },
+   "16": {
+    "Diff": 0.04,
+    "IntDiff": 0.014,
+    "RG": 2.51
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2023-11-07",
@@ -7059,7 +8731,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7070,17 +8742,20 @@
   "CatalogID": "radical-zig-zag-solid",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "ZigZag Asymmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1500 Siaair Micro Pad",
+   "Name": "HK22 - HyperKinetic Solid",
+   "Type": "Solid Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2024-10-24",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -7095,7 +8770,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.043,
+    "IntDiff": 0.011,
+    "RG": 2.612
+   },
+   "13": {
+    "Diff": 0.043,
+    "IntDiff": 0.011,
+    "RG": 2.589
+   },
+   "14": {
+    "Diff": 0.045,
+    "IntDiff": 0.015,
+    "RG": 2.517
+   },
+   "15": {
+    "Diff": 0.045,
+    "IntDiff": 0.015,
+    "RG": 2.501
+   },
+   "16": {
+    "Diff": 0.04,
+    "IntDiff": 0.014,
+    "RG": 2.51
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2024-10-08",
@@ -7104,7 +8805,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7115,17 +8816,20 @@
   "CatalogID": "radical-zing",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Asymmetric (DynamiCore)",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000 & 3000 Siaair Micro Pad",
+   "Name": "Forged 2 Solid",
+   "Type": "Solid Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -7140,7 +8844,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.051,
+    "IntDiff": 0.02,
+    "RG": 2.499
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2019-06-11",
@@ -7149,7 +8859,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7194,7 +8904,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7205,17 +8915,20 @@
   "CatalogID": "radical-zing-hybrid",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Asymmetric (DynamiCore)",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000 Siaair / Crown Factory Compound",
+   "Name": "Forged 2 Hybrid",
+   "Type": "Hybrid Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -7230,7 +8943,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.051,
+    "IntDiff": 0.02,
+    "RG": 2.499
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2019-12-17",
@@ -7239,7 +8958,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7250,17 +8969,20 @@
   "CatalogID": "radical-zing-pearl",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Asymmetric (DynamiCore)",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000 Siaair / Crown Factory Compound",
+   "Name": "Forged 2 Pearl",
+   "Type": "Pearl Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -7275,7 +8997,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.051,
+    "IntDiff": 0.02,
+    "RG": 2.499
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2020-07-07",
@@ -7284,7 +9012,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null

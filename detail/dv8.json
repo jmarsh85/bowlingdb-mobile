@@ -39,7 +39,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -50,17 +50,20 @@
   "CatalogID": "dv8-alley-cat-pink-black",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Alley Cat Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Shine",
+   "Name": "ACR - Alley Cat Reactive",
+   "Type": "Pearl Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -75,7 +78,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.025,
+    "IntDiff": null,
+    "RG": 2.564
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2017-04-18",
@@ -84,7 +93,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -95,17 +104,20 @@
   "CatalogID": "dv8-alley-cat-purple-green",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Alley Cat Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Shine",
+   "Name": "ACR - Alley Cat Reactive",
+   "Type": "Pearl Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -120,7 +132,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.025,
+    "IntDiff": null,
+    "RG": 2.564
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2017-04-18",
@@ -129,7 +147,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -140,17 +158,20 @@
   "CatalogID": "dv8-alley-cat-red-electric-blue",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Alley Cat Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Shine",
+   "Name": "ACR - Alley Cat Reactive",
+   "Type": "Pearl Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -165,7 +186,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.025,
+    "IntDiff": null,
+    "RG": 2.564
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2017-04-18",
@@ -174,7 +201,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -219,7 +246,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -230,17 +257,20 @@
   "CatalogID": "dv8-brutal-nightmare",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Nightmare Low RG",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "500 Siaair / Rough Buff",
+   "Name": "Class 8 Hybrid Reactive",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -255,7 +285,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.052,
+    "IntDiff": 0.013,
+    "RG": 2.505
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2012-12",
@@ -264,7 +300,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -309,7 +345,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -354,7 +390,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -365,17 +401,20 @@
   "CatalogID": "dv8-chill-pearl",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Diva 2.0",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000, 1500 Siaair / Factory Compound",
+   "Name": "HK22 - Inciter Max Flip",
+   "Type": "Pearl Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2024-05-16",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -390,7 +429,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.042,
+    "IntDiff": null,
+    "RG": 2.605
+   },
+   "13": {
+    "Diff": 0.042,
+    "IntDiff": null,
+    "RG": 2.582
+   },
+   "14": {
+    "Diff": 0.051,
+    "IntDiff": null,
+    "RG": 2.511
+   },
+   "15": {
+    "Diff": 0.051,
+    "IntDiff": null,
+    "RG": 2.495
+   },
+   "16": {
+    "Diff": 0.051,
+    "IntDiff": null,
+    "RG": 2.483
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2024-04-30",
@@ -399,7 +464,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -444,7 +509,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -489,7 +554,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -500,17 +565,20 @@
   "CatalogID": "dv8-creed",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Creed Low RG Asymmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "500 Siaair / Crown Factory Compound",
+   "Name": "Composite Hook Pearl",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -525,7 +593,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.055,
+    "IntDiff": 0.011,
+    "RG": 2.496
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2017-06-13",
@@ -534,7 +608,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -545,17 +619,20 @@
   "CatalogID": "dv8-creed-rebellion",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Creed Low RG Asymmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "1,500 Siaair Micro Pad",
+   "Name": "Composite Claw Solid",
+   "Type": "Solid Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -570,7 +647,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.055,
+    "IntDiff": 0.011,
+    "RG": 2.496
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2018-06-14",
@@ -579,7 +662,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -590,17 +673,20 @@
   "CatalogID": "dv8-creed-revelation",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Creed Low RG Asymmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500 Siaair / Crown Factory Compound",
+   "Name": "Composite Flip Pearl",
+   "Type": "Pearl Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -615,7 +701,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.055,
+    "IntDiff": 0.011,
+    "RG": 2.496
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2018-01-09",
@@ -624,7 +716,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -669,7 +761,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -714,7 +806,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -759,7 +851,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -770,17 +862,20 @@
   "CatalogID": "dv8-dark-side",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Duality",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000, 1500 Siaair / Factory Compound",
+   "Name": "Inciter Hybrid",
+   "Type": "Hybrid Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2025-03-20",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -795,7 +890,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.043,
+    "IntDiff": null,
+    "RG": 2.599
+   },
+   "13": {
+    "Diff": 0.043,
+    "IntDiff": null,
+    "RG": 2.577
+   },
+   "14": {
+    "Diff": 0.035,
+    "IntDiff": null,
+    "RG": 2.503
+   },
+   "15": {
+    "Diff": 0.036,
+    "IntDiff": null,
+    "RG": 2.48
+   },
+   "16": {
+    "Diff": 0.031,
+    "IntDiff": null,
+    "RG": 2.494
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2025-03-04",
@@ -804,7 +925,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -815,17 +936,20 @@
   "CatalogID": "dv8-dark-side-curse",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Duality",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000, 1500 Siaair / Factory Compound",
+   "Name": "Inciter Solid",
+   "Type": "Solid Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2026-01-15",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -840,7 +964,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.043,
+    "IntDiff": null,
+    "RG": 2.599
+   },
+   "13": {
+    "Diff": 0.043,
+    "IntDiff": null,
+    "RG": 2.577
+   },
+   "14": {
+    "Diff": 0.035,
+    "IntDiff": null,
+    "RG": 2.503
+   },
+   "15": {
+    "Diff": 0.036,
+    "IntDiff": null,
+    "RG": 2.48
+   },
+   "16": {
+    "Diff": 0.031,
+    "IntDiff": null,
+    "RG": 2.494
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2026-01-06",
@@ -849,7 +999,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -894,7 +1044,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -939,7 +1089,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -950,17 +1100,20 @@
   "CatalogID": "dv8-deviant",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Deviant Medium RG Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "500 Siaair / Royal Compound",
+   "Name": "Composite V Solid",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -975,7 +1128,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.05,
+    "IntDiff": null,
+    "RG": 2.562
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2015-09",
@@ -984,7 +1143,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -995,17 +1154,20 @@
   "CatalogID": "dv8-deviant-pearl",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Deviant Medium RG Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "500 Siaair / Royal Compound",
+   "Name": "Composite Pearl",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -1020,7 +1182,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.05,
+    "IntDiff": null,
+    "RG": 2.562
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2016-06-14",
@@ -1029,7 +1197,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1074,7 +1242,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1085,17 +1253,20 @@
   "CatalogID": "dv8-diva",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Diva",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "500 Siaair / Rough Buff / High Gloss",
+   "Name": "Class 6G Reactive",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -1110,7 +1281,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.052,
+    "IntDiff": null,
+    "RG": 2.516
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2012-12",
@@ -1119,7 +1296,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1164,7 +1341,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1175,17 +1352,20 @@
   "CatalogID": "dv8-diva-divine",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Diva",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "500 and 4,000 Siaair Micro Pad",
+   "Name": "Class 7G Reactive Hybrid",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -1200,7 +1380,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.052,
+    "IntDiff": null,
+    "RG": 2.516
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2014-12",
@@ -1209,7 +1395,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1220,17 +1406,20 @@
   "CatalogID": "dv8-diva-pearl",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Diva",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "500 Siaair / Royal Compound / Royal Shine",
+   "Name": "Class 5F Reactive",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -1245,7 +1434,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.052,
+    "IntDiff": null,
+    "RG": 2.516
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2013-12",
@@ -1254,7 +1449,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1265,17 +1460,20 @@
   "CatalogID": "dv8-diva-style",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Diva",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "500 Siaair / Crown Factory Compound",
+   "Name": "Composite Pearl",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -1290,7 +1488,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.052,
+    "IntDiff": null,
+    "RG": 2.516
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2016-12-20",
@@ -1299,7 +1503,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1310,17 +1514,20 @@
   "CatalogID": "dv8-diva-xoxo",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Diva",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "500 Siaair / Royal Compound",
+   "Name": "Composite Flip Pearl",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -1335,7 +1542,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.052,
+    "IntDiff": null,
+    "RG": 2.516
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2015-12-29",
@@ -1344,7 +1557,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1355,17 +1568,20 @@
   "CatalogID": "dv8-double-trouble",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Dualistic",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000, 1500 Siaair / Factory Compound",
+   "Name": "HK22 - Havoc Pearl",
+   "Type": "Pearl Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2026-03-19",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -1380,7 +1596,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.043,
+    "IntDiff": null,
+    "RG": 2.599
+   },
+   "13": {
+    "Diff": 0.043,
+    "IntDiff": null,
+    "RG": 2.577
+   },
+   "14": {
+    "Diff": 0.043,
+    "IntDiff": null,
+    "RG": 2.52
+   },
+   "15": {
+    "Diff": 0.045,
+    "IntDiff": null,
+    "RG": 2.496
+   },
+   "16": {
+    "Diff": 0.037,
+    "IntDiff": null,
+    "RG": 2.514
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2026-03-10",
@@ -1389,7 +1631,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1400,17 +1642,20 @@
   "CatalogID": "dv8-dude",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Dude",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "500 Siaair / Royal Compound / Royal Shine",
+   "Name": "Class 4F Reactive",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -1425,7 +1670,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.04,
+    "IntDiff": null,
+    "RG": 2.557
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2013-10",
@@ -1434,7 +1685,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1479,7 +1730,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1524,7 +1775,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1569,7 +1820,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1614,7 +1865,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1659,7 +1910,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1670,17 +1921,20 @@
   "CatalogID": "dv8-endless-nightmare",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Nightmare Low RG",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "500 / 1,500 Siaair Micro Pad",
+   "Name": "Class 9 Hybrid Reactive",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -1695,7 +1949,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.052,
+    "IntDiff": 0.013,
+    "RG": 2.505
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2013-06",
@@ -1704,7 +1964,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1715,17 +1975,20 @@
   "CatalogID": "dv8-freak-show",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Freakshow Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "500 Siaair / Royal Compound / Royal Shine",
+   "Name": "Class 6V Pearl Reactive",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -1740,7 +2003,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.054,
+    "IntDiff": null,
+    "RG": 2.481
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2016-06-14",
@@ -1749,7 +2018,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1760,17 +2029,20 @@
   "CatalogID": "dv8-freak-show-flip",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Freakshow Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "500 Siaair / Crown Factory Compound",
+   "Name": "Freaky Flip Pearl",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -1785,7 +2057,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.054,
+    "IntDiff": null,
+    "RG": 2.481
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2017-06-13",
@@ -1794,7 +2072,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1805,17 +2083,20 @@
   "CatalogID": "dv8-freak-show-solid",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Freakshow Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "500 and 1,500 Siaair Micro Pad",
+   "Name": "Class 8 Solid Reactive",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -1830,7 +2111,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.054,
+    "IntDiff": null,
+    "RG": 2.481
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2016-10-11",
@@ -1839,7 +2126,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1884,7 +2171,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1929,7 +2216,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1940,17 +2227,20 @@
   "CatalogID": "dv8-grudge",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Grudge Low RG Asymmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "500 and 1,000 Siaair Micro Pad",
+   "Name": "Composite Hook Solid",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -1965,7 +2255,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.056,
+    "IntDiff": 0.014,
+    "RG": 2.49
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2015-12-29",
@@ -1974,7 +2270,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1985,17 +2281,20 @@
   "CatalogID": "dv8-grudge-hybrid",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Grudge Low RG Asymmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "500 and 4,000 Siaair Micro Pad",
+   "Name": "Composite Hook Hybrid",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -2010,7 +2309,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.056,
+    "IntDiff": 0.014,
+    "RG": 2.49
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2016-06-14",
@@ -2019,7 +2324,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2030,17 +2335,20 @@
   "CatalogID": "dv8-grudge-pearl",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Grudge Low RG Asymmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "500 Siaair / Crown Factory Compound",
+   "Name": "Composite Hook Pearl",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -2055,7 +2363,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.056,
+    "IntDiff": 0.014,
+    "RG": 2.49
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2016-10-11",
@@ -2064,7 +2378,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2075,17 +2389,20 @@
   "CatalogID": "dv8-hater",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Hater",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1500 Siaair Micro Pad",
+   "Name": "HK22 - Havoc Hybrid",
+   "Type": "Hybrid Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2024-03-21",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -2100,7 +2417,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.041,
+    "IntDiff": 0.014,
+    "RG": 2.593
+   },
+   "13": {
+    "Diff": 0.041,
+    "IntDiff": 0.014,
+    "RG": 2.597
+   },
+   "14": {
+    "Diff": 0.054,
+    "IntDiff": 0.024,
+    "RG": 2.556
+   },
+   "15": {
+    "Diff": 0.054,
+    "IntDiff": 0.024,
+    "RG": 2.539
+   },
+   "16": {
+    "Diff": 0.047,
+    "IntDiff": 0.021,
+    "RG": 2.545
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2024-03-05",
@@ -2109,7 +2452,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2120,17 +2463,20 @@
   "CatalogID": "dv8-hater-pearl",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Hater",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000, 1500 Siaair / Factory Compound",
+   "Name": "HK22C - Havoc Pearl",
+   "Type": "Pearl Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2025-05-15",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -2145,7 +2491,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.041,
+    "IntDiff": 0.014,
+    "RG": 2.593
+   },
+   "13": {
+    "Diff": 0.041,
+    "IntDiff": 0.014,
+    "RG": 2.597
+   },
+   "14": {
+    "Diff": 0.054,
+    "IntDiff": 0.024,
+    "RG": 2.556
+   },
+   "15": {
+    "Diff": 0.054,
+    "IntDiff": 0.024,
+    "RG": 2.539
+   },
+   "16": {
+    "Diff": 0.047,
+    "IntDiff": 0.021,
+    "RG": 2.545
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2025-04-29",
@@ -2154,7 +2526,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2165,17 +2537,20 @@
   "CatalogID": "dv8-heckler",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Unholy",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 2000 Siaair Micro Pad",
+   "Name": "HK22C - Maximum Havoc",
+   "Type": "Solid Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2024-11-21",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -2190,7 +2565,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.045,
+    "IntDiff": 0.01,
+    "RG": 2.602
+   },
+   "13": {
+    "Diff": 0.045,
+    "IntDiff": 0.01,
+    "RG": 2.58
+   },
+   "14": {
+    "Diff": 0.049,
+    "IntDiff": 0.01,
+    "RG": 2.526
+   },
+   "15": {
+    "Diff": 0.051,
+    "IntDiff": 0.01,
+    "RG": 2.504
+   },
+   "16": {
+    "Diff": 0.043,
+    "IntDiff": 0.009,
+    "RG": 2.518
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2024-11-05",
@@ -2199,7 +2600,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2210,17 +2611,20 @@
   "CatalogID": "dv8-heckler-hybrid",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Unholy",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000, 1500 Siaair / Factory Compound",
+   "Name": "HK22C - Maximum Havoc",
+   "Type": "Hybrid Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2025-11-20",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -2235,7 +2639,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.045,
+    "IntDiff": 0.01,
+    "RG": 2.602
+   },
+   "13": {
+    "Diff": 0.045,
+    "IntDiff": 0.01,
+    "RG": 2.58
+   },
+   "14": {
+    "Diff": 0.049,
+    "IntDiff": 0.01,
+    "RG": 2.526
+   },
+   "15": {
+    "Diff": 0.051,
+    "IntDiff": 0.01,
+    "RG": 2.504
+   },
+   "16": {
+    "Diff": 0.043,
+    "IntDiff": 0.009,
+    "RG": 2.518
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2025-10-14",
@@ -2244,7 +2674,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2255,17 +2685,20 @@
   "CatalogID": "dv8-heckler-taunt",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Unholy",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000, 2000 Siaair Micro Pad",
+   "Name": "Maximum Havoc Hybrid",
+   "Type": "Hybrid Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2026-06-11",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -2280,7 +2713,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.045,
+    "IntDiff": 0.01,
+    "RG": 2.602
+   },
+   "13": {
+    "Diff": 0.045,
+    "IntDiff": 0.01,
+    "RG": 2.58
+   },
+   "14": {
+    "Diff": 0.049,
+    "IntDiff": 0.01,
+    "RG": 2.526
+   },
+   "15": {
+    "Diff": 0.051,
+    "IntDiff": 0.01,
+    "RG": 2.504
+   },
+   "16": {
+    "Diff": 0.043,
+    "IntDiff": 0.009,
+    "RG": 2.518
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2026-06-02",
@@ -2289,7 +2748,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2334,7 +2793,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2379,7 +2838,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2390,17 +2849,20 @@
   "CatalogID": "dv8-hell-raiser",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Hell Raiser",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "500 and 1,500 Siaair / Rough Buff",
+   "Name": "Class 5 Reactive",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -2415,7 +2877,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.054,
+    "IntDiff": 0.016,
+    "RG": 2.537
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2011-07",
@@ -2424,7 +2892,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2469,7 +2937,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2514,7 +2982,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2559,7 +3027,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2570,17 +3038,20 @@
   "CatalogID": "dv8-hell-raiser-revenge",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Hell Raiser Ultra Low RG",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "500 and 2,000 Siaair Micro Pad",
+   "Name": "Class 7 Reactive",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -2595,7 +3066,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.056,
+    "IntDiff": 0.018,
+    "RG": 2.48
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2011-12",
@@ -2604,7 +3081,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2649,7 +3126,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2660,17 +3137,20 @@
   "CatalogID": "dv8-hell-raiser-terror",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Hell Raiser",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "500 Siaair / Rough Buff / High Gloss",
+   "Name": "Class 6 Reactive",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -2685,7 +3165,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.056,
+    "IntDiff": 0.018,
+    "RG": 2.48
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2012-06",
@@ -2694,7 +3180,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2705,17 +3191,20 @@
   "CatalogID": "dv8-hitman",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Hitman Low RG Asymmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500 Siaair / Crown Factory Compound",
+   "Name": "N-Forcer",
+   "Type": "Pearl Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -2730,7 +3219,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.05,
+    "IntDiff": 0.02,
+    "RG": 2.524
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2017-10-03",
@@ -2739,7 +3234,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2750,17 +3245,20 @@
   "CatalogID": "dv8-hitman-enforcer",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Hitman Low RG Asymmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500 Siaair / Crown Factory Compound",
+   "Name": "N-Forcer Plus",
+   "Type": "Hybrid Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -2775,7 +3273,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.05,
+    "IntDiff": 0.02,
+    "RG": 2.524
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2018-06-14",
@@ -2784,7 +3288,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2795,17 +3299,20 @@
   "CatalogID": "dv8-hooligan",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Hooligan",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "500 Siaair / Royal Compound / Royal Shine",
+   "Name": "Class 3F Reactive",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -2820,7 +3327,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.04,
+    "IntDiff": null,
+    "RG": 2.553
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2014-10",
@@ -2829,7 +3342,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2840,17 +3353,20 @@
   "CatalogID": "dv8-hooligan-taunt",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Hooligan Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "500 Siaair / Royal Compound",
+   "Name": "Class 5G Pearl Reactive",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -2865,7 +3381,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.04,
+    "IntDiff": null,
+    "RG": 2.553
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2015-06",
@@ -2874,7 +3396,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2885,17 +3407,20 @@
   "CatalogID": "dv8-instigator",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Assailant",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500 and 3000 Siaair Micro Pad",
+   "Name": "Inciter Solid",
+   "Type": "Solid Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -2910,7 +3435,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.051,
+    "IntDiff": 0.016,
+    "RG": 2.481
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2019-06-11",
@@ -2919,7 +3450,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2930,17 +3461,20 @@
   "CatalogID": "dv8-intense-collision",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Collision",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000, 1500 Siaair / Factory Compound",
+   "Name": "HK22C² - Havoc Pearl",
+   "Type": "Pearl Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2026-08-13",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -2955,7 +3489,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.041,
+    "IntDiff": 0.014,
+    "RG": 2.593
+   },
+   "13": {
+    "Diff": 0.041,
+    "IntDiff": 0.014,
+    "RG": 2.597
+   },
+   "14": {
+    "Diff": 0.052,
+    "IntDiff": 0.019,
+    "RG": 2.479
+   },
+   "15": {
+    "Diff": 0.052,
+    "IntDiff": 0.019,
+    "RG": 2.462
+   },
+   "16": {
+    "Diff": 0.05,
+    "IntDiff": 0.018,
+    "RG": 2.477
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2026-06-30",
@@ -2964,7 +3524,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3009,7 +3569,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3054,7 +3614,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3099,7 +3659,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3110,17 +3670,20 @@
   "CatalogID": "dv8-mantra",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Mantra",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000, 1500 Siaair / Factory Compound",
+   "Name": "HK22 - Inciter Xtreme",
+   "Type": "Hybrid Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2024-09-19",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -3135,7 +3698,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.041,
+    "IntDiff": 0.014,
+    "RG": 2.593
+   },
+   "13": {
+    "Diff": 0.041,
+    "IntDiff": 0.014,
+    "RG": 2.597
+   },
+   "14": {
+    "Diff": 0.047,
+    "IntDiff": 0.011,
+    "RG": 2.506
+   },
+   "15": {
+    "Diff": 0.047,
+    "IntDiff": 0.011,
+    "RG": 2.498
+   },
+   "16": {
+    "Diff": 0.041,
+    "IntDiff": 0.011,
+    "RG": 2.507
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2024-09-03",
@@ -3144,7 +3733,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3155,17 +3744,20 @@
   "CatalogID": "dv8-mantra-solid",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Mantra",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 2000 Siaair Micro Pad",
+   "Name": "Inciter Xtreme Solid",
+   "Type": "Solid Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2025-09-18",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -3180,7 +3772,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.041,
+    "IntDiff": 0.014,
+    "RG": 2.593
+   },
+   "13": {
+    "Diff": 0.041,
+    "IntDiff": 0.014,
+    "RG": 2.597
+   },
+   "14": {
+    "Diff": 0.047,
+    "IntDiff": 0.011,
+    "RG": 2.506
+   },
+   "15": {
+    "Diff": 0.047,
+    "IntDiff": 0.011,
+    "RG": 2.498
+   },
+   "16": {
+    "Diff": 0.041,
+    "IntDiff": 0.011,
+    "RG": 2.507
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2025-09-09",
@@ -3189,7 +3807,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3200,17 +3818,20 @@
   "CatalogID": "dv8-marauder",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Marauder",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "500 Siaair / Rough Buff / High Gloss",
+   "Name": "Class 4 Reactive",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -3225,7 +3846,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.05,
+    "IntDiff": null,
+    "RG": 2.524
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2012-06",
@@ -3234,7 +3861,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3245,17 +3872,20 @@
   "CatalogID": "dv8-marauder-madness",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Marauder",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "500 and 4,000 Siaair Micro Pad",
+   "Name": "Class 5G Reactive",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -3270,7 +3900,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.05,
+    "IntDiff": null,
+    "RG": 2.524
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2012-10",
@@ -3279,7 +3915,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3290,17 +3926,20 @@
   "CatalogID": "dv8-marauder-mutiny",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Marauder",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "500 Siaair / Rough Buff / High Gloss",
+   "Name": "Class 2L Reactive",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -3315,7 +3954,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.05,
+    "IntDiff": null,
+    "RG": 2.524
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2013-06",
@@ -3324,7 +3969,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3369,7 +4014,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3380,17 +4025,20 @@
   "CatalogID": "dv8-misfit-green-white",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Misfit",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "500 Siaair / Rough Buff / High Gloss",
+   "Name": "Class 1 Reactive",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -3405,7 +4053,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.04,
+    "IntDiff": null,
+    "RG": 2.512
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2011-12",
@@ -3414,7 +4068,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3459,7 +4113,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3504,7 +4158,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3549,7 +4203,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3560,17 +4214,20 @@
   "CatalogID": "dv8-misfit-orange-blue",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Misfit",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "500 Siaair / Rough Buff / High Gloss",
+   "Name": "Class 1 Reactive",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -3585,7 +4242,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.04,
+    "IntDiff": null,
+    "RG": 2.512
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2011-07",
@@ -3594,7 +4257,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3639,7 +4302,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3684,7 +4347,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3695,17 +4358,20 @@
   "CatalogID": "dv8-nasty-rumor",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Rumor Medium RG Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500 Siaair / Crown Factory Compound",
+   "Name": "Deception Pearl Plus",
+   "Type": "Pearl Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -3720,7 +4386,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.048,
+    "IntDiff": null,
+    "RG": 2.534
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2018-01-09",
@@ -3729,7 +4401,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3774,7 +4446,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3785,17 +4457,20 @@
   "CatalogID": "dv8-nightmare",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Nightmare Low RG",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "500, 1,000, and 4,000 Siaair Micro Pad",
+   "Name": "Class 8 Reactive",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -3810,7 +4485,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.052,
+    "IntDiff": 0.013,
+    "RG": 2.505
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2012-10",
@@ -3819,7 +4500,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3864,7 +4545,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3875,17 +4556,20 @@
   "CatalogID": "dv8-notorious",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Antagonist",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500 and 3,000 Siaair Micro Pad",
+   "Name": "Composite Fang",
+   "Type": "Hybrid Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -3900,7 +4584,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.047,
+    "IntDiff": 0.018,
+    "RG": 2.476
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2019-01-08",
@@ -3909,7 +4599,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3954,7 +4644,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3965,17 +4655,20 @@
   "CatalogID": "dv8-outcast-black-citron",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Outcast",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "500 Siaair / Royal Compound / Royal Shine",
+   "Name": "Class 1 Reactive",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -3990,7 +4683,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.03,
+    "IntDiff": null,
+    "RG": 2.547
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2014-10",
@@ -3999,7 +4698,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4010,17 +4709,20 @@
   "CatalogID": "dv8-outcast-blue-bruiser",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Outcast Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "500 Siaair / Royal Compound / Royal Shine",
+   "Name": "Class 1 Reactive",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -4035,7 +4737,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.03,
+    "IntDiff": null,
+    "RG": 2.547
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2016-04-05",
@@ -4044,7 +4752,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4089,7 +4797,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4134,7 +4842,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4179,7 +4887,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4224,7 +4932,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4235,17 +4943,20 @@
   "CatalogID": "dv8-pitbull",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Pitbull Low RG Asymmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "500 and 1,000 Siaair Micro Pad",
+   "Name": "Composite Bite",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -4260,7 +4971,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.055,
+    "IntDiff": 0.02,
+    "RG": 2.486
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2016-12-20",
@@ -4269,7 +4986,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4280,17 +4997,20 @@
   "CatalogID": "dv8-pitbull-bark",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Pitbull Low RG Asymmetric - DynamiCore",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "1,000 Siaair Micro Pad",
+   "Name": "Composite Fang Max",
+   "Type": "Solid Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -4305,7 +5025,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.055,
+    "IntDiff": 0.02,
+    "RG": 2.486
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2018-10-02",
@@ -4314,7 +5040,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4325,17 +5051,20 @@
   "CatalogID": "dv8-pitbull-bite",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Pitbull Low RG Asymmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500 and 1,500 Siaair Micro Pad",
+   "Name": "Composite Fang",
+   "Type": "Solid Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -4350,7 +5079,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.055,
+    "IntDiff": 0.02,
+    "RG": 2.486
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2018-01-09",
@@ -4359,7 +5094,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4370,17 +5105,20 @@
   "CatalogID": "dv8-pitbull-growl",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Pitbull Low RG Asymmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "500 and 2,000 Siaair Micro Pad",
+   "Name": "Composite Claw Solid",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -4395,7 +5133,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.055,
+    "IntDiff": 0.02,
+    "RG": 2.486
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2017-06-13",
@@ -4404,7 +5148,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4415,17 +5159,20 @@
   "CatalogID": "dv8-poison",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Toxicity",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500 and 1,500 Siaair Micro Pad",
+   "Name": "Toxin-R",
+   "Type": "Solid Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -4440,7 +5187,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.054,
+    "IntDiff": 0.001,
+    "RG": 2.564
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2018-10-02",
@@ -4449,7 +5202,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4494,7 +5247,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4539,7 +5292,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4550,17 +5303,20 @@
   "CatalogID": "dv8-prowler",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Divergent",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500 Siaair / Crown Factory Compound",
+   "Name": "N-Forcer Plus",
+   "Type": "Pearl Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -4575,7 +5331,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.044,
+    "IntDiff": 0.011,
+    "RG": 2.491
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2019-01-08",
@@ -4584,7 +5346,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4595,17 +5357,20 @@
   "CatalogID": "dv8-reckless",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Reckless",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "500 Siaair / Rough Buff",
+   "Name": "Class 3 Reactive",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -4620,7 +5385,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.05,
+    "IntDiff": null,
+    "RG": 2.523
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2011-07",
@@ -4629,7 +5400,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4640,17 +5411,20 @@
   "CatalogID": "dv8-ruckus",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Ruckus Medium RG",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "500 Siaair / Royal Compound",
+   "Name": "Class 8F Hybrid Reactive",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -4665,7 +5439,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.052,
+    "IntDiff": 0.013,
+    "RG": 2.54
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2013-10",
@@ -4674,7 +5454,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4719,7 +5499,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4730,17 +5510,20 @@
   "CatalogID": "dv8-ruckus-feud",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Ruckus Medium RG",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "500 and 1,500 Siaair Micro Pad",
+   "Name": "Class 12 Solid Reactive",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -4755,7 +5538,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.052,
+    "IntDiff": 0.013,
+    "RG": 2.54
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2013-12",
@@ -4764,7 +5553,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4775,17 +5564,20 @@
   "CatalogID": "dv8-ruckus-schizo",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Ruckus Medium RG",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "500 Siaair / Royal Compound",
+   "Name": "Class 12F Reactive",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -4800,7 +5592,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.052,
+    "IntDiff": 0.013,
+    "RG": 2.54
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2014-06",
@@ -4809,7 +5607,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4820,17 +5618,20 @@
   "CatalogID": "dv8-rude-dude",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Dude Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "500 Siaair / Royal Compound",
+   "Name": "Class 7G Reactive",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -4845,7 +5646,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.04,
+    "IntDiff": null,
+    "RG": 2.557
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2014-06",
@@ -4854,7 +5661,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4865,17 +5672,20 @@
   "CatalogID": "dv8-rumor",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Rumor Medium RG Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "500 Siaair / Crown Factory Compound",
+   "Name": "Deception Pearl",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -4890,7 +5700,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.048,
+    "IntDiff": null,
+    "RG": 2.534
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2017-06-13",
@@ -4899,7 +5715,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4910,17 +5726,20 @@
   "CatalogID": "dv8-severe-collision",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Collision",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000, 1500 Siaair / Factory Compound",
+   "Name": "HK22C - Havoc Hybrid",
+   "Type": "Hybrid Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2025-07-10",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -4935,7 +5754,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.041,
+    "IntDiff": 0.014,
+    "RG": 2.593
+   },
+   "13": {
+    "Diff": 0.041,
+    "IntDiff": 0.014,
+    "RG": 2.597
+   },
+   "14": {
+    "Diff": 0.052,
+    "IntDiff": 0.019,
+    "RG": 2.479
+   },
+   "15": {
+    "Diff": 0.052,
+    "IntDiff": 0.019,
+    "RG": 2.462
+   },
+   "16": {
+    "Diff": 0.05,
+    "IntDiff": 0.018,
+    "RG": 2.477
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2025-06-24",
@@ -4944,7 +5789,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4955,17 +5800,20 @@
   "CatalogID": "dv8-tactic-control",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Turmoil Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500 / 3,000 Siaair Micro Pad",
+   "Name": "Control Urethane",
+   "Type": "Urethane"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -4980,7 +5828,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.042,
+    "IntDiff": null,
+    "RG": 2.528
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2018-06-14",
@@ -4989,7 +5843,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5000,17 +5854,20 @@
   "CatalogID": "dv8-thug",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Thug Low RG",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "500 Siaair / Royal Compound",
+   "Name": "Class 13F Reactive",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -5025,7 +5882,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.052,
+    "IntDiff": 0.015,
+    "RG": 2.505
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2014-10",
@@ -5034,7 +5897,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5045,17 +5908,20 @@
   "CatalogID": "dv8-thug-corrupt",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Thug Low RG Asymmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "500 and 4,000 Siaair Micro Pad",
+   "Name": "Composite Hybrid",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -5070,7 +5936,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.052,
+    "IntDiff": 0.015,
+    "RG": 2.505
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2015-06",
@@ -5079,7 +5951,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5090,17 +5962,20 @@
   "CatalogID": "dv8-thug-life",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Thug Low RG Asymmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "500 Siaair / Royal Compound",
+   "Name": "Composite Pearl",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -5115,7 +5990,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.052,
+    "IntDiff": 0.015,
+    "RG": 2.505
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2015-09",
@@ -5124,7 +6005,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5135,17 +6016,20 @@
   "CatalogID": "dv8-thug-unruly",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Thug Low RG",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "500 and 2,000 Siaair Micro Pad",
+   "Name": "Class 13G Reactive Solid",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -5160,7 +6044,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.052,
+    "IntDiff": 0.015,
+    "RG": 2.505
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2014-12",
@@ -5169,7 +6059,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5180,17 +6070,20 @@
   "CatalogID": "dv8-too-reckless",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Reckless",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "500 Siaair / Rough Buff / High Gloss",
+   "Name": "Class 3L Reactive",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -5205,7 +6098,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.05,
+    "IntDiff": null,
+    "RG": 2.523
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2011-11",
@@ -5214,7 +6113,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5259,7 +6158,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5270,17 +6169,20 @@
   "CatalogID": "dv8-trouble-maker-pearl",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Dualistic",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000, 1500 Siaair / Factory Compound",
+   "Name": "HK22 - Inciter Xtreme",
+   "Type": "Pearl Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2024-01-25",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -5295,7 +6197,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.043,
+    "IntDiff": null,
+    "RG": 2.599
+   },
+   "13": {
+    "Diff": 0.043,
+    "IntDiff": null,
+    "RG": 2.577
+   },
+   "14": {
+    "Diff": 0.043,
+    "IntDiff": null,
+    "RG": 2.52
+   },
+   "15": {
+    "Diff": 0.045,
+    "IntDiff": null,
+    "RG": 2.496
+   },
+   "16": {
+    "Diff": 0.037,
+    "IntDiff": null,
+    "RG": 2.514
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2024-01-09",
@@ -5304,7 +6232,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5315,17 +6243,20 @@
   "CatalogID": "dv8-trouble-maker-solid",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Dualistic",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1500 Siaair Micro Pad",
+   "Name": "Havoc Solid",
+   "Type": "Solid Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2025-01-16",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -5340,7 +6271,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.043,
+    "IntDiff": null,
+    "RG": 2.599
+   },
+   "13": {
+    "Diff": 0.043,
+    "IntDiff": null,
+    "RG": 2.577
+   },
+   "14": {
+    "Diff": 0.043,
+    "IntDiff": null,
+    "RG": 2.52
+   },
+   "15": {
+    "Diff": 0.045,
+    "IntDiff": null,
+    "RG": 2.496
+   },
+   "16": {
+    "Diff": 0.037,
+    "IntDiff": null,
+    "RG": 2.514
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2025-01-05",
@@ -5349,7 +6306,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5360,17 +6317,20 @@
   "CatalogID": "dv8-turmoil-2-pearl",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Command Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500 and 1,000 Siaair / Crown Factory Compound",
+   "Name": "Intense Composite Pearl",
+   "Type": "Pearl Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -5385,7 +6345,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.043,
+    "IntDiff": null,
+    "RG": 2.53
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2019-04-16",
@@ -5394,7 +6360,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5405,17 +6371,20 @@
   "CatalogID": "dv8-turmoil-2-solid",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Command Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500 and 3,000 Siaair Micro Pad",
+   "Name": "Intense Composite Solid",
+   "Type": "Solid Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -5430,7 +6399,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.043,
+    "IntDiff": null,
+    "RG": 2.53
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2019-04-16",
@@ -5439,7 +6414,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5450,17 +6425,20 @@
   "CatalogID": "dv8-turmoil-hybrid",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Turmoil Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500 and 1,000 Siaair / Crown Factory Compound",
+   "Name": "Composite Hook Hybrid",
+   "Type": "Hybrid Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -5475,7 +6453,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.042,
+    "IntDiff": null,
+    "RG": 2.528
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2019-01-08",
@@ -5484,7 +6468,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5495,17 +6479,20 @@
   "CatalogID": "dv8-turmoil-pearl",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Turmoil Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500 Siaair / Crown Factory Compound",
+   "Name": "Composite Flip Pearl",
+   "Type": "Pearl Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -5520,7 +6507,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.042,
+    "IntDiff": null,
+    "RG": 2.528
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2018-04-17",
@@ -5529,7 +6522,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5540,17 +6533,20 @@
   "CatalogID": "dv8-turmoil-solid",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Turmoil Symmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500 and 4,000 Siaair Micro Pad",
+   "Name": "Composite Hook Solid",
+   "Type": "Solid Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -5565,7 +6561,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.042,
+    "IntDiff": null,
+    "RG": 2.528
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2018-04-17",
@@ -5574,7 +6576,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5585,17 +6587,20 @@
   "CatalogID": "dv8-vandal",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Vandal Asymmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "500 Siaair / Royal Compound",
+   "Name": "Composite Pearl",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -5610,7 +6615,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.011,
+    "IntDiff": null,
+    "RG": 2.499
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2015-06",
@@ -5619,7 +6630,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5630,17 +6641,20 @@
   "CatalogID": "dv8-vandal-destroy",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Vandal Low RG Asymmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "500 Siaair / Crown Factory Compound",
+   "Name": "Composite Hook Hybrid",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -5655,7 +6669,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.055,
+    "IntDiff": 0.011,
+    "RG": 2.499
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2016-12-20",
@@ -5664,7 +6684,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5709,7 +6729,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5720,17 +6740,20 @@
   "CatalogID": "dv8-vandal-smash",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Vandal Asymmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "500 and 4,000 Siaair Micro Pad",
+   "Name": "Composite Flip Solid",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -5745,7 +6768,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.055,
+    "IntDiff": 0.011,
+    "RG": 2.499
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2016-06-14",
@@ -5754,7 +6783,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5799,7 +6828,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5810,17 +6839,20 @@
   "CatalogID": "dv8-vandal-strike",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Vandal Low RG Asymmetric",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "500 Siaair / Crown Factory Compound",
+   "Name": "Composite Flip Pearl",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -5835,7 +6867,13 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.055,
+    "IntDiff": 0.011,
+    "RG": 2.499
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2017-10-03",
@@ -5844,7 +6882,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5889,7 +6927,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5934,7 +6972,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5979,7 +7017,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6024,7 +7062,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6035,17 +7073,20 @@
   "CatalogID": "dv8-violent-collision",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Collision",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000, 1500 Siaair / Factory Compound",
+   "Name": "HK22 - Havoc Pearl",
+   "Type": "Pearl Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2023-12-07",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -6060,7 +7101,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.041,
+    "IntDiff": 0.014,
+    "RG": 2.593
+   },
+   "13": {
+    "Diff": 0.041,
+    "IntDiff": 0.014,
+    "RG": 2.597
+   },
+   "14": {
+    "Diff": 0.052,
+    "IntDiff": 0.019,
+    "RG": 2.479
+   },
+   "15": {
+    "Diff": 0.052,
+    "IntDiff": 0.019,
+    "RG": 2.462
+   },
+   "16": {
+    "Diff": 0.05,
+    "IntDiff": 0.018,
+    "RG": 2.477
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2023-11-07",
@@ -6069,7 +7136,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6114,7 +7181,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6159,7 +7226,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6204,7 +7271,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6215,17 +7282,20 @@
   "CatalogID": "dv8-wicked-collision",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Collision",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000, 1500 Siaair / Factory Compound",
+   "Name": "HK22C - Havoc Solid",
+   "Type": "Solid Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2024-07-11",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -6240,7 +7310,33 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.041,
+    "IntDiff": 0.014,
+    "RG": 2.593
+   },
+   "13": {
+    "Diff": 0.041,
+    "IntDiff": 0.014,
+    "RG": 2.597
+   },
+   "14": {
+    "Diff": 0.052,
+    "IntDiff": 0.019,
+    "RG": 2.479
+   },
+   "15": {
+    "Diff": 0.052,
+    "IntDiff": 0.019,
+    "RG": 2.462
+   },
+   "16": {
+    "Diff": 0.05,
+    "IntDiff": 0.018,
+    "RG": 2.477
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2024-06-18",
@@ -6249,7 +7345,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-06",
+   "ListVersion": "2026-10-07",
    "NonConforming": false
   },
   "WeightLimit": null
