@@ -158,6 +158,24 @@ ok(mm.status === 'match' && mm.catalogId === 'ebonite-bash' && mm.via === 'colou
 ok(X.matchRec({ title: 'Bash - Silver Pearl', brand: 'Ebonite' }, cwb).status === 'no-usbc', 'cover-type suffix never collapsed');
 ok(X.matchRec({ title: 'Misfit - Magenta/Yellow', brand: 'DV8' }, cwb).catalogId === 'dv8-misfit', 'slash colours');
 
+
+/* ---- auto-selection rules ---- */
+ok(X.colourOnly('Black/Cherry') && X.colourOnly('Navy / Silver / Gold') && X.colourOnly('Grn/Prp'), 'colour words');
+ok(!X.colourOnly('Pearl') && !X.colourOnly('Black Pearl') && !X.colourOnly('Pro') && !X.colourOnly('2') && !X.colourOnly(''), 'cover/model words stay manual');
+ok(X.extraWords('Messenger Black/Cherry', 'Messenger') === 'Black/Cherry' && X.extraWords('Other Ball', 'Messenger') === null, 'extra words');
+const idn = { 'c-mb': 'Messenger Black', 'c-mc': 'Messenger Cherry', 'c-mp': 'Messenger Pearl' };
+let at = X.autoTargets({ title: 'Messenger' }, { status: 'variant', candidates: ['c-mb', 'c-mc', 'c-mp'] }, idn);
+ok(at.auto.length === 2 && at.left.length === 1 && at.left[0] === 'c-mp', 'R2: colourways auto, Pearl left for you');
+at = X.autoTargets({ title: 'Puma' }, { status: 'ambiguous', candidates: ['e-puma', 'e-puma-2'] }, {});
+ok(at.auto.length === 2 && at.auto[0].rule === 'same-name-reapproval', 'R1: same-name duplicates both auto');
+const S = (url, rg, diff, id) => ({ decision: 'auto', catalogId: id || 'e-tornado', url, specs: { weights: { 15: { RG: rg, Diff: diff, IntDiff: null } } } });
+let g = [S('a', 2.481, 0.048, 'h-web'), S('b', 2.48, 0.048, 'h-web')]; X.resolveConflicts(g);
+ok(g[0].decision === 'auto' && g[1].decision === 'duplicate', 'R3: rounding agrees, 3-decimal source kept');
+g = [S('1', 2.65, 0.04), S('2', 2.65, 0.04), S('3', 2.65, 0.04), S('4', 2.65, 0.04), S('5', 2.57, 0.031), S('6', 2.65, 0.04)]; X.resolveConflicts(g);
+ok(g.filter(x => x.decision === 'auto').length === 1 && g[4].decision === 'minority' && g.find(x => x.decision === 'auto').rule === 'majority', 'R4: 5 of 6 majority wins, odd one outvoted');
+g = [S('1', 2.65, 0.04), S('2', 2.57, 0.031), S('3', 2.50, 0.02)]; X.resolveConflicts(g);
+ok(g.every(x => x.decision === 'pending'), 'no majority -> you decide');
+
 /* verify / match / decide */
 const rows = [{ i: 'storm-hy-road', k: 'storm|hyroad', m: 'Storm', n: 'Hy-Road', y: '2008' },
   { i: 'storm-monsoon', k: 'storm|monsoon', m: 'Storm', n: 'Monsoon', y: '2026' },
