@@ -1,0 +1,139 @@
+{
+  "generated": "2026-10-07T00:36:37.547Z",
+  "since": 2023,
+  "perSource": {
+    "storm": {
+      "pages": 0,
+      "parsed": 0,
+      "errors": 0,
+      "errorSample": []
+    },
+    "brunswick": {
+      "pages": 10,
+      "parsed": 0,
+      "errors": 0,
+      "errorSample": []
+    },
+    "hammer": {
+      "pages": 10,
+      "parsed": 10,
+      "errors": 0,
+      "errorSample": []
+    },
+    "dv8": {
+      "pages": 10,
+      "parsed": 0,
+      "errors": 0,
+      "errorSample": []
+    },
+    "radical": {
+      "pages": 10,
+      "parsed": 0,
+      "errors": 0,
+      "errorSample": []
+    },
+    "track": {
+      "pages": 10,
+      "parsed": 5,
+      "errors": 0,
+      "errorSample": []
+    },
+    "ebonite": {
+      "pages": 10,
+      "parsed": 5,
+      "errors": 0,
+      "errorSample": []
+    },
+    "columbia": {
+      "pages": 10,
+      "parsed": 8,
+      "errors": 0,
+      "errorSample": []
+    },
+    "motiv": {
+      "pages": 10,
+      "parsed": 10,
+      "errors": 0,
+      "errorSample": []
+    }
+  },
+  "coverage": {
+    "900 Global": {
+      "all": 376,
+      "auto": 0,
+      "pending": 0,
+      "recent": 69,
+      "recentAuto": 0
+    },
+    "Brunswick": {
+      "all": 745,
+      "auto": 0,
+      "pending": 0,
+      "recent": 74,
+      "recentAuto": 0
+    },
+    "Columbia 300": {
+      "all": 553,
+      "auto": 0,
+      "pending": 4,
+      "recent": 20,
+      "recentAuto": 0
+    },
+    "DV8": {
+      "all": 139,
+      "auto": 0,
+      "pending": 0,
+      "recent": 24,
+      "recentAuto": 0
+    },
+    "Ebonite": {
+      "all": 814,
+      "auto": 0,
+      "pending": 3,
+      "recent": 61,
+      "recentAuto": 0
+    },
+    "Hammer": {
+      "all": 653,
+      "auto": 5,
+      "pending": 3,
+      "recent": 114,
+      "recentAuto": 0
+    },
+    "Motiv": {
+      "all": 218,
+      "auto": 10,
+      "pending": 0,
+      "recent": 57,
+      "recentAuto": 10
+    },
+    "Radical": {
+      "all": 162,
+      "auto": 0,
+      "pending": 0,
+      "recent": 43,
+      "recentAuto": 0
+    },
+    "Roto Grip": {
+      "all": 468,
+      "auto": 0,
+      "pending": 0,
+      "recent": 88,
+      "recentAuto": 0
+    },
+    "Storm": {
+      "all": 997,
+      "auto": 0,
+      "pending": 0,
+      "recent": 177,
+      "recentAuto": 0
+    },
+    "Track Inc.": {
+      "all": 361,
+      "auto": 0,
+      "pending": 14,
+      "recent": 46,
+      "recentAuto": 0
+    }
+  }
+}

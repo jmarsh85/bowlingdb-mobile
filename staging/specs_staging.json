@@ -1,0 +1,1558 @@
+[
+ {
+  "source": "columbia",
+  "platform": "shopify",
+  "brand": "Columbia 300",
+  "title": "CHAOS",
+  "url": "https://columbia300.com/products/chaos",
+  "sku": null,
+  "catalogId": "columbia-300-chaos",
+  "match": "match",
+  "candidates": [
+   "columbia-300-chaos"
+  ],
+  "decision": "pending",
+  "reason": "no-weight-specs",
+  "flags": [
+   "no-weight-specs"
+  ],
+  "specs": {
+   "core": "Chaos",
+   "coverName": "Exciter Hybrid",
+   "coverType": null,
+   "finish": null,
+   "released": null,
+   "weights": {}
+  },
+  "mfgScales": {},
+  "imageUrl": "https://cdn.shopify.com/s/files/1/0062/0226/1619/files/Chaos_1600x1707_website.png?v=1700242177",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "columbia",
+  "platform": "shopify",
+  "brand": "Columbia 300",
+  "title": "SAVAGE",
+  "url": "https://columbia300.com/products/savage",
+  "sku": null,
+  "catalogId": "columbia-300-savage",
+  "match": "match",
+  "candidates": [
+   "columbia-300-savage"
+  ],
+  "decision": "pending",
+  "reason": "no-weight-specs",
+  "flags": [
+   "no-weight-specs"
+  ],
+  "specs": {
+   "core": "Savage",
+   "coverName": "Exciter Solid",
+   "coverType": null,
+   "finish": null,
+   "released": null,
+   "weights": {}
+  },
+  "mfgScales": {},
+  "imageUrl": "https://cdn.shopify.com/s/files/1/0062/0226/1619/files/Savage_1600x1707_website.png?v=1755710441",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "columbia",
+  "platform": "shopify",
+  "brand": "Columbia 300",
+  "title": "SAVAGE LIFE",
+  "url": "https://columbia300.com/products/savage-life",
+  "sku": null,
+  "catalogId": "columbia-300-savage-life",
+  "match": "match",
+  "candidates": [
+   "columbia-300-savage-life"
+  ],
+  "decision": "pending",
+  "reason": "no-weight-specs",
+  "flags": [
+   "no-weight-specs"
+  ],
+  "specs": {
+   "core": "Savage",
+   "coverName": "Exciter Pearl",
+   "coverType": null,
+   "finish": null,
+   "released": null,
+   "weights": {}
+  },
+  "mfgScales": {},
+  "imageUrl": "https://cdn.shopify.com/s/files/1/0062/0226/1619/files/Savage_Life_1600x1707_website.png?v=1755710805",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "columbia",
+  "platform": "shopify",
+  "brand": "Columbia 300",
+  "title": "SPOILER ALERT",
+  "url": "https://columbia300.com/products/spoiler-alert",
+  "sku": null,
+  "catalogId": "columbia-300-spoiler-alert",
+  "match": "match",
+  "candidates": [
+   "columbia-300-spoiler-alert"
+  ],
+  "decision": "pending",
+  "reason": "no-weight-specs",
+  "flags": [
+   "no-weight-specs"
+  ],
+  "specs": {
+   "core": "Spoiler",
+   "coverName": "Reflex Pearl",
+   "coverType": null,
+   "finish": null,
+   "released": null,
+   "weights": {}
+  },
+  "mfgScales": {},
+  "imageUrl": "https://cdn.shopify.com/s/files/1/0062/0226/1619/files/Spoiler_Alert_1600x1707_website.png?v=1700602818",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "columbia",
+  "platform": "shopify",
+  "brand": "Columbia 300",
+  "title": "White Dot - Cotton Candy",
+  "url": "https://columbia300.com/products/white-dot-cotton-candy",
+  "sku": null,
+  "catalogId": null,
+  "match": "no-usbc",
+  "candidates": [],
+  "decision": "pending",
+  "reason": "no-usbc",
+  "flags": [
+   "no-weight-specs"
+  ],
+  "specs": {
+   "core": "Pancake",
+   "coverName": "Polyester",
+   "coverType": null,
+   "finish": null,
+   "released": null,
+   "weights": {}
+  },
+  "mfgScales": {},
+  "imageUrl": "https://cdn.shopify.com/s/files/1/0062/0226/1619/files/White_Dot_Cotton_Candy_1600x1707_website.png?v=1755874972",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "columbia",
+  "platform": "shopify",
+  "brand": "Columbia 300",
+  "title": "White Dot - Lava",
+  "url": "https://columbia300.com/products/white-dot-lava",
+  "sku": null,
+  "catalogId": null,
+  "match": "no-usbc",
+  "candidates": [],
+  "decision": "pending",
+  "reason": "no-usbc",
+  "flags": [
+   "no-weight-specs"
+  ],
+  "specs": {
+   "core": "Pancake",
+   "coverName": "Polyester",
+   "coverType": null,
+   "finish": null,
+   "released": null,
+   "weights": {}
+  },
+  "mfgScales": {},
+  "imageUrl": "https://cdn.shopify.com/s/files/1/0062/0226/1619/files/White_Dot_Lava_1600x1707_website.png?v=1755880144",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "columbia",
+  "platform": "shopify",
+  "brand": "Columbia 300",
+  "title": "White Dot - Patriot Sparkle",
+  "url": "https://columbia300.com/products/white-dot-patriot-sparkle",
+  "sku": null,
+  "catalogId": null,
+  "match": "no-usbc",
+  "candidates": [],
+  "decision": "pending",
+  "reason": "no-usbc",
+  "flags": [
+   "no-weight-specs"
+  ],
+  "specs": {
+   "core": "Bullet",
+   "coverName": "Polyester",
+   "coverType": null,
+   "finish": "Factory Polish",
+   "released": null,
+   "weights": {}
+  },
+  "mfgScales": {},
+  "imageUrl": "https://cdn.shopify.com/s/files/1/0062/0226/1619/files/White_Dot_Patriot_Sparkle_2021_1600x1707_website.png?v=1699996412",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "columbia",
+  "platform": "shopify",
+  "brand": "Columbia 300",
+  "title": "White Dot - Pink / Black",
+  "url": "https://columbia300.com/products/white-dot-pink-black",
+  "sku": null,
+  "catalogId": null,
+  "match": "no-usbc",
+  "candidates": [],
+  "decision": "pending",
+  "reason": "no-usbc",
+  "flags": [
+   "no-weight-specs"
+  ],
+  "specs": {
+   "core": "Bullet",
+   "coverName": "Polyester",
+   "coverType": null,
+   "finish": "Factory Polish",
+   "released": null,
+   "weights": {}
+  },
+  "mfgScales": {},
+  "imageUrl": "https://cdn.shopify.com/s/files/1/0062/0226/1619/files/White_Dot_Pink-Black_2021_1600x1707_website.png?v=1699995930",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "ebonite",
+  "platform": "shopify",
+  "brand": "Ebonite",
+  "title": "Game Breaker 4",
+  "url": "https://ebonite.com/products/game-breaker-4",
+  "sku": null,
+  "catalogId": null,
+  "match": "no-usbc",
+  "candidates": [],
+  "decision": "pending",
+  "reason": "no-usbc",
+  "flags": [
+   "no-weight-specs"
+  ],
+  "specs": {
+   "core": "Enhanced V2",
+   "coverName": "GB 12.0 Solid",
+   "coverType": "Solid Reactive",
+   "finish": "500, 1500 Siaair Micro Pad",
+   "released": "2021-03-18",
+   "weights": {}
+  },
+  "mfgScales": {},
+  "imageUrl": "https://cdn.shopify.com/s/files/1/0609/8790/0156/products/Game_Breaker_4_1600x1600_048c8514-c9aa-409f-9670-ec827c351f7d.png?v=1647030069",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "ebonite",
+  "platform": "shopify",
+  "brand": "Ebonite",
+  "title": "Game Breaker 4 Pearl",
+  "url": "https://ebonite.com/products/game-breaker-4-pearl",
+  "sku": null,
+  "catalogId": null,
+  "match": "no-usbc",
+  "candidates": [],
+  "decision": "pending",
+  "reason": "no-usbc",
+  "flags": [
+   "no-weight-specs"
+  ],
+  "specs": {
+   "core": "Enhanced V2",
+   "coverName": "GB 12.0 Pearl",
+   "coverType": "Pearl Reactive",
+   "finish": "500, 1000, 1500 Siaair / Crown Factory Compound",
+   "released": "2022-02-25",
+   "weights": {}
+  },
+  "mfgScales": {},
+  "imageUrl": "https://cdn.shopify.com/s/files/1/0609/8790/0156/products/Game_Breaker_4_Pearl_1600x1600_cec27146-950d-409e-aa16-f7951175827c.png?v=1643892336",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "ebonite",
+  "platform": "shopify",
+  "brand": "Ebonite",
+  "title": "Game Breaker ASYM",
+  "url": "https://ebonite.com/products/game-breaker-asym",
+  "sku": null,
+  "catalogId": "ebonite-game-breaker-asym",
+  "match": "match",
+  "candidates": [
+   "ebonite-game-breaker-asym"
+  ],
+  "decision": "pending",
+  "reason": "no-weight-specs",
+  "flags": [
+   "no-weight-specs"
+  ],
+  "specs": {
+   "core": "V2 Asymmetrical",
+   "coverName": "GB 12.0 Pearl",
+   "coverType": "Pearl Reactive",
+   "finish": "500, 1000, 2000 Siaair / Crown Factory Polish",
+   "released": null,
+   "weights": {}
+  },
+  "mfgScales": {},
+  "imageUrl": "https://cdn.shopify.com/s/files/1/0609/8790/0156/products/Game_Breaker_ASYM_1600x1600_f8bf4b4f-55c5-4bb8-bf47-b8870f8e9917.png?v=1646874729",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "ebonite",
+  "platform": "shopify",
+  "brand": "Ebonite",
+  "title": "Omni Hybrid",
+  "url": "https://ebonite.com/products/omni-hybrid",
+  "sku": null,
+  "catalogId": "ebonite-omni-hybrid",
+  "match": "match",
+  "candidates": [
+   "ebonite-omni-hybrid"
+  ],
+  "decision": "pending",
+  "reason": "no-weight-specs",
+  "flags": [
+   "no-weight-specs"
+  ],
+  "specs": {
+   "core": "Omni",
+   "coverName": "GSV 2.0 Hybrid",
+   "coverType": "Hybrid Reactive",
+   "finish": "500, 1000 Siaair / Crown Factory Compound",
+   "released": "2020-10-15",
+   "weights": {}
+  },
+  "mfgScales": {},
+  "imageUrl": "https://cdn.shopify.com/s/files/1/0609/8790/0156/products/Omni_Hybrid_1600x1600_0e6016cf-3705-4938-a61b-353df2d5ad1b.png?v=1646397678",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "ebonite",
+  "platform": "shopify",
+  "brand": "Ebonite",
+  "title": "Polaris",
+  "url": "https://ebonite.com/products/polaris",
+  "sku": null,
+  "catalogId": "ebonite-polaris",
+  "match": "match",
+  "candidates": [
+   "ebonite-polaris"
+  ],
+  "decision": "pending",
+  "reason": "no-weight-specs",
+  "flags": [
+   "no-weight-specs"
+  ],
+  "specs": {
+   "core": "Polaris",
+   "coverName": "GSV-3 Solid",
+   "coverType": "Solid Reactive",
+   "finish": "500, 1500 Siaair Micro Pad",
+   "released": null,
+   "weights": {}
+  },
+  "mfgScales": {},
+  "imageUrl": "https://cdn.shopify.com/s/files/1/0609/8790/0156/products/Polaris_1600x1600_d75cc112-5de0-45e6-bcd1-8ba99c98deb0.png?v=1643893835",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "hammer",
+  "platform": "shopify",
+  "brand": "Hammer",
+  "title": "Black Widow - Black / Gold",
+  "url": "https://hammerbowling.com/products/black-widow-black-gold",
+  "sku": null,
+  "catalogId": "hammer-black-widow-black-gold",
+  "match": "match",
+  "candidates": [
+   "hammer-black-widow-black-gold"
+  ],
+  "decision": "pending",
+  "reason": "no-weight-specs",
+  "flags": [
+   "no-weight-specs"
+  ],
+  "specs": {
+   "core": "Gas Mask",
+   "coverName": "Aggression Hybrid",
+   "coverType": null,
+   "finish": null,
+   "released": null,
+   "weights": {}
+  },
+  "mfgScales": {},
+  "imageUrl": "https://cdn.shopify.com/s/files/1/0030/3330/1104/files/Black_Widow_Black_Gold_1600x1707_website.png?v=1721420877",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "hammer",
+  "platform": "shopify",
+  "brand": "Hammer",
+  "title": "Black Widow - Gold",
+  "url": "https://hammerbowling.com/products/black-widow-gold",
+  "sku": null,
+  "catalogId": "hammer-black-widow-gold",
+  "match": "match",
+  "candidates": [
+   "hammer-black-widow-gold"
+  ],
+  "decision": "pending",
+  "reason": "no-weight-specs",
+  "flags": [
+   "no-weight-specs"
+  ],
+  "specs": {
+   "core": "Gas Mask",
+   "coverName": "Semtex Pearl",
+   "coverType": null,
+   "finish": null,
+   "released": null,
+   "weights": {}
+  },
+  "mfgScales": {},
+  "imageUrl": "https://cdn.shopify.com/s/files/1/0030/3330/1104/files/Black_Widow_Gold_1600x1707_website.png?v=1721421238",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "hammer",
+  "platform": "shopify",
+  "brand": "Hammer",
+  "title": "Black Widow Urethane - Original",
+  "url": "https://hammerbowling.com/products/black-widow-urethane-original",
+  "sku": null,
+  "catalogId": null,
+  "match": "no-usbc",
+  "candidates": [],
+  "decision": "pending",
+  "reason": "no-usbc",
+  "flags": [],
+  "specs": {
+   "core": "Gas Mask",
+   "coverName": "Urethane",
+   "coverType": null,
+   "finish": null,
+   "released": null,
+   "weights": {
+    "12": {
+     "RG": 2.65,
+     "Diff": 0.045,
+     "IntDiff": null
+    },
+    "13": {
+     "RG": 2.58,
+     "Diff": 0.048,
+     "IntDiff": null
+    },
+    "14": {
+     "RG": 2.5,
+     "Diff": 0.056,
+     "IntDiff": null
+    },
+    "15": {
+     "RG": 2.5,
+     "Diff": 0.058,
+     "IntDiff": null
+    },
+    "16": {
+     "RG": 2.51,
+     "Diff": 0.048,
+     "IntDiff": null
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": "https://cdn.shopify.com/s/files/1/0030/3330/1104/files/Black_Widow_Urethane_Original_1600x1707_website.png?v=1721923457",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "hammer",
+  "platform": "shopify",
+  "brand": "Hammer",
+  "title": "Diesel Ball",
+  "url": "https://hammerbowling.com/products/diesel-ball",
+  "sku": null,
+  "catalogId": null,
+  "match": "no-usbc",
+  "candidates": [],
+  "decision": "pending",
+  "reason": "no-usbc",
+  "flags": [
+   "no-weight-specs"
+  ],
+  "specs": {
+   "core": "Diesel",
+   "coverName": "NBT Hybrid",
+   "coverType": null,
+   "finish": null,
+   "released": null,
+   "weights": {}
+  },
+  "mfgScales": {},
+  "imageUrl": "https://cdn.shopify.com/s/files/1/0030/3330/1104/files/Diesel_Ball_1600x1707_website.png?v=1721933477",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "hammer",
+  "platform": "shopify",
+  "brand": "Hammer",
+  "title": "Fierce Phobia",
+  "url": "https://hammerbowling.com/products/fierce-phobia",
+  "sku": null,
+  "catalogId": "hammer-fierce-phobia",
+  "match": "match",
+  "candidates": [
+   "hammer-fierce-phobia"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Phobia",
+   "coverName": "Semtex Hybrid",
+   "coverType": null,
+   "finish": null,
+   "released": null,
+   "weights": {
+    "12": {
+     "RG": 2.63,
+     "Diff": 0.025,
+     "IntDiff": null
+    },
+    "13": {
+     "RG": 2.56,
+     "Diff": 0.03,
+     "IntDiff": null
+    },
+    "14": {
+     "RG": 2.5,
+     "Diff": 0.055,
+     "IntDiff": null
+    },
+    "15": {
+     "RG": 2.49,
+     "Diff": 0.054,
+     "IntDiff": null
+    },
+    "16": {
+     "RG": 2.51,
+     "Diff": 0.05,
+     "IntDiff": null
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": "https://cdn.shopify.com/s/files/1/0030/3330/1104/files/Fierce_Phobia_1600x1707_website.png?v=1721933682",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "hammer",
+  "platform": "shopify",
+  "brand": "Hammer",
+  "title": "Gauntlet Fury",
+  "url": "https://hammerbowling.com/products/gauntlet-fury",
+  "sku": null,
+  "catalogId": "hammer-gauntlet-fury",
+  "match": "match",
+  "candidates": [
+   "hammer-gauntlet-fury"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Gauntlet",
+   "coverName": "Semtex Pearl CFI",
+   "coverType": null,
+   "finish": null,
+   "released": null,
+   "weights": {
+    "12": {
+     "RG": 2.63,
+     "Diff": 0.025,
+     "IntDiff": null
+    },
+    "13": {
+     "RG": 2.56,
+     "Diff": 0.03,
+     "IntDiff": null
+    },
+    "14": {
+     "RG": 2.51,
+     "Diff": 0.053,
+     "IntDiff": null
+    },
+    "15": {
+     "RG": 2.5,
+     "Diff": 0.05,
+     "IntDiff": null
+    },
+    "16": {
+     "RG": 2.51,
+     "Diff": 0.048,
+     "IntDiff": null
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": "https://cdn.shopify.com/s/files/1/0030/3330/1104/files/Gauntlet_Fury_1600x1707_website.png?v=1721934241",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "hammer",
+  "platform": "shopify",
+  "brand": "Hammer",
+  "title": "Rhodman Pearl",
+  "url": "https://hammerbowling.com/products/rhodman-pearl",
+  "sku": null,
+  "catalogId": "hammer-rhodman-pearl",
+  "match": "match",
+  "candidates": [
+   "hammer-rhodman-pearl"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Spheroid",
+   "coverName": "Juiced Maxx Pearl",
+   "coverType": null,
+   "finish": null,
+   "released": null,
+   "weights": {
+    "12": {
+     "RG": 2.63,
+     "Diff": 0.025,
+     "IntDiff": null
+    },
+    "13": {
+     "RG": 2.56,
+     "Diff": 0.03,
+     "IntDiff": null
+    },
+    "14": {
+     "RG": 2.52,
+     "Diff": 0.047,
+     "IntDiff": null
+    },
+    "15": {
+     "RG": 2.48,
+     "Diff": 0.048,
+     "IntDiff": null
+    },
+    "16": {
+     "RG": 2.49,
+     "Diff": 0.042,
+     "IntDiff": null
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": "https://cdn.shopify.com/s/files/1/0030/3330/1104/files/Rhodman_Pearl_1600x1707_website.png?v=1755528767",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "hammer",
+  "platform": "shopify",
+  "brand": "Hammer",
+  "title": "Rip'd",
+  "url": "https://hammerbowling.com/products/ripd",
+  "sku": null,
+  "catalogId": "hammer-rip-d",
+  "match": "match",
+  "candidates": [
+   "hammer-rip-d"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Rip'D",
+   "coverName": "Aggression Hybrid CFI",
+   "coverType": null,
+   "finish": null,
+   "released": null,
+   "weights": {
+    "12": {
+     "RG": 2.63,
+     "Diff": 0.03,
+     "IntDiff": null
+    },
+    "13": {
+     "RG": 2.56,
+     "Diff": 0.03,
+     "IntDiff": null
+    },
+    "14": {
+     "RG": 2.5,
+     "Diff": 0.052,
+     "IntDiff": null
+    },
+    "15": {
+     "RG": 2.48,
+     "Diff": 0.054,
+     "IntDiff": null
+    },
+    "16": {
+     "RG": 2.49,
+     "Diff": 0.047,
+     "IntDiff": null
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": "https://cdn.shopify.com/s/files/1/0030/3330/1104/files/RipD_1600x1707_website.png?v=1755529851",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "hammer",
+  "platform": "shopify",
+  "brand": "Hammer",
+  "title": "Rip'd Solid",
+  "url": "https://hammerbowling.com/products/ripd-solid",
+  "sku": null,
+  "catalogId": "hammer-rip-d-solid",
+  "match": "match",
+  "candidates": [
+   "hammer-rip-d-solid"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Rip'D",
+   "coverName": "Aggression Solid CFI",
+   "coverType": null,
+   "finish": null,
+   "released": null,
+   "weights": {
+    "12": {
+     "RG": 2.63,
+     "Diff": 0.025,
+     "IntDiff": null
+    },
+    "13": {
+     "RG": 2.56,
+     "Diff": 0.03,
+     "IntDiff": null
+    },
+    "14": {
+     "RG": 2.5,
+     "Diff": 0.052,
+     "IntDiff": null
+    },
+    "15": {
+     "RG": 2.48,
+     "Diff": 0.054,
+     "IntDiff": null
+    },
+    "16": {
+     "RG": 2.49,
+     "Diff": 0.047,
+     "IntDiff": null
+    }
+   }
+  },
+  "mfgScales": {},
+  "imageUrl": "https://cdn.shopify.com/s/files/1/0030/3330/1104/files/RipD_Solid_1600x1707_website.png?v=1755530816",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "hammer",
+  "platform": "shopify",
+  "brand": "Hammer",
+  "title": "Scandal/S",
+  "url": "https://hammerbowling.com/products/scandal-s",
+  "sku": null,
+  "catalogId": "hammer-scandal-s",
+  "match": "match",
+  "candidates": [
+   "hammer-scandal-s"
+  ],
+  "decision": "pending",
+  "reason": "no-weight-specs",
+  "flags": [
+   "no-weight-specs"
+  ],
+  "specs": {
+   "core": "Scandal",
+   "coverName": "Semtex Hybrid CFI",
+   "coverType": null,
+   "finish": null,
+   "released": null,
+   "weights": {}
+  },
+  "mfgScales": {},
+  "imageUrl": "https://cdn.shopify.com/s/files/1/0030/3330/1104/files/Scandal-S_1600x1707_website.png?v=1755539902",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "motiv",
+  "platform": "motiv",
+  "brand": "Motiv",
+  "title": "Apex Jackal",
+  "url": "https://www.motivbowling.com/products/balls/heavy-oil/apex-jackal.html",
+  "sku": null,
+  "catalogId": "motiv-apex-jackal",
+  "match": "match",
+  "candidates": [
+   "motiv-apex-jackal"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Apex Predator™",
+   "coverName": "Propulsion™ MXV Pearl Reactive",
+   "coverType": null,
+   "finish": "5000 Grit LSS",
+   "released": null,
+   "weights": {
+    "12": {
+     "RG": 2.64,
+     "Diff": 0.033,
+     "IntDiff": 0.014
+    },
+    "13": {
+     "RG": 2.64,
+     "Diff": 0.035,
+     "IntDiff": 0.017
+    },
+    "14": {
+     "RG": 2.55,
+     "Diff": 0.052,
+     "IntDiff": 0.02
+    },
+    "15": {
+     "RG": 2.52,
+     "Diff": 0.055,
+     "IntDiff": 0.02
+    },
+    "16": {
+     "RG": 2.53,
+     "Diff": 0.048,
+     "IntDiff": 0.017
+    }
+   }
+  },
+  "mfgScales": {
+   "motivLength": 73,
+   "motivBackend": 87,
+   "motivHook": 78
+  },
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "motiv",
+  "platform": "motiv",
+  "brand": "Motiv",
+  "title": "Evoke Hysteria",
+  "url": "https://www.motivbowling.com/products/balls/medium-heavy-oil/evoke-hysteria.html",
+  "sku": null,
+  "catalogId": "motiv-evoke-hysteria",
+  "match": "match",
+  "candidates": [
+   "motiv-evoke-hysteria"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Overload™ Asymmetrical",
+   "coverName": "Propulsion™ MXV Pearl Reactive",
+   "coverType": null,
+   "finish": "4000 Grit LSS",
+   "released": null,
+   "weights": {
+    "12": {
+     "RG": 2.64,
+     "Diff": 0.025,
+     "IntDiff": 0.008
+    },
+    "13": {
+     "RG": 2.57,
+     "Diff": 0.035,
+     "IntDiff": 0.012
+    },
+    "14": {
+     "RG": 2.51,
+     "Diff": 0.045,
+     "IntDiff": 0.015
+    },
+    "15": {
+     "RG": 2.48,
+     "Diff": 0.05,
+     "IntDiff": 0.015
+    },
+    "16": {
+     "RG": 2.48,
+     "Diff": 0.045,
+     "IntDiff": 0.015
+    }
+   }
+  },
+  "mfgScales": {
+   "motivLength": 70,
+   "motivBackend": 84,
+   "motivHook": 72
+  },
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "motiv",
+  "platform": "motiv",
+  "brand": "Motiv",
+  "title": "Evoke Mayhem",
+  "url": "https://www.motivbowling.com/products/balls/medium-heavy-oil/evoke-mayhem.html",
+  "sku": null,
+  "catalogId": "motiv-evoke-mayhem",
+  "match": "match",
+  "candidates": [
+   "motiv-evoke-mayhem"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Overload™ Asymmetrical",
+   "coverName": "Propulsion™ MXV Solid Reactive",
+   "coverType": null,
+   "finish": "2000 Grit LSS",
+   "released": null,
+   "weights": {
+    "12": {
+     "RG": 2.64,
+     "Diff": 0.025,
+     "IntDiff": 0.008
+    },
+    "13": {
+     "RG": 2.57,
+     "Diff": 0.035,
+     "IntDiff": 0.012
+    },
+    "14": {
+     "RG": 2.51,
+     "Diff": 0.045,
+     "IntDiff": 0.015
+    },
+    "15": {
+     "RG": 2.48,
+     "Diff": 0.05,
+     "IntDiff": 0.015
+    },
+    "16": {
+     "RG": 2.48,
+     "Diff": 0.045,
+     "IntDiff": 0.015
+    }
+   }
+  },
+  "mfgScales": {
+   "motivLength": 65,
+   "motivBackend": 78,
+   "motivHook": 77
+  },
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "motiv",
+  "platform": "motiv",
+  "brand": "Motiv",
+  "title": "Forge Fuel",
+  "url": "https://www.motivbowling.com/products/balls/medium-heavy-oil/forge-fuel.html",
+  "sku": null,
+  "catalogId": "motiv-forge-fuel",
+  "match": "match",
+  "candidates": [
+   "motiv-forge-fuel"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Detonator™ Symmetrical",
+   "coverName": "Leverage™ MXT Solid Reactive",
+   "coverType": null,
+   "finish": "1000 Grit LSS",
+   "released": null,
+   "weights": {
+    "12": {
+     "RG": 2.62,
+     "Diff": 0.032,
+     "IntDiff": null
+    },
+    "13": {
+     "RG": 2.55,
+     "Diff": 0.045,
+     "IntDiff": null
+    },
+    "14": {
+     "RG": 2.49,
+     "Diff": 0.054,
+     "IntDiff": null
+    },
+    "15": {
+     "RG": 2.47,
+     "Diff": 0.055,
+     "IntDiff": null
+    },
+    "16": {
+     "RG": 2.47,
+     "Diff": 0.054,
+     "IntDiff": null
+    }
+   }
+  },
+  "mfgScales": {
+   "motivLength": 55,
+   "motivBackend": 73,
+   "motivHook": 78
+  },
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "motiv",
+  "platform": "motiv",
+  "brand": "Motiv",
+  "title": "Jackal Ghost V2",
+  "url": "https://www.motivbowling.com/products/balls/heavy-oil/jackal-ghost-v2.html",
+  "sku": null,
+  "catalogId": "motiv-jackal-ghost-v2",
+  "match": "match",
+  "candidates": [
+   "motiv-jackal-ghost-v2"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Predator™ V2 Asymmetric",
+   "coverName": "Leverage™ HFS Reactive",
+   "coverType": null,
+   "finish": "3000 Grit LSS",
+   "released": null,
+   "weights": {
+    "12": {
+     "RG": 2.64,
+     "Diff": 0.03,
+     "IntDiff": 0.01
+    },
+    "13": {
+     "RG": 2.57,
+     "Diff": 0.04,
+     "IntDiff": 0.011
+    },
+    "14": {
+     "RG": 2.51,
+     "Diff": 0.049,
+     "IntDiff": 0.014
+    },
+    "15": {
+     "RG": 2.47,
+     "Diff": 0.054,
+     "IntDiff": 0.015
+    },
+    "16": {
+     "RG": 2.48,
+     "Diff": 0.047,
+     "IntDiff": 0.013
+    }
+   }
+  },
+  "mfgScales": {
+   "motivLength": 65,
+   "motivBackend": 76,
+   "motivHook": 80
+  },
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "motiv",
+  "platform": "motiv",
+  "brand": "Motiv",
+  "title": "Jackal Onyx",
+  "url": "https://www.motivbowling.com/products/balls/heavy-oil/jackal-onyx.html",
+  "sku": null,
+  "catalogId": "motiv-jackal-onyx",
+  "match": "match",
+  "candidates": [
+   "motiv-jackal-onyx"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Predator™ V2 Asymmetric",
+   "coverName": "Leverage™ HXC Solid Reactive",
+   "coverType": null,
+   "finish": "1000 Grit LSS",
+   "released": null,
+   "weights": {
+    "12": {
+     "RG": 2.64,
+     "Diff": 0.03,
+     "IntDiff": 0.01
+    },
+    "13": {
+     "RG": 2.57,
+     "Diff": 0.04,
+     "IntDiff": 0.011
+    },
+    "14": {
+     "RG": 2.51,
+     "Diff": 0.049,
+     "IntDiff": 0.014
+    },
+    "15": {
+     "RG": 2.47,
+     "Diff": 0.054,
+     "IntDiff": 0.015
+    },
+    "16": {
+     "RG": 2.48,
+     "Diff": 0.047,
+     "IntDiff": 0.013
+    }
+   }
+  },
+  "mfgScales": {
+   "motivLength": 53,
+   "motivBackend": 70,
+   "motivHook": 87
+  },
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "motiv",
+  "platform": "motiv",
+  "brand": "Motiv",
+  "title": "Nebula",
+  "url": "https://www.motivbowling.com/products/balls/medium-oil/nebula.html",
+  "sku": null,
+  "catalogId": "motiv-nebula",
+  "match": "match",
+  "candidates": [
+   "motiv-nebula"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Hadron™ Symmetrical",
+   "coverName": "Dark Matter Propulsion™ Pearl Reactive",
+   "coverType": null,
+   "finish": "5500 Grit LSP",
+   "released": null,
+   "weights": {
+    "12": {
+     "RG": 2.65,
+     "Diff": 0.02,
+     "IntDiff": null
+    },
+    "13": {
+     "RG": 2.65,
+     "Diff": 0.02,
+     "IntDiff": null
+    },
+    "14": {
+     "RG": 2.51,
+     "Diff": 0.049,
+     "IntDiff": null
+    },
+    "15": {
+     "RG": 2.5,
+     "Diff": 0.045,
+     "IntDiff": null
+    },
+    "16": {
+     "RG": 2.5,
+     "Diff": 0.038,
+     "IntDiff": null
+    }
+   }
+  },
+  "mfgScales": {
+   "motivLength": 74,
+   "motivBackend": 90,
+   "motivHook": 62
+  },
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "motiv",
+  "platform": "motiv",
+  "brand": "Motiv",
+  "title": "Raptor Pursuit",
+  "url": "https://www.motivbowling.com/products/balls/heavy-oil/raptor-pursuit.html",
+  "sku": null,
+  "catalogId": "motiv-raptor-pursuit",
+  "match": "match",
+  "candidates": [
+   "motiv-raptor-pursuit"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Affliction™ V2 Symmetric",
+   "coverName": "Aerial Propulsion™ Pearl Reactive",
+   "coverType": null,
+   "finish": "5500 Grit LSP",
+   "released": null,
+   "weights": {
+    "12": {
+     "RG": 2.64,
+     "Diff": 0.029,
+     "IntDiff": null
+    },
+    "13": {
+     "RG": 2.57,
+     "Diff": 0.04,
+     "IntDiff": null
+    },
+    "14": {
+     "RG": 2.5,
+     "Diff": 0.053,
+     "IntDiff": null
+    },
+    "15": {
+     "RG": 2.48,
+     "Diff": 0.055,
+     "IntDiff": null
+    },
+    "16": {
+     "RG": 2.48,
+     "Diff": 0.053,
+     "IntDiff": null
+    }
+   }
+  },
+  "mfgScales": {
+   "motivLength": 74,
+   "motivBackend": 90,
+   "motivHook": 76
+  },
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "motiv",
+  "platform": "motiv",
+  "brand": "Motiv",
+  "title": "Raptor Reign",
+  "url": "https://www.motivbowling.com/products/balls/heavy-oil/raptor-reign.html",
+  "sku": null,
+  "catalogId": "motiv-raptor-reign",
+  "match": "match",
+  "candidates": [
+   "motiv-raptor-reign"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Affliction™ V2 Symmetric",
+   "coverName": "Leverage MXV Solid Reactive",
+   "coverType": null,
+   "finish": "2000 Grit LSS",
+   "released": null,
+   "weights": {
+    "12": {
+     "RG": 2.64,
+     "Diff": 0.029,
+     "IntDiff": null
+    },
+    "13": {
+     "RG": 2.57,
+     "Diff": 0.04,
+     "IntDiff": null
+    },
+    "14": {
+     "RG": 2.5,
+     "Diff": 0.053,
+     "IntDiff": null
+    },
+    "15": {
+     "RG": 2.48,
+     "Diff": 0.055,
+     "IntDiff": null
+    },
+    "16": {
+     "RG": 2.48,
+     "Diff": 0.053,
+     "IntDiff": null
+    }
+   }
+  },
+  "mfgScales": {
+   "motivLength": 60,
+   "motivBackend": 74,
+   "motivHook": 83
+  },
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "motiv",
+  "platform": "motiv",
+  "brand": "Motiv",
+  "title": "Steel Forge",
+  "url": "https://www.motivbowling.com/products/balls/medium-heavy-oil/steel-forge.html",
+  "sku": null,
+  "catalogId": "motiv-steel-forge",
+  "match": "match",
+  "candidates": [
+   "motiv-steel-forge"
+  ],
+  "decision": "auto",
+  "reason": "exact-match+gates",
+  "flags": [],
+  "specs": {
+   "core": "Detonator™ Symmetrical",
+   "coverName": "Propulsion™ MXV Pearl Reactive",
+   "coverType": null,
+   "finish": "5000 Grit LSS",
+   "released": null,
+   "weights": {
+    "12": {
+     "RG": 2.62,
+     "Diff": 0.032,
+     "IntDiff": null
+    },
+    "13": {
+     "RG": 2.55,
+     "Diff": 0.045,
+     "IntDiff": null
+    },
+    "14": {
+     "RG": 2.49,
+     "Diff": 0.054,
+     "IntDiff": null
+    },
+    "15": {
+     "RG": 2.47,
+     "Diff": 0.055,
+     "IntDiff": null
+    },
+    "16": {
+     "RG": 2.47,
+     "Diff": 0.054,
+     "IntDiff": null
+    }
+   }
+  },
+  "mfgScales": {
+   "motivLength": 74,
+   "motivBackend": 88,
+   "motivHook": 76
+  },
+  "imageUrl": null,
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "track",
+  "platform": "shopify",
+  "brand": "Track Inc.",
+  "title": "Heat",
+  "url": "https://trackbowling.com/products/heat",
+  "sku": null,
+  "catalogId": null,
+  "match": "variant",
+  "candidates": [
+   "track-inc-heat-2-pearl",
+   "track-inc-heat-black-purple-silver",
+   "track-inc-heat-black-purple-silver-orange-pin",
+   "track-inc-heat-blast",
+   "track-inc-heat-burgundy",
+   "track-inc-heat-lava",
+   "track-inc-heat-maroon-pearl",
+   "track-inc-heat-ultraviolet",
+   "track-inc-heat-wave",
+   "track-inc-heat-x-treme",
+   "track-inc-heat-x-treme-polished"
+  ],
+  "decision": "pending",
+  "reason": "variant",
+  "flags": [
+   "no-weight-specs"
+  ],
+  "specs": {
+   "core": "Modified Tri-Core",
+   "coverName": "DR-7 Solid",
+   "coverType": "Solid Reactive",
+   "finish": "500, 1000, 2000 Siaair Micro Pad",
+   "released": null,
+   "weights": {}
+  },
+  "mfgScales": {},
+  "imageUrl": "https://cdn.shopify.com/s/files/1/0609/7590/7033/products/Heat_1600x1600_bc23b9fc-ffb0-4205-ba35-7780c4cc9a01.png?v=1637610133",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "track",
+  "platform": "shopify",
+  "brand": "Track Inc.",
+  "title": "Kinetic Platinum",
+  "url": "https://trackbowling.com/products/kinetic-platinum",
+  "sku": null,
+  "catalogId": "track-inc-kinetic-platinum",
+  "match": "match",
+  "candidates": [
+   "track-inc-kinetic-platinum"
+  ],
+  "decision": "pending",
+  "reason": "no-weight-specs",
+  "flags": [
+   "no-weight-specs"
+  ],
+  "specs": {
+   "core": "Shuttle",
+   "coverName": "DR-7 Pearl",
+   "coverType": "Pearl Reactive",
+   "finish": "500, 1000, 1500 Siaair / Crown Factory Compound",
+   "released": null,
+   "weights": {}
+  },
+  "mfgScales": {},
+  "imageUrl": "https://cdn.shopify.com/s/files/1/0609/7590/7033/products/Kinetic_Platinum_1600x1600_0dc7b1a5-0602-47e7-a678-984477d6923d.png?v=1647561372",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "track",
+  "platform": "shopify",
+  "brand": "Track Inc.",
+  "title": "Legion Pearl",
+  "url": "https://trackbowling.com/products/legion-pearl",
+  "sku": null,
+  "catalogId": "track-inc-legion-pearl",
+  "match": "match",
+  "candidates": [
+   "track-inc-legion-pearl"
+  ],
+  "decision": "pending",
+  "reason": "no-weight-specs",
+  "flags": [
+   "no-weight-specs"
+  ],
+  "specs": {
+   "core": "LT-2",
+   "coverName": "Prime Response Pearl",
+   "coverType": "Pearl Reactive",
+   "finish": "500, 1000, 1500 Siaair / Crown Factory Compound",
+   "released": null,
+   "weights": {}
+  },
+  "mfgScales": {},
+  "imageUrl": "https://cdn.shopify.com/s/files/1/0609/7590/7033/products/Legion_Pearl_1600x1600_af8e070f-835c-4ea9-9e30-bcc4987c1556.png?v=1647560123",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "track",
+  "platform": "shopify",
+  "brand": "Track Inc.",
+  "title": "Paragon",
+  "url": "https://trackbowling.com/products/paragon",
+  "sku": null,
+  "catalogId": "track-inc-paragon",
+  "match": "match",
+  "candidates": [
+   "track-inc-paragon"
+  ],
+  "decision": "pending",
+  "reason": "no-weight-specs",
+  "flags": [
+   "no-weight-specs"
+  ],
+  "specs": {
+   "core": "I-Core 3.0",
+   "coverName": "QR-11 Solid",
+   "coverType": "Solid Reactive",
+   "finish": "500, 1500 Siaair Micro Pad",
+   "released": null,
+   "weights": {}
+  },
+  "mfgScales": {},
+  "imageUrl": "https://cdn.shopify.com/s/files/1/0609/7590/7033/products/Paragon_1600x1600_88715845-d2e9-4ee3-97e9-bea9cb42f444.png?v=1647559087",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ },
+ {
+  "source": "track",
+  "platform": "shopify",
+  "brand": "Track Inc.",
+  "title": "Track Viz-A-Ball",
+  "url": "https://trackbowling.com/products/track-viz-a-ball",
+  "sku": null,
+  "catalogId": null,
+  "match": "no-usbc",
+  "candidates": [],
+  "decision": "pending",
+  "reason": "no-usbc",
+  "flags": [
+   "no-weight-specs"
+  ],
+  "specs": {
+   "core": null,
+   "coverName": "Polyester",
+   "coverType": "Polyester",
+   "finish": "Factory Polish",
+   "released": null,
+   "weights": {}
+  },
+  "mfgScales": {},
+  "imageUrl": "https://cdn.shopify.com/s/files/1/0609/7590/7033/products/Viz-A-Ball_Track_Bowling_Front_1600x1600_bdae7c7d-8301-4585-80da-75979ad626f2.png?v=1647562039",
+  "fetched": "2026-10-07",
+  "method": "parser"
+ }
+]
