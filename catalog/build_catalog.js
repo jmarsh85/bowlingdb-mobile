@@ -116,6 +116,8 @@ function build(rows, specsByKey, listVersion) {
       Core: (specs && specs.Core) || { Name: null, Type: null },
       Cover: (specs && specs.Cover) || { Name: null, Type: null, Finish: null },
       SpecsByWeight: (specs && specs.SpecsByWeight) || {},
+      Source: (specs && specs.Source) || null,     // v30.159: manufacturer page the specs came from
+      Checked: (specs && specs.Checked) || null,   // date the bridge fetched it
       USBC: {
         Approved: true,
         ApprovedDate: r.approvalISO,
@@ -152,6 +154,8 @@ function build(rows, specsByKey, listVersion) {
     y: e.USBC.ApprovedDate ? e.USBC.ApprovedDate.slice(0, 4) : null,
     k: e.ModelKey,
     t: !!e.Images.Thumb,
+    /* v30.159: published specs flag for the search-row dot; absent when none (keeps index small) */
+    ...(Object.keys(e.SpecsByWeight || {}).length ? { s: 1 } : {}),
   }));
 
   /* detail sharded by manufacturer — Storm is one request, not 400 */
