@@ -1,0 +1,44 @@
+name: specs-publish
+# Spec bridge stage 7: approved specs -> catalog/specs.json on main, then
+# re-runs catalog-refresh so build_catalog.js merges them into dist/detail.
+# Manual only. Publishes auto-approved rows plus approval-page decisions.
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: write
+concurrency: { group: specs-branch, cancel-in-progress: false }
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/checkout@v5
+        with: { ref: specs, path: specs }
+      - uses: actions/setup-node@v5
+        with: { node-version: 22 }
+      - name: Tests
+        run: node bridge/publish_test.js
+      - name: Build catalog/specs.json
+        run: |
+          node bridge/publish.js --staging specs/staging/specs_staging.json \
+            --decisions specs/staging/decisions.json --out catalog/specs.json | tee report.json
+          echo "## Spec publish" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"; cat report.json >> "$GITHUB_STEP_SUMMARY"; echo '```' >> "$GITHUB_STEP_SUMMARY"
+      - name: Commit to main
+        id: commit
+        run: |
+          git config user.name  "specs-bridge"
+          git config user.email "specs-bridge@users.noreply.github.com"
+          git add catalog/specs.json
+          if git diff --cached --quiet; then echo "changed=false" >> "$GITHUB_OUTPUT"; echo "specs.json unchanged" >> "$GITHUB_STEP_SUMMARY"; exit 0; fi
+          git commit -m "specs: publish $(date -u +%F)"
+          git push
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+      - name: Re-run catalog-refresh
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh workflow run catalog-refresh.yml --ref main -f force_commit=true
+          echo "Triggered catalog-refresh to merge the new specs into dist." >> "$GITHUB_STEP_SUMMARY"
