@@ -101,6 +101,19 @@ ok(ss[0].specs.weights[16].RG === 2.48 && ss[0].specs.weights[16].Diff === 0.051
 ok(ss[0].specs.core === 'Velocity' && ss[0].specs.finish === '3000 Grit' && ss[0].specs.released === '2016-10-04' && ss[0].mfgScales.stormMatchMaker === 55, 'storm: fields + MatchMaker (not "MatchMaker App")');
 ok(ss[1].url === 'https://www.stormbowling.com/storm-rocket-ai-bowling-ball' && ss[1].specs.weights[16].Diff === 0.046, 'storm: second item');
 
+
+/* ---- run 2 regressions ---- */
+const STORM_OUT = `<li><h2 class="product-name"><a href="/storm-alpha-crux-bowling-ball">Alpha Crux</a></h2><span class="sku">SKU: BBMVXA</span>
+<div><span><b>Brand:</b> Storm</span><span><b>Radius of Gyration:</b> 2.48</span><span><b>Differential:</b> 0.052</span><span><b>Weight:</b> 16</span><span><b>PSA:</b> 0.017</span></div></li>
+<li><h2 class="product-name"><a href="/storm-equinox-solid-bowling-ball">Equinox Solid</a></h2><span class="sku">SKU: BBMVXD</span>
+<div><span><b>Radius of Gyration:</b> 2.47</span><span><b>Differential:</b> 0.054</span><span><b>Weight:</b> 16</span></div></li>`;
+const so = X.parseStormListing(STORM_OUT, 'https://www.stormbowling.com');
+ok(so.length === 2 && so[0].sku === 'BBMVXA' && so[0].specs.weights[16].IntDiff === 0.017, 'storm: SKU outside the heading');
+const NOWT = `<table><tr><th>RG</th><th>DIFF</th><th>INT DIFF</th></tr><tr><td>12 lb</td><td>2.593</td><td>0.041</td><td>0.014</td></tr>
+<tr><td>15 lb</td><td>2.518</td><td>0.053</td><td>0.020</td></tr></table>`;
+const nw = X.weightTable(X.htmlToText(NOWT));
+ok(nw[12].RG === 2.593 && nw[12].Diff === 0.041 && nw[15].IntDiff === 0.02, 'header without Weight column: no RG=12 misread');
+
 /* verify / match / decide */
 const rows = [{ i: 'storm-hy-road', k: 'storm|hyroad', m: 'Storm', n: 'Hy-Road', y: '2008' },
   { i: 'storm-monsoon', k: 'storm|monsoon', m: 'Storm', n: 'Monsoon', y: '2026' },
@@ -159,5 +172,8 @@ X.resolveConflicts(same); ok(same[0].decision === 'auto' && same[1].decision ===
   const md = fs.readFileSync(path.join(tmp, 'st', 'SUMMARY.md'), 'utf8');
   ok(/auto\*\*/.test(md) && /Pending reasons:/.test(md), 'summary written');
   ok(!fs.readFileSync(path.join(tmp, 'st', 'specs_staging.json'), 'utf8').includes('Unbeatable'), 'no marketing text in staging');
+  pages['https://s.com/products/equipment/bowling-balls/'] = '<html><body><div>unrecognised layout</div></body></html>';
+  const r2 = await X.main(['--index', path.join(tmp, 'index.json'), '--out', path.join(tmp, 'st2'), '--sources', path.join(tmp, 'src.json'), '--only', 'storm'], mock, () => {});
+  ok(r2.perSource.storm.debug === 'debug/storm.html' && fs.existsSync(path.join(tmp, 'st2', 'debug', 'storm.html')), 'zero-parse source writes a debug page');
   console.log('extract_test: ' + n + ' checks passed');
 })().catch(e => { console.error('FAIL', e.message); process.exit(1); });
