@@ -5754,17 +5754,20 @@
   "CatalogID": "brunswick-danger-zone",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Danger Zone",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000, 2000 Siaair / Crown Factory Compound",
+   "Name": "HK22 - PowerKoil 26",
+   "Type": "Solid Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2025-12-11",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -5779,7 +5782,43 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "SpecsByWeight": {},
+  "SpecsByWeight": {
+   "10": {
+    "Diff": 0.002,
+    "IntDiff": null,
+    "RG": 2.8
+   },
+   "11": {
+    "Diff": 0.002,
+    "IntDiff": null,
+    "RG": 2.769
+   },
+   "12": {
+    "Diff": 0.04,
+    "IntDiff": null,
+    "RG": 2.597
+   },
+   "13": {
+    "Diff": 0.04,
+    "IntDiff": null,
+    "RG": 2.574
+   },
+   "14": {
+    "Diff": 0.048,
+    "IntDiff": null,
+    "RG": 2.518
+   },
+   "15": {
+    "Diff": 0.048,
+    "IntDiff": null,
+    "RG": 2.501
+   },
+   "16": {
+    "Diff": 0.048,
+    "IntDiff": null,
+    "RG": 2.488
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2025-12-02",
