@@ -109,15 +109,17 @@ function singleWeight(text) {
   return { [w]: { RG: rg.v, Diff: df.v, IntDiff: id ? id.v : null } };
 }
 function withFallback(weights, text) { return Object.keys(weights || {}).length ? weights : singleWeight(text); }
+const MONTHS = 'january|february|march|april|may|june|july|august|september|october|november|december';
 function parseDate(s) {
   if (!s) return null;
   const t = String(s).trim();
   let m = /^(\d{4})-(\d{2})-(\d{2})/.exec(t); if (m) return m[0];
   m = /^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/.exec(t);
   if (m) { let y = +m[3]; if (y < 100) y += y <= (new Date().getFullYear() % 100) + 1 ? 2000 : 1900; return y + '-' + String(m[1]).padStart(2, '0') + '-' + String(m[2]).padStart(2, '0'); }
+  m = new RegExp('^(' + MONTHS + ')\\s+(\\d{4})$', 'i').exec(t);
+  if (m) return m[2] + '-' + String(MONTHS.split('|').indexOf(m[1].toLowerCase()) + 1).padStart(2, '0');
   const d = new Date(t + ' UTC'); return isNaN(d) ? null : d.toISOString().slice(0, 10);
 }
-const MONTHS = 'january|february|march|april|may|june|july|august|september|october|november|december';
 
 /* ---------- platform parsers: html -> [{title, brand, url, specs, mfgScales, imageUrl}] ---------- */
 function parseCraft(html, url, brand) {
@@ -193,6 +195,60 @@ function parseStormListing(html, base) {
       specs: { core: clean(f['weight block']), coverName: clean(f['coverstock']), coverType: null, finish: clean(f['finish']),
                coreType: clean(f['symmetry']), released: parseDate(f['release date']), weights } });
   });
+  return out;
+}
+
+/* Storm product page (retired balls keep their pages, just unlisted):
+   "16 pounds RG: 2.48 Diff: 0.051", "Coverstock: R2S Pearl Reactive", "Release Date: October 2022" */
+const STORM_PAGE_LABELS = ['Coverstock', 'Core', 'Finish', 'Factory Finish', 'Color', 'Release Date', 'Fragrance', 'Symmetry', 'Weight Block'];
+function parseStormProduct(html, url, brand) {
+  const text = htmlToText(html), flat = text.replace(/\n/g, ' ');
+  const weights = {};
+  const re = /\b(1[0-6])\s*(?:pounds?|lbs?\.?)\s*RG:?\s*([\d.]+)\s*(?:Total\s*)?Diff(?:erential)?\.?:?\s*([\d.]+)(?:\s*(?:Int(?:ermediate)?\.?\s*Diff(?:erential)?|PSA|MB(?:\s*Diff)?|Mass Bias)\.?:?\s*([\d.]+))?/gi;
+  let m; while ((m = re.exec(flat))) weights[+m[1]] = { RG: num(m[2]), Diff: num(m[3]), IntDiff: num(m[4]) };
+  const lab = new RegExp('(' + STORM_PAGE_LABELS.join('|') + '):\\s*', 'g');
+  const f = {}, hits = [...flat.matchAll(lab)];
+  hits.forEach((h, k) => { const end = k + 1 < hits.length ? hits[k + 1].index : Math.min(flat.length, h.index + h[0].length + 80);
+    const key = h[1].toLowerCase(); if (!(key in f)) f[key] = flat.slice(h.index + h[0].length, end).replace(/\s*\d{2}\s*pounds?.*$/i, '').trim(); });
+  const tm = (s, n) => s ? s.replace(/[\u2122\u00ae]/g, '').trim().slice(0, n) : null;
+  const core = tm(f['core'] || f['weight block'], 60);
+  const title = firstH1(html) || (/^([^\n]+?)\s*\n\s*SKU:/m.exec(text) || [])[1] || null;
+  return [{ title, brand, url, imageUrl: metaContent(html, 'og:image'), mfgScales: {},
+    specs: { core: core ? core.replace(/\s*(A)?symmetrical\s*Core$/i, '').replace(/\s*Core$/i, '') : null,
+             coreType: core && /asymmetric/i.test(core) ? 'Asymmetrical' : core && /symmetric/i.test(core) ? 'Symmetrical' : null,
+             coverName: tm(f['coverstock'], 60), coverType: null, finish: tm(f['finish'] || f['factory finish'], 40),
+             released: parseDate(f['release date'] && f['release date'].split(/\s{2,}|\s(?=[A-Z][a-z]+:)/)[0]), weights } }];
+}
+/* "!Q Tour A.I." -> "iq-tour-ai" */
+function stormSlug(name) {
+  return String(name || '').replace(/^\*+\s*/, '').toLowerCase().replace(/!/g, 'i').replace(/&/g, 'and').replace(/[.'\u2019]/g, '')
+    .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+/* Learn each brand's URL prefix from the current listing ("/storm-hy-road-bowling-ball" -> "storm-"). */
+function learnStormPrefixes(listed) {
+  const pre = {};
+  for (const r of listed) {
+    if (!r.url || !r.title) continue;
+    const p = new URL(r.url).pathname.replace(/^\//, '').toLowerCase(), sl = stormSlug(r.title);
+    const i = p.indexOf(sl + '-bowling-ball');
+    if (i >= 0 && p.endsWith(sl + '-bowling-ball')) { const b = canonBrand(r.brand); (pre[b] = pre[b] || {})[p.slice(0, i)] = ((pre[b] || {})[p.slice(0, i)] || 0) + 1; }
+  }
+  const out = {};
+  for (const b in pre) out[b] = Object.entries(pre[b]).sort((x, y) => y[1] - x[1])[0][0];
+  return out;
+}
+const STORM_DEFAULT_PREFIX = { 'Storm': 'storm-', 'Roto Grip': 'roto-grip-', '900 Global': '900-global-' };
+function stormCandidates(rows, haveIds, prefixes, since) {
+  const out = [], seen = new Set();
+  for (const r of rows) {
+    const b = canonBrand(r.m);
+    if (!(b in STORM_DEFAULT_PREFIX) || haveIds.has(r.i) || +(r.y || 0) < since) continue;
+    const sl = stormSlug(r.n); if (!sl) continue;
+    const pre = prefixes[b] != null ? prefixes[b] : STORM_DEFAULT_PREFIX[b];
+    const path = pre + sl + '-bowling-ball';
+    if (seen.has(path)) continue; seen.add(path);
+    out.push({ path, brand: b, catalogId: r.i });
+  }
   return out;
 }
 
@@ -272,7 +328,7 @@ async function sitemapUrls(get, robots, start) {
 const PLATFORM = { storm: 'storm', brunswick: 'craft', dv8: 'craft', radical: 'craft', hammer: 'shopify', track: 'shopify', ebonite: 'shopify', columbia: 'shopify', motiv: 'motiv' };
 const SITE_BRAND = { brunswick: 'Brunswick', dv8: 'DV8', radical: 'Radical', hammer: 'Hammer', track: 'Track Inc.', ebonite: 'Ebonite', columbia: 'Columbia 300', motiv: 'Motiv' };
 
-async function extractSource(src, cfg, fetchImpl, limit, log) {
+async function extractSource(src, cfg, fetchImpl, limit, log, ctx) {
   const get0 = getter(cfg, fetchImpl), plat = PLATFORM[src.id], recs = [], errors = [];
   let firstPage = null;
   const get = async u => { const r = await get0(u); if (!firstPage && r.status === 200 && !/robots\.txt|sitemap/i.test(u)) firstPage = { url: u, text: r.text }; return r; };
@@ -283,11 +339,27 @@ async function extractSource(src, cfg, fetchImpl, limit, log) {
     for (let p = 1; p <= 30; p++) {
       const u = src.base + '/products/equipment/bowling-balls/' + (p === 1 ? '' : '24/1/' + p + '/');
       if (!allowed(robots, u)) break;
-      const r = await get(u); if (r.status !== 200) { errors.push(u + ' ' + r.status); break; }
+      const r = await get(u); if (r.status !== 200) { if (p === 1) errors.push(u + ' ' + r.status); break; }   // past the last page is normal
       const items = parseStormListing(r.text, src.base); if (!items.length) break;
       recs.push(...items); pagesSeen++; if (limit && recs.length >= limit) break;
     }
     log(src.id + ': ' + pagesSeen + ' listing pages, ' + recs.length + ' balls');
+    if (ctx && ctx.rows && !(limit && recs.length >= limit)) {
+      const byBrand = indexByBrand(ctx.rows), have = new Set();
+      recs.forEach(r => { const m = matchRec(r, byBrand); if (m.catalogId) have.add(m.catalogId); });
+      const cands = stormCandidates(ctx.rows, have, learnStormPrefixes(recs), ctx.stormSince);
+      let hit = 0, tried = 0;
+      for (const c of cands) {
+        const u = src.base + '/' + c.path;
+        if (!allowed(robots, u)) continue;
+        const r = await get(u); tried++; pagesSeen++;
+        if (r.status !== 200) continue;            // retired page gone: expected, not an error
+        const items = parseStormProduct(r.text, u, c.brand).filter(x => Object.keys(x.specs.weights).length);
+        if (items.length) { recs.push(...items); hit++; }
+        if (limit && tried >= limit) break;
+      }
+      log(src.id + ': retired pages tried ' + tried + ', with specs ' + hit);
+    }
     return { recs, errors, pages: pagesSeen, firstPage };
   }
   const smStart = robots.sitemaps.length ? robots.sitemaps : [src.base + '/sitemap.xml'];
@@ -325,7 +397,8 @@ async function main(argv, fetchImpl, log = s => process.stdout.write(s + '\n')) 
   fs.mkdirSync(out, { recursive: true });
   const byBrand = indexByBrand(rows);
   const sources = cfg.sources.filter(s => s.kind === 'manufacturer' && PLATFORM[s.id] && (!only || s.id === only));
-  const runs = await Promise.all(sources.map(s => extractSource(s, cfg, fetchImpl, limit, log).catch(e => ({ recs: [], errors: [String(e)], pages: 0 }))));
+  const stormSince = +(arg('storm-since') || 2000);
+  const runs = await Promise.all(sources.map(s => extractSource(s, cfg, fetchImpl, limit, log, { rows, stormSince }).catch(e => ({ recs: [], errors: [String(e)], pages: 0 }))));
   const fetched = new Date().toISOString().slice(0, 10), staged = [], perSource = {};
   sources.forEach((s, i) => {
     const r = runs[i]; let parsed = 0;
@@ -363,6 +436,6 @@ async function main(argv, fetchImpl, log = s => process.stdout.write(s + '\n')) 
   return { staged, coverage: cov, perSource };
 }
 
-module.exports = { htmlToText, weightTable, kvLines, parseDate, parseCraft, parseShopifyBody, parseMotiv, parseStormListing,
+module.exports = { parseStormProduct, stormSlug, learnStormPrefixes, stormCandidates, htmlToText, weightTable, kvLines, parseDate, parseCraft, parseShopifyBody, parseMotiv, parseStormListing,
   verify, matchRec, decide, resolveConflicts, coverage, indexByBrand, titleKey, norm, main };
 if (require.main === module) main(process.argv.slice(2), globalThis.fetch).catch(e => { console.error(e); process.exit(1); });
