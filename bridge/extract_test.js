@@ -147,7 +147,7 @@ const pre = X.learnStormPrefixes([{ url: 'https://s/storm-hy-road-bowling-ball',
 ok(pre['Storm'] === 'storm-' && pre['Roto Grip'] === 'roto-grip-', 'prefixes learned from listing');
 const cands = X.stormCandidates([{ i: 'storm-phaze-v', m: 'Storm', n: 'Phaze V', y: '2022' }, { i: 'storm-hy-road', m: 'Storm', n: 'Hy-Road', y: '2008' },
   { i: 'storm-old', m: 'Storm', n: 'Old', y: '1995' }, { i: 'hammer-x', m: 'Hammer', n: 'X', y: '2022' }], new Set(['storm-hy-road']), pre, 2000);
-ok(cands.length === 1 && cands[0].path === 'storm-phaze-v-bowling-ball', 'candidates: storm group only, not already found, since year');
+ok(cands.length === 1 && cands[0].path === 'storm-phaze-v-bowling-ball' && cands[0].alt === 'storm-Phaze-V-bowling-ball', 'candidates: lower + original casing');
 
 /* verify / match / decide */
 const rows = [{ i: 'storm-hy-road', k: 'storm|hyroad', m: 'Storm', n: 'Hy-Road', y: '2008' },
@@ -186,7 +186,7 @@ X.resolveConflicts(same); ok(same[0].decision === 'auto' && same[1].decision ===
     { id: 'bowwwl', kind: 'aggregator', base: 'https://agg.com' }] }));
   const pages = {
     'https://s.com/robots.txt': 'User-agent: *\nDisallow: /ajax', 'https://s.com/products/equipment/bowling-balls/': STORM,
-    'https://s.com/storm-phaze-v-bowling-ball': PHAZEV,
+    'https://s.com/storm-Phaze-V-bowling-ball': PHAZEV,
     'https://h.com/robots.txt': 'Sitemap: https://h.com/sitemap.xml', 'https://h.com/sitemap.xml': '<urlset><url><loc>https://h.com/products/anger-solid</loc></url><url><loc>https://h.com/products/towel</loc></url></urlset>',
     'https://h.com/products/anger-solid.json': JSON.stringify({ product: { title: 'Anger Solid', body_html: SHOP_BODY, image: { src: 'img' } } }),
     'https://h.com/products/towel.json': JSON.stringify({ product: { title: 'Towel', body_html: '<p>Soft towel</p>' } }),
@@ -212,7 +212,7 @@ X.resolveConflicts(same); ok(same[0].decision === 'auto' && same[1].decision ===
   ok(/auto\*\*/.test(md) && /Pending reasons:/.test(md), 'summary written');
   ok(!fs.readFileSync(path.join(tmp, 'st', 'specs_staging.json'), 'utf8').includes('Unbeatable'), 'no marketing text in staging');
   pages['https://s.com/products/equipment/bowling-balls/'] = '<html><body><div>unrecognised layout</div></body></html>';
-  delete pages['https://s.com/storm-phaze-v-bowling-ball'];
+  delete pages['https://s.com/storm-Phaze-V-bowling-ball'];
   const r2 = await X.main(['--index', path.join(tmp, 'index.json'), '--out', path.join(tmp, 'st2'), '--sources', path.join(tmp, 'src.json'), '--only', 'storm'], mock, () => {});
   ok(r2.perSource.storm.debug === 'debug/storm.html' && fs.existsSync(path.join(tmp, 'st2', 'debug', 'storm.html')), 'zero-parse source writes a debug page');
   console.log('extract_test: ' + n + ' checks passed');
