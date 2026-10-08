@@ -3,6 +3,7 @@
   "Aliases": [],
   "BallName": "BIG Shim",
   "CatalogID": "big-bowling-big-shim",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -30,6 +31,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -39,7 +41,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -48,6 +50,7 @@
   "Aliases": [],
   "BallName": "Bounce",
   "CatalogID": "big-bowling-bounce",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -75,6 +78,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -84,7 +88,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -93,6 +97,7 @@
   "Aliases": [],
   "BallName": "Clean Idea",
   "CatalogID": "big-bowling-clean-idea",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -120,6 +125,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -129,7 +135,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -138,6 +144,7 @@
   "Aliases": [],
   "BallName": "EXP'24",
   "CatalogID": "big-bowling-exp-24",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -165,6 +172,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -174,7 +182,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -183,6 +191,7 @@
   "Aliases": [],
   "BallName": "Idea",
   "CatalogID": "big-bowling-idea",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -210,6 +219,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -219,7 +229,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -228,6 +238,7 @@
   "Aliases": [],
   "BallName": "Rekker Extreme",
   "CatalogID": "big-bowling-rekker-extreme",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -255,6 +266,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -264,7 +276,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -273,6 +285,7 @@
   "Aliases": [],
   "BallName": "Shim",
   "CatalogID": "big-bowling-shim",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -300,6 +313,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -309,7 +323,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -318,6 +332,7 @@
   "Aliases": [],
   "BallName": "Shim Rekker",
   "CatalogID": "big-bowling-shim-rekker",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -345,6 +360,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -354,7 +370,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -363,6 +379,7 @@
   "Aliases": [],
   "BallName": "Solid Idea",
   "CatalogID": "big-bowling-solid-idea",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -390,6 +407,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -399,7 +417,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -408,6 +426,7 @@
   "Aliases": [],
   "BallName": "Striking Idea",
   "CatalogID": "big-bowling-striking-idea",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -435,6 +454,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -444,7 +464,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null

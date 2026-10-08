@@ -3,6 +3,7 @@
   "Aliases": [],
   "BallName": "American Eagle",
   "CatalogID": "dyno-thane-american-eagle",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -30,6 +31,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -39,7 +41,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -48,6 +50,7 @@
   "Aliases": [],
   "BallName": "Anomaly",
   "CatalogID": "dyno-thane-anomaly",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -75,6 +78,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -84,7 +88,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -93,6 +97,7 @@
   "Aliases": [],
   "BallName": "Barrage",
   "CatalogID": "dyno-thane-barrage",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -120,6 +125,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -129,7 +135,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -138,6 +144,7 @@
   "Aliases": [],
   "BallName": "Bat",
   "CatalogID": "dyno-thane-bat",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -165,6 +172,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -174,7 +182,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -183,6 +191,7 @@
   "Aliases": [],
   "BallName": "Bat 2",
   "CatalogID": "dyno-thane-bat-2",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -210,6 +219,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -219,7 +229,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -228,6 +238,7 @@
   "Aliases": [],
   "BallName": "Black Scorpion",
   "CatalogID": "dyno-thane-black-scorpion",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -255,6 +266,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -264,7 +276,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -273,6 +285,7 @@
   "Aliases": [],
   "BallName": "Blue Scorpion",
   "CatalogID": "dyno-thane-blue-scorpion",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -300,6 +313,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -309,7 +323,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -318,6 +332,7 @@
   "Aliases": [],
   "BallName": "C4",
   "CatalogID": "dyno-thane-c4",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -345,6 +360,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -354,7 +370,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -363,6 +379,7 @@
   "Aliases": [],
   "BallName": "Centrifugal Mass",
   "CatalogID": "dyno-thane-centrifugal-mass",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -390,6 +407,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -399,7 +417,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -408,6 +426,7 @@
   "Aliases": [],
   "BallName": "Centrifugal Mass #2",
   "CatalogID": "dyno-thane-centrifugal-mass-2",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -435,6 +454,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -444,7 +464,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -453,6 +473,7 @@
   "Aliases": [],
   "BallName": "Concept 4",
   "CatalogID": "dyno-thane-concept-4",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -480,6 +501,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -489,7 +511,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -498,6 +520,7 @@
   "Aliases": [],
   "BallName": "Concept 4P",
   "CatalogID": "dyno-thane-concept-4p",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -525,6 +548,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -534,7 +558,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -543,6 +567,7 @@
   "Aliases": [],
   "BallName": "Concept Cubic/R",
   "CatalogID": "dyno-thane-concept-cubic-r",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -570,6 +595,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -579,7 +605,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -588,6 +614,7 @@
   "Aliases": [],
   "BallName": "Concept EFX",
   "CatalogID": "dyno-thane-concept-efx",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -615,6 +642,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -624,7 +652,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -633,6 +661,7 @@
   "Aliases": [],
   "BallName": "Concept FX",
   "CatalogID": "dyno-thane-concept-fx",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -660,6 +689,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -669,7 +699,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -678,6 +708,7 @@
   "Aliases": [],
   "BallName": "Concept Special EFX",
   "CatalogID": "dyno-thane-concept-special-efx",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -705,6 +736,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -714,7 +746,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -723,6 +755,7 @@
   "Aliases": [],
   "BallName": "Concept Special EFX Pearl",
   "CatalogID": "dyno-thane-concept-special-efx-pearl",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -750,6 +783,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -759,7 +793,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -768,6 +802,7 @@
   "Aliases": [],
   "BallName": "Concept X",
   "CatalogID": "dyno-thane-concept-x",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -795,6 +830,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -804,7 +840,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -813,6 +849,7 @@
   "Aliases": [],
   "BallName": "Concept XTC",
   "CatalogID": "dyno-thane-concept-xtc",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -840,6 +877,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -849,7 +887,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -858,6 +896,7 @@
   "Aliases": [],
   "BallName": "Concept Xxtra",
   "CatalogID": "dyno-thane-concept-xxtra",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -885,6 +924,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -894,7 +934,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -903,6 +943,7 @@
   "Aliases": [],
   "BallName": "Concept Xxtra Swirl",
   "CatalogID": "dyno-thane-concept-xxtra-swirl",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -930,6 +971,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -939,7 +981,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -948,6 +990,7 @@
   "Aliases": [],
   "BallName": "Crisis",
   "CatalogID": "dyno-thane-crisis",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -975,6 +1018,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -984,7 +1028,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -993,6 +1037,7 @@
   "Aliases": [],
   "BallName": "Crisis Pearl",
   "CatalogID": "dyno-thane-crisis-pearl",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1020,6 +1065,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1029,7 +1075,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1038,6 +1084,7 @@
   "Aliases": [],
   "BallName": "Crisis Solid",
   "CatalogID": "dyno-thane-crisis-solid",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1065,6 +1112,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1074,7 +1122,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1083,6 +1131,7 @@
   "Aliases": [],
   "BallName": "Cure",
   "CatalogID": "dyno-thane-cure",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1110,6 +1159,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1119,7 +1169,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1128,6 +1178,7 @@
   "Aliases": [],
   "BallName": "Cure Pearl",
   "CatalogID": "dyno-thane-cure-pearl",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1155,6 +1206,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1164,7 +1216,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1173,6 +1225,7 @@
   "Aliases": [],
   "BallName": "D&C SA",
   "CatalogID": "dyno-thane-dandc-sa",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1200,6 +1253,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1209,7 +1263,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1218,6 +1272,7 @@
   "Aliases": [],
   "BallName": "D&C SS",
   "CatalogID": "dyno-thane-dandc-ss",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1245,6 +1300,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1254,7 +1310,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1263,6 +1319,7 @@
   "Aliases": [],
   "BallName": "Dyna Ace of Clubs",
   "CatalogID": "dyno-thane-dyna-ace-of-clubs",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1290,6 +1347,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1299,7 +1357,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1308,6 +1366,7 @@
   "Aliases": [],
   "BallName": "Dyna Ace of Diamonds",
   "CatalogID": "dyno-thane-dyna-ace-of-diamonds",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1335,6 +1394,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1344,7 +1404,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1353,6 +1413,7 @@
   "Aliases": [],
   "BallName": "Dyna Ace of Diamonds GY (Blue/Gold)",
   "CatalogID": "dyno-thane-dyna-ace-of-diamonds-gy-blue-gold",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1380,6 +1441,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1389,7 +1451,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1398,6 +1460,7 @@
   "Aliases": [],
   "BallName": "Dyna Ace of Hearts",
   "CatalogID": "dyno-thane-dyna-ace-of-hearts",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1425,6 +1488,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1434,7 +1498,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1443,6 +1507,7 @@
   "Aliases": [],
   "BallName": "Dyna Ace of Spades",
   "CatalogID": "dyno-thane-dyna-ace-of-spades",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1470,6 +1535,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1479,7 +1545,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1488,6 +1554,7 @@
   "Aliases": [],
   "BallName": "Dyna Star",
   "CatalogID": "dyno-thane-dyna-star",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1515,6 +1582,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1524,7 +1592,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1533,6 +1601,7 @@
   "Aliases": [],
   "BallName": "Dyna Star II",
   "CatalogID": "dyno-thane-dyna-star-ii",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1560,6 +1629,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1569,7 +1639,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1578,6 +1648,7 @@
   "Aliases": [],
   "BallName": "Dyna Star III",
   "CatalogID": "dyno-thane-dyna-star-iii",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1605,6 +1676,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1614,7 +1686,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1623,6 +1695,7 @@
   "Aliases": [],
   "BallName": "Dyno One",
   "CatalogID": "dyno-thane-dyno-one",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1650,6 +1723,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1659,7 +1733,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1668,6 +1742,7 @@
   "Aliases": [],
   "BallName": "Dynosaur",
   "CatalogID": "dyno-thane-dynosaur",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1695,6 +1770,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1704,7 +1780,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1713,6 +1789,7 @@
   "Aliases": [],
   "BallName": "Dynosaur Black Pearl",
   "CatalogID": "dyno-thane-dynosaur-black-pearl",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1740,6 +1817,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1749,7 +1827,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1758,6 +1836,7 @@
   "Aliases": [],
   "BallName": "Dynosaur Pearl",
   "CatalogID": "dyno-thane-dynosaur-pearl",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1785,6 +1864,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1794,7 +1874,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1803,6 +1883,7 @@
   "Aliases": [],
   "BallName": "Element",
   "CatalogID": "dyno-thane-element",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1830,6 +1911,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1839,7 +1921,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1848,6 +1930,7 @@
   "Aliases": [],
   "BallName": "Element AU-79",
   "CatalogID": "dyno-thane-element-au-79",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1875,6 +1958,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1884,7 +1968,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1893,6 +1977,7 @@
   "Aliases": [],
   "BallName": "Element AU2",
   "CatalogID": "dyno-thane-element-au2",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1920,6 +2005,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1929,7 +2015,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1938,6 +2024,7 @@
   "Aliases": [],
   "BallName": "Element Carbide",
   "CatalogID": "dyno-thane-element-carbide",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1965,6 +2052,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1974,7 +2062,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1983,6 +2071,7 @@
   "Aliases": [],
   "BallName": "Element NE10",
   "CatalogID": "dyno-thane-element-ne10",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2010,6 +2099,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2019,7 +2109,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2028,6 +2118,7 @@
   "Aliases": [],
   "BallName": "Element Platinum",
   "CatalogID": "dyno-thane-element-platinum",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2055,6 +2146,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2064,7 +2156,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2073,6 +2165,7 @@
   "Aliases": [],
   "BallName": "Element Tour",
   "CatalogID": "dyno-thane-element-tour",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2100,6 +2193,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2109,7 +2203,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2118,6 +2212,7 @@
   "Aliases": [],
   "BallName": "Element ZR40",
   "CatalogID": "dyno-thane-element-zr40",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2145,6 +2240,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2154,7 +2250,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2163,6 +2259,7 @@
   "Aliases": [],
   "BallName": "Elixir",
   "CatalogID": "dyno-thane-elixir",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2190,6 +2287,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2199,7 +2297,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2208,6 +2306,7 @@
   "Aliases": [],
   "BallName": "Elixir Pearl",
   "CatalogID": "dyno-thane-elixir-pearl",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2235,6 +2334,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2244,7 +2344,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2253,6 +2353,7 @@
   "Aliases": [],
   "BallName": "Energy",
   "CatalogID": "dyno-thane-energy",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2280,6 +2381,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2289,7 +2391,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2298,6 +2400,7 @@
   "Aliases": [],
   "BallName": "Explorer",
   "CatalogID": "dyno-thane-explorer",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2325,6 +2428,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2334,7 +2438,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2343,6 +2447,7 @@
   "Aliases": [],
   "BallName": "Grazie 39",
   "CatalogID": "dyno-thane-grazie-39",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2370,6 +2475,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2379,7 +2485,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2388,6 +2494,7 @@
   "Aliases": [],
   "BallName": "Hero",
   "CatalogID": "dyno-thane-hero",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2415,6 +2522,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2424,7 +2532,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2433,6 +2541,7 @@
   "Aliases": [],
   "BallName": "High Energy",
   "CatalogID": "dyno-thane-high-energy",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2460,6 +2569,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2469,7 +2579,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2478,6 +2588,7 @@
   "Aliases": [],
   "BallName": "Hot Poison",
   "CatalogID": "dyno-thane-hot-poison",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2505,6 +2616,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2514,7 +2626,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2523,6 +2635,7 @@
   "Aliases": [],
   "BallName": "Killer Machine",
   "CatalogID": "dyno-thane-killer-machine",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2550,6 +2663,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2559,7 +2673,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2568,6 +2682,7 @@
   "Aliases": [],
   "BallName": "Killer Machine II",
   "CatalogID": "dyno-thane-killer-machine-ii",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2595,6 +2710,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2604,7 +2720,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2613,6 +2729,7 @@
   "Aliases": [],
   "BallName": "Lizard",
   "CatalogID": "dyno-thane-lizard",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2640,6 +2757,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2649,7 +2767,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2658,6 +2776,7 @@
   "Aliases": [],
   "BallName": "Maximum Risk",
   "CatalogID": "dyno-thane-maximum-risk",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2685,6 +2804,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2694,7 +2814,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2703,6 +2823,7 @@
   "Aliases": [],
   "BallName": "Midas",
   "CatalogID": "dyno-thane-midas",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2730,6 +2851,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2739,7 +2861,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2748,6 +2870,7 @@
   "Aliases": [],
   "BallName": "Pin Killer",
   "CatalogID": "dyno-thane-pin-killer",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2775,6 +2898,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2784,7 +2908,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2793,6 +2917,7 @@
   "Aliases": [],
   "BallName": "Pin Killer II",
   "CatalogID": "dyno-thane-pin-killer-ii",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2820,6 +2945,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2829,7 +2955,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2838,6 +2964,7 @@
   "Aliases": [],
   "BallName": "Pin Killer III",
   "CatalogID": "dyno-thane-pin-killer-iii",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2865,6 +2992,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2874,7 +3002,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2883,6 +3011,7 @@
   "Aliases": [],
   "BallName": "Pin Killer IV",
   "CatalogID": "dyno-thane-pin-killer-iv",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2910,6 +3039,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2919,7 +3049,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2928,6 +3058,7 @@
   "Aliases": [],
   "BallName": "Pin Killer V",
   "CatalogID": "dyno-thane-pin-killer-v",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2955,6 +3086,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2964,7 +3096,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2973,6 +3105,7 @@
   "Aliases": [],
   "BallName": "Poseidon",
   "CatalogID": "dyno-thane-poseidon",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3000,6 +3133,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3009,7 +3143,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3018,6 +3152,7 @@
   "Aliases": [],
   "BallName": "Poseidon Force",
   "CatalogID": "dyno-thane-poseidon-force",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3045,6 +3180,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3054,7 +3190,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3063,6 +3199,7 @@
   "Aliases": [],
   "BallName": "Powerthane",
   "CatalogID": "dyno-thane-powerthane",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3090,6 +3227,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3099,7 +3237,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3108,6 +3246,7 @@
   "Aliases": [],
   "BallName": "Pro Thing",
   "CatalogID": "dyno-thane-pro-thing",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3135,6 +3274,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3144,7 +3284,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3153,6 +3293,7 @@
   "Aliases": [],
   "BallName": "Pure Energy",
   "CatalogID": "dyno-thane-pure-energy",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3180,6 +3321,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3189,7 +3331,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3198,6 +3340,7 @@
   "Aliases": [],
   "BallName": "R. X.",
   "CatalogID": "dyno-thane-r-x",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3225,6 +3368,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3234,7 +3378,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3243,6 +3387,7 @@
   "Aliases": [],
   "BallName": "Rampage Carbide",
   "CatalogID": "dyno-thane-rampage-carbide",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3270,6 +3415,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3279,7 +3425,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3288,6 +3434,7 @@
   "Aliases": [],
   "BallName": "Red Scorpion",
   "CatalogID": "dyno-thane-red-scorpion",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3315,6 +3462,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3324,7 +3472,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3333,6 +3481,7 @@
   "Aliases": [],
   "BallName": "Red Scorpion Sahara",
   "CatalogID": "dyno-thane-red-scorpion-sahara",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3360,6 +3509,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3369,7 +3519,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3378,6 +3528,7 @@
   "Aliases": [],
   "BallName": "Remedy",
   "CatalogID": "dyno-thane-remedy",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3405,6 +3556,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3414,7 +3566,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3423,6 +3575,7 @@
   "Aliases": [],
   "BallName": "Rev-X",
   "CatalogID": "dyno-thane-rev-x",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3450,6 +3603,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3459,7 +3613,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3468,6 +3622,7 @@
   "Aliases": [],
   "BallName": "Spare Shot",
   "CatalogID": "dyno-thane-spare-shot",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3495,6 +3650,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3504,7 +3660,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3513,6 +3669,7 @@
   "Aliases": [],
   "BallName": "Spark Emerald/Fire",
   "CatalogID": "dyno-thane-spark-emerald-fire",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3540,6 +3697,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3549,7 +3707,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3558,6 +3716,7 @@
   "Aliases": [],
   "BallName": "Spark Fire/Blaze",
   "CatalogID": "dyno-thane-spark-fire-blaze",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3585,6 +3744,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3594,7 +3754,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3603,6 +3763,7 @@
   "Aliases": [],
   "BallName": "Spark Red/Smoke",
   "CatalogID": "dyno-thane-spark-red-smoke",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3630,6 +3791,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3639,7 +3801,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3648,6 +3810,7 @@
   "Aliases": [],
   "BallName": "Summit",
   "CatalogID": "dyno-thane-summit",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3675,6 +3838,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3684,7 +3848,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3693,6 +3857,7 @@
   "Aliases": [],
   "BallName": "Summit ZYX",
   "CatalogID": "dyno-thane-summit-zyx",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3720,6 +3885,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3729,7 +3895,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3738,6 +3904,7 @@
   "Aliases": [],
   "BallName": "The Thing Expansion",
   "CatalogID": "dyno-thane-the-thing-expansion",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3765,6 +3932,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3774,7 +3942,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3783,6 +3951,7 @@
   "Aliases": [],
   "BallName": "The Thing Lives",
   "CatalogID": "dyno-thane-the-thing-lives",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3810,6 +3979,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3819,7 +3989,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3828,6 +3998,7 @@
   "Aliases": [],
   "BallName": "The Thing Returns",
   "CatalogID": "dyno-thane-the-thing-returns",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3855,6 +4026,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3864,7 +4036,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3873,6 +4045,7 @@
   "Aliases": [],
   "BallName": "Thing",
   "CatalogID": "dyno-thane-thing",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3900,6 +4073,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3909,7 +4083,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3918,6 +4092,7 @@
   "Aliases": [],
   "BallName": "Threshold",
   "CatalogID": "dyno-thane-threshold",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3945,6 +4120,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3954,7 +4130,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3963,6 +4139,7 @@
   "Aliases": [],
   "BallName": "Threshold NGS",
   "CatalogID": "dyno-thane-threshold-ngs",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3990,6 +4167,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3999,7 +4177,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4008,6 +4186,7 @@
   "Aliases": [],
   "BallName": "Threshold NGS Purple Pearl",
   "CatalogID": "dyno-thane-threshold-ngs-purple-pearl",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -4035,6 +4214,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -4044,7 +4224,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4053,6 +4233,7 @@
   "Aliases": [],
   "BallName": "Turbine",
   "CatalogID": "dyno-thane-turbine",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -4080,6 +4261,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -4089,7 +4271,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4098,6 +4280,7 @@
   "Aliases": [],
   "BallName": "Turbine Black/Blue",
   "CatalogID": "dyno-thane-turbine-black-blue-u13",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -4125,6 +4308,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -4134,7 +4318,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": "under 13 lb"
@@ -4143,6 +4327,7 @@
   "Aliases": [],
   "BallName": "Turbine II Black/Gold",
   "CatalogID": "dyno-thane-turbine-ii-black-gold-u13",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -4170,6 +4355,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -4179,7 +4365,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": "under 13 lb"
@@ -4188,6 +4374,7 @@
   "Aliases": [],
   "BallName": "Unique",
   "CatalogID": "dyno-thane-unique",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -4215,6 +4402,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -4224,7 +4412,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4233,6 +4421,7 @@
   "Aliases": [],
   "BallName": "Vendetta",
   "CatalogID": "dyno-thane-vendetta",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -4260,6 +4449,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -4269,7 +4459,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4278,6 +4468,7 @@
   "Aliases": [],
   "BallName": "Vendetta 357 Magnum",
   "CatalogID": "dyno-thane-vendetta-357-magnum",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -4305,6 +4496,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -4314,7 +4506,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4323,6 +4515,7 @@
   "Aliases": [],
   "BallName": "Vendetta 44 Magnum",
   "CatalogID": "dyno-thane-vendetta-44-magnum",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -4350,6 +4543,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -4359,7 +4553,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4368,6 +4562,7 @@
   "Aliases": [],
   "BallName": "Vendetta Black",
   "CatalogID": "dyno-thane-vendetta-black",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -4395,6 +4590,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -4404,7 +4600,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4413,6 +4609,7 @@
   "Aliases": [],
   "BallName": "Vendetta Carbide",
   "CatalogID": "dyno-thane-vendetta-carbide",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -4440,6 +4637,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -4449,7 +4647,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4458,6 +4656,7 @@
   "Aliases": [],
   "BallName": "Vendetta Carbide Particle",
   "CatalogID": "dyno-thane-vendetta-carbide-particle",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -4485,6 +4684,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -4494,7 +4694,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4503,6 +4703,7 @@
   "Aliases": [],
   "BallName": "Vendetta Killer",
   "CatalogID": "dyno-thane-vendetta-killer",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -4530,6 +4731,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -4539,7 +4741,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4548,6 +4750,7 @@
   "Aliases": [],
   "BallName": "Vendetta Maxx",
   "CatalogID": "dyno-thane-vendetta-maxx",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -4575,6 +4778,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -4584,7 +4788,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4593,6 +4797,7 @@
   "Aliases": [],
   "BallName": "Vendetta Pearl Particle",
   "CatalogID": "dyno-thane-vendetta-pearl-particle",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -4620,6 +4825,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -4629,7 +4835,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4638,6 +4844,7 @@
   "Aliases": [],
   "BallName": "Vendetta Purple",
   "CatalogID": "dyno-thane-vendetta-purple",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -4665,6 +4872,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -4674,7 +4882,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4683,6 +4891,7 @@
   "Aliases": [],
   "BallName": "Vendetta Red",
   "CatalogID": "dyno-thane-vendetta-red",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -4710,6 +4919,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -4719,7 +4929,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4728,6 +4938,7 @@
   "Aliases": [],
   "BallName": "Vendetta Sin",
   "CatalogID": "dyno-thane-vendetta-sin",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -4755,6 +4966,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -4764,7 +4976,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4773,6 +4985,7 @@
   "Aliases": [],
   "BallName": "Vendetta Sniper",
   "CatalogID": "dyno-thane-vendetta-sniper",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -4800,6 +5013,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -4809,7 +5023,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4818,6 +5032,7 @@
   "Aliases": [],
   "BallName": "XTC Tour Nugget",
   "CatalogID": "dyno-thane-xtc-tour-nugget",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -4845,6 +5060,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -4854,7 +5070,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4863,6 +5079,7 @@
   "Aliases": [],
   "BallName": "Zing Special X",
   "CatalogID": "dyno-thane-zing-special-x",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -4890,6 +5107,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -4899,7 +5117,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null

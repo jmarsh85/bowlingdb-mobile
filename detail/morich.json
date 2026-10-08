@@ -3,6 +3,7 @@
   "Aliases": [],
   "BallName": "Aggressive Motion",
   "CatalogID": "morich-aggressive-motion",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -30,6 +31,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -39,7 +41,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -48,6 +50,7 @@
   "Aliases": [],
   "BallName": "Archon",
   "CatalogID": "morich-archon",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -75,6 +78,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -84,7 +88,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -93,6 +97,7 @@
   "Aliases": [],
   "BallName": "Awesome Finish",
   "CatalogID": "morich-awesome-finish",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -120,6 +125,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -129,7 +135,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -138,6 +144,7 @@
   "Aliases": [],
   "BallName": "Awesome Flip",
   "CatalogID": "morich-awesome-flip",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -165,6 +172,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -174,7 +182,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -183,6 +191,7 @@
   "Aliases": [],
   "BallName": "Awesome Hook Polished",
   "CatalogID": "morich-awesome-hook-polished",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -210,6 +219,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -219,7 +229,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -228,6 +238,7 @@
   "Aliases": [],
   "BallName": "Awesome Hook Sanded",
   "CatalogID": "morich-awesome-hook-sanded",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -255,6 +266,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -264,7 +276,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -273,6 +285,7 @@
   "Aliases": [],
   "BallName": "Awesome Revs",
   "CatalogID": "morich-awesome-revs",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -300,6 +313,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -309,7 +323,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -318,6 +332,7 @@
   "Aliases": [],
   "BallName": "Colossus",
   "CatalogID": "morich-colossus",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -345,6 +360,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -354,7 +370,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -363,6 +379,7 @@
   "Aliases": [],
   "BallName": "Colossus Pearl",
   "CatalogID": "morich-colossus-pearl",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -390,6 +407,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -399,7 +417,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -408,6 +426,7 @@
   "Aliases": [],
   "BallName": "Colossus Supreme",
   "CatalogID": "morich-colossus-supreme",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -435,6 +454,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -444,7 +464,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -453,6 +473,7 @@
   "Aliases": [],
   "BallName": "Colossus Supreme Carbide",
   "CatalogID": "morich-colossus-supreme-carbide",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -480,6 +501,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -489,7 +511,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -498,6 +520,7 @@
   "Aliases": [],
   "BallName": "Colossus Supreme Pearl",
   "CatalogID": "morich-colossus-supreme-pearl",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -525,6 +548,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -534,7 +558,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -543,6 +567,7 @@
   "Aliases": [],
   "BallName": "Complete Annihilation",
   "CatalogID": "morich-complete-annihilation",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -570,6 +595,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -579,7 +605,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -588,6 +614,7 @@
   "Aliases": [],
   "BallName": "Complete Annihilation II",
   "CatalogID": "morich-complete-annihilation-ii",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -615,6 +642,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -624,7 +652,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -633,6 +661,7 @@
   "Aliases": [],
   "BallName": "Complete Annihilation Revival",
   "CatalogID": "morich-complete-annihilation-revival",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -660,6 +689,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -669,7 +699,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -678,6 +708,7 @@
   "Aliases": [],
   "BallName": "Craze",
   "CatalogID": "morich-craze",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -705,6 +736,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -714,7 +746,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -723,6 +755,7 @@
   "Aliases": [],
   "BallName": "DestroyR",
   "CatalogID": "morich-destroyr",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -750,6 +783,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -759,7 +793,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -768,6 +802,7 @@
   "Aliases": [],
   "BallName": "EZ Lev RG ML&L",
   "CatalogID": "morich-ez-lev-rg-mlandl",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -795,6 +830,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -804,7 +840,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -813,6 +849,7 @@
   "Aliases": [],
   "BallName": "Frenzy",
   "CatalogID": "morich-frenzy",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -840,6 +877,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -849,7 +887,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -858,6 +896,7 @@
   "Aliases": [],
   "BallName": "Grand Shock & Awe",
   "CatalogID": "morich-grand-shock-and-awe",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -885,6 +924,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -894,7 +934,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -903,6 +943,7 @@
   "Aliases": [],
   "BallName": "Hercules",
   "CatalogID": "morich-hercules",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -930,6 +971,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -939,7 +981,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -948,6 +990,7 @@
   "Aliases": [],
   "BallName": "Hercules Orange/Purple",
   "CatalogID": "morich-hercules-orange-purple",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -975,6 +1018,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -984,7 +1028,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -993,6 +1037,7 @@
   "Aliases": [],
   "BallName": "HookR",
   "CatalogID": "morich-hookr",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1020,6 +1065,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1029,7 +1075,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1038,6 +1084,7 @@
   "Aliases": [],
   "BallName": "Labyrinth",
   "CatalogID": "morich-labyrinth",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1065,6 +1112,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1074,7 +1122,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1083,6 +1131,7 @@
   "Aliases": [],
   "BallName": "Lane Magic",
   "CatalogID": "morich-lane-magic",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1110,6 +1159,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1119,7 +1169,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1128,6 +1178,7 @@
   "Aliases": [],
   "BallName": "Lane Magic Revival ML & L",
   "CatalogID": "morich-lane-magic-revival-ml-and-l",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1155,6 +1206,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1164,7 +1216,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1173,6 +1225,7 @@
   "Aliases": [],
   "BallName": "LevRG",
   "CatalogID": "morich-levrg",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1200,6 +1253,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1209,7 +1263,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1218,6 +1272,7 @@
   "Aliases": [],
   "BallName": "LevRG Black/Chrome/Blue",
   "CatalogID": "morich-levrg-black-chrome-blue",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1245,6 +1300,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1254,7 +1310,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1263,6 +1319,7 @@
   "Aliases": [],
   "BallName": "LevRG Purple/Black/Chrome",
   "CatalogID": "morich-levrg-purple-black-chrome",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1290,6 +1347,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1299,7 +1357,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1308,6 +1366,7 @@
   "Aliases": [],
   "BallName": "LevRG Purple/Black/Gold",
   "CatalogID": "morich-levrg-purple-black-gold",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1335,6 +1394,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1344,7 +1404,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1353,6 +1413,7 @@
   "Aliases": [],
   "BallName": "LevRG Response",
   "CatalogID": "morich-levrg-response",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1380,6 +1441,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1389,7 +1451,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1398,6 +1460,7 @@
   "Aliases": [],
   "BallName": "LevRG-S",
   "CatalogID": "morich-levrg-s",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1425,6 +1488,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1434,7 +1498,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1443,6 +1507,7 @@
   "Aliases": [],
   "BallName": "Loco Motion",
   "CatalogID": "morich-loco-motion",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1470,6 +1535,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1479,7 +1545,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1488,6 +1554,7 @@
   "Aliases": [],
   "BallName": "Mania",
   "CatalogID": "morich-mania",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1515,6 +1582,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1524,7 +1592,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1533,6 +1601,7 @@
   "Aliases": [],
   "BallName": "Maximum Shock & Awe Black/Red",
   "CatalogID": "morich-maximum-shock-and-awe-black-red",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1560,6 +1629,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1569,7 +1639,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1578,6 +1648,7 @@
   "Aliases": [],
   "BallName": "Maximum Shock & Awe Black/Red Pearl",
   "CatalogID": "morich-maximum-shock-and-awe-black-red-pearl",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1605,6 +1676,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1614,7 +1686,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1623,6 +1695,7 @@
   "Aliases": [],
   "BallName": "Mayhem",
   "CatalogID": "morich-mayhem",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1650,6 +1723,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1659,7 +1733,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1668,6 +1742,7 @@
   "Aliases": [],
   "BallName": "Mayhem Black Pearl",
   "CatalogID": "morich-mayhem-black-pearl",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1695,6 +1770,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1704,7 +1780,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1713,6 +1789,7 @@
   "Aliases": [],
   "BallName": "Mayhem Black Solid",
   "CatalogID": "morich-mayhem-black-solid",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1740,6 +1817,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1749,7 +1827,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1758,6 +1836,7 @@
   "Aliases": [],
   "BallName": "Mayhem Blue/Bronze/Gold",
   "CatalogID": "morich-mayhem-blue-bronze-gold",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1785,6 +1864,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1794,7 +1874,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1803,6 +1883,7 @@
   "Aliases": [],
   "BallName": "Mayhem LRB",
   "CatalogID": "morich-mayhem-lrb",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1830,6 +1911,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1839,7 +1921,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1848,6 +1930,7 @@
   "Aliases": [],
   "BallName": "Mayhem LRBP",
   "CatalogID": "morich-mayhem-lrbp",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1875,6 +1958,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1884,7 +1968,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1893,6 +1977,7 @@
   "Aliases": [],
   "BallName": "Mayhem-P",
   "CatalogID": "morich-mayhem-p",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1920,6 +2005,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1929,7 +2015,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1938,6 +2024,7 @@
   "Aliases": [],
   "BallName": "Mayhem Up",
   "CatalogID": "morich-mayhem-up",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1965,6 +2052,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1974,7 +2062,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1983,6 +2071,7 @@
   "Aliases": [],
   "BallName": "Minotaur",
   "CatalogID": "morich-minotaur",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2010,6 +2099,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2019,7 +2109,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2028,6 +2118,7 @@
   "Aliases": [],
   "BallName": "Mojave",
   "CatalogID": "morich-mojave",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2055,6 +2146,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2064,7 +2156,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2073,6 +2165,7 @@
   "Aliases": [],
   "BallName": "MoRich Polyester Blue/Black/Silver",
   "CatalogID": "morich-morich-polyester-blue-black-silver",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2100,6 +2193,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2109,7 +2203,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2118,6 +2212,7 @@
   "Aliases": [],
   "BallName": "MoRich Polyester Magenta/Black/Silver",
   "CatalogID": "morich-morich-polyester-magenta-black-silver",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2145,6 +2240,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2154,7 +2250,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2163,6 +2259,7 @@
   "Aliases": [],
   "BallName": "'Nsane LevRG",
   "CatalogID": "morich-nsane-levrg",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2190,6 +2287,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2199,7 +2297,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2208,6 +2306,7 @@
   "Aliases": [],
   "BallName": "'Ntense LevRG",
   "CatalogID": "morich-ntense-levrg",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2235,6 +2334,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2244,7 +2344,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2253,6 +2353,7 @@
   "Aliases": [],
   "BallName": "Offset Retro",
   "CatalogID": "morich-offset-retro",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2280,6 +2381,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2289,7 +2391,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2298,6 +2400,7 @@
   "Aliases": [],
   "BallName": "Onslaught",
   "CatalogID": "morich-onslaught",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2325,6 +2428,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2334,7 +2438,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2343,6 +2447,7 @@
   "Aliases": [],
   "BallName": "Paragon",
   "CatalogID": "morich-paragon",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2370,6 +2475,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2379,7 +2485,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2388,6 +2494,7 @@
   "Aliases": [],
   "BallName": "Perpetual Motion",
   "CatalogID": "morich-perpetual-motion",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2415,6 +2522,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2424,7 +2532,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2433,6 +2541,7 @@
   "Aliases": [],
   "BallName": "Pioneer",
   "CatalogID": "morich-pioneer",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2460,6 +2569,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2469,7 +2579,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2478,6 +2588,7 @@
   "Aliases": [],
   "BallName": "Ravage",
   "CatalogID": "morich-ravage",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2505,6 +2616,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2514,7 +2626,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2523,6 +2635,7 @@
   "Aliases": [],
   "BallName": "Ravage Black/Purple/Maroon Pearl",
   "CatalogID": "morich-ravage-black-purple-maroon-pearl",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2550,6 +2663,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2559,7 +2673,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2568,6 +2682,7 @@
   "Aliases": [],
   "BallName": "Ravage II",
   "CatalogID": "morich-ravage-ii",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2595,6 +2710,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2604,7 +2720,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2613,6 +2729,7 @@
   "Aliases": [],
   "BallName": "Ravage III",
   "CatalogID": "morich-ravage-iii",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2640,6 +2757,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2649,7 +2767,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2658,6 +2776,7 @@
   "Aliases": [],
   "BallName": "Ravage IV",
   "CatalogID": "morich-ravage-iv",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2685,6 +2804,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2694,7 +2814,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2703,6 +2823,7 @@
   "Aliases": [],
   "BallName": "Ravage Orange/Smoke Pearl",
   "CatalogID": "morich-ravage-orange-smoke-pearl",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2730,6 +2851,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2739,7 +2861,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2748,6 +2870,7 @@
   "Aliases": [],
   "BallName": "Ravage Pearl",
   "CatalogID": "morich-ravage-pearl",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2775,6 +2898,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2784,7 +2908,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2793,6 +2917,7 @@
   "Aliases": [],
   "BallName": "Ravage Red/Black/Blue",
   "CatalogID": "morich-ravage-red-black-blue",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2820,6 +2945,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2829,7 +2955,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2838,6 +2964,7 @@
   "Aliases": [],
   "BallName": "Ravage V",
   "CatalogID": "morich-ravage-v",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2865,6 +2992,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2874,7 +3002,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2883,6 +3011,7 @@
   "Aliases": [],
   "BallName": "Ravage VG Balance",
   "CatalogID": "morich-ravage-vg-balance",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2910,6 +3039,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2919,7 +3049,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2928,6 +3058,7 @@
   "Aliases": [],
   "BallName": "Ravage VI",
   "CatalogID": "morich-ravage-vi",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2955,6 +3086,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2964,7 +3096,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2973,6 +3105,7 @@
   "Aliases": [],
   "BallName": "Ravage VII",
   "CatalogID": "morich-ravage-vii",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3000,6 +3133,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3009,7 +3143,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3018,6 +3152,7 @@
   "Aliases": [],
   "BallName": "Rev Annihilation",
   "CatalogID": "morich-rev-annihilation",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3045,6 +3180,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3054,7 +3190,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3063,6 +3199,7 @@
   "Aliases": [],
   "BallName": "Rip R",
   "CatalogID": "morich-rip-r",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3090,6 +3227,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3099,7 +3237,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3108,6 +3246,7 @@
   "Aliases": [],
   "BallName": "Rip R Black/Chrome/Gold",
   "CatalogID": "morich-rip-r-black-chrome-gold",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3135,6 +3274,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3144,7 +3284,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3153,6 +3293,7 @@
   "Aliases": [],
   "BallName": "Rip R Black/Purple/Orange",
   "CatalogID": "morich-rip-r-black-purple-orange",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3180,6 +3321,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3189,7 +3331,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3198,6 +3340,7 @@
   "Aliases": [],
   "BallName": "Rip R Blue/Charcoal",
   "CatalogID": "morich-rip-r-blue-charcoal",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3225,6 +3368,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3234,7 +3378,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3243,6 +3387,7 @@
   "Aliases": [],
   "BallName": "Rip R Blue/Pink",
   "CatalogID": "morich-rip-r-blue-pink",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3270,6 +3415,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3279,7 +3425,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3288,6 +3434,7 @@
   "Aliases": [],
   "BallName": "Sahara",
   "CatalogID": "morich-sahara",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3315,6 +3462,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3324,7 +3472,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3333,6 +3481,7 @@
   "Aliases": [],
   "BallName": "Seek & Destroy",
   "CatalogID": "morich-seek-and-destroy",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3360,6 +3509,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3369,7 +3519,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3378,6 +3528,7 @@
   "Aliases": [],
   "BallName": "Shock & Awe",
   "CatalogID": "morich-shock-and-awe",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3405,6 +3556,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3414,7 +3566,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3423,6 +3575,7 @@
   "Aliases": [],
   "BallName": "Solid LevRG",
   "CatalogID": "morich-solid-levrg",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3450,6 +3603,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3459,7 +3613,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3468,6 +3622,7 @@
   "Aliases": [],
   "BallName": "Sweeping Annihilation",
   "CatalogID": "morich-sweeping-annihilation",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3495,6 +3650,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3504,7 +3660,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3513,6 +3669,7 @@
   "Aliases": [],
   "BallName": "Total Annihilation",
   "CatalogID": "morich-total-annihilation",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3540,6 +3697,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3549,7 +3707,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3558,6 +3716,7 @@
   "Aliases": [],
   "BallName": "Total Annihilation P",
   "CatalogID": "morich-total-annihilation-p",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3585,6 +3744,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3594,7 +3754,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3603,6 +3763,7 @@
   "Aliases": [],
   "BallName": "Total Shock & Awe",
   "CatalogID": "morich-total-shock-and-awe",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3630,6 +3791,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3639,7 +3801,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3648,6 +3810,7 @@
   "Aliases": [],
   "BallName": "Ultra Hercules",
   "CatalogID": "morich-ultra-hercules",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3675,6 +3838,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3684,7 +3848,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3693,6 +3857,7 @@
   "Aliases": [],
   "BallName": "Weapon of Mass Bias",
   "CatalogID": "morich-weapon-of-mass-bias",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3720,6 +3885,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3729,7 +3895,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3738,6 +3904,7 @@
   "Aliases": [],
   "BallName": "Weapon of Mass Bias II",
   "CatalogID": "morich-weapon-of-mass-bias-ii",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3765,6 +3932,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3774,7 +3942,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3783,6 +3951,7 @@
   "Aliases": [],
   "BallName": "Weapon of Mass Bias III",
   "CatalogID": "morich-weapon-of-mass-bias-iii",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3810,6 +3979,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3819,7 +3989,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3828,6 +3998,7 @@
   "Aliases": [],
   "BallName": "Weapon of Mass Bias Professional Blue/Red",
   "CatalogID": "morich-weapon-of-mass-bias-professional-blue-red",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3855,6 +4026,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3864,7 +4036,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3873,6 +4045,7 @@
   "Aliases": [],
   "BallName": "Weapon of Mass Bias Professional Teal/Orange",
   "CatalogID": "morich-weapon-of-mass-bias-professional-teal-orange",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3900,6 +4073,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3909,7 +4083,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null

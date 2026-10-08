@@ -3,6 +3,7 @@
   "Aliases": [],
   "BallName": "Beyond Ridiculous",
   "CatalogID": "radical-beyond-ridiculous",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Symmetric with Scoop Technology",
@@ -33,6 +34,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/beyond-ridiculous",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.05,
@@ -48,7 +50,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -57,6 +59,7 @@
   "Aliases": [],
   "BallName": "Beyond Ridiculous Pearl",
   "CatalogID": "radical-beyond-ridiculous-pearl",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Symmetric with Scoop Technology",
@@ -87,6 +90,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/beyond-ridiculous-pearl",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.05,
@@ -102,7 +106,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -111,6 +115,7 @@
   "Aliases": [],
   "BallName": "Bigfoot",
   "CatalogID": "radical-bigfoot",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Symmetric (DynamiCore)",
@@ -141,6 +146,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/bigfoot",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.053,
@@ -156,7 +162,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -165,6 +171,7 @@
   "Aliases": [],
   "BallName": "Bigfoot Hybrid",
   "CatalogID": "radical-bigfoot-hybrid",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Bigfoot Symmetric",
@@ -195,6 +202,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/bigfoot-hybrid",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.053,
@@ -210,7 +218,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -219,6 +227,7 @@
   "Aliases": [],
   "BallName": "Bonu$",
   "CatalogID": "radical-bonu",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -246,6 +255,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -255,7 +265,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -264,6 +274,7 @@
   "Aliases": [],
   "BallName": "Bonu$ Pearl",
   "CatalogID": "radical-bonu-pearl",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -291,6 +302,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -300,7 +312,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -309,6 +321,7 @@
   "Aliases": [],
   "BallName": "Break Away",
   "CatalogID": "radical-break-away",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Breakaway Symmetric",
@@ -339,6 +352,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/breakaway",
   "SpecsByWeight": {
    "12": {
     "Diff": 0.04,
@@ -374,7 +388,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -383,6 +397,7 @@
   "Aliases": [],
   "BallName": "Ca$h",
   "CatalogID": "radical-ca-h",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -410,6 +425,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -419,7 +435,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -428,6 +444,7 @@
   "Aliases": [],
   "BallName": "Conspiracy",
   "CatalogID": "radical-conspiracy",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Asymmetric",
@@ -458,6 +475,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/conspiracy",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.056,
@@ -473,7 +491,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -482,6 +500,7 @@
   "Aliases": [],
   "BallName": "Conspiracy Dark Red",
   "CatalogID": "radical-conspiracy-dark-red",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -509,6 +528,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -518,7 +538,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -527,6 +547,7 @@
   "Aliases": [],
   "BallName": "Conspiracy Hybrid",
   "CatalogID": "radical-conspiracy-hybrid",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Asymmetric (DynamiCore)",
@@ -557,6 +578,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/conspiracy-hybrid",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.056,
@@ -572,7 +594,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -581,6 +603,7 @@
   "Aliases": [],
   "BallName": "Conspiracy Pearl",
   "CatalogID": "radical-conspiracy-pearl",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Asymmetric (Featuring DynamiCore)",
@@ -611,6 +634,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/conspiracy-pearl",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.056,
@@ -626,7 +650,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -635,6 +659,7 @@
   "Aliases": [],
   "BallName": "Conspiracy Purple",
   "CatalogID": "radical-conspiracy-purple",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -662,6 +687,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -671,7 +697,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -680,6 +706,7 @@
   "Aliases": [],
   "BallName": "Conspiracy Scheme",
   "CatalogID": "radical-conspiracy-scheme",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Asymmetric (DynamiCore)",
@@ -710,6 +737,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/conspiracy-scheme",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.056,
@@ -725,7 +753,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -734,6 +762,7 @@
   "Aliases": [],
   "BallName": "Conspiracy Theory",
   "CatalogID": "radical-conspiracy-theory",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Asymmetric (DynamiCore)",
@@ -764,6 +793,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/conspiracy-theory",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.054,
@@ -779,7 +809,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -788,6 +818,7 @@
   "Aliases": [],
   "BallName": "Counter Attack Pearl",
   "CatalogID": "radical-counter-attack-pearl",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Rack Attack 2 Symmetric",
@@ -818,6 +849,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/counter-attack-pearl",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.023,
@@ -833,7 +865,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -842,6 +874,7 @@
   "Aliases": [],
   "BallName": "Counter Attack Solid",
   "CatalogID": "radical-counter-attack-solid",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Rack Attack 2 Symmetric",
@@ -872,6 +905,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/counter-attack-solid",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.023,
@@ -887,7 +921,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -896,6 +930,7 @@
   "Aliases": [],
   "BallName": "Crypto",
   "CatalogID": "radical-crypto",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Symmetric (DynamiCore)",
@@ -926,6 +961,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/crypto",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.046,
@@ -941,7 +977,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -950,6 +986,7 @@
   "Aliases": [],
   "BallName": "Crypto Boom",
   "CatalogID": "radical-crypto-boom",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Crypto Symmetric",
@@ -980,6 +1017,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/crypto-boom",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.046,
@@ -995,7 +1033,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1004,6 +1042,7 @@
   "Aliases": [],
   "BallName": "Cyclops",
   "CatalogID": "radical-cyclops",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Spindle Symmetric",
@@ -1034,6 +1073,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/cyclops",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.048,
@@ -1049,7 +1089,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1058,6 +1098,7 @@
   "Aliases": [],
   "BallName": "Cyclops Pearl",
   "CatalogID": "radical-cyclops-pearl",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Spindle Symmetric",
@@ -1088,6 +1129,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/cyclops-pearl",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.048,
@@ -1103,7 +1145,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1112,6 +1154,7 @@
   "Aliases": [],
   "BallName": "Dart",
   "CatalogID": "radical-dart",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1139,6 +1182,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1148,7 +1192,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1157,6 +1201,7 @@
   "Aliases": [],
   "BallName": "Deadly Rattler",
   "CatalogID": "radical-deadly-rattler",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Rattler Symmetric",
@@ -1187,6 +1232,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/deadly-rattler",
   "SpecsByWeight": {
    "12": {
     "Diff": 0.04,
@@ -1222,7 +1268,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1231,6 +1277,7 @@
   "Aliases": [],
   "BallName": "Deep Impact",
   "CatalogID": "radical-deep-impact",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Torpedo Asymmetric",
@@ -1261,6 +1308,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/current/deep-impact",
   "SpecsByWeight": {
    "12": {
     "Diff": 0.043,
@@ -1296,7 +1344,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1305,6 +1353,7 @@
   "Aliases": [],
   "BallName": "Double Cross",
   "CatalogID": "radical-double-cross",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Symmetric (DynamiCore)",
@@ -1335,6 +1384,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/double-cross",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.035,
@@ -1350,7 +1400,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1359,6 +1409,7 @@
   "Aliases": [],
   "BallName": "Evil Eye",
   "CatalogID": "radical-evil-eye",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Evil Eye Symmetric",
@@ -1389,6 +1440,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/current/evil-eye",
   "SpecsByWeight": {
    "12": {
     "Diff": 0.04,
@@ -1424,7 +1476,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1433,6 +1485,7 @@
   "Aliases": [],
   "BallName": "Evil Eye Pearl",
   "CatalogID": "radical-evil-eye-pearl",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Evil Eye Symmetric",
@@ -1463,6 +1516,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/current/evil-eye-pearl",
   "SpecsByWeight": {
    "12": {
     "Diff": 0.04,
@@ -1498,7 +1552,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1507,6 +1561,7 @@
   "Aliases": [],
   "BallName": "Grease Monkey",
   "CatalogID": "radical-grease-monkey",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Symmetric",
@@ -1537,6 +1592,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/grease-monkey",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.048,
@@ -1552,7 +1608,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1561,6 +1617,7 @@
   "Aliases": [],
   "BallName": "Grease Monkey POW!",
   "CatalogID": "radical-grease-monkey-pow",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Symmetric",
@@ -1591,6 +1648,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/grease-monkey-pow",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.048,
@@ -1606,7 +1664,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1615,6 +1673,7 @@
   "Aliases": [],
   "BallName": "Grease Monkey Whack!",
   "CatalogID": "radical-grease-monkey-whack",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Symmetric",
@@ -1645,6 +1704,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/grease-monkey-whack",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.048,
@@ -1660,7 +1720,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1669,6 +1729,7 @@
   "Aliases": [],
   "BallName": "Guru",
   "CatalogID": "radical-guru",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Asymmetric",
@@ -1699,6 +1760,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/guru",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.044,
@@ -1714,7 +1776,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1723,6 +1785,7 @@
   "Aliases": [],
   "BallName": "Guru Espada",
   "CatalogID": "radical-guru-espada",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1750,6 +1813,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1759,7 +1823,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1768,6 +1832,7 @@
   "Aliases": [],
   "BallName": "Guru Eternal",
   "CatalogID": "radical-guru-eternal",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1795,6 +1860,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1804,7 +1870,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1813,6 +1879,7 @@
   "Aliases": [],
   "BallName": "Guru Eternal Pearl",
   "CatalogID": "radical-guru-eternal-pearl",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1840,6 +1907,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1849,7 +1917,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1858,6 +1926,7 @@
   "Aliases": [],
   "BallName": "Guru Force",
   "CatalogID": "radical-guru-force",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1885,6 +1954,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1894,7 +1964,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1903,6 +1973,7 @@
   "Aliases": [],
   "BallName": "Guru Master",
   "CatalogID": "radical-guru-master",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Asymmetric with Offset and Scoop Technology",
@@ -1933,6 +2004,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/guru-master",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.044,
@@ -1948,7 +2020,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1957,6 +2029,7 @@
   "Aliases": [],
   "BallName": "Guru Mighty",
   "CatalogID": "radical-guru-mighty",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Asymmetric",
@@ -1987,6 +2060,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/guru-mighty",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.044,
@@ -2002,7 +2076,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2011,6 +2085,7 @@
   "Aliases": [],
   "BallName": "Guru Oracle",
   "CatalogID": "radical-guru-oracle",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Guru Asymmetric",
@@ -2041,6 +2116,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/guru-oracle",
   "SpecsByWeight": {
    "12": {
     "Diff": 0.043,
@@ -2076,7 +2152,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2085,6 +2161,7 @@
   "Aliases": [],
   "BallName": "Guru Oracle Pearl",
   "CatalogID": "radical-guru-oracle-pearl",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Guru Asymmetric",
@@ -2115,6 +2192,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/current/guru-oracle-pearl",
   "SpecsByWeight": {
    "12": {
     "Diff": 0.043,
@@ -2150,7 +2228,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2159,6 +2237,7 @@
   "Aliases": [],
   "BallName": "Guru Pearl Limited",
   "CatalogID": "radical-guru-pearl-limited",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Asymmetric with Offset and Scoop Technology",
@@ -2189,6 +2268,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/guru-pearl-limited",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.044,
@@ -2204,7 +2284,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2213,6 +2293,7 @@
   "Aliases": [],
   "BallName": "Guru Supreme",
   "CatalogID": "radical-guru-supreme",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Asymmetric with Offset and Scoop Technology",
@@ -2243,6 +2324,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/guru-supreme",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.044,
@@ -2258,7 +2340,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2267,6 +2349,7 @@
   "Aliases": [],
   "BallName": "Incognito",
   "CatalogID": "radical-incognito",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Asymmetric (DynamiCore)",
@@ -2297,6 +2380,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/incognito",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.053,
@@ -2312,7 +2396,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2321,6 +2405,7 @@
   "Aliases": [],
   "BallName": "Incognito Pearl",
   "CatalogID": "radical-incognito-pearl",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Asymmetric (DynamiCore)",
@@ -2351,6 +2436,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/incognito-pearl",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.053,
@@ -2366,7 +2452,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2375,6 +2461,7 @@
   "Aliases": [],
   "BallName": "Incognito (Pro)",
   "CatalogID": "radical-incognito-pro",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2402,6 +2489,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2411,7 +2499,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2420,6 +2508,7 @@
   "Aliases": [],
   "BallName": "Informer",
   "CatalogID": "radical-informer",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Asymmetric (DynamiCore)",
@@ -2450,6 +2539,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/informer",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.051,
@@ -2465,7 +2555,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2474,6 +2564,7 @@
   "Aliases": [],
   "BallName": "Innovator",
   "CatalogID": "radical-innovator",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2501,6 +2592,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2510,7 +2602,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2519,6 +2611,7 @@
   "Aliases": [],
   "BallName": "Innovator Solid",
   "CatalogID": "radical-innovator-solid",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Innovator Asymmetric",
@@ -2549,6 +2642,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/innovator-solid",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.053,
@@ -2564,7 +2658,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2573,6 +2667,7 @@
   "Aliases": [],
   "BallName": "Intel",
   "CatalogID": "radical-intel",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Symmetric",
@@ -2603,6 +2698,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/intel",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.035,
@@ -2618,7 +2714,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2627,6 +2723,7 @@
   "Aliases": [],
   "BallName": "Intel Pearl",
   "CatalogID": "radical-intel-pearl",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Symmetric",
@@ -2657,6 +2754,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/intel-pearl",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.035,
@@ -2672,7 +2770,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2681,6 +2779,7 @@
   "Aliases": [],
   "BallName": "Intel Pearl Special Edition",
   "CatalogID": "radical-intel-pearl-special-edition",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Symmetric (DynamiCore)",
@@ -2711,6 +2810,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/intel-pearl-se",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.035,
@@ -2726,7 +2826,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2735,6 +2835,7 @@
   "Aliases": [],
   "BallName": "Intel Recon",
   "CatalogID": "radical-intel-recon",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Modified Intel Symmetric",
@@ -2765,6 +2866,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/intel-recon",
   "SpecsByWeight": {
    "12": {
     "Diff": 0.04,
@@ -2800,7 +2902,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2809,6 +2911,7 @@
   "Aliases": [],
   "BallName": "Intel Tour",
   "CatalogID": "radical-intel-tour",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Modified Intel Symmetric",
@@ -2839,6 +2942,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/current/intel-tour",
   "SpecsByWeight": {
    "12": {
     "Diff": 0.04,
@@ -2874,7 +2978,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2883,6 +2987,7 @@
   "Aliases": [],
   "BallName": "Jackpot",
   "CatalogID": "radical-jackpot",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Symmetric with Scoop Technology",
@@ -2913,6 +3018,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/jackpot",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.056,
@@ -2928,7 +3034,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2937,6 +3043,7 @@
   "Aliases": [],
   "BallName": "Jackpot Solid",
   "CatalogID": "radical-jackpot-solid",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Symmetric with Scoop Technology",
@@ -2967,6 +3074,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/jackpot-solid",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.056,
@@ -2982,7 +3090,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2991,6 +3099,7 @@
   "Aliases": [],
   "BallName": "Katana",
   "CatalogID": "radical-katana",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Katana Asymmetric",
@@ -3021,6 +3130,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/katana",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.05,
@@ -3036,7 +3146,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3045,6 +3155,7 @@
   "Aliases": [],
   "BallName": "Katana Assault",
   "CatalogID": "radical-katana-assault",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Katana Assault Asymmetric",
@@ -3075,6 +3186,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/katana-assault",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.051,
@@ -3090,7 +3202,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3099,6 +3211,7 @@
   "Aliases": [],
   "BallName": "Katana Dragon",
   "CatalogID": "radical-katana-dragon",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Katana Asymmetric",
@@ -3129,6 +3242,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/katana-dragon",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.05,
@@ -3144,7 +3258,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3153,6 +3267,7 @@
   "Aliases": [],
   "BallName": "Katana Gengetsuko",
   "CatalogID": "radical-katana-gengetsuko",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3180,6 +3295,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3189,7 +3305,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3198,6 +3314,7 @@
   "Aliases": [],
   "BallName": "Katana Homura",
   "CatalogID": "radical-katana-homura",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3225,6 +3342,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3234,7 +3352,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3243,6 +3361,7 @@
   "Aliases": [],
   "BallName": "Katana Izayoi",
   "CatalogID": "radical-katana-izayoi",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3270,6 +3389,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3279,7 +3399,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3288,6 +3408,7 @@
   "Aliases": [],
   "BallName": "Katana Khan",
   "CatalogID": "radical-katana-khan",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3315,6 +3436,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3324,7 +3446,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3333,6 +3455,7 @@
   "Aliases": [],
   "BallName": "Katana Legend",
   "CatalogID": "radical-katana-legend",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Katana Asymmetric",
@@ -3363,6 +3486,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/katana-legend",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.05,
@@ -3378,7 +3502,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3387,6 +3511,7 @@
   "Aliases": [],
   "BallName": "Katana Senbon Zakura",
   "CatalogID": "radical-katana-senbon-zakura",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3414,6 +3539,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3423,7 +3549,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3432,6 +3558,7 @@
   "Aliases": [],
   "BallName": "Katana (Shiranui)",
   "CatalogID": "radical-katana-shiranui",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3459,6 +3586,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3468,7 +3596,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3477,6 +3605,7 @@
   "Aliases": [],
   "BallName": "Katana Slash",
   "CatalogID": "radical-katana-slash",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Katana Asymmetric",
@@ -3507,6 +3636,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/katana-slash",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.05,
@@ -3522,7 +3652,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3531,6 +3661,7 @@
   "Aliases": [],
   "BallName": "Katana Strike",
   "CatalogID": "radical-katana-strike",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Katana Assault Asymmetric",
@@ -3561,6 +3692,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/katana-strike",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.051,
@@ -3576,7 +3708,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3585,6 +3717,7 @@
   "Aliases": [],
   "BallName": "Katana Yasha",
   "CatalogID": "radical-katana-yasha",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3612,6 +3745,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3621,7 +3755,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3630,6 +3764,7 @@
   "Aliases": [],
   "BallName": "Ludicrous",
   "CatalogID": "radical-ludicrous",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Asymmetric with Scoop Technology",
@@ -3660,6 +3795,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/ludicrous",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.05,
@@ -3675,7 +3811,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3684,6 +3820,7 @@
   "Aliases": [],
   "BallName": "Ludicrous Solid",
   "CatalogID": "radical-ludicrous-solid",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Asymmetric with Scoop Technology",
@@ -3714,6 +3851,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/ludicrous-solid",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.05,
@@ -3729,7 +3867,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3738,6 +3876,7 @@
   "Aliases": [],
   "BallName": "Max Bias",
   "CatalogID": "radical-max-bias",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Maximum Results Asymmetric",
@@ -3768,6 +3907,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/max-bias",
   "SpecsByWeight": {
    "12": {
     "Diff": 0.043,
@@ -3803,7 +3943,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3812,6 +3952,7 @@
   "Aliases": [],
   "BallName": "Maximum Results",
   "CatalogID": "radical-maximum-results",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Asymmetric (DynamiCore)",
@@ -3842,6 +3983,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/maximum-results",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.05,
@@ -3857,7 +3999,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3866,6 +4008,7 @@
   "Aliases": [],
   "BallName": "More Ca$h",
   "CatalogID": "radical-more-ca-h",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3893,6 +4036,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3902,7 +4046,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3911,6 +4055,7 @@
   "Aliases": [],
   "BallName": "No Doubt",
   "CatalogID": "radical-no-doubt",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "No Doubt Symmetric",
@@ -3941,6 +4086,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/no-doubt",
   "SpecsByWeight": {
    "12": {
     "Diff": 0.04,
@@ -3976,7 +4122,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3985,6 +4131,7 @@
   "Aliases": [],
   "BallName": "No Doubt Hybrid",
   "CatalogID": "radical-no-doubt-hybrid",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "No Doubt Symmetric",
@@ -4015,6 +4162,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/current/no-doubt-hybrid",
   "SpecsByWeight": {
    "12": {
     "Diff": 0.04,
@@ -4050,7 +4198,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4059,6 +4207,7 @@
   "Aliases": [],
   "BallName": "No Doubt Solid",
   "CatalogID": "radical-no-doubt-solid",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "No Doubt Symmetric",
@@ -4089,6 +4238,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/no-doubt-solid",
   "SpecsByWeight": {
    "12": {
     "Diff": 0.04,
@@ -4124,7 +4274,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4133,6 +4283,7 @@
   "Aliases": [],
   "BallName": "Outer Limits",
   "CatalogID": "radical-outer-limits",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Outer Limits Asymmetric",
@@ -4163,6 +4314,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/outer-limits",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.051,
@@ -4178,7 +4330,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4187,6 +4339,7 @@
   "Aliases": [],
   "BallName": "Outer Limits Black Hole",
   "CatalogID": "radical-outer-limits-black-hole",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Outer Limits Asymmetric",
@@ -4217,6 +4370,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/current/outer-limits-black-hole",
   "SpecsByWeight": {
    "12": {
     "Diff": 0.043,
@@ -4252,7 +4406,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4261,6 +4415,7 @@
   "Aliases": [],
   "BallName": "Outer Limits Pearl",
   "CatalogID": "radical-outer-limits-pearl",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Outer Limits Asymmetric",
@@ -4291,6 +4446,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/outer-limits-pearl",
   "SpecsByWeight": {
    "12": {
     "Diff": 0.043,
@@ -4326,7 +4482,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4335,6 +4491,7 @@
   "Aliases": [],
   "BallName": "Outer Limits Solid",
   "CatalogID": "radical-outer-limits-solid",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Outer Limits Asymmetric",
@@ -4365,6 +4522,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/outer-limits-solid",
   "SpecsByWeight": {
    "12": {
     "Diff": 0.043,
@@ -4400,7 +4558,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4409,6 +4567,7 @@
   "Aliases": [],
   "BallName": "Pandemonium",
   "CatalogID": "radical-pandemonium",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Symmetric (DynamiCore)",
@@ -4439,6 +4598,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/pandemonium",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.053,
@@ -4454,7 +4614,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4463,6 +4623,7 @@
   "Aliases": [],
   "BallName": "Pandemonium Solid",
   "CatalogID": "radical-pandemonium-solid",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Symmetric (DynamiCore)",
@@ -4493,6 +4654,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/pandemonium-solid",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.053,
@@ -4508,7 +4670,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4517,6 +4679,7 @@
   "Aliases": [],
   "BallName": "Payback",
   "CatalogID": "radical-payback",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Symmetric (DynamiCore)",
@@ -4547,6 +4710,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/payback",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.041,
@@ -4562,7 +4726,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4571,6 +4735,7 @@
   "Aliases": [],
   "BallName": "Power Hitter",
   "CatalogID": "radical-power-hitter",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Hitter Asymmetric",
@@ -4601,6 +4766,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/power-hitter",
   "SpecsByWeight": {
    "12": {
     "Diff": 0.043,
@@ -4636,7 +4802,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4645,6 +4811,7 @@
   "Aliases": [],
   "BallName": "(Prime) Power Hitter",
   "CatalogID": "radical-prime-power-hitter",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -4672,6 +4839,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -4681,7 +4849,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4690,6 +4858,7 @@
   "Aliases": [],
   "BallName": "Primo",
   "CatalogID": "radical-primo",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Symmetric with Scoop Technology",
@@ -4720,6 +4889,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/primo",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.048,
@@ -4735,7 +4905,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4744,6 +4914,7 @@
   "Aliases": [],
   "BallName": "Primo Solid",
   "CatalogID": "radical-primo-solid",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Symmetric with Scoop Technology",
@@ -4774,6 +4945,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/primo-solid",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.048,
@@ -4789,7 +4961,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4798,6 +4970,7 @@
   "Aliases": [],
   "BallName": "Quick Fix",
   "CatalogID": "radical-quick-fix",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Shapeshifter Sym / Asym",
@@ -4828,6 +5001,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/quick-fix",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.054,
@@ -4843,7 +5017,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4852,6 +5026,7 @@
   "Aliases": [],
   "BallName": "Rack Attack Pearl",
   "CatalogID": "radical-rack-attack-pearl",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Symmetric",
@@ -4882,6 +5057,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/rack-attack-pearl",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.024,
@@ -4897,7 +5073,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4906,6 +5082,7 @@
   "Aliases": [],
   "BallName": "Rack Attack Solid",
   "CatalogID": "radical-rack-attack-solid",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Symmetric",
@@ -4936,6 +5113,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/rack-attack-solid",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.024,
@@ -4951,7 +5129,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4960,6 +5138,7 @@
   "Aliases": [],
   "BallName": "Radical Conspiracy",
   "CatalogID": "radical-radical-conspiracy",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Conspiracy Asymmetric",
@@ -4990,6 +5169,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/radical-conspiracy",
   "SpecsByWeight": {
    "14": {
     "Diff": 0.056,
@@ -5015,7 +5195,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5024,6 +5204,7 @@
   "Aliases": [],
   "BallName": "Radical Spare",
   "CatalogID": "radical-radical-spare",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -5051,6 +5232,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -5060,7 +5242,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5069,6 +5251,7 @@
   "Aliases": [],
   "BallName": "Rattler",
   "CatalogID": "radical-rattler",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Rattler Symmetric",
@@ -5099,6 +5282,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/rattler",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.035,
@@ -5114,7 +5298,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5123,6 +5307,7 @@
   "Aliases": [],
   "BallName": "Rattler Big Bite",
   "CatalogID": "radical-rattler-big-bite",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Rattler Symmetric",
@@ -5153,6 +5338,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/rattler-big-bite",
   "SpecsByWeight": {
    "12": {
     "Diff": 0.04,
@@ -5188,7 +5374,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5197,6 +5383,7 @@
   "Aliases": [],
   "BallName": "Rattler NU",
   "CatalogID": "radical-rattler-nu",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Rattler Symmetric",
@@ -5227,6 +5414,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/rattler-nu",
   "SpecsByWeight": {
    "12": {
     "Diff": 0.04,
@@ -5262,7 +5450,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5271,6 +5459,7 @@
   "Aliases": [],
   "BallName": "Rave",
   "CatalogID": "radical-rave",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Symmetric with Scoop Technology",
@@ -5301,6 +5490,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/rave",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.049,
@@ -5316,7 +5506,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5325,6 +5515,7 @@
   "Aliases": [],
   "BallName": "Rave On",
   "CatalogID": "radical-rave-on",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Symmetric with Scoop Technology",
@@ -5355,6 +5546,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/rave-on",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.049,
@@ -5370,7 +5562,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5379,6 +5571,7 @@
   "Aliases": [],
   "BallName": "REAX",
   "CatalogID": "radical-reax",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Asymmetric with Offset Technology",
@@ -5409,6 +5602,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/reax",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.054,
@@ -5424,7 +5618,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5433,6 +5627,7 @@
   "Aliases": [],
   "BallName": "REAX Gusto",
   "CatalogID": "radical-reax-gusto",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Asymmetric",
@@ -5463,6 +5658,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/reax-gusto",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.038,
@@ -5478,7 +5674,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5487,6 +5683,7 @@
   "Aliases": [],
   "BallName": "REAX Pearl",
   "CatalogID": "radical-reax-pearl",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Asymmetric with Offset Technology",
@@ -5517,6 +5714,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/reax-pearl",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.054,
@@ -5532,7 +5730,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5541,6 +5739,7 @@
   "Aliases": [],
   "BallName": "REAX Version 2",
   "CatalogID": "radical-reax-version-2",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Asymmetric with Offset Technology",
@@ -5571,6 +5770,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/reax-version-2",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.048,
@@ -5586,7 +5786,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5595,6 +5795,7 @@
   "Aliases": [],
   "BallName": "REAX Version 2 Pearl",
   "CatalogID": "radical-reax-version-2-pearl",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Asymmetric",
@@ -5625,6 +5826,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/reax-version-2-pearl",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.048,
@@ -5640,7 +5842,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5649,6 +5851,7 @@
   "Aliases": [],
   "BallName": "Results",
   "CatalogID": "radical-results",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Asymmetric (DynamiCore)",
@@ -5679,6 +5882,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/results",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.044,
@@ -5694,7 +5898,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5703,6 +5907,7 @@
   "Aliases": [],
   "BallName": "Results Solid",
   "CatalogID": "radical-results-solid",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Asymmetric (DynamiCore)",
@@ -5733,6 +5938,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/results-solid",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.044,
@@ -5748,7 +5954,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5757,6 +5963,7 @@
   "Aliases": [],
   "BallName": "Results+",
   "CatalogID": "radical-resultsplus",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Asymmetric (DynamiCore)",
@@ -5787,6 +5994,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/results-plus",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.044,
@@ -5802,7 +6010,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5811,6 +6019,7 @@
   "Aliases": [],
   "BallName": "Revenge Pearl",
   "CatalogID": "radical-revenge-pearl",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Sneak Attack Symmetric",
@@ -5841,6 +6050,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/current/revenge-pearl",
   "SpecsByWeight": {
    "12": {
     "Diff": 0.04,
@@ -5876,7 +6086,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5885,6 +6095,7 @@
   "Aliases": [],
   "BallName": "Revenge Solid",
   "CatalogID": "radical-revenge-solid",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Sneak Attack Symmetric",
@@ -5915,6 +6126,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/current/revenge-solid",
   "SpecsByWeight": {
    "12": {
     "Diff": 0.04,
@@ -5950,7 +6162,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5959,6 +6171,7 @@
   "Aliases": [],
   "BallName": "Ridiculous",
   "CatalogID": "radical-ridiculous",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Symmetric with Scoop Technology",
@@ -5989,6 +6202,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/ridiculous",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.05,
@@ -6004,7 +6218,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6013,6 +6227,7 @@
   "Aliases": [],
   "BallName": "Ridiculous Asym",
   "CatalogID": "radical-ridiculous-asym",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Asymmetric with Scoop Technology",
@@ -6043,6 +6258,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/ridiculous-asym",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.05,
@@ -6058,7 +6274,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6067,6 +6283,7 @@
   "Aliases": [],
   "BallName": "Ridiculous Pearl",
   "CatalogID": "radical-ridiculous-pearl",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Symmetric with Scoop Technology",
@@ -6097,6 +6314,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/ridiculous-pearl",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.05,
@@ -6112,7 +6330,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6121,6 +6339,7 @@
   "Aliases": [],
   "BallName": "RS-67",
   "CatalogID": "radical-rs-67",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -6148,6 +6367,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -6157,7 +6377,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6166,6 +6386,7 @@
   "Aliases": [],
   "BallName": "RS-67 Evolution HK22",
   "CatalogID": "radical-rs-67-evolution-hk22",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -6193,6 +6414,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -6202,7 +6424,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6211,6 +6433,7 @@
   "Aliases": [],
   "BallName": "RS-79",
   "CatalogID": "radical-rs-79",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -6238,6 +6461,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -6247,7 +6471,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6256,6 +6480,7 @@
   "Aliases": [],
   "BallName": "Score",
   "CatalogID": "radical-score",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Asymmetric",
@@ -6286,6 +6511,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/score",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.054,
@@ -6301,7 +6527,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6310,6 +6536,7 @@
   "Aliases": [],
   "BallName": "Shinuchi Katana Izayoi",
   "CatalogID": "radical-shinuchi-katana-izayoi",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -6337,6 +6564,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -6346,7 +6574,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6355,6 +6583,7 @@
   "Aliases": [],
   "BallName": "Shinuchi Katana Shiranui",
   "CatalogID": "radical-shinuchi-katana-shiranui",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -6382,6 +6611,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -6391,7 +6621,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6400,6 +6630,7 @@
   "Aliases": [],
   "BallName": "Sizzle",
   "CatalogID": "radical-sizzle",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Symmetric",
@@ -6430,6 +6661,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/sizzle",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.05,
@@ -6445,7 +6677,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6454,6 +6686,7 @@
   "Aliases": [],
   "BallName": "Slant",
   "CatalogID": "radical-slant",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -6481,6 +6714,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -6490,7 +6724,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6499,6 +6733,7 @@
   "Aliases": [],
   "BallName": "Slant HD",
   "CatalogID": "radical-slant-hd",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -6526,6 +6761,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -6535,7 +6771,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6544,6 +6780,7 @@
   "Aliases": [],
   "BallName": "Slant Hybrid",
   "CatalogID": "radical-slant-hybrid",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -6571,6 +6808,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -6580,7 +6818,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6589,6 +6827,7 @@
   "Aliases": [],
   "BallName": "Slant Solid",
   "CatalogID": "radical-slant-solid",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -6616,6 +6855,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -6625,7 +6865,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6634,6 +6874,7 @@
   "Aliases": [],
   "BallName": "Snap Shot Hybrid",
   "CatalogID": "radical-snap-shot-hybrid",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Snapshot Symmetric",
@@ -6664,6 +6905,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/snapshot-hybrid",
   "SpecsByWeight": {
    "12": {
     "Diff": 0.043,
@@ -6699,7 +6941,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6708,6 +6950,7 @@
   "Aliases": [],
   "BallName": "Snapshot",
   "CatalogID": "radical-snapshot",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Snapshot Symmetric",
@@ -6738,6 +6981,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/snapshot",
   "SpecsByWeight": {
    "12": {
     "Diff": 0.043,
@@ -6773,7 +7017,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6782,6 +7026,7 @@
   "Aliases": [],
   "BallName": "Sneak Attack",
   "CatalogID": "radical-sneak-attack",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Sneak Attack Symmetric",
@@ -6812,6 +7057,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/sneak-attack",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.036,
@@ -6827,7 +7073,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6836,6 +7082,7 @@
   "Aliases": [],
   "BallName": "Sneak Attack HK22 Hybrid",
   "CatalogID": "radical-sneak-attack-hk22-hybrid",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -6863,6 +7110,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -6872,7 +7120,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6881,6 +7129,7 @@
   "Aliases": [],
   "BallName": "Sneak Attack HK22 Pearl",
   "CatalogID": "radical-sneak-attack-hk22-pearl",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -6908,6 +7157,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -6917,7 +7167,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6926,6 +7176,7 @@
   "Aliases": [],
   "BallName": "Sneak Attack Hybrid",
   "CatalogID": "radical-sneak-attack-hybrid",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -6953,6 +7204,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -6962,7 +7214,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6971,6 +7223,7 @@
   "Aliases": [],
   "BallName": "Sneak Attack Solid",
   "CatalogID": "radical-sneak-attack-solid",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Sneak Attack Symmetric",
@@ -7001,6 +7254,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/sneak-attack-solid",
   "SpecsByWeight": {
    "12": {
     "Diff": 0.04,
@@ -7036,7 +7290,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7045,6 +7299,7 @@
   "Aliases": [],
   "BallName": "Sneak Attack V.S.A.",
   "CatalogID": "radical-sneak-attack-v-s-a",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -7072,6 +7327,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -7081,7 +7337,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7090,6 +7346,7 @@
   "Aliases": [],
   "BallName": "Squatch",
   "CatalogID": "radical-squatch",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Symmetric",
@@ -7120,6 +7377,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/squatch",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.054,
@@ -7135,7 +7393,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7144,6 +7402,7 @@
   "Aliases": [],
   "BallName": "Squatch Hybrid",
   "CatalogID": "radical-squatch-hybrid",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Symmetric (DynamiCore)",
@@ -7174,6 +7433,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/squatch-hybrid",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.054,
@@ -7189,7 +7449,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7198,6 +7458,7 @@
   "Aliases": [],
   "BallName": "Squatch Solid",
   "CatalogID": "radical-squatch-solid",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Symmetric (DynamiCore)",
@@ -7228,6 +7489,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/squatch-solid",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.054,
@@ -7243,7 +7505,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7252,6 +7514,7 @@
   "Aliases": [],
   "BallName": "Team 2011 NYC Police",
   "CatalogID": "radical-team-2011-nyc-police",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -7279,6 +7542,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -7288,7 +7552,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7297,6 +7561,7 @@
   "Aliases": [],
   "BallName": "The Closer",
   "CatalogID": "radical-the-closer",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Symmetric (DynamiCore)",
@@ -7327,6 +7592,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/the-closer",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.05,
@@ -7342,7 +7608,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7351,6 +7617,7 @@
   "Aliases": [],
   "BallName": "The Closer Pearl",
   "CatalogID": "radical-the-closer-pearl",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Symmetric (DynamiCore)",
@@ -7381,6 +7648,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/the-closer-pearl",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.05,
@@ -7396,7 +7664,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7405,6 +7673,7 @@
   "Aliases": [],
   "BallName": "The Fix",
   "CatalogID": "radical-the-fix",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Shapeshifter Sym / Asym",
@@ -7435,6 +7704,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/the-fix",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.054,
@@ -7450,7 +7720,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7459,6 +7729,7 @@
   "Aliases": [],
   "BallName": "The Hitter",
   "CatalogID": "radical-the-hitter",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Hitter Asymmetric",
@@ -7489,6 +7760,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/the-hitter",
   "SpecsByWeight": {
    "12": {
     "Diff": 0.043,
@@ -7524,7 +7796,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7533,6 +7805,7 @@
   "Aliases": [],
   "BallName": "The Hitter Pearl",
   "CatalogID": "radical-the-hitter-pearl",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Hitter Asymmetric",
@@ -7563,6 +7836,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/the-hitter-pearl",
   "SpecsByWeight": {
    "12": {
     "Diff": 0.043,
@@ -7598,7 +7872,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7607,6 +7881,7 @@
   "Aliases": [],
   "BallName": "The Spy",
   "CatalogID": "radical-the-spy",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Asymmetric (DynamiCore)",
@@ -7637,6 +7912,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/current/the-spy",
   "SpecsByWeight": {
    "14": {
     "Diff": 0.053,
@@ -7662,7 +7938,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7671,6 +7947,7 @@
   "Aliases": [],
   "BallName": "Time's Up!",
   "CatalogID": "radical-time-s-up",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -7698,6 +7975,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -7707,7 +7985,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7716,6 +7994,7 @@
   "Aliases": [],
   "BallName": "Time's Up! Solid",
   "CatalogID": "radical-time-s-up-solid",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -7743,6 +8022,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -7752,7 +8032,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7761,6 +8041,7 @@
   "Aliases": [],
   "BallName": "Torpedo",
   "CatalogID": "radical-torpedo",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Torpedo Asymmetric",
@@ -7791,6 +8072,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/torpedo",
   "SpecsByWeight": {
    "12": {
     "Diff": 0.043,
@@ -7826,7 +8108,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7835,6 +8117,7 @@
   "Aliases": [],
   "BallName": "Torpedo Direct Hit",
   "CatalogID": "radical-torpedo-direct-hit",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Torpedo Asymmetric",
@@ -7865,6 +8148,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/torpedo-direct-hit",
   "SpecsByWeight": {
    "12": {
     "Diff": 0.043,
@@ -7900,7 +8184,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7909,6 +8193,7 @@
   "Aliases": [],
   "BallName": "Torrid",
   "CatalogID": "radical-torrid",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -7936,6 +8221,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -7945,7 +8231,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7954,6 +8240,7 @@
   "Aliases": [],
   "BallName": "Torrid Affair",
   "CatalogID": "radical-torrid-affair",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Low RG Symmetric",
@@ -7984,6 +8271,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/torrid-affair",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.047,
@@ -7999,7 +8287,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -8008,6 +8296,7 @@
   "Aliases": [],
   "BallName": "Torrid Elite",
   "CatalogID": "radical-torrid-elite",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Low RG Symmetric Core",
@@ -8038,6 +8327,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/torrid-elite",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.047,
@@ -8053,7 +8343,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -8062,6 +8352,7 @@
   "Aliases": [],
   "BallName": "Trail Blazer",
   "CatalogID": "radical-trail-blazer",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Asymmetric (DynamiCore)",
@@ -8092,6 +8383,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/trail-blazer",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.052,
@@ -8107,7 +8399,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -8116,6 +8408,7 @@
   "Aliases": [],
   "BallName": "Trail Blazer Solid",
   "CatalogID": "radical-trail-blazer-solid",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Asymmetric (DynamiCore)",
@@ -8146,6 +8439,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/trail-blazer-solid",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.052,
@@ -8161,7 +8455,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -8170,6 +8464,7 @@
   "Aliases": [],
   "BallName": "Tremendous",
   "CatalogID": "radical-tremendous",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Guru Asymmetric",
@@ -8200,6 +8495,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/tremendous",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.044,
@@ -8215,7 +8511,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -8224,6 +8520,7 @@
   "Aliases": [],
   "BallName": "Tremendous Pearl",
   "CatalogID": "radical-tremendous-pearl",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Guru Asymmetric",
@@ -8254,6 +8551,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/tremendous-pearl",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.044,
@@ -8269,7 +8567,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -8278,6 +8576,7 @@
   "Aliases": [],
   "BallName": "Vexed",
   "CatalogID": "radical-vexed",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Vexed Asymmetric",
@@ -8308,6 +8607,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/current/vexed",
   "SpecsByWeight": {
    "12": {
     "Diff": 0.043,
@@ -8343,7 +8643,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -8352,6 +8652,7 @@
   "Aliases": [],
   "BallName": "Xeno",
   "CatalogID": "radical-xeno",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Asymmetric with Scoop Technology",
@@ -8382,6 +8683,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/xeno",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.048,
@@ -8397,7 +8699,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -8406,6 +8708,7 @@
   "Aliases": [],
   "BallName": "Xeno Pearl",
   "CatalogID": "radical-xeno-pearl",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Asymmetric with Scoop Technology",
@@ -8436,6 +8739,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/xeno-pearl",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.048,
@@ -8451,7 +8755,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -8460,6 +8764,7 @@
   "Aliases": [],
   "BallName": "Yeti",
   "CatalogID": "radical-yeti",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Symmetric",
@@ -8490,6 +8795,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/yeti",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.054,
@@ -8505,7 +8811,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -8514,6 +8820,7 @@
   "Aliases": [],
   "BallName": "Yeti Uncaged",
   "CatalogID": "radical-yeti-uncaged",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Symmetric",
@@ -8544,6 +8851,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/yeti-uncaged",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.054,
@@ -8559,7 +8867,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -8568,6 +8876,7 @@
   "Aliases": [],
   "BallName": "Yeti Unleashed",
   "CatalogID": "radical-yeti-unleashed",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Symmetric",
@@ -8598,6 +8907,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/yeti-unleashed",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.054,
@@ -8613,7 +8923,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -8622,6 +8932,7 @@
   "Aliases": [],
   "BallName": "Yeti Untamed",
   "CatalogID": "radical-yeti-untamed",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Symmetric",
@@ -8652,6 +8963,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/yeti-untamed",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.054,
@@ -8667,7 +8979,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -8676,6 +8988,7 @@
   "Aliases": [],
   "BallName": "Zig Zag",
   "CatalogID": "radical-zig-zag",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "ZigZag Asymmetric",
@@ -8706,6 +9019,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/zigzag",
   "SpecsByWeight": {
    "14": {
     "Diff": 0.045,
@@ -8731,7 +9045,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -8740,6 +9054,7 @@
   "Aliases": [],
   "BallName": "Zig Zag Solid",
   "CatalogID": "radical-zig-zag-solid",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "ZigZag Asymmetric",
@@ -8770,6 +9085,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/zigzag-solid",
   "SpecsByWeight": {
    "12": {
     "Diff": 0.043,
@@ -8805,7 +9121,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -8814,6 +9130,7 @@
   "Aliases": [],
   "BallName": "Zing!",
   "CatalogID": "radical-zing",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Asymmetric (DynamiCore)",
@@ -8844,6 +9161,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/zing",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.051,
@@ -8859,7 +9177,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -8868,6 +9186,7 @@
   "Aliases": [],
   "BallName": "Zing! & Zing",
   "CatalogID": "radical-zing-and-zing",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -8895,6 +9214,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -8904,7 +9224,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -8913,6 +9233,7 @@
   "Aliases": [],
   "BallName": "Zing! Hybrid",
   "CatalogID": "radical-zing-hybrid",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Asymmetric (DynamiCore)",
@@ -8943,6 +9264,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/zing-hybrid",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.051,
@@ -8958,7 +9280,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -8967,6 +9289,7 @@
   "Aliases": [],
   "BallName": "Zing! Pearl",
   "CatalogID": "radical-zing-pearl",
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
    "Name": "Asymmetric (DynamiCore)",
@@ -8997,6 +9320,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": "https://radicalbowling.com/products/balls/retired/zing-pearl",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.051,
@@ -9012,7 +9336,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null

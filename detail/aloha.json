@@ -3,6 +3,7 @@
   "Aliases": [],
   "BallName": "App Ball",
   "CatalogID": "aloha-app-ball",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -30,6 +31,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -39,7 +41,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -48,6 +50,7 @@
   "Aliases": [],
   "BallName": "Basketball",
   "CatalogID": "aloha-basketball",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -75,6 +78,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -84,7 +88,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -93,6 +97,7 @@
   "Aliases": [],
   "BallName": "Black Dice",
   "CatalogID": "aloha-black-dice",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -120,6 +125,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -129,7 +135,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -138,6 +144,7 @@
   "Aliases": [],
   "BallName": "Breeze",
   "CatalogID": "aloha-breeze",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -165,6 +172,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -174,7 +182,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -183,6 +191,7 @@
   "Aliases": [],
   "BallName": "Breeze Green/Yellow Pearl",
   "CatalogID": "aloha-breeze-green-yellow-pearl",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -210,6 +219,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -219,7 +229,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -228,6 +238,7 @@
   "Aliases": [],
   "BallName": "German Team",
   "CatalogID": "aloha-german-team",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -255,6 +266,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -264,7 +276,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -273,6 +285,7 @@
   "Aliases": [],
   "BallName": "Kong",
   "CatalogID": "aloha-kong",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -300,6 +313,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -309,7 +323,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -318,6 +332,7 @@
   "Aliases": [],
   "BallName": "Kong Black Pearl",
   "CatalogID": "aloha-kong-black-pearl",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -345,6 +360,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -354,7 +370,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -363,6 +379,7 @@
   "Aliases": [],
   "BallName": "Kong Blue/Yellow",
   "CatalogID": "aloha-kong-blue-yellow",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -390,6 +407,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -399,7 +417,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -408,6 +426,7 @@
   "Aliases": [],
   "BallName": "Ocean",
   "CatalogID": "aloha-ocean",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -435,6 +454,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -444,7 +464,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -453,6 +473,7 @@
   "Aliases": [],
   "BallName": "Pacman",
   "CatalogID": "aloha-pacman",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -480,6 +501,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -489,7 +511,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -498,6 +520,7 @@
   "Aliases": [],
   "BallName": "Profi Shop",
   "CatalogID": "aloha-profi-shop",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -525,6 +548,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -534,7 +558,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -543,6 +567,7 @@
   "Aliases": [],
   "BallName": "Rotation",
   "CatalogID": "aloha-rotation",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -570,6 +595,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -579,7 +605,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -588,6 +614,7 @@
   "Aliases": [],
   "BallName": "Rotation Star",
   "CatalogID": "aloha-rotation-star",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -615,6 +642,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -624,7 +652,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -633,6 +661,7 @@
   "Aliases": [],
   "BallName": "Schaeffler",
   "CatalogID": "aloha-schaeffler",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -660,6 +689,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -669,7 +699,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -678,6 +708,7 @@
   "Aliases": [],
   "BallName": "Skull Pink",
   "CatalogID": "aloha-skull-pink",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -705,6 +736,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -714,7 +746,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -723,6 +755,7 @@
   "Aliases": [],
   "BallName": "Skull White",
   "CatalogID": "aloha-skull-white",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -750,6 +783,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -759,7 +793,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -768,6 +802,7 @@
   "Aliases": [],
   "BallName": "Speed F1 Ball",
   "CatalogID": "aloha-speed-f1-ball",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -795,6 +830,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -804,7 +840,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -813,6 +849,7 @@
   "Aliases": [],
   "BallName": "Startup",
   "CatalogID": "aloha-startup",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -840,6 +877,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -849,7 +887,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -858,6 +896,7 @@
   "Aliases": [],
   "BallName": "Target",
   "CatalogID": "aloha-target",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -885,6 +924,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -894,7 +934,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -903,6 +943,7 @@
   "Aliases": [],
   "BallName": "Union Jack",
   "CatalogID": "aloha-union-jack",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -930,6 +971,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -939,7 +981,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -948,6 +990,7 @@
   "Aliases": [],
   "BallName": "Voodoo Ball",
   "CatalogID": "aloha-voodoo-ball",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -975,6 +1018,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -984,7 +1028,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -993,6 +1037,7 @@
   "Aliases": [],
   "BallName": "White Dice",
   "CatalogID": "aloha-white-dice",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1020,6 +1065,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1029,7 +1075,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1038,6 +1084,7 @@
   "Aliases": [],
   "BallName": "Zero",
   "CatalogID": "aloha-zero",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1065,6 +1112,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1074,7 +1122,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null

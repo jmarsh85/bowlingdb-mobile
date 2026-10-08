@@ -3,6 +3,7 @@
   "Aliases": [],
   "BallName": "Arrow One",
   "CatalogID": "faball-arrow-one",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -30,6 +31,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -39,7 +41,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -48,6 +50,7 @@
   "Aliases": [],
   "BallName": "Black Hammer",
   "CatalogID": "faball-black-hammer",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -75,6 +78,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -84,7 +88,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -93,6 +97,7 @@
   "Aliases": [],
   "BallName": "Black Hammer 2001",
   "CatalogID": "faball-black-hammer-2001",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -120,6 +125,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -129,7 +135,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -138,6 +144,7 @@
   "Aliases": [],
   "BallName": "Blue Hammer",
   "CatalogID": "faball-blue-hammer",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -165,6 +172,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -174,7 +182,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -183,6 +191,7 @@
   "Aliases": [],
   "BallName": "Blue Hammer 2001",
   "CatalogID": "faball-blue-hammer-2001",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -210,6 +219,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -219,7 +229,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -228,6 +238,7 @@
   "Aliases": [],
   "BallName": "Blue Pearl Hammer",
   "CatalogID": "faball-blue-pearl-hammer",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -255,6 +266,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -264,7 +276,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -273,6 +285,7 @@
   "Aliases": [],
   "BallName": "Bravo Burgundy",
   "CatalogID": "faball-bravo-burgundy",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -300,6 +313,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -309,7 +323,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -318,6 +332,7 @@
   "Aliases": [],
   "BallName": "Bravo Purple",
   "CatalogID": "faball-bravo-purple",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -345,6 +360,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -354,7 +370,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -363,6 +379,7 @@
   "Aliases": [],
   "BallName": "Bravo Red",
   "CatalogID": "faball-bravo-red",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -390,6 +407,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -399,7 +417,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -408,6 +426,7 @@
   "Aliases": [],
   "BallName": "Bravo Wine",
   "CatalogID": "faball-bravo-wine",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -435,6 +454,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -444,7 +464,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -453,6 +473,7 @@
   "Aliases": [],
   "BallName": "Burgundy Hammer",
   "CatalogID": "faball-burgundy-hammer",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -480,6 +501,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -489,7 +511,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -498,6 +520,7 @@
   "Aliases": [],
   "BallName": "Claw Hammer Blue Pearl",
   "CatalogID": "faball-claw-hammer-blue-pearl",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -525,6 +548,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -534,7 +558,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -543,6 +567,7 @@
   "Aliases": [],
   "BallName": "Claw Hammer Charcoal Pearl",
   "CatalogID": "faball-claw-hammer-charcoal-pearl",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -570,6 +595,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -579,7 +605,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -588,6 +614,7 @@
   "Aliases": [],
   "BallName": "Claw Hammer Orange Pearl",
   "CatalogID": "faball-claw-hammer-orange-pearl",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -615,6 +642,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -624,7 +652,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -633,6 +661,7 @@
   "Aliases": [],
   "BallName": "Claw Hammer Purple Sanded",
   "CatalogID": "faball-claw-hammer-purple-sanded",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -660,6 +689,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -669,7 +699,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -678,6 +708,7 @@
   "Aliases": [],
   "BallName": "Claw Hammer Red Pearl",
   "CatalogID": "faball-claw-hammer-red-pearl",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -705,6 +736,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -714,7 +746,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -723,6 +755,7 @@
   "Aliases": [],
   "BallName": "Claw Hammer Teal",
   "CatalogID": "faball-claw-hammer-teal",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -750,6 +783,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -759,7 +793,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -768,6 +802,7 @@
   "Aliases": [],
   "BallName": "Fire Claw",
   "CatalogID": "faball-fire-claw",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -795,6 +830,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -804,7 +840,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -813,6 +849,7 @@
   "Aliases": [],
   "BallName": "Hammer 3D",
   "CatalogID": "faball-hammer-3d",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -840,6 +877,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -849,7 +887,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -858,6 +896,7 @@
   "Aliases": [],
   "BallName": "Hammer 3D Midnight Pearl",
   "CatalogID": "faball-hammer-3d-midnight-pearl",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -885,6 +924,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -894,7 +934,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -903,6 +943,7 @@
   "Aliases": [],
   "BallName": "Hammer 3D Offset",
   "CatalogID": "faball-hammer-3d-offset",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -930,6 +971,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -939,7 +981,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -948,6 +990,7 @@
   "Aliases": [],
   "BallName": "Hammer 3D Offset Maxxx",
   "CatalogID": "faball-hammer-3d-offset-maxxx",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -975,6 +1018,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -984,7 +1028,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -993,6 +1037,7 @@
   "Aliases": [],
   "BallName": "Hammer 3D Offset Super Flip",
   "CatalogID": "faball-hammer-3d-offset-super-flip",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1020,6 +1065,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1029,7 +1075,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1038,6 +1084,7 @@
   "Aliases": [],
   "BallName": "Hammer 3D Offset Super Hook",
   "CatalogID": "faball-hammer-3d-offset-super-hook",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1065,6 +1112,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1074,7 +1122,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1083,6 +1131,7 @@
   "Aliases": [],
   "BallName": "Hammer 3D Offset Tour",
   "CatalogID": "faball-hammer-3d-offset-tour",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1110,6 +1159,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1119,7 +1169,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1128,6 +1178,7 @@
   "Aliases": [],
   "BallName": "Hammer 3D Offset Violet Pearl",
   "CatalogID": "faball-hammer-3d-offset-violet-pearl",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1155,6 +1206,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1164,7 +1216,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1173,6 +1225,7 @@
   "Aliases": [],
   "BallName": "Hammer 4D HPT",
   "CatalogID": "faball-hammer-4d-hpt",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1200,6 +1253,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1209,7 +1263,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1218,6 +1272,7 @@
   "Aliases": [],
   "BallName": "Hammer 4D HPT Tour",
   "CatalogID": "faball-hammer-4d-hpt-tour",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1245,6 +1300,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1254,7 +1310,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1263,6 +1319,7 @@
   "Aliases": [],
   "BallName": "Hammer 4D Reactive",
   "CatalogID": "faball-hammer-4d-reactive",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1290,6 +1347,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1299,7 +1357,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1308,6 +1366,7 @@
   "Aliases": [],
   "BallName": "Hammer Nova",
   "CatalogID": "faball-hammer-nova",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1335,6 +1394,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1344,7 +1404,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1353,6 +1413,7 @@
   "Aliases": [],
   "BallName": "Hammer Nova Pearl",
   "CatalogID": "faball-hammer-nova-pearl",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1380,6 +1441,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1389,7 +1451,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1398,6 +1460,7 @@
   "Aliases": [],
   "BallName": "Hammer PC 2",
   "CatalogID": "faball-hammer-pc-2",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1425,6 +1488,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1434,7 +1498,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1443,6 +1507,7 @@
   "Aliases": [],
   "BallName": "Hammer PC 3",
   "CatalogID": "faball-hammer-pc-3",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1470,6 +1535,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1479,7 +1545,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1488,6 +1554,7 @@
   "Aliases": [],
   "BallName": "Hammer Spike",
   "CatalogID": "faball-hammer-spike",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1515,6 +1582,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1524,7 +1592,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1533,6 +1601,7 @@
   "Aliases": [],
   "BallName": "Hammer Spike HPT",
   "CatalogID": "faball-hammer-spike-hpt",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1560,6 +1629,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1569,7 +1639,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1578,6 +1648,7 @@
   "Aliases": [],
   "BallName": "Hatchet",
   "CatalogID": "faball-hatchet",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1605,6 +1676,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1614,7 +1686,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1623,6 +1695,7 @@
   "Aliases": [],
   "BallName": "Ice Claw",
   "CatalogID": "faball-ice-claw",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1650,6 +1723,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1659,7 +1733,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1668,6 +1742,7 @@
   "Aliases": [],
   "BallName": "Jack Hammer",
   "CatalogID": "faball-jack-hammer",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1695,6 +1770,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1704,7 +1780,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1713,6 +1789,7 @@
   "Aliases": [],
   "BallName": "Magic Hammer",
   "CatalogID": "faball-magic-hammer",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1740,6 +1817,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1749,7 +1827,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1758,6 +1836,7 @@
   "Aliases": [],
   "BallName": "Nail Navy Blue Sanded",
   "CatalogID": "faball-nail-navy-blue-sanded",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1785,6 +1864,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1794,7 +1874,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1803,6 +1883,7 @@
   "Aliases": [],
   "BallName": "Nail Purple Pearl",
   "CatalogID": "faball-nail-purple-pearl",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1830,6 +1911,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1839,7 +1921,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1848,6 +1930,7 @@
   "Aliases": [],
   "BallName": "Nasty Nail Extreme",
   "CatalogID": "faball-nasty-nail-extreme",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1875,6 +1958,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1884,7 +1968,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1893,6 +1977,7 @@
   "Aliases": [],
   "BallName": "Nasty Nail Jade Pearl",
   "CatalogID": "faball-nasty-nail-jade-pearl",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1920,6 +2005,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1929,7 +2015,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1938,6 +2024,7 @@
   "Aliases": [],
   "BallName": "Nasty Nail Jet Black",
   "CatalogID": "faball-nasty-nail-jet-black",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1965,6 +2052,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1974,7 +2062,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1983,6 +2071,7 @@
   "Aliases": [],
   "BallName": "Navy Reactive Hammer",
   "CatalogID": "faball-navy-reactive-hammer",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2010,6 +2099,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2019,7 +2109,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2028,6 +2118,7 @@
   "Aliases": [],
   "BallName": "Norm Duke Hammer",
   "CatalogID": "faball-norm-duke-hammer",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2055,6 +2146,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2064,7 +2156,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2073,6 +2165,7 @@
   "Aliases": [],
   "BallName": "Ocean Claw Hammer",
   "CatalogID": "faball-ocean-claw-hammer",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2100,6 +2193,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2109,7 +2203,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2118,6 +2212,7 @@
   "Aliases": [],
   "BallName": "Pink Hammer",
   "CatalogID": "faball-pink-hammer",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2145,6 +2240,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2154,7 +2250,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2163,6 +2259,7 @@
   "Aliases": [],
   "BallName": "Power Hammer 2000",
   "CatalogID": "faball-power-hammer-2000",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2190,6 +2287,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2199,7 +2297,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2208,6 +2306,7 @@
   "Aliases": [],
   "BallName": "Purple Hammer",
   "CatalogID": "faball-purple-hammer",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2235,6 +2334,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2244,7 +2344,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2253,6 +2353,7 @@
   "Aliases": [],
   "BallName": "Purple Reactive Hammer",
   "CatalogID": "faball-purple-reactive-hammer",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2280,6 +2381,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2289,7 +2391,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2298,6 +2400,7 @@
   "Aliases": [],
   "BallName": "Razor Berry",
   "CatalogID": "faball-razor-berry",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2325,6 +2428,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2334,7 +2438,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2343,6 +2447,7 @@
   "Aliases": [],
   "BallName": "Razor Burgundy",
   "CatalogID": "faball-razor-burgundy",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2370,6 +2475,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2379,7 +2485,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2388,6 +2494,7 @@
   "Aliases": [],
   "BallName": "Razor Ice Blue",
   "CatalogID": "faball-razor-ice-blue",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2415,6 +2522,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2424,7 +2532,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2433,6 +2541,7 @@
   "Aliases": [],
   "BallName": "Razor Red",
   "CatalogID": "faball-razor-red",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2460,6 +2569,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2469,7 +2579,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2478,6 +2588,7 @@
   "Aliases": [],
   "BallName": "Razor Tan",
   "CatalogID": "faball-razor-tan",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2505,6 +2616,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2514,7 +2626,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2523,6 +2635,7 @@
   "Aliases": [],
   "BallName": "Reaper",
   "CatalogID": "faball-reaper",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2550,6 +2663,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2559,7 +2673,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2568,6 +2682,7 @@
   "Aliases": [],
   "BallName": "Reaper 2",
   "CatalogID": "faball-reaper-2",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2595,6 +2710,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2604,7 +2720,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2613,6 +2729,7 @@
   "Aliases": [],
   "BallName": "Red Hammer",
   "CatalogID": "faball-red-hammer",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2640,6 +2757,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2649,7 +2767,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2658,6 +2776,7 @@
   "Aliases": [],
   "BallName": "Red Pearl Hammer",
   "CatalogID": "faball-red-pearl-hammer",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2685,6 +2804,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2694,7 +2814,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2703,6 +2823,7 @@
   "Aliases": [],
   "BallName": "Red Reactive Hammer",
   "CatalogID": "faball-red-reactive-hammer",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2730,6 +2851,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2739,7 +2861,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2748,6 +2870,7 @@
   "Aliases": [],
   "BallName": "Simpsons (Bart)",
   "CatalogID": "faball-simpsons-bart",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2775,6 +2898,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2784,7 +2908,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2793,6 +2917,7 @@
   "Aliases": [],
   "BallName": "Simpsons (Homer)",
   "CatalogID": "faball-simpsons-homer",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2820,6 +2945,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2829,7 +2955,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2838,6 +2964,7 @@
   "Aliases": [],
   "BallName": "Simpsons (Krusty)",
   "CatalogID": "faball-simpsons-krusty",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2865,6 +2992,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2874,7 +3002,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2883,6 +3011,7 @@
   "Aliases": [],
   "BallName": "Simpsons (Lisa)",
   "CatalogID": "faball-simpsons-lisa",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2910,6 +3039,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2919,7 +3049,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2928,6 +3058,7 @@
   "Aliases": [],
   "BallName": "Sledge Hammer",
   "CatalogID": "faball-sledge-hammer",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2955,6 +3086,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2964,7 +3096,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2973,6 +3105,7 @@
   "Aliases": [],
   "BallName": "Syntactive Sledge Hammer (Purple)",
   "CatalogID": "faball-syntactive-sledge-hammer-purple",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3000,6 +3133,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3009,7 +3143,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3018,6 +3152,7 @@
   "Aliases": [],
   "BallName": "Tiger Claw Hammer",
   "CatalogID": "faball-tiger-claw-hammer",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3045,6 +3180,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3054,7 +3190,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3063,6 +3199,7 @@
   "Aliases": [],
   "BallName": "Tour Gear Hammer Hitman",
   "CatalogID": "faball-tour-gear-hammer-hitman",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3090,6 +3227,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3099,7 +3237,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3108,6 +3246,7 @@
   "Aliases": [],
   "BallName": "Truck",
   "CatalogID": "faball-truck",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3135,6 +3274,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3144,7 +3284,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3153,6 +3293,7 @@
   "Aliases": [],
   "BallName": "Wheel",
   "CatalogID": "faball-wheel",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3180,6 +3321,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3189,7 +3331,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null

@@ -3,6 +3,7 @@
   "Aliases": [],
   "BallName": "Antidote",
   "CatalogID": "pyramid-bowling-antidote",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -30,6 +31,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -39,7 +41,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -48,6 +50,7 @@
   "Aliases": [],
   "BallName": "Antidote Pearl",
   "CatalogID": "pyramid-bowling-antidote-pearl",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -75,6 +78,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -84,7 +88,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -93,6 +97,7 @@
   "Aliases": [],
   "BallName": "Blood Moon",
   "CatalogID": "pyramid-bowling-blood-moon",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -120,6 +125,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -129,7 +135,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -138,6 +144,7 @@
   "Aliases": [],
   "BallName": "Blood Moon Evolve",
   "CatalogID": "pyramid-bowling-blood-moon-evolve",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -165,6 +172,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -174,7 +182,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -183,6 +191,7 @@
   "Aliases": [],
   "BallName": "Blood Moon Infinity",
   "CatalogID": "pyramid-bowling-blood-moon-infinity",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -210,6 +219,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -219,7 +229,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -228,6 +238,7 @@
   "Aliases": [],
   "BallName": "Blood Moon Rising",
   "CatalogID": "pyramid-bowling-blood-moon-rising",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -255,6 +266,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -264,7 +276,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -273,6 +285,7 @@
   "Aliases": [],
   "BallName": "Blood Moon Rising Pearl",
   "CatalogID": "pyramid-bowling-blood-moon-rising-pearl",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -300,6 +313,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -309,7 +323,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -318,6 +332,7 @@
   "Aliases": [],
   "BallName": "Blue Moon",
   "CatalogID": "pyramid-bowling-blue-moon",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -345,6 +360,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -354,7 +370,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -363,6 +379,7 @@
   "Aliases": [],
   "BallName": "Blueprint",
   "CatalogID": "pyramid-bowling-blueprint",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -390,6 +407,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -399,7 +417,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -408,6 +426,7 @@
   "Aliases": [],
   "BallName": "Blueprint Pearl",
   "CatalogID": "pyramid-bowling-blueprint-pearl",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -435,6 +454,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -444,7 +464,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -453,6 +473,7 @@
   "Aliases": [],
   "BallName": "Blunt Force",
   "CatalogID": "pyramid-bowling-blunt-force",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -480,6 +501,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -489,7 +511,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -498,6 +520,7 @@
   "Aliases": [],
   "BallName": "Chosen I",
   "CatalogID": "pyramid-bowling-chosen-i",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -525,6 +548,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -534,7 +558,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -543,6 +567,7 @@
   "Aliases": [],
   "BallName": "Chosen Path Hot Pink/Lime Green",
   "CatalogID": "pyramid-bowling-chosen-path-hot-pink-lime-green",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -570,6 +595,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -579,7 +605,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -588,6 +614,7 @@
   "Aliases": [],
   "BallName": "Chosen Path Orange/Grey",
   "CatalogID": "pyramid-bowling-chosen-path-orange-grey",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -615,6 +642,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -624,7 +652,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -633,6 +661,7 @@
   "Aliases": [],
   "BallName": "Chosen Path Pearl Black/Lime Green",
   "CatalogID": "pyramid-bowling-chosen-path-pearl-black-lime-green",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -660,6 +689,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -669,7 +699,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -678,6 +708,7 @@
   "Aliases": [],
   "BallName": "Clear 8-Ball",
   "CatalogID": "pyramid-bowling-clear-8-ball",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -705,6 +736,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -714,7 +746,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -723,6 +755,7 @@
   "Aliases": [],
   "BallName": "Clear Baseball",
   "CatalogID": "pyramid-bowling-clear-baseball",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -750,6 +783,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -759,7 +793,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -768,6 +802,7 @@
   "Aliases": [],
   "BallName": "Clear Basketball",
   "CatalogID": "pyramid-bowling-clear-basketball",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -795,6 +830,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -804,7 +840,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -813,6 +849,7 @@
   "Aliases": [],
   "BallName": "Clear Skull",
   "CatalogID": "pyramid-bowling-clear-skull",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -840,6 +877,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -849,7 +887,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -858,6 +896,7 @@
   "Aliases": [],
   "BallName": "Curse",
   "CatalogID": "pyramid-bowling-curse",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -885,6 +924,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -894,7 +934,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -903,6 +943,7 @@
   "Aliases": [],
   "BallName": "Curse Pearl",
   "CatalogID": "pyramid-bowling-curse-pearl",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -930,6 +971,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -939,7 +981,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -948,6 +990,7 @@
   "Aliases": [],
   "BallName": "Dark Path 19.5 Hybrid",
   "CatalogID": "pyramid-bowling-dark-path-19-5-hybrid",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -975,6 +1018,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -984,7 +1028,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -993,6 +1037,7 @@
   "Aliases": [],
   "BallName": "Dark Path Hybrid",
   "CatalogID": "pyramid-bowling-dark-path-hybrid",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1020,6 +1065,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1029,7 +1075,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1038,6 +1084,7 @@
   "Aliases": [],
   "BallName": "Divergent Path",
   "CatalogID": "pyramid-bowling-divergent-path",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1065,6 +1112,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1074,7 +1122,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1083,6 +1131,7 @@
   "Aliases": [],
   "BallName": "Divergent Path Pearl",
   "CatalogID": "pyramid-bowling-divergent-path-pearl",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1110,6 +1159,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1119,7 +1169,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1128,6 +1178,7 @@
   "Aliases": [],
   "BallName": "Enchanted Path",
   "CatalogID": "pyramid-bowling-enchanted-path",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1155,6 +1206,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1164,7 +1216,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1173,6 +1225,7 @@
   "Aliases": [],
   "BallName": "Enchanted Path Purple-Black-Silver",
   "CatalogID": "pyramid-bowling-enchanted-path-purple-black-silver",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1200,6 +1253,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1209,7 +1263,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1218,6 +1272,7 @@
   "Aliases": [],
   "BallName": "Force",
   "CatalogID": "pyramid-bowling-force",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1245,6 +1300,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1254,7 +1310,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1263,6 +1319,7 @@
   "Aliases": [],
   "BallName": "Force Black Label",
   "CatalogID": "pyramid-bowling-force-black-label",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1290,6 +1347,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1299,7 +1357,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1308,6 +1366,7 @@
   "Aliases": [],
   "BallName": "Force Gold Pearl",
   "CatalogID": "pyramid-bowling-force-gold-pearl",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1335,6 +1394,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1344,7 +1404,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1353,6 +1413,7 @@
   "Aliases": [],
   "BallName": "Force Pearl",
   "CatalogID": "pyramid-bowling-force-pearl",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1380,6 +1441,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1389,7 +1451,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1398,6 +1460,7 @@
   "Aliases": [],
   "BallName": "Force Pink Label",
   "CatalogID": "pyramid-bowling-force-pink-label",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1425,6 +1488,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1434,7 +1498,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1443,6 +1507,7 @@
   "Aliases": [],
   "BallName": "Force Purple-Black",
   "CatalogID": "pyramid-bowling-force-purple-black",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1470,6 +1535,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1479,7 +1545,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1488,6 +1554,7 @@
   "Aliases": [],
   "BallName": "Force Unleashed",
   "CatalogID": "pyramid-bowling-force-unleashed",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1515,6 +1582,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1524,7 +1592,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1533,6 +1601,7 @@
   "Aliases": [],
   "BallName": "Fortress",
   "CatalogID": "pyramid-bowling-fortress",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1560,6 +1629,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1569,7 +1639,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1578,6 +1648,7 @@
   "Aliases": [],
   "BallName": "Fortress Endgame",
   "CatalogID": "pyramid-bowling-fortress-endgame",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1605,6 +1676,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1614,7 +1686,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1623,6 +1695,7 @@
   "Aliases": [],
   "BallName": "Fortress Hybrid",
   "CatalogID": "pyramid-bowling-fortress-hybrid",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1650,6 +1723,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1659,7 +1733,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1668,6 +1742,7 @@
   "Aliases": [],
   "BallName": "Fortress Solid",
   "CatalogID": "pyramid-bowling-fortress-solid",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1695,6 +1770,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1704,7 +1780,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1713,6 +1789,7 @@
   "Aliases": [],
   "BallName": "Guardian",
   "CatalogID": "pyramid-bowling-guardian",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1740,6 +1817,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1749,7 +1827,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1758,6 +1836,7 @@
   "Aliases": [],
   "BallName": "Guardian Pink-Black-White",
   "CatalogID": "pyramid-bowling-guardian-pink-black-white",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1785,6 +1864,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1794,7 +1874,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1803,6 +1883,7 @@
   "Aliases": [],
   "BallName": "Path (All Colors)",
   "CatalogID": "pyramid-bowling-path-all-colors",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1830,6 +1911,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1839,7 +1921,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1848,6 +1930,7 @@
   "Aliases": [],
   "BallName": "Path Origin",
   "CatalogID": "pyramid-bowling-path-origin",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1875,6 +1958,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1884,7 +1968,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1893,6 +1977,7 @@
   "Aliases": [],
   "BallName": "Path Origin Pearl",
   "CatalogID": "pyramid-bowling-path-origin-pearl",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1920,6 +2005,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1929,7 +2015,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1938,6 +2024,7 @@
   "Aliases": [],
   "BallName": "Path Rising Black/Hot Pink",
   "CatalogID": "pyramid-bowling-path-rising-black-hot-pink",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -1965,6 +2052,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -1974,7 +2062,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1983,6 +2071,7 @@
   "Aliases": [],
   "BallName": "Path Rising Black/Silver",
   "CatalogID": "pyramid-bowling-path-rising-black-silver",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2010,6 +2099,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2019,7 +2109,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2028,6 +2118,7 @@
   "Aliases": [],
   "BallName": "Path Rising Black Solid",
   "CatalogID": "pyramid-bowling-path-rising-black-solid",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2055,6 +2146,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2064,7 +2156,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2073,6 +2165,7 @@
   "Aliases": [],
   "BallName": "Path Rising Blue/Dark Blue",
   "CatalogID": "pyramid-bowling-path-rising-blue-dark-blue",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2100,6 +2193,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2109,7 +2203,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2118,6 +2212,7 @@
   "Aliases": [],
   "BallName": "Path Rising Kelly Green Sparkle",
   "CatalogID": "pyramid-bowling-path-rising-kelly-green-sparkle",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2145,6 +2240,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2154,7 +2250,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2163,6 +2259,7 @@
   "Aliases": [],
   "BallName": "Path Rising Lime Green/Orange",
   "CatalogID": "pyramid-bowling-path-rising-lime-green-orange",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2190,6 +2287,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2199,7 +2297,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2208,6 +2306,7 @@
   "Aliases": [],
   "BallName": "Path Rising Purple Solid",
   "CatalogID": "pyramid-bowling-path-rising-purple-solid",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2235,6 +2334,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2244,7 +2344,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2253,6 +2353,7 @@
   "Aliases": [],
   "BallName": "Path Rising Purple/Steel Blue",
   "CatalogID": "pyramid-bowling-path-rising-purple-steel-blue",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2280,6 +2381,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2289,7 +2391,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2298,6 +2400,7 @@
   "Aliases": [],
   "BallName": "Path Rising Red/White/Blue",
   "CatalogID": "pyramid-bowling-path-rising-red-white-blue",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2325,6 +2428,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2334,7 +2438,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2343,6 +2447,7 @@
   "Aliases": [],
   "BallName": "Path Rising Sea Blue/Silver Pearl",
   "CatalogID": "pyramid-bowling-path-rising-sea-blue-silver-pearl",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2370,6 +2475,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2379,7 +2485,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2388,6 +2494,7 @@
   "Aliases": [],
   "BallName": "Pathogen",
   "CatalogID": "pyramid-bowling-pathogen",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2415,6 +2522,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2424,7 +2532,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2433,6 +2541,7 @@
   "Aliases": [],
   "BallName": "Pathogen Asym",
   "CatalogID": "pyramid-bowling-pathogen-asym",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2460,6 +2569,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2469,7 +2579,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2478,6 +2588,7 @@
   "Aliases": [],
   "BallName": "Pathogen Plague",
   "CatalogID": "pyramid-bowling-pathogen-plague",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2505,6 +2616,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2514,7 +2626,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2523,6 +2635,7 @@
   "Aliases": [],
   "BallName": "Pathogen Plague Pearl",
   "CatalogID": "pyramid-bowling-pathogen-plague-pearl",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2550,6 +2663,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2559,7 +2673,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2568,6 +2682,7 @@
   "Aliases": [],
   "BallName": "Pathogen Spare",
   "CatalogID": "pyramid-bowling-pathogen-spare",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2595,6 +2710,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2604,7 +2720,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2613,6 +2729,7 @@
   "Aliases": [],
   "BallName": "Pathogen X",
   "CatalogID": "pyramid-bowling-pathogen-x",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2640,6 +2757,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2649,7 +2767,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2658,6 +2776,7 @@
   "Aliases": [],
   "BallName": "Pathogen X ATK",
   "CatalogID": "pyramid-bowling-pathogen-x-atk",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2685,6 +2804,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2694,7 +2814,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2703,6 +2823,7 @@
   "Aliases": [],
   "BallName": "Pathogen X²",
   "CatalogID": "pyramid-bowling-pathogen-x2",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2730,6 +2851,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2739,7 +2861,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2748,6 +2870,7 @@
   "Aliases": [],
   "BallName": "Pink Moon",
   "CatalogID": "pyramid-bowling-pink-moon",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2775,6 +2898,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2784,7 +2908,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2793,6 +2917,7 @@
   "Aliases": [],
   "BallName": "Power Moon",
   "CatalogID": "pyramid-bowling-power-moon",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2820,6 +2945,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2829,7 +2955,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2838,6 +2964,7 @@
   "Aliases": [],
   "BallName": "Prime Pearl",
   "CatalogID": "pyramid-bowling-prime-pearl",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2865,6 +2992,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2874,7 +3002,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2883,6 +3011,7 @@
   "Aliases": [],
   "BallName": "Prime Solid",
   "CatalogID": "pyramid-bowling-prime-solid",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2910,6 +3039,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2919,7 +3049,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2928,6 +3058,7 @@
   "Aliases": [],
   "BallName": "Scarab",
   "CatalogID": "pyramid-bowling-scarab",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -2955,6 +3086,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -2964,7 +3096,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2973,6 +3105,7 @@
   "Aliases": [],
   "BallName": "Supermoon",
   "CatalogID": "pyramid-bowling-supermoon",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3000,6 +3133,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3009,7 +3143,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3018,6 +3152,7 @@
   "Aliases": [],
   "BallName": "Supermoon Luna",
   "CatalogID": "pyramid-bowling-supermoon-luna",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3045,6 +3180,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3054,7 +3190,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3063,6 +3199,7 @@
   "Aliases": [],
   "BallName": "Supermoon Pearl",
   "CatalogID": "pyramid-bowling-supermoon-pearl",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3090,6 +3227,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3099,7 +3237,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3108,6 +3246,7 @@
   "Aliases": [],
   "BallName": "Titan",
   "CatalogID": "pyramid-bowling-titan",
+  "Checked": null,
   "Colorway": null,
   "Core": {
    "Name": null,
@@ -3135,6 +3274,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
+  "Source": null,
   "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
@@ -3144,7 +3284,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-07",
+   "ListVersion": "2026-10-08",
    "NonConforming": false
   },
   "WeightLimit": null

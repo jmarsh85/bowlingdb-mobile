@@ -2444,6 +2444,7 @@
   "k": "900global|portal",
   "m": "900 Global",
   "n": "Portal",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -3002,6 +3003,7 @@
   "k": "900global|vengeance",
   "m": "900 Global",
   "n": "Vengeance",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -3011,6 +3013,7 @@
   "k": "900global|vengeancereturns",
   "m": "900 Global",
   "n": "Vengeance Returns",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -3038,6 +3041,7 @@
   "k": "900global|vikingconquest",
   "m": "900 Global",
   "n": "Viking Conquest",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -10346,6 +10350,7 @@
   "k": "brunswick|absolutenirvana",
   "m": "Brunswick",
   "n": "Absolute Nirvana",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -10373,6 +10378,7 @@
   "k": "brunswick|alert",
   "m": "Brunswick",
   "n": "Alert",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -10400,6 +10406,7 @@
   "k": "brunswick|anaconda",
   "m": "Brunswick",
   "n": "Anaconda",
+  "s": 1,
   "t": false,
   "y": "2010"
  },
@@ -10481,6 +10488,7 @@
   "k": "brunswick|attitude",
   "m": "Brunswick",
   "n": "Attitude",
+  "s": 1,
   "t": false,
   "y": "2022"
  },
@@ -10499,6 +10507,7 @@
   "k": "brunswick|attitudecontrol",
   "m": "Brunswick",
   "n": "Attitude Control",
+  "s": 1,
   "t": false,
   "y": "2022"
  },
@@ -10526,6 +10535,7 @@
   "k": "brunswick|aura",
   "m": "Brunswick",
   "n": "Aura",
+  "s": 1,
   "t": false,
   "y": "2012"
  },
@@ -10598,6 +10608,7 @@
   "k": "brunswick|avalancheblackelectricgreen",
   "m": "Brunswick",
   "n": "Avalanche Black/Electric Green",
+  "s": 1,
   "t": false,
   "y": "2009"
  },
@@ -10616,6 +10627,7 @@
   "k": "brunswick|avalancheslide",
   "m": "Brunswick",
   "n": "Avalanche Slide",
+  "s": 1,
   "t": false,
   "y": "2008"
  },
@@ -10625,6 +10637,7 @@
   "k": "brunswick|avalanchesolid",
   "m": "Brunswick",
   "n": "Avalanche Solid",
+  "s": 1,
   "t": false,
   "y": "2008"
  },
@@ -10634,6 +10647,7 @@
   "k": "brunswick|avalancheurethane",
   "m": "Brunswick",
   "n": "Avalanche Urethane",
+  "s": 1,
   "t": false,
   "y": "2010"
  },
@@ -10706,6 +10720,7 @@
   "k": "brunswick|beyondinfinity",
   "m": "Brunswick",
   "n": "Beyond Infinity",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -10850,6 +10865,7 @@
   "k": "brunswick|brute",
   "m": "Brunswick",
   "n": "Brute",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -10859,6 +10875,7 @@
   "k": "brunswick|brutestrength",
   "m": "Brunswick",
   "n": "Brute Strength",
+  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -10976,6 +10993,7 @@
   "k": "brunswick|csystem25",
   "m": "Brunswick",
   "n": "C*(System) 2.5",
+  "s": 1,
   "t": false,
   "y": "2009"
  },
@@ -10985,6 +11003,7 @@
   "k": "brunswick|csystem35",
   "m": "Brunswick",
   "n": "C*(System) 3.5",
+  "s": 1,
   "t": false,
   "y": "2009"
  },
@@ -11012,6 +11031,7 @@
   "k": "brunswick|csystem45",
   "m": "Brunswick",
   "n": "C*(System) 4.5",
+  "s": 1,
   "t": false,
   "y": "2010"
  },
@@ -11030,6 +11050,7 @@
   "k": "brunswick|csystemalphamax",
   "m": "Brunswick",
   "n": "C*(System) Alpha-Max",
+  "s": 1,
   "t": false,
   "y": "2010"
  },
@@ -11057,6 +11078,7 @@
   "k": "brunswick|csystemmaxxedout",
   "m": "Brunswick",
   "n": "C*(System) Maxxed-Out",
+  "s": 1,
   "t": false,
   "y": "2012"
  },
@@ -11066,6 +11088,7 @@
   "k": "brunswick|csystemultimax",
   "m": "Brunswick",
   "n": "C*(System) Ulti-Max",
+  "s": 1,
   "t": false,
   "y": "2011"
  },
@@ -11075,6 +11098,7 @@
   "k": "brunswick|csystemversamax",
   "m": "Brunswick",
   "n": "C*(System) Versa-Max",
+  "s": 1,
   "t": false,
   "y": "2012"
  },
@@ -11129,6 +11153,7 @@
   "k": "brunswick|combat",
   "m": "Brunswick",
   "n": "Combat",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -11138,6 +11163,7 @@
   "k": "brunswick|combathybrid",
   "m": "Brunswick",
   "n": "Combat Hybrid",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -11147,6 +11173,7 @@
   "k": "brunswick|combatsolid",
   "m": "Brunswick",
   "n": "Combat Solid",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -11273,6 +11300,7 @@
   "k": "brunswick|copperhead",
   "m": "Brunswick",
   "n": "Copperhead",
+  "s": 1,
   "t": false,
   "y": "2008"
  },
@@ -11309,6 +11337,7 @@
   "k": "brunswick|crown78u",
   "m": "Brunswick",
   "n": "Crown 78U",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -11327,6 +11356,7 @@
   "k": "brunswick|crownvictory",
   "m": "Brunswick",
   "n": "Crown Victory",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -11336,6 +11366,7 @@
   "k": "brunswick|crownvictorypearl",
   "m": "Brunswick",
   "n": "Crown Victory Pearl",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -11354,6 +11385,7 @@
   "k": "brunswick|cuttingedgehybrid",
   "m": "Brunswick",
   "n": "Cutting Edge Hybrid",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -11363,6 +11395,7 @@
   "k": "brunswick|cuttingedgepearl",
   "m": "Brunswick",
   "n": "Cutting Edge Pearl",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -11372,6 +11405,7 @@
   "k": "brunswick|cuttingedgesolid",
   "m": "Brunswick",
   "n": "Cutting Edge Solid",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -11390,6 +11424,7 @@
   "k": "brunswick|damage",
   "m": "Brunswick",
   "n": "Damage",
+  "s": 1,
   "t": false,
   "y": "2010"
  },
@@ -11399,6 +11434,7 @@
   "k": "brunswick|dangerzone",
   "m": "Brunswick",
   "n": "(Danger) Zone",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -11408,6 +11444,7 @@
   "k": "brunswick|dangerzone",
   "m": "Brunswick",
   "n": "Danger Zone",
+  "s": 1,
   "t": false,
   "y": "1996"
  },
@@ -11561,6 +11598,7 @@
   "k": "brunswick|dangerzonepurpleice",
   "m": "Brunswick",
   "n": "(Danger) Zone Purple Ice",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -11660,6 +11698,7 @@
   "k": "brunswick|defender",
   "m": "Brunswick",
   "n": "Defender",
+  "s": 1,
   "t": false,
   "y": "2022"
  },
@@ -11678,6 +11717,7 @@
   "k": "brunswick|defenderhybrid",
   "m": "Brunswick",
   "n": "Defender Hybrid",
+  "s": 1,
   "t": false,
   "y": "2022"
  },
@@ -11714,6 +11754,7 @@
   "k": "brunswick|diamondback",
   "m": "Brunswick",
   "n": "Diamondback",
+  "s": 1,
   "t": false,
   "y": "2009"
  },
@@ -11885,6 +11926,7 @@
   "k": "brunswick|endeavor",
   "m": "Brunswick",
   "n": "Endeavor",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -11894,6 +11936,7 @@
   "k": "brunswick|energize",
   "m": "Brunswick",
   "n": "Energize",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -11903,6 +11946,7 @@
   "k": "brunswick|ethos",
   "m": "Brunswick",
   "n": "Ethos",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -11912,6 +11956,7 @@
   "k": "brunswick|ethoshybrid",
   "m": "Brunswick",
   "n": "Ethos Hybrid",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -11930,6 +11975,7 @@
   "k": "brunswick|ethossolid",
   "m": "Brunswick",
   "n": "Ethos Solid",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -11948,6 +11994,7 @@
   "k": "brunswick|evilsiege",
   "m": "Brunswick",
   "n": "Evil Siege",
+  "s": 1,
   "t": false,
   "y": "2009"
  },
@@ -12002,6 +12049,7 @@
   "k": "brunswick|fanatic",
   "m": "Brunswick",
   "n": "Fanatic",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -12011,6 +12059,7 @@
   "k": "brunswick|fanaticbtu",
   "m": "Brunswick",
   "n": "Fanatic BTU",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -12029,6 +12078,7 @@
   "k": "brunswick|fanaticss",
   "m": "Brunswick",
   "n": "Fanatic SS",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -12038,6 +12088,7 @@
   "k": "brunswick|fearless",
   "m": "Brunswick",
   "n": "Fearless",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -12092,6 +12143,7 @@
   "k": "brunswick|forteraexile",
   "m": "Brunswick",
   "n": "Fortera Exile",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -12101,6 +12153,7 @@
   "k": "brunswick|forteraintrigue",
   "m": "Brunswick",
   "n": "Fortera Intrigue",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -12146,6 +12199,7 @@
   "k": "brunswick|furyemeraldblack",
   "m": "Brunswick",
   "n": "Fury Emerald/Black",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -12155,6 +12209,7 @@
   "k": "brunswick|furyorangered",
   "m": "Brunswick",
   "n": "Fury Orange/Red",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -12182,6 +12237,7 @@
   "k": "brunswick|furypinkicesilver",
   "m": "Brunswick",
   "n": "Fury Pink/Ice/Silver",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -12191,6 +12247,7 @@
   "k": "brunswick|furypurpleblue",
   "m": "Brunswick",
   "n": "Fury Purple/Blue",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -12200,6 +12257,7 @@
   "k": "brunswick|furyredblueblack",
   "m": "Brunswick",
   "n": "Fury Red/Blue/Black",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -12362,6 +12420,7 @@
   "k": "brunswick|grooveurethane",
   "m": "Brunswick",
   "n": "Groove Urethane",
+  "s": 1,
   "t": false,
   "y": "2005"
  },
@@ -12389,6 +12448,7 @@
   "k": "brunswick|hero",
   "m": "Brunswick",
   "n": "Hero",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -12398,6 +12458,7 @@
   "k": "brunswick|herosolid",
   "m": "Brunswick",
   "n": "Hero Solid",
+  "s": 1,
   "t": false,
   "y": "2020"
  },
@@ -12452,6 +12513,7 @@
   "k": "brunswick|hypnotize",
   "m": "Brunswick",
   "n": "Hypnotize",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -12461,6 +12523,7 @@
   "k": "brunswick|igniterpearl",
   "m": "Brunswick",
   "n": "Igniter Pearl",
+  "s": 1,
   "t": false,
   "y": "2020"
  },
@@ -12614,6 +12677,7 @@
   "k": "brunswick|infinity",
   "m": "Brunswick",
   "n": "Infinity",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -12623,6 +12687,7 @@
   "k": "brunswick|infinityquest",
   "m": "Brunswick",
   "n": "Infinity Quest",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -12632,6 +12697,7 @@
   "k": "brunswick|infinityquestpearl",
   "m": "Brunswick",
   "n": "Infinity Quest Pearl",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -12650,6 +12716,7 @@
   "k": "brunswick|intensemindset",
   "m": "Brunswick",
   "n": "Intense Mindset",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -12659,6 +12726,7 @@
   "k": "brunswick|jaggededgehybrid",
   "m": "Brunswick",
   "n": "Jagged Edge Hybrid",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -12668,6 +12736,7 @@
   "k": "brunswick|jaggededgesolid",
   "m": "Brunswick",
   "n": "Jagged Edge Solid",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -12776,6 +12845,7 @@
   "k": "brunswick|karmablackbluesolid",
   "m": "Brunswick",
   "n": "Karma Black/Blue Solid",
+  "s": 1,
   "t": false,
   "y": "2011"
  },
@@ -12785,6 +12855,7 @@
   "k": "brunswick|karmabluegreenpearl",
   "m": "Brunswick",
   "n": "Karma Blue/Green Pearl",
+  "s": 1,
   "t": false,
   "y": "2011"
  },
@@ -12794,6 +12865,7 @@
   "k": "brunswick|karmapurplepinkpearl",
   "m": "Brunswick",
   "n": "Karma Purple/Pink Pearl",
+  "s": 1,
   "t": false,
   "y": "2012"
  },
@@ -12821,6 +12893,7 @@
   "k": "brunswick|kingpin",
   "m": "Brunswick",
   "n": "Kingpin",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -12839,6 +12912,7 @@
   "k": "brunswick|kingpingoldspecialedition",
   "m": "Brunswick",
   "n": "Kingpin Gold Special Edition",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -12848,6 +12922,7 @@
   "k": "brunswick|kingpinmax",
   "m": "Brunswick",
   "n": "Kingpin Max",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -12857,6 +12932,7 @@
   "k": "brunswick|kingpinrule",
   "m": "Brunswick",
   "n": "Kingpin Rule",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -12866,6 +12942,7 @@
   "k": "brunswick|knockout",
   "m": "Brunswick",
   "n": "Knock Out",
+  "s": 1,
   "t": false,
   "y": "2020"
  },
@@ -12875,6 +12952,7 @@
   "k": "brunswick|knockoutblackblue",
   "m": "Brunswick",
   "n": "Knock Out Black/Blue",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -12884,6 +12962,7 @@
   "k": "brunswick|knockoutbruiser",
   "m": "Brunswick",
   "n": "Knock Out Bruiser",
+  "s": 1,
   "t": false,
   "y": "2022"
  },
@@ -12893,6 +12972,7 @@
   "k": "brunswick|lethalrevolver",
   "m": "Brunswick",
   "n": "Lethal Revolver",
+  "s": 1,
   "t": false,
   "y": "2011"
  },
@@ -12902,6 +12982,7 @@
   "k": "brunswick|loadedrevolver",
   "m": "Brunswick",
   "n": "Loaded Revolver",
+  "s": 1,
   "t": false,
   "y": "2010"
  },
@@ -12974,6 +13055,7 @@
   "k": "brunswick|magnitude035",
   "m": "Brunswick",
   "n": "Magnitude 035",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -12983,6 +13065,7 @@
   "k": "brunswick|magnitude035pearl",
   "m": "Brunswick",
   "n": "Magnitude 035 Pearl",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -12992,6 +13075,7 @@
   "k": "brunswick|magnitude055",
   "m": "Brunswick",
   "n": "Magnitude 055",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -13019,6 +13103,7 @@
   "k": "brunswick|massivedamage",
   "m": "Brunswick",
   "n": "Massive Damage",
+  "s": 1,
   "t": false,
   "y": "2011"
  },
@@ -13046,6 +13131,7 @@
   "k": "brunswick|mastermind",
   "m": "Brunswick",
   "n": "Mastermind",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -13082,6 +13168,7 @@
   "k": "brunswick|mastermindbrainiac",
   "m": "Brunswick",
   "n": "Mastermind Brainiac",
+  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -13100,6 +13187,7 @@
   "k": "brunswick|mastermindeinstein",
   "m": "Brunswick",
   "n": "Mastermind Einstein",
+  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -13109,6 +13197,7 @@
   "k": "brunswick|mastermindgenius",
   "m": "Brunswick",
   "n": "Mastermind Genius",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -13118,6 +13207,7 @@
   "k": "brunswick|mastermindintellect",
   "m": "Brunswick",
   "n": "Mastermind Intellect",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -13136,6 +13226,7 @@
   "k": "brunswick|mastermindscholar",
   "m": "Brunswick",
   "n": "Mastermind Scholar",
+  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -13154,6 +13245,7 @@
   "k": "brunswick|mastermindstrategy",
   "m": "Brunswick",
   "n": "Mastermind Strategy",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -13208,6 +13300,7 @@
   "k": "brunswick|maxxxzone",
   "m": "Brunswick",
   "n": "Maxxx Zone",
+  "s": 1,
   "t": false,
   "y": "2008"
  },
@@ -13235,6 +13328,7 @@
   "k": "brunswick|meanstreak",
   "m": "Brunswick",
   "n": "Meanstreak",
+  "s": 1,
   "t": false,
   "y": "2012"
  },
@@ -13244,6 +13338,7 @@
   "k": "brunswick|meanstreakbeatdown",
   "m": "Brunswick",
   "n": "Meanstreak Beatdown",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -13253,6 +13348,7 @@
   "k": "brunswick|meanstreakbrawler",
   "m": "Brunswick",
   "n": "Meanstreak Brawler",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -13280,6 +13376,7 @@
   "k": "brunswick|melee",
   "m": "Brunswick",
   "n": "Melee",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -13289,6 +13386,7 @@
   "k": "brunswick|meleecross",
   "m": "Brunswick",
   "n": "Melee Cross",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -13298,6 +13396,7 @@
   "k": "brunswick|meleehook",
   "m": "Brunswick",
   "n": "Melee Hook",
+  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -13307,6 +13406,7 @@
   "k": "brunswick|meleejab",
   "m": "Brunswick",
   "n": "Melee Jab",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -13325,6 +13425,7 @@
   "k": "brunswick|meleejabbloodred",
   "m": "Brunswick",
   "n": "Melee Jab Blood Red",
+  "s": 1,
   "t": false,
   "y": "2020"
  },
@@ -13334,6 +13435,7 @@
   "k": "brunswick|meleejabcarbon",
   "m": "Brunswick",
   "n": "Melee Jab Carbon",
+  "s": 1,
   "t": false,
   "y": "2022"
  },
@@ -13370,6 +13472,7 @@
   "k": "brunswick|meleejabmidnightblue",
   "m": "Brunswick",
   "n": "Melee Jab Midnight Blue",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -13415,6 +13518,7 @@
   "k": "brunswick|mesmerize",
   "m": "Brunswick",
   "n": "Mesmerize",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -13433,6 +13537,7 @@
   "k": "brunswick|methodsolid",
   "m": "Brunswick",
   "n": "Method Solid",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -13469,6 +13574,7 @@
   "k": "brunswick|mindset",
   "m": "Brunswick",
   "n": "Mindset",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -13622,6 +13728,7 @@
   "k": "brunswick|nexusfppearl",
   "m": "Brunswick",
   "n": "NeXus f(P) Pearl",
+  "s": 1,
   "t": false,
   "y": "2011"
  },
@@ -13640,6 +13747,7 @@
   "k": "brunswick|nexusfpplusfsolid",
   "m": "Brunswick",
   "n": "NeXus f(P+F) Solid",
+  "s": 1,
   "t": false,
   "y": "2011"
  },
@@ -13757,6 +13865,7 @@
   "k": "brunswick|nexxxusfppluss",
   "m": "Brunswick",
   "n": "NeXXXus f(P+S)",
+  "s": 1,
   "t": false,
   "y": "2012"
  },
@@ -13802,6 +13911,7 @@
   "k": "brunswick|nirvana",
   "m": "Brunswick",
   "n": "Nirvana",
+  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -14045,6 +14155,7 @@
   "k": "brunswick|perfectmindset",
   "m": "Brunswick",
   "n": "Perfect Mindset",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -14216,6 +14327,7 @@
   "k": "brunswick|powergroovereactivepurplesilver",
   "m": "Brunswick",
   "n": "Power Groove Reactive Purple/Silver",
+  "s": 1,
   "t": false,
   "y": "2004"
  },
@@ -14297,6 +14409,7 @@
   "k": "brunswick|prismhybrid",
   "m": "Brunswick",
   "n": "Prism Hybrid",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -14324,6 +14437,7 @@
   "k": "brunswick|prismsolid",
   "m": "Brunswick",
   "n": "Prism Solid",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -14333,6 +14447,7 @@
   "k": "brunswick|prismwarp",
   "m": "Brunswick",
   "n": "Prism Warp",
+  "s": 1,
   "t": false,
   "y": "2020"
  },
@@ -14342,6 +14457,7 @@
   "k": "brunswick|prismwarphybrid",
   "m": "Brunswick",
   "n": "Prism Warp Hybrid",
+  "s": 1,
   "t": false,
   "y": "2020"
  },
@@ -14387,6 +14503,7 @@
   "k": "brunswick|python",
   "m": "Brunswick",
   "n": "Python",
+  "s": 1,
   "t": false,
   "y": "2009"
  },
@@ -14414,6 +14531,7 @@
   "k": "brunswick|quantumbiaspearl",
   "m": "Brunswick",
   "n": "Quantum Bias Pearl",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -14423,6 +14541,7 @@
   "k": "brunswick|quantumbiaspurple",
   "m": "Brunswick",
   "n": "Quantum Bias Purple",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -14477,6 +14596,7 @@
   "k": "brunswick|quantumclassicblack",
   "m": "Brunswick",
   "n": "Quantum Classic Black",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -14513,6 +14633,7 @@
   "k": "brunswick|quantumevohybrid",
   "m": "Brunswick",
   "n": "Quantum Evo Hybrid",
+  "s": 1,
   "t": false,
   "y": "2022"
  },
@@ -14522,6 +14643,7 @@
   "k": "brunswick|quantumevopearl",
   "m": "Brunswick",
   "n": "Quantum Evo Pearl",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -14531,6 +14653,7 @@
   "k": "brunswick|quantumevoresponse",
   "m": "Brunswick",
   "n": "Quantum Evo Response",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -14540,6 +14663,7 @@
   "k": "brunswick|quantumevosolid",
   "m": "Brunswick",
   "n": "Quantum Evo Solid",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -14558,6 +14682,7 @@
   "k": "brunswick|quantumfirepearl",
   "m": "Brunswick",
   "n": "Quantum Fire Pearl",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -14585,6 +14710,7 @@
   "k": "brunswick|quantumforestgreensolid",
   "m": "Brunswick",
   "n": "Quantum Forest Green Solid",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -14819,6 +14945,7 @@
   "k": "brunswick|rattler",
   "m": "Brunswick",
   "n": "Rattler",
+  "s": 1,
   "t": false,
   "y": "2008"
  },
@@ -15044,6 +15171,7 @@
   "k": "brunswick|revolver",
   "m": "Brunswick",
   "n": "Revolver",
+  "s": 1,
   "t": false,
   "y": "2010"
  },
@@ -15053,6 +15181,7 @@
   "k": "brunswick|rhino",
   "m": "Brunswick",
   "n": "Rhino",
+  "s": 1,
   "t": false,
   "y": "2002"
  },
@@ -15062,6 +15191,7 @@
   "k": "brunswick|rhinoblackbluesilverpearl",
   "m": "Brunswick",
   "n": "Rhino Black/Blue/Silver Pearl",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -15080,6 +15210,7 @@
   "k": "brunswick|rhinoblackpearl",
   "m": "Brunswick",
   "n": "Rhino Black Pearl",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -15089,6 +15220,7 @@
   "k": "brunswick|rhinobluecadetgreysilver",
   "m": "Brunswick",
   "n": "Rhino Blue/Cadet/Grey/Silver",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -15098,6 +15230,7 @@
   "k": "brunswick|rhinocarbonlimesilver",
   "m": "Brunswick",
   "n": "Rhino Carbon-Lime-Silver",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -15116,6 +15249,7 @@
   "k": "brunswick|rhinocharcoalsilverviolet",
   "m": "Brunswick",
   "n": "Rhino Charcoal/Silver/Violet",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -15152,6 +15286,7 @@
   "k": "brunswick|rhinogreensilverpearl",
   "m": "Brunswick",
   "n": "Rhino Green/Silver Pearl",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -15161,6 +15296,7 @@
   "k": "brunswick|rhinomagentapurplenavy",
   "m": "Brunswick",
   "n": "Rhino Magenta/Purple/Navy",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -15305,6 +15441,7 @@
   "k": "brunswick|rhinopurpleblack",
   "m": "Brunswick",
   "n": "Rhino Purple/Black",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -15314,6 +15451,7 @@
   "k": "brunswick|rhinopurplepinkberry",
   "m": "Brunswick",
   "n": "Rhino Purple/Pink/Berry",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -15323,6 +15461,7 @@
   "k": "brunswick|rhinopurplepinkwhitepearl",
   "m": "Brunswick",
   "n": "Rhino Purple/Pink/White Pearl",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -15350,6 +15489,7 @@
   "k": "brunswick|rhinoredblackgoldpearl",
   "m": "Brunswick",
   "n": "Rhino Red/Black/Gold Pearl",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -15512,6 +15652,7 @@
   "k": "brunswick|siege",
   "m": "Brunswick",
   "n": "Siege",
+  "s": 1,
   "t": false,
   "y": "2009"
  },
@@ -15647,6 +15788,7 @@
   "k": "brunswick|slingshotredpearlsilverpearl",
   "m": "Brunswick",
   "n": "Slingshot Red Pearl/Silver Pearl",
+  "s": 1,
   "t": false,
   "y": "2010"
  },
@@ -15728,6 +15870,7 @@
   "k": "brunswick|soul",
   "m": "Brunswick",
   "n": "Soul",
+  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -15737,6 +15880,7 @@
   "k": "brunswick|soulmate",
   "m": "Brunswick",
   "n": "Soul Mate",
+  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -15809,6 +15953,7 @@
   "k": "brunswick|stellar",
   "m": "Brunswick",
   "n": "Stellar",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -15854,6 +15999,7 @@
   "k": "brunswick|strategy",
   "m": "Brunswick",
   "n": "Strategy",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -15863,6 +16009,7 @@
   "k": "brunswick|strikekingblackpearl",
   "m": "Brunswick",
   "n": "Strike King Black Pearl",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -15872,6 +16019,7 @@
   "k": "brunswick|strikekingblueredpearl",
   "m": "Brunswick",
   "n": "Strike King Blue/Red Pearl",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -15890,6 +16038,7 @@
   "k": "brunswick|strikekingpurplepinkpearl",
   "m": "Brunswick",
   "n": "Strike King Purple/Pink Pearl",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -15899,6 +16048,7 @@
   "k": "brunswick|strikekingredgoldpearl",
   "m": "Brunswick",
   "n": "Strike King Red/Gold Pearl",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -15971,6 +16121,7 @@
   "k": "brunswick|tenacity",
   "m": "Brunswick",
   "n": "Tenacity",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -15980,6 +16131,7 @@
   "k": "brunswick|tenacitygrit",
   "m": "Brunswick",
   "n": "Tenacity Grit",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -16088,6 +16240,7 @@
   "k": "brunswick|truemotion",
   "m": "Brunswick",
   "n": "True Motion",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -16097,6 +16250,7 @@
   "k": "brunswick|truenirvana",
   "m": "Brunswick",
   "n": "True Nirvana",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -16142,6 +16296,7 @@
   "k": "brunswick|twistblackgoldsilver",
   "m": "Brunswick",
   "n": "Twist Black/Gold/Silver",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -16151,6 +16306,7 @@
   "k": "brunswick|twistbluesilver",
   "m": "Brunswick",
   "n": "Twist Blue/Silver",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -16160,6 +16316,7 @@
   "k": "brunswick|twistlavenderlime",
   "m": "Brunswick",
   "n": "Twist Lavender/Lime",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -16169,6 +16326,7 @@
   "k": "brunswick|twistneongreenblack",
   "m": "Brunswick",
   "n": "Twist Neon Green/Black",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -16178,6 +16336,7 @@
   "k": "brunswick|twistpinkblack",
   "m": "Brunswick",
   "n": "Twist Pink-Black",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -16187,6 +16346,7 @@
   "k": "brunswick|twistredpurple",
   "m": "Brunswick",
   "n": "Twist Red/Purple",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -16196,6 +16356,7 @@
   "k": "brunswick|twistredwhiteblue",
   "m": "Brunswick",
   "n": "Twist Red/White/Blue",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -16205,6 +16366,7 @@
   "k": "brunswick|twistskybluepinksnow",
   "m": "Brunswick",
   "n": "Twist Sky Blue/Pink/Snow",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -16241,6 +16403,7 @@
   "k": "brunswick|umotion",
   "m": "Brunswick",
   "n": "U-Motion",
+  "s": 1,
   "t": false,
   "y": "2020"
  },
@@ -16259,6 +16422,7 @@
   "k": "brunswick|ultimatedefender",
   "m": "Brunswick",
   "n": "Ultimate Defender",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -16286,6 +16450,7 @@
   "k": "brunswick|ultimatenirvana",
   "m": "Brunswick",
   "n": "Ultimate Nirvana",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -16358,6 +16523,7 @@
   "k": "brunswick|vaporzonehybrid",
   "m": "Brunswick",
   "n": "Vapor Zone Hybrid",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -16376,6 +16542,7 @@
   "k": "brunswick|vaporzonesolid",
   "m": "Brunswick",
   "n": "Vapor Zone Solid",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -16385,6 +16552,7 @@
   "k": "brunswick|vaporize",
   "m": "Brunswick",
   "n": "Vaporize",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -16421,6 +16589,7 @@
   "k": "brunswick|vintagedangerzone",
   "m": "Brunswick",
   "n": "Vintage Danger Zone",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -16439,6 +16608,7 @@
   "k": "brunswick|vintagegoldrhinopro",
   "m": "Brunswick",
   "n": "Vintage Gold Rhino Pro",
+  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -16448,6 +16618,7 @@
   "k": "brunswick|vintageinferno",
   "m": "Brunswick",
   "n": "Vintage Inferno",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -16457,6 +16628,7 @@
   "k": "brunswick|vintagelt48",
   "m": "Brunswick",
   "n": "Vintage LT-48",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -16466,6 +16638,7 @@
   "k": "brunswick|vintagephantom",
   "m": "Brunswick",
   "n": "Vintage Phantom",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -16484,6 +16657,7 @@
   "k": "brunswick|vintagevaporzone",
   "m": "Brunswick",
   "n": "Vintage Vapor Zone",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -16556,6 +16730,7 @@
   "k": "brunswick|warningalert",
   "m": "Brunswick",
   "n": "Warning Alert",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -16583,6 +16758,7 @@
   "k": "brunswick|wickedsiege",
   "m": "Brunswick",
   "n": "Wicked Siege",
+  "s": 1,
   "t": false,
   "y": "2010"
  },
@@ -16610,6 +16786,7 @@
   "k": "brunswick|wildcard",
   "m": "Brunswick",
   "n": "Wild Card",
+  "s": 1,
   "t": false,
   "y": "2009"
  },
@@ -16646,6 +16823,7 @@
   "k": "brunswick|wildride",
   "m": "Brunswick",
   "n": "Wild Ride",
+  "s": 1,
   "t": false,
   "y": "2008"
  },
@@ -16673,6 +16851,7 @@
   "k": "brunswick|wildthing",
   "m": "Brunswick",
   "n": "Wild Thing",
+  "s": 1,
   "t": false,
   "y": "2009"
  },
@@ -16763,6 +16942,7 @@
   "k": "brunswick|zenith",
   "m": "Brunswick",
   "n": "Zenith",
+  "s": 1,
   "t": false,
   "y": "2020"
  },
@@ -16772,6 +16952,7 @@
   "k": "brunswick|zenithhybrid",
   "m": "Brunswick",
   "n": "Zenith Hybrid",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -16781,6 +16962,7 @@
   "k": "brunswick|zenithpearl",
   "m": "Brunswick",
   "n": "Zenith Pearl",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -17654,6 +17836,7 @@
   "k": "columbia300|action",
   "m": "Columbia 300",
   "n": "Action",
+  "s": 1,
   "t": false,
   "y": "2005"
  },
@@ -17663,6 +17846,7 @@
   "k": "columbia300|actionattack",
   "m": "Columbia 300",
   "n": "Action Attack",
+  "s": 1,
   "t": false,
   "y": "2006"
  },
@@ -17708,6 +17892,7 @@
   "k": "columbia300|actionpacked",
   "m": "Columbia 300",
   "n": "Action Packed",
+  "s": 1,
   "t": false,
   "y": "2006"
  },
@@ -17753,6 +17938,7 @@
   "k": "columbia300|antics",
   "m": "Columbia 300",
   "n": "Antics",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -17780,6 +17966,7 @@
   "k": "columbia300|apogee",
   "m": "Columbia 300",
   "n": "Apogee",
+  "s": 1,
   "t": false,
   "y": "2006"
  },
@@ -17789,6 +17976,7 @@
   "k": "columbia300|archrival",
   "m": "Columbia 300",
   "n": "Arch Rival",
+  "s": 1,
   "t": false,
   "y": "2008"
  },
@@ -17798,6 +17986,7 @@
   "k": "columbia300|atlas",
   "m": "Columbia 300",
   "n": "Atlas",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -17807,6 +17996,7 @@
   "k": "columbia300|atlashybrid",
   "m": "Columbia 300",
   "n": "Atlas Hybrid",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -17816,6 +18006,7 @@
   "k": "columbia300|authority",
   "m": "Columbia 300",
   "n": "Authority",
+  "s": 1,
   "t": false,
   "y": "2020"
  },
@@ -17825,6 +18016,7 @@
   "k": "columbia300|authoritysolid",
   "m": "Columbia 300",
   "n": "Authority Solid",
+  "s": 1,
   "t": false,
   "y": "2020"
  },
@@ -17861,6 +18053,7 @@
   "k": "columbia300|bedlam",
   "m": "Columbia 300",
   "n": "Bedlam",
+  "s": 1,
   "t": false,
   "y": "2009"
  },
@@ -17870,6 +18063,7 @@
   "k": "columbia300|benchmark",
   "m": "Columbia 300",
   "n": "Benchmark",
+  "s": 1,
   "t": false,
   "y": "2011"
  },
@@ -17888,6 +18082,7 @@
   "k": "columbia300|bigbully",
   "m": "Columbia 300",
   "n": "Big Bully",
+  "s": 1,
   "t": false,
   "y": "2004"
  },
@@ -17933,6 +18128,7 @@
   "k": "columbia300|blurhybrid",
   "m": "Columbia 300",
   "n": "Blur Hybrid",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -17942,6 +18138,7 @@
   "k": "columbia300|blurpearl",
   "m": "Columbia 300",
   "n": "Blur Pearl",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -17951,6 +18148,7 @@
   "k": "columbia300|blursolid",
   "m": "Columbia 300",
   "n": "Blur Solid",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -18014,6 +18212,7 @@
   "k": "columbia300|bully",
   "m": "Columbia 300",
   "n": "Bully",
+  "s": 1,
   "t": false,
   "y": "2004"
  },
@@ -18023,6 +18222,7 @@
   "k": "columbia300|burst",
   "m": "Columbia 300",
   "n": "Burst",
+  "s": 1,
   "t": false,
   "y": "2010"
  },
@@ -18086,6 +18286,7 @@
   "k": "columbia300|classicrock",
   "m": "Columbia 300",
   "n": "Classic Rock",
+  "s": 1,
   "t": false,
   "y": "2001"
  },
@@ -18113,6 +18314,7 @@
   "k": "columbia300|command",
   "m": "Columbia 300",
   "n": "Command",
+  "s": 1,
   "t": false,
   "y": "2020"
  },
@@ -18122,6 +18324,7 @@
   "k": "columbia300|commandsolid",
   "m": "Columbia 300",
   "n": "Command Solid",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -18131,6 +18334,7 @@
   "k": "columbia300|completebedlam",
   "m": "Columbia 300",
   "n": "Complete Bedlam",
+  "s": 1,
   "t": false,
   "y": "2010"
  },
@@ -18158,6 +18362,7 @@
   "k": "columbia300|coolnoize",
   "m": "Columbia 300",
   "n": "Cool Noize",
+  "s": 1,
   "t": false,
   "y": "2009"
  },
@@ -18167,6 +18372,7 @@
   "k": "columbia300|crazyantics",
   "m": "Columbia 300",
   "n": "Crazy Antics",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -18203,6 +18409,7 @@
   "k": "columbia300|cudac2000",
   "m": "Columbia 300",
   "n": "Cuda/C 2000",
+  "s": 1,
   "t": false,
   "y": "2000"
  },
@@ -18248,6 +18455,7 @@
   "k": "columbia300|cudapowercor",
   "m": "Columbia 300",
   "n": "Cuda PowerCOR",
+  "s": 1,
   "t": false,
   "y": "2022"
  },
@@ -18257,6 +18465,7 @@
   "k": "columbia300|cudapowercorpearl",
   "m": "Columbia 300",
   "n": "Cuda PowerCOR Pearl",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -18284,6 +18493,7 @@
   "k": "columbia300|darkencounter",
   "m": "Columbia 300",
   "n": "Dark Encounter",
+  "s": 1,
   "t": false,
   "y": "2011"
  },
@@ -18302,6 +18512,7 @@
   "k": "columbia300|deepfreeze",
   "m": "Columbia 300",
   "n": "Deep Freeze",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -18311,6 +18522,7 @@
   "k": "columbia300|deepfreezecoralsplash",
   "m": "Columbia 300",
   "n": "Deep Freeze Coral Splash",
+  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -18320,6 +18532,7 @@
   "k": "columbia300|deepfreezepinkfrost",
   "m": "Columbia 300",
   "n": "Deep Freeze Pink Frost",
+  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -18329,6 +18542,7 @@
   "k": "columbia300|delirium",
   "m": "Columbia 300",
   "n": "Delirium",
+  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -18338,6 +18552,7 @@
   "k": "columbia300|deliriumshock",
   "m": "Columbia 300",
   "n": "Delirium Shock",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -18356,6 +18571,7 @@
   "k": "columbia300|detour",
   "m": "Columbia 300",
   "n": "Detour",
+  "s": 1,
   "t": false,
   "y": "2004"
  },
@@ -18365,6 +18581,7 @@
   "k": "columbia300|disorder",
   "m": "Columbia 300",
   "n": "Disorder",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -18374,6 +18591,7 @@
   "k": "columbia300|disruption",
   "m": "Columbia 300",
   "n": "Disruption",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -18383,6 +18601,7 @@
   "k": "columbia300|drjekyll",
   "m": "Columbia 300",
   "n": "Dr. Jekyll",
+  "s": 1,
   "t": false,
   "y": "2005"
  },
@@ -18410,6 +18629,7 @@
   "k": "columbia300|drive",
   "m": "Columbia 300",
   "n": "Drive",
+  "s": 1,
   "t": false,
   "y": "2004"
  },
@@ -18428,6 +18648,7 @@
   "k": "columbia300|dynamicswing",
   "m": "Columbia 300",
   "n": "Dynamic Swing",
+  "s": 1,
   "t": false,
   "y": "2020"
  },
@@ -18437,6 +18658,7 @@
   "k": "columbia300|dynamicswingpearl",
   "m": "Columbia 300",
   "n": "Dynamic Swing Pearl",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -18455,6 +18677,7 @@
   "k": "columbia300|encounter",
   "m": "Columbia 300",
   "n": "Encounter",
+  "s": 1,
   "t": false,
   "y": "2011"
  },
@@ -18464,6 +18687,7 @@
   "k": "columbia300|enigma",
   "m": "Columbia 300",
   "n": "Enigma",
+  "s": 1,
   "t": false,
   "y": "2012"
  },
@@ -18518,6 +18742,7 @@
   "k": "columbia300|epxt1",
   "m": "Columbia 300",
   "n": "EPX T1",
+  "s": 1,
   "t": false,
   "y": "2005"
  },
@@ -18527,6 +18752,7 @@
   "k": "columbia300|eruption",
   "m": "Columbia 300",
   "n": "Eruption",
+  "s": 1,
   "t": false,
   "y": "2011"
  },
@@ -18545,6 +18771,7 @@
   "k": "columbia300|eruptionpearl",
   "m": "Columbia 300",
   "n": "Eruption Pearl",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -18554,6 +18781,7 @@
   "k": "columbia300|eruptionpro",
   "m": "Columbia 300",
   "n": "Eruption Pro",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -18581,6 +18809,7 @@
   "k": "columbia300|eruptionproblue",
   "m": "Columbia 300",
   "n": "Eruption Pro Blue",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -18590,6 +18819,7 @@
   "k": "columbia300|eruptionprohybrid",
   "m": "Columbia 300",
   "n": "Eruption Pro Hybrid",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -18599,6 +18829,7 @@
   "k": "columbia300|explosion",
   "m": "Columbia 300",
   "n": "Explosion",
+  "s": 1,
   "t": false,
   "y": "2022"
  },
@@ -18617,6 +18848,7 @@
   "k": "columbia300|extremechaos",
   "m": "Columbia 300",
   "n": "Extreme Chaos",
+  "s": 1,
   "t": false,
   "y": "1999"
  },
@@ -18833,6 +19065,7 @@
   "k": "columbia300|formula",
   "m": "Columbia 300",
   "n": "Formula",
+  "s": 1,
   "t": false,
   "y": "2003"
  },
@@ -18860,6 +19093,7 @@
   "k": "columbia300|freezeblacksilver",
   "m": "Columbia 300",
   "n": "Freeze Black/Silver",
+  "s": 1,
   "t": false,
   "y": "2009"
  },
@@ -18869,6 +19103,7 @@
   "k": "columbia300|freezebluegreen",
   "m": "Columbia 300",
   "n": "Freeze Blue/Green",
+  "s": 1,
   "t": false,
   "y": "2010"
  },
@@ -18878,6 +19113,7 @@
   "k": "columbia300|freezeblueorangegreen",
   "m": "Columbia 300",
   "n": "Freeze Blue/Orange/Green",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -18887,6 +19123,7 @@
   "k": "columbia300|freezehybrid",
   "m": "Columbia 300",
   "n": "Freeze Hybrid",
+  "s": 1,
   "t": false,
   "y": "2012"
  },
@@ -18923,6 +19160,7 @@
   "k": "columbia300|freezeredblue",
   "m": "Columbia 300",
   "n": "Freeze Red/Blue",
+  "s": 1,
   "t": false,
   "y": "2009"
  },
@@ -18932,6 +19170,7 @@
   "k": "columbia300|freezescarletblack",
   "m": "Columbia 300",
   "n": "Freeze Scarlet/Black",
+  "s": 1,
   "t": false,
   "y": "2009"
  },
@@ -18941,6 +19180,7 @@
   "k": "columbia300|freezesolid",
   "m": "Columbia 300",
   "n": "Freeze Solid",
+  "s": 1,
   "t": false,
   "y": "2012"
  },
@@ -18950,6 +19190,7 @@
   "k": "columbia300|fullswing",
   "m": "Columbia 300",
   "n": "Full Swing",
+  "s": 1,
   "t": false,
   "y": "2009"
  },
@@ -18959,6 +19200,7 @@
   "k": "columbia300|fullthrottle",
   "m": "Columbia 300",
   "n": "Full Throttle",
+  "s": 1,
   "t": false,
   "y": "2003"
  },
@@ -18977,6 +19219,7 @@
   "k": "columbia300|game",
   "m": "Columbia 300",
   "n": "Game",
+  "s": 1,
   "t": false,
   "y": "2001"
  },
@@ -18986,6 +19229,7 @@
   "k": "columbia300|gamepearl",
   "m": "Columbia 300",
   "n": "Game Pearl",
+  "s": 1,
   "t": false,
   "y": "2001"
  },
@@ -19013,6 +19257,7 @@
   "k": "columbia300|highspeed",
   "m": "Columbia 300",
   "n": "High Speed",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -19022,6 +19267,7 @@
   "k": "columbia300|hyde",
   "m": "Columbia 300",
   "n": "Hyde",
+  "s": 1,
   "t": false,
   "y": "2003"
  },
@@ -19031,6 +19277,7 @@
   "k": "columbia300|hyjinx",
   "m": "Columbia 300",
   "n": "Hyjinx",
+  "s": 1,
   "t": false,
   "y": "2006"
  },
@@ -19040,6 +19287,7 @@
   "k": "columbia300|icon",
   "m": "Columbia 300",
   "n": "Icon",
+  "s": 1,
   "t": false,
   "y": "2002"
  },
@@ -19049,6 +19297,7 @@
   "k": "columbia300|icon2",
   "m": "Columbia 300",
   "n": "Icon 2",
+  "s": 1,
   "t": false,
   "y": "2002"
  },
@@ -19058,6 +19307,7 @@
   "k": "columbia300|icon300",
   "m": "Columbia 300",
   "n": "Icon 300",
+  "s": 1,
   "t": false,
   "y": "2002"
  },
@@ -19121,6 +19371,7 @@
   "k": "columbia300|impulse",
   "m": "Columbia 300",
   "n": "Impulse",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -19130,6 +19381,7 @@
   "k": "columbia300|impulsesolid",
   "m": "Columbia 300",
   "n": "Impulse Solid",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -19184,6 +19436,7 @@
   "k": "columbia300|jazzredblue",
   "m": "Columbia 300",
   "n": "Jazz Red/Blue",
+  "s": 1,
   "t": false,
   "y": "2008"
  },
@@ -19193,6 +19446,7 @@
   "k": "columbia300|jekyll",
   "m": "Columbia 300",
   "n": "Jekyll",
+  "s": 1,
   "t": false,
   "y": "2003"
  },
@@ -19202,6 +19456,7 @@
   "k": "columbia300|jinx",
   "m": "Columbia 300",
   "n": "Jinx",
+  "s": 1,
   "t": false,
   "y": "2006"
  },
@@ -19211,6 +19466,7 @@
   "k": "columbia300|juke",
   "m": "Columbia 300",
   "n": "Juke",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -19229,6 +19485,7 @@
   "k": "columbia300|kaboom",
   "m": "Columbia 300",
   "n": "Kaboom",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -19283,6 +19540,7 @@
   "k": "columbia300|lit",
   "m": "Columbia 300",
   "n": "Lit",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -19301,6 +19559,7 @@
   "k": "columbia300|litpearl",
   "m": "Columbia 300",
   "n": "Lit Pearl",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -19337,6 +19596,7 @@
   "k": "columbia300|loudnoize",
   "m": "Columbia 300",
   "n": "Loud Noize",
+  "s": 1,
   "t": false,
   "y": "2008"
  },
@@ -19346,6 +19606,7 @@
   "k": "columbia300|madantics",
   "m": "Columbia 300",
   "n": "Mad Antics",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -19355,6 +19616,7 @@
   "k": "columbia300|madness",
   "m": "Columbia 300",
   "n": "Madness",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -19373,6 +19635,7 @@
   "k": "columbia300|masseruption",
   "m": "Columbia 300",
   "n": "Mass Eruption",
+  "s": 1,
   "t": false,
   "y": "2012"
  },
@@ -19409,6 +19672,7 @@
   "k": "columbia300|meltdown",
   "m": "Columbia 300",
   "n": "Melt Down",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -19418,6 +19682,7 @@
   "k": "columbia300|messenger",
   "m": "Columbia 300",
   "n": "Messenger",
+  "s": 1,
   "t": false,
   "y": "1999"
  },
@@ -19481,6 +19746,7 @@
   "k": "columbia300|messengerpowercorpearl",
   "m": "Columbia 300",
   "n": "Messenger PowerCOR Pearl",
+  "s": 1,
   "t": false,
   "y": "2022"
  },
@@ -19499,6 +19765,7 @@
   "k": "columbia300|messengerpowercorsolid",
   "m": "Columbia 300",
   "n": "Messenger PowerCOR Solid",
+  "s": 1,
   "t": false,
   "y": "2022"
  },
@@ -19517,6 +19784,7 @@
   "k": "columbia300|messengertec",
   "m": "Columbia 300",
   "n": "Messenger TEC",
+  "s": 1,
   "t": false,
   "y": "2000"
  },
@@ -19526,6 +19794,7 @@
   "k": "columbia300|messengertilowrg",
   "m": "Columbia 300",
   "n": "Messenger Ti Low RG",
+  "s": 1,
   "t": false,
   "y": "2005"
  },
@@ -19535,6 +19804,7 @@
   "k": "columbia300|messengertitraction",
   "m": "Columbia 300",
   "n": "Messenger Ti Traction",
+  "s": 1,
   "t": false,
   "y": "2003"
  },
@@ -19580,6 +19850,7 @@
   "k": "columbia300|momentum",
   "m": "Columbia 300",
   "n": "Momentum",
+  "s": 1,
   "t": false,
   "y": "2007"
  },
@@ -19706,6 +19977,7 @@
   "k": "columbia300|momentumswing",
   "m": "Columbia 300",
   "n": "Momentum Swing",
+  "s": 1,
   "t": false,
   "y": "2008"
  },
@@ -19769,6 +20041,7 @@
   "k": "columbia300|nsneantics",
   "m": "Columbia 300",
   "n": "N'S@ne Antics",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -19832,6 +20105,7 @@
   "k": "columbia300|nitrousblackbluebronze",
   "m": "Columbia 300",
   "n": "Nitrous Black/Blue/Bronze",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -19841,6 +20115,7 @@
   "k": "columbia300|nitrousblackcherryyellowblue",
   "m": "Columbia 300",
   "n": "Nitrous Black Cherry/Yellow/Blue",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -19850,6 +20125,7 @@
   "k": "columbia300|nitrouspurplebluesilver",
   "m": "Columbia 300",
   "n": "Nitrous Purple/Blue/Silver",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -19859,6 +20135,7 @@
   "k": "columbia300|nitrouspurplepink",
   "m": "Columbia 300",
   "n": "Nitrous Purple/Pink",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -19868,6 +20145,7 @@
   "k": "columbia300|nitrousredgold",
   "m": "Columbia 300",
   "n": "Nitrous Red/Gold",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -19877,6 +20155,7 @@
   "k": "columbia300|nitrousredsilver",
   "m": "Columbia 300",
   "n": "Nitrous Red/Silver",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -19886,6 +20165,7 @@
   "k": "columbia300|nitrousredsmokewhite",
   "m": "Columbia 300",
   "n": "Nitrous Red/Smoke/White",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -19895,6 +20175,7 @@
   "k": "columbia300|nitroussilverblack",
   "m": "Columbia 300",
   "n": "Nitrous Silver/Black",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -19913,6 +20194,7 @@
   "k": "columbia300|noize",
   "m": "Columbia 300",
   "n": "Noize",
+  "s": 1,
   "t": false,
   "y": "2008"
  },
@@ -19931,6 +20213,7 @@
   "k": "columbia300|omen",
   "m": "Columbia 300",
   "n": "Omen",
+  "s": 1,
   "t": false,
   "y": "2011"
  },
@@ -19940,6 +20223,7 @@
   "k": "columbia300|outburst",
   "m": "Columbia 300",
   "n": "Outburst",
+  "s": 1,
   "t": false,
   "y": "2010"
  },
@@ -19949,6 +20233,7 @@
   "k": "columbia300|outlook",
   "m": "Columbia 300",
   "n": "Outlook",
+  "s": 1,
   "t": false,
   "y": "2020"
  },
@@ -19958,6 +20243,7 @@
   "k": "columbia300|outlooksolid",
   "m": "Columbia 300",
   "n": "Outlook Solid",
+  "s": 1,
   "t": false,
   "y": "2020"
  },
@@ -19976,6 +20262,7 @@
   "k": "columbia300|overdrive",
   "m": "Columbia 300",
   "n": "Overdrive",
+  "s": 1,
   "t": false,
   "y": "2005"
  },
@@ -19985,6 +20272,7 @@
   "k": "columbia300|perfectrival",
   "m": "Columbia 300",
   "n": "Perfect Rival",
+  "s": 1,
   "t": false,
   "y": "2008"
  },
@@ -20084,6 +20372,7 @@
   "k": "columbia300|piranhapowercor",
   "m": "Columbia 300",
   "n": "Piranha PowerCOR",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -20093,6 +20382,7 @@
   "k": "columbia300|piranhapowercorpearl",
   "m": "Columbia 300",
   "n": "Piranha PowerCOR Pearl",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -20111,6 +20401,7 @@
   "k": "columbia300|piranharetro",
   "m": "Columbia 300",
   "n": "Piranha Retro",
+  "s": 1,
   "t": false,
   "y": "2003"
  },
@@ -20120,6 +20411,7 @@
   "k": "columbia300|piranhasolid",
   "m": "Columbia 300",
   "n": "Piranha Solid",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -20129,6 +20421,7 @@
   "k": "columbia300|pitboss",
   "m": "Columbia 300",
   "n": "Pit Boss",
+  "s": 1,
   "t": false,
   "y": "1998"
  },
@@ -20174,6 +20467,7 @@
   "k": "columbia300|powerdrive",
   "m": "Columbia 300",
   "n": "Power Drive",
+  "s": 1,
   "t": false,
   "y": "2005"
  },
@@ -20183,6 +20477,7 @@
   "k": "columbia300|powerdrivesanded",
   "m": "Columbia 300",
   "n": "Power Drive Sanded",
+  "s": 1,
   "t": false,
   "y": "2006"
  },
@@ -20192,6 +20487,7 @@
   "k": "columbia300|powersurge",
   "m": "Columbia 300",
   "n": "Power Surge",
+  "s": 1,
   "t": false,
   "y": "1999"
  },
@@ -20201,6 +20497,7 @@
   "k": "columbia300|powerswing",
   "m": "Columbia 300",
   "n": "Power Swing",
+  "s": 1,
   "t": false,
   "y": "2008"
  },
@@ -20210,6 +20507,7 @@
   "k": "columbia300|powertorq",
   "m": "Columbia 300",
   "n": "Power Torq",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -20228,6 +20526,7 @@
   "k": "columbia300|powertorqpearl",
   "m": "Columbia 300",
   "n": "Power Torq Pearl",
+  "s": 1,
   "t": false,
   "y": "2022"
  },
@@ -20309,6 +20608,7 @@
   "k": "columbia300|pulseblueblackgold",
   "m": "Columbia 300",
   "n": "Pulse Blue Black Gold",
+  "s": 1,
   "t": false,
   "y": "2009"
  },
@@ -20345,6 +20645,7 @@
   "k": "columbia300|pulsescarletredblack",
   "m": "Columbia 300",
   "n": "Pulse Scarlet (Red)/Black",
+  "s": 1,
   "t": false,
   "y": "2010"
  },
@@ -20363,6 +20664,7 @@
   "k": "columbia300|puremadness",
   "m": "Columbia 300",
   "n": "Pure Madness",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -20372,6 +20674,7 @@
   "k": "columbia300|purephysics",
   "m": "Columbia 300",
   "n": "Pure Physics",
+  "s": 1,
   "t": false,
   "y": "2010"
  },
@@ -20381,6 +20684,7 @@
   "k": "columbia300|pureswing",
   "m": "Columbia 300",
   "n": "Pure Swing",
+  "s": 1,
   "t": false,
   "y": "2009"
  },
@@ -20435,6 +20739,7 @@
   "k": "columbia300|rally",
   "m": "Columbia 300",
   "n": "Rally",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -20444,6 +20749,7 @@
   "k": "columbia300|ransom",
   "m": "Columbia 300",
   "n": "Ransom",
+  "s": 1,
   "t": false,
   "y": "2010"
  },
@@ -20453,6 +20759,7 @@
   "k": "columbia300|ransomdemand",
   "m": "Columbia 300",
   "n": "Ransom Demand",
+  "s": 1,
   "t": false,
   "y": "2011"
  },
@@ -20480,6 +20787,7 @@
   "k": "columbia300|rawurge",
   "m": "Columbia 300",
   "n": "Raw Urge",
+  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -20498,6 +20806,7 @@
   "k": "columbia300|reactionarc",
   "m": "Columbia 300",
   "n": "Reaction Arc",
+  "s": 1,
   "t": false,
   "y": "2001"
  },
@@ -20507,6 +20816,7 @@
   "k": "columbia300|reactionrev",
   "m": "Columbia 300",
   "n": "Reaction Rev",
+  "s": 1,
   "t": false,
   "y": "2002"
  },
@@ -20516,6 +20826,7 @@
   "k": "columbia300|reactionricochet",
   "m": "Columbia 300",
   "n": "Reaction Ricochet",
+  "s": 1,
   "t": false,
   "y": "2001"
  },
@@ -20543,6 +20854,7 @@
   "k": "columbia300|reactionrip",
   "m": "Columbia 300",
   "n": "Reaction Rip",
+  "s": 1,
   "t": false,
   "y": "2001"
  },
@@ -20552,6 +20864,7 @@
   "k": "columbia300|reactionroll",
   "m": "Columbia 300",
   "n": "Reaction Roll",
+  "s": 1,
   "t": false,
   "y": "2001"
  },
@@ -20588,6 +20901,7 @@
   "k": "columbia300|resurgence",
   "m": "Columbia 300",
   "n": "Resurgence",
+  "s": 1,
   "t": false,
   "y": "2007"
  },
@@ -20804,6 +21118,7 @@
   "k": "columbia300|ricochetpearl",
   "m": "Columbia 300",
   "n": "Ricochet Pearl",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -20822,6 +21137,7 @@
   "k": "columbia300|ricochetreturn",
   "m": "Columbia 300",
   "n": "Ricochet Return",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -20858,6 +21174,7 @@
   "k": "columbia300|rival",
   "m": "Columbia 300",
   "n": "Rival",
+  "s": 1,
   "t": false,
   "y": "2007"
  },
@@ -20885,6 +21202,7 @@
   "k": "columbia300|rockon",
   "m": "Columbia 300",
   "n": "Rock On",
+  "s": 1,
   "t": false,
   "y": "2000"
  },
@@ -20984,6 +21302,7 @@
   "k": "columbia300|rockpearl",
   "m": "Columbia 300",
   "n": "Rock Pearl",
+  "s": 1,
   "t": false,
   "y": "2000"
  },
@@ -21011,6 +21330,7 @@
   "k": "columbia300|saberpearl",
   "m": "Columbia 300",
   "n": "Saber Pearl",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -21137,6 +21457,7 @@
   "k": "columbia300|scoutrhiflare",
   "m": "Columbia 300",
   "n": "Scout/R Hi-Flare",
+  "s": 1,
   "t": false,
   "y": "2005"
  },
@@ -21173,6 +21494,7 @@
   "k": "columbia300|scoutrparticlehiflare",
   "m": "Columbia 300",
   "n": "Scout/R Particle Hi-Flare",
+  "s": 1,
   "t": false,
   "y": "2005"
  },
@@ -21218,6 +21540,7 @@
   "k": "columbia300|scoutreactivebluegold",
   "m": "Columbia 300",
   "n": "Scout Reactive Blue/Gold",
+  "s": 1,
   "t": false,
   "y": "2007"
  },
@@ -21245,6 +21568,7 @@
   "k": "columbia300|scoutreactivegreensilver",
   "m": "Columbia 300",
   "n": "Scout Reactive Green/Silver",
+  "s": 1,
   "t": false,
   "y": "2007"
  },
@@ -21353,6 +21677,7 @@
   "k": "columbia300|scouturethanehiflare",
   "m": "Columbia 300",
   "n": "Scout Urethane Hi-Flare",
+  "s": 1,
   "t": false,
   "y": "2005"
  },
@@ -21362,6 +21687,7 @@
   "k": "columbia300|severedelirium",
   "m": "Columbia 300",
   "n": "Severe Delirium",
+  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -21416,6 +21742,7 @@
   "k": "columbia300|sharpnoize",
   "m": "Columbia 300",
   "n": "Sharp Noize",
+  "s": 1,
   "t": false,
   "y": "2009"
  },
@@ -21425,6 +21752,7 @@
   "k": "columbia300|sideswipe",
   "m": "Columbia 300",
   "n": "Sideswipe",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -21443,6 +21771,7 @@
   "k": "columbia300|sideswipesolid",
   "m": "Columbia 300",
   "n": "Sideswipe Solid",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -21452,6 +21781,7 @@
   "k": "columbia300|smackdown",
   "m": "Columbia 300",
   "n": "Smack Down",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -21470,6 +21800,7 @@
   "k": "columbia300|speed",
   "m": "Columbia 300",
   "n": "Speed",
+  "s": 1,
   "t": false,
   "y": "2022"
  },
@@ -21506,6 +21837,7 @@
   "k": "columbia300|spiritii",
   "m": "Columbia 300",
   "n": "Spirit II",
+  "s": 1,
   "t": false,
   "y": "2003"
  },
@@ -21578,6 +21910,7 @@
   "k": "columbia300|streetrally",
   "m": "Columbia 300",
   "n": "Street Rally",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -21614,6 +21947,7 @@
   "k": "columbia300|supercudapowercor",
   "m": "Columbia 300",
   "n": "Super Cuda PowerCOR",
+  "s": 1,
   "t": false,
   "y": null
  },
@@ -21623,6 +21957,7 @@
   "k": "columbia300|supercudapowercorpearl",
   "m": "Columbia 300",
   "n": "Super Cuda PowerCOR Pearl",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -21659,6 +21994,7 @@
   "k": "columbia300|supertrooper",
   "m": "Columbia 300",
   "n": "Super Trooper",
+  "s": 1,
   "t": false,
   "y": "2004"
  },
@@ -21677,6 +22013,7 @@
   "k": "columbia300|swerve",
   "m": "Columbia 300",
   "n": "Swerve",
+  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -21695,6 +22032,7 @@
   "k": "columbia300|swervefx",
   "m": "Columbia 300",
   "n": "Swerve Fx",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -21713,6 +22051,7 @@
   "k": "columbia300|swervegt",
   "m": "Columbia 300",
   "n": "Swerve GT",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -21758,6 +22097,7 @@
   "k": "columbia300|takedown",
   "m": "Columbia 300",
   "n": "Take Down",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -21947,6 +22287,7 @@
   "k": "columbia300|theclassicu2",
   "m": "Columbia 300",
   "n": "The Classic U2",
+  "s": 1,
   "t": false,
   "y": "2012"
  },
@@ -22091,6 +22432,7 @@
   "k": "columbia300|throttle",
   "m": "Columbia 300",
   "n": "Throttle",
+  "s": 1,
   "t": false,
   "y": "2003"
  },
@@ -22118,6 +22460,7 @@
   "k": "columbia300|throttler",
   "m": "Columbia 300",
   "n": "Throttle-R",
+  "s": 1,
   "t": false,
   "y": "2003"
  },
@@ -22127,6 +22470,7 @@
   "k": "columbia300|throttleup",
   "m": "Columbia 300",
   "n": "Throttle Up",
+  "s": 1,
   "t": false,
   "y": "2003"
  },
@@ -22145,6 +22489,7 @@
   "k": "columbia300|throwdown",
   "m": "Columbia 300",
   "n": "Throw Down",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -22235,6 +22580,7 @@
   "k": "columbia300|topspeed",
   "m": "Columbia 300",
   "n": "Top Speed",
+  "s": 1,
   "t": false,
   "y": "2022"
  },
@@ -22316,6 +22662,7 @@
   "k": "columbia300|tyrant",
   "m": "Columbia 300",
   "n": "Tyrant",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -22352,6 +22699,7 @@
   "k": "columbia300|tyrantpearl",
   "m": "Columbia 300",
   "n": "Tyrant Pearl",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -22415,6 +22763,7 @@
   "k": "columbia300|urge",
   "m": "Columbia 300",
   "n": "Urge",
+  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -22460,6 +22809,7 @@
   "k": "columbia300|vow",
   "m": "Columbia 300",
   "n": "Vow",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -22478,6 +22828,7 @@
   "k": "columbia300|wickedencounter",
   "m": "Columbia 300",
   "n": "Wicked Encounter",
+  "s": 1,
   "t": false,
   "y": "2012"
  },
@@ -22514,6 +22865,7 @@
   "k": "columbia300|worldbeater",
   "m": "Columbia 300",
   "n": "World Beater",
+  "s": 1,
   "t": false,
   "y": "2010"
  },
@@ -22874,6 +23226,7 @@
   "k": "dv8|alleycatpinkblack",
   "m": "DV8",
   "n": "Alley Cat Pink/Black",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -22883,6 +23236,7 @@
   "k": "dv8|alleycatpurplegreen",
   "m": "DV8",
   "n": "Alley Cat Purple/Green",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -22892,6 +23246,7 @@
   "k": "dv8|alleycatredelectricblue",
   "m": "DV8",
   "n": "Alley Cat Red/Electric Blue",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -22910,6 +23265,7 @@
   "k": "dv8|brutalnightmare",
   "m": "DV8",
   "n": "Brutal Nightmare",
+  "s": 1,
   "t": false,
   "y": "2012"
  },
@@ -22937,6 +23293,7 @@
   "k": "dv8|chillpearl",
   "m": "DV8",
   "n": "Chill Pearl",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -22964,6 +23321,7 @@
   "k": "dv8|creed",
   "m": "DV8",
   "n": "Creed",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -22973,6 +23331,7 @@
   "k": "dv8|creedrebellion",
   "m": "DV8",
   "n": "Creed Rebellion",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -22982,6 +23341,7 @@
   "k": "dv8|creedrevelation",
   "m": "DV8",
   "n": "Creed Revelation",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -23018,6 +23378,7 @@
   "k": "dv8|darkside",
   "m": "DV8",
   "n": "Dark Side",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -23027,6 +23388,7 @@
   "k": "dv8|darksidecurse",
   "m": "DV8",
   "n": "Dark Side Curse",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -23054,6 +23416,7 @@
   "k": "dv8|deviant",
   "m": "DV8",
   "n": "Deviant",
+  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -23063,6 +23426,7 @@
   "k": "dv8|deviantpearl",
   "m": "DV8",
   "n": "Deviant Pearl",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -23081,6 +23445,7 @@
   "k": "dv8|diva",
   "m": "DV8",
   "n": "Diva",
+  "s": 1,
   "t": false,
   "y": "2012"
  },
@@ -23099,6 +23464,7 @@
   "k": "dv8|divadivine",
   "m": "DV8",
   "n": "Diva Divine",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -23108,6 +23474,7 @@
   "k": "dv8|divapearl",
   "m": "DV8",
   "n": "Diva Pearl",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -23117,6 +23484,7 @@
   "k": "dv8|divastyle",
   "m": "DV8",
   "n": "Diva Style",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -23126,6 +23494,7 @@
   "k": "dv8|divaxoxo",
   "m": "DV8",
   "n": "Diva XOXO",
+  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -23135,6 +23504,7 @@
   "k": "dv8|doubletrouble",
   "m": "DV8",
   "n": "Double Trouble",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -23144,6 +23514,7 @@
   "k": "dv8|dude",
   "m": "DV8",
   "n": "Dude",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -23198,6 +23569,7 @@
   "k": "dv8|endlessnightmare",
   "m": "DV8",
   "n": "Endless Nightmare",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -23207,6 +23579,7 @@
   "k": "dv8|freakshow",
   "m": "DV8",
   "n": "Freak Show",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -23216,6 +23589,7 @@
   "k": "dv8|freakshowflip",
   "m": "DV8",
   "n": "Freak Show Flip",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -23225,6 +23599,7 @@
   "k": "dv8|freakshowsolid",
   "m": "DV8",
   "n": "Freak Show Solid",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -23252,6 +23627,7 @@
   "k": "dv8|grudge",
   "m": "DV8",
   "n": "Grudge",
+  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -23261,6 +23637,7 @@
   "k": "dv8|grudgehybrid",
   "m": "DV8",
   "n": "Grudge Hybrid",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -23270,6 +23647,7 @@
   "k": "dv8|grudgepearl",
   "m": "DV8",
   "n": "Grudge Pearl",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -23279,6 +23657,7 @@
   "k": "dv8|hater",
   "m": "DV8",
   "n": "Hater",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -23288,6 +23667,7 @@
   "k": "dv8|haterpearl",
   "m": "DV8",
   "n": "Hater Pearl",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -23297,6 +23677,7 @@
   "k": "dv8|heckler",
   "m": "DV8",
   "n": "Heckler",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -23306,6 +23687,7 @@
   "k": "dv8|hecklerhybrid",
   "m": "DV8",
   "n": "Heckler Hybrid",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -23315,6 +23697,7 @@
   "k": "dv8|hecklertaunt",
   "m": "DV8",
   "n": "Heckler Taunt",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -23342,6 +23725,7 @@
   "k": "dv8|hellraiser",
   "m": "DV8",
   "n": "Hell Raiser",
+  "s": 1,
   "t": false,
   "y": "2011"
  },
@@ -23378,6 +23762,7 @@
   "k": "dv8|hellraiserrevenge",
   "m": "DV8",
   "n": "Hell Raiser Revenge",
+  "s": 1,
   "t": false,
   "y": "2011"
  },
@@ -23396,6 +23781,7 @@
   "k": "dv8|hellraiserterror",
   "m": "DV8",
   "n": "Hell Raiser Terror",
+  "s": 1,
   "t": false,
   "y": "2012"
  },
@@ -23405,6 +23791,7 @@
   "k": "dv8|hitman",
   "m": "DV8",
   "n": "Hitman",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -23414,6 +23801,7 @@
   "k": "dv8|hitmanenforcer",
   "m": "DV8",
   "n": "Hitman Enforcer",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -23423,6 +23811,7 @@
   "k": "dv8|hooligan",
   "m": "DV8",
   "n": "Hooligan",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -23432,6 +23821,7 @@
   "k": "dv8|hooligantaunt",
   "m": "DV8",
   "n": "Hooligan Taunt",
+  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -23441,6 +23831,7 @@
   "k": "dv8|instigator",
   "m": "DV8",
   "n": "Instigator",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -23450,6 +23841,7 @@
   "k": "dv8|intensecollision",
   "m": "DV8",
   "n": "Intense Collision",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -23486,6 +23878,7 @@
   "k": "dv8|mantra",
   "m": "DV8",
   "n": "Mantra",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -23495,6 +23888,7 @@
   "k": "dv8|mantrasolid",
   "m": "DV8",
   "n": "Mantra Solid",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -23504,6 +23898,7 @@
   "k": "dv8|marauder",
   "m": "DV8",
   "n": "Marauder",
+  "s": 1,
   "t": false,
   "y": "2012"
  },
@@ -23513,6 +23908,7 @@
   "k": "dv8|maraudermadness",
   "m": "DV8",
   "n": "Marauder Madness",
+  "s": 1,
   "t": false,
   "y": "2012"
  },
@@ -23522,6 +23918,7 @@
   "k": "dv8|maraudermutiny",
   "m": "DV8",
   "n": "Marauder Mutiny",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -23540,6 +23937,7 @@
   "k": "dv8|misfitgreenwhite",
   "m": "DV8",
   "n": "Misfit Green/White",
+  "s": 1,
   "t": false,
   "y": "2011"
  },
@@ -23576,6 +23974,7 @@
   "k": "dv8|misfitorangeblue",
   "m": "DV8",
   "n": "Misfit Orange/Blue",
+  "s": 1,
   "t": false,
   "y": "2011"
  },
@@ -23603,6 +24002,7 @@
   "k": "dv8|nastyrumor",
   "m": "DV8",
   "n": "Nasty Rumor",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -23621,6 +24021,7 @@
   "k": "dv8|nightmare",
   "m": "DV8",
   "n": "Nightmare",
+  "s": 1,
   "t": false,
   "y": "2012"
  },
@@ -23639,6 +24040,7 @@
   "k": "dv8|notorious",
   "m": "DV8",
   "n": "Notorious",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -23657,6 +24059,7 @@
   "k": "dv8|outcastblackcitron",
   "m": "DV8",
   "n": "Outcast Black Citron",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -23666,6 +24069,7 @@
   "k": "dv8|outcastbluebruiser",
   "m": "DV8",
   "n": "Outcast Blue Bruiser",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -23711,6 +24115,7 @@
   "k": "dv8|pitbull",
   "m": "DV8",
   "n": "Pitbull",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -23720,6 +24125,7 @@
   "k": "dv8|pitbullbark",
   "m": "DV8",
   "n": "Pitbull Bark",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -23729,6 +24135,7 @@
   "k": "dv8|pitbullbite",
   "m": "DV8",
   "n": "Pitbull Bite",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -23738,6 +24145,7 @@
   "k": "dv8|pitbullgrowl",
   "m": "DV8",
   "n": "Pitbull Growl",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -23747,6 +24155,7 @@
   "k": "dv8|poison",
   "m": "DV8",
   "n": "Poison",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -23774,6 +24183,7 @@
   "k": "dv8|prowler",
   "m": "DV8",
   "n": "Prowler",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -23783,6 +24193,7 @@
   "k": "dv8|reckless",
   "m": "DV8",
   "n": "Reckless",
+  "s": 1,
   "t": false,
   "y": "2011"
  },
@@ -23792,6 +24203,7 @@
   "k": "dv8|ruckus",
   "m": "DV8",
   "n": "Ruckus",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -23810,6 +24222,7 @@
   "k": "dv8|ruckusfeud",
   "m": "DV8",
   "n": "Ruckus Feud",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -23819,6 +24232,7 @@
   "k": "dv8|ruckusschizo",
   "m": "DV8",
   "n": "Ruckus Schizo",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -23828,6 +24242,7 @@
   "k": "dv8|rudedude",
   "m": "DV8",
   "n": "Rude Dude",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -23837,6 +24252,7 @@
   "k": "dv8|rumor",
   "m": "DV8",
   "n": "Rumor",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -23846,6 +24262,7 @@
   "k": "dv8|severecollision",
   "m": "DV8",
   "n": "Severe Collision",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -23855,6 +24272,7 @@
   "k": "dv8|tacticcontrol",
   "m": "DV8",
   "n": "Tactic Control",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -23864,6 +24282,7 @@
   "k": "dv8|thug",
   "m": "DV8",
   "n": "Thug",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -23873,6 +24292,7 @@
   "k": "dv8|thugcorrupt",
   "m": "DV8",
   "n": "Thug Corrupt",
+  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -23882,6 +24302,7 @@
   "k": "dv8|thuglife",
   "m": "DV8",
   "n": "Thug Life",
+  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -23891,6 +24312,7 @@
   "k": "dv8|thugunruly",
   "m": "DV8",
   "n": "Thug Unruly",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -23900,6 +24322,7 @@
   "k": "dv8|tooreckless",
   "m": "DV8",
   "n": "Too Reckless",
+  "s": 1,
   "t": false,
   "y": "2011"
  },
@@ -23918,6 +24341,7 @@
   "k": "dv8|troublemakerpearl",
   "m": "DV8",
   "n": "Trouble Maker Pearl",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -23927,6 +24351,7 @@
   "k": "dv8|troublemakersolid",
   "m": "DV8",
   "n": "Trouble Maker Solid",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -23936,6 +24361,7 @@
   "k": "dv8|turmoil2pearl",
   "m": "DV8",
   "n": "Turmoil 2 Pearl",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -23945,6 +24371,7 @@
   "k": "dv8|turmoil2solid",
   "m": "DV8",
   "n": "Turmoil 2 Solid",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -23954,6 +24381,7 @@
   "k": "dv8|turmoilhybrid",
   "m": "DV8",
   "n": "Turmoil Hybrid",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -23963,6 +24391,7 @@
   "k": "dv8|turmoilpearl",
   "m": "DV8",
   "n": "Turmoil Pearl",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -23972,6 +24401,7 @@
   "k": "dv8|turmoilsolid",
   "m": "DV8",
   "n": "Turmoil Solid",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -23981,6 +24411,7 @@
   "k": "dv8|vandal",
   "m": "DV8",
   "n": "Vandal",
+  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -23990,6 +24421,7 @@
   "k": "dv8|vandaldestroy",
   "m": "DV8",
   "n": "Vandal Destroy",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -24008,6 +24440,7 @@
   "k": "dv8|vandalsmash",
   "m": "DV8",
   "n": "Vandal Smash",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -24026,6 +24459,7 @@
   "k": "dv8|vandalstrike",
   "m": "DV8",
   "n": "Vandal Strike",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -24071,6 +24505,7 @@
   "k": "dv8|violentcollision",
   "m": "DV8",
   "n": "Violent Collision",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -24107,6 +24542,7 @@
   "k": "dv8|wickedcollision",
   "m": "DV8",
   "n": "Wicked Collision",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -25169,6 +25605,7 @@
   "k": "ebonite|adrenalineoverload",
   "m": "Ebonite",
   "n": "Adrenaline Overload",
+  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -25178,6 +25615,7 @@
   "k": "ebonite|adrenalineshot",
   "m": "Ebonite",
   "n": "Adrenaline Shot",
+  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -25187,6 +25625,7 @@
   "k": "ebonite|aero",
   "m": "Ebonite",
   "n": "Aero",
+  "s": 1,
   "t": false,
   "y": "2020"
  },
@@ -25205,6 +25644,7 @@
   "k": "ebonite|affinity",
   "m": "Ebonite",
   "n": "Affinity",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -25232,6 +25672,7 @@
   "k": "ebonite|allure",
   "m": "Ebonite",
   "n": "Allure",
+  "s": 1,
   "t": false,
   "y": "2020"
  },
@@ -25241,6 +25682,7 @@
   "k": "ebonite|alluresolid",
   "m": "Ebonite",
   "n": "Allure Solid",
+  "s": 1,
   "t": false,
   "y": "2020"
  },
@@ -25268,6 +25710,7 @@
   "k": "ebonite|angularone",
   "m": "Ebonite",
   "n": "Angular One",
+  "s": 1,
   "t": false,
   "y": "2006"
  },
@@ -25502,6 +25945,7 @@
   "k": "ebonite|bashblackred",
   "m": "Ebonite",
   "n": "Bash Black Red",
+  "s": 1,
   "t": false,
   "y": "2008"
  },
@@ -25619,6 +26063,7 @@
   "k": "ebonite|boom",
   "m": "Ebonite",
   "n": "Boom",
+  "s": 1,
   "t": false,
   "y": "2009"
  },
@@ -25727,6 +26172,7 @@
   "k": "ebonite|challenge",
   "m": "Ebonite",
   "n": "Challenge",
+  "s": 1,
   "t": false,
   "y": "2012"
  },
@@ -25754,6 +26200,7 @@
   "k": "ebonite|champion",
   "m": "Ebonite",
   "n": "Champion",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -25763,6 +26210,7 @@
   "k": "ebonite|choice",
   "m": "Ebonite",
   "n": "Choice",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -25772,6 +26220,7 @@
   "k": "ebonite|choicepearl",
   "m": "Ebonite",
   "n": "Choice Pearl",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -25799,6 +26248,7 @@
   "k": "ebonite|choicesolid",
   "m": "Ebonite",
   "n": "Choice Solid",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -25808,6 +26258,7 @@
   "k": "ebonite|clash",
   "m": "Ebonite",
   "n": "Clash",
+  "s": 1,
   "t": false,
   "y": "2007"
  },
@@ -25817,6 +26268,7 @@
   "k": "ebonite|clashturquoisepurple",
   "m": "Ebonite",
   "n": "Clash Turquoise Purple",
+  "s": 1,
   "t": false,
   "y": "2008"
  },
@@ -25835,6 +26287,7 @@
   "k": "ebonite|codeofhonor",
   "m": "Ebonite",
   "n": "Code of Honor",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -26069,6 +26522,7 @@
   "k": "ebonite|crusher",
   "m": "Ebonite",
   "n": "Crusher",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -26078,6 +26532,7 @@
   "k": "ebonite|crusherhybrid",
   "m": "Ebonite",
   "n": "Crusher Hybrid",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -26087,6 +26542,7 @@
   "k": "ebonite|curveball",
   "m": "Ebonite",
   "n": "Curve Ball",
+  "s": 1,
   "t": false,
   "y": "2010"
  },
@@ -26096,6 +26552,7 @@
   "k": "ebonite|cycloneblackbluesilver",
   "m": "Ebonite",
   "n": "Cyclone Black/Blue/Silver",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -26105,6 +26562,7 @@
   "k": "ebonite|cycloneblackgoldsilver",
   "m": "Ebonite",
   "n": "Cyclone Black/Gold/Silver",
+  "s": 1,
   "t": false,
   "y": "2011"
  },
@@ -26114,6 +26572,7 @@
   "k": "ebonite|cycloneblackredyellow",
   "m": "Ebonite",
   "n": "Cyclone Black/Red/Yellow",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -26123,6 +26582,7 @@
   "k": "ebonite|cycloneblueredsparkle",
   "m": "Ebonite",
   "n": "Cyclone Blue/Red Sparkle",
+  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -26141,6 +26601,7 @@
   "k": "ebonite|cyclonefireballredgold",
   "m": "Ebonite",
   "n": "Cyclone Fireball (Red/Gold)",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -26159,6 +26620,7 @@
   "k": "ebonite|cyclonegreengoldsilver",
   "m": "Ebonite",
   "n": "Cyclone Green/Gold/Silver",
+  "s": 1,
   "t": false,
   "y": "2012"
  },
@@ -26168,6 +26630,7 @@
   "k": "ebonite|cyclonegreenyellowpearl",
   "m": "Ebonite",
   "n": "Cyclone Green/Yellow Pearl",
+  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -26177,6 +26640,7 @@
   "k": "ebonite|cyclonenavypinkgold",
   "m": "Ebonite",
   "n": "Cyclone Navy/Pink/Gold",
+  "s": 1,
   "t": false,
   "y": "2011"
  },
@@ -26249,6 +26713,7 @@
   "k": "ebonite|cyclonepurpleteallime",
   "m": "Ebonite",
   "n": "Cyclone Purple/Teal/Lime",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -26258,6 +26723,7 @@
   "k": "ebonite|cycloneredpurpleyellow",
   "m": "Ebonite",
   "n": "Cyclone Red/Purple/Yellow",
+  "s": 1,
   "t": false,
   "y": "2012"
  },
@@ -26267,6 +26733,7 @@
   "k": "ebonite|cycloneredwhiteblue",
   "m": "Ebonite",
   "n": "Cyclone Red/White/Blue",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -26294,6 +26761,7 @@
   "k": "ebonite|cycloneturquoisepurplemagenta",
   "m": "Ebonite",
   "n": "Cyclone Turquoise/Purple/Magenta",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -26303,6 +26771,7 @@
   "k": "ebonite|cyclonevioletgoldblue",
   "m": "Ebonite",
   "n": "Cyclone Violet/Gold/Blue",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -26312,6 +26781,7 @@
   "k": "ebonite|cycloneyellowturquoise",
   "m": "Ebonite",
   "n": "Cyclone Yellow/Turquoise",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -26339,6 +26809,7 @@
   "k": "ebonite|destinyhybrid",
   "m": "Ebonite",
   "n": "Destiny Hybrid",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -26348,6 +26819,7 @@
   "k": "ebonite|destinypearl",
   "m": "Ebonite",
   "n": "Destiny Pearl",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -26366,6 +26838,7 @@
   "k": "ebonite|destinysolid",
   "m": "Ebonite",
   "n": "Destiny Solid",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -26375,6 +26848,7 @@
   "k": "ebonite|destinysolidmagenta",
   "m": "Ebonite",
   "n": "Destiny Solid Magenta",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -26483,6 +26957,7 @@
   "k": "ebonite|emerge",
   "m": "Ebonite",
   "n": "Emerge",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -26492,6 +26967,7 @@
   "k": "ebonite|emergehybrid",
   "m": "Ebonite",
   "n": "Emerge Hybrid",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -26501,6 +26977,7 @@
   "k": "ebonite|endure",
   "m": "Ebonite",
   "n": "Endure",
+  "s": 1,
   "t": false,
   "y": "2012"
  },
@@ -26519,6 +26996,7 @@
   "k": "ebonite|energysource",
   "m": "Ebonite",
   "n": "Energy Source",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -26528,6 +27006,7 @@
   "k": "ebonite|entity",
   "m": "Ebonite",
   "n": "Entity",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -26537,6 +27016,7 @@
   "k": "ebonite|entitypearl",
   "m": "Ebonite",
   "n": "Entity Pearl",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -26546,6 +27026,7 @@
   "k": "ebonite|envision",
   "m": "Ebonite",
   "n": "Envision",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -26582,6 +27063,7 @@
   "k": "ebonite|evolve",
   "m": "Ebonite",
   "n": "Evolve",
+  "s": 1,
   "t": false,
   "y": "2009"
  },
@@ -26609,6 +27091,7 @@
   "k": "ebonite|exceed",
   "m": "Ebonite",
   "n": "Exceed",
+  "s": 1,
   "t": false,
   "y": "2012"
  },
@@ -26672,6 +27155,7 @@
   "k": "ebonite|fireball",
   "m": "Ebonite",
   "n": "Fireball",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -26681,6 +27165,7 @@
   "k": "ebonite|fireballpurplegold",
   "m": "Ebonite",
   "n": "Fireball Purple/Gold",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -26708,6 +27193,7 @@
   "k": "ebonite|futura",
   "m": "Ebonite",
   "n": "Futura",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -26717,6 +27203,7 @@
   "k": "ebonite|gamebreaker",
   "m": "Ebonite",
   "n": "Game Breaker",
+  "s": 1,
   "t": false,
   "y": "2007"
  },
@@ -26753,6 +27240,7 @@
   "k": "ebonite|gamebreaker2gold",
   "m": "Ebonite",
   "n": "Game Breaker 2 Gold",
+  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -26771,6 +27259,7 @@
   "k": "ebonite|gamebreaker2mvp",
   "m": "Ebonite",
   "n": "Game Breaker 2 MVP",
+  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -26789,6 +27278,7 @@
   "k": "ebonite|gamebreaker2phenom",
   "m": "Ebonite",
   "n": "Game Breaker 2 Phenom",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -26798,6 +27288,7 @@
   "k": "ebonite|gamebreaker2phenompearl",
   "m": "Ebonite",
   "n": "Game Breaker 2 Phenom Pearl",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -26816,6 +27307,7 @@
   "k": "ebonite|gamebreakerasym",
   "m": "Ebonite",
   "n": "Game Breaker Asym",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -26834,6 +27326,7 @@
   "k": "ebonite|gamechanger",
   "m": "Ebonite",
   "n": "Game Changer",
+  "s": 1,
   "t": false,
   "y": "2011"
  },
@@ -26852,6 +27345,7 @@
   "k": "ebonite|gameon",
   "m": "Ebonite",
   "n": "Game On",
+  "s": 1,
   "t": false,
   "y": "2010"
  },
@@ -26861,6 +27355,7 @@
   "k": "ebonite|gameplan",
   "m": "Ebonite",
   "n": "Game Plan",
+  "s": 1,
   "t": false,
   "y": "2010"
  },
@@ -27113,6 +27608,7 @@
   "k": "ebonite|hardball",
   "m": "Ebonite",
   "n": "Hard Ball",
+  "s": 1,
   "t": false,
   "y": "2010"
  },
@@ -27122,6 +27618,7 @@
   "k": "ebonite|honor",
   "m": "Ebonite",
   "n": "Honor",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -27203,6 +27700,7 @@
   "k": "ebonite|impact",
   "m": "Ebonite",
   "n": "Impact",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -27221,6 +27719,7 @@
   "k": "ebonite|infiniteone",
   "m": "Ebonite",
   "n": "Infinite One",
+  "s": 1,
   "t": false,
   "y": "2006"
  },
@@ -27239,6 +27738,7 @@
   "k": "ebonite|innovate",
   "m": "Ebonite",
   "n": "Innovate",
+  "s": 1,
   "t": false,
   "y": "2012"
  },
@@ -27338,6 +27838,7 @@
   "k": "ebonite|lanebreaker",
   "m": "Ebonite",
   "n": "Lane Breaker",
+  "s": 1,
   "t": false,
   "y": "2009"
  },
@@ -27356,6 +27857,7 @@
   "k": "ebonite|legacy",
   "m": "Ebonite",
   "n": "Legacy",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -27482,6 +27984,7 @@
   "k": "ebonite|magic",
   "m": "Ebonite",
   "n": "Magic",
+  "s": 1,
   "t": false,
   "y": "2009"
  },
@@ -27491,6 +27994,7 @@
   "k": "ebonite|magicaction",
   "m": "Ebonite",
   "n": "Magic Action",
+  "s": 1,
   "t": false,
   "y": "2009"
  },
@@ -27509,6 +28013,7 @@
   "k": "ebonite|magictouchblackredgreen",
   "m": "Ebonite",
   "n": "Magic Touch Black/Red/Green",
+  "s": 1,
   "t": false,
   "y": "2009"
  },
@@ -27518,6 +28023,7 @@
   "k": "ebonite|magictouchblackredsilver",
   "m": "Ebonite",
   "n": "Magic Touch Black/Red/Silver",
+  "s": 1,
   "t": false,
   "y": "2009"
  },
@@ -27545,6 +28051,7 @@
   "k": "ebonite|matrix",
   "m": "Ebonite",
   "n": "Matrix",
+  "s": 1,
   "t": false,
   "y": "1999"
  },
@@ -27662,6 +28169,7 @@
   "k": "ebonite|matrixsolid",
   "m": "Ebonite",
   "n": "Matrix Solid",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -27752,6 +28260,7 @@
   "k": "ebonite|maverick",
   "m": "Ebonite",
   "n": "Maverick",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -27779,6 +28288,7 @@
   "k": "ebonite|maverickpearl",
   "m": "Ebonite",
   "n": "Maverick Pearl",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -27869,6 +28379,7 @@
   "k": "ebonite|mission",
   "m": "Ebonite",
   "n": "Mission",
+  "s": 1,
   "t": false,
   "y": "2009"
  },
@@ -27896,6 +28407,7 @@
   "k": "ebonite|mission20",
   "m": "Ebonite",
   "n": "Mission 2.0",
+  "s": 1,
   "t": false,
   "y": "2010"
  },
@@ -27923,6 +28435,7 @@
   "k": "ebonite|mission250k",
   "m": "Ebonite",
   "n": "Mission $250K",
+  "s": 1,
   "t": false,
   "y": "2011"
  },
@@ -28184,6 +28697,7 @@
   "k": "ebonite|missionunknownblack",
   "m": "Ebonite",
   "n": "Mission Unknown Black",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -28193,6 +28707,7 @@
   "k": "ebonite|missionunknowngold",
   "m": "Ebonite",
   "n": "Mission Unknown Gold",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -28202,6 +28717,7 @@
   "k": "ebonite|missionunknownred",
   "m": "Ebonite",
   "n": "Mission Unknown Red",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -28553,6 +29069,7 @@
   "k": "ebonite|nvs",
   "m": "Ebonite",
   "n": "NVS",
+  "s": 1,
   "t": false,
   "y": "2007"
  },
@@ -28616,6 +29133,7 @@
   "k": "ebonite|omniblackblue",
   "m": "Ebonite",
   "n": "Omni Black/Blue",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -28625,6 +29143,7 @@
   "k": "ebonite|omnihybrid",
   "m": "Ebonite",
   "n": "Omni Hybrid",
+  "s": 1,
   "t": false,
   "y": "2020"
  },
@@ -28859,6 +29378,7 @@
   "k": "ebonite|persevere",
   "m": "Ebonite",
   "n": "Persevere",
+  "s": 1,
   "t": false,
   "y": "2012"
  },
@@ -28886,6 +29406,7 @@
   "k": "ebonite|pinslasher",
   "m": "Ebonite",
   "n": "Pin Slasher",
+  "s": 1,
   "t": false,
   "y": "2008"
  },
@@ -29093,6 +29614,7 @@
   "k": "ebonite|pivotpoint",
   "m": "Ebonite",
   "n": "Pivot Point",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -29228,6 +29750,7 @@
   "k": "ebonite|playmaker",
   "m": "Ebonite",
   "n": "Playmaker",
+  "s": 1,
   "t": false,
   "y": "2007"
  },
@@ -29354,6 +29877,7 @@
   "k": "ebonite|puma",
   "m": "Ebonite",
   "n": "Puma",
+  "s": 1,
   "t": false,
   "y": "1998"
  },
@@ -29363,6 +29887,7 @@
   "k": "ebonite|puma",
   "m": "Ebonite",
   "n": "Puma",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -29480,6 +30005,7 @@
   "k": "ebonite|raid",
   "m": "Ebonite",
   "n": "Raid",
+  "s": 1,
   "t": false,
   "y": "2007"
  },
@@ -29498,6 +30024,7 @@
   "k": "ebonite|realone",
   "m": "Ebonite",
   "n": "Real One",
+  "s": 1,
   "t": false,
   "y": "2006"
  },
@@ -29516,6 +30043,7 @@
   "k": "ebonite|realtime",
   "m": "Ebonite",
   "n": "Real Time",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -29642,6 +30170,7 @@
   "k": "ebonite|salute",
   "m": "Ebonite",
   "n": "Salute",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -29750,6 +30279,7 @@
   "k": "ebonite|signals",
   "m": "Ebonite",
   "n": "Signals",
+  "s": 1,
   "t": false,
   "y": "2011"
  },
@@ -29768,6 +30298,7 @@
   "k": "ebonite|smashblueblackpurple",
   "m": "Ebonite",
   "n": "Smash Blue/Black/Purple",
+  "s": 1,
   "t": false,
   "y": "2009"
  },
@@ -29813,6 +30344,7 @@
   "k": "ebonite|source",
   "m": "Ebonite",
   "n": "Source",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -29867,6 +30399,7 @@
   "k": "ebonite|spartan",
   "m": "Ebonite",
   "n": "Spartan",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -29885,6 +30418,7 @@
   "k": "ebonite|spartanpearl",
   "m": "Ebonite",
   "n": "Spartan Pearl",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -30065,6 +30599,7 @@
   "k": "ebonite|thegreatone",
   "m": "Ebonite",
   "n": "The Great One",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -30083,6 +30618,7 @@
   "k": "ebonite|theone",
   "m": "Ebonite",
   "n": "The One",
+  "s": 1,
   "t": false,
   "y": "2005"
  },
@@ -30290,6 +30826,7 @@
   "k": "ebonite|theoneovation",
   "m": "Ebonite",
   "n": "The One Ovation",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -30947,6 +31484,7 @@
   "k": "ebonite|tornado",
   "m": "Ebonite",
   "n": "Tornado",
+  "s": 1,
   "t": false,
   "y": "2002"
  },
@@ -30965,6 +31503,7 @@
   "k": "ebonite|tornadoblackpurplesilver",
   "m": "Ebonite",
   "n": "Tornado Black/Purple/Silver",
+  "s": 1,
   "t": false,
   "y": "2010"
  },
@@ -30983,6 +31522,7 @@
   "k": "ebonite|tornadoblacksparkle",
   "m": "Ebonite",
   "n": "Tornado Black Sparkle",
+  "s": 1,
   "t": false,
   "y": "2006"
  },
@@ -31028,6 +31568,7 @@
   "k": "ebonite|tornadopurpleredgold",
   "m": "Ebonite",
   "n": "Tornado Purple/Red/Gold",
+  "s": 1,
   "t": false,
   "y": "2009"
  },
@@ -31055,6 +31596,7 @@
   "k": "ebonite|tornadoredwhiteblue",
   "m": "Ebonite",
   "n": "Tornado Red White Blue",
+  "s": 1,
   "t": false,
   "y": "2008"
  },
@@ -31082,6 +31624,7 @@
   "k": "ebonite|tornadosilvernavygold",
   "m": "Ebonite",
   "n": "Tornado Silver/Navy/Gold",
+  "s": 1,
   "t": false,
   "y": "2007"
  },
@@ -31208,6 +31751,7 @@
   "k": "ebonite|totalnv",
   "m": "Ebonite",
   "n": "Total NV",
+  "s": 1,
   "t": false,
   "y": "2007"
  },
@@ -31406,6 +31950,7 @@
   "k": "ebonite|turborblackcopperyellow",
   "m": "Ebonite",
   "n": "Turbo-R Black/Copper/Yellow",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -31424,6 +31969,7 @@
   "k": "ebonite|turborblackpurplegold",
   "m": "Ebonite",
   "n": "Turbo-R Black/Purple/Gold",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -31433,6 +31979,7 @@
   "k": "ebonite|turborblacksparkleaqua",
   "m": "Ebonite",
   "n": "Turbo-R Black Sparkle/Aqua",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -31442,6 +31989,7 @@
   "k": "ebonite|turborbluegreensilver",
   "m": "Ebonite",
   "n": "Turbo-R Blue/Green/Silver",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -31460,6 +32008,7 @@
   "k": "ebonite|turborpinkblackwhite",
   "m": "Ebonite",
   "n": "Turbo-R Pink/Black/White",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -31469,6 +32018,7 @@
   "k": "ebonite|turborpurpleblack",
   "m": "Ebonite",
   "n": "Turbo-R Purple/Black",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -31487,6 +32037,7 @@
   "k": "ebonite|turborpurpleredsilver",
   "m": "Ebonite",
   "n": "Turbo-R Purple/Red/Silver",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -31514,6 +32065,7 @@
   "k": "ebonite|turbox",
   "m": "Ebonite",
   "n": "Turbo X",
+  "s": 1,
   "t": false,
   "y": "1992"
  },
@@ -31523,6 +32075,7 @@
   "k": "ebonite|turbox",
   "m": "Ebonite",
   "n": "Turbo X",
+  "s": 1,
   "t": false,
   "y": "2003"
  },
@@ -31532,6 +32085,7 @@
   "k": "ebonite|turbox",
   "m": "Ebonite",
   "n": "Turbo X",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -31550,6 +32104,7 @@
   "k": "ebonite|turboxnu",
   "m": "Ebonite",
   "n": "Turbo X NU",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -31559,6 +32114,7 @@
   "k": "ebonite|turboxpearl",
   "m": "Ebonite",
   "n": "Turbo X Pearl",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -31739,6 +32295,7 @@
   "k": "ebonite|verdict",
   "m": "Ebonite",
   "n": "Verdict",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -31775,6 +32332,7 @@
   "k": "ebonite|verdictpearl",
   "m": "Ebonite",
   "n": "Verdict Pearl",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -31802,6 +32360,7 @@
   "k": "ebonite|vitalenergy",
   "m": "Ebonite",
   "n": "Vital Energy",
+  "s": 1,
   "t": false,
   "y": "2010"
  },
@@ -31811,6 +32370,7 @@
   "k": "ebonite|vitalsign",
   "m": "Ebonite",
   "n": "Vital Sign",
+  "s": 1,
   "t": false,
   "y": "2010"
  },
@@ -31946,6 +32506,7 @@
   "k": "ebonite|warrior",
   "m": "Ebonite",
   "n": "Warrior",
+  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -32018,6 +32579,7 @@
   "k": "ebonite|warriorsupreme",
   "m": "Ebonite",
   "n": "Warrior Supreme",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -34061,6 +34623,7 @@
   "k": "hammer|3doffsetassault",
   "m": "Hammer",
   "n": "3D Offset Assault",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -34070,6 +34633,7 @@
   "k": "hammer|3doffsetattack",
   "m": "Hammer",
   "n": "3D Offset Attack",
+  "s": 1,
   "t": false,
   "y": "2022"
  },
@@ -34223,6 +34787,7 @@
   "k": "hammer|angersolid",
   "m": "Hammer",
   "n": "Anger Solid",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -34232,6 +34797,7 @@
   "k": "hammer|arcticvibe",
   "m": "Hammer",
   "n": "Arctic Vibe",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -34583,6 +35149,7 @@
   "k": "hammer|blackwidow20",
   "m": "Hammer",
   "n": "Black Widow (2.0)",
+  "s": 1,
   "t": false,
   "y": "2020"
  },
@@ -34601,6 +35168,7 @@
   "k": "hammer|blackwidow20hybrid",
   "m": "Hammer",
   "n": "Black Widow (2.0 Hybrid)",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -34646,6 +35214,7 @@
   "k": "hammer|blackwidow30",
   "m": "Hammer",
   "n": "Black Widow (3.0)",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -34664,6 +35233,7 @@
   "k": "hammer|blackwidow30dynasty",
   "m": "Hammer",
   "n": "Black Widow (3.0 Dynasty)",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -34979,6 +35549,7 @@
   "k": "hammer|blackwidowghostpearl",
   "m": "Hammer",
   "n": "Black Widow Ghost Pearl",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -35168,6 +35739,7 @@
   "k": "hammer|blackwidowmania",
   "m": "Hammer",
   "n": "Black Widow (Mania)",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -35582,6 +36154,7 @@
   "k": "hammer|blackwidowspareplus",
   "m": "Hammer",
   "n": "Black Widow Spare +",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -35627,6 +36200,7 @@
   "k": "hammer|blackwidowtourv1",
   "m": "Hammer",
   "n": "(Black Widow) Tour V1",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -35861,6 +36435,7 @@
   "k": "hammer|blackwidowvizaball",
   "m": "Hammer",
   "n": "Black Widow Viz-A-Ball",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -35978,6 +36553,7 @@
   "k": "hammer|bubblegumvibe",
   "m": "Hammer",
   "n": "Bubblegum Vibe",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -36068,6 +36644,7 @@
   "k": "hammer|darkweb",
   "m": "Hammer",
   "n": "Dark Web",
+  "s": 1,
   "t": false,
   "y": "2022"
  },
@@ -36077,6 +36654,7 @@
   "k": "hammer|darkwebhybrid",
   "m": "Hammer",
   "n": "Dark Web Hybrid",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -36113,6 +36691,7 @@
   "k": "hammer|deepoceanvibe",
   "m": "Hammer",
   "n": "Deep Ocean Vibe",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -36293,6 +36872,7 @@
   "k": "hammer|envy",
   "m": "Hammer",
   "n": "Envy",
+  "s": 1,
   "t": false,
   "y": "2022"
  },
@@ -36320,6 +36900,7 @@
   "k": "hammer|envytour",
   "m": "Hammer",
   "n": "Envy Tour",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -36329,6 +36910,7 @@
   "k": "hammer|envytourpearl",
   "m": "Hammer",
   "n": "Envy Tour Pearl",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -36374,6 +36956,7 @@
   "k": "hammer|extremeenvy",
   "m": "Hammer",
   "n": "Extreme Envy",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -36419,6 +37002,7 @@
   "k": "hammer|fallout",
   "m": "Hammer",
   "n": "Fallout",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -36437,6 +37021,7 @@
   "k": "hammer|fiercephobia",
   "m": "Hammer",
   "n": "Fierce Phobia",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -36482,6 +37067,7 @@
   "k": "hammer|fugitive",
   "m": "Hammer",
   "n": "Fugitive",
+  "s": 1,
   "t": false,
   "y": "2020"
  },
@@ -36491,6 +37077,7 @@
   "k": "hammer|fugitivesolid",
   "m": "Hammer",
   "n": "Fugitive Solid",
+  "s": 1,
   "t": false,
   "y": "2020"
  },
@@ -36500,6 +37087,7 @@
   "k": "hammer|fulleffect",
   "m": "Hammer",
   "n": "Full Effect",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -36590,6 +37178,7 @@
   "k": "hammer|gauntletfury",
   "m": "Hammer",
   "n": "Gauntlet Fury",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -36725,6 +37314,7 @@
   "k": "hammer|hammerhead",
   "m": "Hammer",
   "n": "Hammerhead",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -36734,6 +37324,7 @@
   "k": "hammer|hammerheadpearl",
   "m": "Hammer",
   "n": "Hammerhead Pearl",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -36797,6 +37388,7 @@
   "k": "hammer|hazmat",
   "m": "Hammer",
   "n": "Hazmat",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -36806,6 +37398,7 @@
   "k": "hammer|hazmatpearl",
   "m": "Hammer",
   "n": "Hazmat Pearl",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -36815,6 +37408,7 @@
   "k": "hammer|hazmatsolid",
   "m": "Hammer",
   "n": "Hazmat Solid",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -36950,6 +37544,7 @@
   "k": "hammer|infamous",
   "m": "Hammer",
   "n": "Infamous",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -37148,6 +37743,7 @@
   "k": "hammer|maximumeffect",
   "m": "Hammer",
   "n": "Maximum Effect",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -37481,6 +38077,7 @@
   "k": "hammer|nu20",
   "m": "Hammer",
   "n": "NU 2.0",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -37490,6 +38087,7 @@
   "k": "hammer|nubluehammer",
   "m": "Hammer",
   "n": "NU Blue Hammer",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -37508,6 +38106,7 @@
   "k": "hammer|obsession",
   "m": "Hammer",
   "n": "Obsession",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -37517,6 +38116,7 @@
   "k": "hammer|obsessiontour",
   "m": "Hammer",
   "n": "Obsession Tour",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -37526,6 +38126,7 @@
   "k": "hammer|oceanvibe",
   "m": "Hammer",
   "n": "Ocean Vibe",
+  "s": 1,
   "t": false,
   "y": "2022"
  },
@@ -37607,6 +38208,7 @@
   "k": "hammer|pureenvy",
   "m": "Hammer",
   "n": "Pure Envy",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -37616,6 +38218,7 @@
   "k": "hammer|purehammer",
   "m": "Hammer",
   "n": "Pure Hammer",
+  "s": 1,
   "t": false,
   "y": "2004"
  },
@@ -37652,6 +38255,7 @@
   "k": "hammer|purplepearlurethane78d",
   "m": "Hammer",
   "n": "Purple Pearl Urethane 78D",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -37715,6 +38319,7 @@
   "k": "hammer|radioactivevibe",
   "m": "Hammer",
   "n": "Radioactive Vibe",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -37769,6 +38374,7 @@
   "k": "hammer|rawhammerblack",
   "m": "Hammer",
   "n": "Raw Hammer Black",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -37787,6 +38393,7 @@
   "k": "hammer|rawhammerblackgrey",
   "m": "Hammer",
   "n": "Raw Hammer Black/Grey",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -37796,6 +38403,7 @@
   "k": "hammer|rawhammerblackpurpleteal",
   "m": "Hammer",
   "n": "Raw Hammer Black/Purple/Teal",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -37814,6 +38422,7 @@
   "k": "hammer|rawhammerbluesilverwhite",
   "m": "Hammer",
   "n": "Raw Hammer Blue/Silver/White",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -37877,6 +38486,7 @@
   "k": "hammer|rawhammerorangeblack",
   "m": "Hammer",
   "n": "Raw Hammer Orange/Black",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -37904,6 +38514,7 @@
   "k": "hammer|rawhammerpurplepinksilver",
   "m": "Hammer",
   "n": "Raw Hammer Purple/Pink/Silver",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -37922,6 +38533,7 @@
   "k": "hammer|rawhammerredwhitepurple",
   "m": "Hammer",
   "n": "Raw Hammer Red/White/Purple",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -37940,6 +38552,7 @@
   "k": "hammer|rawhammersmokebluegold",
   "m": "Hammer",
   "n": "Raw Hammer Smoke-Blue-Gold",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -38093,6 +38706,7 @@
   "k": "hammer|redemptionhybrid",
   "m": "Hammer",
   "n": "Redemption Hybrid",
+  "s": 1,
   "t": false,
   "y": "2020"
  },
@@ -38111,6 +38725,7 @@
   "k": "hammer|redemptionpearl",
   "m": "Hammer",
   "n": "Redemption Pearl",
+  "s": 1,
   "t": false,
   "y": "2020"
  },
@@ -38120,6 +38735,7 @@
   "k": "hammer|redemptionsolid",
   "m": "Hammer",
   "n": "Redemption Solid",
+  "s": 1,
   "t": false,
   "y": "2020"
  },
@@ -38147,6 +38763,7 @@
   "k": "hammer|rhodmanpearl",
   "m": "Hammer",
   "n": "Rhodman Pearl",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -38165,6 +38782,7 @@
   "k": "hammer|ripd",
   "m": "Hammer",
   "n": "Rip'D",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -38201,6 +38819,7 @@
   "k": "hammer|ripdsolid",
   "m": "Hammer",
   "n": "Rip'D Solid",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -38345,6 +38964,7 @@
   "k": "hammer|scorpion",
   "m": "Hammer",
   "n": "Scorpion",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -38354,6 +38974,7 @@
   "k": "hammer|scorpionlowflare",
   "m": "Hammer",
   "n": "Scorpion Low Flare",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -38363,6 +38984,7 @@
   "k": "hammer|scorpionsting",
   "m": "Hammer",
   "n": "Scorpion Sting",
+  "s": 1,
   "t": false,
   "y": "2022"
  },
@@ -38372,6 +38994,7 @@
   "k": "hammer|scorpionstrike",
   "m": "Hammer",
   "n": "Scorpion Strike",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -38408,6 +39031,7 @@
   "k": "hammer|slingblade",
   "m": "Hammer",
   "n": "Sling Blade",
+  "s": 1,
   "t": false,
   "y": "2003"
  },
@@ -38417,6 +39041,7 @@
   "k": "hammer|spawn",
   "m": "Hammer",
   "n": "Spawn",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -38480,6 +39105,7 @@
   "k": "hammer|statementhybrid",
   "m": "Hammer",
   "n": "Statement Hybrid",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -38498,6 +39124,7 @@
   "k": "hammer|statementpearl",
   "m": "Hammer",
   "n": "Statement Pearl",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -38516,6 +39143,7 @@
   "k": "hammer|statementsolid",
   "m": "Hammer",
   "n": "Statement Solid",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -39560,6 +40188,7 @@
   "k": "hammer|web",
   "m": "Hammer",
   "n": "Web",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -39578,6 +40207,7 @@
   "k": "hammer|webmb",
   "m": "Hammer",
   "n": "Web M.B.",
+  "s": 1,
   "t": false,
   "y": "2020"
  },
@@ -39605,6 +40235,7 @@
   "k": "hammer|webtouredition",
   "m": "Hammer",
   "n": "Web Tour Edition",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -39614,6 +40245,7 @@
   "k": "hammer|webtoureditionhybrid",
   "m": "Hammer",
   "n": "Web Tour Edition Hybrid",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -39893,6 +40525,7 @@
   "k": "hammer|zeromercyhybrid",
   "m": "Hammer",
   "n": "Zero Mercy Hybrid",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -39902,6 +40535,7 @@
   "k": "hammer|zeromercypearl",
   "m": "Hammer",
   "n": "Zero Mercy Pearl",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -39911,6 +40545,7 @@
   "k": "hammer|zeromercysolid",
   "m": "Hammer",
   "n": "Zero Mercy Solid",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -39929,6 +40564,7 @@
   "k": "hammer|zeromercytour",
   "m": "Hammer",
   "n": "Zero Mercy Tour",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -45410,6 +46046,7 @@
   "k": "motiv|2cruel",
   "m": "Motiv",
   "n": "2 Cruel",
+  "s": 1,
   "t": false,
   "y": "2012"
  },
@@ -45419,6 +46056,7 @@
   "k": "motiv|2020revolt",
   "m": "Motiv",
   "n": "2020 Revolt",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -45437,6 +46075,7 @@
   "k": "motiv|alphajackal",
   "m": "Motiv",
   "n": "(Alpha) Jackal",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -45446,6 +46085,7 @@
   "k": "motiv|apexjackal",
   "m": "Motiv",
   "n": "(Apex) Jackal",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -45455,6 +46095,7 @@
   "k": "motiv|arcticsniper",
   "m": "Motiv",
   "n": "Arctic Sniper",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -45473,6 +46114,7 @@
   "k": "motiv|ascenddarkpurplepurpleblue",
   "m": "Motiv",
   "n": "Ascend Dark Purple/Purple/Blue",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -45482,6 +46124,7 @@
   "k": "motiv|ascendnavytealyellow",
   "m": "Motiv",
   "n": "Ascend Navy/Teal/Yellow",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -45491,6 +46134,7 @@
   "k": "motiv|ascendredblacktangerine",
   "m": "Motiv",
   "n": "Ascend Red/Black/Tangerine",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -45536,6 +46180,7 @@
   "k": "motiv|ascentpearlpinkpurple",
   "m": "Motiv",
   "n": "Ascent Pearl Pink/Purple",
+  "s": 1,
   "t": false,
   "y": "2012"
  },
@@ -45545,6 +46190,7 @@
   "k": "motiv|ascentpearlredblack",
   "m": "Motiv",
   "n": "Ascent Pearl Red/Black",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -45554,6 +46200,7 @@
   "k": "motiv|aspire",
   "m": "Motiv",
   "n": "Aspire (All Colors)",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -45563,6 +46210,7 @@
   "k": "motiv|blackjackal",
   "m": "Motiv",
   "n": "Black Jackal",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -45572,6 +46220,7 @@
   "k": "motiv|blackvenom",
   "m": "Motiv",
   "n": "Black Venom",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -45581,6 +46230,7 @@
   "k": "motiv|bluecoralvenom",
   "m": "Motiv",
   "n": "Blue Coral Venom",
+  "s": 1,
   "t": false,
   "y": "2022"
  },
@@ -45590,6 +46240,7 @@
   "k": "motiv|bluetank",
   "m": "Motiv",
   "n": "Blue Tank",
+  "s": 1,
   "t": false,
   "y": "2022"
  },
@@ -45599,6 +46250,7 @@
   "k": "motiv|carbidetank",
   "m": "Motiv",
   "n": "Carbide Tank",
+  "s": 1,
   "t": false,
   "y": "2022"
  },
@@ -45608,6 +46260,7 @@
   "k": "motiv|chronicparanoia",
   "m": "Motiv",
   "n": "Chronic Paranoia",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -45617,6 +46270,7 @@
   "k": "motiv|combattankblackburgundy",
   "m": "Motiv",
   "n": "(Combat) Tank Black/Burgundy",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -45626,6 +46280,7 @@
   "k": "motiv|covertrevolt",
   "m": "Motiv",
   "n": "Covert Revolt",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -45635,6 +46290,7 @@
   "k": "motiv|coverttank",
   "m": "Motiv",
   "n": "(Covert) Tank",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -45662,6 +46318,7 @@
   "k": "motiv|crimsonjackal",
   "m": "Motiv",
   "n": "Crimson Jackal",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -45671,6 +46328,7 @@
   "k": "motiv|cruelc51",
   "m": "Motiv",
   "n": "Cruel C51",
+  "s": 1,
   "t": false,
   "y": "2010"
  },
@@ -45689,6 +46347,7 @@
   "k": "motiv|cruelintent",
   "m": "Motiv",
   "n": "Cruel Intent",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -45698,6 +46357,7 @@
   "k": "motiv|deserttank",
   "m": "Motiv",
   "n": "(Desert) Tank",
+  "s": 1,
   "t": false,
   "y": "2020"
  },
@@ -45707,6 +46367,7 @@
   "k": "motiv|evoke",
   "m": "Motiv",
   "n": "Evoke",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -45716,6 +46377,7 @@
   "k": "motiv|evokehysteria",
   "m": "Motiv",
   "n": "Evoke (Hysteria)",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -45725,6 +46387,7 @@
   "k": "motiv|evokemayhem",
   "m": "Motiv",
   "n": "Evoke (Mayhem)",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -45734,6 +46397,7 @@
   "k": "motiv|fatalvenom",
   "m": "Motiv",
   "n": "(Fatal) Venom",
+  "s": 1,
   "t": false,
   "y": "2020"
  },
@@ -45743,6 +46407,7 @@
   "k": "motiv|forge",
   "m": "Motiv",
   "n": "Forge",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -45752,6 +46417,7 @@
   "k": "motiv|forgeember",
   "m": "Motiv",
   "n": "Forge (Ember)",
+  "s": 1,
   "t": false,
   "y": "2022"
  },
@@ -45761,6 +46427,7 @@
   "k": "motiv|forgefire",
   "m": "Motiv",
   "n": "Forge (Fire)",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -45770,6 +46437,7 @@
   "k": "motiv|forgeflare",
   "m": "Motiv",
   "n": "Forge (Flare)",
+  "s": 1,
   "t": false,
   "y": "2020"
  },
@@ -45779,6 +46447,7 @@
   "k": "motiv|forgefuel",
   "m": "Motiv",
   "n": "Forge (Fuel)",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -45788,6 +46457,7 @@
   "k": "motiv|forza",
   "m": "Motiv",
   "n": "Forza",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -45797,6 +46467,7 @@
   "k": "motiv|forzagt",
   "m": "Motiv",
   "n": "Forza GT",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -45815,6 +46486,7 @@
   "k": "motiv|forzass",
   "m": "Motiv",
   "n": "Forza SS",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -45842,6 +46514,7 @@
   "k": "motiv|freestylerush",
   "m": "Motiv",
   "n": "Freestyle Rush",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -45878,6 +46551,7 @@
   "k": "motiv|goldrevolt",
   "m": "Motiv",
   "n": "Gold Revolt",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -45887,6 +46561,7 @@
   "k": "motiv|goldenjackal",
   "m": "Motiv",
   "n": "Golden Jackal",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -45896,6 +46571,7 @@
   "k": "motiv|gt1",
   "m": "Motiv",
   "n": "GT1",
+  "s": 1,
   "t": false,
   "y": "2009"
  },
@@ -45914,6 +46590,7 @@
   "k": "motiv|hydra",
   "m": "Motiv",
   "n": "Hydra",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -45923,6 +46600,7 @@
   "k": "motiv|hypervenom",
   "m": "Motiv",
   "n": "(Hyper) Venom",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -45932,6 +46610,7 @@
   "k": "motiv|ironforge",
   "m": "Motiv",
   "n": "(Iron) Forge",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -45941,6 +46620,7 @@
   "k": "motiv|jackalambush",
   "m": "Motiv",
   "n": "Jackal (Ambush)",
+  "s": 1,
   "t": false,
   "y": "2022"
  },
@@ -45950,6 +46630,7 @@
   "k": "motiv|jackalassault",
   "m": "Motiv",
   "n": "Jackal (Assault)",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -45959,6 +46640,7 @@
   "k": "motiv|jackalattack",
   "m": "Motiv",
   "n": "Jackal Attack",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -45968,6 +46650,7 @@
   "k": "motiv|jackalboss",
   "m": "Motiv",
   "n": "Jackal Boss",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -45977,6 +46660,7 @@
   "k": "motiv|jackalchase",
   "m": "Motiv",
   "n": "Jackal Chase",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -45995,6 +46679,7 @@
   "k": "motiv|jackalexj",
   "m": "Motiv",
   "n": "Jackal ExJ",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -46004,6 +46689,7 @@
   "k": "motiv|jackalflash",
   "m": "Motiv",
   "n": "Jackal (Flash)",
+  "s": 1,
   "t": false,
   "y": "2020"
  },
@@ -46013,6 +46699,7 @@
   "k": "motiv|jackalfury",
   "m": "Motiv",
   "n": "Jackal Fury",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -46022,6 +46709,7 @@
   "k": "motiv|jackalghost",
   "m": "Motiv",
   "n": "Jackal Ghost",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -46031,6 +46719,7 @@
   "k": "motiv|jackalghostv2",
   "m": "Motiv",
   "n": "Jackal (Ghost V2)",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -46040,6 +46729,7 @@
   "k": "motiv|jackalhowl",
   "m": "Motiv",
   "n": "Jackal (Howl)",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -46049,6 +46739,7 @@
   "k": "motiv|jackalhunt",
   "m": "Motiv",
   "n": "Jackal Hunt",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -46058,6 +46749,7 @@
   "k": "motiv|jackalle",
   "m": "Motiv",
   "n": "Jackal LE",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -46067,6 +46759,7 @@
   "k": "motiv|jackallegacy",
   "m": "Motiv",
   "n": "Jackal (Legacy)",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -46076,6 +46769,7 @@
   "k": "motiv|jackalmagic",
   "m": "Motiv",
   "n": "Jackal Magic",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -46085,6 +46779,7 @@
   "k": "motiv|jackalonyx",
   "m": "Motiv",
   "n": "Jackal (Onyx)",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -46103,6 +46798,7 @@
   "k": "motiv|jackalrising",
   "m": "Motiv",
   "n": "Jackal Rising",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -46112,6 +46808,7 @@
   "k": "motiv|jackalscar",
   "m": "Motiv",
   "n": "Jackal Scar",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -46121,6 +46818,7 @@
   "k": "motiv|jackalshadow",
   "m": "Motiv",
   "n": "Jackal (Shadow)",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -46130,6 +46828,7 @@
   "k": "motiv|jackalshred",
   "m": "Motiv",
   "n": "Jackal Shred",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -46139,6 +46838,7 @@
   "k": "motiv|jackalslash",
   "m": "Motiv",
   "n": "Jackal Slash",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -46157,6 +46857,7 @@
   "k": "motiv|jackalwild",
   "m": "Motiv",
   "n": "Jackal Wild",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -46166,6 +46867,7 @@
   "k": "motiv|kingvenom",
   "m": "Motiv",
   "n": "(King) Venom",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -46175,6 +46877,7 @@
   "k": "motiv|lasersniper",
   "m": "Motiv",
   "n": "(Laser) Sniper",
+  "s": 1,
   "t": false,
   "y": "2022"
  },
@@ -46184,6 +46887,7 @@
   "k": "motiv|lethalparanoia",
   "m": "Motiv",
   "n": "Lethal Paranoia",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -46193,6 +46897,7 @@
   "k": "motiv|lethalvenom",
   "m": "Motiv",
   "n": "(Lethal) Venom",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -46211,6 +46916,7 @@
   "k": "motiv|maxthrillhybrid",
   "m": "Motiv",
   "n": "(Max) Thrill Hybrid",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -46220,6 +46926,7 @@
   "k": "motiv|maxthrillpearl",
   "m": "Motiv",
   "n": "(Max) Thrill Pearl",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -46238,6 +46945,7 @@
   "k": "motiv|maxthrillsolid",
   "m": "Motiv",
   "n": "(Max) Thrill Solid",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -46247,6 +46955,7 @@
   "k": "motiv|mythicjackal",
   "m": "Motiv",
   "n": "(Mythic) Jackal",
+  "s": 1,
   "t": false,
   "y": "2022"
  },
@@ -46256,6 +46965,7 @@
   "k": "motiv|nebula",
   "m": "Motiv",
   "n": "Nebula",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -46265,6 +46975,7 @@
   "k": "motiv|nuclearforge",
   "m": "Motiv",
   "n": "(Nuclear) Forge",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -46274,6 +46985,7 @@
   "k": "motiv|octane",
   "m": "Motiv",
   "n": "Octane",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -46283,6 +46995,7 @@
   "k": "motiv|octaneburn",
   "m": "Motiv",
   "n": "Octane Burn",
+  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -46292,6 +47005,7 @@
   "k": "motiv|octanecarbon",
   "m": "Motiv",
   "n": "Octane Carbon",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -46301,6 +47015,7 @@
   "k": "motiv|paranoia",
   "m": "Motiv",
   "n": "Paranoia",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -46310,6 +47025,7 @@
   "k": "motiv|pride",
   "m": "Motiv",
   "n": "Pride",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -46319,6 +47035,7 @@
   "k": "motiv|pridedynasty",
   "m": "Motiv",
   "n": "Pride (Dynasty)",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -46328,6 +47045,7 @@
   "k": "motiv|prideempire",
   "m": "Motiv",
   "n": "Pride (Empire)",
+  "s": 1,
   "t": false,
   "y": "2022"
  },
@@ -46337,6 +47055,7 @@
   "k": "motiv|prideliberty",
   "m": "Motiv",
   "n": "Pride (Liberty)",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -46355,6 +47074,7 @@
   "k": "motiv|primalfear",
   "m": "Motiv",
   "n": "Primal Fear",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -46364,6 +47084,7 @@
   "k": "motiv|primalghost",
   "m": "Motiv",
   "n": "Primal (Ghost)",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -46373,6 +47094,7 @@
   "k": "motiv|primalimpulse",
   "m": "Motiv",
   "n": "Primal Impulse",
+  "s": 1,
   "t": false,
   "y": "2011"
  },
@@ -46382,6 +47104,7 @@
   "k": "motiv|primalrage",
   "m": "Motiv",
   "n": "Primal Rage",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -46400,6 +47123,7 @@
   "k": "motiv|primalrageevolution",
   "m": "Motiv",
   "n": "Primal (Rage Evolution)",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -46409,6 +47133,7 @@
   "k": "motiv|primalrageremix",
   "m": "Motiv",
   "n": "Primal Rage Remix",
+  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -46418,6 +47143,7 @@
   "k": "motiv|primalscream",
   "m": "Motiv",
   "n": "Primal Scream",
+  "s": 1,
   "t": false,
   "y": "2012"
  },
@@ -46427,6 +47153,7 @@
   "k": "motiv|primalshock",
   "m": "Motiv",
   "n": "Primal (Shock)",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -46436,6 +47163,7 @@
   "k": "motiv|primaltv4",
   "m": "Motiv",
   "n": "Primal TV4",
+  "s": 1,
   "t": false,
   "y": "2011"
  },
@@ -46454,6 +47182,7 @@
   "k": "motiv|purpletank",
   "m": "Motiv",
   "n": "Purple Tank",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -46499,6 +47228,7 @@
   "k": "motiv|raptoraltitude",
   "m": "Motiv",
   "n": "Raptor (Altitude)",
+  "s": 1,
   "t": false,
   "y": "2020"
  },
@@ -46508,6 +47238,7 @@
   "k": "motiv|raptorattack",
   "m": "Motiv",
   "n": "Raptor Attack",
+  "s": 1,
   "t": false,
   "y": "2012"
  },
@@ -46517,6 +47248,7 @@
   "k": "motiv|raptorfury",
   "m": "Motiv",
   "n": "Raptor (Fury)",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -46526,6 +47258,7 @@
   "k": "motiv|raptorp7",
   "m": "Motiv",
   "n": "Raptor P7",
+  "s": 1,
   "t": false,
   "y": "2011"
  },
@@ -46535,6 +47268,7 @@
   "k": "motiv|raptorpursuit",
   "m": "Motiv",
   "n": "Raptor (Pursuit)",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -46544,6 +47278,7 @@
   "k": "motiv|raptorreign",
   "m": "Motiv",
   "n": "Raptor (Reign)",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -46553,6 +47288,7 @@
   "k": "motiv|raptorrush",
   "m": "Motiv",
   "n": "Raptor (Rush)",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -46562,6 +47298,7 @@
   "k": "motiv|raptorsupreme",
   "m": "Motiv",
   "n": "Raptor (Supreme)",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -46571,6 +47308,7 @@
   "k": "motiv|raptortalon",
   "m": "Motiv",
   "n": "Raptor Talon",
+  "s": 1,
   "t": false,
   "y": "2012"
  },
@@ -46634,6 +47372,7 @@
   "k": "motiv|revoltuprising",
   "m": "Motiv",
   "n": "Revolt (Uprising)",
+  "s": 1,
   "t": false,
   "y": "2022"
  },
@@ -46643,6 +47382,7 @@
   "k": "motiv|revoltvengeance",
   "m": "Motiv",
   "n": "Revolt (Vengeance)",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -46652,6 +47392,7 @@
   "k": "motiv|ripcord",
   "m": "Motiv",
   "n": "Ripcord",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -46661,6 +47402,7 @@
   "k": "motiv|ripcordflight",
   "m": "Motiv",
   "n": "Ripcord (Flight)",
+  "s": 1,
   "t": false,
   "y": "2020"
  },
@@ -46670,6 +47412,7 @@
   "k": "motiv|ripcordlaunch",
   "m": "Motiv",
   "n": "Ripcord (Launch)",
+  "s": 1,
   "t": false,
   "y": "2022"
  },
@@ -46679,6 +47422,7 @@
   "k": "motiv|ripcordvelocity",
   "m": "Motiv",
   "n": "Ripcord (Velocity)",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -46688,6 +47432,7 @@
   "k": "motiv|risingvenom",
   "m": "Motiv",
   "n": "(Rising) Venom",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -46697,6 +47442,7 @@
   "k": "motiv|rogueassassin",
   "m": "Motiv",
   "n": "Rogue (Assassin)",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -46706,6 +47452,7 @@
   "k": "motiv|rogueblade",
   "m": "Motiv",
   "n": "Rogue Blade",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -46715,6 +47462,7 @@
   "k": "motiv|royalrevolt",
   "m": "Motiv",
   "n": "Royal Revolt",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -46733,6 +47481,7 @@
   "k": "motiv|sapphirejackal",
   "m": "Motiv",
   "n": "Sapphire Jackal",
+  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -46742,6 +47491,7 @@
   "k": "motiv|shadowtank",
   "m": "Motiv",
   "n": "(Shadow) Tank",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -46751,6 +47501,7 @@
   "k": "motiv|sigmahybrid",
   "m": "Motiv",
   "n": "Sigma Hybrid",
+  "s": 1,
   "t": false,
   "y": "2012"
  },
@@ -46760,6 +47511,7 @@
   "k": "motiv|sigmasting",
   "m": "Motiv",
   "n": "Sigma Sting",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -46769,6 +47521,7 @@
   "k": "motiv|sigmatour",
   "m": "Motiv",
   "n": "Sigma Tour",
+  "s": 1,
   "t": false,
   "y": "2011"
  },
@@ -46778,6 +47531,7 @@
   "k": "motiv|sigmatourpearl",
   "m": "Motiv",
   "n": "Sigma (Tour) Pearl",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -46787,6 +47541,7 @@
   "k": "motiv|silversniper",
   "m": "Motiv",
   "n": "Silver Sniper",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -46796,6 +47551,7 @@
   "k": "motiv|skyraptor",
   "m": "Motiv",
   "n": "(Sky) Raptor",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -46805,6 +47561,7 @@
   "k": "motiv|sniper",
   "m": "Motiv",
   "n": "Sniper",
+  "s": 1,
   "t": false,
   "y": "2012"
  },
@@ -46832,6 +47589,7 @@
   "k": "motiv|sr2",
   "m": "Motiv",
   "n": "SR2",
+  "s": 1,
   "t": false,
   "y": "2009"
  },
@@ -46850,6 +47608,7 @@
   "k": "motiv|steelforge",
   "m": "Motiv",
   "n": "(Steel) Forge",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -46859,6 +47618,7 @@
   "k": "motiv|subzeroforge",
   "m": "Motiv",
   "n": "(Subzero) Forge",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -46868,6 +47628,7 @@
   "k": "motiv|supra",
   "m": "Motiv",
   "n": "Supra",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -46877,6 +47638,7 @@
   "k": "motiv|supraclutch",
   "m": "Motiv",
   "n": "Supra (Clutch)",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -46886,6 +47648,7 @@
   "k": "motiv|supraenzo",
   "m": "Motiv",
   "n": "Supra Enzo",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -46895,6 +47658,7 @@
   "k": "motiv|supragt",
   "m": "Motiv",
   "n": "Supra (GT)",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -46904,6 +47668,7 @@
   "k": "motiv|suprarally",
   "m": "Motiv",
   "n": "Supra (Rally)",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -46913,6 +47678,7 @@
   "k": "motiv|suprasport",
   "m": "Motiv",
   "n": "Supra (Sport)",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -46922,6 +47688,7 @@
   "k": "motiv|sx1",
   "m": "Motiv",
   "n": "SX1",
+  "s": 1,
   "t": false,
   "y": "2008"
  },
@@ -46931,6 +47698,7 @@
   "k": "motiv|t10",
   "m": "Motiv",
   "n": "T10",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -46967,6 +47735,7 @@
   "k": "motiv|tank",
   "m": "Motiv",
   "n": "Tank",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -46976,6 +47745,7 @@
   "k": "motiv|tankblitzred",
   "m": "Motiv",
   "n": "Tank (Blitz) Red",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -46994,6 +47764,7 @@
   "k": "motiv|tankrampagepearl",
   "m": "Motiv",
   "n": "Tank (Rampage) Pearl",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -47003,6 +47774,7 @@
   "k": "motiv|tankyellowjacket",
   "m": "Motiv",
   "n": "Tank Yellow Jacket",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -47012,6 +47784,7 @@
   "k": "motiv|thrash",
   "m": "Motiv",
   "n": "Thrash",
+  "s": 1,
   "t": false,
   "y": "2011"
  },
@@ -47021,6 +47794,7 @@
   "k": "motiv|thrashfrenzy",
   "m": "Motiv",
   "n": "Thrash Frenzy",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -47057,6 +47831,7 @@
   "k": "motiv|topthrillbluegreen",
   "m": "Motiv",
   "n": "(Top) Thrill Blue/Green",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -47066,6 +47841,7 @@
   "k": "motiv|topthrillhybrid",
   "m": "Motiv",
   "n": "(Top) Thrill Hybrid",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -47075,6 +47851,7 @@
   "k": "motiv|topthrillpurplered",
   "m": "Motiv",
   "n": "(Top) Thrill Purple/Red",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -47084,6 +47861,7 @@
   "k": "motiv|topthrillsolid",
   "m": "Motiv",
   "n": "(Top) Thrill Solid",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -47102,6 +47880,7 @@
   "k": "motiv|tribal",
   "m": "Motiv",
   "n": "Tribal",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -47120,6 +47899,7 @@
   "k": "motiv|trident",
   "m": "Motiv",
   "n": "Trident",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -47129,6 +47909,7 @@
   "k": "motiv|tridentabyss",
   "m": "Motiv",
   "n": "Trident Abyss",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -47138,6 +47919,7 @@
   "k": "motiv|tridenthorizon",
   "m": "Motiv",
   "n": "Trident (Horizon)",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -47147,6 +47929,7 @@
   "k": "motiv|tridentnemesis",
   "m": "Motiv",
   "n": "Trident (Nemesis)",
+  "s": 1,
   "t": false,
   "y": "2020"
  },
@@ -47156,6 +47939,7 @@
   "k": "motiv|tridentodyssey",
   "m": "Motiv",
   "n": "Trident (Odyssey)",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -47165,6 +47949,7 @@
   "k": "motiv|tridentquest",
   "m": "Motiv",
   "n": "Trident Quest",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -47174,6 +47959,7 @@
   "k": "motiv|tridentshield",
   "m": "Motiv",
   "n": "Trident Shield",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -47183,6 +47969,7 @@
   "k": "motiv|tridenttempest",
   "m": "Motiv",
   "n": "Trident (Tempest)",
+  "s": 1,
   "t": false,
   "y": "2020"
  },
@@ -47192,6 +47979,7 @@
   "k": "motiv|tx1",
   "m": "Motiv",
   "n": "TX1",
+  "s": 1,
   "t": false,
   "y": "2008"
  },
@@ -47210,6 +47998,7 @@
   "k": "motiv|ultimatejackal",
   "m": "Motiv",
   "n": "(Ultimate) Jackal",
+  "s": 1,
   "t": false,
   "y": "2020"
  },
@@ -47219,6 +48008,7 @@
   "k": "motiv|unitedrevolt",
   "m": "Motiv",
   "n": "United Revolt",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -47228,6 +48018,7 @@
   "k": "motiv|venomcobra",
   "m": "Motiv",
   "n": "Venom Cobra",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -47237,6 +48028,7 @@
   "k": "motiv|venomexj",
   "m": "Motiv",
   "n": "Venom ExJ",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -47246,6 +48038,7 @@
   "k": "motiv|venomhysteria",
   "m": "Motiv",
   "n": "Venom (Hysteria)",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -47255,6 +48048,7 @@
   "k": "motiv|venompanic",
   "m": "Motiv",
   "n": "Venom Panic",
+  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -47264,6 +48058,7 @@
   "k": "motiv|venomrecoil",
   "m": "Motiv",
   "n": "Venom (Recoil)",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -47273,6 +48068,7 @@
   "k": "motiv|venomshock",
   "m": "Motiv",
   "n": "Venom Shock",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -47282,6 +48078,7 @@
   "k": "motiv|venomshockpearl",
   "m": "Motiv",
   "n": "Venom Shock Pearl",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -47309,6 +48106,7 @@
   "k": "motiv|venomstrike",
   "m": "Motiv",
   "n": "Venom Strike",
+  "s": 1,
   "t": false,
   "y": "2012"
  },
@@ -47318,6 +48116,7 @@
   "k": "motiv|venomtoxin",
   "m": "Motiv",
   "n": "Venom Toxin",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -47327,6 +48126,7 @@
   "k": "motiv|villain",
   "m": "Motiv",
   "n": "Villain",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -47336,6 +48136,7 @@
   "k": "motiv|villainscorn",
   "m": "Motiv",
   "n": "Villain Scorn",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -47345,6 +48146,7 @@
   "k": "motiv|vipaffliction",
   "m": "Motiv",
   "n": "VIP (Affliction)",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -47363,6 +48165,7 @@
   "k": "motiv|vipexjsigma",
   "m": "Motiv",
   "n": "VIP ExJ (Sigma)",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -49694,6 +50497,7 @@
   "k": "radical|beyondridiculous",
   "m": "Radical",
   "n": "Beyond Ridiculous",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -49703,6 +50507,7 @@
   "k": "radical|beyondridiculouspearl",
   "m": "Radical",
   "n": "Beyond Ridiculous Pearl",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -49712,6 +50517,7 @@
   "k": "radical|bigfoot",
   "m": "Radical",
   "n": "Bigfoot",
+  "s": 1,
   "t": false,
   "y": "2022"
  },
@@ -49721,6 +50527,7 @@
   "k": "radical|bigfoothybrid",
   "m": "Radical",
   "n": "Bigfoot Hybrid",
+  "s": 1,
   "t": false,
   "y": "2022"
  },
@@ -49748,6 +50555,7 @@
   "k": "radical|breakaway",
   "m": "Radical",
   "n": "Break Away",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -49766,6 +50574,7 @@
   "k": "radical|conspiracy",
   "m": "Radical",
   "n": "Conspiracy",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -49784,6 +50593,7 @@
   "k": "radical|conspiracyhybrid",
   "m": "Radical",
   "n": "Conspiracy Hybrid",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -49793,6 +50603,7 @@
   "k": "radical|conspiracypearl",
   "m": "Radical",
   "n": "Conspiracy Pearl",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -49811,6 +50622,7 @@
   "k": "radical|conspiracyscheme",
   "m": "Radical",
   "n": "Conspiracy Scheme",
+  "s": 1,
   "t": false,
   "y": "2022"
  },
@@ -49820,6 +50632,7 @@
   "k": "radical|conspiracytheory",
   "m": "Radical",
   "n": "Conspiracy Theory",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -49829,6 +50642,7 @@
   "k": "radical|counterattackpearl",
   "m": "Radical",
   "n": "Counter Attack Pearl",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -49838,6 +50652,7 @@
   "k": "radical|counterattacksolid",
   "m": "Radical",
   "n": "Counter Attack Solid",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -49847,6 +50662,7 @@
   "k": "radical|crypto",
   "m": "Radical",
   "n": "Crypto",
+  "s": 1,
   "t": false,
   "y": "2022"
  },
@@ -49856,6 +50672,7 @@
   "k": "radical|cryptoboom",
   "m": "Radical",
   "n": "Crypto Boom",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -49865,6 +50682,7 @@
   "k": "radical|cyclops",
   "m": "Radical",
   "n": "Cyclops",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -49874,6 +50692,7 @@
   "k": "radical|cyclopspearl",
   "m": "Radical",
   "n": "Cyclops Pearl",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -49892,6 +50711,7 @@
   "k": "radical|deadlyrattler",
   "m": "Radical",
   "n": "Deadly Rattler",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -49901,6 +50721,7 @@
   "k": "radical|deepimpact",
   "m": "Radical",
   "n": "Deep Impact",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -49910,6 +50731,7 @@
   "k": "radical|doublecross",
   "m": "Radical",
   "n": "Double Cross",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -49919,6 +50741,7 @@
   "k": "radical|evileye",
   "m": "Radical",
   "n": "Evil Eye",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -49928,6 +50751,7 @@
   "k": "radical|evileyepearl",
   "m": "Radical",
   "n": "Evil Eye Pearl",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -49937,6 +50761,7 @@
   "k": "radical|greasemonkey",
   "m": "Radical",
   "n": "Grease Monkey",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -49946,6 +50771,7 @@
   "k": "radical|greasemonkeypow",
   "m": "Radical",
   "n": "Grease Monkey POW!",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -49955,6 +50781,7 @@
   "k": "radical|greasemonkeywhack",
   "m": "Radical",
   "n": "Grease Monkey Whack!",
+  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -49964,6 +50791,7 @@
   "k": "radical|guru",
   "m": "Radical",
   "n": "Guru",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -50009,6 +50837,7 @@
   "k": "radical|gurumaster",
   "m": "Radical",
   "n": "Guru Master",
+  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -50018,6 +50847,7 @@
   "k": "radical|gurumighty",
   "m": "Radical",
   "n": "Guru Mighty",
+  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -50027,6 +50857,7 @@
   "k": "radical|guruoracle",
   "m": "Radical",
   "n": "Guru Oracle",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -50036,6 +50867,7 @@
   "k": "radical|guruoraclepearl",
   "m": "Radical",
   "n": "Guru Oracle Pearl",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -50045,6 +50877,7 @@
   "k": "radical|gurupearllimited",
   "m": "Radical",
   "n": "Guru Pearl Limited",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -50054,6 +50887,7 @@
   "k": "radical|gurusupreme",
   "m": "Radical",
   "n": "Guru Supreme",
+  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -50063,6 +50897,7 @@
   "k": "radical|incognito",
   "m": "Radical",
   "n": "Incognito",
+  "s": 1,
   "t": false,
   "y": "2020"
  },
@@ -50072,6 +50907,7 @@
   "k": "radical|incognitopearl",
   "m": "Radical",
   "n": "Incognito Pearl",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -50090,6 +50926,7 @@
   "k": "radical|informer",
   "m": "Radical",
   "n": "Informer",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -50108,6 +50945,7 @@
   "k": "radical|innovatorsolid",
   "m": "Radical",
   "n": "Innovator Solid",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -50117,6 +50955,7 @@
   "k": "radical|intel",
   "m": "Radical",
   "n": "Intel",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -50126,6 +50965,7 @@
   "k": "radical|intelpearl",
   "m": "Radical",
   "n": "Intel Pearl",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -50135,6 +50975,7 @@
   "k": "radical|intelpearlspecialedition",
   "m": "Radical",
   "n": "Intel Pearl Special Edition",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -50144,6 +50985,7 @@
   "k": "radical|intelrecon",
   "m": "Radical",
   "n": "Intel Recon",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -50153,6 +50995,7 @@
   "k": "radical|inteltour",
   "m": "Radical",
   "n": "Intel Tour",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -50162,6 +51005,7 @@
   "k": "radical|jackpot",
   "m": "Radical",
   "n": "Jackpot",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -50171,6 +51015,7 @@
   "k": "radical|jackpotsolid",
   "m": "Radical",
   "n": "Jackpot Solid",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -50180,6 +51025,7 @@
   "k": "radical|katana",
   "m": "Radical",
   "n": "Katana",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -50189,6 +51035,7 @@
   "k": "radical|katanaassault",
   "m": "Radical",
   "n": "Katana Assault",
+  "s": 1,
   "t": false,
   "y": "2022"
  },
@@ -50198,6 +51045,7 @@
   "k": "radical|katanadragon",
   "m": "Radical",
   "n": "Katana Dragon",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -50243,6 +51091,7 @@
   "k": "radical|katanalegend",
   "m": "Radical",
   "n": "Katana Legend",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -50270,6 +51119,7 @@
   "k": "radical|katanaslash",
   "m": "Radical",
   "n": "Katana Slash",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -50279,6 +51129,7 @@
   "k": "radical|katanastrike",
   "m": "Radical",
   "n": "Katana Strike",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -50297,6 +51148,7 @@
   "k": "radical|ludicrous",
   "m": "Radical",
   "n": "Ludicrous",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -50306,6 +51158,7 @@
   "k": "radical|ludicroussolid",
   "m": "Radical",
   "n": "Ludicrous Solid",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -50315,6 +51168,7 @@
   "k": "radical|maxbias",
   "m": "Radical",
   "n": "Max Bias",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -50324,6 +51178,7 @@
   "k": "radical|maximumresults",
   "m": "Radical",
   "n": "Maximum Results",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -50342,6 +51197,7 @@
   "k": "radical|nodoubt",
   "m": "Radical",
   "n": "No Doubt",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -50351,6 +51207,7 @@
   "k": "radical|nodoubthybrid",
   "m": "Radical",
   "n": "No Doubt Hybrid",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -50360,6 +51217,7 @@
   "k": "radical|nodoubtsolid",
   "m": "Radical",
   "n": "No Doubt Solid",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -50369,6 +51227,7 @@
   "k": "radical|outerlimits",
   "m": "Radical",
   "n": "Outer Limits",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -50378,6 +51237,7 @@
   "k": "radical|outerlimitsblackhole",
   "m": "Radical",
   "n": "Outer Limits Black Hole",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -50387,6 +51247,7 @@
   "k": "radical|outerlimitspearl",
   "m": "Radical",
   "n": "Outer Limits Pearl",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -50396,6 +51257,7 @@
   "k": "radical|outerlimitssolid",
   "m": "Radical",
   "n": "Outer Limits Solid",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -50405,6 +51267,7 @@
   "k": "radical|pandemonium",
   "m": "Radical",
   "n": "Pandemonium",
+  "s": 1,
   "t": false,
   "y": "2020"
  },
@@ -50414,6 +51277,7 @@
   "k": "radical|pandemoniumsolid",
   "m": "Radical",
   "n": "Pandemonium Solid",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -50423,6 +51287,7 @@
   "k": "radical|payback",
   "m": "Radical",
   "n": "Payback",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -50432,6 +51297,7 @@
   "k": "radical|powerhitter",
   "m": "Radical",
   "n": "Power Hitter",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -50450,6 +51316,7 @@
   "k": "radical|primo",
   "m": "Radical",
   "n": "Primo",
+  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -50459,6 +51326,7 @@
   "k": "radical|primosolid",
   "m": "Radical",
   "n": "Primo Solid",
+  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -50468,6 +51336,7 @@
   "k": "radical|quickfix",
   "m": "Radical",
   "n": "Quick Fix",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -50477,6 +51346,7 @@
   "k": "radical|rackattackpearl",
   "m": "Radical",
   "n": "Rack Attack Pearl",
+  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -50486,6 +51356,7 @@
   "k": "radical|rackattacksolid",
   "m": "Radical",
   "n": "Rack Attack Solid",
+  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -50495,6 +51366,7 @@
   "k": "radical|radicalconspiracy",
   "m": "Radical",
   "n": "Radical Conspiracy",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -50513,6 +51385,7 @@
   "k": "radical|rattler",
   "m": "Radical",
   "n": "Rattler",
+  "s": 1,
   "t": false,
   "y": "2022"
  },
@@ -50522,6 +51395,7 @@
   "k": "radical|rattlerbigbite",
   "m": "Radical",
   "n": "Rattler Big Bite",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -50531,6 +51405,7 @@
   "k": "radical|rattlernu",
   "m": "Radical",
   "n": "Rattler NU",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -50540,6 +51415,7 @@
   "k": "radical|rave",
   "m": "Radical",
   "n": "Rave",
+  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -50549,6 +51425,7 @@
   "k": "radical|raveon",
   "m": "Radical",
   "n": "Rave On",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -50558,6 +51435,7 @@
   "k": "radical|reax",
   "m": "Radical",
   "n": "REAX",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -50567,6 +51445,7 @@
   "k": "radical|reaxgusto",
   "m": "Radical",
   "n": "REAX Gusto",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -50576,6 +51455,7 @@
   "k": "radical|reaxpearl",
   "m": "Radical",
   "n": "REAX Pearl",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -50585,6 +51465,7 @@
   "k": "radical|reaxversion2",
   "m": "Radical",
   "n": "REAX Version 2",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -50594,6 +51475,7 @@
   "k": "radical|reaxversion2pearl",
   "m": "Radical",
   "n": "REAX Version 2 Pearl",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -50603,6 +51485,7 @@
   "k": "radical|results",
   "m": "Radical",
   "n": "Results",
+  "s": 1,
   "t": false,
   "y": "2020"
  },
@@ -50612,6 +51495,7 @@
   "k": "radical|resultssolid",
   "m": "Radical",
   "n": "Results Solid",
+  "s": 1,
   "t": false,
   "y": "2020"
  },
@@ -50621,6 +51505,7 @@
   "k": "radical|resultsplus",
   "m": "Radical",
   "n": "Results+",
+  "s": 1,
   "t": false,
   "y": "2020"
  },
@@ -50630,6 +51515,7 @@
   "k": "radical|revengepearl",
   "m": "Radical",
   "n": "Revenge Pearl",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -50639,6 +51525,7 @@
   "k": "radical|revengesolid",
   "m": "Radical",
   "n": "Revenge Solid",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -50648,6 +51535,7 @@
   "k": "radical|ridiculous",
   "m": "Radical",
   "n": "Ridiculous",
+  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -50657,6 +51545,7 @@
   "k": "radical|ridiculousasym",
   "m": "Radical",
   "n": "Ridiculous Asym",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -50666,6 +51555,7 @@
   "k": "radical|ridiculouspearl",
   "m": "Radical",
   "n": "Ridiculous Pearl",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -50702,6 +51592,7 @@
   "k": "radical|score",
   "m": "Radical",
   "n": "Score",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -50729,6 +51620,7 @@
   "k": "radical|sizzle",
   "m": "Radical",
   "n": "Sizzle",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -50774,6 +51666,7 @@
   "k": "radical|snapshothybrid",
   "m": "Radical",
   "n": "Snap Shot Hybrid",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -50783,6 +51676,7 @@
   "k": "radical|snapshot",
   "m": "Radical",
   "n": "Snapshot",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -50792,6 +51686,7 @@
   "k": "radical|sneakattack",
   "m": "Radical",
   "n": "Sneak Attack",
+  "s": 1,
   "t": false,
   "y": "2022"
  },
@@ -50828,6 +51723,7 @@
   "k": "radical|sneakattacksolid",
   "m": "Radical",
   "n": "Sneak Attack Solid",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -50846,6 +51742,7 @@
   "k": "radical|squatch",
   "m": "Radical",
   "n": "Squatch",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -50855,6 +51752,7 @@
   "k": "radical|squatchhybrid",
   "m": "Radical",
   "n": "Squatch Hybrid",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -50864,6 +51762,7 @@
   "k": "radical|squatchsolid",
   "m": "Radical",
   "n": "Squatch Solid",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -50882,6 +51781,7 @@
   "k": "radical|thecloser",
   "m": "Radical",
   "n": "The Closer",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -50891,6 +51791,7 @@
   "k": "radical|thecloserpearl",
   "m": "Radical",
   "n": "The Closer Pearl",
+  "s": 1,
   "t": false,
   "y": "2020"
  },
@@ -50900,6 +51801,7 @@
   "k": "radical|thefix",
   "m": "Radical",
   "n": "The Fix",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -50909,6 +51811,7 @@
   "k": "radical|thehitter",
   "m": "Radical",
   "n": "The Hitter",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -50918,6 +51821,7 @@
   "k": "radical|thehitterpearl",
   "m": "Radical",
   "n": "The Hitter Pearl",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -50927,6 +51831,7 @@
   "k": "radical|thespy",
   "m": "Radical",
   "n": "The Spy",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -50954,6 +51859,7 @@
   "k": "radical|torpedo",
   "m": "Radical",
   "n": "Torpedo",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -50963,6 +51869,7 @@
   "k": "radical|torpedodirecthit",
   "m": "Radical",
   "n": "Torpedo Direct Hit",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -50981,6 +51888,7 @@
   "k": "radical|torridaffair",
   "m": "Radical",
   "n": "Torrid Affair",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -50990,6 +51898,7 @@
   "k": "radical|torridelite",
   "m": "Radical",
   "n": "Torrid Elite",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -50999,6 +51908,7 @@
   "k": "radical|trailblazer",
   "m": "Radical",
   "n": "Trail Blazer",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -51008,6 +51918,7 @@
   "k": "radical|trailblazersolid",
   "m": "Radical",
   "n": "Trail Blazer Solid",
+  "s": 1,
   "t": false,
   "y": "2022"
  },
@@ -51017,6 +51928,7 @@
   "k": "radical|tremendous",
   "m": "Radical",
   "n": "Tremendous",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -51026,6 +51938,7 @@
   "k": "radical|tremendouspearl",
   "m": "Radical",
   "n": "Tremendous Pearl",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -51035,6 +51948,7 @@
   "k": "radical|vexed",
   "m": "Radical",
   "n": "Vexed",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -51044,6 +51958,7 @@
   "k": "radical|xeno",
   "m": "Radical",
   "n": "Xeno",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -51053,6 +51968,7 @@
   "k": "radical|xenopearl",
   "m": "Radical",
   "n": "Xeno Pearl",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -51062,6 +51978,7 @@
   "k": "radical|yeti",
   "m": "Radical",
   "n": "Yeti",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -51071,6 +51988,7 @@
   "k": "radical|yetiuncaged",
   "m": "Radical",
   "n": "Yeti Uncaged",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -51080,6 +51998,7 @@
   "k": "radical|yetiunleashed",
   "m": "Radical",
   "n": "Yeti Unleashed",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -51089,6 +52008,7 @@
   "k": "radical|yetiuntamed",
   "m": "Radical",
   "n": "Yeti Untamed",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -51098,6 +52018,7 @@
   "k": "radical|zigzag",
   "m": "Radical",
   "n": "Zig Zag",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -51107,6 +52028,7 @@
   "k": "radical|zigzagsolid",
   "m": "Radical",
   "n": "Zig Zag Solid",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -51116,6 +52038,7 @@
   "k": "radical|zing",
   "m": "Radical",
   "n": "Zing!",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -51134,6 +52057,7 @@
   "k": "radical|zinghybrid",
   "m": "Radical",
   "n": "Zing! Hybrid",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -51143,6 +52067,7 @@
   "k": "radical|zingpearl",
   "m": "Radical",
   "n": "Zing! Pearl",
+  "s": 1,
   "t": false,
   "y": "2020"
  },
@@ -52601,6 +53526,7 @@
   "k": "rotogrip|clone",
   "m": "Roto Grip",
   "n": "Clone",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -52619,6 +53545,7 @@
   "k": "rotogrip|cosmos",
   "m": "Roto Grip",
   "n": "Cosmos",
+  "s": 1,
   "t": false,
   "y": "2002"
  },
@@ -52628,6 +53555,7 @@
   "k": "rotogrip|cosmos",
   "m": "Roto Grip",
   "n": "Cosmos (All Colors)",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -53060,6 +53988,7 @@
   "k": "rotogrip|exoticgem",
   "m": "Roto Grip",
   "n": "Exotic Gem",
+  "s": 1,
   "t": false,
   "y": "2022"
  },
@@ -53285,6 +54214,7 @@
   "k": "rotogrip|gremlin",
   "m": "Roto Grip",
   "n": "Gremlin",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -53294,6 +54224,7 @@
   "k": "rotogrip|gremlintourx",
   "m": "Roto Grip",
   "n": "Gremlin Tour-X",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -53564,6 +54495,7 @@
   "k": "rotogrip|hustleearthbluegoldgreen",
   "m": "Roto Grip",
   "n": "Hustle (Earth) Blue-Gold-Green",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -53897,6 +54829,7 @@
   "k": "rotogrip|hustlexray",
   "m": "Roto Grip",
   "n": "Hustle X-Ray",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -53978,6 +54911,7 @@
   "k": "rotogrip|hypedpearl",
   "m": "Roto Grip",
   "n": "Hyped Pearl",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -54014,6 +54948,7 @@
   "k": "rotogrip|hypedup",
   "m": "Roto Grip",
   "n": "Hyped Up!",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -54086,6 +55021,7 @@
   "k": "rotogrip|idolcosmos",
   "m": "Roto Grip",
   "n": "Idol Cosmos",
+  "s": 1,
   "t": false,
   "y": "2022"
  },
@@ -54104,6 +55040,7 @@
   "k": "rotogrip|idolhelios",
   "m": "Roto Grip",
   "n": "Idol Helios",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -54923,6 +55860,7 @@
   "k": "rotogrip|perfectgem",
   "m": "Roto Grip",
   "n": "Perfect Gem",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -55283,6 +56221,7 @@
   "k": "rotogrip|rsthyperdrivepearl",
   "m": "Roto Grip",
   "n": "RST Hyperdrive Pearl",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -56021,6 +56960,7 @@
   "k": "rotogrip|tnt",
   "m": "Roto Grip",
   "n": "TNT",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -56129,6 +57069,7 @@
   "k": "rotogrip|transformpearl",
   "m": "Roto Grip",
   "n": "Transform Pearl",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -56138,6 +57079,7 @@
   "k": "rotogrip|transformer",
   "m": "Roto Grip",
   "n": "Transformer",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -56255,6 +57197,7 @@
   "k": "rotogrip|wickedgremlin",
   "m": "Roto Grip",
   "n": "Wicked Gremlin",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -57083,6 +58026,7 @@
   "k": "storm|absolute",
   "m": "Storm",
   "n": "Absolute",
+  "s": 1,
   "t": false,
   "y": "2022"
  },
@@ -57173,6 +58117,7 @@
   "k": "storm|alphacrux",
   "m": "Storm",
   "n": "Alpha Crux",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -57452,6 +58397,7 @@
   "k": "storm|bionic",
   "m": "Storm",
   "n": "Bionic",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -57722,6 +58668,7 @@
   "k": "storm|clearstormteal",
   "m": "Storm",
   "n": "Clear Storm Teal",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -58028,6 +58975,7 @@
   "k": "storm|concept",
   "m": "Storm",
   "n": "Concept",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -58748,6 +59696,7 @@
   "k": "storm|equinoxhybrid",
   "m": "Storm",
   "n": "Equinox Hybrid",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -58757,6 +59706,7 @@
   "k": "storm|equinoxsolid",
   "m": "Storm",
   "n": "Equinox Solid",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -58964,6 +59914,7 @@
   "k": "storm|fate",
   "m": "Storm",
   "n": "Fate",
+  "s": 1,
   "t": false,
   "y": "2022"
  },
@@ -59648,6 +60599,7 @@
   "k": "storm|hyroad",
   "m": "Storm",
   "n": "Hy-Road",
+  "s": 1,
   "t": false,
   "y": "2008"
  },
@@ -60008,6 +60960,7 @@
   "k": "storm|icestormoceanbluewhite",
   "m": "Storm",
   "n": "Ice Storm - Ocean Blue/White",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -60035,6 +60988,7 @@
   "k": "storm|identity",
   "m": "Storm",
   "n": "IDentity",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -60044,6 +60998,7 @@
   "k": "storm|identitybcp",
   "m": "Storm",
   "n": "IDentity (B-C-P)",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -60080,6 +61035,7 @@
   "k": "storm|infinitephysix",
   "m": "Storm",
   "n": "Infinite PhysiX",
+  "s": 1,
   "t": false,
   "y": "2022"
  },
@@ -60161,6 +61117,7 @@
   "k": "storm|ionmax",
   "m": "Storm",
   "n": "Ion Max",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -60170,6 +61127,7 @@
   "k": "storm|ionmaxpearl",
   "m": "Storm",
   "n": "Ion Max Pearl",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -60215,6 +61173,7 @@
   "k": "storm|ionprosolid",
   "m": "Storm",
   "n": "Ion Pro Solid",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -61403,6 +62362,7 @@
   "k": "storm|nextfactor",
   "m": "Storm",
   "n": "Next Factor",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -61430,6 +62390,7 @@
   "k": "storm|nova",
   "m": "Storm",
   "n": "Nova",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -61781,6 +62742,7 @@
   "k": "storm|phaze4",
   "m": "Storm",
   "n": "Phaze 4",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -61844,6 +62806,7 @@
   "k": "storm|phazeii",
   "m": "Storm",
   "n": "Phaze II",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -61853,6 +62816,7 @@
   "k": "storm|phazeiipearl",
   "m": "Storm",
   "n": "Phaze II Pearl",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -61943,6 +62907,7 @@
   "k": "storm|phazev",
   "m": "Storm",
   "n": "Phaze V",
+  "s": 1,
   "t": false,
   "y": "2022"
  },
@@ -62132,6 +63097,7 @@
   "k": "storm|pitchblack",
   "m": "Storm",
   "n": "Pitch Black",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -62546,6 +63512,7 @@
   "k": "storm|qtour78u",
   "m": "Storm",
   "n": "!Q Tour 78/U",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -62744,6 +63711,7 @@
   "k": "storm|qtoursapphire",
   "m": "Storm",
   "n": "!Q Tour Sapphire",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -63023,6 +63991,7 @@
   "k": "storm|rocketai",
   "m": "Storm",
   "n": "Rocket A.I.",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -63680,6 +64649,7 @@
   "k": "storm|sunstormlimitededition",
   "m": "Storm",
   "n": "Sun Storm Limited Edition",
+  "s": 1,
   "t": false,
   "y": "2022"
  },
@@ -65102,6 +66072,7 @@
   "k": "storm|tropicalsurgeblackcherry",
   "m": "Storm",
   "n": "Tropical Surge Black/Cherry",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -65138,6 +66109,7 @@
   "k": "storm|tropicalsurgeemeraldcharcoal",
   "m": "Storm",
   "n": "Tropical Surge Emerald/Charcoal",
+  "s": 1,
   "t": false,
   "y": "2022"
  },
@@ -65156,6 +66128,7 @@
   "k": "storm|tropicalsurgegoldbronzemedallion",
   "m": "Storm",
   "n": "Tropical Surge Gold/Bronze/Medallion",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -65174,6 +66147,7 @@
   "k": "storm|tropicalsurgekiwiappleavocado",
   "m": "Storm",
   "n": "Tropical Surge Kiwi/Apple/Avocado",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -65210,6 +66184,7 @@
   "k": "storm|tropicalsurgepinkpurple",
   "m": "Storm",
   "n": "Tropical Surge Pink/Purple",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -65264,6 +66239,7 @@
   "k": "storm|tropicalsurgetealblue",
   "m": "Storm",
   "n": "Tropical Surge Teal/Blue",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -65318,6 +66294,7 @@
   "k": "storm|typhoon",
   "m": "Storm",
   "n": "Typhoon",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -67496,6 +68473,7 @@
   "k": "trackinc|300a",
   "m": "Track Inc.",
   "n": "300A",
+  "s": 1,
   "t": false,
   "y": "2012"
  },
@@ -67505,6 +68483,7 @@
   "k": "trackinc|300c",
   "m": "Track Inc.",
   "n": "300C",
+  "s": 1,
   "t": false,
   "y": "2010"
  },
@@ -67514,6 +68493,7 @@
   "k": "trackinc|300csolid",
   "m": "Track Inc.",
   "n": "300C Solid",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -67532,6 +68512,7 @@
   "k": "trackinc|400aspecialedition",
   "m": "Track Inc.",
   "n": "400A Special Edition",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -67622,6 +68603,7 @@
   "k": "trackinc|503a",
   "m": "Track Inc.",
   "n": "503A",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -67631,6 +68613,7 @@
   "k": "trackinc|503c",
   "m": "Track Inc.",
   "n": "503C",
+  "s": 1,
   "t": false,
   "y": "2011"
  },
@@ -67640,6 +68623,7 @@
   "k": "trackinc|503t",
   "m": "Track Inc.",
   "n": "503T",
+  "s": 1,
   "t": false,
   "y": "2012"
  },
@@ -67649,6 +68633,7 @@
   "k": "trackinc|505a",
   "m": "Track Inc.",
   "n": "505A",
+  "s": 1,
   "t": false,
   "y": "2009"
  },
@@ -67658,6 +68643,7 @@
   "k": "trackinc|505c",
   "m": "Track Inc.",
   "n": "505C",
+  "s": 1,
   "t": false,
   "y": "2009"
  },
@@ -67676,6 +68662,7 @@
   "k": "trackinc|505c2",
   "m": "Track Inc.",
   "n": "505C²",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -67685,6 +68672,7 @@
   "k": "trackinc|505t",
   "m": "Track Inc.",
   "n": "505T",
+  "s": 1,
   "t": false,
   "y": "2010"
  },
@@ -67694,6 +68682,7 @@
   "k": "trackinc|508a",
   "m": "Track Inc.",
   "n": "508A",
+  "s": 1,
   "t": false,
   "y": "2011"
  },
@@ -67703,6 +68692,7 @@
   "k": "trackinc|607aspecialedition",
   "m": "Track Inc.",
   "n": "607A Special Edition",
+  "s": 1,
   "t": false,
   "y": "2010"
  },
@@ -67712,6 +68702,7 @@
   "k": "trackinc|706a",
   "m": "Track Inc.",
   "n": "706A",
+  "s": 1,
   "t": false,
   "y": "2012"
  },
@@ -67721,6 +68712,7 @@
   "k": "trackinc|706ca",
   "m": "Track Inc.",
   "n": "706C/A",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -67730,6 +68722,7 @@
   "k": "trackinc|706t",
   "m": "Track Inc.",
   "n": "706T",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -67739,6 +68732,7 @@
   "k": "trackinc|714c",
   "m": "Track Inc.",
   "n": "714C",
+  "s": 1,
   "t": false,
   "y": "2012"
  },
@@ -67748,6 +68742,7 @@
   "k": "trackinc|715a",
   "m": "Track Inc.",
   "n": "715A",
+  "s": 1,
   "t": false,
   "y": "2009"
  },
@@ -67757,6 +68752,7 @@
   "k": "trackinc|715c",
   "m": "Track Inc.",
   "n": "715C",
+  "s": 1,
   "t": false,
   "y": "2010"
  },
@@ -67766,6 +68762,7 @@
   "k": "trackinc|715t",
   "m": "Track Inc.",
   "n": "715T",
+  "s": 1,
   "t": false,
   "y": "2010"
  },
@@ -67775,6 +68772,7 @@
   "k": "trackinc|716c",
   "m": "Track Inc.",
   "n": "716C",
+  "s": 1,
   "t": false,
   "y": "2011"
  },
@@ -67784,6 +68782,7 @@
   "k": "trackinc|716t",
   "m": "Track Inc.",
   "n": "716T",
+  "s": 1,
   "t": false,
   "y": "2012"
  },
@@ -67793,6 +68792,7 @@
   "k": "trackinc|718a",
   "m": "Track Inc.",
   "n": "718A",
+  "s": 1,
   "t": false,
   "y": "2010"
  },
@@ -67811,6 +68811,7 @@
   "k": "trackinc|811aspecialedition",
   "m": "Track Inc.",
   "n": "811A Special Edition",
+  "s": 1,
   "t": false,
   "y": "2011"
  },
@@ -67820,6 +68821,7 @@
   "k": "trackinc|811ct",
   "m": "Track Inc.",
   "n": "811C/T",
+  "s": 1,
   "t": false,
   "y": "2012"
  },
@@ -67847,6 +68849,7 @@
   "k": "trackinc|910a",
   "m": "Track Inc.",
   "n": "910A",
+  "s": 1,
   "t": false,
   "y": "2013"
  },
@@ -67865,6 +68868,7 @@
   "k": "trackinc|912t",
   "m": "Track Inc.",
   "n": "912T",
+  "s": 1,
   "t": false,
   "y": "2012"
  },
@@ -67892,6 +68896,7 @@
   "k": "trackinc|919c",
   "m": "Track Inc.",
   "n": "919C",
+  "s": 1,
   "t": false,
   "y": "2011"
  },
@@ -67901,6 +68906,7 @@
   "k": "trackinc|920a",
   "m": "Track Inc.",
   "n": "920A",
+  "s": 1,
   "t": false,
   "y": "2009"
  },
@@ -67910,6 +68916,7 @@
   "k": "trackinc|920t",
   "m": "Track Inc.",
   "n": "920T",
+  "s": 1,
   "t": false,
   "y": "2010"
  },
@@ -67919,6 +68926,7 @@
   "k": "trackinc|930t",
   "m": "Track Inc.",
   "n": "930T",
+  "s": 1,
   "t": false,
   "y": "2009"
  },
@@ -67937,6 +68945,7 @@
   "k": "trackinc|alias",
   "m": "Track Inc.",
   "n": "Alias",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -67973,6 +68982,7 @@
   "k": "trackinc|archetype",
   "m": "Track Inc.",
   "n": "Archetype",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -67982,6 +68992,7 @@
   "k": "trackinc|archetypehybrid",
   "m": "Track Inc.",
   "n": "Archetype Hybrid",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -68099,6 +69110,7 @@
   "k": "trackinc|criterion",
   "m": "Track Inc.",
   "n": "Criterion",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -68108,6 +69120,7 @@
   "k": "trackinc|criterionhybrid",
   "m": "Track Inc.",
   "n": "Criterion Hybrid",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -68117,6 +69130,7 @@
   "k": "trackinc|criterioninverse",
   "m": "Track Inc.",
   "n": "Criterion Inverse",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -68180,6 +69194,7 @@
   "k": "trackinc|cyborgpearl",
   "m": "Track Inc.",
   "n": "Cyborg Pearl",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -68198,6 +69213,7 @@
   "k": "trackinc|cypher",
   "m": "Track Inc.",
   "n": "Cypher",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -68207,6 +69223,7 @@
   "k": "trackinc|cypherpearl",
   "m": "Track Inc.",
   "n": "Cypher Pearl",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -68414,6 +69431,7 @@
   "k": "trackinc|heatblackpurplesilver",
   "m": "Track Inc.",
   "n": "Heat Black/Purple/Silver",
+  "s": 1,
   "t": false,
   "y": "2012"
  },
@@ -68441,6 +69459,7 @@
   "k": "trackinc|heatburgundy",
   "m": "Track Inc.",
   "n": "Heat Burgundy",
+  "s": 1,
   "t": false,
   "y": "2005"
  },
@@ -68450,6 +69469,7 @@
   "k": "trackinc|heatlava",
   "m": "Track Inc.",
   "n": "Heat Lava",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -68459,6 +69479,7 @@
   "k": "trackinc|heatmaroonpearl",
   "m": "Track Inc.",
   "n": "Heat Maroon Pearl",
+  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -68486,6 +69507,7 @@
   "k": "trackinc|heatxtreme",
   "m": "Track Inc.",
   "n": "Heat X-Treme",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -68531,6 +69553,7 @@
   "k": "trackinc|hx05",
   "m": "Track Inc.",
   "n": "Hx05",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -68540,6 +69563,7 @@
   "k": "trackinc|hx10",
   "m": "Track Inc.",
   "n": "Hx10",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -68549,6 +69573,7 @@
   "k": "trackinc|hx16",
   "m": "Track Inc.",
   "n": "Hx16",
+  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -68558,6 +69583,7 @@
   "k": "trackinc|in2ition",
   "m": "Track Inc.",
   "n": "In2ition",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -68630,6 +69656,7 @@
   "k": "trackinc|kineticamethyst",
   "m": "Track Inc.",
   "n": "Kinetic Amethyst",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -68657,6 +69684,7 @@
   "k": "trackinc|kineticblackice",
   "m": "Track Inc.",
   "n": "Kinetic Black Ice",
+  "s": 1,
   "t": false,
   "y": "2022"
  },
@@ -68666,6 +69694,7 @@
   "k": "trackinc|kineticcobalt",
   "m": "Track Inc.",
   "n": "Kinetic Cobalt",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -68675,6 +69704,7 @@
   "k": "trackinc|kineticemerald",
   "m": "Track Inc.",
   "n": "Kinetic Emerald",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -68711,6 +69741,7 @@
   "k": "trackinc|kineticobsidian",
   "m": "Track Inc.",
   "n": "Kinetic Obsidian",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -68720,6 +69751,7 @@
   "k": "trackinc|kineticpearl",
   "m": "Track Inc.",
   "n": "Kinetic Pearl",
+  "s": 1,
   "t": false,
   "y": "2008"
  },
@@ -68729,6 +69761,7 @@
   "k": "trackinc|kineticplatinum",
   "m": "Track Inc.",
   "n": "Kinetic Platinum",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -68747,6 +69780,7 @@
   "k": "trackinc|kineticruby",
   "m": "Track Inc.",
   "n": "Kinetic Ruby",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -68774,6 +69808,7 @@
   "k": "trackinc|kineticsapphireice",
   "m": "Track Inc.",
   "n": "Kinetic Sapphire Ice",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -68783,6 +69818,7 @@
   "k": "trackinc|latitude",
   "m": "Track Inc.",
   "n": "Latitude",
+  "s": 1,
   "t": false,
   "y": "2020"
  },
@@ -68792,6 +69828,7 @@
   "k": "trackinc|latitudepearl",
   "m": "Track Inc.",
   "n": "Latitude Pearl",
+  "s": 1,
   "t": false,
   "y": "2020"
  },
@@ -68801,6 +69838,7 @@
   "k": "trackinc|legion",
   "m": "Track Inc.",
   "n": "Legion",
+  "s": 1,
   "t": false,
   "y": "2006"
  },
@@ -68828,6 +69866,7 @@
   "k": "trackinc|legionpearl",
   "m": "Track Inc.",
   "n": "Legion Pearl",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -68873,6 +69912,7 @@
   "k": "trackinc|logix",
   "m": "Track Inc.",
   "n": "Logix",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -68882,6 +69922,7 @@
   "k": "trackinc|lx05",
   "m": "Track Inc.",
   "n": "Lx05",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -68891,6 +69932,7 @@
   "k": "trackinc|lx10",
   "m": "Track Inc.",
   "n": "Lx10",
+  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -68900,6 +69942,7 @@
   "k": "trackinc|lx16",
   "m": "Track Inc.",
   "n": "Lx16",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -68918,6 +69961,7 @@
   "k": "trackinc|mako",
   "m": "Track Inc.",
   "n": "Mako",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -68927,6 +69971,7 @@
   "k": "trackinc|makoattack",
   "m": "Track Inc.",
   "n": "Mako Attack",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -69026,6 +70071,7 @@
   "k": "trackinc|mx05",
   "m": "Track Inc.",
   "n": "Mx05",
+  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -69035,6 +70081,7 @@
   "k": "trackinc|mx10",
   "m": "Track Inc.",
   "n": "Mx10",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -69044,6 +70091,7 @@
   "k": "trackinc|mx16",
   "m": "Track Inc.",
   "n": "Mx16",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -69080,6 +70128,7 @@
   "k": "trackinc|paradox",
   "m": "Track Inc.",
   "n": "Paradox",
+  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -69089,6 +70138,7 @@
   "k": "trackinc|paradoxblack",
   "m": "Track Inc.",
   "n": "Paradox Black",
+  "s": 1,
   "t": false,
   "y": "2017"
  },
@@ -69116,6 +70166,7 @@
   "k": "trackinc|paradoxpearl",
   "m": "Track Inc.",
   "n": "Paradox Pearl",
+  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -69134,6 +70185,7 @@
   "k": "trackinc|paradoxred",
   "m": "Track Inc.",
   "n": "Paradox Red",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -69197,6 +70249,7 @@
   "k": "trackinc|paradoxtrilogy",
   "m": "Track Inc.",
   "n": "Paradox Trilogy",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -69233,6 +70286,7 @@
   "k": "trackinc|paradoxv",
   "m": "Track Inc.",
   "n": "Paradox V",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -69242,6 +70296,7 @@
   "k": "trackinc|paragon",
   "m": "Track Inc.",
   "n": "Paragon",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -69278,6 +70333,7 @@
   "k": "trackinc|paragonfire",
   "m": "Track Inc.",
   "n": "Paragon (Fire)",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -69287,6 +70343,7 @@
   "k": "trackinc|paragonhybrid",
   "m": "Track Inc.",
   "n": "Paragon Hybrid",
+  "s": 1,
   "t": false,
   "y": "2022"
  },
@@ -69305,6 +70362,7 @@
   "k": "trackinc|paragonpearl",
   "m": "Track Inc.",
   "n": "Paragon Pearl",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -69332,6 +70390,7 @@
   "k": "trackinc|paragonshadow",
   "m": "Track Inc.",
   "n": "Paragon (Shadow)",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -69512,6 +70571,7 @@
   "k": "trackinc|precision",
   "m": "Track Inc.",
   "n": "Precision",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -69539,6 +70599,7 @@
   "k": "trackinc|precisionsolid",
   "m": "Track Inc.",
   "n": "Precision Solid",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -69566,6 +70627,7 @@
   "k": "trackinc|proof",
   "m": "Track Inc.",
   "n": "Proof",
+  "s": 1,
   "t": false,
   "y": "2020"
  },
@@ -69575,6 +70637,7 @@
   "k": "trackinc|proofhybrid",
   "m": "Track Inc.",
   "n": "Proof Hybrid",
+  "s": 1,
   "t": false,
   "y": "2020"
  },
@@ -69584,6 +70647,7 @@
   "k": "trackinc|proofpearl",
   "m": "Track Inc.",
   "n": "Proof Pearl",
+  "s": 1,
   "t": false,
   "y": "2020"
  },
@@ -69746,6 +70810,7 @@
   "k": "trackinc|sensor",
   "m": "Track Inc.",
   "n": "Sensor",
+  "s": 1,
   "t": false,
   "y": "1994"
  },
@@ -69791,6 +70856,7 @@
   "k": "trackinc|sensorsolid",
   "m": "Track Inc.",
   "n": "Sensor Solid",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -69881,6 +70947,7 @@
   "k": "trackinc|spareplus",
   "m": "Track Inc.",
   "n": "Spare +",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -69908,6 +70975,7 @@
   "k": "trackinc|stealth",
   "m": "Track Inc.",
   "n": "Stealth",
+  "s": 1,
   "t": false,
   "y": "2022"
  },
@@ -69935,6 +71003,7 @@
   "k": "trackinc|stealthhybrid",
   "m": "Track Inc.",
   "n": "Stealth Hybrid",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -69944,6 +71013,7 @@
   "k": "trackinc|stealthmode",
   "m": "Track Inc.",
   "n": "Stealth Mode",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -69953,6 +71023,7 @@
   "k": "trackinc|stealthmodehybrid",
   "m": "Track Inc.",
   "n": "Stealth Mode Hybrid",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -69962,6 +71033,7 @@
   "k": "trackinc|stealthpearl",
   "m": "Track Inc.",
   "n": "Stealth Pearl",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -70016,6 +71088,7 @@
   "k": "trackinc|strata",
   "m": "Track Inc.",
   "n": "Strata",
+  "s": 1,
   "t": false,
   "y": "2020"
  },
@@ -70151,6 +71224,7 @@
   "k": "trackinc|synthesis",
   "m": "Track Inc.",
   "n": "Synthesis",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -70241,6 +71315,7 @@
   "k": "trackinc|tactix",
   "m": "Track Inc.",
   "n": "Tactix",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -70268,6 +71343,7 @@
   "k": "trackinc|tactixhybrid",
   "m": "Track Inc.",
   "n": "Tactix Hybrid",
+  "s": 1,
   "t": false,
   "y": "2019"
  },
@@ -70286,6 +71362,7 @@
   "k": "trackinc|tantrum",
   "m": "Track Inc.",
   "n": "Tantrum",
+  "s": 1,
   "t": false,
   "y": "2008"
  },
@@ -70295,6 +71372,7 @@
   "k": "trackinc|temper",
   "m": "Track Inc.",
   "n": "Temper",
+  "s": 1,
   "t": false,
   "y": "2007"
  },
@@ -70304,6 +71382,7 @@
   "k": "trackinc|tempo",
   "m": "Track Inc.",
   "n": "Tempo",
+  "s": 1,
   "t": false,
   "y": "2020"
  },
@@ -70340,6 +71419,7 @@
   "k": "trackinc|theorem",
   "m": "Track Inc.",
   "n": "Theorem",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -70394,6 +71474,7 @@
   "k": "trackinc|theoremdelta",
   "m": "Track Inc.",
   "n": "Theorem Delta",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -70403,6 +71484,7 @@
   "k": "trackinc|theorempearl",
   "m": "Track Inc.",
   "n": "Theorem Pearl",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -70430,6 +71512,7 @@
   "k": "trackinc|theoremsolid",
   "m": "Track Inc.",
   "n": "Theorem Solid",
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -70475,6 +71558,7 @@
   "k": "trackinc|toursic",
   "m": "Track Inc.",
   "n": "Tour SiC",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -70484,6 +71568,7 @@
   "k": "trackinc|tourx",
   "m": "Track Inc.",
   "n": "Tour X",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -70493,6 +71578,7 @@
   "k": "trackinc|tourxsolid",
   "m": "Track Inc.",
   "n": "Tour X Solid",
+  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -70547,6 +71633,7 @@
   "k": "trackinc|tritonelite",
   "m": "Track Inc.",
   "n": "Triton Elite",
+  "s": 1,
   "t": false,
   "y": "1998"
  },
@@ -70610,6 +71697,7 @@
   "k": "trackinc|tundra",
   "m": "Track Inc.",
   "n": "Tundra",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -70619,6 +71707,7 @@
   "k": "trackinc|tundrabluefire",
   "m": "Track Inc.",
   "n": "Tundra Blue Fire",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -70628,6 +71717,7 @@
   "k": "trackinc|tundrafire",
   "m": "Track Inc.",
   "n": "Tundra Fire",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -70637,6 +71727,7 @@
   "k": "trackinc|tundrasolid",
   "m": "Track Inc.",
   "n": "Tundra Solid",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -70646,6 +71737,7 @@
   "k": "trackinc|ultraheat",
   "m": "Track Inc.",
   "n": "Ultra Heat",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -70655,6 +71747,7 @@
   "k": "trackinc|uprising",
   "m": "Track Inc.",
   "n": "Uprising",
+  "s": 1,
   "t": false,
   "y": "2008"
  },

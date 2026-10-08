@@ -1,797 +1,797 @@
 {
- "build": "fd541cc3fe6318ff",
+ "build": "9a31629d7960d700",
  "files": {
   "detail/3g.json": {
-   "bytes": 3381,
-   "hash": "692db6a93f56d5a5",
+   "bytes": 3529,
+   "hash": "86257b411bd36119",
    "path": "detail/3g.json"
   },
   "detail/900global.json": {
-   "bytes": 320969,
-   "hash": "d495cfda244488a8",
+   "bytes": 335164,
+   "hash": "f123c92d22267aa4",
    "path": "detail/900global.json"
   },
   "detail/abowl.json": {
-   "bytes": 798,
-   "hash": "4d4164c6510530d6",
+   "bytes": 835,
+   "hash": "11db2dd749d81471",
    "path": "detail/abowl.json"
   },
   "detail/abs.json": {
-   "bytes": 262458,
-   "hash": "7ae5ec6f967f4a14",
+   "bytes": 274039,
+   "hash": "da1991dfb6cd26db",
    "path": "detail/abs.json"
   },
   "detail/acebowlingchampion.json": {
-   "bytes": 3491,
-   "hash": "7f8a53b6c6afaa7c",
+   "bytes": 3639,
+   "hash": "890b2d0462dcc792",
    "path": "detail/acebowlingchampion.json"
   },
   "detail/aloha.json": {
-   "bytes": 19582,
-   "hash": "9dcdf3afaa85dace",
+   "bytes": 20470,
+   "hash": "f860ececb54ab2a1",
    "path": "detail/aloha.json"
   },
   "detail/amf.json": {
-   "bytes": 165079,
-   "hash": "af368f508d0ac252",
+   "bytes": 172516,
+   "hash": "d45ae7406674eb71",
    "path": "detail/amf.json"
   },
   "detail/amko.json": {
-   "bytes": 4969,
-   "hash": "257453a2624e3e03",
+   "bytes": 5191,
+   "hash": "77d90b71e904737f",
    "path": "detail/amko.json"
   },
   "detail/ampac.json": {
-   "bytes": 2484,
-   "hash": "137636c067a85f80",
+   "bytes": 2595,
+   "hash": "27e3a4bf36ecd413",
    "path": "detail/ampac.json"
   },
   "detail/angocorp.json": {
-   "bytes": 833,
-   "hash": "2b58cd308508c2b5",
+   "bytes": 870,
+   "hash": "28e9a87dae9b4724",
    "path": "detail/angocorp.json"
   },
   "detail/angrybirds.json": {
-   "bytes": 2622,
-   "hash": "eada7db836f3e54b",
+   "bytes": 2733,
+   "hash": "6bc616b8acd13fc5",
    "path": "detail/angrybirds.json"
   },
   "detail/arkinternational.json": {
-   "bytes": 5293,
-   "hash": "5a1af0031b332273",
+   "bytes": 5515,
+   "hash": "51df04838e592d7f",
    "path": "detail/arkinternational.json"
   },
   "detail/asb.json": {
-   "bytes": 800,
-   "hash": "79993e5e3449a6bc",
+   "bytes": 837,
+   "hash": "61d7a358625e0a30",
    "path": "detail/asb.json"
   },
   "detail/asics.json": {
-   "bytes": 65874,
-   "hash": "d2382cf8d1b82115",
+   "bytes": 68834,
+   "hash": "9ddfbc11c11a85e7",
    "path": "detail/asics.json"
   },
   "detail/asu.json": {
-   "bytes": 11243,
-   "hash": "4aec64e0d27da86d",
+   "bytes": 11761,
+   "hash": "cf6a338e35f7fd1d",
    "path": "detail/asu.json"
   },
   "detail/atkbowling.json": {
-   "bytes": 2521,
-   "hash": "5fc6ab00af437511",
+   "bytes": 2632,
+   "hash": "5ca57bc730f22ad6",
    "path": "detail/atkbowling.json"
   },
   "detail/azo.json": {
-   "bytes": 50523,
-   "hash": "d7b6b924949931cd",
+   "bytes": 52817,
+   "hash": "a356e5f0f6eb072a",
    "path": "detail/azo.json"
   },
   "detail/bak.json": {
-   "bytes": 798,
-   "hash": "1db931fb3f11c0f7",
+   "bytes": 835,
+   "hash": "a23beecd7760c6ec",
    "path": "detail/bak.json"
   },
   "detail/ballfactory.json": {
-   "bytes": 2601,
-   "hash": "9c6ffe8b0c727344",
+   "bytes": 2712,
+   "hash": "4139880265329791",
    "path": "detail/ballfactory.json"
   },
   "detail/ballistik.json": {
-   "bytes": 836,
-   "hash": "6756ea408a735a0f",
+   "bytes": 873,
+   "hash": "e85592cd9d34f8b0",
    "path": "detail/ballistik.json"
   },
   "detail/ballmakernet.json": {
-   "bytes": 871,
-   "hash": "f32b53c0aebbe661",
+   "bytes": 908,
+   "hash": "c4545c312751d2c4",
    "path": "detail/ballmakernet.json"
   },
   "detail/bangerbowling.json": {
-   "bytes": 5147,
-   "hash": "360c2b5f41f931bb",
+   "bytes": 5369,
+   "hash": "11c003ab9a1dada4",
    "path": "detail/bangerbowling.json"
   },
   "detail/bigbowling.json": {
-   "bytes": 8353,
-   "hash": "7b7b09c178d50109",
+   "bytes": 8723,
+   "hash": "05b44331cbc3a778",
    "path": "detail/bigbowling.json"
   },
   "detail/blend10.json": {
-   "bytes": 3211,
-   "hash": "1684adc5f141dd26",
+   "bytes": 3359,
+   "hash": "9a39528be7ff32c8",
    "path": "detail/blend10.json"
   },
   "detail/bowlamerica.json": {
-   "bytes": 2506,
-   "hash": "3568a51deea62e94",
+   "bytes": 2617,
+   "hash": "1f1b87ac141ff244",
    "path": "detail/bowlamerica.json"
   },
   "detail/bowlero.json": {
-   "bytes": 2775,
-   "hash": "2a5b7a2727de7e74",
+   "bytes": 2886,
+   "hash": "4849726f92052034",
    "path": "detail/bowlero.json"
   },
   "detail/bowlersedge.json": {
-   "bytes": 1729,
-   "hash": "37e7b90588a61794",
+   "bytes": 1803,
+   "hash": "ad00c9c11e0cc448",
    "path": "detail/bowlersedge.json"
   },
   "detail/bowlersparadisecom.json": {
-   "bytes": 3407,
-   "hash": "979f3417f88f8b2d",
+   "bytes": 3555,
+   "hash": "05f9974523b6cab0",
    "path": "detail/bowlersparadisecom.json"
   },
   "detail/bowlhk.json": {
-   "bytes": 1661,
-   "hash": "a3be9fb4b767c5f3",
+   "bytes": 1735,
+   "hash": "20e4397dfd81c8ed",
    "path": "detail/bowlhk.json"
   },
   "detail/bowlingmania.json": {
-   "bytes": 2689,
-   "hash": "ada85c0d12f66613",
+   "bytes": 2800,
+   "hash": "bfa893ac598a409b",
    "path": "detail/bowlingmania.json"
   },
   "detail/bowlstar.json": {
-   "bytes": 1666,
-   "hash": "6c5c9688a0ab5246",
+   "bytes": 1740,
+   "hash": "81eeb98f8fbb30d1",
    "path": "detail/bowlstar.json"
   },
   "detail/bowltech.json": {
-   "bytes": 822,
-   "hash": "6aa01c332df5930a",
+   "bytes": 859,
+   "hash": "d8ab8995098bd472",
    "path": "detail/bowltech.json"
   },
   "detail/brunswick.json": {
-   "bytes": 689888,
-   "hash": "d4505e9c2dba734c",
+   "bytes": 731315,
+   "hash": "df11a0b8cedb32d9",
    "path": "detail/brunswick.json"
   },
   "detail/bulldogbowlingproducts.json": {
-   "bytes": 3591,
-   "hash": "1ea905cc4a283888",
+   "bytes": 3739,
+   "hash": "826bbbe1ddc83a0a",
    "path": "detail/bulldogbowlingproducts.json"
   },
   "detail/bulldozer.json": {
-   "bytes": 840,
-   "hash": "9db9366848ec8412",
+   "bytes": 877,
+   "hash": "2426b0790b055a31",
    "path": "detail/bulldozer.json"
   },
   "detail/caffeinesports.json": {
-   "bytes": 5269,
-   "hash": "8ec81b133330213b",
+   "bytes": 5491,
+   "hash": "433263f6ee590799",
    "path": "detail/caffeinesports.json"
   },
   "detail/calbowling.json": {
-   "bytes": 2508,
-   "hash": "882bcba9f886a960",
+   "bytes": 2619,
+   "hash": "b9913588038fa634",
    "path": "detail/calbowling.json"
   },
   "detail/carmensalvino.json": {
-   "bytes": 2600,
-   "hash": "cd099300d1bf9827",
+   "bytes": 2711,
+   "hash": "bfb61a136aa8549f",
    "path": "detail/carmensalvino.json"
   },
   "detail/champions.json": {
-   "bytes": 18573,
-   "hash": "8880e90db95ffd6f",
+   "bytes": 19387,
+   "hash": "5294d3e2c01f4d9a",
    "path": "detail/champions.json"
   },
   "detail/circleathletics.json": {
-   "bytes": 23376,
-   "hash": "d4742a5c48040959",
+   "bytes": 24375,
+   "hash": "5f241abe5c203715",
    "path": "detail/circleathletics.json"
   },
   "detail/coactorent.json": {
-   "bytes": 819,
-   "hash": "ca328c06582c06ab",
+   "bytes": 856,
+   "hash": "05787bbe07fb342f",
    "path": "detail/coactorent.json"
   },
   "detail/columbia300.json": {
-   "bytes": 534515,
-   "hash": "8ac82857f244e233",
+   "bytes": 564679,
+   "hash": "48a3bb9016e17eb6",
    "path": "detail/columbia300.json"
   },
   "detail/cometandco.json": {
-   "bytes": 834,
-   "hash": "a53b117a76f759c3",
+   "bytes": 871,
+   "hash": "000e458c25664f9f",
    "path": "detail/cometandco.json"
   },
   "detail/completeleisurebowling.json": {
-   "bytes": 2706,
-   "hash": "b6f946a2f659922a",
+   "bytes": 2817,
+   "hash": "ec3e9a0e56635957",
    "path": "detail/completeleisurebowling.json"
   },
   "detail/dc.json": {
-   "bytes": 4041,
-   "hash": "70e4f76b3ab8a1c5",
+   "bytes": 4226,
+   "hash": "a7e246286af9557e",
    "path": "detail/dc.json"
   },
   "detail/denversporting.json": {
-   "bytes": 11805,
-   "hash": "192a714ad2cb0275",
+   "bytes": 12323,
+   "hash": "42e6408ebf859c42",
    "path": "detail/denversporting.json"
   },
   "detail/dexter.json": {
-   "bytes": 1674,
-   "hash": "7038496c74715e1b",
+   "bytes": 1748,
+   "hash": "c85f0d0f6d341713",
    "path": "detail/dexter.json"
   },
   "detail/dqa.json": {
-   "bytes": 1599,
-   "hash": "10f331a42d607bde",
+   "bytes": 1673,
+   "hash": "33e59559909b43bf",
    "path": "detail/dqa.json"
   },
   "detail/dv8.json": {
-   "bytes": 135749,
-   "hash": "a145e3b6130971cf",
+   "bytes": 146287,
+   "hash": "a1550291d64dd023",
    "path": "detail/dv8.json"
   },
   "detail/dynothane.json": {
-   "bytes": 91864,
-   "hash": "4504507ee492260e",
+   "bytes": 95897,
+   "hash": "68b5e57357eaea5e",
    "path": "detail/dynothane.json"
   },
   "detail/ebonite.json": {
-   "bytes": 744827,
-   "hash": "f1a4104712d05692",
+   "bytes": 788295,
+   "hash": "c28f4862e6c986ec",
    "path": "detail/ebonite.json"
   },
   "detail/elitebowlersparadise.json": {
-   "bytes": 65769,
-   "hash": "2252ae5e25fcdc1c",
+   "bytes": 68470,
+   "hash": "3368f3eb9e729565",
    "path": "detail/elitebowlersparadise.json"
   },
   "detail/eos.json": {
-   "bytes": 823,
-   "hash": "0f64676025d9463b",
+   "bytes": 860,
+   "hash": "35cb669453011009",
    "path": "detail/eos.json"
   },
   "detail/epicbowling.json": {
-   "bytes": 10089,
-   "hash": "4a6c5e541e7091e1",
+   "bytes": 10496,
+   "hash": "13b6fce72bc15ee5",
    "path": "detail/epicbowling.json"
   },
   "detail/eurostrike.json": {
-   "bytes": 832,
-   "hash": "74e21399e17dc606",
+   "bytes": 869,
+   "hash": "f104a3037cba3f42",
    "path": "detail/eurostrike.json"
   },
   "detail/exyd1.json": {
-   "bytes": 802,
-   "hash": "902abef3b7946665",
+   "bytes": 839,
+   "hash": "7d5f6e49ccd17051",
    "path": "detail/exyd1.json"
   },
   "detail/faball.json": {
-   "bytes": 59624,
-   "hash": "0f1f3a07c3bdbcf2",
+   "bytes": 62251,
+   "hash": "74fbaeb3c04b6136",
    "path": "detail/faball.json"
   },
   "detail/genesisbowlingcoltd.json": {
-   "bytes": 21498,
-   "hash": "bb22003607933bfd",
+   "bytes": 22386,
+   "hash": "da97936f9c4c8ee9",
    "path": "detail/genesisbowlingcoltd.json"
   },
   "detail/hammer.json": {
-   "bytes": 592031,
-   "hash": "bce842c06792be0c",
+   "bytes": 620377,
+   "hash": "b69de1f47001ea95",
    "path": "detail/hammer.json"
   },
   "detail/hardball.json": {
-   "bytes": 2526,
-   "hash": "1fbdb9a2ba7f5fa8",
+   "bytes": 2637,
+   "hash": "f7017ed4f5135eab",
    "path": "detail/hardball.json"
   },
   "detail/head.json": {
-   "bytes": 802,
-   "hash": "237bdb20944f434d",
+   "bytes": 839,
+   "hash": "271f35cae4f73c8d",
    "path": "detail/head.json"
   },
   "detail/hellbent.json": {
-   "bytes": 11703,
-   "hash": "539ea60d280ed2d1",
+   "bytes": 12221,
+   "hash": "7b897200f2b6059e",
    "path": "detail/hellbent.json"
   },
   "detail/hero.json": {
-   "bytes": 12467,
-   "hash": "702c151e151ba9a9",
+   "bytes": 12985,
+   "hash": "4f13513927d946aa",
    "path": "detail/hero.json"
   },
   "detail/hexa.json": {
-   "bytes": 1695,
-   "hash": "a81b52e7cc8e54ee",
+   "bytes": 1769,
+   "hash": "c256829ca3cdf043",
    "path": "detail/hexa.json"
   },
   "detail/hihbowling.json": {
-   "bytes": 2481,
-   "hash": "c628759d5bf4b56d",
+   "bytes": 2592,
+   "hash": "d5557d36a019cd8e",
    "path": "detail/hihbowling.json"
   },
   "detail/hjmalone.json": {
-   "bytes": 26828,
-   "hash": "7618bc8bd95a75dd",
+   "bytes": 27975,
+   "hash": "b9a2390a1a307484",
    "path": "detail/hjmalone.json"
   },
   "detail/hughesplastics.json": {
-   "bytes": 3405,
-   "hash": "bf7afe4c83da89d9",
+   "bytes": 3553,
+   "hash": "527f0ef071fb4dd4",
    "path": "detail/hughesplastics.json"
   },
   "detail/insitebowlingproducts.json": {
-   "bytes": 4442,
-   "hash": "e56e2eda7ee40bcd",
+   "bytes": 4627,
+   "hash": "4cbbd6f1d791f343",
    "path": "detail/insitebowlingproducts.json"
   },
   "detail/internationalbowlingsupply.json": {
-   "bytes": 910,
-   "hash": "03742eb7ebb342e7",
+   "bytes": 947,
+   "hash": "702da4faddd34c9b",
    "path": "detail/internationalbowlingsupply.json"
   },
   "detail/iwei.json": {
-   "bytes": 3335,
-   "hash": "ae3b9e707eab6174",
+   "bytes": 3483,
+   "hash": "6410e4ff3da24194",
    "path": "detail/iwei.json"
   },
   "detail/jab.json": {
-   "bytes": 1615,
-   "hash": "d520a0867408fd61",
+   "bytes": 1689,
+   "hash": "91af265bc6024898",
    "path": "detail/jab.json"
   },
   "detail/jandkinternational.json": {
-   "bytes": 852,
-   "hash": "f7444adae0b6a4df",
+   "bytes": 889,
+   "hash": "fca2511889a7a8e2",
    "path": "detail/jandkinternational.json"
   },
   "detail/jetbowling.json": {
-   "bytes": 11710,
-   "hash": "df33b3a7564ad01e",
+   "bytes": 12228,
+   "hash": "cd71b76b172a8674",
    "path": "detail/jetbowling.json"
   },
   "detail/jewel.json": {
-   "bytes": 5117,
-   "hash": "8b97c714184a18b8",
+   "bytes": 5339,
+   "hash": "ca522ae29e15546b",
    "path": "detail/jewel.json"
   },
   "detail/keff.json": {
-   "bytes": 2425,
-   "hash": "6d477e2ea51f1bcd",
+   "bytes": 2536,
+   "hash": "fa837c395f5c3849",
    "path": "detail/keff.json"
   },
   "detail/kinetic.json": {
-   "bytes": 816,
-   "hash": "c5ee5fb375fc32bc",
+   "bytes": 853,
+   "hash": "409790125c45471a",
    "path": "detail/kinetic.json"
   },
   "detail/koronaworld.json": {
-   "bytes": 855,
-   "hash": "4494858eb1624fe4",
+   "bytes": 892,
+   "hash": "a4b91dd4813fb9ef",
    "path": "detail/koronaworld.json"
   },
   "detail/krsf.json": {
-   "bytes": 3382,
-   "hash": "c87beb2523e0b985",
+   "bytes": 3530,
+   "hash": "a84377dbdef1eb63",
    "path": "detail/krsf.json"
   },
   "detail/lane1.json": {
-   "bytes": 85097,
-   "hash": "572770572ab66784",
+   "bytes": 88871,
+   "hash": "8d65870e992a8e1f",
    "path": "detail/lane1.json"
   },
   "detail/laneconcepts.json": {
-   "bytes": 822,
-   "hash": "59996e9d99c1eaf4",
+   "bytes": 859,
+   "hash": "7378ec6e721a35c4",
    "path": "detail/laneconcepts.json"
   },
   "detail/lanemasters.json": {
-   "bytes": 91570,
-   "hash": "571b69764f7f8fe7",
+   "bytes": 95492,
+   "hash": "8c262377ca48e41e",
    "path": "detail/lanemasters.json"
   },
   "detail/legends.json": {
-   "bytes": 33828,
-   "hash": "36caed841b29cc94",
+   "bytes": 35308,
+   "hash": "16f6e5a734ae4e78",
    "path": "detail/legends.json"
   },
   "detail/legendstar.json": {
-   "bytes": 24791,
-   "hash": "1d3ff03bd67e510d",
+   "bytes": 25864,
+   "hash": "f4d7816dd6a08b95",
    "path": "detail/legendstar.json"
   },
   "detail/leyon.json": {
-   "bytes": 795,
-   "hash": "dfd943264cb5de50",
+   "bytes": 832,
+   "hash": "097d4ff1fae2b7b1",
    "path": "detail/leyon.json"
   },
   "detail/linds.json": {
-   "bytes": 9273,
-   "hash": "42a6eca0558ce959",
+   "bytes": 9680,
+   "hash": "59fc1ac1c2c53be6",
    "path": "detail/linds.json"
   },
   "detail/lloydpricebrands.json": {
-   "bytes": 1839,
-   "hash": "ecbde48e2eb97d7a",
+   "bytes": 1913,
+   "hash": "80e9d2638344a535",
    "path": "detail/lloydpricebrands.json"
   },
   "detail/lordfield.json": {
-   "bytes": 76887,
-   "hash": "3ce5ec1dc10563a8",
+   "bytes": 80254,
+   "hash": "80149da185535c34",
    "path": "detail/lordfield.json"
   },
   "detail/magicbowlingservice.json": {
-   "bytes": 8001,
-   "hash": "78c818da8b3166b2",
+   "bytes": 8334,
+   "hash": "fc4eb6aebc881416",
    "path": "detail/magicbowlingservice.json"
   },
   "detail/mandtassociates.json": {
-   "bytes": 862,
-   "hash": "834187010bda4d55",
+   "bytes": 899,
+   "hash": "0b631501d4e3a825",
    "path": "detail/mandtassociates.json"
   },
   "detail/matsudaco.json": {
-   "bytes": 861,
-   "hash": "63a19a761cd46500",
+   "bytes": 898,
+   "hash": "c0d35198784991db",
    "path": "detail/matsudaco.json"
   },
   "detail/maximumbowlingservice.json": {
-   "bytes": 4504,
-   "hash": "4b26750ba0412d81",
+   "bytes": 4689,
+   "hash": "be84d4c3a977af53",
    "path": "detail/maximumbowlingservice.json"
   },
   "detail/millennium.json": {
-   "bytes": 1655,
-   "hash": "b697de786070c9a4",
+   "bytes": 1729,
+   "hash": "759970726ba2db8a",
    "path": "detail/millennium.json"
   },
   "detail/milo.json": {
-   "bytes": 839,
-   "hash": "60cd8c1ec05361a9",
+   "bytes": 876,
+   "hash": "ce683a8dce78a3bd",
    "path": "detail/milo.json"
   },
   "detail/modern.json": {
-   "bytes": 827,
-   "hash": "f60f1f2576dcef68",
+   "bytes": 864,
+   "hash": "7585fac65c224eba",
    "path": "detail/modern.json"
   },
   "detail/monsterbowling.json": {
-   "bytes": 3443,
-   "hash": "95f34b1de344bea3",
+   "bytes": 3591,
+   "hash": "d144f92fc89bc36c",
    "path": "detail/monsterbowling.json"
   },
   "detail/morich.json": {
-   "bytes": 73255,
-   "hash": "3156f164e91325ec",
+   "bytes": 76474,
+   "hash": "873c75632b3b2b25",
    "path": "detail/morich.json"
   },
   "detail/motiv.json": {
-   "bytes": 254255,
-   "hash": "f6213fea198d9882",
+   "bytes": 276437,
+   "hash": "3571281dee7a22fe",
    "path": "detail/motiv.json"
   },
   "detail/naturalenemies.json": {
-   "bytes": 6819,
-   "hash": "9d38cbbe5dc9553f",
+   "bytes": 7115,
+   "hash": "e9668f9bcd92bab7",
    "path": "detail/naturalenemies.json"
   },
   "detail/neotechnologies.json": {
-   "bytes": 858,
-   "hash": "9b3d187e2f32c365",
+   "bytes": 895,
+   "hash": "9ac05e104f62b8c0",
    "path": "detail/neotechnologies.json"
   },
   "detail/nipponebonite.json": {
-   "bytes": 16508,
-   "hash": "4ffafdc68e93b7e8",
+   "bytes": 17211,
+   "hash": "3f863cfa958a5401",
    "path": "detail/nipponebonite.json"
   },
   "detail/nlbowlingstar.json": {
-   "bytes": 867,
-   "hash": "ef1bd90f2e4731c3",
+   "bytes": 904,
+   "hash": "7dad21d29a180463",
    "path": "detail/nlbowlingstar.json"
   },
   "detail/nuline.json": {
-   "bytes": 10712,
-   "hash": "21b7594b6ebf727a",
+   "bytes": 11193,
+   "hash": "9dfb4eed54cc3751",
    "path": "detail/nuline.json"
   },
   "detail/ownhero.json": {
-   "bytes": 1663,
-   "hash": "3e91d3102f8fb7dd",
+   "bytes": 1737,
+   "hash": "9f01d9739b624e32",
    "path": "detail/ownhero.json"
   },
   "detail/pba.json": {
-   "bytes": 3258,
-   "hash": "7ea7d5b3fa7335f6",
+   "bytes": 3406,
+   "hash": "0a54fc9ff4da976b",
    "path": "detail/pba.json"
   },
   "detail/pbs.json": {
-   "bytes": 23124,
-   "hash": "0c08101f6166543c",
+   "bytes": 24160,
+   "hash": "4f70857475140400",
    "path": "detail/pbs.json"
   },
   "detail/phiten.json": {
-   "bytes": 2541,
-   "hash": "f1c6fbd9c74b2cf8",
+   "bytes": 2652,
+   "hash": "f0ab9d69ff4cfb72",
    "path": "detail/phiten.json"
   },
   "detail/pinbreaker.json": {
-   "bytes": 13936,
-   "hash": "f139e74294893bd9",
+   "bytes": 14528,
+   "hash": "ec31ba4d33ed1edf",
    "path": "detail/pinbreaker.json"
   },
   "detail/pinmarketing.json": {
-   "bytes": 1695,
-   "hash": "871d1f00b9cbfaf9",
+   "bytes": 1769,
+   "hash": "001590d74b6d56aa",
    "path": "detail/pinmarketing.json"
   },
   "detail/powerplay.json": {
-   "bytes": 7727,
-   "hash": "c807263069b222b5",
+   "bytes": 8060,
+   "hash": "3e4f21ff464b52bb",
    "path": "detail/powerplay.json"
   },
   "detail/probowl.json": {
-   "bytes": 20810,
-   "hash": "77c80e7837b0b93b",
+   "bytes": 21698,
+   "hash": "553d7bcde2bc46bd",
    "path": "detail/probowl.json"
   },
   "detail/probowls.json": {
-   "bytes": 830,
-   "hash": "6996e64d8f2d5db0",
+   "bytes": 867,
+   "hash": "0873abda0c7ea2ca",
    "path": "detail/probowls.json"
   },
   "detail/profishop.json": {
-   "bytes": 31709,
-   "hash": "6935f2c121afff3c",
+   "bytes": 33115,
+   "hash": "c22937b5ca50c2dd",
    "path": "detail/profishop.json"
   },
   "detail/pyramidbowling.json": {
-   "bytes": 61464,
-   "hash": "6c340d4ff5b45297",
+   "bytes": 64054,
+   "hash": "79e6cb2aca7fea73",
    "path": "detail/pyramidbowling.json"
   },
   "detail/qmr.json": {
-   "bytes": 7280,
-   "hash": "91ffe4149f5837ba",
+   "bytes": 7613,
+   "hash": "03faffc2d4ca8594",
    "path": "detail/qmr.json"
   },
   "detail/quantum.json": {
-   "bytes": 8445,
-   "hash": "366da6f873d16d25",
+   "bytes": 8815,
+   "hash": "1a41e8b6bb83434f",
    "path": "detail/quantum.json"
   },
   "detail/radical.json": {
-   "bytes": 168662,
-   "hash": "9ba2e49055d26ea7",
+   "bytes": 182947,
+   "hash": "67b3bd581a9739b6",
    "path": "detail/radical.json"
   },
   "detail/rev.json": {
-   "bytes": 2394,
-   "hash": "5f38c2589930e41a",
+   "bytes": 2505,
+   "hash": "b828e348cfec4130",
    "path": "detail/rev.json"
   },
   "detail/revolution.json": {
-   "bytes": 90509,
-   "hash": "78bcb84b74e05e40",
+   "bytes": 94283,
+   "hash": "d0a7becef8dda3e6",
    "path": "detail/revolution.json"
   },
   "detail/robbys.json": {
-   "bytes": 8958,
-   "hash": "ca116b651cdda2e5",
+   "bytes": 9365,
+   "hash": "7a06a3b8d96fcae5",
    "path": "detail/robbys.json"
   },
   "detail/rotogrip.json": {
-   "bytes": 397663,
-   "hash": "8c2f2c2d57e193bd",
+   "bytes": 416754,
+   "hash": "900650dee931aaf9",
    "path": "detail/rotogrip.json"
   },
   "detail/round1.json": {
-   "bytes": 14658,
-   "hash": "be2b84ede9bfacea",
+   "bytes": 15287,
+   "hash": "20c2442b6f1bbc55",
    "path": "detail/round1.json"
   },
   "detail/sagamihara.json": {
-   "bytes": 863,
-   "hash": "53b9f4f9f5c1b4ef",
+   "bytes": 900,
+   "hash": "b335b0dfff262fb1",
    "path": "detail/sagamihara.json"
   },
   "detail/seismic.json": {
-   "bytes": 30054,
-   "hash": "87c5b112cf9ad9db",
+   "bytes": 31386,
+   "hash": "19d31c99ccfe1b64",
    "path": "detail/seismic.json"
   },
   "detail/skillbowling.json": {
-   "bytes": 849,
-   "hash": "3d90a249875df8cb",
+   "bytes": 886,
+   "hash": "fd3c15956024a694",
    "path": "detail/skillbowling.json"
   },
   "detail/sm.json": {
-   "bytes": 834,
-   "hash": "562c52c4494e905e",
+   "bytes": 871,
+   "hash": "5424c3d76afcd0f1",
    "path": "detail/sm.json"
   },
   "detail/snb.json": {
-   "bytes": 1595,
-   "hash": "e39ee7270376bb02",
+   "bytes": 1669,
+   "hash": "01f9bd7c4ffd5e40",
    "path": "detail/snb.json"
   },
   "detail/spark.json": {
-   "bytes": 800,
-   "hash": "88d747e32bc82328",
+   "bytes": 837,
+   "hash": "77475588c95c9738",
    "path": "detail/spark.json"
   },
   "detail/sportstec.json": {
-   "bytes": 5794,
-   "hash": "88aa9e34d2fa5e75",
+   "bytes": 6053,
+   "hash": "259f172e43ae36e5",
    "path": "detail/sportstec.json"
   },
   "detail/squarebowlingproducts.json": {
-   "bytes": 3531,
-   "hash": "b164b0bf691ad79c",
+   "bytes": 3679,
+   "hash": "8e7a2fd78694e554",
    "path": "detail/squarebowlingproducts.json"
   },
   "detail/storm.json": {
-   "bytes": 838812,
-   "hash": "4194552213596496",
+   "bytes": 878060,
+   "hash": "9b1be2d8d194e321",
    "path": "detail/storm.json"
   },
   "detail/stormhighscoreproducts.json": {
-   "bytes": 3615,
-   "hash": "f8b354c99eb74a42",
+   "bytes": 3763,
+   "hash": "06d4670c43490a11",
    "path": "detail/stormhighscoreproducts.json"
   },
   "detail/strikeforce.json": {
-   "bytes": 4435,
-   "hash": "e98445989380b01f",
+   "bytes": 4620,
+   "hash": "c2233a2750efd652",
    "path": "detail/strikeforce.json"
   },
   "detail/strikemaker.json": {
-   "bytes": 840,
-   "hash": "68731bef5aa01c5a",
+   "bytes": 877,
+   "hash": "f52e18c858e5bd99",
    "path": "detail/strikemaker.json"
   },
   "detail/sunbridgecoltd.json": {
-   "bytes": 16934,
-   "hash": "6cb074f3c6f1f2aa",
+   "bytes": 17637,
+   "hash": "4adb3c7900842cfe",
    "path": "detail/sunbridgecoltd.json"
   },
   "detail/sunrich.json": {
-   "bytes": 826,
-   "hash": "3bdb86523aa7f2e8",
+   "bytes": 863,
+   "hash": "bc82f3ca77e94f19",
    "path": "detail/sunrich.json"
   },
   "detail/superbowl.json": {
-   "bytes": 824,
-   "hash": "6153caba12a4940a",
+   "bytes": 861,
+   "hash": "9fe9369c98f7ff8e",
    "path": "detail/superbowl.json"
   },
   "detail/swag.json": {
-   "bytes": 104406,
-   "hash": "a39141f9111a3720",
+   "bytes": 109068,
+   "hash": "9ec75e0730dc4513",
    "path": "detail/swag.json"
   },
   "detail/sweetrade.json": {
-   "bytes": 841,
-   "hash": "f5504ce04f4ecc8e",
+   "bytes": 878,
+   "hash": "3f8f10e7917ec47c",
    "path": "detail/sweetrade.json"
   },
   "detail/synsheenstar.json": {
-   "bytes": 1714,
-   "hash": "9320a27974136cc8",
+   "bytes": 1788,
+   "hash": "34bb12cb27cf3aff",
    "path": "detail/synsheenstar.json"
   },
   "detail/tayoto.json": {
-   "bytes": 1605,
-   "hash": "8d85a645d899f7e9",
+   "bytes": 1679,
+   "hash": "5091a5d96b75385a",
    "path": "detail/tayoto.json"
   },
   "detail/trackinc.json": {
-   "bytes": 355659,
-   "hash": "9a65f879ab83203f",
+   "bytes": 375951,
+   "hash": "1b1b0e4d8a592294",
    "path": "detail/trackinc.json"
   },
   "detail/ubb.json": {
-   "bytes": 846,
-   "hash": "85916ea5264b631e",
+   "bytes": 883,
+   "hash": "c82f84feebc0a9e4",
    "path": "detail/ubb.json"
   },
   "detail/ultimatusinternational.json": {
-   "bytes": 908,
-   "hash": "42bb0c3bca765a7b",
+   "bytes": 945,
+   "hash": "a602134165d3f7ae",
    "path": "detail/ultimatusinternational.json"
   },
   "detail/undergroundbowlingassociation.json": {
-   "bytes": 922,
-   "hash": "39c3e31f9952f023",
+   "bytes": 959,
+   "hash": "dda47d956da41306",
    "path": "detail/undergroundbowlingassociation.json"
   },
   "detail/usact.json": {
-   "bytes": 68407,
-   "hash": "a234fd24c9a4ab9a",
+   "bytes": 71478,
+   "hash": "afa6024e9673757a",
    "path": "detail/usact.json"
   },
   "detail/vettex.json": {
-   "bytes": 812,
-   "hash": "abd70a8d97cdd80a",
+   "bytes": 849,
+   "hash": "450bd5d168f02861",
    "path": "detail/vettex.json"
   },
   "detail/via.json": {
-   "bytes": 17895,
-   "hash": "6e0ec0b2cbef5387",
+   "bytes": 18709,
+   "hash": "c721daf88d99666f",
    "path": "detail/via.json"
   },
   "detail/viatrading.json": {
-   "bytes": 826,
-   "hash": "b7a4b3ce966af0bf",
+   "bytes": 863,
+   "hash": "f806d3fc176f6da2",
    "path": "detail/viatrading.json"
   },
   "detail/visionary.json": {
-   "bytes": 56827,
-   "hash": "9fa440d021b01a92",
+   "bytes": 59306,
+   "hash": "4296292ee3e62a97",
    "path": "detail/visionary.json"
   },
   "detail/vps300.json": {
-   "bytes": 798,
-   "hash": "f3219dd99f0e4114",
+   "bytes": 835,
+   "hash": "235939fc84584c6c",
    "path": "detail/vps300.json"
   },
   "detail/winsomeindustrial.json": {
-   "bytes": 898,
-   "hash": "e30ffb728646eaaa",
+   "bytes": 935,
+   "hash": "a1cf530c57d467b9",
    "path": "detail/winsomeindustrial.json"
   },
   "detail/xatk.json": {
-   "bytes": 1638,
-   "hash": "5d5c692284f31286",
+   "bytes": 1712,
+   "hash": "c432a7efd96a2510",
    "path": "detail/xatk.json"
   },
   "detail/xcaliburbowling.json": {
-   "bytes": 850,
-   "hash": "f7a3a8a28a32f38e",
+   "bytes": 887,
+   "hash": "6800aa5f7e2021ba",
    "path": "detail/xcaliburbowling.json"
   },
   "detail/xtremebowling.json": {
-   "bytes": 1699,
-   "hash": "3e145e82017b5f41",
+   "bytes": 1773,
+   "hash": "668ea4003bb2f7be",
    "path": "detail/xtremebowling.json"
   },
   "detail/yellowjacket.json": {
-   "bytes": 1661,
-   "hash": "8ac209e96a245777",
+   "bytes": 1735,
+   "hash": "5258fa11b41fe2b2",
    "path": "detail/yellowjacket.json"
   },
   "detail/yuean.json": {
-   "bytes": 4970,
-   "hash": "5a37694e6e0eb98a",
+   "bytes": 5192,
+   "hash": "694667e48fd7a8ce",
    "path": "detail/yuean.json"
   },
   "index.json": {
-   "bytes": 1287835,
-   "hash": "1cecc8d774818265",
+   "bytes": 1298765,
+   "hash": "053f531ab2bc7fec",
    "path": "index.json"
   },
   "usbc.json": {
    "bytes": 665365,
-   "hash": "189ff4b77aca56dd",
+   "hash": "28ef485efb6de46d",
    "path": "usbc.json"
   }
  },
- "generated": "2026-10-07",
- "listVersion": "2026-10-07"
+ "generated": "2026-10-08",
+ "listVersion": "2026-10-08"
 }
