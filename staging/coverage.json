@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-07T22:25:24.636Z",
+  "generated": "2026-10-08T00:15:39.038Z",
   "since": 2023,
   "perSource": {
     "storm": {
@@ -16,12 +16,12 @@
     },
     "hammer": {
       "pages": 366,
-      "parsed": 195,
+      "parsed": 197,
       "errors": 3,
       "errorSample": [
-        "https://hammerbowling.com/products/black-widow-sting.json 429",
-        "https://hammerbowling.com/products/black-widow-urethane.json 429",
-        "https://hammerbowling.com/products/anger-solid.json 429"
+        "https://hammerbowling.com/products/tnba-chalk.json 429",
+        "https://hammerbowling.com/products/tournament-backpack.json 429",
+        "https://hammerbowling.com/products/gauntlet-triple-roller-camo.json 429"
       ]
     },
     "dv8": {
@@ -41,7 +41,7 @@
       "parsed": 163,
       "errors": 1,
       "errorSample": [
-        "https://trackbowling.com/products/kinetic-pearl.json 429"
+        "https://trackbowling.com/products/mean-machine.json 429"
       ]
     },
     "ebonite": {
@@ -49,8 +49,8 @@
       "parsed": 190,
       "errors": 2,
       "errorSample": [
-        "https://ebonite.com/products/maxim-turquoise-onyx.json 429",
-        "https://ebonite.com/products/real-time.json 429"
+        "https://ebonite.com/products/rxs300.json 429",
+        "https://ebonite.com/products/game-breaker-4-hybrid.json 429"
       ]
     },
     "columbia": {
@@ -58,9 +58,9 @@
       "parsed": 386,
       "errors": 3,
       "errorSample": [
-        "https://columbia300.com/products/the-classic-u2.json 429",
-        "https://columbia300.com/products/messenger-blue.json 429",
-        "https://columbia300.com/products/nitrous-red-smoke-white.json 429"
+        "https://columbia300.com/products/total-bedlam.json 429",
+        "https://columbia300.com/products/oath.json 429",
+        "https://columbia300.com/products/action-max.json 429"
       ]
     },
     "motiv": {
@@ -80,15 +80,15 @@
     },
     "Brunswick": {
       "all": 745,
-      "auto": 175,
-      "pending": 19,
+      "auto": 178,
+      "pending": 16,
       "recent": 74,
-      "recentAuto": 37
+      "recentAuto": 38
     },
     "Columbia 300": {
       "all": 553,
-      "auto": 168,
-      "pending": 76,
+      "auto": 170,
+      "pending": 73,
       "recent": 20,
       "recentAuto": 15
     },
@@ -101,22 +101,22 @@
     },
     "Ebonite": {
       "all": 814,
-      "auto": 111,
-      "pending": 35,
+      "auto": 126,
+      "pending": 21,
       "recent": 61,
-      "recentAuto": 14
+      "recentAuto": 16
     },
     "Hammer": {
       "all": 653,
       "auto": 74,
-      "pending": 100,
+      "pending": 101,
       "recent": 114,
-      "recentAuto": 38
+      "recentAuto": 39
     },
     "Motiv": {
       "all": 218,
-      "auto": 165,
-      "pending": 14,
+      "auto": 167,
+      "pending": 12,
       "recent": 57,
       "recentAuto": 49
     },
@@ -129,10 +129,10 @@
     },
     "Roto Grip": {
       "all": 469,
-      "auto": 15,
-      "pending": 6,
+      "auto": 18,
+      "pending": 3,
       "recent": 89,
-      "recentAuto": 11
+      "recentAuto": 13
     },
     "Storm": {
       "all": 998,
@@ -143,8 +143,8 @@
     },
     "Track Inc.": {
       "all": 361,
-      "auto": 113,
-      "pending": 49,
+      "auto": 116,
+      "pending": 46,
       "recent": 46,
       "recentAuto": 24
     }

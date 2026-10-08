@@ -160,7 +160,7 @@
  {
   "source": "hammer",
   "reason": "no-weight-specs",
-  "n": 84,
+  "n": 85,
   "samples": [
    {
     "title": "Absolut Curve",
@@ -318,7 +318,7 @@
  {
   "source": "ebonite",
   "reason": "no-weight-specs",
-  "n": 42,
+  "n": 43,
   "samples": [
    {
     "title": "Big Time Special Edition",
@@ -409,7 +409,7 @@
  {
   "source": "track",
   "reason": "no-weight-specs",
-  "n": 36,
+  "n": 35,
   "samples": [
    {
     "title": "100P",
@@ -591,7 +591,7 @@
  {
   "source": "hammer",
   "reason": "no-usbc",
-  "n": 27,
+  "n": 26,
   "samples": [
    {
     "title": "Blue Vibe",
@@ -816,7 +816,7 @@
  {
   "source": "ebonite",
   "reason": "no-usbc",
-  "n": 22,
+  "n": 20,
   "samples": [
    {
     "title": "Angry Birds",
@@ -869,13 +869,13 @@
     "candidates": []
    },
    {
-    "title": "Game Breaker 4 Hybrid",
-    "url": "https://ebonite.com/products/game-breaker-4-hybrid",
+    "title": "Game Breaker 4 Pearl",
+    "url": "https://ebonite.com/products/game-breaker-4-pearl",
     "candidates": []
    },
    {
-    "title": "Game Breaker 4 Pearl",
-    "url": "https://ebonite.com/products/game-breaker-4-pearl",
+    "title": "Game Breaker 5",
+    "url": "https://ebonite.com/products/game-breaker-5",
     "candidates": []
    }
   ]
@@ -987,9 +987,9 @@
     "url": "https://columbia300.com/products/pulse",
     "candidates": [
      "columbia-300-pulse-2025",
-     "columbia-300-pulse-blue-black-gold",
      "columbia-300-pulse-clear-pin",
-     "columbia-300-pulse-hybrid"
+     "columbia-300-pulse-hybrid",
+     "columbia-300-pulse-pearl"
     ]
    },
    {
@@ -1107,20 +1107,13 @@
  {
   "source": "motiv",
   "reason": "variant",
-  "n": 9,
+  "n": 7,
   "samples": [
    {
     "title": "Allegiant Sniper",
     "url": "https://www.motivbowling.com/products/balls/retired-balls/allegiant-sniper.html",
     "candidates": [
      "motiv-allegiant-sniper-orange-pearl"
-    ]
-   },
-   {
-    "title": "Combat Tank",
-    "url": "https://www.motivbowling.com/products/balls/retired-balls/combat-tank.html",
-    "candidates": [
-     "motiv-combat-tank-black-burgundy"
     ]
    },
    {
@@ -1165,83 +1158,10 @@
     ]
    },
    {
-    "title": "Tank Blitz",
-    "url": "https://www.motivbowling.com/products/balls/retired-balls/tank-blitz.html",
-    "candidates": [
-     "motiv-tank-blitz-red"
-    ]
-   },
-   {
     "title": "Tank Rampage",
     "url": "https://www.motivbowling.com/products/balls/retired-balls/tank-rampage.html",
     "candidates": [
      "motiv-tank-rampage-pearl"
-    ]
-   }
-  ]
- },
- {
-  "source": "ebonite",
-  "reason": "variant",
-  "n": 7,
-  "samples": [
-   {
-    "title": "Big One",
-    "url": "https://ebonite.com/products/big-one",
-    "candidates": [
-     "ebonite-big-one-2017",
-     "ebonite-big-one-j-limited"
-    ]
-   },
-   {
-    "title": "Cyclone - Fireball",
-    "url": "https://ebonite.com/products/cyclone-fireball",
-    "candidates": [
-     "ebonite-cyclone-fireball-red-gold"
-    ]
-   },
-   {
-    "title": "Destiny Pearl - Black / Red / Blue",
-    "url": "https://ebonite.com/products/destiny-pearl-black-red-blue",
-    "candidates": [
-     "ebonite-destiny-pearl-black-red-blue-red-pin"
-    ]
-   },
-   {
-    "title": "Magic Touch",
-    "url": "https://ebonite.com/products/magic-touch",
-    "candidates": [
-     "ebonite-magic-touch-black-red-green",
-     "ebonite-magic-touch-black-red-silver"
-    ]
-   },
-   {
-    "title": "Mission Unknown",
-    "url": "https://ebonite.com/products/mission-unknown",
-    "candidates": [
-     "ebonite-mission-unknown-black",
-     "ebonite-mission-unknown-gold",
-     "ebonite-mission-unknown-red"
-    ]
-   },
-   {
-    "title": "Omni",
-    "url": "https://ebonite.com/products/omni",
-    "candidates": [
-     "ebonite-omni-black-blue",
-     "ebonite-omni-hybrid",
-     "ebonite-omni-pearl",
-     "ebonite-omni-solid"
-    ]
-   },
-   {
-    "title": "Smash",
-    "url": "https://ebonite.com/products/smash",
-    "candidates": [
-     "ebonite-smash-blue-black-purple",
-     "ebonite-smash-blue-pearl",
-     "ebonite-smash-time",
-     "ebonite-smash-time-pearl"
     ]
    }
   ]
@@ -1322,9 +1242,9 @@
     "url": "https://brunswickbowling.com/products/balls/retired/quantum-bias",
     "candidates": [
      "brunswick-quantum-bias-pearl",
-     "brunswick-quantum-bias-purple",
      "brunswick-quantum-bias-solid",
-     "brunswick-quantum-bias-urethane"
+     "brunswick-quantum-bias-urethane",
+     "brunswick-quantum-bias-urethane-blue"
     ]
    },
    {
@@ -1339,55 +1259,6 @@
     "url": "https://brunswickbowling.com/products/balls/retired/uppercut",
     "candidates": [
      "brunswick-uppercut-pearl"
-    ]
-   }
-  ]
- },
- {
-  "source": "ebonite",
-  "reason": "conflicting-sources",
-  "n": 6,
-  "samples": [
-   {
-    "title": "Tornado - Black / Hot Pink / Silver",
-    "url": "https://ebonite.com/products/tornado-black-hot-pink-silver",
-    "candidates": [
-     "ebonite-tornado"
-    ]
-   },
-   {
-    "title": "Tornado - Black / Orange / Red",
-    "url": "https://ebonite.com/products/tornado-black-orange-red",
-    "candidates": [
-     "ebonite-tornado"
-    ]
-   },
-   {
-    "title": "Tornado - Green / Purple / Navy",
-    "url": "https://ebonite.com/products/tornado-green-purple-navy",
-    "candidates": [
-     "ebonite-tornado"
-    ]
-   },
-   {
-    "title": "Tornado - Navy / Gold / Red",
-    "url": "https://ebonite.com/products/tornado-navy-gold-red",
-    "candidates": [
-     "ebonite-tornado"
-    ]
-   },
-   {
-    "title": "Tornado - Navy / Silver / Gold",
-    "url": "https://ebonite.com/products/tornado-navy-silver-gold",
-    "candidates": [
-     "ebonite-tornado"
-    ]
-   },
-   {
-    "title": "Tornado - Navy / Turquoise / Silver",
-    "url": "https://ebonite.com/products/tornado-navy-turquoise-silver",
-    "candidates": [
-     "ebonite-tornado"
     ]
    }
   ]
@@ -1529,36 +1400,77 @@
   ]
  },
  {
-  "source": "storm",
+  "source": "ebonite",
   "reason": "variant",
   "n": 4,
   "samples": [
    {
-    "title": "HUSTLE EARTH",
-    "url": "https://www.stormbowling.com/roto-grip-hustle-bowling-ball-earth",
+    "title": "Big One",
+    "url": "https://ebonite.com/products/big-one",
     "candidates": [
-     "roto-grip-hustle-earth-blue-gold-green"
+     "ebonite-big-one-2017",
+     "ebonite-big-one-j-limited"
     ]
    },
    {
-    "title": "HUSTLE GLOW",
-    "url": "https://www.stormbowling.com/roto-grip-hustle-bowling-ball-glow",
+    "title": "Destiny Pearl - Black / Red / Blue",
+    "url": "https://ebonite.com/products/destiny-pearl-black-red-blue",
     "candidates": [
-     "roto-grip-hustle-glow-mint-fuchsia-lemon"
+     "ebonite-destiny-pearl-black-red-blue-red-pin"
     ]
    },
    {
-    "title": "Hustle SOS",
-    "url": "https://www.stormbowling.com/roto-grip-hustle-sos-bowling-ball",
+    "title": "Omni",
+    "url": "https://ebonite.com/products/omni",
     "candidates": [
-     "roto-grip-hustle-sos-soot-onyx-sky"
+     "ebonite-omni-hybrid",
+     "ebonite-omni-pearl",
+     "ebonite-omni-solid"
     ]
    },
    {
-    "title": "Hustle VP",
-    "url": "https://www.stormbowling.com/roto-grip-hustle-vp-bowling-ball",
+    "title": "Smash",
+    "url": "https://ebonite.com/products/smash",
     "candidates": [
-     "roto-grip-hustle-vp-vanilla-popsicle"
+     "ebonite-smash-blue-pearl",
+     "ebonite-smash-time",
+     "ebonite-smash-time-pearl",
+     "ebonite-smash-time-tj-limited"
+    ]
+   }
+  ]
+ },
+ {
+  "source": "hammer",
+  "reason": "conflicting-sources",
+  "n": 4,
+  "samples": [
+   {
+    "title": "Black Widow Urethane",
+    "url": "https://hammerbowling.com/products/black-widow-urethane",
+    "candidates": [
+     "hammer-black-widow-urethane"
+    ]
+   },
+   {
+    "title": "Black Widow Urethane - Original",
+    "url": "https://hammerbowling.com/products/black-widow-urethane-original",
+    "candidates": [
+     "hammer-black-widow-urethane"
+    ]
+   },
+   {
+    "title": "Web Pearl",
+    "url": "https://hammerbowling.com/products/web-pearl",
+    "candidates": [
+     "hammer-web-pearl"
+    ]
+   },
+   {
+    "title": "Web Pearl - Original",
+    "url": "https://hammerbowling.com/products/web-pearl-original",
+    "candidates": [
+     "hammer-web-pearl"
     ]
    }
   ]
@@ -1592,6 +1504,34 @@
   ]
  },
  {
+  "source": "storm",
+  "reason": "variant",
+  "n": 3,
+  "samples": [
+   {
+    "title": "HUSTLE GLOW",
+    "url": "https://www.stormbowling.com/roto-grip-hustle-bowling-ball-glow",
+    "candidates": [
+     "roto-grip-hustle-glow-mint-fuchsia-lemon"
+    ]
+   },
+   {
+    "title": "Hustle SOS",
+    "url": "https://www.stormbowling.com/roto-grip-hustle-sos-bowling-ball",
+    "candidates": [
+     "roto-grip-hustle-sos-soot-onyx-sky"
+    ]
+   },
+   {
+    "title": "Hustle VP",
+    "url": "https://www.stormbowling.com/roto-grip-hustle-vp-bowling-ball",
+    "candidates": [
+     "roto-grip-hustle-vp-vanilla-popsicle"
+    ]
+   }
+  ]
+ },
+ {
   "source": "track",
   "reason": "variant",
   "n": 3,
@@ -1601,9 +1541,9 @@
     "url": "https://trackbowling.com/products/heat",
     "candidates": [
      "track-inc-heat-2-pearl",
-     "track-inc-heat-black-purple-silver",
      "track-inc-heat-black-purple-silver-orange-pin",
-     "track-inc-heat-blast"
+     "track-inc-heat-blast",
+     "track-inc-heat-lava"
     ]
    },
    {
@@ -1619,30 +1559,6 @@
     "candidates": [
      "track-inc-slash-blue",
      "track-inc-slash-red"
-    ]
-   }
-  ]
- },
- {
-  "source": "ebonite",
-  "reason": "ambiguous",
-  "n": 2,
-  "samples": [
-   {
-    "title": "Puma",
-    "url": "https://ebonite.com/products/puma",
-    "candidates": [
-     "ebonite-puma",
-     "ebonite-puma-2"
-    ]
-   },
-   {
-    "title": "Turbo X",
-    "url": "https://ebonite.com/products/turbo-x",
-    "candidates": [
-     "ebonite-turbo-x",
-     "ebonite-turbo-x-2",
-     "ebonite-turbo-x-3"
     ]
    }
   ]
@@ -1666,27 +1582,6 @@
     "candidates": [
      "hammer-burgundy-hammer",
      "hammer-burgundy-hammer-2"
-    ]
-   }
-  ]
- },
- {
-  "source": "hammer",
-  "reason": "conflicting-sources",
-  "n": 2,
-  "samples": [
-   {
-    "title": "Web Pearl",
-    "url": "https://hammerbowling.com/products/web-pearl",
-    "candidates": [
-     "hammer-web-pearl"
-    ]
-   },
-   {
-    "title": "Web Pearl - Original",
-    "url": "https://hammerbowling.com/products/web-pearl-original",
-    "candidates": [
-     "hammer-web-pearl"
     ]
    }
   ]
@@ -1755,21 +1650,6 @@
   ]
  },
  {
-  "source": "brunswick",
-  "reason": "ambiguous",
-  "n": 1,
-  "samples": [
-   {
-    "title": "Danger Zone",
-    "url": "https://brunswickbowling.com/products/balls/current/danger-zone",
-    "candidates": [
-     "brunswick-danger-zone",
-     "brunswick-danger-zone-2"
-    ]
-   }
-  ]
- },
- {
   "source": "columbia",
   "reason": "out-of-range",
   "n": 1,
@@ -1793,21 +1673,6 @@
     "url": "https://radicalbowling.com/products/balls/retired/innovator",
     "candidates": [
      "radical-innovator"
-    ]
-   }
-  ]
- },
- {
-  "source": "storm",
-  "reason": "ambiguous",
-  "n": 1,
-  "samples": [
-   {
-    "title": "Cosmos",
-    "url": "https://www.stormbowling.com/roto-grip-cosmos-bowling-ball",
-    "candidates": [
-     "roto-grip-cosmos",
-     "roto-grip-cosmos-all-colors"
     ]
    }
   ]
