@@ -6,6 +6,10 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="BowlingDB">
+<!-- v30.162 OFF-1: manifest + icons so the home-screen app installs and launches as an app -->
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#0E0F11">
 <title>BowlingDB v22</title>
 <style>
 :root {
@@ -2599,7 +2603,7 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
     </div>
     <div id="hdr-title" onclick="hdrTitleTap()"><span class="brand">Bowling</span>DB</div>
     <div id="hdr-title-popover"></div>
-    <span id="hdr-build-ref">v30.160 · 2026-10-09</span>
+    <span id="hdr-build-ref">v30.162 · 2026-10-09</span>
     <div id="hdr-right">
       <div class="hdr-icon-btn" id="hdr-delete-game-btn" onclick="confirmDeleteGame(G.gameID)" title="Delete Game" style="display:none">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -16195,12 +16199,25 @@ angleBadge = '<span style="font-size:9px;color:'+ aColor
 }
 
 var hasAlign = alignments.some(function(a) { return a.leaveID === lvID; });
+var _alnSum = aln2SetupSummary(lvID);
+var _canExpand = (typeof lvID === 'number');
+var _isOpen = _canExpand && !!_leavesExpanded[lvID];
 var alignLabel = hasAlign ? '⊕ Setup': '+ Setup';
 var alignColor = hasAlign ? 'var(--teal)': 'var(--t3)';
 var alignPart = '<span style="font-size:10px;color:'+ alignColor + ';margin-left:6px;cursor:pointer" '
-+ 'onclick="openLeaveAlignModal(_leavesAlignMap['+ _alignIdx + '])">'+ alignLabel + '</span>';
++ 'onclick="event.stopPropagation();openLeaveAlignModal(_leavesAlignMap['+ _alignIdx + '])">'+ (_alnSum || alignLabel) + '</span>';
+var expandPart = _canExpand
+? '<span style="font-size:10px;color:var(--t3);margin-left:8px">' + (_isOpen ? '\u25B4' : '\u25BE') + ' best</span>'
+: '';
+var bestPart = _isOpen
+? '<div style="grid-column:1 / -1;padding:2px 4px 6px 52px" onclick="event.stopPropagation()">'
++ '<div style="font-size:10px;color:var(--t3)">Best setups \u00b7 all games \u00b7 values you set</div>'
++ aln2BestSetupsHTML(lvID, ['hook', 'straight'], 'lib')
++ '</div>'
+: '';
 return '<div style="display:grid;grid-template-columns:44px 1fr 44px;gap:8px;'
-+ 'align-items:center;padding:10px 0;border-bottom:1px solid var(--border1)">'
++ 'align-items:center;padding:10px 0;border-bottom:1px solid var(--border1)'
++ (_canExpand ? ';cursor:pointer" onclick="toggleLeaveBest(' + _alignIdx + ')">' : '">')
 
 + '<div style="display:flex;justify-content:center;transform:scale(0.75);transform-origin:center">'+ pinHtml + '</div>'
 
@@ -16213,11 +16230,12 @@ return '<div style="display:grid;grid-template-columns:44px 1fr 44px;gap:8px;'
 + '</div>'
 + '<div style="font-size:11px;color:var(--t3)">'
 + e.opps + ' opp'+ (e.opps !== 1 ? 's': '') + ' · '+ e.conv + '/'+ e.opps
-+ alignPart
++ alignPart + expandPart
 + '</div>'
 + '</div>'
 
 + '<div style="text-align:right;font-size:17px;font-weight:800;color:'+ barColor + '">'+ pct + '%</div>'
++ bestPart
 + '</div>';
 }).join('');
 return '<div style="padding:16px">'
@@ -16227,6 +16245,72 @@ return '<div style="padding:16px">'
 }
 
 
+
+/* ---------- v30.161 ALN-3: best setups display (design rev 7, sec 12) ----------
+   One renderer for both places. 'lib' (Leave Library row, expanded):
+   "use" saves the pair as this style's setup. 'sheet' (alignment sheet):
+   "use" only fills the SB/TB inputs; Save still decides. Rankings are
+   all games, strong tier only (see spareSetupRank), top 3 per style. */
+var _leavesExpanded = {};
+function toggleLeaveBest(idx) {
+var id = _leavesAlignMap[idx];
+if (typeof id !== 'number') return;
+_leavesExpanded[id] = !_leavesExpanded[id];
+renderLeavesScreen();
+}
+function aln2SetupSummary(leaveID) {
+if (typeof leaveID !== 'number') return '';
+var parts = [];
+[['hook', 'H'], ['straight', 'S']].forEach(function(x) {
+var a = getSpareAlignment(leaveID, x[0]);
+if (a && a.style === x[0] && (a.sb != null || a.tb != null)) {
+parts.push(x[1] + ' ' + (a.sb != null ? a.sb : '\u2013') + '/' + (a.tb != null ? a.tb : '\u2013'));
+}
+});
+return parts.join(' \u00b7 ');
+}
+function aln2BestSetupsHTML(leaveID, styles, mode) {
+var out = '';
+styles.forEach(function(style) {
+var rows = spareSetupRank(leaveID, style).slice(0, 3);
+var cur = getSpareAlignment(leaveID, style);
+if (cur && cur.style !== style) cur = null;
+var head = '<div style="font-size:10px;font-weight:800;color:var(--t3);letter-spacing:0.5px;margin:8px 0 4px">'
++ (style === 'hook' ? 'HOOK' : 'STRAIGHT') + '</div>';
+if (!rows.length) {
+out += head + '<div style="font-size:11px;color:var(--t3);padding:2px 0 4px">No setups set on the wheel yet</div>';
+return;
+}
+out += head + rows.map(function(r) {
+var isCur = cur && cur.sb === r.sb && cur.tb === r.tb;
+var action = isCur
+? '<span style="font-size:10px;font-weight:700;color:var(--teal)">\u2713 default</span>'
+: (mode === 'sheet'
+? '<button class="btn btn-ghost" style="font-size:10px;padding:3px 9px;width:auto;margin:0" onclick="aln2FillSheet(' + r.sb + ',' + r.tb + ')">use</button>'
+: '<button class="btn btn-ghost" style="font-size:10px;padding:3px 9px;width:auto;margin:0" onclick="event.stopPropagation();aln2UseSetup(' + leaveID + ',\'' + style + '\',' + r.sb + ',' + r.tb + ')">use</button>');
+return '<div style="display:grid;grid-template-columns:64px 1fr 40px 62px;gap:6px;align-items:center;padding:3px 0;'
++ (r.low ? 'opacity:0.55;' : '') + '">'
++ '<span style="font-size:13px;font-weight:800;color:var(--t1)">' + r.sb + '/' + r.tb + '</span>'
++ '<span style="font-size:11px;color:var(--t3)">' + r.conv + '/' + r.opps + (r.low ? ' \u00b7 low sample' : '') + '</span>'
++ '<span style="font-size:12px;font-weight:700;color:var(--t2);text-align:right">' + r.pct + '%</span>'
++ '<span style="text-align:right">' + action + '</span>'
++ '</div>';
+}).join('');
+});
+return out;
+}
+function aln2UseSetup(leaveID, style, sb, tb) {
+saveSpareAlignment(leaveID, { sb: sb, tb: tb }, style);
+renderLeavesScreen();
+toast((style === 'hook' ? 'Hook' : 'Straight') + ' setup set \u2014 ' + sb + ' / ' + tb);
+haptic && haptic('light');
+}
+function aln2FillSheet(sb, tb) {
+var a = document.getElementById('la-sb'), b = document.getElementById('la-tb');
+if (a) a.value = sb;
+if (b) b.value = tb;
+haptic && haptic('light');
+}
 
 var _leaveAlignCurrent = null; 
 var _leaveAlignStyle = 'hook'; 
@@ -16288,6 +16372,12 @@ return '<div class="modal-title">'+ name + ' Alignment</div>'
 + 'background:var(--bg3);color:var(--t1);font-size:15px;font-weight:700;box-sizing:border-box">'
 + '</div>'
 + '</div>'
++ (typeof leaveID === 'number'
+? '<div style="margin:-4px 0 12px;padding:6px 10px 8px;background:var(--bg3);border-radius:8px">'
++ '<div style="font-size:10px;color:var(--t3)">Best ' + style + ' setups \u00b7 all games \u00b7 values you set</div>'
++ aln2BestSetupsHTML(leaveID, [style], 'sheet').replace(/<div style="font-size:10px;font-weight:800[^>]*>(HOOK|STRAIGHT)<\/div>/, '')
++ '</div>'
+: '')
 + '<div style="margin-bottom:12px">'
 + (style === 'straight'
 ? '<div style="font-size:10px;font-weight:700;color:var(--t3);margin-bottom:4px">BALL — the specific ball suggested when this leave comes up straight</div>'
@@ -20590,9 +20680,15 @@ var LL_NOTE_TAXONOMY = {
 
 
 
+/* v30.162 OFF-1: AI needs the network. Say so plainly instead of the
+   browser's "Load failed". navigator.onLine is only trusted when false. */
+function aiOnline() {
+if (navigator.onLine === false) throw new Error('Offline \u2014 AI features need a connection');
+}
 async function llCallAI(prompt, useDeepModel) {
 var key = localStorage.getItem('bowlingdb_ai_key');
 if (!key) throw new Error('No API key - add one in Settings');
+aiOnline();
 var res = await fetch('https://api.anthropic.com/v1/messages', {
 method: 'POST',
 headers: {
@@ -25661,6 +25757,7 @@ return (c && c.models.length) ? c.models : AI_MODEL_FALLBACK.slice();
 async function fetchAIModels() {
 const key = localStorage.getItem('bowlingdb_ai_key');
 if (!key) throw new Error('No API key saved');
+aiOnline();
 const res = await fetch('https://api.anthropic.com/v1/models?limit=100', {
 method: 'GET',
 headers: {
@@ -26517,7 +26614,7 @@ meta: {
 kind: 'bowlingdb-snapshot',
 snapshotVersion: 1,
 exportDate: new Date().toISOString(),
-exportSource: 'BowlingDB PWA v30.160',
+exportSource: 'BowlingDB PWA v30.162',
 includesBallImages: !!includeBallImages,
 excluded: Array.from(SNAPSHOT_LS_SKIP)
 },
@@ -34270,6 +34367,7 @@ return filled;
 async function _bdetCallAI(prompt) {
 const key = localStorage.getItem('bowlingdb_ai_key');
 if (!key) throw new Error('No API key — add one in Settings');
+aiOnline();
 const res = await fetch('https://api.anthropic.com/v1/messages', {
 method: 'POST',
 headers: {
@@ -34369,6 +34467,7 @@ if (btn) { btn.disabled = false; btn.textContent = 'Extract Specs'; }
 async function _seriesCallAI(prompt) {
 const key = localStorage.getItem('bowlingdb_ai_key');
 if (!key) throw new Error('No API key — add one in Settings');
+aiOnline();
 const res = await fetch('https://api.anthropic.com/v1/messages', {
 method: 'POST',
 headers: {
@@ -35708,6 +35807,7 @@ const promptObj = _buildDebriefPrompt(ctx);
 const key = localStorage.getItem('bowlingdb_ai_key');
 if (!key) throw new Error('No API key — add one in Settings');
 const model = getAIModelFast();
+aiOnline();
 const res = await fetch('https://api.anthropic.com/v1/messages', {
 method: 'POST',
 headers: {
@@ -36173,6 +36273,7 @@ el.style.display = 'block';
 }
 async function _aiChatCallAPI(messages) {
 const key = localStorage.getItem('bowlingdb_ai_key');
+aiOnline();
 const res = await fetch('https://api.anthropic.com/v1/messages', {
 method: 'POST',
 headers: {
@@ -37024,5 +37125,20 @@ var _DKM_STATUS_LABELS = {ok:'🟢 Working',partial:'🟡 Partial',broken:'🔴 
 <script src="report.js"></script>
 <!-- v30.157 NEW-11 step 4: ball catalog manifest check + IDB cache (same-origin, like devkit.js/report.js). Optional: if missing, the app behaves exactly as before. -->
 <script src="catalog.js"></script>
+<script>
+/* v30.162 OFF-1: service worker (sw.js, same folder) so the app opens with
+   no connection, and a request that the browser keep this app's storage.
+   https only: a file:// test copy simply skips this and runs as before. */
+(function () {
+try {
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+navigator.serviceWorker.register('sw.js').catch(function (e) { console.warn('sw register:', e); });
+}
+if (navigator.storage && navigator.storage.persist) {
+navigator.storage.persisted().then(function (p) { if (!p) return navigator.storage.persist(); }).catch(function () {});
+}
+} catch (e) {}
+})();
+</script>
 </body>
 </html>
