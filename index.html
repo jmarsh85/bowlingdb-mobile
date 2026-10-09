@@ -2599,7 +2599,7 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
     </div>
     <div id="hdr-title" onclick="hdrTitleTap()"><span class="brand">Bowling</span>DB</div>
     <div id="hdr-title-popover"></div>
-    <span id="hdr-build-ref">v30.159 · 2026-10-07</span>
+    <span id="hdr-build-ref">v30.160 · 2026-10-09</span>
     <div id="hdr-right">
       <div class="hdr-icon-btn" id="hdr-delete-game-btn" onclick="confirmDeleteGame(G.gameID)" title="Delete Game" style="display:none">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -2969,16 +2969,16 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
 
         <!-- Pin canvas with floating chip + side strips -->
         <div id="fm-pin-anchor">
-          <!-- Floating ball chip: long-press to drag, snaps to corner -->
+          <!-- Active ball chip (v30.160): fixed bottom-left; tap opens the ball strip -->
           <div class="fm-float-chip" id="fm-float-chip">
             <img class="fm-chip-img" id="fm-chip-img" src="" alt="">
             <span class="fm-chip-name" id="fm-chip-name"></span>
           </div>
-          <!-- Spare ball chip: shows lastBallAtt2; tap opens ball strip; long-press to drag -->
+          <!-- Spare ball chip (v30.160): fixed bottom-right. Spare shot: shows the swap target; tap swaps Hook/Straight. Long-press opens the ball strip. -->
           <div class="fm-float-chip fm-spare-chip" id="fm-spare-chip">
             <img class="fm-chip-img fm-spare-chip-img" id="fm-spare-chip-img" src="" alt="">
             <span class="fm-chip-name fm-spare-chip-name" id="fm-spare-chip-name"></span>
-            <span class="fm-spare-chip-label">SPARE</span>
+            <span class="fm-spare-chip-label" id="fm-spare-chip-label">SPARE</span>
           </div>
           <div class="fm-side-strip prev" id="fm-prev-strip" onclick="fmHandlePrev()">
             <svg width="10" height="18" viewBox="0 0 10 18" fill="none"><path d="M8.5 1L1 9l7.5 8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -8992,7 +8992,25 @@ const freshRack  = (att1Strike && att2Strike) || att2Spare;
 const targetBall = freshRack ? G.lastBallAtt1 : G.lastBallAtt2;
 if (targetBall && db.balls.find(b => b.BallID === targetBall)) G.ballID = targetBall;
 }
+aln2AutoStyle();
 renderBallBar();
+}
+/* v30.160 ALN-2: on a spare shot, use the style last thrown at this leave
+   (derived from history -- see spareLastStyle). Runs after the rules
+   above and only overrides them when the leave has history; a leave
+   never seen keeps today's rule (last spare ball / league default).
+   Fresh racks, gutters and attempt 1 are left alone. */
+function aln2AutoStyle() {
+if (G.attempt === 1) return;
+if (fmFacesFullRack()) return;
+var frame = getFrame(G.frame);
+if (!frame) return;
+var prev = frameAttempts(frame.FrameID).find(function(a) { return a.Attempt === G.attempt - 1; });
+if (!prev || prev.Pinfall == null || prev.LeaveID == null) return;
+var st = spareLastStyle(prev.LeaveID);
+if (!st || inferBallStyle(G.ballID) === st) return;
+var id = spareStyleBall(st, prev.LeaveID);
+if (id) G.ballID = id;
 }
 function advanceState() {
 G.numericPinfall = null; 
@@ -10077,60 +10095,52 @@ var prefs = getPrefs();
 
 
 var refSb = null, refTb = null, refBallSuggestion = null;
-/* Reset per load: _fmSpareCtx is only assigned in the attempt-2 branch
+/* Reset per load: _fmSpareCtx is only assigned in the spare branch
    when a leave is known, so without this it would survive into a frame
    with no leave recorded and the hint would describe the wrong one. */
 _fmSpareCtx = null;
-if (!att || att.StartingBoard == null) {
+/* v30.160 ALN-1: targeting follows the ball.
+   Before this, ANY stored SB/TB on the attempt won, so once a value was
+   on file the leave setup was never consulted again -- and a value was
+   always on file, because the programmatic wheel scroll below fires the
+   scroll handler, which saves. Switching Theorem -> Tzone on the 4 pin
+   re-ran this load, found that saved 22/9, and kept it.
+   Now an UNTHROWN attempt whose stored value nobody set (weak tier:
+   shown / auto / untagged) is re-resolved from the setup for the ball
+   now in hand. A value the bowler set (tier 2) is kept, and a thrown
+   attempt always shows what was recorded. */
+var _faceFull = fmFacesFullRack();
+var _weakStored = !!(att && att.StartingBoard != null && att.Pinfall == null &&
+alignSourceTier(att.StartingBoardSource || att.TargetBoardSource) < 2);
+var _resolve = !att || att.StartingBoard == null || (_weakStored && !_faceFull);
 /* FRESH VS SPARE, NOT ATTEMPT NUMBER (fixed 2026-09-17).
-   This used to branch on G.attempt === 1, which is wrong in frame 10
-   and wrong in the most common way: after a strike, ball 2 is a FRESH
-   rack, but the old branch treated it as a spare, looked up the leave
-   from ball 1 -- which is null, because a strike leaves nothing -- found
-   no alignment, and fell all the way through to prefs.defaultSB/defaultTB
-   (17 / 10). So the wheels jumped to a fixed pair mid-frame precisely
-   when the bowler was striking and should have stayed on the lane
-   reference. isFreshAttempt() already handles every frame-10 shape,
-   NoTap included, so ask it instead.
-
-   The leave also comes from the PREVIOUS delivery rather than ball 1:
-   in frame 10 after a strike then an open, ball 3 is shot at ball 2's
-   leave. */
-if (fmFacesFullRack()) {
+   isFreshAttempt() handles every frame-10 shape, NoTap included. The
+   leave comes from the PREVIOUS delivery rather than ball 1: in frame 10
+   after a strike then an open, ball 3 is shot at ball 2's leave. */
+if (_faceFull) {
+if (!att || att.StartingBoard == null) {
 var _parity = currentLaneParity();
 if (_parity) {
 var _ref = getLaneRef();
 refSb = _ref[_parity].sbHalf ? _ref[_parity].sb + 0.5 : _ref[_parity].sb;
 refTb = _ref[_parity].tbHalf ? _ref[_parity].tb + 0.5 : _ref[_parity].tb;
 }
+}
 } else {
 var _prevAtt = frameAttempts(frame.FrameID).find(function(a) { return a.Attempt === G.attempt - 1; });
 var _leaveID = _prevAtt ? _prevAtt.LeaveID : null;
 if (_leaveID != null) {
-
-
-
-
 var _style = inferBallStyle(G.ballID);
-/* Cross-style fallback (2026-09-17). A leave with only a straight
-   setup used to surface nothing when a hook ball was up, even though
-   the one real reference on file was perfectly usable. */
+/* Cross-style fallback (2026-09-17): a leave with only a straight
+   setup still surfaces it when a hook ball is up, flagged as borrowed. */
 var _res = spareAlignResolve(_leaveID, _style);
 var _align = _res.align;
+/* Built for every unthrown spare shot, not only when the wheels are
+   re-resolved, so a kept user value still gets the "setup" chip. */
 _fmSpareCtx = { leaveID: _leaveID, style: _style, borrowedFrom: _res.borrowedFrom, def: _align };
-if (_align) {
+if (_align && _resolve) {
 refSb = _align.sb;
 refTb = _align.tb;
-
-
-
-
-
-
-
-
-
-
 if (_style === 'straight') {
 if (_align.ballID != null && _align.ballID !== G.ballID) refBallSuggestion = _align.ballID;
 } else if (_style === 'hook') {
@@ -10139,23 +10149,30 @@ if (G.lastBallAtt1 != null && G.lastBallAtt1 !== G.ballID) refBallSuggestion = G
 }
 }
 }
-}
 G.fmSuggestedBallID = refBallSuggestion;
 /* Same rule for the carried-forward values: a fresh rack in frame 10
    should inherit the last fresh-rack line, not drop to the 17/10
    default pair. */
-var _freshNow = fmFacesFullRack();
-var sbVal = (att && att.StartingBoard != null) ? att.StartingBoard
+var _freshNow = _faceFull;
+var sbVal = (_resolve && refSb != null) ? refSb
+: (att && att.StartingBoard != null) ? att.StartingBoard
 : (refSb != null ? refSb
 : (_freshNow && G.lastSB != null ? G.lastSB : (prefs.defaultSB != null ? prefs.defaultSB : 17)));
-var tbVal = (att && att.TargetBoard != null) ? att.TargetBoard
+var tbVal = (_resolve && refTb != null) ? refTb
+: (att && att.TargetBoard != null) ? att.TargetBoard
 : (refTb != null ? refTb
 : (_freshNow && G.lastTB != null ? G.lastTB : (prefs.defaultTB != null ? prefs.defaultTB : 10)));
 fmScrollWheelTo(sbDrum, sbVal);
 fmScrollWheelTo(tbDrum, tbVal);
-fmRenderSpareHint();
 fmSetHalfToggle('sb', sbVal % 1 >= 0.5);
 fmSetHalfToggle('tb', tbVal % 1 >= 0.5);
+/* ALN-1: a re-resolved weak value is written back at once. The scroll
+   handler cannot be relied on: a half-board change (22.5 -> 22) leaves
+   scrollTop where it was, fires no scroll event, and the stale 22.5
+   would be recorded when the shot is confirmed. Halves are set first
+   (moved up from after the hint) so the write reads the right pair. */
+if (_weakStored && _resolve && (sbVal !== att.StartingBoard || tbVal !== att.TargetBoard)) fmSaveBoardData();
+fmRenderSpareHint();
 }
 
 
@@ -10228,6 +10245,13 @@ _fmLastUsedOffer = last;
 var lbl = (last.sb != null ? last.sb : '\u2013') + ' / ' + (last.tb != null ? last.tb : '\u2013');
 parts.push('<button class="fm-hint-last" onclick="fmAdoptLastUsed()">last used ' + lbl + '</button>');
 }
+/* v30.160 ALN-1: wheels kept off the setup (the bowler moved them, then
+   changed ball) -- offer the setup for the ball in hand, never force it. */
+var _curA = fmCurrentWheelPair();
+if (ctx.def && _curA && spareAlignDiffers(ctx.def, _curA)) {
+var _dl = (ctx.def.sb != null ? ctx.def.sb : '\u2013') + ' / ' + (ctx.def.tb != null ? ctx.def.tb : '\u2013');
+parts.push('<button class="fm-hint-last" onclick="fmApplySpareSetup()">' + (ctx.borrowedFrom || ctx.style || '') + ' setup ' + _dl + '</button>');
+}
 /* Manual promotion. Offered whenever the wheels are sitting somewhere
    other than this leave's saved setup for this style -- including when
    there is no saved setup yet, which is how a leave gets its first one.
@@ -10280,6 +10304,20 @@ if (typeof toast === 'function') {
 toast('Default set \u2014 ' + (cur.sb != null ? cur.sb : '\u2013') + ' / ' + (cur.tb != null ? cur.tb : '\u2013') +
 (style ? (' (' + style + ')') : ''));
 }
+fmRenderSpareHint();
+}
+function fmApplySpareSetup() {
+var ctx = _fmSpareCtx;
+if (!ctx || !ctx.def) return;
+var d = ctx.def;
+var sbDrum = document.getElementById('fm-sb-drum');
+var tbDrum = document.getElementById('fm-tb-drum');
+if (d.sb != null && sbDrum) { fmSetHalfToggle('sb', d.sb % 1 >= 0.5); fmScrollWheelTo(sbDrum, d.sb); _fmBoardTouched.sb = true; }
+if (d.tb != null && tbDrum) { fmSetHalfToggle('tb', d.tb % 1 >= 0.5); fmScrollWheelTo(tbDrum, d.tb); _fmBoardTouched.tb = true; }
+fmSaveBoardData();
+haptic('light');
+var frame = getFrame(G.frame);
+fmPaintAlignCue(frame ? frameAttempts(frame.FrameID).find(function(a){ return a.Attempt === G.attempt; }) : null);
 fmRenderSpareHint();
 }
 function fmAdoptLastUsed() {
@@ -10454,94 +10492,35 @@ fmRenderLaneRef();
 
 
 
-var FM_CHIP_DOCK = 0; 
-var _fmChipDragState = null;
+/* v30.160 ALN-2: drag-and-dock removed from the active-ball chip too
+   (James, 2026-10-09). Fixed bottom-left, opposite the spare chip; tap
+   opens the ball strip as before. The old dock key is cleared. */
+var _fmChipPress = null;
 function fmChipInit() {
 var chip = document.getElementById('fm-float-chip');
 if (!chip) return;
-var stored = parseInt(localStorage.getItem('fm_chip_dock') || '0', 10);
-
-FM_CHIP_DOCK = (stored === 3) ? 1 : (stored === 1) ? 1 : 0;
-fmChipApplyDock(FM_CHIP_DOCK, false);
-chip.addEventListener('touchstart', fmChipTouchStart, { passive: false });
-chip.addEventListener('touchmove',  fmChipTouchMove,  { passive: false });
-chip.addEventListener('touchend',   fmChipTouchEnd,   { passive: false });
-}
-function fmChipApplyDock(corner, animate) {
-var chip = document.getElementById('fm-float-chip');
-if (!chip) return;
-chip.style.transition = animate ? 'top 0.15s ease, left 0.15s ease, right 0.15s ease, bottom 0.15s ease': 'none';
-chip.style.top = chip.style.left = chip.style.right = chip.style.bottom = 'auto';
-
-
-var bottomGap = '10px';
-var sideGap   = '6px';
-if (corner === 0 || corner === 2) { chip.style.bottom = bottomGap; chip.style.left = sideGap; }  
-else { chip.style.bottom = bottomGap; chip.style.right = sideGap; }                               
-}
-function fmChipTouchStart(e) {
-var chip = document.getElementById('fm-float-chip');
-_fmChipDragState = {
-startX: e.touches[0].clientX,
-startY: e.touches[0].clientY,
-dragging: false,
-longPressTimer: setTimeout(function() {
-if (_fmChipDragState) {
-_fmChipDragState.dragging = true;
-chip.style.opacity = '1';
+try { localStorage.removeItem('fm_chip_dock'); } catch (e) {}
 chip.style.transition = 'none';
-haptic && haptic('light');
-}
-}, 300)
-};
-}
-function fmChipTouchMove(e) {
-if (!_fmChipDragState || !_fmChipDragState.dragging) return;
-e.preventDefault();
-var chip = document.getElementById('fm-float-chip');
-var anchor = document.getElementById('fm-pin-anchor');
-if (!chip || !anchor) return;
-var rect = anchor.getBoundingClientRect();
-var tx = e.touches[0].clientX - rect.left;
-var ty = e.touches[0].clientY - rect.top;
-
-var cw = chip.offsetWidth, ch = chip.offsetHeight;
-var x = Math.max(6, Math.min(tx - cw / 2, rect.width - cw - 6));
-var y = Math.max(0,  Math.min(ty - ch / 2, rect.height - ch));
-chip.style.top = 'auto'; chip.style.bottom = 'auto';
-chip.style.left = 'auto'; chip.style.right = 'auto';
-chip.style.top  = y + 'px';
-chip.style.left = x + 'px';
-}
-function fmChipTouchEnd(e) {
-if (!_fmChipDragState) return;
-clearTimeout(_fmChipDragState.longPressTimer);
-var wasDragging = _fmChipDragState.dragging;
-_fmChipDragState = null;
-var chip = document.getElementById('fm-float-chip');
-if (!chip) return;
-chip.style.opacity = '0.72';
-if (!wasDragging) {
-
+chip.style.top = 'auto'; chip.style.right = 'auto';
+chip.style.bottom = '10px'; chip.style.left = '6px';
+if (chip._aln2Bound) return;
+chip._aln2Bound = true;
+chip.addEventListener('touchstart', function(e) {
+var t = e.touches[0]; _fmChipPress = { x: t.clientX, y: t.clientY };
+}, { passive: true });
+chip.addEventListener('touchmove', function(e) {
+if (!_fmChipPress) return;
+var t = e.touches[0];
+if (Math.abs(t.clientX - _fmChipPress.x) > 10 || Math.abs(t.clientY - _fmChipPress.y) > 10) _fmChipPress = null;
+}, { passive: true });
+chip.addEventListener('touchend', function(e) {
+if (!_fmChipPress) return;
+_fmChipPress = null;
+if (e.cancelable) e.preventDefault();
 fmOpenBallStripForPrimary();
-return;
+}, { passive: false });
+chip.addEventListener('click', function() { fmOpenBallStripForPrimary(); });
 }
-
-var anchor = document.getElementById('fm-pin-anchor');
-var rect = anchor.getBoundingClientRect();
-var chipRect = chip.getBoundingClientRect();
-var cx = chipRect.left - rect.left + chipRect.width / 2;
-var cy = chipRect.top  - rect.top  + chipRect.height / 2;
-var midX = rect.width  / 2;
-var midY = rect.height / 2;
-
-var corner = (cx < midX) ? 0 : 1;
-FM_CHIP_DOCK = corner;
-localStorage.setItem('fm_chip_dock', String(corner));
-fmChipApplyDock(corner, true);
-}
- 
-
 
 var FM_BALL_PLACEHOLDER = 'data:image/svg+xml;utf8,'+ encodeURIComponent(
 '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 76 76">'+
@@ -10581,92 +10560,84 @@ fmRenderSpareChip();
 
 
 
-var FM_SPARE_CHIP_DOCK = 1; 
-var _fmSpareChipDragState = null;
+/* v30.160 ALN-2: drag-and-dock removed (James, 2026-10-09: no useful
+   value). The chip is fixed bottom-right. Tap swaps Hook <-> Straight on
+   a spare shot (opens the strip on a fresh rack); long-press opens the
+   ball strip to pick a different spare ball. The old dock key is
+   cleared so a left-corner setting cannot move it. */
+var _fmSpareChipPress = null;
 function fmSpareChipInit() {
 var chip = document.getElementById('fm-spare-chip');
 if (!chip) return;
-var stored = parseInt(localStorage.getItem('fm_spare_chip_dock') || '1', 10);
-FM_SPARE_CHIP_DOCK = (stored === 0) ? 0 : 1;
-fmSpareChipApplyDock(FM_SPARE_CHIP_DOCK, false);
-chip.addEventListener('touchstart', fmSpareChipTouchStart, { passive: false });
-chip.addEventListener('touchmove',  fmSpareChipTouchMove,  { passive: false });
+try { localStorage.removeItem('fm_spare_chip_dock'); } catch (e) {}
+chip.style.transition = 'none';
+chip.style.top = 'auto'; chip.style.left = 'auto';
+chip.style.bottom = '10px'; chip.style.right = '6px';
+/* Called on every Focus Mode entry. A toggle bound twice swaps twice,
+   which is no swap at all, so bind once. */
+if (chip._aln2Bound) return;
+chip._aln2Bound = true;
+chip.addEventListener('touchstart', fmSpareChipTouchStart, { passive: true });
+chip.addEventListener('touchmove',  fmSpareChipTouchMove,  { passive: true });
 chip.addEventListener('touchend',   fmSpareChipTouchEnd,   { passive: false });
-}
-function fmSpareChipApplyDock(corner, animate) {
-var chip = document.getElementById('fm-spare-chip');
-if (!chip) return;
-chip.style.transition = animate ? 'top 0.15s ease, left 0.15s ease, right 0.15s ease, bottom 0.15s ease': 'none';
-chip.style.top = chip.style.left = chip.style.right = chip.style.bottom = 'auto';
-
-
-
-var bottomGap = '10px';
-var sideGap   = '6px';
-if (corner === 0) { chip.style.bottom = bottomGap; chip.style.left = sideGap; }  
-else              { chip.style.bottom = bottomGap; chip.style.right = sideGap; } 
+/* Mouse (Edge testing). On touch devices touchend calls preventDefault,
+   so no click follows and this never doubles a tap. */
+chip.addEventListener('click', function() { fmSpareChipTap(); });
 }
 function fmSpareChipTouchStart(e) {
-var chip = document.getElementById('fm-spare-chip');
-_fmSpareChipDragState = {
-startX: e.touches[0].clientX,
-startY: e.touches[0].clientY,
-dragging: false,
-longPressTimer: setTimeout(function() {
-if (_fmSpareChipDragState) {
-_fmSpareChipDragState.dragging = true;
-chip.style.opacity = '1';
-chip.style.transition = 'none';
+var t = e.touches[0];
+_fmSpareChipPress = {
+x: t.clientX, y: t.clientY, long: false,
+timer: setTimeout(function() {
+if (!_fmSpareChipPress) return;
+_fmSpareChipPress.long = true;
 haptic && haptic('light');
-}
-}, 300)
+fmOpenBallStripForSpare();
+}, 450)
 };
 }
 function fmSpareChipTouchMove(e) {
-if (!_fmSpareChipDragState || !_fmSpareChipDragState.dragging) return;
-e.preventDefault();
-var chip = document.getElementById('fm-spare-chip');
-var anchor = document.getElementById('fm-pin-anchor');
-if (!chip || !anchor) return;
-var rect = anchor.getBoundingClientRect();
-var tx = e.touches[0].clientX - rect.left;
-var ty = e.touches[0].clientY - rect.top;
-var cw = chip.offsetWidth, ch = chip.offsetHeight;
-var x = Math.max(6, Math.min(tx - cw / 2, rect.width - cw - 6));
-var y = Math.max(0,  Math.min(ty - ch / 2, rect.height - ch));
-chip.style.top = 'auto'; chip.style.bottom = 'auto';
-chip.style.left = 'auto'; chip.style.right = 'auto';
-chip.style.top  = y + 'px';
-chip.style.left = x + 'px';
+if (!_fmSpareChipPress) return;
+var t = e.touches[0];
+if (Math.abs(t.clientX - _fmSpareChipPress.x) > 10 || Math.abs(t.clientY - _fmSpareChipPress.y) > 10) {
+clearTimeout(_fmSpareChipPress.timer);
+_fmSpareChipPress = null;
+}
 }
 function fmSpareChipTouchEnd(e) {
-if (!_fmSpareChipDragState) return;
-clearTimeout(_fmSpareChipDragState.longPressTimer);
-var wasDragging = _fmSpareChipDragState.dragging;
-_fmSpareChipDragState = null;
-var chip = document.getElementById('fm-spare-chip');
-if (!chip) return;
-chip.style.opacity = '0.72';
-if (!wasDragging) {
-
+if (!_fmSpareChipPress) return;
+clearTimeout(_fmSpareChipPress.timer);
+var wasLong = _fmSpareChipPress.long;
+_fmSpareChipPress = null;
+if (e && e.cancelable) e.preventDefault();
+if (!wasLong) fmSpareChipTap();
+}
+/* Swap context for the shot in hand, or null on a fresh rack. */
+function fmSpareSwapCtx() {
+if (!G.gameID || fmFacesFullRack()) return null;
+var frame = getFrame(G.frame);
+if (!frame) return null;
+var prev = frameAttempts(frame.FrameID).find(function(a) { return a.Attempt === G.attempt - 1; });
+if (!prev || prev.Pinfall == null) return null;
+var cur = inferBallStyle(G.ballID) || 'hook';
+var target = (cur === 'straight') ? 'hook' : 'straight';
+return { leaveID: prev.LeaveID, cur: cur, target: target, id: spareStyleBall(target, prev.LeaveID) };
+}
+function fmSpareChipTap() {
+var ctx = fmSpareSwapCtx();
+if (!ctx) { fmOpenBallStripForSpare(); return; }
+if (!ctx.id) {
+toast('No ' + ctx.target + ' ball on file \u2014 pick one');
 fmOpenBallStripForSpare();
 return;
 }
-
-var anchor = document.getElementById('fm-pin-anchor');
-var rect = anchor.getBoundingClientRect();
-var chipRect = chip.getBoundingClientRect();
-var cx = chipRect.left - rect.left + chipRect.width / 2;
-var corner = (cx < rect.width / 2) ? 0 : 1;
-FM_SPARE_CHIP_DOCK = corner;
-localStorage.setItem('fm_spare_chip_dock', String(corner));
-fmSpareChipApplyDock(corner, true);
+haptic && haptic('light');
+/* selectBall re-renders the panel, which re-runs fmLoadBoardData, so
+   the wheels follow the new ball (ALN-1). Strip mode is forced to
+   primary so an open spare strip cannot divert the swap. */
+_fmBallStripMode = 'primary';
+selectBall(ctx.id);
 }
-
-
-
-
-
 function fmResolveSpareChipBallID() {
 if (G.lastBallAtt2 && (db.balls || []).find(function(b) { return b.BallID === G.lastBallAtt2; })) {
 return G.lastBallAtt2;
@@ -10686,7 +10657,13 @@ function fmRenderSpareChip() {
 var img  = document.getElementById('fm-spare-chip-img');
 var name = document.getElementById('fm-spare-chip-name');
 if (!img || !name) return;
-var ballID = fmResolveSpareChipBallID();
+/* v30.160 ALN-2: on a spare shot the chip shows the ball a tap swaps TO
+   and that ball's style; the active-ball chip already shows the current
+   one. On a fresh rack it is the spare-ball slot, as before. */
+var lblEl = document.getElementById('fm-spare-chip-label');
+var _sw = fmSpareSwapCtx();
+if (lblEl) lblEl.textContent = _sw ? ('\u21C4 ' + _sw.target.toUpperCase()) : 'SPARE';
+var ballID = (_sw && _sw.id) ? _sw.id : fmResolveSpareChipBallID();
 var ball   = ballID ? (db.balls || []).find(function(b) { return b.BallID === ballID; }) : null;
 if (ball) {
 var src = getBallImgSrc(ball.BallID, 'cover') || '';
@@ -25482,6 +25459,126 @@ best = { sb: info.sb, tb: info.tb, attemptID: a.AttemptID, source: info.source, 
 return best;
 }
 
+/* ---------- v30.160 ALN-2: Hook/Straight spare toggle (design rev 7, sec 12) ----------
+   Style memory is DERIVED from history, never stored: the style of a
+   leave is the style of the ball last thrown at it. A swap is
+   remembered the moment that shot is confirmed, because the attempt
+   records its BallID. No new store, no migration, works backwards. */
+function _aln2History() {
+var frameOf = {}, gameOf = {}, byFrame = {};
+db.frames.forEach(function(f) { frameOf[f.FrameID] = f; });
+db.games.forEach(function(g) { gameOf[g.GameID] = g; });
+db.attempts.forEach(function(x) { (byFrame[x.FrameID] = byFrame[x.FrameID] || {})[x.Attempt] = x; });
+var fresh = buildFreshIndex();
+/* Leave by pins when LeaveID was never stored (imports): same
+   getLeaveFromAtt() chain the Leave Library counts with. */
+var sigToLeave = {};
+(db.leaves || []).forEach(function(l) {
+var s = ''; for (var p = 1; p <= 10; p++) s += l['Pin' + p] ? '1' : '0';
+if (!(s in sigToLeave)) sigToLeave[s] = l.LeaveID;
+});
+function leaveOf(prev) {
+if (prev.LeaveID != null) return prev.LeaveID;
+var st = getLeaveFromAtt(prev);
+if (!st || !st.size) return null;
+var s = ''; for (var p = 1; p <= 10; p++) s += st.has(p) ? '1' : '0';
+return (s in sigToLeave) ? sigToLeave[s] : null;
+}
+var rows = [];
+db.attempts.forEach(function(a) {
+if (fresh[a.AttemptID]) return;
+if (a.Pinfall == null) return;
+var f = frameOf[a.FrameID];
+var g = f ? gameOf[f.GameID] : null;
+if (!g || g.IsTeammate) return;
+var prev = (byFrame[a.FrameID] || {})[a.Attempt - 1];
+if (!prev || prev.Pinfall == null) return;
+var lid = leaveOf(prev);
+if (lid == null) return;
+rows.push({ a: a, leaveID: lid, made: (prev.Pinfall + a.Pinfall) === 10 });
+});
+return rows;
+}
+/* 'hook' | 'straight' | null -- the style of the last ball thrown at this leave */
+function spareLastStyle(leaveID) {
+if (leaveID == null) return null;
+var best = null;
+_aln2History().forEach(function(r) {
+if (r.leaveID !== leaveID || r.a.BallID == null) return;
+var st = inferBallStyle(r.a.BallID);
+if (!st) return;
+if (!best || r.a.AttemptID > best.id) best = { id: r.a.AttemptID, style: st };
+});
+return best ? best.style : null;
+}
+function _aln2Active(id) {
+return id != null && !!(db.balls || []).find(function(b) { return b.BallID === id && b.Active !== false; });
+}
+/* The ball a style swaps to. Straight: the leave's straight setup ball,
+   then the spare defaults (only if they really are straight balls), then
+   the last straight ball thrown at any spare. Hook: the strike ball. */
+function spareStyleBall(style, leaveID) {
+if (style === 'straight') {
+var al = leaveID != null ? getSpareAlignment(leaveID, 'straight') : null;
+var c = [al && al.style === 'straight' ? al.ballID : null, G.lastBallAtt2];
+var lg = (db.leagues || []).find(function(l) { return l.LeagueID === G.leagueID; });
+c.push(lg ? lg.DefaultSpareBallID : null, getPrefs().defaultSpareBallID);
+for (var i = 0; i < c.length; i++) {
+if (_aln2Active(c[i]) && inferBallStyle(c[i]) === 'straight') return c[i];
+}
+var last = null;
+_aln2History().forEach(function(r) {
+var id = r.a.BallID;
+if (_aln2Active(id) && inferBallStyle(id) === 'straight' && (!last || r.a.AttemptID > last.at)) last = { at: r.a.AttemptID, id: id };
+});
+return last ? last.id : null;
+}
+if (style === 'hook') {
+if (_aln2Active(G.lastBallAtt1) && inferBallStyle(G.lastBallAtt1) === 'hook') return G.lastBallAtt1;
+var lastH = null;
+db.attempts.forEach(function(a) {
+if (a.Attempt === 1 && _aln2Active(a.BallID) && inferBallStyle(a.BallID) === 'hook' && (!lastH || a.AttemptID > lastH.at)) lastH = { at: a.AttemptID, id: a.BallID };
+});
+return lastH ? lastH.id : null;
+}
+return null;
+}
+/* Best setups by conversion. Strong-tier values only (set on the wheel,
+   or pre-v30.112 legacy): a carried-forward default nobody looked at
+   must not score itself. Percent uses Math.floor. Sorted by rate, then
+   sample size; rows under minN are kept but flagged low sample. */
+function spareSetupRank(leaveID, style, minN) {
+var lim = (minN == null) ? 5 : minN;
+var groups = {};
+_aln2History().forEach(function(r) {
+if (r.leaveID !== leaveID) return;
+if (style) {
+if (r.a.BallID == null || inferBallStyle(r.a.BallID) !== style) return;
+}
+var info = attemptAlignment(r.a);
+if (info.tier !== 2 || info.sb == null || info.tb == null) return;
+/* 17 / 10 is the old hard-coded default pair. None of the 73 strong-tier
+   spare records carrying it were set on the wheel (all legacy-tagged
+   default fill, 2026-10-08 backup), so it is not a setup anyone used.
+   Excluded unless the bowler actually set it ('user'). James, 2026-10-09. */
+if (info.sb === 17 && info.tb === 10 && info.source !== 'user') return;
+var k = info.sb + '|' + info.tb;
+var gr = groups[k] || (groups[k] = { sb: info.sb, tb: info.tb, opps: 0, conv: 0, lastAt: 0 });
+gr.opps++; if (r.made) gr.conv++;
+if (r.a.AttemptID > gr.lastAt) gr.lastAt = r.a.AttemptID;
+});
+return Object.keys(groups).map(function(k) {
+var gr = groups[k];
+gr.pct = Math.floor(gr.conv / gr.opps * 100);
+gr.low = gr.opps < lim;
+return gr;
+}).sort(function(x, y) {
+if (x.low !== y.low) return x.low ? 1 : -1;
+if (y.pct !== x.pct) return y.pct - x.pct;
+return y.opps - x.opps;
+});
+}
+
 /* True when the last actually-used setup differs from the resolved
    default by enough to be worth surfacing. Half-board moves count --
    they are exactly the "couple of boards in or out" adjustment the
@@ -26420,7 +26517,7 @@ meta: {
 kind: 'bowlingdb-snapshot',
 snapshotVersion: 1,
 exportDate: new Date().toISOString(),
-exportSource: 'BowlingDB PWA v30.159',
+exportSource: 'BowlingDB PWA v30.160',
 includesBallImages: !!includeBallImages,
 excluded: Array.from(SNAPSHOT_LS_SKIP)
 },
