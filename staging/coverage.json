@@ -1,12 +1,14 @@
 {
-  "generated": "2026-10-10T02:15:59.064Z",
+  "generated": "2026-10-10T03:27:59.564Z",
   "since": 2023,
   "perSource": {
-    "motiv": {
-      "pages": 206,
-      "parsed": 205,
-      "errors": 0,
-      "errorSample": []
+    "track": {
+      "pages": 181,
+      "parsed": 163,
+      "errors": 1,
+      "errorSample": [
+        "https://trackbowling.com/products/paradox-pearl.json 429"
+      ]
     }
   },
   "coverage": {
@@ -82,8 +84,8 @@
     },
     "Track Inc.": {
       "all": 361,
-      "auto": 116,
-      "pending": 46,
+      "auto": 115,
+      "pending": 47,
       "recent": 46,
       "recentAuto": 24
     }

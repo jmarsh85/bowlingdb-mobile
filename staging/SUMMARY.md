@@ -1,12 +1,12 @@
 # Spec bridge extract
 
-Staged 1743 ball pages: **1093 auto**, 642 pending, 6 duplicate, 2 outvoted.
+Staged 1743 ball pages: **1092 auto**, 643 pending, 6 duplicate, 2 outvoted.
 
 Auto-applied by rule: same-name-reapproval 9, colourway 28, majority 1.
 
 | source | pages | ball pages | auto | pending | errors |
 |---|---|---|---|---|---|
-| motiv | 206 | 205 | 167 | 35 | 0 |
+| track | 181 | 163 | 115 | 50 | 1 |
 
 | brand | USBC rows | specs (auto) | pending | 2023+ rows | 2023+ auto |
 |---|---|---|---|---|---|
@@ -20,9 +20,9 @@ Auto-applied by rule: same-name-reapproval 9, colourway 28, majority 1.
 | Radical | 162 | 122 | 1 | 43 | 36 |
 | Roto Grip | 469 | 18 | 3 | 89 | 13 |
 | Storm | 998 | 34 | 1 | 178 | 18 |
-| Track Inc. | 361 | 116 | 46 | 46 | 24 |
+| Track Inc. | 361 | 115 | 47 | 46 | 24 |
 
-Pending reasons: no-usbc 277, no-weight-specs 303, variant 45, out-of-range:16:RG=2.257 1, ambiguous 2, conflicting-sources 8, out-of-range:15:Diff=56 1, out-of-range:12:Diff=0.31 2, out-of-range:16:IntDiff=0.2 1, out-of-range:15:Diff=0.09 1, out-of-range:13:Diff=2.53 1
+Pending reasons: no-usbc 277, no-weight-specs 304, variant 45, out-of-range:16:RG=2.257 1, ambiguous 2, conflicting-sources 8, out-of-range:15:Diff=56 1, out-of-range:12:Diff=0.31 2, out-of-range:16:IntDiff=0.2 1, out-of-range:15:Diff=0.09 1, out-of-range:13:Diff=2.53 1
 
 | source | pending reason | count | e.g. |
 |---|---|---|---|
@@ -31,7 +31,7 @@ Pending reasons: no-usbc 277, no-weight-specs 303, variant 45, out-of-range:16:R
 | hammer | no-weight-specs | 85 | Absolut Curve; Absolut Flip; Absolut Hook |
 | brunswick | no-usbc | 52 | Aura Mystic; Aura Paranormal; Butterflies |
 | ebonite | no-weight-specs | 43 | Big Time Special Edition; Complete NV; Envision Pearl |
-| track | no-weight-specs | 35 | 100P; Animal; Arsenal Aggressive |
+| track | no-weight-specs | 36 | 100P; Animal; Arsenal Aggressive |
 | dv8 | no-weight-specs | 28 | Activ8; Brutal Collision; Captiv8 |
 | hammer | no-usbc | 27 | Blue Vibe; Cherry Vibe; Cobalt Vibe |
 | brunswick | no-weight-specs | 24 | Crown Jewel; Hearts; Igniter Solid |
