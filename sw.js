@@ -1,4 +1,4 @@
-/* BowlingDB service worker -- v30.162 OFF-1 (design rev 7, sec 14).
+/* BowlingDB service worker -- v30.162 OFF-1, v30.167 no-cache shell (design rev 7, sec 14).
    Lets the home-screen app open with no connection. Data is not handled
    here: games, balls and setups already live on the phone (localStorage
    + IndexedDB), and the catalog keeps its own IndexedDB copy.
@@ -46,8 +46,15 @@ self.addEventListener('activate', function (e) {
 function timeout(ms) {
   return new Promise(function (_, rej) { setTimeout(function () { rej(new Error('timeout')); }, ms); });
 }
+/* v30.167: shell requests skip the browser's HTTP cache. GitHub Pages serves
+   files with max-age=600, so a plain fetch could hand back the previous upload
+   for up to 10 minutes after a deploy. 'no-cache' revalidates with GitHub
+   every online launch (a cheap 304 when nothing changed). */
+function freshRequest(req) {
+  try { return new Request(req.url, { cache: 'no-cache', credentials: 'same-origin' }); } catch (e) { return req; }
+}
 function networkFirst(req, key) {
-  return Promise.race([fetch(req), timeout(NET_TIMEOUT)]).then(function (res) {
+  return Promise.race([fetch(freshRequest(req)), timeout(NET_TIMEOUT)]).then(function (res) {
     if (res && res.ok) {
       var copy = res.clone();
       caches.open(SHELL_VER).then(function (c) { c.put(key || req, copy); });
