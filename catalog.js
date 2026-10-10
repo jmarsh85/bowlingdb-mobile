@@ -1383,6 +1383,11 @@ function apBuildPages(reset) {
 /* ---------- UI ---------- */
 function catApprovalsOpen() {
   if (typeof document === 'undefined') return;
+  /* v30.166: Settings is a modal (.modal-bg, z-index 1010) and this screen is
+     905, so opening from Settings drew it BEHIND the sheet -- the tap looked
+     like it did nothing. Close the modal first. */
+  var mb = document.getElementById('modal-bg');
+  if (mb && mb.classList.contains('open') && typeof root.closeModal === 'function') root.closeModal();
   catApprovalsClose();
   document.body.appendChild(overlay('ap-ov', 905));
   _ap.idx = 0; _ap.pages = []; _ap.body = null;
@@ -1571,6 +1576,11 @@ function catImagesRefresh() {
 function catImagesSet(on) {
   var l = apLS(); if (!l) return Promise.resolve(0);
   if (!on) { l.setItem(IMG_ON_KEY, '0'); return Promise.resolve(0); }
+  /* No token yet: take the bowler to the token screen instead of failing quietly. */
+  if (!apToken() && !Object.keys(imgMap()).length) {
+    catApprovalsOpen();
+    return Promise.reject(new Error('Add your GitHub token here first, then turn images on'));
+  }
   l.setItem(IMG_ON_KEY, '1');
   return Object.keys(imgMap()).length ? Promise.resolve(Object.keys(imgMap()).length) : catImagesRefresh();
 }
