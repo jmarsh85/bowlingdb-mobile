@@ -60,7 +60,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -136,7 +136,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -183,7 +183,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -249,7 +249,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -325,7 +325,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -401,7 +401,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -448,7 +448,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -529,7 +529,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -610,7 +610,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -691,7 +691,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -738,7 +738,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -747,20 +747,23 @@
   "Aliases": [],
   "BallName": "Ascent Apex",
   "CatalogID": "motiv-ascent-apex",
-  "Checked": null,
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Recon",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "5000 Grit Laser Scan Polished",
+   "Name": "Fusion XL",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -775,8 +778,44 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": null,
-  "SpecsByWeight": {},
+  "Source": "https://www.motivbowling.com/products/balls/retired-balls/ascent-apex-blue.html",
+  "SpecsByWeight": {
+   "10": {
+    "Diff": 0.01,
+    "IntDiff": null,
+    "RG": 2.75
+   },
+   "11": {
+    "Diff": 0.022,
+    "IntDiff": null,
+    "RG": 2.69
+   },
+   "12": {
+    "Diff": 0.038,
+    "IntDiff": null,
+    "RG": 2.62
+   },
+   "13": {
+    "Diff": 0.03,
+    "IntDiff": null,
+    "RG": 2.62
+   },
+   "14": {
+    "Diff": 0.025,
+    "IntDiff": null,
+    "RG": 2.61
+   },
+   "15": {
+    "Diff": 0.025,
+    "IntDiff": null,
+    "RG": 2.59
+   },
+   "16": {
+    "Diff": 0.018,
+    "IntDiff": null,
+    "RG": 2.59
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2014-04",
@@ -785,7 +824,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -832,7 +871,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -879,7 +918,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -965,7 +1004,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1051,7 +1090,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1132,7 +1171,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1198,7 +1237,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1274,7 +1313,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1350,7 +1389,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1426,7 +1465,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1502,7 +1541,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1578,7 +1617,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1644,7 +1683,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1720,7 +1759,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1786,7 +1825,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1833,7 +1872,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1880,7 +1919,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1956,7 +1995,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2022,7 +2061,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2069,7 +2108,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2135,7 +2174,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2201,7 +2240,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2277,7 +2316,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2353,7 +2392,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2429,7 +2468,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2505,7 +2544,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2581,7 +2620,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2657,7 +2696,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2733,7 +2772,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2809,7 +2848,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2885,7 +2924,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2961,7 +3000,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3037,7 +3076,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3084,7 +3123,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3160,7 +3199,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3207,7 +3246,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3254,7 +3293,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3340,7 +3379,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3387,7 +3426,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3434,7 +3473,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3481,7 +3520,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3557,7 +3596,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3623,7 +3662,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3699,7 +3738,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3746,7 +3785,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3822,7 +3861,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3898,7 +3937,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3974,7 +4013,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4050,7 +4089,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4116,7 +4155,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4182,7 +4221,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4248,7 +4287,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4314,7 +4353,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4361,7 +4400,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4437,7 +4476,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4503,7 +4542,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4569,7 +4608,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4645,7 +4684,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4721,7 +4760,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4797,7 +4836,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4863,7 +4902,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4929,7 +4968,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5005,7 +5044,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5081,7 +5120,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5157,7 +5196,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5204,7 +5243,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5270,7 +5309,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5336,7 +5375,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5412,7 +5451,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5478,7 +5517,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5544,7 +5583,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5591,7 +5630,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5657,7 +5696,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5723,7 +5762,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5799,7 +5838,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5875,7 +5914,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5951,7 +5990,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5998,7 +6037,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6084,7 +6123,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6170,7 +6209,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6217,7 +6256,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6303,7 +6342,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6379,7 +6418,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6455,7 +6494,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6531,7 +6570,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6607,7 +6646,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6683,7 +6722,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6759,7 +6798,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6835,7 +6874,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6911,7 +6950,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6987,7 +7026,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7063,7 +7102,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7139,7 +7178,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7186,7 +7225,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7262,7 +7301,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7338,7 +7377,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7414,7 +7453,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7490,7 +7529,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7537,7 +7576,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7613,7 +7652,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7689,7 +7728,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7765,7 +7804,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7841,7 +7880,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7917,7 +7956,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7964,7 +8003,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -8030,7 +8069,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -8077,7 +8116,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -8124,7 +8163,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -8171,7 +8210,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -8218,7 +8257,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -8284,7 +8323,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -8360,7 +8399,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -8436,7 +8475,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -8512,7 +8551,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -8588,7 +8627,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -8664,7 +8703,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -8740,7 +8779,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -8806,7 +8845,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -8882,7 +8921,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -8929,7 +8968,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -8976,7 +9015,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -9023,7 +9062,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -9070,7 +9109,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -9117,7 +9156,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -9164,7 +9203,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -9240,7 +9279,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -9316,7 +9355,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -9392,7 +9431,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -9468,7 +9507,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -9544,7 +9583,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -9620,7 +9659,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -9696,7 +9735,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -9772,7 +9811,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -9848,7 +9887,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -9924,7 +9963,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -9971,7 +10010,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -10037,7 +10076,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -10103,7 +10142,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -10179,7 +10218,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -10255,7 +10294,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -10331,7 +10370,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -10407,7 +10446,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -10473,7 +10512,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -10549,7 +10588,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -10625,7 +10664,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -10672,7 +10711,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -10719,7 +10758,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -10795,7 +10834,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -10842,7 +10881,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -10918,7 +10957,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -10994,7 +11033,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -11070,7 +11109,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -11146,7 +11185,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -11222,7 +11261,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -11298,7 +11337,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -11374,7 +11413,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -11450,7 +11489,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -11526,7 +11565,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -11592,7 +11631,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -11639,7 +11678,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -11686,7 +11725,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -11733,7 +11772,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -11799,7 +11838,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -11865,7 +11904,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -11912,7 +11951,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -11978,7 +12017,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -12054,7 +12093,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -12140,7 +12179,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -12216,7 +12255,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -12263,7 +12302,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -12310,7 +12349,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -12357,7 +12396,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -12443,7 +12482,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -12529,7 +12568,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -12615,7 +12654,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -12701,7 +12740,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -12748,7 +12787,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -12824,7 +12863,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -12871,7 +12910,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -12937,7 +12976,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -13003,7 +13042,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -13079,7 +13118,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -13155,7 +13194,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -13231,7 +13270,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -13297,7 +13336,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -13363,7 +13402,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -13439,7 +13478,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -13515,7 +13554,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -13562,7 +13601,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -13628,7 +13667,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -13704,7 +13743,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -13780,7 +13819,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -13856,7 +13895,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -13932,7 +13971,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -14008,7 +14047,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -14084,7 +14123,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -14160,7 +14199,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -14236,7 +14275,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -14283,7 +14322,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -14330,7 +14369,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -14406,7 +14445,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -14482,7 +14521,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -14558,7 +14597,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -14634,7 +14673,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -14700,7 +14739,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -14747,7 +14786,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -14813,7 +14852,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-08",
+   "ListVersion": "2026-10-10",
    "NonConforming": false
   },
   "WeightLimit": null
