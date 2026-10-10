@@ -2603,7 +2603,7 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
     </div>
     <div id="hdr-title" onclick="hdrTitleTap()"><span class="brand">Bowling</span>DB</div>
     <div id="hdr-title-popover"></div>
-    <span id="hdr-build-ref">v30.162 · 2026-10-09</span>
+    <span id="hdr-build-ref">v30.163 · 2026-10-09</span>
     <div id="hdr-right">
       <div class="hdr-icon-btn" id="hdr-delete-game-btn" onclick="confirmDeleteGame(G.gameID)" title="Delete Game" style="display:none">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -25218,6 +25218,11 @@ function renderBallsScreen() {
 /* v30.157 NEW-11: background catalog refresh on Balls open. Throttled to once/24h inside
    catCheck(); never awaited, never blocks render, no-op if catalog.js is absent. */
 if (typeof catCheck === 'function') catCheck();
+/* v30.163 DATA-2: auto-verify linked balls whose legacy specs match the catalog
+   within rounding; re-render once if anything changed (a second pass finds nothing). */
+if (typeof catAutoVerifyAll === 'function') catAutoVerifyAll().then(function(n) {
+if (n && getCurrentScreen() === 's-balls') renderBallsScreen();
+});
 const filterEl = document.getElementById('balls-filter-bar');
 const listEl   = document.getElementById('balls-screen-list');
 if (!filterEl || !listEl) return;
@@ -26614,7 +26619,7 @@ meta: {
 kind: 'bowlingdb-snapshot',
 snapshotVersion: 1,
 exportDate: new Date().toISOString(),
-exportSource: 'BowlingDB PWA v30.162',
+exportSource: 'BowlingDB PWA v30.163',
 includesBallImages: !!includeBallImages,
 excluded: Array.from(SNAPSHOT_LS_SKIP)
 },
@@ -34170,23 +34175,25 @@ pane.innerHTML = _bdetSpecsReadHTML(b);
 }
 function _bdetSpecsReadHTML(b) {
 if (!b) return '<div style="padding:20px;text-align:center;color:var(--t3);font-size:13px">No data yet.</div>';
-const fmt = (v, suffix='') => (v != null && v !== '') ? _escHtml(String(v)) + suffix : '<span style="color:var(--t3)">—</span>';
+const fmt = (v, suffix='') => (v != null && v !== '') ? _escHtml(String(v)) + suffix : '<span style="color:var(--t3)">--</span>';
+/* v30.163 DATA-2: spec values with no source tag carry an "unverified" marker (catalog.js) */
+const uv = (f) => (typeof catUnverifiedTag === 'function') ? catUnverifiedTag(b, f) : '';
 const rows = [
 ['Manufacturer',   fmt(b.MFG)],
 ['Weight',         fmt(b.Weight, ' lb')],
 ['Hook Rating',    fmt(b.HookRating != null ? b.HookRating + '/10': null)],
 ['Perfect Scale',  fmt(b.PerfectScaleVal)],
-['Box Finish',     fmt(b.BoxFinish)],
-['Coverstock',     fmt(b.Coverstock)],
-['Cover Name',     fmt(b.CoverName)],
-['Core Type',      fmt(b.CoreType)],
-['Core Name',      fmt(b.CoreShort && b.CoreShort !== b.CoreType ? b.CoreShort : null)],
-['RG',             fmt(b.RG)],
-['Differential',   fmt(b.Differential)],
-['Int. Diff',      fmt(b.IntDiff)],
+['Box Finish',     fmt(b.BoxFinish) + uv('BoxFinish')],
+['Coverstock',     fmt(b.Coverstock) + uv('Coverstock')],
+['Cover Name',     fmt(b.CoverName) + uv('CoverName')],
+['Core Type',      fmt(b.CoreType) + uv('CoreType')],
+['Core Name',      fmt(b.CoreShort && b.CoreShort !== b.CoreType ? b.CoreShort : null) + (b.CoreShort && b.CoreShort !== b.CoreType ? uv('CoreShort') : '')],
+['RG',             fmt(b.RG) + uv('RG')],
+['Differential',   fmt(b.Differential) + uv('Differential')],
+['Int. Diff',      fmt(b.IntDiff) + uv('IntDiff')],
 ['Strength',       typeof catMetricHTML === 'function' ? catMetricHTML(b) : fmt(null)],
 ['RG / Diff band', (typeof catRGBand === 'function' && catRGBand(b.RG, b.Differential)) || fmt(b.RGDiff)],   /* v30.159 MET-3: computed from James's bands */
-['Released',       fmt(b.DateReleased?.slice(0,10))],
+['Released',       fmt(b.DateReleased?.slice(0,10)) + uv('DateReleased')],
 ['Catalog',        typeof catLinkLabel === 'function' ? catLinkLabel(b) : fmt(null)],
 ['Active',         b.Active === false ? 'No': 'Yes'],
 ];
