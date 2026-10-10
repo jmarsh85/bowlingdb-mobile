@@ -36,7 +36,7 @@
 'use strict';
 
 /* v30.169: shown in the app header when it differs from the build's EXPECTED_CATALOG_JS */
-var CAT_VERSION  = 'v30.170';
+var CAT_VERSION  = 'v30.171';
 var CAT_BASE     = 'https://raw.githubusercontent.com/jmarsh85/bowlingdb-mobile/dist/';
 var CAT_DB       = 'BowlingDB_Catalog';
 var CAT_DB_VER   = 1;
@@ -865,7 +865,27 @@ function specMatch(f, owned, cat) {
     return normTxt(a) === normTxt(c);
   }
   if (f === 'DateReleased') return String(a).slice(0, 7) === String(c).slice(0, 7);
+  if (f === 'CoreShort') return coreNameMatch(a, c);
   return normTxt(a) === normTxt(c);
+}
+/* v30.171 CAT-NEW-5: core names match when one contains the other as whole
+   words ("Atomic" in "Atomic Asymmetric Core"). Generic words (core, sym/asym,
+   weight block...) are ignored, so "Asymmetric" alone never matches a name. */
+var CORE_GENERIC = /^(core|cores|weight|block|engine|sym|asym|symmetric|symmetrical|asymmetric|asymmetrical|low|high|med|medium|rg|diff|the|tm)$/;
+function coreWords(t) {
+  return String(t == null ? '' : t).toLowerCase().replace(/[\u2122\u00ae\u00a9]/g, ' ').replace(/[^a-z0-9]+/g, ' ')
+    .trim().split(' ').filter(function (w) { return w && !CORE_GENERIC.test(w); });
+}
+function coreNameMatch(a, c) {
+  var x = coreWords(a), y = coreWords(c);
+  if (!x.length || !y.length) return normTxt(a) === normTxt(c) && normTxt(a) !== '';
+  var s = x.length <= y.length ? x : y, l = s === x ? y : x;
+  for (var i = 0; i + s.length <= l.length; i++) {
+    var ok = true;
+    for (var j = 0; j < s.length; j++) if (l[i + j] !== s[j]) { ok = false; break; }
+    if (ok) return true;
+  }
+  return false;
 }
 /* Pure: the tag changes auto-verify would make. Only untagged fields that
    match move to 'catalog'; 'user' and 'catalog' tags are never touched,
@@ -982,52 +1002,117 @@ function addSearchIn(rows, q, limit) {
   }
   return searchIn(rows, q, limit || 60);
 }
-function addRowHTML(e, owned) {
+/* ---------- v30.171 CAT-NEW-3 + CAT-NEW-1: Add a Ball bubbles, discontinued (LOCKED 2026-10-10) ----------
+   Bubble rows: Brand (your brands + any you add), Cover, Core, then Specs and
+   Discontinued. Within a row bubbles OR; across rows AND; typed search narrows
+   on top. Cover/Core rows show only once the index carries them (cv/co, from
+   build_catalog); Discontinued uses r (1 retired, 0 current from the maker's
+   site). Unknown status: likely discontinued when USBC-approved over 3 years
+   ago (year precision: approved before this year minus 3). */
+var _af = { brands: [], cover: [], core: [], specs: true, disc: false, extra: [] };
+var COVER_BUBBLES = [['S', 'Solid'], ['P', 'Pearl'], ['H', 'Hybrid'], ['U', 'Urethane']];
+var CORE_BUBBLES = [['a', 'Asym'], ['s', 'Sym']];
+function discontinuedOf(e, year) {
+  if (!e) return null;
+  if (e.r === 1) return 'retired';
+  if (e.r === 0) return null;
+  var y = parseInt(e.y, 10), now = year || new Date().getFullYear();
+  return isFinite(y) && y < now - 3 ? 'likely' : null;
+}
+/* Pure: rows passing the bubbles (no text). */
+function bubbleFilter(rows, f, year) {
+  var bs = {}; (f.brands || []).forEach(function (b) { bs[norm(b)] = 1; });
+  var hasB = (f.brands || []).length, hasC = (f.cover || []).length, hasK = (f.core || []).length;
+  return rows.filter(function (e) {
+    if (f.specs && !e.s) return false;
+    if (!f.disc && discontinuedOf(e, year)) return false;
+    if (hasB && !bs[norm(e.m)]) return false;
+    if (hasC && f.cover.indexOf(e.cv) < 0) return false;
+    if (hasK && f.core.indexOf(e.co) < 0) return false;
+    return true;
+  });
+}
+function yourBrands() {
+  var b = {}; appBalls().forEach(function (x) { if (x.MFG) b[canonicalMfg(x.MFG)] = 1; });
+  return Object.keys(b).sort();
+}
+function addRowHTML(e, owned, showBrand) {
   var mine = owned && (owned.linked[e.i] || owned.keyed[e.k]);
-  var meta = [esc(e.m)]; if (e.y) meta.push('USBC ' + esc(e.y));
+  var meta = []; if (showBrand) meta.push(esc(e.m)); if (e.y) meta.push(esc(e.y));
+  var dc = discontinuedOf(e);
+  if (dc) meta.push('<span style="color:var(--t3)">' + (dc === 'retired' ? 'retired' : 'likely retired') + '</span>');
   return '<div class="cat-add-row" onclick="catAddDetail(\'' + esc(e.i) + '\')" style="display:flex;align-items:center;gap:12px;padding:10px 2px;border-bottom:1px solid var(--border1);cursor:pointer">' +
     thumbHTML(e, 40) +
     '<div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:600;color:var(--t1)">' + esc(cleanName(e.n)) +
       (mine ? '<span style="' + CHIP_T + '">IN YOUR ARSENAL</span>' : '') +
       (/-u13$/.test(e.i) ? '<span style="' + CHIP_G + '">UNDER 13 LB</span>' : '') + '</div>' +
     '<div style="font-size:12px;color:var(--t2);margin-top:2px">' + meta.join(' · ') +
-      (e.s ? ' · <span data-spec-id="' + esc(e.i) + '" style="color:var(--teal)">● specs</span>' : '') + '</div></div></div>';
+      (e.s ? '<span data-spec-id="' + esc(e.i) + '" style="color:var(--gold)"></span>' : '') + '</div></div></div>';
 }
-function sectionHTML(title, body) {
-  return '<div style="font-size:13px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:0.5px;margin:16px 2px 4px">' + title + '</div>' + body;
+var BUB = 'border-radius:16px;padding:5px 11px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;';
+function bubble(on, label, js) {
+  return '<button onclick="' + js + '" style="' + BUB + (on ? 'background:rgba(0,217,217,0.14);color:var(--teal);border:1px solid rgba(0,217,217,0.45)' : 'background:var(--bg2);color:var(--t2);border:1px solid var(--border1)') + '">' + label + '</button>';
 }
-function emptyStateHTML(rows, owned) {
-  ensureMaps(rows);
-  var h = '';
-  var brands = {}; appBalls().forEach(function (b) { if (b.MFG) brands[canonicalMfg(b.MFG)] = 1; });
-  var bl = Object.keys(brands).sort();
-  if (bl.length) h += sectionHTML('Your brands', '<div style="display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 4px">' +
-    bl.map(function (b) { return '<button class="ball-filter-chip" onclick="catAddBrand(\'' + esc(b).replace(/&#39;/g, "\\'") + '\')">' + esc(b) + '</button>'; }).join('') + '</div>');
-  var rec = readRecent().map(function (id) { return byIdIn(rows, id); }).filter(Boolean);
-  if (rec.length) h += sectionHTML('Recently viewed', rec.map(function (e) { return addRowHTML(e, owned); }).join(''));
-  var nw = _specsOnly ? newest(rows.filter(function (e) { return e.s; }), 20) : newest(rows, 20);
-  h += sectionHTML('New on the USBC list' + (_specsOnly ? ' \u00b7 with specs' : ''), nw.map(function (e) { return addRowHTML(e, owned); }).join(''));
+function jsq(s) { return esc(s).replace(/&#39;/g, "\\'"); }
+function bubblesHTML(rows) {
+  var row = function (h) { return '<div style="display:flex;gap:6px;overflow-x:auto;padding:3px 0;-webkit-overflow-scrolling:touch;scrollbar-width:none">' + h + '</div>'; };
+  var brands = yourBrands(); _af.extra.concat(_af.brands).forEach(function (b) { if (brands.indexOf(b) < 0) brands.push(b); });
+  var h = row(brands.map(function (b) { return bubble(_af.brands.indexOf(b) >= 0, esc(b), "catAddBubble('b','" + jsq(b) + "')"); }).join('') +
+    bubble(false, '+ brand', 'catAddBrandPick()'));
+  var hasCv = rows.some(function (e) { return e.cv; }), hasCo = rows.some(function (e) { return e.co; });
+  if (hasCv || hasCo) h += row((hasCv ? COVER_BUBBLES.map(function (c) { return bubble(_af.cover.indexOf(c[0]) >= 0, c[1], "catAddBubble('c','" + c[0] + "')"); }).join('') : '') +
+    (hasCo ? CORE_BUBBLES.map(function (c) { return bubble(_af.core.indexOf(c[0]) >= 0, c[1], "catAddBubble('k','" + c[0] + "')"); }).join('') : ''));
+  h += row(bubble(_af.specs, 'Specs', "catAddBubble('s')") + bubble(_af.disc, 'Discontinued', "catAddBubble('d')"));
   return h;
 }
 function addListHTML(rows, q, owned) {
-  if (!q || q.replace(/\s/g, '').length < 2) return emptyStateHTML(rows, owned);
-  var all = addSearchIn(rows, q, 400);
-  var list = (_specsOnly ? all.filter(function (e) { return e.s; }) : all).slice(0, 60);
-  var hidden = _specsOnly ? all.length - all.filter(function (e) { return e.s; }).length : 0;
-  if (!list.length && hidden) return '<div style="font-size:13px;color:var(--t2);padding:16px 2px;line-height:1.6">No match with approved specs. ' +
-    '<a href="#" onclick="event.preventDefault();catAddSpecsOnly(false)" style="color:var(--teal)">Show ' + hidden + ' without specs</a></div>';
-  if (!list.length) return '<div style="font-size:13px;color:var(--t2);padding:16px 2px;line-height:1.6">No match in the USBC list.<br>Use <b>Enter manually</b> below.</div>';
-  return list.map(function (e) { return addRowHTML(e, owned); }).join('') +
-    (hidden ? '<div style="font-size:12px;color:var(--t3);padding:12px 2px">' + hidden + ' more without approved specs \u00b7 <a href="#" onclick="event.preventDefault();catAddSpecsOnly(false)" style="color:var(--teal)">show all</a></div>' : '');
+  var text = q && q.replace(/\s/g, '').length >= 2;
+  var pool = text ? addSearchIn(rows, q, 2000) : newest(rows, rows.length);
+  var list = bubbleFilter(pool, _af);
+  var oneBrand = _af.brands.length === 1 || (list.length && list.every(function (e) { return e.m === list[0].m; }));
+  if (!list.length) {
+    var loose = bubbleFilter(pool, { brands: _af.brands, cover: _af.cover, core: _af.core, specs: false, disc: true }).length;
+    return '<div style="font-size:13px;color:var(--t2);padding:16px 2px;line-height:1.6">No match' + (text ? ' in the USBC list' : '') + '.' +
+      (loose ? ' <a href="#" onclick="event.preventDefault();catAddLoosen()" style="color:var(--teal)">Show ' + loose + ' without specs or discontinued</a>' : '') + '</div>';
+  }
+  var cap = 100, more = list.length - cap;
+  return list.slice(0, cap).map(function (e) { return addRowHTML(e, owned, !oneBrand); }).join('') +
+    (more > 0 ? '<div style="font-size:12px;color:var(--t3);padding:12px 2px">' + more + ' more \u00b7 type to narrow</div>' : '');
 }
-/* v30.167 (locked): Add a Ball shows balls with approved specs by default
-   (index flag e.s: only published = auto or approved), with a switch. */
-var _specsOnly = true;
-function catAddSpecsOnly(on) {
-  _specsOnly = !!on;
-  var t = document.getElementById('cat-specs-only'); if (t) t.checked = _specsOnly;
-  var q = document.getElementById('cat-add-q'); catAddSearch(q ? q.value : '');
+function catAddBubble(kind, v) {
+  if (kind === 's') _af.specs = !_af.specs;
+  else if (kind === 'd') _af.disc = !_af.disc;
+  else {
+    var a = kind === 'b' ? _af.brands : kind === 'c' ? _af.cover : _af.core, i = a.indexOf(v);
+    if (i >= 0) a.splice(i, 1); else a.push(v);
+  }
+  catAddRefresh();
 }
+function catAddLoosen() { _af.specs = false; _af.disc = true; catAddRefresh(); }
+function catAddRefresh() { var q = document.getElementById('cat-add-q'); catAddSearch(q ? q.value : ''); }
+function catAddSpecsOnly(on) { _af.specs = !!on; catAddRefresh(); }   // kept for older callers
+/* "+ brand": every catalog brand, tap to add it as a bubble (selected). */
+function catAddBrandPick() {
+  catLoad().then(function (rows) {
+    var n = {}; rows.forEach(function (e) { n[e.m] = (n[e.m] || 0) + 1; });
+    var ov = overlay('cat-brand-ov', 905);
+    ov.innerHTML = '<div style="padding:12px 16px 6px;display:flex;align-items:center;gap:12px"><button onclick="catAddBrandPickClose()" style="' + BACK + '" aria-label="Back">\u2039</button>' +
+      '<div style="font-size:18px;font-weight:800;color:var(--t1)">Brands</div></div>' +
+      '<div style="flex:1;overflow-y:auto;padding:0 16px 16px;-webkit-overflow-scrolling:touch">' +
+      Object.keys(n).sort(function (a, b) { return a.localeCompare(b); }).map(function (b) {
+        var on = _af.brands.indexOf(b) >= 0;
+        return '<div onclick="catAddBrandToggle(\'' + jsq(b) + '\')" style="display:flex;justify-content:space-between;padding:11px 2px;border-bottom:1px solid var(--border1);cursor:pointer;font-size:15px;color:' + (on ? 'var(--teal)' : 'var(--t1)') + '">' +
+          '<span>' + (on ? '\u2713 ' : '') + esc(b) + '</span><span style="font-size:12px;color:var(--t3)">' + n[b] + '</span></div>';
+      }).join('') + '</div>';
+    document.body.appendChild(ov);
+  });
+}
+function catAddBrandToggle(b) {
+  var i = _af.brands.indexOf(b);
+  if (i >= 0) _af.brands.splice(i, 1); else { _af.brands.push(b); if (_af.extra.indexOf(b) < 0) _af.extra.push(b); }
+  catAddBrandPickClose(); catAddRefresh();
+}
+function catAddBrandPickClose() { var el = document.getElementById('cat-brand-ov'); if (el) el.parentNode.removeChild(el); }
 /* Marks listed rows whose record is missing key fields; shards load once per brand. */
 function markPartials(box, rows) {
   var els = box.querySelectorAll('[data-spec-id]');
@@ -1035,7 +1120,7 @@ function markPartials(box, rows) {
     var e = byIdIn(rows, el.getAttribute('data-spec-id'));
     catDetail(e).then(function (d) {
       var g = specGaps(d);
-      if (g && g.length && el.isConnected) { el.textContent = '\u25D0 partial'; el.style.color = 'var(--gold)'; el.title = 'Missing ' + g.join(', '); }
+      if (g && g.length && el.isConnected) { el.textContent = ' \u00b7 \u25D0'; el.title = 'Missing ' + g.join(', '); }
     });
   });
 }
@@ -1054,39 +1139,33 @@ function catOpenAddSearch() {
   var s = catStatus();
   if (!(s.count > 0)) return false;
   catCloseAddSearch();
-  _specsOnly = true;   // each visit starts on specs only
+  _af.specs = true; _af.disc = false; _af.brands = []; _af.cover = []; _af.core = [];   // each visit starts on specs only, current balls
   var ov = overlay('cat-search-ov', 900);
   ov.innerHTML =
     '<div style="padding:12px 16px 4px"><button onclick="catCloseAddSearch()" style="' + BACK + '" aria-label="Back">‹</button></div>' +
     '<div style="padding:4px 16px 0;font-size:30px;font-weight:800;color:var(--t1)">Add a Ball</div>' +
-    '<div style="padding:10px 16px 4px"><input id="cat-add-q" class="bdet-field-input" type="search" placeholder="Search brands, names…"' +
+    '<div style="padding:10px 16px 2px"><input id="cat-add-q" class="bdet-field-input" type="search" placeholder="Search brands, names…"' +
       ' autocomplete="off" autocorrect="off" autocapitalize="off" oninput="catAddSearch(this.value)" style="width:100%;font-size:16px">' +
-      '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:5px">' +
-        '<span style="font-size:11px;color:var(--t3)">' + esc(s.count.toLocaleString()) + ' USBC-approved balls · list ' + esc(s.listVersion || '') + '</span>' +
-        '<label style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--t2);white-space:nowrap"><input id="cat-specs-only" type="checkbox" ' + (_specsOnly ? 'checked ' : '') +
-        'onchange="catAddSpecsOnly(this.checked)"> Specs only</label></div></div>' +
+      '<div id="cat-add-bubbles" style="margin-top:6px"></div></div>' +
     '<div id="cat-add-results" style="flex:1;overflow-y:auto;padding:0 16px 12px;-webkit-overflow-scrolling:touch"><div style="font-size:12px;color:var(--t3);padding:14px 2px">Loading…</div></div>' +
     '<div style="padding:10px 16px;border-top:1px solid var(--border1)">' +
-      '<button onclick="catAddManual()" style="' + BTN_G + 'width:100%;padding:11px;font-size:13px">Can\'t find it? Enter manually</button></div>';
+      '<button onclick="catAddManual()" style="' + BTN_G + 'width:100%;padding:11px;font-size:13px">Enter manually</button></div>';
   document.body.appendChild(ov);
   catAddSearch('');
   return true;
 }
 function catCloseAddSearch() {
   if (typeof document === 'undefined') return;
-  ['cat-sheet-ov', 'cat-search-ov'].forEach(function (id) { var el = document.getElementById(id); if (el) el.parentNode.removeChild(el); });
+  ['cat-brand-ov', 'cat-sheet-ov', 'cat-search-ov'].forEach(function (id) { var el = document.getElementById(id); if (el) el.parentNode.removeChild(el); });
 }
 function catAddSearch(q) {
   catLoad().then(function (rows) {
     var box = document.getElementById('cat-add-results');
+    var bb = document.getElementById('cat-add-bubbles'); if (bb) bb.innerHTML = bubblesHTML(rows);
     if (box) { box.innerHTML = addListHTML(rows, q, ownedIndex(rows)); markPartials(box, rows); }
   });
 }
-function catAddBrand(b) {
-  var q = document.getElementById('cat-add-q');
-  if (q) q.value = b;
-  catAddSearch(b);
-}
+function catAddBrand(b) { if (_af.brands.indexOf(b) < 0) _af.brands.push(b); catAddRefresh(); }
 function catAddManual() {
   catCloseAddSearch();
   if (root.navToBall) root.navToBall(null);
@@ -1158,7 +1237,8 @@ function sheetHTML(e, rows) {
       'Strength <b>' + met.strength + '</b> · Shape <b>' + signed(met.shape) + '</b><span style="color:var(--t3);font-size:11px"> · factory finish' + (_shownW !== wt ? ', ' + _shownW + ' lb specs' : '') + '</span></div>';
   }
   var w = _sheet.weight;
-  return '<div style="padding:12px 16px 4px;display:flex"><button onclick="catSheetClose()" style="' + BACK + '" aria-label="Back">‹</button></div>' +
+  return '<div style="padding:12px 16px 4px;display:flex;justify-content:space-between;align-items:center"><button onclick="catSheetClose()" style="' + BACK + '" aria-label="Back">‹</button>' +
+    '<button onclick="catCompareFromSheet()" style="' + BTN_G + 'padding:8px 14px;font-size:13px">Compare</button></div>' +   /* v30.171 MET-2 */
     '<div style="flex:1;overflow-y:auto;padding:0 16px 16px;-webkit-overflow-scrolling:touch">' +
       '<div style="display:flex;justify-content:center;margin:6px 0 12px">' + thumbHTML(e, 150) + '</div>' +
       '<div style="text-align:center;font-size:26px;font-weight:800;color:var(--t1)">' + esc(cleanName(e.n)) + '</div>' +
@@ -1846,13 +1926,17 @@ function apApplyOverride(r, o) {
   return Object.assign({}, r || {}, { specs: sp, _edited: o });
 }
 /* Pure: form values -> correction object (blank = no change; numbers checked). */
+/* v30.171 (locked 2026-10-10): Diff gate = USBC's 0.060 maximum (was 0.080).
+   No approved ball can exceed it, so a higher value is a source error
+   (e.g. Track 300T 15 lb 0.090). Same value as the bridge GATES. */
+var DIFF_MAX = 0.060;
 function apOverrideFrom(form) {
   var o = {}, err = [];
   ['coverType', 'finish', 'core', 'coreType', 'released'].forEach(function (k) { var v = String(form[k] || '').trim(); if (v) o[k] = v; });
   var w = {};
   Object.keys(form.weights || {}).forEach(function (lb) {
     var x = form.weights[lb] || {}, y = {};
-    [['RG', 2.30, 2.90], ['Diff', 0, 0.080], ['IntDiff', 0, 0.040]].forEach(function (g) {
+    [['RG', 2.30, 2.90], ['Diff', 0, DIFF_MAX], ['IntDiff', 0, 0.040]].forEach(function (g) {
       var v = String(x[g[0]] == null ? '' : x[g[0]]).trim();
       if (!v) return;
       var n = Number(v);
@@ -1964,6 +2048,216 @@ function apExtractStatus() {
   }).catch(function () { return null; });
 }
 
+/* ---------- MET-2: ball comparison (design LOCKED 2026-10-09, built v30.171) ----------
+   Entry points: Compare on Balls (pick 2-4), on Ball Detail, on the catalog
+   detail sheet. One column per ball, labels pinned left, horizontal scroll
+   past two columns. Rows that differ are highlighted; a '--' never counts.
+   Owned balls: Strength on the current surface (factory noted, MET-1) and
+   DATA-2 markers. Catalog balls: factory specs at the chosen weight (15 lb
+   if unset, labelled), nearest published weight shown when it is missing. */
+var CMP_MAX = 4;
+var _cmp = { cols: [], details: {}, pending: {} };
+function cmpCell(txt, key, extra) {
+  var c = { txt: txt == null || txt === '' ? null : String(txt), key: key == null || key === '' ? null : String(key) };
+  if (extra) for (var k in extra) c[k] = extra[k];
+  return c;
+}
+function n3(v) { var n = parseFloat(v); return isFinite(n) ? n.toFixed(3) : null; }
+function finishKey(v) { var p = parseFinish(v); return p ? p.grit + (p.polished ? 'p' : '') : (v ? normTxt(v) : null); }
+function coreKey(t) { return !t ? null : /asym/i.test(t) ? 'a' : /sym/i.test(t) ? 's' : normTxt(t); }
+/* Pure: one column from an owned ball. */
+function cmpColOwned(b) {
+  var m = catMetric(b), uv = function (f) { return catSpecUnverified(b, f); };
+  var fac = m && m.factory, cur = m && m.current && fac && (fac.strength !== m.strength || fac.shape !== m.shape);
+  var cc = coverClass(b.Coverstock, b.CoverName), band = catRGBand(b.RG, b.Differential);
+  return { kind: 'owned', id: b.BallID, name: b.BallName || '', mfg: b.MFG || '', cells: {
+    weight: cmpCell(b.Weight ? b.Weight + ' lb' : null, b.Weight),
+    strength: cmpCell(m ? (m.approx ? '~' : '') + m.strength : null, m ? m.strength : null,
+      { note: cur ? 'current \u00b7 factory ' + fac.strength : (m ? 'factory finish' : null), approx: m && m.approx }),
+    shape: cmpCell(m ? signed(m.shape) : null, m ? m.shape : null, { note: cur ? 'factory ' + signed(fac.shape) : null }),
+    band: cmpCell(band, band),
+    cover: cmpCell(b.Coverstock || (cc ? cc.charAt(0).toUpperCase() + cc.slice(1) : null), cc || normTxt(b.Coverstock), { uv: uv('Coverstock') }),
+    finish: cmpCell(b.BoxFinish, finishKey(b.BoxFinish), { uv: uv('BoxFinish') }),
+    rg: cmpCell(n3(b.RG), n3(b.RG), { uv: uv('RG') }),
+    diff: cmpCell(n3(b.Differential), n3(b.Differential), { uv: uv('Differential') }),
+    intDiff: cmpCell(n3(b.IntDiff), n3(b.IntDiff), { uv: uv('IntDiff') }),
+    coreType: cmpCell(b.CoreType, coreKey(b.CoreType), { uv: uv('CoreType') }),
+  } };
+}
+/* Pure: one column from a catalog entry + detail record at a weight (null = 15, labelled). */
+function cmpColCatalog(e, d, weight) {
+  var wt = weight || 15, s = specsOf(d, wt), shownW = wt;
+  if (d && s.rg == null && s.diff == null) {
+    var nw = nearestWeight(d, wt);
+    if (nw != null) { var s2 = specsOf(d, nw); s.rg = s2.rg; s.diff = s2.diff; s.intDiff = s2.intDiff; shownW = nw; }
+  }
+  var wNote = shownW !== wt ? shownW + ' lb specs' : null;
+  var spec = ballFromSpecs(s), met = d ? metricScore(spec, parseFinish(s.finish)) : null;
+  var cc = coverClass(s.coverType, s.coverName), dct = s.coverType ? null : derivedCoverType(s.coverName);
+  var band = catRGBand(s.rg, s.diff);
+  return { kind: 'catalog', id: e.i, name: cleanName(e.n), mfg: e.m || '', loaded: !!d, weight: weight || null, cells: {
+    weight: cmpCell(wt + ' lb', wt, { note: weight ? null : 'default' }),
+    strength: cmpCell(met ? met.strength : null, met ? met.strength : null, { note: met ? 'factory' + (wNote ? ', ' + wNote : '') : null }),
+    shape: cmpCell(met ? signed(met.shape) : null, met ? met.shape : null),
+    band: cmpCell(band, band, { note: band && wNote ? wNote : null }),
+    cover: cmpCell(s.coverType || dct, cc || (dct ? dct.toLowerCase() : null), { note: dct ? 'from name' : null }),
+    finish: cmpCell(s.finish, finishKey(s.finish)),
+    rg: cmpCell(n3(s.rg), n3(s.rg), { note: wNote && s.rg != null ? wNote : null }),
+    diff: cmpCell(n3(s.diff), n3(s.diff), { note: wNote && s.diff != null ? wNote : null }),
+    intDiff: cmpCell(n3(s.intDiff), n3(s.intDiff)),
+    coreType: cmpCell(spec.CoreType, coreKey(spec.CoreType)),
+  } };
+}
+var CMP_ROWS = [['weight', 'Weight'], ['strength', 'Strength'], ['shape', 'Shape'], ['band', 'RG / Diff band'], ['cover', 'Cover type'],
+  ['finish', 'Factory finish'], ['rg', 'RG'], ['diff', 'Differential'], ['intDiff', 'Int. Diff'], ['coreType', 'Core type']];
+/* Pure: rows with a differ flag. Only cells with a value count; needs two or more. */
+function cmpRows(cols) {
+  return CMP_ROWS.map(function (r) {
+    var cells = cols.map(function (c) { return c.cells[r[0]] || cmpCell(null, null); });
+    var keys = cells.map(function (c) { return c.key; }).filter(function (k) { return k != null; });
+    var differ = keys.length >= 2 && keys.some(function (k) { return k !== keys[0]; });
+    return { id: r[0], label: r[1], cells: cells, differ: differ };
+  });
+}
+function cmpBuildCols(rows) {
+  return _cmp.cols.map(function (c) {
+    if (c.t === 'o') { var b = appBalls().filter(function (x) { return x.BallID == c.id; })[0]; return b ? cmpColOwned(b) : null; }
+    var e = byIdIn(rows, c.id); if (!e) return null;
+    var col = cmpColCatalog(e, _cmp.details[c.id] || null, c.w);
+    col.loaded = Object.prototype.hasOwnProperty.call(_cmp.details, c.id);
+    return col;
+  }).filter(Boolean);
+}
+var CMP_HI = 'rgba(214,169,76,0.13)';
+function cmpHTML(rows) {
+  var cols = cmpBuildCols(rows), body = cmpRows(cols);
+  var lw = 88, aw = 52, fit = cols.length <= 2;
+  var stick = 'position:sticky;left:0;z-index:1;background:var(--bg0);';
+  var td = 'padding:9px 6px;border-bottom:1px solid var(--border1);vertical-align:top;font-size:13px;color:var(--t1);overflow-wrap:anywhere;min-width:' + (fit ? '0' : '124px') + ';';
+  var head = '<tr><th style="' + stick + 'width:' + lw + 'px;min-width:' + lw + 'px"></th>' + cols.map(function (c, i) {
+    var thumb;
+    if (c.kind === 'owned') {
+      var src = null; try { if (typeof root.getBallImgSrc === 'function') src = root.getBallImgSrc(c.id, 'cover'); } catch (x) {}
+      var ph = '<div style="width:36px;height:36px;border-radius:50%;background:var(--bg3);display:' + (src ? 'none' : 'flex') + ';align-items:center;justify-content:center;font-size:18px">\uD83C\uDFB3</div>';
+      thumb = src ? '<span style="display:inline-flex"><img src="' + esc(src) + '" alt="" onerror="this.style.display=\'none\';this.nextSibling.style.display=\'flex\'" style="width:36px;height:36px;border-radius:50%;object-fit:cover">' + ph + '</span>' : ph;
+    } else thumb = thumbHTML({ i: c.id, m: c.mfg }, 36);
+    return '<th style="padding:6px 8px 10px;text-align:left;vertical-align:top;font-weight:400;border-bottom:1px solid var(--border2);overflow-wrap:anywhere;min-width:' + (fit ? '0' : '124px') + '">' +
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start">' + thumb +
+      '<button onclick="catCompareRemove(' + i + ')" aria-label="Remove" style="background:none;border:none;color:var(--t3);font-size:18px;padding:0 2px;cursor:pointer">\u00d7</button></div>' +
+      '<div style="font-size:14px;font-weight:700;color:var(--t1);margin-top:6px;line-height:1.25">' + esc(c.name) + '</div>' +
+      '<div style="font-size:11px;color:var(--t2);margin-top:2px">' + esc(c.mfg) + '</div>' +
+      '<div style="margin-top:4px"><span style="' + (c.kind === 'owned' ? CHIP_T : CHIP_G) + ';margin-left:0">' + (c.kind === 'owned' ? 'ARSENAL' : 'CATALOG') + '</span></div></th>';
+  }).join('') + (cols.length < CMP_MAX ? '<th style="padding:6px 0 6px 4px;vertical-align:top;width:' + aw + 'px;min-width:' + aw + 'px;border-bottom:1px solid var(--border2)"><button onclick="catComparePick()" aria-label="Add ball" style="width:100%;min-height:84px;border:1px dashed var(--border2);border-radius:12px;background:none;color:var(--teal);font-size:12px;font-weight:700;cursor:pointer;padding:0">+<br>Add</button></th>' : '') + '</tr>';
+  var anyUv = false;
+  var trs = body.map(function (r) {
+    var hi = r.differ ? 'background:' + CMP_HI + ';' : '';
+    return '<tr><td style="' + stick + td + 'font-size:12px;color:' + (r.differ ? 'var(--gold)' : 'var(--t2)') + ';font-weight:' + (r.differ ? '700' : '500') + ';min-width:' + lw + 'px">' + r.label + '</td>' +
+      r.cells.map(function (cell, i) {
+        var col = cols[i], v;
+        if (r.id === 'weight' && col.kind === 'catalog') {
+          v = '<select onchange="catCompareWeight(' + i + ',this.value)" style="font-size:13px;background:var(--bg2);color:var(--t1);border:1px solid var(--border1);border-radius:8px;padding:3px 4px">' +
+            WEIGHTS.map(function (w) { return '<option value="' + w + '"' + (w === (col.weight || 15) ? ' selected' : '') + '>' + w + ' lb</option>'; }).join('') + '</select>';
+        } else if (col.kind === 'catalog' && !col.loaded && r.id !== 'weight') v = '<span style="color:var(--t3)">\u2026</span>';
+        else v = cell.txt == null ? '<span style="color:var(--t3)">--</span>' : esc(cell.txt);
+        if (cell.approx) anyUv = true;
+        if (cell.uv && cell.txt != null) { anyUv = true; v += '<span style="font-size:9px;font-weight:700;color:var(--gold);margin-left:4px;white-space:nowrap;display:inline-block">unv</span>'; }
+        if (cell.note) v += '<div style="font-size:10px;color:var(--t3);margin-top:2px">' + esc(cell.note) + '</div>';
+        return '<td style="' + td + hi + '">' + v + '</td>';
+      }).join('') + (cols.length < CMP_MAX ? '<td style="' + td + '"></td>' : '') + '</tr>';
+  }).join('');
+  var nDiff = body.filter(function (r) { return r.differ; }).length;
+  return '<div style="padding:12px 16px 6px;display:flex;align-items:center;gap:12px"><button onclick="catCompareClose()" style="' + BACK + '" aria-label="Back">\u2039</button>' +
+      '<div><div style="font-size:20px;font-weight:800;color:var(--t1)">Compare</div><div style="font-size:12px;color:var(--t3)">' +
+      (cols.length < 2 ? 'Add a ball to compare' : nDiff + ' row' + (nDiff === 1 ? '' : 's') + ' differ \u00b7 highlighted') + '</div></div></div>' +
+    '<div style="flex:1;overflow:auto;-webkit-overflow-scrolling:touch;padding:0 16px 16px">' +
+      '<table style="border-collapse:separate;border-spacing:0;' + (fit ? 'width:100%;table-layout:fixed' : '') + '">' +
+        (fit ? '<colgroup><col style="width:' + lw + 'px">' + cols.map(function () { return '<col>'; }).join('') + (cols.length < CMP_MAX ? '<col style="width:' + aw + 'px">' : '') + '</colgroup>' : '') + head + trs + '</table>' +
+      '<div style="font-size:11px;color:var(--t3);margin-top:10px;line-height:1.5">Strength 0\u2013100 and Shape \u221250\u2026+50 are this app\'s own measures (MET-1). Owned balls use their latest surface; catalog balls use factory finish at the weight shown.' +
+      (anyUv ? ' <b style="color:var(--gold)">unv</b> = not yet confirmed by the catalog or by you; ~ = Strength built on such a value.' : '') + '</div>' +
+    '</div>';
+}
+function cmpRender() {
+  var ov = document.getElementById('cmp-ov'); if (!ov) return;
+  catLoad().then(function (rows) {
+    rows = rows || [];
+    var sc = ov.querySelector('[style*="overflow:auto"]'), top = sc ? sc.scrollTop : 0, left = sc ? sc.scrollLeft : 0;
+    ov.innerHTML = cmpHTML(rows);
+    var sc2 = ov.querySelector('[style*="overflow:auto"]'); if (sc2) { sc2.scrollTop = top; sc2.scrollLeft = left; }
+    _cmp.cols.forEach(function (c) {
+      if (c.t !== 'c' || Object.prototype.hasOwnProperty.call(_cmp.details, c.id)) return;
+      var e = byIdIn(rows, c.id); if (!e) return;
+      if (_cmp.pending[c.id]) return; _cmp.pending[c.id] = 1;
+      catDetail(e).then(function (d) { _cmp.details[c.id] = d || null; delete _cmp.pending[c.id]; cmpRender(); });
+    });
+  });
+}
+function cmpParse(x) {
+  var m = /^([oc]):(.+)$/.exec(String(x || '')); if (!m) return null;
+  return m[1] === 'o' ? { t: 'o', id: +m[2] } : { t: 'c', id: m[2], w: null };
+}
+function cmpHas(c) { return _cmp.cols.some(function (x) { return x.t === c.t && String(x.id) === String(c.id) && (x.t === 'o' || x.w === c.w); }); }
+/* list: ['o:12', 'c:storm-phaze-ii', ...]; opens with those columns (max 4). */
+function catCompareOpen(list) {
+  if (typeof document === 'undefined') return;
+  _cmp.cols = []; _cmp.details = {}; _cmp.pending = {};
+  (list || []).forEach(function (x) { var c = typeof x === 'object' ? x : cmpParse(x); if (c && _cmp.cols.length < CMP_MAX && !cmpHas(c)) _cmp.cols.push(c); });
+  var old = document.getElementById('cmp-ov'); if (old) old.parentNode.removeChild(old);
+  document.body.appendChild(overlay('cmp-ov', 920));
+  cmpRender();
+  if (_cmp.cols.length < 2) catComparePick();
+}
+function catCompareFromSheet() { catCompareOpen([{ t: 'c', id: _sheet.id, w: _sheet.weight || null }]); }
+function catCompareClose() { ['cmp-pick-ov', 'cmp-ov'].forEach(function (id) { var el = document.getElementById(id); if (el) el.parentNode.removeChild(el); }); }
+function catCompareRemove(i) { _cmp.cols.splice(i, 1); cmpRender(); }
+function catCompareWeight(i, w) { var c = _cmp.cols[i]; if (c && c.t === 'c') { c.w = parseInt(w, 10) || null; cmpRender(); } }
+/* Add a column: Arsenal (owned, not archived) or Catalog search. */
+var _cmpPickTab = 'o';
+function cmpPickBody(rows, q) {
+  if (_cmpPickTab === 'o') {
+    var list = appBalls().filter(function (b) { return !b.Archived && !cmpHas({ t: 'o', id: b.BallID }); })
+      .sort(function (a, b) { return String(a.BallName).localeCompare(String(b.BallName)); });
+    if (!list.length) return '<div style="font-size:13px;color:var(--t3);padding:16px 2px">Every ball is already in the comparison.</div>';
+    return list.map(function (b) {
+      return '<div onclick="catCompareAdd(\'o:' + b.BallID + '\')" style="padding:11px 2px;border-bottom:1px solid var(--border1);cursor:pointer">' +
+        '<div style="font-size:15px;font-weight:600;color:var(--t1)">' + esc(b.BallName) + '</div>' +
+        '<div style="font-size:12px;color:var(--t2);margin-top:2px">' + esc(b.MFG || '') + (b.Weight ? ' \u00b7 ' + b.Weight + ' lb' : '') + (catMetricChip(b) ? ' \u00b7 ' + esc(catMetricChip(b)) : '') + '</div></div>';
+    }).join('');
+  }
+  if (!rows || !rows.length) return '<div style="font-size:13px;color:var(--t3);padding:16px 2px">The catalog isn\'t installed on this device yet.</div>';
+  if (!q || q.replace(/\s/g, '').length < 2) return '<div style="font-size:13px;color:var(--t3);padding:16px 2px">Type a ball or brand name.</div>';
+  var hits = addSearchIn(rows, q, 40);
+  if (!hits.length) return '<div style="font-size:13px;color:var(--t3);padding:16px 2px">No match in the USBC list.</div>';
+  return hits.map(function (e) {
+    return '<div onclick="catCompareAdd(\'c:' + esc(e.i) + '\')" style="display:flex;align-items:center;gap:10px;padding:10px 2px;border-bottom:1px solid var(--border1);cursor:pointer">' + thumbHTML(e, 32) +
+      '<div style="min-width:0"><div style="font-size:15px;font-weight:600;color:var(--t1)">' + esc(cleanName(e.n)) + '</div>' +
+      '<div style="font-size:12px;color:var(--t2);margin-top:2px">' + esc(e.m) + (e.y ? ' \u00b7 USBC ' + esc(e.y) : '') + (e.s ? ' \u00b7 <span style="color:var(--teal)">\u25cf specs</span>' : '') + '</div></div></div>';
+  }).join('');
+}
+function catComparePick() {
+  if (_cmp.cols.length >= CMP_MAX) { if (root.toast) root.toast('Up to ' + CMP_MAX + ' balls'); return; }
+  var old = document.getElementById('cmp-pick-ov'); if (old) old.parentNode.removeChild(old);
+  var ov = overlay('cmp-pick-ov', 925);
+  var tab = function (t, l) { return '<button onclick="catComparePickTab(\'' + t + '\')" style="' + (_cmpPickTab === t ? BTN_P : BTN_G) + 'flex:1;padding:8px 0;font-size:13px">' + l + '</button>'; };
+  ov.innerHTML = '<div style="padding:12px 16px 6px;display:flex;align-items:center;gap:12px"><button onclick="catComparePickClose()" style="' + BACK + '" aria-label="Back">\u2039</button>' +
+      '<div style="font-size:18px;font-weight:800;color:var(--t1)">Add a ball</div></div>' +
+    '<div style="padding:4px 16px 8px;display:flex;gap:6px">' + tab('o', 'Arsenal') + tab('c', 'Catalog') + '</div>' +
+    (_cmpPickTab === 'c' ? '<div style="padding:0 16px 6px"><input id="cmp-pick-q" class="finput" placeholder="Search the USBC list" autocomplete="off" autocorrect="off" oninput="catComparePickSearch(this.value)" style="width:100%;box-sizing:border-box"></div>' : '') +
+    '<div id="cmp-pick-list" style="flex:1;overflow-y:auto;padding:0 16px 16px;-webkit-overflow-scrolling:touch"></div>';
+  document.body.appendChild(ov);
+  catComparePickSearch('');
+  var q = document.getElementById('cmp-pick-q'); if (q) q.focus();
+}
+function catComparePickTab(t) { _cmpPickTab = t === 'c' ? 'c' : 'o'; catComparePick(); }
+function catComparePickSearch(q) {
+  catLoad().then(function (rows) { var box = document.getElementById('cmp-pick-list'); if (box) box.innerHTML = cmpPickBody(rows, q); });
+}
+function catComparePickClose() { var el = document.getElementById('cmp-pick-ov'); if (el) el.parentNode.removeChild(el); }
+function catCompareAdd(x) {
+  var c = cmpParse(x);
+  if (c && !cmpHas(c) && _cmp.cols.length < CMP_MAX) _cmp.cols.push(c);
+  catComparePickClose(); cmpRender();
+}
+
 
 root.CATALOG_JS_VERSION = CAT_VERSION;
 root.catPickerMount = catPickerMount;
@@ -1977,11 +2271,15 @@ root.catReviewLink = catReviewLink; root.catReviewSkip = catReviewSkip;
 root.catReviewResetSkips = catReviewResetSkips;
 root.catOpenAddSearch = catOpenAddSearch; root.catCloseAddSearch = catCloseAddSearch;
 root.catAddSearch = catAddSearch; root.catAddManual = catAddManual; root.catAddBrand = catAddBrand;
+root.catAddBubble = catAddBubble; root.catAddLoosen = catAddLoosen; root.catAddBrandPick = catAddBrandPick; root.catAddBrandToggle = catAddBrandToggle; root.catAddBrandPickClose = catAddBrandPickClose;
 root.catAddDetail = catAddDetail; root.catSheetClose = catSheetClose; root.catSheetWeight = catSheetWeight;
 root.catAddToArsenal = catAddToArsenal; root.catFillFromCatalog = catFillFromCatalog;
 root.catSpecSource = catSpecSource; root.catDetail = catDetail;
 root.catSpecUnverified = catSpecUnverified; root.catUnverifiedTag = catUnverifiedTag;
 root.catAutoVerify = catAutoVerify; root.catAutoVerifyAll = catAutoVerifyAll;
+root.catCompareOpen = catCompareOpen; root.catCompareFromSheet = catCompareFromSheet; root.catCompareClose = catCompareClose; root.catCompareRemove = catCompareRemove;
+root.catCompareWeight = catCompareWeight; root.catComparePick = catComparePick; root.catComparePickTab = catComparePickTab; root.catComparePickSearch = catComparePickSearch;
+root.catComparePickClose = catComparePickClose; root.catCompareAdd = catCompareAdd;
 root.catMetric = catMetric; root.catRGBand = catRGBand; root.catMetricChip = catMetricChip; root.catMetricHTML = catMetricHTML;
 root.catIdentityLocked = catIdentityLocked; root.catAuditOpen = catAuditOpen;
 root.catLookup = function (mfg, name) { return catLoad().then(function (rows) { return lookupIn(rows, mfg, name); }); };
@@ -1989,14 +2287,15 @@ root.catSearch = function (q, n) { return catLoad().then(function (rows) { retur
 root._catStep5 = { norm: norm, modelKey: modelKey, lookupIn: lookupIn, searchIn: searchIn, reviewModel: reviewModel,
                    pickerBodyHTML: pickerBodyHTML, reviewHTML: reviewHTML, resultsHTML: resultsHTML,
                    setPick: function (p) { _pick = p; }, auditModel: auditModel, auditHTML: auditHTML,
-                   addListHTML: addListHTML, addSearchIn: addSearchIn, newest: newest,
+                   addListHTML: addListHTML, addSearchIn: addSearchIn, newest: newest, bubbleFilter: bubbleFilter, discontinuedOf: discontinuedOf, addFilters: function () { return _af; },
                    specsOf: specsOf, shardMap: shardMap, shardKeyFor: shardKeyFor, detailFiles: detailFiles,
                    buildOwnedBall: buildOwnedBall, ballFromSpecs: ballFromSpecs, fillPlan: fillPlan,
                    catSpecSource: catSpecSource, setFilled: function (f) { _filled = f; },
                    imgLinksFrom: imgLinksFrom, sheetState: function () { return _sheet; }, mergeOverrides: mergeOverrides, withLocalCorrection: withLocalCorrection, apApplyOverride: apApplyOverride, apOverrideFrom: apOverrideFrom, bowwwlLinks: bowwwlLinks, apStagedFor: apStagedFor, apAsDetail: apAsDetail, apRangeNotes: apRangeNotes, derivedCoverType: derivedCoverType, specGaps: specGaps, nearestWeight: nearestWeight, addListHTML: addListHTML, sourceForBrand: sourceForBrand, apParseIssue: apParseIssue, apPages: apPages, apApplyTicks: apApplyTicks, apConflict: apConflict, apNums: apNums,
-                   verifyPlan: verifyPlan, specMatch: specMatch, metricUnverified: metricUnverified, catSpecUnverified: catSpecUnverified,
+                   verifyPlan: verifyPlan, specMatch: specMatch, coreNameMatch: coreNameMatch, DIFF_MAX: DIFF_MAX, metricUnverified: metricUnverified, catSpecUnverified: catSpecUnverified,
                    metricScore: metricScore, parseFinish: parseFinish, rgBand: rgBand, diffBand: diffBand, coverClass: coverClass,
-                   catMetric: catMetric, sheetHTML: sheetHTML, setSheet: function (x) { _sheet = x; } };
+                   catMetric: catMetric, sheetHTML: sheetHTML, cmpColOwned: cmpColOwned, cmpColCatalog: cmpColCatalog, cmpRows: cmpRows,
+                   cmpHTML: cmpHTML, cmpState: function () { return _cmp; }, setSheet: function (x) { _sheet = x; } };
 
 root.catCheck = catCheck;
 root.catLoad = catLoad;
