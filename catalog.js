@@ -707,6 +707,36 @@ function specsOf(d, weight) {
   out.checked = d.Checked || fs.checked || null;
   return out;
 }
+/* v30.167 (locked 2026-10-09): cover type may be read from the coverstock
+   name, but only Pearl, Hybrid and Solid, and only when the name names
+   exactly one of them. Shown as "from name"; never stored as a stated value. */
+function derivedCoverType(name) {
+  var t = String(name || ''), hit = [];
+  if (/\bpearl/i.test(t)) hit.push('Pearl');
+  if (/\bhybrid/i.test(t)) hit.push('Hybrid');
+  if (/\bsolid/i.test(t)) hit.push('Solid');
+  return hit.length === 1 ? hit[0] : null;
+}
+/* Pure: what a catalog record is missing. RG/Diff count at ANY weight;
+   Int Diff is only expected for an asymmetric core. */
+function specGaps(d) {
+  if (!d) return null;
+  var s = specsOf(d, 15), g = [], w = d.SpecsByWeight || {}, rd = false, idf = false;
+  for (var k in w) { if (w[k] && numOrNull(w[k].RG) != null && numOrNull(w[k].Diff) != null) rd = true; if (w[k] && numOrNull(w[k].IntDiff) != null) idf = true; }
+  if (!s.coverType && !derivedCoverType(s.coverName)) g.push('cover type');
+  if (!s.finish) g.push('finish');
+  if (!s.coreType) g.push('core type');
+  if (!rd) g.push('RG / Diff');
+  if (/asym/i.test(s.coreType || '') && !idf) g.push('Int Diff');
+  return g;
+}
+/* Pure: nearest published weight that has RG and Diff (ties go heavier), or null. */
+function nearestWeight(d, wt) {
+  var w = (d && d.SpecsByWeight) || {}, best = null;
+  Object.keys(w).map(Number).filter(function (k) { return isFinite(k) && numOrNull(w[k].RG) != null && numOrNull(w[k].Diff) != null; })
+    .forEach(function (k) { if (best == null || Math.abs(k - wt) < Math.abs(best - wt) || (Math.abs(k - wt) === Math.abs(best - wt) && k > best)) best = k; });
+  return best;
+}
 function hasAnySpec(s) {
   return !!(s.coverName || s.coverType || s.finish || s.coreName || s.coreType || s.weights.length || s.released);
 }
@@ -943,7 +973,7 @@ function addRowHTML(e, owned) {
       (mine ? '<span style="' + CHIP_T + '">IN YOUR ARSENAL</span>' : '') +
       (/-u13$/.test(e.i) ? '<span style="' + CHIP_G + '">UNDER 13 LB</span>' : '') + '</div>' +
     '<div style="font-size:12px;color:var(--t2);margin-top:2px">' + meta.join(' · ') +
-      (e.s ? ' · <span style="color:var(--teal)">● specs</span>' : '') + '</div></div></div>';
+      (e.s ? ' · <span data-spec-id="' + esc(e.i) + '" style="color:var(--teal)">● specs</span>' : '') + '</div></div></div>';
 }
 function sectionHTML(title, body) {
   return '<div style="font-size:13px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:0.5px;margin:16px 2px 4px">' + title + '</div>' + body;
@@ -957,14 +987,39 @@ function emptyStateHTML(rows, owned) {
     bl.map(function (b) { return '<button class="ball-filter-chip" onclick="catAddBrand(\'' + esc(b).replace(/&#39;/g, "\\'") + '\')">' + esc(b) + '</button>'; }).join('') + '</div>');
   var rec = readRecent().map(function (id) { return byIdIn(rows, id); }).filter(Boolean);
   if (rec.length) h += sectionHTML('Recently viewed', rec.map(function (e) { return addRowHTML(e, owned); }).join(''));
-  h += sectionHTML('New on the USBC list', newest(rows, 20).map(function (e) { return addRowHTML(e, owned); }).join(''));
+  var nw = _specsOnly ? newest(rows.filter(function (e) { return e.s; }), 20) : newest(rows, 20);
+  h += sectionHTML('New on the USBC list' + (_specsOnly ? ' \u00b7 with specs' : ''), nw.map(function (e) { return addRowHTML(e, owned); }).join(''));
   return h;
 }
 function addListHTML(rows, q, owned) {
   if (!q || q.replace(/\s/g, '').length < 2) return emptyStateHTML(rows, owned);
-  var list = addSearchIn(rows, q, 60);
+  var all = addSearchIn(rows, q, 400);
+  var list = (_specsOnly ? all.filter(function (e) { return e.s; }) : all).slice(0, 60);
+  var hidden = _specsOnly ? all.length - all.filter(function (e) { return e.s; }).length : 0;
+  if (!list.length && hidden) return '<div style="font-size:13px;color:var(--t2);padding:16px 2px;line-height:1.6">No match with approved specs. ' +
+    '<a href="#" onclick="event.preventDefault();catAddSpecsOnly(false)" style="color:var(--teal)">Show ' + hidden + ' without specs</a></div>';
   if (!list.length) return '<div style="font-size:13px;color:var(--t2);padding:16px 2px;line-height:1.6">No match in the USBC list.<br>Use <b>Enter manually</b> below.</div>';
-  return list.map(function (e) { return addRowHTML(e, owned); }).join('');
+  return list.map(function (e) { return addRowHTML(e, owned); }).join('') +
+    (hidden ? '<div style="font-size:12px;color:var(--t3);padding:12px 2px">' + hidden + ' more without approved specs \u00b7 <a href="#" onclick="event.preventDefault();catAddSpecsOnly(false)" style="color:var(--teal)">show all</a></div>' : '');
+}
+/* v30.167 (locked): Add a Ball shows balls with approved specs by default
+   (index flag e.s: only published = auto or approved), with a switch. */
+var _specsOnly = true;
+function catAddSpecsOnly(on) {
+  _specsOnly = !!on;
+  var t = document.getElementById('cat-specs-only'); if (t) t.checked = _specsOnly;
+  var q = document.getElementById('cat-add-q'); catAddSearch(q ? q.value : '');
+}
+/* Marks listed rows whose record is missing key fields; shards load once per brand. */
+function markPartials(box, rows) {
+  var els = box.querySelectorAll('[data-spec-id]');
+  Array.prototype.forEach.call(els, function (el) {
+    var e = byIdIn(rows, el.getAttribute('data-spec-id'));
+    catDetail(e).then(function (d) {
+      var g = specGaps(d);
+      if (g && g.length && el.isConnected) { el.textContent = '\u25D0 partial'; el.style.color = 'var(--gold)'; el.title = 'Missing ' + g.join(', '); }
+    });
+  });
 }
 function overlay(id, z) {
   var ov = document.createElement('div');
@@ -981,13 +1036,17 @@ function catOpenAddSearch() {
   var s = catStatus();
   if (!(s.count > 0)) return false;
   catCloseAddSearch();
+  _specsOnly = true;   // each visit starts on specs only
   var ov = overlay('cat-search-ov', 900);
   ov.innerHTML =
     '<div style="padding:12px 16px 4px"><button onclick="catCloseAddSearch()" style="' + BACK + '" aria-label="Back">‹</button></div>' +
     '<div style="padding:4px 16px 0;font-size:30px;font-weight:800;color:var(--t1)">Add a Ball</div>' +
     '<div style="padding:10px 16px 4px"><input id="cat-add-q" class="bdet-field-input" type="search" placeholder="Search brands, names…"' +
       ' autocomplete="off" autocorrect="off" autocapitalize="off" oninput="catAddSearch(this.value)" style="width:100%;font-size:16px">' +
-      '<div style="font-size:11px;color:var(--t3);margin-top:5px">' + esc(s.count.toLocaleString()) + ' USBC-approved balls · list ' + esc(s.listVersion || '') + '</div></div>' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:5px">' +
+        '<span style="font-size:11px;color:var(--t3)">' + esc(s.count.toLocaleString()) + ' USBC-approved balls · list ' + esc(s.listVersion || '') + '</span>' +
+        '<label style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--t2);white-space:nowrap"><input id="cat-specs-only" type="checkbox" ' + (_specsOnly ? 'checked ' : '') +
+        'onchange="catAddSpecsOnly(this.checked)"> Specs only</label></div></div>' +
     '<div id="cat-add-results" style="flex:1;overflow-y:auto;padding:0 16px 12px;-webkit-overflow-scrolling:touch"><div style="font-size:12px;color:var(--t3);padding:14px 2px">Loading…</div></div>' +
     '<div style="padding:10px 16px;border-top:1px solid var(--border1)">' +
       '<button onclick="catAddManual()" style="' + BTN_G + 'width:100%;padding:11px;font-size:13px">Can\'t find it? Enter manually</button></div>';
@@ -1002,7 +1061,7 @@ function catCloseAddSearch() {
 function catAddSearch(q) {
   catLoad().then(function (rows) {
     var box = document.getElementById('cat-add-results');
-    if (box) box.innerHTML = addListHTML(rows, q, ownedIndex(rows));
+    if (box) { box.innerHTML = addListHTML(rows, q, ownedIndex(rows)); markPartials(box, rows); }
   });
 }
 function catAddBrand(b) {
@@ -1023,9 +1082,12 @@ function specRows(e, s) {
   var dash = '<span style="color:var(--t3)">—</span>';
   var f = function (v, d) { return v != null && v !== '' ? esc(d != null ? Number(v).toFixed(d) : v) : dash; };
   return [
-    ['Coverstock', f(s.coverName)], ['Cover type', f(s.coverType)], ['Factory finish', f(s.finish)],
+    ['Coverstock', f(s.coverName)],
+    ['Cover type', s.coverType ? f(s.coverType) : (derivedCoverType(s.coverName) ? esc(derivedCoverType(s.coverName)) + ' <span style="font-size:10px;color:var(--t3)">from name</span>' : dash)],
+    ['Factory finish', f(s.finish)],
     ['Core', f(s.coreName)], ['Core type', f(s.coreType)],
-    ['RG', f(s.rg, 3)], ['Differential', f(s.diff, 3)], ['Int. Diff', f(s.intDiff, 3)],
+    ['RG', f(s.rg, 3) + (s._wNote && s.rg != null ? s._wNote : '')], ['Differential', f(s.diff, 3) + (s._wNote && s.diff != null ? s._wNote : '')],
+    ['Int. Diff', f(s.intDiff, 3) + (s._wNote && s.intDiff != null ? s._wNote : '')],
     ['RG / Diff band', catRGBand(s.rg, s.diff) ? esc(catRGBand(s.rg, s.diff)) : dash],
     ['Release date', s.released ? (monthYear(s.released) || dash) : dash],
   ];
@@ -1044,6 +1106,16 @@ function ballFromSpecs(s) {
 }
 function sheetHTML(e, rows) {
   var s = specsOf(_sheet.detail, _sheet.weight || 15);
+  /* v30.167 (locked): your weight not published -> show the nearest published
+     weight's RG/Diff, labelled. Display only; Add to Arsenal and Fill still use
+     the ball's own weight, so a 15 lb ball never stores 16 lb numbers. */
+  var _wt = _sheet.weight || 15, _shownW = _wt;
+  if (s.rg == null && s.diff == null) {
+    var _nw = nearestWeight(_sheet.detail, _wt);
+    if (_nw != null) { var _s2 = specsOf(_sheet.detail, _nw); s.rg = _s2.rg; s.diff = _s2.diff; s.intDiff = _s2.intDiff; _shownW = _nw;
+      s._wNote = ' <span style="font-size:10px;font-weight:700;color:var(--gold)">' + _nw + ' LB</span>'; }
+  }
+  var _gaps = _sheet.loaded ? specGaps(_sheet.detail) : null;
   var owned = ownedFor(e);
   var chips = '';
   if (e.y) chips += '<span style="' + CHIP_G + '">USBC APPROVED ' + esc(e.d ? (monthYear(e.d) || e.y).toUpperCase() : e.y) + '</span>';
@@ -1053,17 +1125,18 @@ function sheetHTML(e, rows) {
   if (!_sheet.loaded) body = '<div style="font-size:12px;color:var(--t3);padding:10px 0">Loading specs…</div>';
   else if (!hasAnySpec(s)) body = '<div style="font-size:13px;color:var(--t2);padding:6px 0 10px;line-height:1.55">Specs aren\'t in the catalog for this ball yet. You can add them after adding it.</div>';
   else {
-    body = specRows(e, s).map(function (r) {
+    body = (_gaps && _gaps.length ? '<div style="font-size:12px;color:var(--gold);padding:2px 0 8px;line-height:1.45">Incomplete \u2014 missing ' + esc(_gaps.join(', ')) + '. Verify now on a linked ball re-reads the site.</div>' : '') +
+      specRows(e, s).map(function (r) {
       return '<div style="display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--border1);font-size:14px">' +
         '<span style="color:var(--t2)">' + r[0] + '</span><span style="color:var(--t1);text-align:right">' + r[1] + '</span></div>';
     }).join('');
     var wt = _sheet.weight || 15;
-    body += '<div style="font-size:11px;color:var(--t3);margin-top:8px;line-height:1.5">RG and Diff shown for ' + wt + ' lb' +
-      (s.weights.length && s.weights.indexOf(wt) < 0 ? ' (not published for this weight)' : '') + '.' +
+    body += '<div style="font-size:11px;color:var(--t3);margin-top:8px;line-height:1.5">RG and Diff shown for ' + _shownW + ' lb' +
+      (_shownW !== wt ? ' \u2014 <b style="color:var(--gold)">' + wt + ' lb is not published</b>' : (s.weights.length && s.weights.indexOf(wt) < 0 ? ' (not published for this weight)' : '')) + '.' +
       (s.src ? ' Specs: ' + (/^https?:|^manufacturer$/.test(s.src) ? 'manufacturer' : esc(s.src)) + (s.checked ? ', checked ' + esc(s.checked) : '') + '.' : '') + '</div>';
     var met = metricScore(ballFromSpecs(s), parseFinish(s.finish));
     if (met) body += '<div style="margin-top:12px;padding:10px 12px;border-radius:10px;background:var(--bg3);font-size:13px;color:var(--t1)">' +
-      'Strength <b>' + met.strength + '</b> · Shape <b>' + signed(met.shape) + '</b><span style="color:var(--t3);font-size:11px"> · factory finish</span></div>';
+      'Strength <b>' + met.strength + '</b> · Shape <b>' + signed(met.shape) + '</b><span style="color:var(--t3);font-size:11px"> · factory finish' + (_shownW !== wt ? ', ' + _shownW + ' lb specs' : '') + '</span></div>';
   }
   var w = _sheet.weight;
   return '<div style="padding:12px 16px 4px;display:flex"><button onclick="catSheetClose()" style="' + BACK + '" aria-label="Back">‹</button></div>' +
@@ -1597,7 +1670,7 @@ function catImageFor(id) { return (imgOn() && id) ? (imgMap()[id] || null) : nul
    change). Results land in the Spec approvals issue; auto rows reach the
    catalog after Publish. */
 var VERIFY_KEY = 'bdbgh_verify';
-var BRAND_SOURCE = [[/storm/, 'storm'], [/brunswick/, 'brunswick'], [/dv8/, 'dv8'], [/radical/, 'radical'], [/hammer/, 'hammer'],
+var BRAND_SOURCE = [[/storm|roto ?grip|900 ?global/, 'storm'], [/brunswick/, 'brunswick'], [/dv8/, 'dv8'], [/radical/, 'radical'], [/hammer/, 'hammer'],
                     [/track/, 'track'], [/ebonite/, 'ebonite'], [/columbia/, 'columbia'], [/motiv/, 'motiv']];
 /* Pure: manufacturer name -> bridge source id, or null. */
 function sourceForBrand(m) {
@@ -1634,7 +1707,7 @@ function apExtractStatus() {
 root.catPickerMount = catPickerMount;
 root.catApprovalsOpen = catApprovalsOpen; root.catApprovalsClose = catApprovalsClose; root.catApprovalsSaveToken = catApprovalsSaveToken;
 root.catApprovalsForgetToken = catApprovalsForgetToken; root.catApprovalsChangeToken = catApprovalsChangeToken; root.catApprovalsPage = catApprovalsPage; root.catApprovalsFilter = catApprovalsFilter;
-root.catApprovalsTick = catApprovalsTick; root.catVerifyNow = catVerifyNow; root.catImagesSet = catImagesSet;
+root.catApprovalsTick = catApprovalsTick; root.catAddSpecsOnly = catAddSpecsOnly; root.catVerifyNow = catVerifyNow; root.catImagesSet = catImagesSet;
 root.catImagesRefresh = catImagesRefresh; root.catImagesStatus = catImagesStatus; root.catImageFor = catImageFor; root.catApprovalsSend = catApprovalsSend; root.catApprovalsPublish = catApprovalsPublish; root.catPickerSearch = catPickerSearch;
 root.catPick = catPick; root.catUnlink = catUnlink; root.catPickValue = catPickValue;
 root.catLinkLabel = catLinkLabel; root.catReviewOpen = catReviewOpen;
@@ -1658,7 +1731,7 @@ root._catStep5 = { norm: norm, modelKey: modelKey, lookupIn: lookupIn, searchIn:
                    specsOf: specsOf, shardMap: shardMap, shardKeyFor: shardKeyFor, detailFiles: detailFiles,
                    buildOwnedBall: buildOwnedBall, ballFromSpecs: ballFromSpecs, fillPlan: fillPlan,
                    catSpecSource: catSpecSource, setFilled: function (f) { _filled = f; },
-                   imgLinksFrom: imgLinksFrom, sourceForBrand: sourceForBrand, apParseIssue: apParseIssue, apPages: apPages, apApplyTicks: apApplyTicks, apConflict: apConflict, apNums: apNums,
+                   imgLinksFrom: imgLinksFrom, derivedCoverType: derivedCoverType, specGaps: specGaps, nearestWeight: nearestWeight, addListHTML: addListHTML, sourceForBrand: sourceForBrand, apParseIssue: apParseIssue, apPages: apPages, apApplyTicks: apApplyTicks, apConflict: apConflict, apNums: apNums,
                    verifyPlan: verifyPlan, specMatch: specMatch, metricUnverified: metricUnverified, catSpecUnverified: catSpecUnverified,
                    metricScore: metricScore, parseFinish: parseFinish, rgBand: rgBand, diffBand: diffBand, coverClass: coverClass,
                    catMetric: catMetric, sheetHTML: sheetHTML, setSheet: function (x) { _sheet = x; } };
