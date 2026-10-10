@@ -9060,20 +9060,23 @@
   "Aliases": [],
   "BallName": "(Rebel) Tank Pearl",
   "CatalogID": "motiv-rebel-tank-pearl",
-  "Checked": null,
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Halogen",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "4000 Grit Laser Scan Sanded",
+   "Name": "DMX Pearl Urethane",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -9088,8 +9091,24 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": null,
-  "SpecsByWeight": {},
+  "Source": "https://www.motivbowling.com/products/balls/retired-balls/rebel-tank.html",
+  "SpecsByWeight": {
+   "14": {
+    "Diff": 0.038,
+    "IntDiff": null,
+    "RG": 2.56
+   },
+   "15": {
+    "Diff": 0.037,
+    "IntDiff": null,
+    "RG": 2.55
+   },
+   "16": {
+    "Diff": 0.036,
+    "IntDiff": null,
+    "RG": 2.54
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2015-05",
