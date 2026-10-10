@@ -1,14 +1,72 @@
 {
-  "generated": "2026-10-10T03:27:59.564Z",
+  "generated": "2026-10-10T14:18:23.036Z",
   "since": 2023,
   "perSource": {
+    "storm": {
+      "pages": 1788,
+      "parsed": 73,
+      "errors": 0,
+      "errorSample": []
+    },
+    "brunswick": {
+      "pages": 258,
+      "parsed": 258,
+      "errors": 0,
+      "errorSample": []
+    },
+    "hammer": {
+      "pages": 366,
+      "parsed": 197,
+      "errors": 3,
+      "errorSample": [
+        "https://hammerbowling.com/products/pure-hammer.json 429",
+        "https://hammerbowling.com/products/radioactive-vibe.json 429",
+        "https://hammerbowling.com/products/black-widow-hybrid-triple-roller.json 429"
+      ]
+    },
+    "dv8": {
+      "pages": 126,
+      "parsed": 126,
+      "errors": 0,
+      "errorSample": []
+    },
+    "radical": {
+      "pages": 129,
+      "parsed": 129,
+      "errors": 0,
+      "errorSample": []
+    },
     "track": {
       "pages": 181,
-      "parsed": 163,
+      "parsed": 164,
       "errors": 1,
       "errorSample": [
-        "https://trackbowling.com/products/paradox-pearl.json 429"
+        "https://trackbowling.com/products/flaming-t-clear.json 429"
       ]
+    },
+    "ebonite": {
+      "pages": 215,
+      "parsed": 191,
+      "errors": 1,
+      "errorSample": [
+        "https://ebonite.com/products/maxim-captain-galaxy.json 429"
+      ]
+    },
+    "columbia": {
+      "pages": 404,
+      "parsed": 386,
+      "errors": 3,
+      "errorSample": [
+        "https://columbia300.com/products/shock.json 429",
+        "https://columbia300.com/products/game-pearl.json 429",
+        "https://columbia300.com/products/nitrous-red-gold.json 429"
+      ]
+    },
+    "motiv": {
+      "pages": 206,
+      "parsed": 205,
+      "errors": 0,
+      "errorSample": []
     }
   },
   "coverage": {
@@ -28,7 +86,7 @@
     },
     "Columbia 300": {
       "all": 553,
-      "auto": 170,
+      "auto": 171,
       "pending": 73,
       "recent": 20,
       "recentAuto": 15
@@ -49,10 +107,10 @@
     },
     "Hammer": {
       "all": 653,
-      "auto": 74,
+      "auto": 73,
       "pending": 101,
       "recent": 114,
-      "recentAuto": 39
+      "recentAuto": 38
     },
     "Motiv": {
       "all": 218,
@@ -84,7 +142,7 @@
     },
     "Track Inc.": {
       "all": 361,
-      "auto": 115,
+      "auto": 116,
       "pending": 47,
       "recent": 46,
       "recentAuto": 24

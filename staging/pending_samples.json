@@ -2,7 +2,7 @@
  {
   "source": "columbia",
   "reason": "no-usbc",
-  "n": 118,
+  "n": 117,
   "samples": [
    {
     "title": "ABC Masters Yellow Dot",
@@ -318,7 +318,7 @@
  {
   "source": "ebonite",
   "reason": "no-weight-specs",
-  "n": 43,
+  "n": 42,
   "samples": [
    {
     "title": "Big Time Special Edition",
@@ -391,15 +391,15 @@
     ]
    },
    {
-    "title": "Maxim - Captain Galaxy",
-    "url": "https://ebonite.com/products/maxim-captain-galaxy",
+    "title": "Maxim - Captain Midnight",
+    "url": "https://ebonite.com/products/maxim-captain-midnight",
     "candidates": [
      "ebonite-maxim"
     ]
    },
    {
-    "title": "Maxim - Captain Midnight",
-    "url": "https://ebonite.com/products/maxim-captain-midnight",
+    "title": "Maxim - Captain Odyssey",
+    "url": "https://ebonite.com/products/maxim-captain-odyssey",
     "candidates": [
      "ebonite-maxim"
     ]
@@ -816,7 +816,7 @@
  {
   "source": "ebonite",
   "reason": "no-usbc",
-  "n": 20,
+  "n": 22,
   "samples": [
    {
     "title": "Angry Birds",
@@ -869,13 +869,13 @@
     "candidates": []
    },
    {
-    "title": "Game Breaker 4 Pearl",
-    "url": "https://ebonite.com/products/game-breaker-4-pearl",
+    "title": "Game Breaker 4 Hybrid",
+    "url": "https://ebonite.com/products/game-breaker-4-hybrid",
     "candidates": []
    },
    {
-    "title": "Game Breaker 5",
-    "url": "https://ebonite.com/products/game-breaker-5",
+    "title": "Game Breaker 4 Pearl",
+    "url": "https://ebonite.com/products/game-breaker-4-pearl",
     "candidates": []
    }
   ]
