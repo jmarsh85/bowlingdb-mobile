@@ -6,7 +6,7 @@ Auto-applied by rule: same-name-reapproval 9, colourway 28, majority 1.
 
 | source | pages | ball pages | auto | pending | errors |
 |---|---|---|---|---|---|
-| hammer | 366 | 198 | 74 | 124 | 3 |
+| motiv | 206 | 205 | 167 | 35 | 0 |
 
 | brand | USBC rows | specs (auto) | pending | 2023+ rows | 2023+ auto |
 |---|---|---|---|---|---|

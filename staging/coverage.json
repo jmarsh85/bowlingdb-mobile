@@ -1,16 +1,12 @@
 {
-  "generated": "2026-10-10T02:11:50.831Z",
+  "generated": "2026-10-10T02:15:59.064Z",
   "since": 2023,
   "perSource": {
-    "hammer": {
-      "pages": 366,
-      "parsed": 198,
-      "errors": 3,
-      "errorSample": [
-        "https://hammerbowling.com/products/black-widow.json 429",
-        "https://hammerbowling.com/products/vincennes-university.json 429",
-        "https://hammerbowling.com/products/black-widow-rubber-shammy-red.json 429"
-      ]
+    "motiv": {
+      "pages": 206,
+      "parsed": 205,
+      "errors": 0,
+      "errorSample": []
     }
   },
   "coverage": {
