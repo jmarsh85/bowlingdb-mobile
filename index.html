@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#0E0F11">
-<title>BowlingDB v22</title>
+<title>BowlingDB</title>
 <style>
 :root {
 color-scheme: dark;
@@ -2603,7 +2603,7 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
     </div>
     <div id="hdr-title" onclick="hdrTitleTap()"><span class="brand">Bowling</span>DB</div>
     <div id="hdr-title-popover"></div>
-    <span id="hdr-build-ref">v30.168 · 2026-10-10</span>
+    <span id="hdr-build-ref"></span>
     <div id="hdr-right">
       <div class="hdr-icon-btn" id="hdr-delete-game-btn" onclick="confirmDeleteGame(G.gameID)" title="Delete Game" style="display:none">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -2645,7 +2645,7 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
     <div id="s-home" class="screen active" data-title="<span class='brand'>Bowling</span>DB">
       <div class="home-hero">
         <div class="home-logo">BowlingDB</div>
-        <div class="home-sub" id="home-version" onclick="handleVersionTap()">v22</div>
+        <div class="home-sub" id="home-version" onclick="handleVersionTap()"></div>
       </div>
       <div class="qs-grid">
         <div class="qs-card" id="qs-avg-card" style="cursor:pointer" onclick="goToAvgGames()">
@@ -3443,6 +3443,33 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
 </div><!-- /app -->
 
 <script>
+/* v30.169: ONE place for the version. The header, the home screen label, the
+   page title and backups all read these, so nothing can go stale on an update.
+   Bump both lines (and CATALOG_JS_VERSION in catalog.js when it changes). */
+const APP_VERSION = 'v30.170';
+const APP_BUILD_DATE = '2026-10-10';
+/* catalog.js this build expects; an older file on the server shows a warning */
+const EXPECTED_CATALOG_JS = 'v30.170';
+function applyAppVersion() {
+const ref = document.getElementById('hdr-build-ref');
+const cat = (typeof window.CATALOG_JS_VERSION === 'string') ? window.CATALOG_JS_VERSION : null;
+if (ref) {
+ref.textContent = APP_VERSION + ' \u00b7 ' + APP_BUILD_DATE;
+if (cat && cat !== EXPECTED_CATALOG_JS) {
+const w = document.createElement('span');
+w.style.color = 'var(--gold)';
+w.textContent = ' \u00b7 catalog.js ' + cat;
+w.title = 'catalog.js on the server is ' + cat + '; this build expects ' + EXPECTED_CATALOG_JS;
+ref.appendChild(w);
+}
+}
+const home = document.getElementById('home-version');
+if (home) home.textContent = APP_VERSION;
+document.title = 'BowlingDB ' + APP_VERSION;
+}
+document.addEventListener('DOMContentLoaded', applyAppVersion);
+window.addEventListener('load', applyAppVersion);
+
 /*
    COACHING ENGINE — NORTH STAR REFERENCE (maintain this block!)
    Last updated: v30.117, 2026-08-16.
@@ -26619,7 +26646,7 @@ meta: {
 kind: 'bowlingdb-snapshot',
 snapshotVersion: 1,
 exportDate: new Date().toISOString(),
-exportSource: 'BowlingDB PWA v30.168',
+exportSource: 'BowlingDB PWA ' + APP_VERSION,
 includesBallImages: !!includeBallImages,
 excluded: Array.from(SNAPSHOT_LS_SKIP)
 },
@@ -36398,7 +36425,7 @@ const mapLines = openMapEdits.map(e =>
 const doneItems = (DKM_ROWS || []).filter(r => r.status === 'done');
 const doneLines = doneItems.map(r => `- [${r.form}] ${r.object}: ${r.current}`).join('\n')
 || '(none flagged in DKM_ROWS)';
-const versionBadge = document.getElementById('hdr-build-ref')?.textContent?.trim() || 'unknown';
+const versionBadge = APP_VERSION + ' \u00b7 ' + APP_BUILD_DATE + (window.CATALOG_JS_VERSION ? ' (catalog.js ' + window.CATALOG_JS_VERSION + ')' : '');
 const today = (typeof azToday === 'function') ? azToday() : new Date().toISOString().split('T')[0];
 return `APP: BowlingDB PWA (personal bowling stats + scoring PWA, single-file HTML/CSS/JS, iPhone Safari standalone)
 VERSION: ${versionBadge} (handoff generated ${today})
