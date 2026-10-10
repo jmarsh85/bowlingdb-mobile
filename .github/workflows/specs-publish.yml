@@ -21,6 +21,7 @@ jobs:
       - name: Tests
         run: |
           node bridge/publish_test.js
+          node bridge/publish_overrides_test.js
           node bridge/approvals_test.js
       - name: Read ticked approvals
         env:
@@ -31,8 +32,9 @@ jobs:
           node bridge/approvals.js parse --body approvals.md --out decisions.json
       - name: Build catalog/specs.json
         run: |
+          OVR=""; if [ -f specs/corrections/overrides.json ]; then OVR="--overrides specs/corrections/overrides.json"; fi
           node bridge/publish.js --staging specs/staging/specs_staging.json \
-            --decisions decisions.json --out catalog/specs.json | tee report.json
+            --decisions decisions.json $OVR --out catalog/specs.json | tee report.json
           echo "## Spec publish" >> "$GITHUB_STEP_SUMMARY"
           echo '```' >> "$GITHUB_STEP_SUMMARY"; cat report.json >> "$GITHUB_STEP_SUMMARY"; echo '```' >> "$GITHUB_STEP_SUMMARY"
       - name: Commit to main
