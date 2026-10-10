@@ -141,6 +141,20 @@
   "coverType": "Solid Reactive",
   "coreType": "Asymmetrical",
   "released": "2026-08-01",
+  "weights": {
+   "14": {
+    "RG": 2.64,
+    "Diff": 0.02
+   },
+   "15": {
+    "RG": 2.64,
+    "Diff": 0.02
+   },
+   "16": {
+    "RG": 2.64,
+    "Diff": 0.02
+   }
+  },
   "source": "maker",
   "at": "2026-10-10"
  }
