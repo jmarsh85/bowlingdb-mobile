@@ -32,6 +32,8 @@ function toSpecsEntry(r) {
     SpecsByWeight: sbw,
     Source: r.url || null,
     Checked: r.fetched || null,
+    /* v30.171 CAT-NEW-1: maker's current/retired; unknown is left out */
+    ...(r.status === 'current' || r.status === 'retired' ? { Status: r.status } : {}),
   };
 }
 /* Pure: a staged row with a correction merged in (new object; the row is untouched). */
