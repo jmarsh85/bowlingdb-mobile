@@ -2603,7 +2603,7 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
     </div>
     <div id="hdr-title" onclick="hdrTitleTap()"><span class="brand">Bowling</span>DB</div>
     <div id="hdr-title-popover"></div>
-    <span id="hdr-build-ref">v30.164 · 2026-10-09</span>
+    <span id="hdr-build-ref">v30.165 · 2026-10-09</span>
     <div id="hdr-right">
       <div class="hdr-icon-btn" id="hdr-delete-game-btn" onclick="confirmDeleteGame(G.gameID)" title="Delete Game" style="display:none">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -26619,7 +26619,7 @@ meta: {
 kind: 'bowlingdb-snapshot',
 snapshotVersion: 1,
 exportDate: new Date().toISOString(),
-exportSource: 'BowlingDB PWA v30.164',
+exportSource: 'BowlingDB PWA v30.165',
 includesBallImages: !!includeBallImages,
 excluded: Array.from(SNAPSHOT_LS_SKIP)
 },
@@ -28354,6 +28354,14 @@ return `
           ${s.lastError ? `<div style="font-size:11px;color:var(--red);margin:4px 0 6px;line-height:1.4">Last check failed: ${String(s.lastError).replace(/[<>&]/g,'')}</div>` : ''}
           ${s.count ? `<button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="catReviewOpen()">Review suggested matches</button><button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="catAuditOpen()">Check linked balls</button>` : ''}
           <button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="if(typeof catApprovalsOpen==='function')catApprovalsOpen()">Spec approvals</button>
+          ${typeof catImagesStatus === 'function' ? (() => { const im = catImagesStatus(); return `
+          <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border1)">
+            <label style="display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:13px;color:var(--t1)">
+              <span>Manufacturer images on this device</span>
+              <input type="checkbox" ${im.on ? 'checked' : ''} onchange="const on=this.checked;catImagesSet(on).then(n=>{toast(on?(n+' image links on this device'):'Manufacturer images off');}).catch(e=>{this.checked=false;catImagesSet(false);toast(e.message);})">
+            </label>
+            <div style="font-size:11px;color:var(--t3);margin-top:4px;line-height:1.45">Shown only here, loaded from the manufacturer's site and kept offline. ${im.count ? im.count + ' links' : 'Needs the Spec approvals token'}${im.at ? ' · updated ' + new Date(im.at).toLocaleDateString() : ''}${im.on ? ' · <a href="#" onclick="event.preventDefault();catImagesRefresh().then(n=>toast(n+\' image links updated\')).catch(e=>toast(e.message))" style="color:var(--teal)">refresh</a>' : ''}</div>
+          </div>`; })() : ''}
           <button class="btn btn-ghost btn-sm" style="margin-top:6px" id="cat-check-btn"
             onclick="this.disabled=true;this.textContent='Checking…';catCheck({force:true}).then(r=>{toast(r.status==='updated'?('Catalog updated: '+r.count.toLocaleString()+' balls'):r.status==='current'?'Catalog is up to date':('Catalog check failed: '+r.error),3500);openSettingsModal();})">Check for updates</button>
         `;
