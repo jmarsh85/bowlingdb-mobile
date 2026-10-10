@@ -1,20 +1,12 @@
 # Spec bridge extract
 
-Staged 1742 ball pages: **1093 auto**, 641 pending, 6 duplicate, 2 outvoted.
+Staged 1743 ball pages: **1093 auto**, 642 pending, 6 duplicate, 2 outvoted.
 
 Auto-applied by rule: same-name-reapproval 9, colourway 28, majority 1.
 
 | source | pages | ball pages | auto | pending | errors |
 |---|---|---|---|---|---|
-| storm | 1728 | 73 | 56 | 18 | 0 |
-| brunswick | 258 | 258 | 178 | 82 | 0 |
-| hammer | 366 | 197 | 74 | 123 | 3 |
-| dv8 | 126 | 126 | 84 | 42 | 0 |
-| radical | 129 | 129 | 122 | 7 | 0 |
-| track | 181 | 163 | 116 | 49 | 1 |
-| ebonite | 215 | 190 | 126 | 67 | 2 |
-| columbia | 404 | 386 | 170 | 218 | 3 |
-| motiv | 206 | 205 | 167 | 35 | 0 |
+| hammer | 366 | 198 | 74 | 124 | 3 |
 
 | brand | USBC rows | specs (auto) | pending | 2023+ rows | 2023+ auto |
 |---|---|---|---|---|---|
@@ -30,7 +22,7 @@ Auto-applied by rule: same-name-reapproval 9, colourway 28, majority 1.
 | Storm | 998 | 34 | 1 | 178 | 18 |
 | Track Inc. | 361 | 116 | 46 | 46 | 24 |
 
-Pending reasons: no-usbc 276, no-weight-specs 303, variant 45, out-of-range:16:RG=2.257 1, ambiguous 2, conflicting-sources 8, out-of-range:15:Diff=56 1, out-of-range:12:Diff=0.31 2, out-of-range:16:IntDiff=0.2 1, out-of-range:15:Diff=0.09 1, out-of-range:13:Diff=2.53 1
+Pending reasons: no-usbc 277, no-weight-specs 303, variant 45, out-of-range:16:RG=2.257 1, ambiguous 2, conflicting-sources 8, out-of-range:15:Diff=56 1, out-of-range:12:Diff=0.31 2, out-of-range:16:IntDiff=0.2 1, out-of-range:15:Diff=0.09 1, out-of-range:13:Diff=2.53 1
 
 | source | pending reason | count | e.g. |
 |---|---|---|---|
@@ -41,7 +33,7 @@ Pending reasons: no-usbc 276, no-weight-specs 303, variant 45, out-of-range:16:R
 | ebonite | no-weight-specs | 43 | Big Time Special Edition; Complete NV; Envision Pearl |
 | track | no-weight-specs | 35 | 100P; Animal; Arsenal Aggressive |
 | dv8 | no-weight-specs | 28 | Activ8; Brutal Collision; Captiv8 |
-| hammer | no-usbc | 26 | Blue Vibe; Cherry Vibe; Cobalt Vibe |
+| hammer | no-usbc | 27 | Blue Vibe; Cherry Vibe; Cobalt Vibe |
 | brunswick | no-weight-specs | 24 | Crown Jewel; Hearts; Igniter Solid |
 | motiv | no-usbc | 23 | Ascend - Green/Teal/Black; Ascent Pearl - Grn/Prp; Ascent Solid |
 | ebonite | no-usbc | 20 | Angry Birds; Bash - Purple / Yellow / Silver Pearl; Cyclone - Orange / Purple / Red |

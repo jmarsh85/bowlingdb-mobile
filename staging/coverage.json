@@ -1,73 +1,16 @@
 {
-  "generated": "2026-10-08T00:15:39.038Z",
+  "generated": "2026-10-10T02:11:50.831Z",
   "since": 2023,
   "perSource": {
-    "storm": {
-      "pages": 1728,
-      "parsed": 73,
-      "errors": 0,
-      "errorSample": []
-    },
-    "brunswick": {
-      "pages": 258,
-      "parsed": 258,
-      "errors": 0,
-      "errorSample": []
-    },
     "hammer": {
       "pages": 366,
-      "parsed": 197,
+      "parsed": 198,
       "errors": 3,
       "errorSample": [
-        "https://hammerbowling.com/products/tnba-chalk.json 429",
-        "https://hammerbowling.com/products/tournament-backpack.json 429",
-        "https://hammerbowling.com/products/gauntlet-triple-roller-camo.json 429"
+        "https://hammerbowling.com/products/black-widow.json 429",
+        "https://hammerbowling.com/products/vincennes-university.json 429",
+        "https://hammerbowling.com/products/black-widow-rubber-shammy-red.json 429"
       ]
-    },
-    "dv8": {
-      "pages": 126,
-      "parsed": 126,
-      "errors": 0,
-      "errorSample": []
-    },
-    "radical": {
-      "pages": 129,
-      "parsed": 129,
-      "errors": 0,
-      "errorSample": []
-    },
-    "track": {
-      "pages": 181,
-      "parsed": 163,
-      "errors": 1,
-      "errorSample": [
-        "https://trackbowling.com/products/mean-machine.json 429"
-      ]
-    },
-    "ebonite": {
-      "pages": 215,
-      "parsed": 190,
-      "errors": 2,
-      "errorSample": [
-        "https://ebonite.com/products/rxs300.json 429",
-        "https://ebonite.com/products/game-breaker-4-hybrid.json 429"
-      ]
-    },
-    "columbia": {
-      "pages": 404,
-      "parsed": 386,
-      "errors": 3,
-      "errorSample": [
-        "https://columbia300.com/products/total-bedlam.json 429",
-        "https://columbia300.com/products/oath.json 429",
-        "https://columbia300.com/products/action-max.json 429"
-      ]
-    },
-    "motiv": {
-      "pages": 206,
-      "parsed": 205,
-      "errors": 0,
-      "errorSample": []
     }
   },
   "coverage": {
