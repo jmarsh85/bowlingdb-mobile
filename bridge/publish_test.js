@@ -35,4 +35,14 @@ const c = shard.find(x => x.CatalogID === 'brunswick-combat'), z = shard.find(x 
 ok(c.SpecsByWeight['15'].Diff === 0.051 && c.Cover.Name === 'Alpha Premier Pearl' && c.DateReleased === '2025-08-14', 'merged into detail shard by build_catalog');
 ok(Object.keys(z.SpecsByWeight).length === 0 && b.review.missingSpecs.includes('brunswick-zebra'), 'unmatched ball untouched');
 ok(c.USBC.ApprovedDate === '2025-08-01' && c.DateReleased !== c.USBC.ApprovedDate, 'release date is not the approval date');
+/* v30.171 CAT-NEW-1/3: status + cover/core codes reach the index */
+{ const pubS = P.publish([rec({ status: 'retired' }), rec({ catalogId: 'brunswick-zebra', url: 'z', status: 'unknown' })]).specs;
+  ok(pubS['brunswick-combat'].Status === 'retired' && !('Status' in pubS['brunswick-zebra']), 'Status published; unknown left out');
+  const bs = B.build(rows, pubS, '2026-10-06'), ix = bs.index.find(x => x.i === 'brunswick-combat'), iz = bs.index.find(x => x.i === 'brunswick-zebra');
+  ok(ix.r === 1 && !('r' in iz), 'index r=1 retired; absent when unknown');
+  ok(ix.cv === 'P' && iz.cv === 'P', 'cover code from stated type');
+  ok(B.build(rows, P.publish([rec({ status: 'current' })]).specs, 'x').index.find(x => x.i === 'brunswick-combat').r === 0, 'current -> r=0');
+  ok(B.coverCode({ Type: null, Name: 'Hybrid Reactive' }) === 'H' && B.coverCode({ Type: null, Name: 'Pearl Hybrid' }) === null, 'name only when it names one class');
+  ok(B.coverCode({ Type: 'Urethane' }) === 'U' && B.coverCode({ Type: 'Solid Reactive' }) === 'S' && B.coverCode({ Type: 'Polyester' }) === null, 'type classes');
+  ok(B.coreCode({ Type: 'Asymmetrical' }) === 'a' && B.coreCode({ Type: 'Symmetrical' }) === 's' && B.coreCode({}) === null, 'core codes'); }
 console.log('publish_test: ' + n + ' checks passed');
