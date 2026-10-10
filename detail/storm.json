@@ -21797,20 +21797,23 @@
   "Aliases": [],
   "BallName": "Monsoon",
   "CatalogID": "storm-monsoon",
-  "Checked": null,
+  "Checked": "2026-10-08",
   "Colorway": null,
   "Core": {
-   "Name": null,
-   "Type": null
+   "Name": "Atmos AI",
+   "Type": "Symmetrical"
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "2000 Grit",
+   "Name": "Reactor Solid",
    "Type": null
   },
-  "DateReleased": null,
+  "DateReleased": "2026-05-01",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -21825,8 +21828,14 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": null,
-  "SpecsByWeight": {},
+  "Source": "https://www.stormbowling.com/storm-monsoon-bowling-ball",
+  "SpecsByWeight": {
+   "16": {
+    "Diff": 0.042,
+    "IntDiff": null,
+    "RG": 2.53
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2026-01-06",

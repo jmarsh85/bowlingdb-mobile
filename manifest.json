@@ -1,5 +1,5 @@
 {
- "build": "4140ef56a26d5f58",
+ "build": "50947fe6d903232a",
  "files": {
   "detail/3g.json": {
    "bytes": 3529,
@@ -482,8 +482,8 @@
    "path": "detail/morich.json"
   },
   "detail/motiv.json": {
-   "bytes": 277116,
-   "hash": "9989452ba2b0874c",
+   "bytes": 278068,
+   "hash": "c98193f70d6c5403",
    "path": "detail/motiv.json"
   },
   "detail/naturalenemies.json": {
@@ -647,8 +647,8 @@
    "path": "detail/squarebowlingproducts.json"
   },
   "detail/storm.json": {
-   "bytes": 878060,
-   "hash": "95d0747fc22eb381",
+   "bytes": 878289,
+   "hash": "561e62bc2f0641b3",
    "path": "detail/storm.json"
   },
   "detail/stormhighscoreproducts.json": {
@@ -782,8 +782,8 @@
    "path": "detail/yuean.json"
   },
   "index.json": {
-   "bytes": 1298805,
-   "hash": "a56ca0b6f24e13de",
+   "bytes": 1298835,
+   "hash": "5d05c9ca1b1e784e",
    "path": "index.json"
   },
   "usbc.json": {
