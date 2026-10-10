@@ -12552,7 +12552,7 @@
   "Aliases": [],
   "BallName": "Portal",
   "CatalogID": "900-global-portal",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Conduit AI",
@@ -12585,6 +12585,26 @@
   },
   "Source": "https://www.stormbowling.com/900-global-portal-bowling-ball",
   "SpecsByWeight": {
+   "12": {
+    "Diff": 0.031,
+    "IntDiff": 0.009,
+    "RG": 2.58
+   },
+   "13": {
+    "Diff": 0.034,
+    "IntDiff": 0.011,
+    "RG": 2.56
+   },
+   "14": {
+    "Diff": 0.049,
+    "IntDiff": 0.018,
+    "RG": 2.61
+   },
+   "15": {
+    "Diff": 0.05,
+    "IntDiff": 0.019,
+    "RG": 2.59
+   },
    "16": {
     "Diff": 0.053,
     "IntDiff": 0.021,
@@ -15475,7 +15495,7 @@
   "Aliases": [],
   "BallName": "Vengeance",
   "CatalogID": "900-global-vengeance",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Blast AI",
@@ -15531,7 +15551,7 @@
   "Aliases": [],
   "BallName": "Vengeance Returns",
   "CatalogID": "900-global-vengeance-returns",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Blast AI",
@@ -15681,7 +15701,7 @@
   "Aliases": [],
   "BallName": "Viking Conquest",
   "CatalogID": "900-global-viking-conquest",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Strobe AI",

@@ -50,11 +50,11 @@
   "Aliases": [],
   "BallName": "300A",
   "CatalogID": "track-inc-300a",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Track Symmetric",
-   "Type": null
+   "Type": "Symmetrical"
   },
   "Cover": {
    "Finish": "800 Abranet®, 1000, 2000, 4000 Abralon®, Power House Factory Finish Polish",
@@ -126,11 +126,11 @@
   "Aliases": [],
   "BallName": "300C",
   "CatalogID": "track-inc-300c",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Track Symmetric",
-   "Type": null
+   "Type": "Symmetrical"
   },
   "Cover": {
    "Finish": "500, 1000, 2000, 4000 Abralon® Sanded, Polished With Power House Factory Finish",
@@ -192,7 +192,7 @@
   "Aliases": [],
   "BallName": "300C Solid",
   "CatalogID": "track-inc-300c-solid",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "DNA",
@@ -315,11 +315,11 @@
   "Aliases": [],
   "BallName": "400A Special Edition",
   "CatalogID": "track-inc-400a-special-edition",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "DNA",
-   "Type": null
+   "Type": "Symmetrical"
   },
   "Cover": {
    "Finish": "500, 800, 1000, 2000 Abralon® Polished with Power House Factory Finish Polish",
@@ -814,7 +814,7 @@
   "Aliases": [],
   "BallName": "503A",
   "CatalogID": "track-inc-503a",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Packman",
@@ -890,11 +890,11 @@
   "Aliases": [],
   "BallName": "503C",
   "CatalogID": "track-inc-503c",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Packman",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "800, 1000, 2000, 4000 Abralon® Polished With Power House Factory Finish",
@@ -956,7 +956,7 @@
   "Aliases": [],
   "BallName": "503T",
   "CatalogID": "track-inc-503t",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Packman",
@@ -1032,7 +1032,7 @@
   "Aliases": [],
   "BallName": "505A",
   "CatalogID": "track-inc-505a",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Shuffle",
@@ -1098,11 +1098,11 @@
   "Aliases": [],
   "BallName": "505C",
   "CatalogID": "track-inc-505c",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Shuttle",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": null,
@@ -1211,11 +1211,11 @@
   "Aliases": [],
   "BallName": "505C²",
   "CatalogID": "track-inc-505c2",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Modified Kinetic",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "800, 1000, 2000 Abralon® Polished With Power House Factory Finish Polish",
@@ -1287,11 +1287,11 @@
   "Aliases": [],
   "BallName": "505T",
   "CatalogID": "track-inc-505t",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Shuttle",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "500, 1000, 2000, 4000 Abralon®",
@@ -1353,11 +1353,11 @@
   "Aliases": [],
   "BallName": "508A",
   "CatalogID": "track-inc-508a",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Legion",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "800 Abranet®, 1000, 2000 Abralon®, With Power House™ Factory Finish Polish",
@@ -1419,11 +1419,11 @@
   "Aliases": [],
   "BallName": "607A Special Edition",
   "CatalogID": "track-inc-607a-special-edition",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Modified Legion",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "500, 1000, 2000, 2000 Abralon® Sanded, Polished With Power House Factory Finish",
@@ -1485,7 +1485,7 @@
   "Aliases": [],
   "BallName": "706A",
   "CatalogID": "track-inc-706a",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Helmet",
@@ -1561,11 +1561,11 @@
   "Aliases": [],
   "BallName": "706C/A",
   "CatalogID": "track-inc-706c-a",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Helmet",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "500 Abralon® /1500 Abranet Soft Polished With Power House Factory Finish Polish™",
@@ -1637,7 +1637,7 @@
   "Aliases": [],
   "BallName": "706T",
   "CatalogID": "track-inc-706t",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Helmet",
@@ -1713,11 +1713,11 @@
   "Aliases": [],
   "BallName": "714C",
   "CatalogID": "track-inc-714c",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "The 714C features a core shape that we successfully used in the past in both our 718A and 716T. The original Robot core gave us the big backending 718A while the Modified Robot core gave us our strong rolling 716T, so we knew it was a great core. For this new release, we modified the densities once again to create a strong continuous motion at the backend of the lane. This new version is the Modified Robot 2.0.",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "800 Abranet®,1000 ,2000, 3000 Abralon®",
@@ -1789,11 +1789,11 @@
   "Aliases": [],
   "BallName": "715A",
   "CatalogID": "track-inc-715a",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Catback",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "4000 Grit Abralon®, Polished With Power House Factory Finish Polish",
@@ -1855,11 +1855,11 @@
   "Aliases": [],
   "BallName": "715C",
   "CatalogID": "track-inc-715c",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Catback",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "2000 Abralon® with Power House Factory Finish",
@@ -1921,11 +1921,11 @@
   "Aliases": [],
   "BallName": "715T",
   "CatalogID": "track-inc-715t",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Catback",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "500, 1000, 2000 Abralon®",
@@ -1987,7 +1987,7 @@
   "Aliases": [],
   "BallName": "716C",
   "CatalogID": "track-inc-716c",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Modified Robot",
@@ -2053,7 +2053,7 @@
   "Aliases": [],
   "BallName": "716T",
   "CatalogID": "track-inc-716t",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Modified Robot",
@@ -2119,11 +2119,11 @@
   "Aliases": [],
   "BallName": "718A",
   "CatalogID": "track-inc-718a",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Robot",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "800, 1000, 2000, 2000 Abralon® Sanded, Polished With Power House Factory Finish",
@@ -2232,11 +2232,11 @@
   "Aliases": [],
   "BallName": "811A Special Edition",
   "CatalogID": "track-inc-811a-special-edition",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Legion 2 Turbo",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "500, 1000, 2000 Abralon®, Power House Factory Finish Polish",
@@ -2298,11 +2298,11 @@
   "Aliases": [],
   "BallName": "811C/T",
   "CatalogID": "track-inc-811c-t",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Legion 2 Turbo",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "800 Abranet®,1000, 2000, 4000 Abralon®",
@@ -2468,11 +2468,11 @@
   "Aliases": [],
   "BallName": "910A",
   "CatalogID": "track-inc-910a",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Face",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "500 Abralon® /1500 Abranet™ Soft Polished With Power House Factory Finish Polish",
@@ -2591,11 +2591,11 @@
   "Aliases": [],
   "BallName": "912T",
   "CatalogID": "track-inc-912t",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Legion 2 Turbo",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "800, 800, 1500, 1500 Abranet®",
@@ -2761,11 +2761,11 @@
   "Aliases": [],
   "BallName": "919C",
   "CatalogID": "track-inc-919c",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Edge",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "500, 1000, 2000, 3000 Abralon®",
@@ -2827,7 +2827,7 @@
   "Aliases": [],
   "BallName": "920A",
   "CatalogID": "track-inc-920a",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Modified Leggo",
@@ -2893,11 +2893,11 @@
   "Aliases": [],
   "BallName": "920T",
   "CatalogID": "track-inc-920t",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Modified Leggo",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "500, 1000, 2000, 4000 Abralon®",
@@ -2959,7 +2959,7 @@
   "Aliases": [],
   "BallName": "930T",
   "CatalogID": "track-inc-930t",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Reactive",
@@ -3072,11 +3072,11 @@
   "Aliases": [],
   "BallName": "Alias",
   "CatalogID": "track-inc-alias",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Alias",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "500, 2000 Abralon®",
@@ -3289,7 +3289,7 @@
   "Aliases": [],
   "BallName": "Archetype",
   "CatalogID": "track-inc-archetype",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "I-Core 3.0 Slim",
@@ -3365,7 +3365,7 @@
   "Aliases": [],
   "BallName": "Archetype Hybrid",
   "CatalogID": "track-inc-archetype-hybrid",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "I-Core 3.0 Slim",
@@ -4005,7 +4005,7 @@
   "Aliases": [],
   "BallName": "Criterion",
   "CatalogID": "track-inc-criterion",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Criterion M.D.",
@@ -4081,7 +4081,7 @@
   "Aliases": [],
   "BallName": "Criterion Hybrid",
   "CatalogID": "track-inc-criterion-hybrid",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Criterion M.D.",
@@ -4157,7 +4157,7 @@
   "Aliases": [],
   "BallName": "Criterion Inverse",
   "CatalogID": "track-inc-criterion-inverse",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Criterion I.D.",
@@ -4515,11 +4515,11 @@
   "Aliases": [],
   "BallName": "Cyborg Pearl",
   "CatalogID": "track-inc-cyborg-pearl",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Cyborg",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "500, 1000 Abralon® Polished With Power House Factory Finish Polish",
@@ -4638,7 +4638,7 @@
   "Aliases": [],
   "BallName": "Cypher",
   "CatalogID": "track-inc-cypher",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Synergy",
@@ -4714,7 +4714,7 @@
   "Aliases": [],
   "BallName": "Cypher Pearl",
   "CatalogID": "track-inc-cypher-pearl",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Synergy",
@@ -5824,7 +5824,7 @@
   "Aliases": [],
   "BallName": "Heat Black/Purple/Silver",
   "CatalogID": "track-inc-heat-black-purple-silver",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Modified Tri-Core",
@@ -5994,7 +5994,7 @@
   "Aliases": [],
   "BallName": "Heat Burgundy",
   "CatalogID": "track-inc-heat-burgundy",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Modified Tri-Core",
@@ -6070,11 +6070,11 @@
   "Aliases": [],
   "BallName": "Heat Lava",
   "CatalogID": "track-inc-heat-lava",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Modified Tri-Core",
-   "Type": null
+   "Type": "Symmetrical"
   },
   "Cover": {
    "Finish": "500, 1000 Abralon® Polished With Power House Factory Finish Polish",
@@ -6146,11 +6146,11 @@
   "Aliases": [],
   "BallName": "Heat Maroon Pearl",
   "CatalogID": "track-inc-heat-maroon-pearl",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Modified Tri-Core",
-   "Type": null
+   "Type": "Symmetrical"
   },
   "Cover": {
    "Finish": "500, 2000 Abralon® Polished With Power House Factory Finish Polish",
@@ -6316,11 +6316,11 @@
   "Aliases": [],
   "BallName": "Heat X-Treme",
   "CatalogID": "track-inc-heat-x-treme",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Modified Tri-Core",
-   "Type": null
+   "Type": "Symmetrical"
   },
   "Cover": {
    "Finish": "500 / 2000 Abralon®",
@@ -6580,11 +6580,11 @@
   "Aliases": [],
   "BallName": "Hx05",
   "CatalogID": "track-inc-hx05",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Modified Kinetic",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "500, 1000 Grit Abralon® Polished with Power House Factor Finish Polish",
@@ -6656,11 +6656,11 @@
   "Aliases": [],
   "BallName": "Hx10",
   "CatalogID": "track-inc-hx10",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Face",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "500, 1000 Abralon® Polished with Power House Factory Finish",
@@ -6732,11 +6732,11 @@
   "Aliases": [],
   "BallName": "Hx16",
   "CatalogID": "track-inc-hx16",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "I-Core (Dual Density)",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "500, 1000 Abralon® Polished with Factory Finish Polish",
@@ -6808,11 +6808,11 @@
   "Aliases": [],
   "BallName": "In2ition",
   "CatalogID": "track-inc-in2ition",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "X-Type",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "500, 1000 Abralon® Polished with Power House Factory Finish Polish",
@@ -7213,11 +7213,11 @@
   "Aliases": [],
   "BallName": "Kinetic Amethyst",
   "CatalogID": "track-inc-kinetic-amethyst",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Modified Kinetic",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "500, 1000 Abralon® Polished with Power House Factory Finish Polish",
@@ -7383,7 +7383,7 @@
   "Aliases": [],
   "BallName": "Kinetic Black Ice",
   "CatalogID": "track-inc-kinetic-black-ice",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Shuttle",
@@ -7459,7 +7459,7 @@
   "Aliases": [],
   "BallName": "Kinetic Cobalt",
   "CatalogID": "track-inc-kinetic-cobalt",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Shuttle",
@@ -7535,11 +7535,11 @@
   "Aliases": [],
   "BallName": "Kinetic Emerald",
   "CatalogID": "track-inc-kinetic-emerald",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Modified Kinetic",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "500, 1000 Abralon® Polished with Power House Factory Finish Polish",
@@ -7752,11 +7752,11 @@
   "Aliases": [],
   "BallName": "Kinetic Obsidian",
   "CatalogID": "track-inc-kinetic-obsidian",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Modified Kinetic",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "500, 2000 Abralon®",
@@ -7828,11 +7828,11 @@
   "Aliases": [],
   "BallName": "Kinetic Pearl",
   "CatalogID": "track-inc-kinetic-pearl",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Shuttle",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "Shuttle",
@@ -7894,7 +7894,7 @@
   "Aliases": [],
   "BallName": "Kinetic Platinum",
   "CatalogID": "track-inc-kinetic-platinum",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Shuttle",
@@ -8017,11 +8017,11 @@
   "Aliases": [],
   "BallName": "Kinetic Ruby",
   "CatalogID": "track-inc-kinetic-ruby",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Modified Kinetic",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "500, 2000 Abralon®",
@@ -8187,7 +8187,7 @@
   "Aliases": [],
   "BallName": "Kinetic Sapphire Ice",
   "CatalogID": "track-inc-kinetic-sapphire-ice",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Shuttle",
@@ -8263,7 +8263,7 @@
   "Aliases": [],
   "BallName": "Latitude",
   "CatalogID": "track-inc-latitude",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "MC2 Technology",
@@ -8339,7 +8339,7 @@
   "Aliases": [],
   "BallName": "Latitude Pearl",
   "CatalogID": "track-inc-latitude-pearl",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "MC2 Technology",
@@ -8415,7 +8415,7 @@
   "Aliases": [],
   "BallName": "Legion",
   "CatalogID": "track-inc-legion",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "LT-2",
@@ -8585,7 +8585,7 @@
   "Aliases": [],
   "BallName": "Legion Pearl",
   "CatalogID": "track-inc-legion-pearl",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "LT-2",
@@ -8755,7 +8755,7 @@
   "Aliases": [],
   "BallName": "Legion Solid",
   "CatalogID": "track-inc-legion-solid",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "LT-2",
@@ -8878,11 +8878,11 @@
   "Aliases": [],
   "BallName": "Logix",
   "CatalogID": "track-inc-logix",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "LT-2",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "500, 1000 Abralon® Polished With Power House Factory Finish Polish",
@@ -8954,11 +8954,11 @@
   "Aliases": [],
   "BallName": "Lx05",
   "CatalogID": "track-inc-lx05",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Modified Kinetic",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "500, 2000 Abralon®",
@@ -9030,11 +9030,11 @@
   "Aliases": [],
   "BallName": "Lx10",
   "CatalogID": "track-inc-lx10",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Face",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "500, 3000 Abralon®",
@@ -9106,11 +9106,11 @@
   "Aliases": [],
   "BallName": "Lx16",
   "CatalogID": "track-inc-lx16",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "I-Core (Dual Density)",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "800, 1000, 2000, 3000 Abralon®",
@@ -9229,11 +9229,11 @@
   "Aliases": [],
   "BallName": "Mako",
   "CatalogID": "track-inc-mako",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Mako (Dual Density)",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "500, 2000 Abralon®",
@@ -9305,7 +9305,7 @@
   "Aliases": [],
   "BallName": "Mako Attack",
   "CatalogID": "track-inc-mako-attack",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Mako (Dual Density)",
@@ -9851,11 +9851,11 @@
   "Aliases": [],
   "BallName": "Mx05",
   "CatalogID": "track-inc-mx05",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Modified Kinetic",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "500, 1000 Abralon® Polished with Power House Factory Finish Polish",
@@ -9927,11 +9927,11 @@
   "Aliases": [],
   "BallName": "Mx10",
   "CatalogID": "track-inc-mx10",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Face",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "500, 1000 Grit Abralon® Polished with Power House Factor Finish Polish",
@@ -10003,11 +10003,11 @@
   "Aliases": [],
   "BallName": "Mx16",
   "CatalogID": "track-inc-mx16",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "I-Core (Dual Density)",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "500, 3000 Abralon®",
@@ -10220,7 +10220,7 @@
   "Aliases": [],
   "BallName": "Paradox",
   "CatalogID": "track-inc-paradox",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "I-Core 2.0 (Dual Density)",
@@ -10296,11 +10296,11 @@
   "Aliases": [],
   "BallName": "Paradox Black",
   "CatalogID": "track-inc-paradox-black",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "I-Core 2.0 (Dual Density)",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "500, 2000 Abralon®",
@@ -10466,11 +10466,11 @@
   "Aliases": [],
   "BallName": "Paradox Pearl",
   "CatalogID": "track-inc-paradox-pearl",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "I-Core 2.0 (Dual Density)",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "500, 1000 Abralon® Polished with Power House Clean N’ Sheen",
@@ -10589,11 +10589,11 @@
   "Aliases": [],
   "BallName": "Paradox Red",
   "CatalogID": "track-inc-paradox-red",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "I-Core 2.0 (Dual Density)",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "500, 2000 Abralon®",
@@ -10947,11 +10947,11 @@
   "Aliases": [],
   "BallName": "Paradox Trilogy",
   "CatalogID": "track-inc-paradox-trilogy",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "I-Core 2.0 (Dual Density)",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "500, 1000 Abralon® Polished with Power House Factory Finish Polish",
@@ -11164,11 +11164,11 @@
   "Aliases": [],
   "BallName": "Paradox V",
   "CatalogID": "track-inc-paradox-v",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "I-Core 2.0 (Dual Density)",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "500, 1000 Abralon® Polished with Power House Factory Finish Polish",
@@ -11240,7 +11240,7 @@
   "Aliases": [],
   "BallName": "Paragon",
   "CatalogID": "track-inc-paragon",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "I-Core 3.0",
@@ -11457,7 +11457,7 @@
   "Aliases": [],
   "BallName": "Paragon (Fire)",
   "CatalogID": "track-inc-paragon-fire",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "I-Core 3.0",
@@ -11533,7 +11533,7 @@
   "Aliases": [],
   "BallName": "Paragon Hybrid",
   "CatalogID": "track-inc-paragon-hybrid",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "I-Core 3.0",
@@ -11656,7 +11656,7 @@
   "Aliases": [],
   "BallName": "Paragon Pearl",
   "CatalogID": "track-inc-paragon-pearl",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "I-Core 3.0",
@@ -11826,7 +11826,7 @@
   "Aliases": [],
   "BallName": "Paragon (Shadow)",
   "CatalogID": "track-inc-paragon-shadow",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "I-Core 3.0",
@@ -12795,11 +12795,11 @@
   "Aliases": [],
   "BallName": "Precision",
   "CatalogID": "track-inc-precision",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Precision SD",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "500, 1000 Abralon® Polished with Power House Factory Finish Polish",
@@ -12965,11 +12965,11 @@
   "Aliases": [],
   "BallName": "Precision Solid",
   "CatalogID": "track-inc-precision-solid",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Precision SD (Single Density)",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "500, 2000 Abralon®",
@@ -13135,7 +13135,7 @@
   "Aliases": [],
   "BallName": "Proof",
   "CatalogID": "track-inc-proof",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Proof",
@@ -13211,7 +13211,7 @@
   "Aliases": [],
   "BallName": "Proof Hybrid",
   "CatalogID": "track-inc-proof-hybrid",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Proof",
@@ -13287,7 +13287,7 @@
   "Aliases": [],
   "BallName": "Proof Pearl",
   "CatalogID": "track-inc-proof-pearl",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Proof",
@@ -14162,7 +14162,7 @@
   "Aliases": [],
   "BallName": "Sensor",
   "CatalogID": "track-inc-sensor",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Regulator",
@@ -14426,7 +14426,7 @@
   "Aliases": [],
   "BallName": "Sensor Solid",
   "CatalogID": "track-inc-sensor-solid",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Regulator",
@@ -14925,11 +14925,11 @@
   "Aliases": [],
   "BallName": "Spare +",
   "CatalogID": "track-inc-spare-plus",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "I-Core (Single Density)",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "800, 800, 1000,2000 Abralon® Polished with Power House Factory Finish",
@@ -15095,7 +15095,7 @@
   "Aliases": [],
   "BallName": "Stealth",
   "CatalogID": "track-inc-stealth",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Stealth",
@@ -15265,7 +15265,7 @@
   "Aliases": [],
   "BallName": "Stealth Hybrid",
   "CatalogID": "track-inc-stealth-hybrid",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Stealth",
@@ -15341,7 +15341,7 @@
   "Aliases": [],
   "BallName": "Stealth Mode",
   "CatalogID": "track-inc-stealth-mode",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Stealth",
@@ -15417,7 +15417,7 @@
   "Aliases": [],
   "BallName": "Stealth Mode Hybrid",
   "CatalogID": "track-inc-stealth-mode-hybrid",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Stealth",
@@ -15493,7 +15493,7 @@
   "Aliases": [],
   "BallName": "Stealth Pearl",
   "CatalogID": "track-inc-stealth-pearl",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Stealth",
@@ -15804,7 +15804,7 @@
   "Aliases": [],
   "BallName": "Strata",
   "CatalogID": "track-inc-strata",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Strata",
@@ -16538,7 +16538,7 @@
   "Aliases": [],
   "BallName": "Synthesis",
   "CatalogID": "track-inc-synthesis",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "I-Core Gen4",
@@ -17037,11 +17037,11 @@
   "Aliases": [],
   "BallName": "Tactix",
   "CatalogID": "track-inc-tactix",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Starship",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "500, 2000 Abralon®",
@@ -17207,11 +17207,11 @@
   "Aliases": [],
   "BallName": "Tactix Hybrid",
   "CatalogID": "track-inc-tactix-hybrid",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Starship",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "500, 1000 Abralon® Polished with Power House Factory Finish Polish",
@@ -17330,11 +17330,11 @@
   "Aliases": [],
   "BallName": "Tantrum",
   "CatalogID": "track-inc-tantrum",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Legion",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "1000 Polished",
@@ -17396,11 +17396,11 @@
   "Aliases": [],
   "BallName": "Temper",
   "CatalogID": "track-inc-temper",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Legion",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "2000 Polished",
@@ -17462,11 +17462,11 @@
   "Aliases": [],
   "BallName": "Tempo",
   "CatalogID": "track-inc-tempo",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Tempo",
-   "Type": null
+   "Type": "Symmetrical"
   },
   "Cover": {
    "Finish": "500, 1000 Siaair / Crown Factory Compound",
@@ -17679,11 +17679,11 @@
   "Aliases": [],
   "BallName": "Theorem",
   "CatalogID": "track-inc-theorem",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "MC 2 Asym",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "500, 1000, 1500 Siaair / Factory Compound",
@@ -17990,11 +17990,11 @@
   "Aliases": [],
   "BallName": "Theorem Delta",
   "CatalogID": "track-inc-theorem-delta",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "MC 2 Asym",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "500, 1000, 1500 Siaair / Factory Compound",
@@ -18066,11 +18066,11 @@
   "Aliases": [],
   "BallName": "Theorem Pearl",
   "CatalogID": "track-inc-theorem-pearl",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "MC 2 Asym",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "500, 1000, 1500 Siaair / Factory Compound",
@@ -18236,11 +18236,11 @@
   "Aliases": [],
   "BallName": "Theorem Solid",
   "CatalogID": "track-inc-theorem-solid",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "MC 2 Asym",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "500, 2000 Siaair Micro Pad",
@@ -18500,7 +18500,7 @@
   "Aliases": [],
   "BallName": "Tour SiC",
   "CatalogID": "track-inc-tour-sic",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "I-Core",
@@ -18576,11 +18576,11 @@
   "Aliases": [],
   "BallName": "Tour X",
   "CatalogID": "track-inc-tour-x",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "DNA",
-   "Type": null
+   "Type": "Symmetrical"
   },
   "Cover": {
    "Finish": "500, 800, 1000, 2000 Abralon® Polished With Power House Factory Finish",
@@ -18652,11 +18652,11 @@
   "Aliases": [],
   "BallName": "Tour X Solid",
   "CatalogID": "track-inc-tour-x-solid",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "DNA",
-   "Type": null
+   "Type": "Symmetrical"
   },
   "Cover": {
    "Finish": "500 / 3000 Abralon® with Power House Factory Finish Polish",
@@ -18963,11 +18963,11 @@
   "Aliases": [],
   "BallName": "Triton Elite",
   "CatalogID": "track-inc-triton-elite",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "MC2 Technology",
-   "Type": null
+   "Type": "Symmetrical"
   },
   "Cover": {
    "Finish": "500, 2000 Abralon®",
@@ -19321,11 +19321,11 @@
   "Aliases": [],
   "BallName": "Tundra",
   "CatalogID": "track-inc-tundra",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Track Symmetric",
-   "Type": null
+   "Type": "Symmetrical"
   },
   "Cover": {
    "Finish": "500, 1000 Abralon® Polished With Power House Factory Finish Polish",
@@ -19397,11 +19397,11 @@
   "Aliases": [],
   "BallName": "Tundra Blue Fire",
   "CatalogID": "track-inc-tundra-blue-fire",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Track Symmetric",
-   "Type": null
+   "Type": "Symmetrical"
   },
   "Cover": {
    "Finish": "500, 1000, 1500 Siaair / Factory Compound",
@@ -19473,11 +19473,11 @@
   "Aliases": [],
   "BallName": "Tundra Fire",
   "CatalogID": "track-inc-tundra-fire",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Track Symmetric",
-   "Type": null
+   "Type": "Symmetrical"
   },
   "Cover": {
    "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound",
@@ -19549,11 +19549,11 @@
   "Aliases": [],
   "BallName": "Tundra Solid",
   "CatalogID": "track-inc-tundra-solid",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Track Symmetric",
-   "Type": null
+   "Type": "Symmetrical"
   },
   "Cover": {
    "Finish": "500, 1000, 3000 Abralon®",
@@ -19625,11 +19625,11 @@
   "Aliases": [],
   "BallName": "Ultra Heat",
   "CatalogID": "track-inc-ultra-heat",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Modified Tri-Core",
-   "Type": null
+   "Type": "Symmetrical"
   },
   "Cover": {
    "Finish": "500, 1000 Abralon® Polished With Power House Factory Finish Polish",
@@ -19701,11 +19701,11 @@
   "Aliases": [],
   "BallName": "Uprising",
   "CatalogID": "track-inc-uprising",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Mega Tron",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "4000 Polished",

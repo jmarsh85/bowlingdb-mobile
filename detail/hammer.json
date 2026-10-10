@@ -2859,7 +2859,7 @@
   "Colorway": null,
   "Core": {
    "Name": "Gas Mask",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "500, 1000, 2000 Siaair Micro Pad",
@@ -5043,7 +5043,7 @@
   "Colorway": null,
   "Core": {
    "Name": "Gas Mask",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound",
@@ -8835,7 +8835,7 @@
   "Colorway": null,
   "Core": {
    "Name": "Gas Mask",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "360, 800 Siaair Micro Pad",
@@ -9804,7 +9804,7 @@
   "Colorway": null,
   "Core": {
    "Name": "Gas Mask",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "Factory Polish",
@@ -13122,7 +13122,7 @@
   "Colorway": null,
   "Core": {
    "Name": "Phobia",
-   "Type": null
+   "Type": "Symmetrical"
   },
   "Cover": {
    "Finish": null,
@@ -13386,7 +13386,7 @@
   "Colorway": null,
   "Core": {
    "Name": "Fugitive",
-   "Type": null
+   "Type": "Symmetrical"
   },
   "Cover": {
    "Finish": "500, 1000 Siaair / Crown Factory Compound",
@@ -13462,7 +13462,7 @@
   "Colorway": null,
   "Core": {
    "Name": "Fugitive",
-   "Type": null
+   "Type": "Symmetrical"
   },
   "Cover": {
    "Finish": "500, 2000 Siaair Micro Pad",
@@ -14037,7 +14037,7 @@
   "Colorway": null,
   "Core": {
    "Name": "Gauntlet",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": null,
@@ -19121,7 +19121,7 @@
   "Colorway": null,
   "Core": {
    "Name": "Obsession",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "500, 1500 Siaair Micro Pad",
@@ -19197,7 +19197,7 @@
   "Colorway": null,
   "Core": {
    "Name": "Obsession Tour",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "500, 1000 Siaair Micro Pad",
@@ -20392,23 +20392,20 @@
   "Aliases": [],
   "BallName": "Radioactive Vibe",
   "CatalogID": "hammer-radioactive-vibe",
-  "Checked": "2026-10-10",
+  "Checked": null,
   "Colorway": null,
   "Core": {
-   "Name": "Vibe",
+   "Name": null,
    "Type": null
   },
   "Cover": {
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound",
-   "Name": "HK22 - CT Reactive Max",
-   "Type": "Solid Reactive"
+   "Finish": null,
+   "Name": null,
+   "Type": null
   },
-  "DateReleased": "2023-07-13",
+  "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
-   "Core": "mfg",
-   "Cover": "mfg",
-   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -20423,44 +20420,8 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": "https://hammerbowling.com/products/radioactive-vibe",
-  "SpecsByWeight": {
-   "10": {
-    "Diff": 0.002,
-    "IntDiff": null,
-    "RG": 2.8
-   },
-   "11": {
-    "Diff": 0.002,
-    "IntDiff": null,
-    "RG": 2.769
-   },
-   "12": {
-    "Diff": 0.04,
-    "IntDiff": null,
-    "RG": 2.608
-   },
-   "13": {
-    "Diff": 0.04,
-    "IntDiff": null,
-    "RG": 2.585
-   },
-   "14": {
-    "Diff": 0.045,
-    "IntDiff": null,
-    "RG": 2.51
-   },
-   "15": {
-    "Diff": 0.042,
-    "IntDiff": null,
-    "RG": 2.51
-   },
-   "16": {
-    "Diff": 0.039,
-    "IntDiff": null,
-    "RG": 2.51
-   }
-  },
+  "Source": null,
+  "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2023-06-13",
@@ -22721,7 +22682,7 @@
   "Colorway": null,
   "Core": {
    "Name": "Redemption",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "500, 1000 Siaair / Crown Factory Compound",
@@ -22844,7 +22805,7 @@
   "Colorway": null,
   "Core": {
    "Name": "Redemption",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "500 Siaair / Crown Factory Compound",
@@ -22920,7 +22881,7 @@
   "Colorway": null,
   "Core": {
    "Name": "Redemption",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "360, 500, 2000 Siaair Micro Pad",
@@ -23090,7 +23051,7 @@
   "Colorway": null,
   "Core": {
    "Name": "Spheroid",
-   "Type": null
+   "Type": "Symmetrical"
   },
   "Cover": {
    "Finish": null,
@@ -23213,7 +23174,7 @@
   "Colorway": null,
   "Core": {
    "Name": "Rip'D",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": null,
@@ -23430,7 +23391,7 @@
   "Colorway": null,
   "Core": {
    "Name": "Rip'D",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": null,
@@ -25100,7 +25061,7 @@
   "Colorway": null,
   "Core": {
    "Name": "Statement",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": null,
@@ -25223,7 +25184,7 @@
   "Colorway": null,
   "Core": {
    "Name": "Statement",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": null,
@@ -25346,7 +25307,7 @@
   "Colorway": null,
   "Core": {
    "Name": "Statement",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": null,
@@ -30827,7 +30788,7 @@
   "Colorway": null,
   "Core": {
    "Name": "Spheroid",
-   "Type": null
+   "Type": "Symmetrical"
   },
   "Cover": {
    "Finish": null,
@@ -30950,7 +30911,7 @@
   "Colorway": null,
   "Core": {
    "Name": "Spheroid Asymmetrical",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "500, 1000 Siaair / Crown Factory Compound",
@@ -31149,7 +31110,7 @@
   "Colorway": null,
   "Core": {
    "Name": "Spheroid TE",
-   "Type": null
+   "Type": "Symmetrical"
   },
   "Cover": {
    "Finish": null,

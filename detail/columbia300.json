@@ -50,7 +50,7 @@
   "Aliases": [],
   "BallName": "Action",
   "CatalogID": "columbia-300-action",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "2-Piece",
@@ -106,7 +106,7 @@
   "Aliases": [],
   "BallName": "Action Attack",
   "CatalogID": "columbia-300-action-attack",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "2-Piece",
@@ -209,20 +209,23 @@
   "Aliases": [],
   "BallName": "Action Max",
   "CatalogID": "columbia-300-action-max",
-  "Checked": null,
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "2-Piece",
    "Type": null
   },
   "Cover": {
    "Finish": null,
-   "Name": null,
+   "Name": "Reactive",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -237,8 +240,14 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": null,
-  "SpecsByWeight": {},
+  "Source": "https://columbia300.com/products/action-max",
+  "SpecsByWeight": {
+   "16": {
+    "Diff": 0.054,
+    "IntDiff": null,
+    "RG": 2.45
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2006-07",
@@ -350,7 +359,7 @@
   "Aliases": [],
   "BallName": "Action Packed",
   "CatalogID": "columbia-300-action-packed",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "2-Piece",
@@ -594,7 +603,7 @@
   "Aliases": [],
   "BallName": "Antics",
   "CatalogID": "columbia-300-antics",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "High Dynamix",
@@ -764,11 +773,11 @@
   "Aliases": [],
   "BallName": "Apogee",
   "CatalogID": "columbia-300-apogee",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "2-Piece Asymmetrical",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": null,
@@ -820,7 +829,7 @@
   "Aliases": [],
   "BallName": "Arch Rival",
   "CatalogID": "columbia-300-arch-rival",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Spinner",
@@ -886,7 +895,7 @@
   "Aliases": [],
   "BallName": "Atlas",
   "CatalogID": "columbia-300-atlas",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Atlas",
@@ -962,7 +971,7 @@
   "Aliases": [],
   "BallName": "Atlas Hybrid",
   "CatalogID": "columbia-300-atlas-hybrid",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Atlas",
@@ -1038,7 +1047,7 @@
   "Aliases": [],
   "BallName": "Authority",
   "CatalogID": "columbia-300-authority",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Authority",
@@ -1114,7 +1123,7 @@
   "Aliases": [],
   "BallName": "Authority Solid",
   "CatalogID": "columbia-300-authority-solid",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Authority",
@@ -1331,11 +1340,11 @@
   "Aliases": [],
   "BallName": "Bedlam",
   "CatalogID": "columbia-300-bedlam",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Bedlam Asymmetric",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": null,
@@ -1397,7 +1406,7 @@
   "Aliases": [],
   "BallName": "Benchmark",
   "CatalogID": "columbia-300-benchmark",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Tri-Rib",
@@ -1520,11 +1529,11 @@
   "Aliases": [],
   "BallName": "Big Bully",
   "CatalogID": "columbia-300-big-bully",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "2-Piece Asymmetrical",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": null,
@@ -1764,7 +1773,7 @@
   "Aliases": [],
   "BallName": "Blur Hybrid",
   "CatalogID": "columbia-300-blur-hybrid",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Blur",
@@ -1850,7 +1859,7 @@
   "Aliases": [],
   "BallName": "Blur Pearl",
   "CatalogID": "columbia-300-blur-pearl",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Blur",
@@ -1936,7 +1945,7 @@
   "Aliases": [],
   "BallName": "Blur Solid",
   "CatalogID": "columbia-300-blur-solid",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Blur",
@@ -2304,11 +2313,11 @@
   "Aliases": [],
   "BallName": "Bully",
   "CatalogID": "columbia-300-bully",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "2-Piece Asymmetrical",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": null,
@@ -2360,7 +2369,7 @@
   "Aliases": [],
   "BallName": "Burst",
   "CatalogID": "columbia-300-burst",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Resurgence",
@@ -2708,7 +2717,7 @@
   "Aliases": [],
   "BallName": "Classic Rock",
   "CatalogID": "columbia-300-classic-rock",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "2-Piece",
@@ -2858,7 +2867,7 @@
   "Aliases": [],
   "BallName": "Command",
   "CatalogID": "columbia-300-command",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Movement",
@@ -2934,7 +2943,7 @@
   "Aliases": [],
   "BallName": "Command Solid",
   "CatalogID": "columbia-300-command-solid",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Movement",
@@ -3010,7 +3019,7 @@
   "Aliases": [],
   "BallName": "Complete Bedlam",
   "CatalogID": "columbia-300-complete-bedlam",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Bedlam V2.0",
@@ -3170,7 +3179,7 @@
   "Aliases": [],
   "BallName": "Cool Noize",
   "CatalogID": "columbia-300-cool-noize",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "TI Boss II",
@@ -3236,7 +3245,7 @@
   "Aliases": [],
   "BallName": "Crazy Antics",
   "CatalogID": "columbia-300-crazy-antics",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Hi-Dynamix",
@@ -3453,7 +3462,7 @@
   "Aliases": [],
   "BallName": "Cuda/C 2000",
   "CatalogID": "columbia-300-cuda-c-2000",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "2-Piece",
@@ -3697,7 +3706,7 @@
   "Aliases": [],
   "BallName": "Cuda PowerCOR",
   "CatalogID": "columbia-300-cuda-powercor",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Cuda PowerCOR",
@@ -3773,7 +3782,7 @@
   "Aliases": [],
   "BallName": "Cuda PowerCOR Pearl",
   "CatalogID": "columbia-300-cuda-powercor-pearl",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Cuda PowerCOR",
@@ -3943,7 +3952,7 @@
   "Aliases": [],
   "BallName": "Dark Encounter",
   "CatalogID": "columbia-300-dark-encounter",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Encounter",
@@ -4066,7 +4075,7 @@
   "Aliases": [],
   "BallName": "Deep Freeze",
   "CatalogID": "columbia-300-deep-freeze",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Modified Messenger 2",
@@ -4152,7 +4161,7 @@
   "Aliases": [],
   "BallName": "Deep Freeze Coral Splash",
   "CatalogID": "columbia-300-deep-freeze-coral-splash",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Modified Messenger 2",
@@ -4238,7 +4247,7 @@
   "Aliases": [],
   "BallName": "Deep Freeze Pink Frost",
   "CatalogID": "columbia-300-deep-freeze-pink-frost",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Modified Messenger 2",
@@ -4324,7 +4333,7 @@
   "Aliases": [],
   "BallName": "Delirium",
   "CatalogID": "columbia-300-delirium",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Resurgence",
@@ -4400,7 +4409,7 @@
   "Aliases": [],
   "BallName": "Delirium Shock",
   "CatalogID": "columbia-300-delirium-shock",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Resurgence",
@@ -4523,7 +4532,7 @@
   "Aliases": [],
   "BallName": "Detour",
   "CatalogID": "columbia-300-detour",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "2-Piece",
@@ -4579,7 +4588,7 @@
   "Aliases": [],
   "BallName": "Disorder",
   "CatalogID": "columbia-300-disorder",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Resurgence",
@@ -4655,7 +4664,7 @@
   "Aliases": [],
   "BallName": "Disruption",
   "CatalogID": "columbia-300-disruption",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Resurgence",
@@ -4731,7 +4740,7 @@
   "Aliases": [],
   "BallName": "Dr. Jekyll",
   "CatalogID": "columbia-300-dr-jekyll",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "2-Piece",
@@ -4881,11 +4890,11 @@
   "Aliases": [],
   "BallName": "Drive",
   "CatalogID": "columbia-300-drive",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "2-Piece Asymmetrical",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": null,
@@ -4984,7 +4993,7 @@
   "Aliases": [],
   "BallName": "Dynamic Swing",
   "CatalogID": "columbia-300-dynamic-swing",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Modified Full Swing",
@@ -5060,7 +5069,7 @@
   "Aliases": [],
   "BallName": "Dynamic Swing Pearl",
   "CatalogID": "columbia-300-dynamic-swing-pearl",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Modified Full Swing",
@@ -5183,7 +5192,7 @@
   "Aliases": [],
   "BallName": "Encounter",
   "CatalogID": "columbia-300-encounter",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Encounter",
@@ -5249,7 +5258,7 @@
   "Aliases": [],
   "BallName": "Enigma",
   "CatalogID": "columbia-300-enigma",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Encounter",
@@ -5560,7 +5569,7 @@
   "Aliases": [],
   "BallName": "EPX T1",
   "CatalogID": "columbia-300-epx-t1",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "2-Piece",
@@ -5616,7 +5625,7 @@
   "Aliases": [],
   "BallName": "Eruption",
   "CatalogID": "columbia-300-eruption",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Resurgence",
@@ -5729,7 +5738,7 @@
   "Aliases": [],
   "BallName": "Eruption Pearl",
   "CatalogID": "columbia-300-eruption-pearl",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Resurgence",
@@ -5805,7 +5814,7 @@
   "Aliases": [],
   "BallName": "Eruption Pro",
   "CatalogID": "columbia-300-eruption-pro",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Modified Resurgence",
@@ -5975,7 +5984,7 @@
   "Aliases": [],
   "BallName": "Eruption Pro Blue",
   "CatalogID": "columbia-300-eruption-pro-blue",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Modified Resurgence",
@@ -6051,7 +6060,7 @@
   "Aliases": [],
   "BallName": "Eruption Pro Hybrid",
   "CatalogID": "columbia-300-eruption-pro-hybrid",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Modified Resurgence",
@@ -6127,7 +6136,7 @@
   "Aliases": [],
   "BallName": "Explosion",
   "CatalogID": "columbia-300-explosion",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Resurgence",
@@ -6250,7 +6259,7 @@
   "Aliases": [],
   "BallName": "Extreme Chaos",
   "CatalogID": "columbia-300-extreme-chaos",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "2-Piece",
@@ -7387,7 +7396,7 @@
   "Aliases": [],
   "BallName": "Formula",
   "CatalogID": "columbia-300-formula",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "2-Piece",
@@ -7537,7 +7546,7 @@
   "Aliases": [],
   "BallName": "Freeze Black/Silver",
   "CatalogID": "columbia-300-freeze-black-silver",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Modified Messenger",
@@ -7603,7 +7612,7 @@
   "Aliases": [],
   "BallName": "Freeze Blue/Green",
   "CatalogID": "columbia-300-freeze-blue-green",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Modified Messenger",
@@ -7669,11 +7678,11 @@
   "Aliases": [],
   "BallName": "Freeze Blue/Orange/Green",
   "CatalogID": "columbia-300-freeze-blue-orange-green",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Symmetric",
-   "Type": null
+   "Type": "Symmetrical"
   },
   "Cover": {
    "Finish": null,
@@ -7755,11 +7764,11 @@
   "Aliases": [],
   "BallName": "Freeze Hybrid",
   "CatalogID": "columbia-300-freeze-hybrid",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Symmetric",
-   "Type": null
+   "Type": "Symmetrical"
   },
   "Cover": {
    "Finish": null,
@@ -7982,7 +7991,7 @@
   "Aliases": [],
   "BallName": "Freeze Red/Blue",
   "CatalogID": "columbia-300-freeze-red-blue",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Modified Messenger",
@@ -8048,7 +8057,7 @@
   "Aliases": [],
   "BallName": "Freeze Scarlet/Black",
   "CatalogID": "columbia-300-freeze-scarlet-black",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Modified Messenger",
@@ -8114,7 +8123,7 @@
   "Aliases": [],
   "BallName": "Freeze Solid",
   "CatalogID": "columbia-300-freeze-solid",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Modified Messenger",
@@ -8190,11 +8199,11 @@
   "Aliases": [],
   "BallName": "Full Swing",
   "CatalogID": "columbia-300-full-swing",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Mass Bias Full Swing Asymmetric",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": null,
@@ -8256,7 +8265,7 @@
   "Aliases": [],
   "BallName": "Full Throttle",
   "CatalogID": "columbia-300-full-throttle",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "2-Piece",
@@ -8359,7 +8368,7 @@
   "Aliases": [],
   "BallName": "Game",
   "CatalogID": "columbia-300-game",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "2-Piece",
@@ -8415,23 +8424,20 @@
   "Aliases": [],
   "BallName": "Game Pearl",
   "CatalogID": "columbia-300-game-pearl",
-  "Checked": "2026-10-08",
+  "Checked": null,
   "Colorway": null,
   "Core": {
-   "Name": "2-Piece",
+   "Name": null,
    "Type": null
   },
   "Cover": {
    "Finish": null,
-   "Name": "Particle Pearl",
+   "Name": null,
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
-   "Core": "mfg",
-   "Cover": "mfg",
-   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -8446,14 +8452,8 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": "https://columbia300.com/products/game-pearl",
-  "SpecsByWeight": {
-   "16": {
-    "Diff": 0.051,
-    "IntDiff": null,
-    "RG": 2.48
-   }
-  },
+  "Source": null,
+  "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2001-11",
@@ -8565,7 +8565,7 @@
   "Aliases": [],
   "BallName": "High Speed",
   "CatalogID": "columbia-300-high-speed",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Shifter",
@@ -8641,7 +8641,7 @@
   "Aliases": [],
   "BallName": "Hyde",
   "CatalogID": "columbia-300-hyde",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "2-Piece",
@@ -8697,7 +8697,7 @@
   "Aliases": [],
   "BallName": "Hyjinx",
   "CatalogID": "columbia-300-hyjinx",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "2-Piece",
@@ -8753,7 +8753,7 @@
   "Aliases": [],
   "BallName": "Icon",
   "CatalogID": "columbia-300-icon",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "2-Piece",
@@ -8809,7 +8809,7 @@
   "Aliases": [],
   "BallName": "Icon 2",
   "CatalogID": "columbia-300-icon-2",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "2-Piece",
@@ -8865,7 +8865,7 @@
   "Aliases": [],
   "BallName": "Icon 300",
   "CatalogID": "columbia-300-icon-300",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "2-Piece",
@@ -9203,7 +9203,7 @@
   "Aliases": [],
   "BallName": "Impulse",
   "CatalogID": "columbia-300-impulse",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Impulse",
@@ -9279,7 +9279,7 @@
   "Aliases": [],
   "BallName": "Impulse Solid",
   "CatalogID": "columbia-300-impulse-solid",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Impulse",
@@ -9590,7 +9590,7 @@
   "Aliases": [],
   "BallName": "Jazz Red/Blue",
   "CatalogID": "columbia-300-jazz-red-blue",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Jazz",
@@ -9656,7 +9656,7 @@
   "Aliases": [],
   "BallName": "Jekyll",
   "CatalogID": "columbia-300-jekyll",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "2-Piece",
@@ -9712,7 +9712,7 @@
   "Aliases": [],
   "BallName": "Jinx",
   "CatalogID": "columbia-300-jinx",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "2-Piece",
@@ -9768,7 +9768,7 @@
   "Aliases": [],
   "BallName": "Juke",
   "CatalogID": "columbia-300-juke",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Modified SD",
@@ -9891,7 +9891,7 @@
   "Aliases": [],
   "BallName": "Kaboom",
   "CatalogID": "columbia-300-kaboom",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Detonate",
@@ -10202,11 +10202,11 @@
   "Aliases": [],
   "BallName": "Lit",
   "CatalogID": "columbia-300-lit",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Lit Asymmetric",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": null,
@@ -10325,11 +10325,11 @@
   "Aliases": [],
   "BallName": "Lit Pearl",
   "CatalogID": "columbia-300-lit-pearl",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Lit Asymmetric",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": null,
@@ -10542,7 +10542,7 @@
   "Aliases": [],
   "BallName": "Loud Noize",
   "CatalogID": "columbia-300-loud-noize",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "TI Boss II",
@@ -10608,7 +10608,7 @@
   "Aliases": [],
   "BallName": "Mad Antics",
   "CatalogID": "columbia-300-mad-antics",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Hi-Dynamix",
@@ -10684,7 +10684,7 @@
   "Aliases": [],
   "BallName": "Madness",
   "CatalogID": "columbia-300-madness",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Craze",
@@ -10807,11 +10807,11 @@
   "Aliases": [],
   "BallName": "Mass Eruption",
   "CatalogID": "columbia-300-mass-eruption",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Resurgence Symmetric",
-   "Type": null
+   "Type": "Symmetrical"
   },
   "Cover": {
    "Finish": null,
@@ -11024,7 +11024,7 @@
   "Aliases": [],
   "BallName": "Melt Down",
   "CatalogID": "columbia-300-melt-down",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "SD Medium RG",
@@ -11100,7 +11100,7 @@
   "Aliases": [],
   "BallName": "Messenger",
   "CatalogID": "columbia-300-messenger",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "2-Piece",
@@ -11438,7 +11438,7 @@
   "Aliases": [],
   "BallName": "Messenger PowerCOR Pearl",
   "CatalogID": "columbia-300-messenger-powercor-pearl",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Messenger PowerCOR",
@@ -11571,7 +11571,7 @@
   "Aliases": [],
   "BallName": "Messenger PowerCOR Solid",
   "CatalogID": "columbia-300-messenger-powercor-solid",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Messenger PowerCOR",
@@ -11704,7 +11704,7 @@
   "Aliases": [],
   "BallName": "Messenger TEC",
   "CatalogID": "columbia-300-messenger-tec",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "2-Piece",
@@ -11760,7 +11760,7 @@
   "Aliases": [],
   "BallName": "Messenger Ti Low RG",
   "CatalogID": "columbia-300-messenger-ti-low-rg",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "2-Piece",
@@ -11816,7 +11816,7 @@
   "Aliases": [],
   "BallName": "Messenger Ti Traction",
   "CatalogID": "columbia-300-messenger-ti-traction",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "2-Piece",
@@ -12060,11 +12060,11 @@
   "Aliases": [],
   "BallName": "Momentum",
   "CatalogID": "columbia-300-momentum",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Resurgence Asymmetric",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": null,
@@ -12737,11 +12737,11 @@
   "Aliases": [],
   "BallName": "Momentum Swing",
   "CatalogID": "columbia-300-momentum-swing",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Resurgence Asymmetric",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": null,
@@ -13085,7 +13085,7 @@
   "Aliases": [],
   "BallName": "N'S@ne Antics",
   "CatalogID": "columbia-300-n-s-ne-antics",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Hi-Dynamix II",
@@ -13443,7 +13443,7 @@
   "Aliases": [],
   "BallName": "Nitrous Black/Blue/Bronze",
   "CatalogID": "columbia-300-nitrous-black-blue-bronze",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Nitrous",
@@ -13529,7 +13529,7 @@
   "Aliases": [],
   "BallName": "Nitrous Black Cherry/Yellow/Blue",
   "CatalogID": "columbia-300-nitrous-black-cherry-yellow-blue",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Nitrous",
@@ -13615,7 +13615,7 @@
   "Aliases": [],
   "BallName": "Nitrous Purple/Blue/Silver",
   "CatalogID": "columbia-300-nitrous-purple-blue-silver",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Nitrous",
@@ -13701,7 +13701,7 @@
   "Aliases": [],
   "BallName": "Nitrous Purple/Pink",
   "CatalogID": "columbia-300-nitrous-purple-pink",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Nitrous",
@@ -13787,23 +13787,20 @@
   "Aliases": [],
   "BallName": "Nitrous Red/Gold",
   "CatalogID": "columbia-300-nitrous-red-gold",
-  "Checked": "2026-10-08",
+  "Checked": null,
   "Colorway": null,
   "Core": {
-   "Name": "Nitrous",
+   "Name": null,
    "Type": null
   },
   "Cover": {
    "Finish": null,
-   "Name": "Boost/R",
+   "Name": null,
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
-   "Core": "mfg",
-   "Cover": "mfg",
-   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -13818,44 +13815,8 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": "https://columbia300.com/products/nitrous-red-gold",
-  "SpecsByWeight": {
-   "10": {
-    "Diff": 0.017,
-    "IntDiff": null,
-    "RG": 2.75
-   },
-   "11": {
-    "Diff": 0.02,
-    "IntDiff": null,
-    "RG": 2.69
-   },
-   "12": {
-    "Diff": 0.03,
-    "IntDiff": null,
-    "RG": 2.63
-   },
-   "13": {
-    "Diff": 0.03,
-    "IntDiff": null,
-    "RG": 2.6
-   },
-   "14": {
-    "Diff": 0.031,
-    "IntDiff": null,
-    "RG": 2.58
-   },
-   "15": {
-    "Diff": 0.033,
-    "IntDiff": null,
-    "RG": 2.55
-   },
-   "16": {
-    "Diff": 0.03,
-    "IntDiff": null,
-    "RG": 2.55
-   }
-  },
+  "Source": null,
+  "SpecsByWeight": {},
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2018-04-24",
@@ -13873,7 +13834,7 @@
   "Aliases": [],
   "BallName": "Nitrous Red/Silver",
   "CatalogID": "columbia-300-nitrous-red-silver",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Nitrous",
@@ -13959,7 +13920,7 @@
   "Aliases": [],
   "BallName": "Nitrous Red/Smoke/White",
   "CatalogID": "columbia-300-nitrous-red-smoke-white",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Nitrous",
@@ -14040,7 +14001,7 @@
   "Aliases": [],
   "BallName": "Nitrous Silver/Black",
   "CatalogID": "columbia-300-nitrous-silver-black",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Nitrous",
@@ -14173,7 +14134,7 @@
   "Aliases": [],
   "BallName": "Noize",
   "CatalogID": "columbia-300-noize",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Ti Boss",
@@ -14239,20 +14200,23 @@
   "Aliases": [],
   "BallName": "Oath",
   "CatalogID": "columbia-300-oath",
-  "Checked": null,
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Capsule core with Magnetite",
    "Type": null
   },
   "Cover": {
    "Finish": null,
-   "Name": null,
+   "Name": "Bend It Pearl",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -14267,8 +14231,34 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": null,
-  "SpecsByWeight": {},
+  "Source": "https://columbia300.com/products/oath",
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.039,
+    "IntDiff": null,
+    "RG": 2.49
+   },
+   "13": {
+    "Diff": 0.055,
+    "IntDiff": null,
+    "RG": 2.53
+   },
+   "14": {
+    "Diff": 0.056,
+    "IntDiff": null,
+    "RG": 2.49
+   },
+   "15": {
+    "Diff": 0.054,
+    "IntDiff": null,
+    "RG": 2.47
+   },
+   "16": {
+    "Diff": 0.047,
+    "IntDiff": null,
+    "RG": 2.48
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2012-08",
@@ -14286,7 +14276,7 @@
   "Aliases": [],
   "BallName": "Omen",
   "CatalogID": "columbia-300-omen",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Capsule core with Magnetite",
@@ -14362,11 +14352,11 @@
   "Aliases": [],
   "BallName": "Outburst",
   "CatalogID": "columbia-300-outburst",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Resurgence Symmetric",
-   "Type": null
+   "Type": "Symmetrical"
   },
   "Cover": {
    "Finish": null,
@@ -14428,7 +14418,7 @@
   "Aliases": [],
   "BallName": "Outlook",
   "CatalogID": "columbia-300-outlook",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Outlook",
@@ -14504,7 +14494,7 @@
   "Aliases": [],
   "BallName": "Outlook Solid",
   "CatalogID": "columbia-300-outlook-solid",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Outlook",
@@ -14627,11 +14617,11 @@
   "Aliases": [],
   "BallName": "Overdrive",
   "CatalogID": "columbia-300-overdrive",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "2-Piece Asymmetrical",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": null,
@@ -14683,7 +14673,7 @@
   "Aliases": [],
   "BallName": "Perfect Rival",
   "CatalogID": "columbia-300-perfect-rival",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Spinner",
@@ -15219,7 +15209,7 @@
   "Aliases": [],
   "BallName": "Piranha PowerCOR",
   "CatalogID": "columbia-300-piranha-powercor",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Piranha PowerCOR",
@@ -15295,7 +15285,7 @@
   "Aliases": [],
   "BallName": "Piranha PowerCOR Pearl",
   "CatalogID": "columbia-300-piranha-powercor-pearl",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Piranha PowerCOR",
@@ -15418,7 +15408,7 @@
   "Aliases": [],
   "BallName": "Piranha Retro",
   "CatalogID": "columbia-300-piranha-retro",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "2-Piece",
@@ -15474,7 +15464,7 @@
   "Aliases": [],
   "BallName": "Piranha Solid",
   "CatalogID": "columbia-300-piranha-solid",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Piranha",
@@ -15550,7 +15540,7 @@
   "Aliases": [],
   "BallName": "Pit Boss",
   "CatalogID": "columbia-300-pit-boss",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "2-Piece",
@@ -15794,7 +15784,7 @@
   "Aliases": [],
   "BallName": "Power Drive",
   "CatalogID": "columbia-300-power-drive",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "2-Piece",
@@ -15850,11 +15840,11 @@
   "Aliases": [],
   "BallName": "Power Drive Sanded",
   "CatalogID": "columbia-300-power-drive-sanded",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "2-Piece Asymmetrical",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": null,
@@ -15906,7 +15896,7 @@
   "Aliases": [],
   "BallName": "Power Surge",
   "CatalogID": "columbia-300-power-surge",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "2-Piece",
@@ -15962,7 +15952,7 @@
   "Aliases": [],
   "BallName": "Power Swing",
   "CatalogID": "columbia-300-power-swing",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "TriRib",
@@ -16028,7 +16018,7 @@
   "Aliases": [],
   "BallName": "Power Torq",
   "CatalogID": "columbia-300-power-torq",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Torq",
@@ -16151,7 +16141,7 @@
   "Aliases": [],
   "BallName": "Power Torq Pearl",
   "CatalogID": "columbia-300-power-torq-pearl",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Torq",
@@ -16603,7 +16593,7 @@
   "Aliases": [],
   "BallName": "Pulse Blue Black Gold",
   "CatalogID": "columbia-300-pulse-blue-black-gold",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Pulse PowerCOR",
@@ -16820,7 +16810,7 @@
   "Aliases": [],
   "BallName": "Pulse Scarlet (Red)/Black",
   "CatalogID": "columbia-300-pulse-scarlet-red-black",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Pulse PowerCOR",
@@ -16943,7 +16933,7 @@
   "Aliases": [],
   "BallName": "Pure Madness",
   "CatalogID": "columbia-300-pure-madness",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Craze",
@@ -17019,7 +17009,7 @@
   "Aliases": [],
   "BallName": "Pure Physics",
   "CatalogID": "columbia-300-pure-physics",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Full Swing",
@@ -17085,7 +17075,7 @@
   "Aliases": [],
   "BallName": "Pure Swing",
   "CatalogID": "columbia-300-pure-swing",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Full Swing",
@@ -17386,7 +17376,7 @@
   "Aliases": [],
   "BallName": "Rally",
   "CatalogID": "columbia-300-rally",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Shifter",
@@ -17462,7 +17452,7 @@
   "Aliases": [],
   "BallName": "Ransom",
   "CatalogID": "columbia-300-ransom",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Full Swing V2",
@@ -17528,7 +17518,7 @@
   "Aliases": [],
   "BallName": "Ransom Demand",
   "CatalogID": "columbia-300-ransom-demand",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "2-Piece",
@@ -17678,7 +17668,7 @@
   "Aliases": [],
   "BallName": "Raw Urge",
   "CatalogID": "columbia-300-raw-urge",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Ironman",
@@ -17801,7 +17791,7 @@
   "Aliases": [],
   "BallName": "Reaction Arc",
   "CatalogID": "columbia-300-reaction-arc",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "2-Piece",
@@ -17857,7 +17847,7 @@
   "Aliases": [],
   "BallName": "Reaction Rev",
   "CatalogID": "columbia-300-reaction-rev",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "2-Piece",
@@ -17913,7 +17903,7 @@
   "Aliases": [],
   "BallName": "Reaction Ricochet",
   "CatalogID": "columbia-300-reaction-ricochet",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "2-Piece",
@@ -18063,7 +18053,7 @@
   "Aliases": [],
   "BallName": "Reaction Rip",
   "CatalogID": "columbia-300-reaction-rip",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "2-Piece",
@@ -18119,7 +18109,7 @@
   "Aliases": [],
   "BallName": "Reaction Roll",
   "CatalogID": "columbia-300-reaction-roll",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "2-Piece",
@@ -18316,7 +18306,7 @@
   "Aliases": [],
   "BallName": "Resurgence",
   "CatalogID": "columbia-300-resurgence",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Resurgence",
@@ -19463,7 +19453,7 @@
   "Aliases": [],
   "BallName": "Ricochet Pearl",
   "CatalogID": "columbia-300-ricochet-pearl",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Ricochet",
@@ -19586,7 +19576,7 @@
   "Aliases": [],
   "BallName": "Ricochet Return",
   "CatalogID": "columbia-300-ricochet-return",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Ricochet",
@@ -19803,11 +19793,11 @@
   "Aliases": [],
   "BallName": "Rival",
   "CatalogID": "columbia-300-rival",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Spinner Symmetric",
-   "Type": null
+   "Type": "Symmetrical"
   },
   "Cover": {
    "Finish": "4000 grit Abralon",
@@ -19963,7 +19953,7 @@
   "Aliases": [],
   "BallName": "Rock On",
   "CatalogID": "columbia-300-rock-on",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "2-Piece",
@@ -20489,7 +20479,7 @@
   "Aliases": [],
   "BallName": "Rock Pearl",
   "CatalogID": "columbia-300-rock-pearl",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "2-Piece",
@@ -20639,7 +20629,7 @@
   "Aliases": [],
   "BallName": "Saber Pearl",
   "CatalogID": "columbia-300-saber-pearl",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "New-Dynamix",
@@ -21326,11 +21316,11 @@
   "Aliases": [],
   "BallName": "Scout/R Hi-Flare",
   "CatalogID": "columbia-300-scout-r-hi-flare",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "3-Piece Asymmetrical",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": null,
@@ -21523,11 +21513,11 @@
   "Aliases": [],
   "BallName": "Scout/R Particle Hi-Flare",
   "CatalogID": "columbia-300-scout-r-particle-hi-flare",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "3-Piece Asymmetrical",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": null,
@@ -21767,7 +21757,7 @@
   "Aliases": [],
   "BallName": "Scout Reactive Blue/Gold",
   "CatalogID": "columbia-300-scout-reactive-blue-gold",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Pancake",
@@ -21927,7 +21917,7 @@
   "Aliases": [],
   "BallName": "Scout Reactive Green/Silver",
   "CatalogID": "columbia-300-scout-reactive-green-silver",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Pancake",
@@ -22510,11 +22500,11 @@
   "Aliases": [],
   "BallName": "Scout Urethane Hi-Flare",
   "CatalogID": "columbia-300-scout-urethane-hi-flare",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "3-Piece Asymmetrical",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": null,
@@ -22566,7 +22556,7 @@
   "Aliases": [],
   "BallName": "Severe Delirium",
   "CatalogID": "columbia-300-severe-delirium",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Resurgence",
@@ -22872,7 +22862,7 @@
   "Aliases": [],
   "BallName": "Sharp Noize",
   "CatalogID": "columbia-300-sharp-noize",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "TI Boss II",
@@ -22938,7 +22928,7 @@
   "Aliases": [],
   "BallName": "Sideswipe",
   "CatalogID": "columbia-300-sideswipe",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Sideswipe",
@@ -23061,7 +23051,7 @@
   "Aliases": [],
   "BallName": "Sideswipe Solid",
   "CatalogID": "columbia-300-sideswipe-solid",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Sideswipe",
@@ -23137,7 +23127,7 @@
   "Aliases": [],
   "BallName": "Smack Down",
   "CatalogID": "columbia-300-smack-down",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "SD Medium RG Core",
@@ -23260,7 +23250,7 @@
   "Aliases": [],
   "BallName": "Speed",
   "CatalogID": "columbia-300-speed",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Shifter",
@@ -23477,7 +23467,7 @@
   "Aliases": [],
   "BallName": "Spirit II",
   "CatalogID": "columbia-300-spirit-ii",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "2-Piece",
@@ -23862,7 +23852,7 @@
   "Aliases": [],
   "BallName": "Street Rally",
   "CatalogID": "columbia-300-street-rally",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Shifter",
@@ -24079,7 +24069,7 @@
   "Aliases": [],
   "BallName": "Super Cuda PowerCOR",
   "CatalogID": "columbia-300-super-cuda-powercor",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Cuda PowerCOR",
@@ -24155,7 +24145,7 @@
   "Aliases": [],
   "BallName": "Super Cuda PowerCOR Pearl",
   "CatalogID": "columbia-300-super-cuda-powercor-pearl",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Cuda PowerCOR",
@@ -24372,7 +24362,7 @@
   "Aliases": [],
   "BallName": "Super Trooper",
   "CatalogID": "columbia-300-super-trooper",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "2-Piece",
@@ -24475,7 +24465,7 @@
   "Aliases": [],
   "BallName": "Swerve",
   "CatalogID": "columbia-300-swerve",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Swerve",
@@ -24598,7 +24588,7 @@
   "Aliases": [],
   "BallName": "Swerve Fx",
   "CatalogID": "columbia-300-swerve-fx",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Swerve",
@@ -24721,7 +24711,7 @@
   "Aliases": [],
   "BallName": "Swerve GT",
   "CatalogID": "columbia-300-swerve-gt",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Swerve",
@@ -24985,7 +24975,7 @@
   "Aliases": [],
   "BallName": "Take Down",
   "CatalogID": "columbia-300-take-down",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "SD Medium RG Core",
@@ -26001,7 +25991,7 @@
   "Aliases": [],
   "BallName": "The Classic U2",
   "CatalogID": "columbia-300-the-classic-u2",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Resurgance",
@@ -26772,7 +26762,7 @@
   "Aliases": [],
   "BallName": "Throttle",
   "CatalogID": "columbia-300-throttle",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "2-Piece",
@@ -26922,7 +26912,7 @@
   "Aliases": [],
   "BallName": "Throttle-R",
   "CatalogID": "columbia-300-throttle-r",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "2-Piece",
@@ -26978,7 +26968,7 @@
   "Aliases": [],
   "BallName": "Throttle Up",
   "CatalogID": "columbia-300-throttle-up",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "2-Piece",
@@ -27081,7 +27071,7 @@
   "Aliases": [],
   "BallName": "Throw Down",
   "CatalogID": "columbia-300-throw-down",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "SD Medium RG",
@@ -27580,7 +27570,7 @@
   "Aliases": [],
   "BallName": "Top Speed",
   "CatalogID": "columbia-300-top-speed",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Shifter",
@@ -27656,20 +27646,23 @@
   "Aliases": [],
   "BallName": "Total Bedlam",
   "CatalogID": "columbia-300-total-bedlam",
-  "Checked": null,
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Bedlam V.2.0",
    "Type": null
   },
   "Cover": {
    "Finish": null,
-   "Name": null,
+   "Name": "FULL TILT 6.0",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -27684,8 +27677,24 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": null,
-  "SpecsByWeight": {},
+  "Source": "https://columbia300.com/products/total-bedlam",
+  "SpecsByWeight": {
+   "14": {
+    "Diff": 0.054,
+    "IntDiff": null,
+    "RG": 2.49
+   },
+   "15": {
+    "Diff": 0.055,
+    "IntDiff": null,
+    "RG": 2.53
+   },
+   "16": {
+    "Diff": 0.052,
+    "IntDiff": null,
+    "RG": 2.54
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2009-12",
@@ -28032,7 +28041,7 @@
   "Aliases": [],
   "BallName": "Tyrant",
   "CatalogID": "columbia-300-tyrant",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Tyrant",
@@ -28249,7 +28258,7 @@
   "Aliases": [],
   "BallName": "Tyrant Pearl",
   "CatalogID": "columbia-300-tyrant-pearl",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Tyrant",
@@ -28607,7 +28616,7 @@
   "Aliases": [],
   "BallName": "Urge",
   "CatalogID": "columbia-300-urge",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Ironman",
@@ -28871,7 +28880,7 @@
   "Aliases": [],
   "BallName": "Vow",
   "CatalogID": "columbia-300-vow",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Capsule",
@@ -28994,7 +29003,7 @@
   "Aliases": [],
   "BallName": "Wicked Encounter",
   "CatalogID": "columbia-300-wicked-encounter",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Encounter",
@@ -29211,7 +29220,7 @@
   "Aliases": [],
   "BallName": "World Beater",
   "CatalogID": "columbia-300-world-beater",
-  "Checked": "2026-10-08",
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
    "Name": "Arrowhead",
