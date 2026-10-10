@@ -2,7 +2,7 @@
  {
   "source": "columbia",
   "reason": "no-usbc",
-  "n": 117,
+  "n": 118,
   "samples": [
    {
     "title": "ABC Masters Yellow Dot",
@@ -318,7 +318,7 @@
  {
   "source": "ebonite",
   "reason": "no-weight-specs",
-  "n": 42,
+  "n": 43,
   "samples": [
    {
     "title": "Big Time Special Edition",
@@ -391,15 +391,15 @@
     ]
    },
    {
-    "title": "Maxim - Captain Midnight",
-    "url": "https://ebonite.com/products/maxim-captain-midnight",
+    "title": "Maxim - Captain Galaxy",
+    "url": "https://ebonite.com/products/maxim-captain-galaxy",
     "candidates": [
      "ebonite-maxim"
     ]
    },
    {
-    "title": "Maxim - Captain Odyssey",
-    "url": "https://ebonite.com/products/maxim-captain-odyssey",
+    "title": "Maxim - Captain Midnight",
+    "url": "https://ebonite.com/products/maxim-captain-midnight",
     "candidates": [
      "ebonite-maxim"
     ]

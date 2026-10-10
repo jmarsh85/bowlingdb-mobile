@@ -1,10 +1,70 @@
 {
-  "generated": "2026-10-10T18:37:32.269Z",
+  "generated": "2026-10-10T21:06:09.903Z",
   "since": 2023,
   "perSource": {
     "storm": {
       "pages": 1788,
       "parsed": 73,
+      "errors": 0,
+      "errorSample": []
+    },
+    "brunswick": {
+      "pages": 258,
+      "parsed": 258,
+      "errors": 0,
+      "errorSample": []
+    },
+    "hammer": {
+      "pages": 366,
+      "parsed": 197,
+      "errors": 3,
+      "errorSample": [
+        "https://hammerbowling.com/products/the-big-deal.json 429",
+        "https://hammerbowling.com/products/nu-blue-hammer.json 429",
+        "https://hammerbowling.com/products/rocio-restrepo.json 429"
+      ]
+    },
+    "dv8": {
+      "pages": 126,
+      "parsed": 126,
+      "errors": 0,
+      "errorSample": []
+    },
+    "radical": {
+      "pages": 129,
+      "parsed": 129,
+      "errors": 0,
+      "errorSample": []
+    },
+    "track": {
+      "pages": 181,
+      "parsed": 163,
+      "errors": 1,
+      "errorSample": [
+        "https://trackbowling.com/products/alias.json 429"
+      ]
+    },
+    "ebonite": {
+      "pages": 215,
+      "parsed": 191,
+      "errors": 1,
+      "errorSample": [
+        "https://ebonite.com/products/magic.json 429"
+      ]
+    },
+    "columbia": {
+      "pages": 404,
+      "parsed": 386,
+      "errors": 3,
+      "errorSample": [
+        "https://columbia300.com/products/scout-r-hi-flare.json 429",
+        "https://columbia300.com/products/formula.json 429",
+        "https://columbia300.com/products/dynamic-swing.json 429"
+      ]
+    },
+    "motiv": {
+      "pages": 206,
+      "parsed": 205,
       "errors": 0,
       "errorSample": []
     }
@@ -26,8 +86,8 @@
     },
     "Columbia 300": {
       "all": 553,
-      "auto": 171,
-      "pending": 73,
+      "auto": 170,
+      "pending": 74,
       "recent": 20,
       "recentAuto": 15
     },
@@ -40,7 +100,7 @@
     },
     "Ebonite": {
       "all": 814,
-      "auto": 126,
+      "auto": 125,
       "pending": 21,
       "recent": 61,
       "recentAuto": 16
@@ -82,7 +142,7 @@
     },
     "Track Inc.": {
       "all": 361,
-      "auto": 116,
+      "auto": 115,
       "pending": 47,
       "recent": 46,
       "recentAuto": 24
