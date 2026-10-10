@@ -2360,20 +2360,23 @@
   "Aliases": [],
   "BallName": "Big One (2017)",
   "CatalogID": "ebonite-big-one-2017",
-  "Checked": null,
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": null,
-   "Type": null
+   "Name": "Centrex Symmetrical Mass Bias",
+   "Type": "Symmetrical"
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "500, 2000 Abralon®",
+   "Name": "GB 11.2",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -2388,8 +2391,24 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": null,
-  "SpecsByWeight": {},
+  "Source": "https://ebonite.com/products/big-one",
+  "SpecsByWeight": {
+   "14": {
+    "Diff": 0.053,
+    "IntDiff": null,
+    "RG": 2.49
+   },
+   "15": {
+    "Diff": 0.056,
+    "IntDiff": null,
+    "RG": 2.46
+   },
+   "16": {
+    "Diff": 0.05,
+    "IntDiff": null,
+    "RG": 2.47
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2017-09-12",
@@ -2407,20 +2426,23 @@
   "Aliases": [],
   "BallName": "Big One J Limited",
   "CatalogID": "ebonite-big-one-j-limited",
-  "Checked": null,
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": null,
-   "Type": null
+   "Name": "Centrex Symmetrical Mass Bias",
+   "Type": "Symmetrical"
   },
   "Cover": {
    "Finish": null,
-   "Name": null,
+   "Name": "GB 11.2",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -2435,8 +2457,24 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": null,
-  "SpecsByWeight": {},
+  "Source": "https://ebonite.com/products/big-one",
+  "SpecsByWeight": {
+   "14": {
+    "Diff": 0.053,
+    "IntDiff": null,
+    "RG": 2.49
+   },
+   "15": {
+    "Diff": 0.056,
+    "IntDiff": null,
+    "RG": 2.46
+   },
+   "16": {
+    "Diff": 0.05,
+    "IntDiff": null,
+    "RG": 2.47
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2006-09",
@@ -7760,20 +7798,23 @@
   "Aliases": [],
   "BallName": "Destiny Pearl Black/Red/Blue (Red Pin)",
   "CatalogID": "ebonite-destiny-pearl-black-red-blue-red-pin",
-  "Checked": null,
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Cyclone Torque",
    "Type": null
   },
   "Cover": {
    "Finish": null,
-   "Name": null,
+   "Name": "GB 11.2 Pearl",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -7788,8 +7829,44 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": null,
-  "SpecsByWeight": {},
+  "Source": "https://ebonite.com/products/destiny-pearl-black-red-blue",
+  "SpecsByWeight": {
+   "10": {
+    "Diff": 0.02,
+    "IntDiff": null,
+    "RG": 2.73
+   },
+   "11": {
+    "Diff": 0.059,
+    "IntDiff": null,
+    "RG": 2.66
+   },
+   "12": {
+    "Diff": 0.053,
+    "IntDiff": null,
+    "RG": 2.6
+   },
+   "13": {
+    "Diff": 0.058,
+    "IntDiff": null,
+    "RG": 2.55
+   },
+   "14": {
+    "Diff": 0.053,
+    "IntDiff": null,
+    "RG": 2.54
+   },
+   "15": {
+    "Diff": 0.053,
+    "IntDiff": null,
+    "RG": 2.53
+   },
+   "16": {
+    "Diff": 0.047,
+    "IntDiff": null,
+    "RG": 2.52
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2019-05-21",
@@ -21035,11 +21112,11 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500, 1000 Siaair / Crown Factory Compound",
-   "Name": "GSV 2.0 Hybrid",
-   "Type": "Hybrid Reactive"
+   "Finish": null,
+   "Name": "GSV 2.0",
+   "Type": "Hybrid"
   },
-  "DateReleased": "2020-10-15",
+  "DateReleased": "2020-02-20",
   "FieldSources": {
    "BallName": "usbc",
    "Core": "mfg",
@@ -21059,31 +21136,31 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": "https://ebonite.com/products/omni-hybrid",
+  "Source": "https://ebonite.com/products/omni",
   "SpecsByWeight": {
    "12": {
     "Diff": 0.043,
-    "IntDiff": 0.011,
+    "IntDiff": null,
     "RG": 2.612
    },
    "13": {
     "Diff": 0.043,
-    "IntDiff": 0.011,
+    "IntDiff": null,
     "RG": 2.589
    },
    "14": {
     "Diff": 0.05,
-    "IntDiff": 0.013,
+    "IntDiff": null,
     "RG": 2.527
    },
    "15": {
     "Diff": 0.05,
-    "IntDiff": 0.013,
+    "IntDiff": null,
     "RG": 2.501
    },
    "16": {
     "Diff": 0.05,
-    "IntDiff": 0.013,
+    "IntDiff": null,
     "RG": 2.496
    }
   },
@@ -21104,20 +21181,23 @@
   "Aliases": [],
   "BallName": "Omni Pearl",
   "CatalogID": "ebonite-omni-pearl",
-  "Checked": null,
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Omni",
    "Type": null
   },
   "Cover": {
    "Finish": null,
-   "Name": null,
-   "Type": null
+   "Name": "GSV 2.0",
+   "Type": "Pearl"
   },
-  "DateReleased": null,
+  "DateReleased": "2020-02-20",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -21132,8 +21212,34 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": null,
-  "SpecsByWeight": {},
+  "Source": "https://ebonite.com/products/omni",
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.043,
+    "IntDiff": null,
+    "RG": 2.612
+   },
+   "13": {
+    "Diff": 0.043,
+    "IntDiff": null,
+    "RG": 2.589
+   },
+   "14": {
+    "Diff": 0.05,
+    "IntDiff": null,
+    "RG": 2.527
+   },
+   "15": {
+    "Diff": 0.05,
+    "IntDiff": null,
+    "RG": 2.501
+   },
+   "16": {
+    "Diff": 0.05,
+    "IntDiff": null,
+    "RG": 2.496
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2019-12-17",
@@ -21151,20 +21257,23 @@
   "Aliases": [],
   "BallName": "Omni Solid",
   "CatalogID": "ebonite-omni-solid",
-  "Checked": null,
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Omni",
    "Type": null
   },
   "Cover": {
    "Finish": null,
-   "Name": null,
-   "Type": null
+   "Name": "GSV 2.0",
+   "Type": "Solid"
   },
-  "DateReleased": null,
+  "DateReleased": "2020-02-20",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -21179,8 +21288,34 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": null,
-  "SpecsByWeight": {},
+  "Source": "https://ebonite.com/products/omni",
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.043,
+    "IntDiff": null,
+    "RG": 2.612
+   },
+   "13": {
+    "Diff": 0.043,
+    "IntDiff": null,
+    "RG": 2.589
+   },
+   "14": {
+    "Diff": 0.05,
+    "IntDiff": null,
+    "RG": 2.527
+   },
+   "15": {
+    "Diff": 0.05,
+    "IntDiff": null,
+    "RG": 2.501
+   },
+   "16": {
+    "Diff": 0.05,
+    "IntDiff": null,
+    "RG": 2.496
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2020-01-28",
@@ -27451,20 +27586,23 @@
   "Aliases": [],
   "BallName": "Smash Blue Pearl",
   "CatalogID": "ebonite-smash-blue-pearl",
-  "Checked": null,
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": null,
-   "Type": null
+   "Name": "Cylinder Shape (Symmetric)",
+   "Type": "Symmetrical"
   },
   "Cover": {
    "Finish": null,
-   "Name": null,
-   "Type": null
+   "Name": "Phazed Bomber Reactive",
+   "Type": "Pearl"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -27479,8 +27617,44 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": null,
-  "SpecsByWeight": {},
+  "Source": "https://ebonite.com/products/smash",
+  "SpecsByWeight": {
+   "10": {
+    "Diff": 0.031,
+    "IntDiff": null,
+    "RG": 2.72
+   },
+   "11": {
+    "Diff": 0.032,
+    "IntDiff": null,
+    "RG": 2.62
+   },
+   "12": {
+    "Diff": 0.046,
+    "IntDiff": null,
+    "RG": 2.62
+   },
+   "13": {
+    "Diff": 0.043,
+    "IntDiff": null,
+    "RG": 2.59
+   },
+   "14": {
+    "Diff": 0.044,
+    "IntDiff": null,
+    "RG": 2.56
+   },
+   "15": {
+    "Diff": 0.041,
+    "IntDiff": null,
+    "RG": 2.55
+   },
+   "16": {
+    "Diff": 0.042,
+    "IntDiff": null,
+    "RG": 2.55
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2009-05",
@@ -27498,20 +27672,23 @@
   "Aliases": [],
   "BallName": "Smash Time",
   "CatalogID": "ebonite-smash-time",
-  "Checked": null,
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": null,
-   "Type": null
+   "Name": "Cylinder Shape (Symmetric)",
+   "Type": "Symmetrical"
   },
   "Cover": {
    "Finish": null,
-   "Name": null,
+   "Name": "Phazed Bomber Reactive",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -27526,8 +27703,44 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": null,
-  "SpecsByWeight": {},
+  "Source": "https://ebonite.com/products/smash",
+  "SpecsByWeight": {
+   "10": {
+    "Diff": 0.031,
+    "IntDiff": null,
+    "RG": 2.72
+   },
+   "11": {
+    "Diff": 0.032,
+    "IntDiff": null,
+    "RG": 2.62
+   },
+   "12": {
+    "Diff": 0.046,
+    "IntDiff": null,
+    "RG": 2.62
+   },
+   "13": {
+    "Diff": 0.043,
+    "IntDiff": null,
+    "RG": 2.59
+   },
+   "14": {
+    "Diff": 0.044,
+    "IntDiff": null,
+    "RG": 2.56
+   },
+   "15": {
+    "Diff": 0.041,
+    "IntDiff": null,
+    "RG": 2.55
+   },
+   "16": {
+    "Diff": 0.042,
+    "IntDiff": null,
+    "RG": 2.55
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2006-03",
@@ -27545,20 +27758,23 @@
   "Aliases": [],
   "BallName": "Smash Time Pearl",
   "CatalogID": "ebonite-smash-time-pearl",
-  "Checked": null,
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": null,
-   "Type": null
+   "Name": "Cylinder Shape (Symmetric)",
+   "Type": "Symmetrical"
   },
   "Cover": {
    "Finish": null,
-   "Name": null,
-   "Type": null
+   "Name": "Phazed Bomber Reactive",
+   "Type": "Pearl"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -27573,8 +27789,44 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": null,
-  "SpecsByWeight": {},
+  "Source": "https://ebonite.com/products/smash",
+  "SpecsByWeight": {
+   "10": {
+    "Diff": 0.031,
+    "IntDiff": null,
+    "RG": 2.72
+   },
+   "11": {
+    "Diff": 0.032,
+    "IntDiff": null,
+    "RG": 2.62
+   },
+   "12": {
+    "Diff": 0.046,
+    "IntDiff": null,
+    "RG": 2.62
+   },
+   "13": {
+    "Diff": 0.043,
+    "IntDiff": null,
+    "RG": 2.59
+   },
+   "14": {
+    "Diff": 0.044,
+    "IntDiff": null,
+    "RG": 2.56
+   },
+   "15": {
+    "Diff": 0.041,
+    "IntDiff": null,
+    "RG": 2.55
+   },
+   "16": {
+    "Diff": 0.042,
+    "IntDiff": null,
+    "RG": 2.55
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2006-09",
@@ -27592,20 +27844,23 @@
   "Aliases": [],
   "BallName": "Smash Time TJ Limited",
   "CatalogID": "ebonite-smash-time-tj-limited",
-  "Checked": null,
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": null,
-   "Type": null
+   "Name": "Cylinder Shape (Symmetric)",
+   "Type": "Symmetrical"
   },
   "Cover": {
    "Finish": null,
-   "Name": null,
+   "Name": "Phazed Bomber Reactive",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -27620,8 +27875,44 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": null,
-  "SpecsByWeight": {},
+  "Source": "https://ebonite.com/products/smash",
+  "SpecsByWeight": {
+   "10": {
+    "Diff": 0.031,
+    "IntDiff": null,
+    "RG": 2.72
+   },
+   "11": {
+    "Diff": 0.032,
+    "IntDiff": null,
+    "RG": 2.62
+   },
+   "12": {
+    "Diff": 0.046,
+    "IntDiff": null,
+    "RG": 2.62
+   },
+   "13": {
+    "Diff": 0.043,
+    "IntDiff": null,
+    "RG": 2.59
+   },
+   "14": {
+    "Diff": 0.044,
+    "IntDiff": null,
+    "RG": 2.56
+   },
+   "15": {
+    "Diff": 0.041,
+    "IntDiff": null,
+    "RG": 2.55
+   },
+   "16": {
+    "Diff": 0.042,
+    "IntDiff": null,
+    "RG": 2.55
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2013-07",

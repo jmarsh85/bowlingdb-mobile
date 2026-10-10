@@ -145,20 +145,23 @@
   "Aliases": [],
   "BallName": "(Allegiant) Sniper Orange Pearl",
   "CatalogID": "motiv-allegiant-sniper-orange-pearl",
-  "Checked": null,
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Hollow Point™",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "5500 Grit LSP",
+   "Name": "TruShot™ Polythane",
+   "Type": "Pearl Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -173,8 +176,34 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": null,
-  "SpecsByWeight": {},
+  "Source": "https://www.motivbowling.com/products/balls/retired-balls/allegiant-sniper.html",
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.003,
+    "IntDiff": null,
+    "RG": 2.75
+   },
+   "13": {
+    "Diff": 0.006,
+    "IntDiff": null,
+    "RG": 2.73
+   },
+   "14": {
+    "Diff": 0.014,
+    "IntDiff": null,
+    "RG": 2.69
+   },
+   "15": {
+    "Diff": 0.01,
+    "IntDiff": null,
+    "RG": 2.68
+   },
+   "16": {
+    "Diff": 0.01,
+    "IntDiff": null,
+    "RG": 2.67
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2020-04-07",
@@ -3232,20 +3261,23 @@
   "Aliases": [],
   "BallName": "Freestyle Black/Blue Pearl",
   "CatalogID": "motiv-freestyle-black-blue-pearl",
-  "Checked": null,
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Recon",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "5500 Grit LSP",
+   "Name": "Turmoil LFP Reactive",
+   "Type": "Pearl Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -3260,8 +3292,44 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": null,
-  "SpecsByWeight": {},
+  "Source": "https://www.motivbowling.com/products/balls/retired-balls/freestyle.html",
+  "SpecsByWeight": {
+   "10": {
+    "Diff": 0.01,
+    "IntDiff": null,
+    "RG": 2.75
+   },
+   "11": {
+    "Diff": 0.022,
+    "IntDiff": null,
+    "RG": 2.69
+   },
+   "12": {
+    "Diff": 0.038,
+    "IntDiff": null,
+    "RG": 2.62
+   },
+   "13": {
+    "Diff": 0.03,
+    "IntDiff": null,
+    "RG": 2.62
+   },
+   "14": {
+    "Diff": 0.025,
+    "IntDiff": null,
+    "RG": 2.61
+   },
+   "15": {
+    "Diff": 0.025,
+    "IntDiff": null,
+    "RG": 2.59
+   },
+   "16": {
+    "Diff": 0.018,
+    "IntDiff": null,
+    "RG": 2.59
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2016-05-03",
@@ -3279,20 +3347,23 @@
   "Aliases": [],
   "BallName": "Freestyle Black/Pink Pearl",
   "CatalogID": "motiv-freestyle-black-pink-pearl",
-  "Checked": null,
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Recon",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "5500 Grit LSP",
+   "Name": "Turmoil LFP Reactive",
+   "Type": "Pearl Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -3307,8 +3378,44 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": null,
-  "SpecsByWeight": {},
+  "Source": "https://www.motivbowling.com/products/balls/retired-balls/freestyle.html",
+  "SpecsByWeight": {
+   "10": {
+    "Diff": 0.01,
+    "IntDiff": null,
+    "RG": 2.75
+   },
+   "11": {
+    "Diff": 0.022,
+    "IntDiff": null,
+    "RG": 2.69
+   },
+   "12": {
+    "Diff": 0.038,
+    "IntDiff": null,
+    "RG": 2.62
+   },
+   "13": {
+    "Diff": 0.03,
+    "IntDiff": null,
+    "RG": 2.62
+   },
+   "14": {
+    "Diff": 0.025,
+    "IntDiff": null,
+    "RG": 2.61
+   },
+   "15": {
+    "Diff": 0.025,
+    "IntDiff": null,
+    "RG": 2.59
+   },
+   "16": {
+    "Diff": 0.018,
+    "IntDiff": null,
+    "RG": 2.59
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2016-05-03",
@@ -3334,7 +3441,7 @@
   },
   "Cover": {
    "Finish": "5500 Grit LSP",
-   "Name": "Agility LFP Reactive",
+   "Name": "Turmoil LFP Reactive",
    "Type": null
   },
   "DateReleased": null,
@@ -3357,7 +3464,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": "https://www.motivbowling.com/products/balls/retired-balls/freestyle-rush.html",
+  "Source": "https://www.motivbowling.com/products/balls/retired-balls/freestyle.html",
   "SpecsByWeight": {
    "10": {
     "Diff": 0.01,
@@ -3380,19 +3487,19 @@
     "RG": 2.62
    },
    "14": {
-    "Diff": 0.03,
+    "Diff": 0.025,
     "IntDiff": null,
-    "RG": 2.62
+    "RG": 2.61
    },
    "15": {
-    "Diff": 0.03,
+    "Diff": 0.025,
     "IntDiff": null,
-    "RG": 2.6
+    "RG": 2.59
    },
    "16": {
-    "Diff": 0.026,
+    "Diff": 0.018,
     "IntDiff": null,
-    "RG": 2.6
+    "RG": 2.59
    }
   },
   "USBC": {
@@ -3412,20 +3519,23 @@
   "Aliases": [],
   "BallName": "Freestyle Rush Red/Blue",
   "CatalogID": "motiv-freestyle-rush-red-blue",
-  "Checked": null,
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Recon",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "5500 Grit LSP",
+   "Name": "Turmoil LFP Reactive",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -3440,8 +3550,44 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": null,
-  "SpecsByWeight": {},
+  "Source": "https://www.motivbowling.com/products/balls/retired-balls/freestyle.html",
+  "SpecsByWeight": {
+   "10": {
+    "Diff": 0.01,
+    "IntDiff": null,
+    "RG": 2.75
+   },
+   "11": {
+    "Diff": 0.022,
+    "IntDiff": null,
+    "RG": 2.69
+   },
+   "12": {
+    "Diff": 0.038,
+    "IntDiff": null,
+    "RG": 2.62
+   },
+   "13": {
+    "Diff": 0.03,
+    "IntDiff": null,
+    "RG": 2.62
+   },
+   "14": {
+    "Diff": 0.025,
+    "IntDiff": null,
+    "RG": 2.61
+   },
+   "15": {
+    "Diff": 0.025,
+    "IntDiff": null,
+    "RG": 2.59
+   },
+   "16": {
+    "Diff": 0.018,
+    "IntDiff": null,
+    "RG": 2.59
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2018-04-03",
@@ -4049,12 +4195,12 @@
   "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": "Predator™ V2 Asymmetric",
-   "Type": "Asymmetrical"
+   "Name": "Predator",
+   "Type": null
   },
   "Cover": {
-   "Finish": "1000 Grit LSS",
-   "Name": "Leverage™ Solid Reactive",
+   "Finish": "3000 Grit LSS",
+   "Name": "Turmoil HFP Reactive",
    "Type": null
   },
   "DateReleased": null,
@@ -4077,32 +4223,22 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": "https://www.motivbowling.com/products/balls/retired-balls/jackal-ambush.html",
+  "Source": "https://www.motivbowling.com/products/balls/retired-balls/jackal.html",
   "SpecsByWeight": {
-   "12": {
-    "Diff": 0.03,
-    "IntDiff": 0.01,
-    "RG": 2.64
-   },
-   "13": {
-    "Diff": 0.04,
-    "IntDiff": 0.011,
-    "RG": 2.57
-   },
    "14": {
-    "Diff": 0.049,
-    "IntDiff": 0.014,
-    "RG": 2.51
+    "Diff": 0.06,
+    "IntDiff": 0.015,
+    "RG": 2.48
    },
    "15": {
-    "Diff": 0.054,
+    "Diff": 0.06,
     "IntDiff": 0.015,
-    "RG": 2.47
+    "RG": 2.46
    },
    "16": {
-    "Diff": 0.047,
-    "IntDiff": 0.013,
-    "RG": 2.48
+    "Diff": 0.06,
+    "IntDiff": 0.015,
+    "RG": 2.46
    }
   },
   "USBC": {
@@ -4125,15 +4261,15 @@
   "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": "Predator™ V2 Asymmetric",
+   "Name": "Predator V2 Core",
    "Type": "Asymmetrical"
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "2000 LSS",
+   "Name": "Turmoil HFP Reactive",
+   "Type": "Solid Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2019-12-01",
   "FieldSources": {
    "BallName": "usbc",
    "Core": "mfg",
@@ -4153,22 +4289,22 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": "https://www.motivbowling.com/products/balls/exclusives/jackal-assault.html",
+  "Source": "https://www.motivbowling.com/products/balls/retired-balls/jackal.html",
   "SpecsByWeight": {
    "14": {
-    "Diff": 0.052,
-    "IntDiff": 0.018,
-    "RG": 2.5
+    "Diff": 0.06,
+    "IntDiff": 0.015,
+    "RG": 2.48
    },
    "15": {
-    "Diff": 0.055,
-    "IntDiff": 0.019,
-    "RG": 2.47
+    "Diff": 0.06,
+    "IntDiff": 0.015,
+    "RG": 2.46
    },
    "16": {
-    "Diff": 0.053,
-    "IntDiff": 0.018,
-    "RG": 2.47
+    "Diff": 0.06,
+    "IntDiff": 0.015,
+    "RG": 2.46
    }
   },
   "USBC": {
@@ -4191,12 +4327,12 @@
   "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": "Predator™ V3",
-   "Type": null
+   "Name": "Predator",
+   "Type": "Asymmetrical"
   },
   "Cover": {
-   "Finish": "2000 Grit LSS",
-   "Name": "Coercion™ HV2 Reactive",
+   "Finish": "3000 Grit LSS",
+   "Name": "Turmoil HFP Reactive",
    "Type": null
   },
   "DateReleased": null,
@@ -4219,22 +4355,22 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": "https://www.motivbowling.com/products/balls/exclusives/jackal-attack.html",
+  "Source": "https://www.motivbowling.com/products/balls/retired-balls/jackal.html",
   "SpecsByWeight": {
    "14": {
-    "Diff": 0.052,
-    "IntDiff": 0.018,
-    "RG": 2.5
+    "Diff": 0.06,
+    "IntDiff": 0.015,
+    "RG": 2.48
    },
    "15": {
-    "Diff": 0.055,
-    "IntDiff": 0.019,
-    "RG": 2.47
+    "Diff": 0.06,
+    "IntDiff": 0.015,
+    "RG": 2.46
    },
    "16": {
-    "Diff": 0.053,
-    "IntDiff": 0.018,
-    "RG": 2.47
+    "Diff": 0.06,
+    "IntDiff": 0.015,
+    "RG": 2.46
    }
   },
   "USBC": {
@@ -4257,12 +4393,12 @@
   "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": "Predator™ V2",
+   "Name": "Predator",
    "Type": null
   },
   "Cover": {
    "Finish": "3000 Grit LSS",
-   "Name": "Coercion™ HVH Reactive",
+   "Name": "Turmoil HFP Reactive",
    "Type": null
   },
   "DateReleased": null,
@@ -4285,22 +4421,22 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": "https://www.motivbowling.com/products/balls/exclusives/jackal-boss.html",
+  "Source": "https://www.motivbowling.com/products/balls/retired-balls/jackal.html",
   "SpecsByWeight": {
    "14": {
-    "Diff": 0.049,
-    "IntDiff": 0.014,
-    "RG": 2.51
+    "Diff": 0.06,
+    "IntDiff": 0.015,
+    "RG": 2.48
    },
    "15": {
-    "Diff": 0.054,
+    "Diff": 0.06,
     "IntDiff": 0.015,
-    "RG": 2.47
+    "RG": 2.46
    },
    "16": {
-    "Diff": 0.047,
-    "IntDiff": 0.013,
-    "RG": 2.48
+    "Diff": 0.06,
+    "IntDiff": 0.015,
+    "RG": 2.46
    }
   },
   "USBC": {
@@ -4323,12 +4459,12 @@
   "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": "Predator™ V3",
+   "Name": "Predator",
    "Type": null
   },
   "Cover": {
-   "Finish": "2000 Grit Laser Scan Sanded",
-   "Name": "Coercion™ HVH Reactive",
+   "Finish": "3000 Grit LSS",
+   "Name": "Turmoil HFP Reactive",
    "Type": null
   },
   "DateReleased": null,
@@ -4351,22 +4487,22 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": "https://www.motivbowling.com/products/balls/exclusives/jackal-chase.html",
+  "Source": "https://www.motivbowling.com/products/balls/retired-balls/jackal.html",
   "SpecsByWeight": {
    "14": {
-    "Diff": 0.052,
-    "IntDiff": 0.018,
-    "RG": 2.5
+    "Diff": 0.06,
+    "IntDiff": 0.015,
+    "RG": 2.48
    },
    "15": {
-    "Diff": 0.055,
-    "IntDiff": 0.019,
-    "RG": 2.47
+    "Diff": 0.06,
+    "IntDiff": 0.015,
+    "RG": 2.46
    },
    "16": {
-    "Diff": 0.053,
-    "IntDiff": 0.018,
-    "RG": 2.47
+    "Diff": 0.06,
+    "IntDiff": 0.015,
+    "RG": 2.46
    }
   },
   "USBC": {
@@ -4436,12 +4572,12 @@
   "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": "Predator™ V2 Asymmetric",
+   "Name": "Predator",
    "Type": "Asymmetrical"
   },
   "Cover": {
-   "Finish": "4000 Grit LSS",
-   "Name": "Propulsion™ HVH Reactive",
+   "Finish": "3000 Grit LSS",
+   "Name": "Turmoil HFP Reactive",
    "Type": null
   },
   "DateReleased": null,
@@ -4464,32 +4600,22 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": "https://www.motivbowling.com/products/balls/retired-balls/jackal-exj.html",
+  "Source": "https://www.motivbowling.com/products/balls/retired-balls/jackal.html",
   "SpecsByWeight": {
-   "12": {
-    "Diff": 0.03,
-    "IntDiff": 0.01,
-    "RG": 2.64
-   },
-   "13": {
-    "Diff": 0.04,
-    "IntDiff": 0.011,
-    "RG": 2.57
-   },
    "14": {
-    "Diff": 0.049,
-    "IntDiff": 0.014,
-    "RG": 2.51
+    "Diff": 0.06,
+    "IntDiff": 0.015,
+    "RG": 2.48
    },
    "15": {
-    "Diff": 0.054,
+    "Diff": 0.06,
     "IntDiff": 0.015,
-    "RG": 2.47
+    "RG": 2.46
    },
    "16": {
-    "Diff": 0.047,
-    "IntDiff": 0.013,
-    "RG": 2.48
+    "Diff": 0.06,
+    "IntDiff": 0.015,
+    "RG": 2.46
    }
   },
   "USBC": {
@@ -4512,12 +4638,12 @@
   "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": "Predator™ V2 Asymmetric",
-   "Type": "Asymmetrical"
+   "Name": "Predator",
+   "Type": null
   },
   "Cover": {
-   "Finish": "5000 LSP",
-   "Name": "Infusion™ HV Pearl Reactive",
+   "Finish": "3000 Grit LSS",
+   "Name": "Turmoil HFP Reactive",
    "Type": null
   },
   "DateReleased": null,
@@ -4540,22 +4666,22 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": "https://www.motivbowling.com/products/balls/retired-balls/jackal-flash.html",
+  "Source": "https://www.motivbowling.com/products/balls/retired-balls/jackal.html",
   "SpecsByWeight": {
    "14": {
-    "Diff": 0.049,
-    "IntDiff": 0.014,
-    "RG": 2.51
+    "Diff": 0.06,
+    "IntDiff": 0.015,
+    "RG": 2.48
    },
    "15": {
-    "Diff": 0.054,
+    "Diff": 0.06,
     "IntDiff": 0.015,
-    "RG": 2.47
+    "RG": 2.46
    },
    "16": {
-    "Diff": 0.047,
-    "IntDiff": 0.013,
-    "RG": 2.48
+    "Diff": 0.06,
+    "IntDiff": 0.015,
+    "RG": 2.46
    }
   },
   "USBC": {
@@ -4644,12 +4770,12 @@
   "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": "Predator™ V2 Asymmetric",
-   "Type": "Asymmetrical"
+   "Name": "Predator",
+   "Type": null
   },
   "Cover": {
    "Finish": "3000 Grit LSS",
-   "Name": "Coercion™ HFS Reactive",
+   "Name": "Turmoil HFP Reactive",
    "Type": null
   },
   "DateReleased": null,
@@ -4672,32 +4798,22 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": "https://www.motivbowling.com/products/balls/retired-balls/jackal-ghost.html",
+  "Source": "https://www.motivbowling.com/products/balls/retired-balls/jackal.html",
   "SpecsByWeight": {
-   "12": {
-    "Diff": 0.03,
-    "IntDiff": 0.01,
-    "RG": 2.64
-   },
-   "13": {
-    "Diff": 0.04,
-    "IntDiff": 0.011,
-    "RG": 2.57
-   },
    "14": {
-    "Diff": 0.049,
-    "IntDiff": 0.014,
-    "RG": 2.51
+    "Diff": 0.06,
+    "IntDiff": 0.015,
+    "RG": 2.48
    },
    "15": {
-    "Diff": 0.054,
+    "Diff": 0.06,
     "IntDiff": 0.015,
-    "RG": 2.47
+    "RG": 2.46
    },
    "16": {
-    "Diff": 0.047,
-    "IntDiff": 0.013,
-    "RG": 2.48
+    "Diff": 0.06,
+    "IntDiff": 0.015,
+    "RG": 2.46
    }
   },
   "USBC": {
@@ -4720,15 +4836,15 @@
   "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": "Predator™ V2 Asymmetric",
+   "Name": "Predator",
    "Type": "Asymmetrical"
   },
   "Cover": {
    "Finish": "3000 Grit LSS",
-   "Name": "Leverage™ HFS Reactive",
-   "Type": null
+   "Name": "Turmoil HFP Reactive",
+   "Type": "Solid Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2026-08-01",
   "FieldSources": {
    "BallName": "usbc",
    "Core": "mfg",
@@ -4748,32 +4864,22 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": "https://www.motivbowling.com/products/balls/heavy-oil/jackal-ghost-v2.html",
+  "Source": "https://www.motivbowling.com/products/balls/retired-balls/jackal.html",
   "SpecsByWeight": {
-   "12": {
-    "Diff": 0.03,
-    "IntDiff": 0.01,
+   "14": {
+    "Diff": 0.02,
+    "IntDiff": 0.015,
     "RG": 2.64
    },
-   "13": {
-    "Diff": 0.04,
-    "IntDiff": 0.011,
-    "RG": 2.57
-   },
-   "14": {
-    "Diff": 0.049,
-    "IntDiff": 0.014,
-    "RG": 2.51
-   },
    "15": {
-    "Diff": 0.054,
+    "Diff": 0.02,
     "IntDiff": 0.015,
-    "RG": 2.47
+    "RG": 2.64
    },
    "16": {
-    "Diff": 0.047,
-    "IntDiff": 0.013,
-    "RG": 2.48
+    "Diff": 0.02,
+    "IntDiff": 0.015,
+    "RG": 2.64
    }
   },
   "USBC": {

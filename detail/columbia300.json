@@ -11250,20 +11250,23 @@
   "Aliases": [],
   "BallName": "Messenger Cherry Pearl",
   "CatalogID": "columbia-300-messenger-cherry-pearl",
-  "Checked": null,
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "2-Piece",
    "Type": null
   },
   "Cover": {
    "Finish": null,
-   "Name": null,
+   "Name": "Reactive Holo-Flex",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -11278,8 +11281,14 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": null,
-  "SpecsByWeight": {},
+  "Source": "https://columbia300.com/products/messenger-cherry",
+  "SpecsByWeight": {
+   "16": {
+    "Diff": 0.047,
+    "IntDiff": null,
+    "RG": 2.577
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2001-02",
@@ -16546,20 +16555,23 @@
   "Aliases": [],
   "BallName": "Pulse (2025)",
   "CatalogID": "columbia-300-pulse-2025",
-  "Checked": null,
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": null,
-   "Type": null
+   "Name": "Pulse PowerCOR",
+   "Type": "Symmetrical"
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1500 Siaair Micro Pad",
+   "Name": "HK22 - Hyperflex",
+   "Type": "Solid Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2025-08-14",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -16574,8 +16586,34 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": null,
-  "SpecsByWeight": {},
+  "Source": "https://columbia300.com/products/pulse",
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.042,
+    "IntDiff": null,
+    "RG": 2.605
+   },
+   "13": {
+    "Diff": 0.042,
+    "IntDiff": null,
+    "RG": 2.582
+   },
+   "14": {
+    "Diff": 0.045,
+    "IntDiff": null,
+    "RG": 2.481
+   },
+   "15": {
+    "Diff": 0.045,
+    "IntDiff": null,
+    "RG": 2.468
+   },
+   "16": {
+    "Diff": 0.039,
+    "IntDiff": null,
+    "RG": 2.481
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2025-06-24",
@@ -16669,20 +16707,23 @@
   "Aliases": [],
   "BallName": "Pulse - Clear Pin",
   "CatalogID": "columbia-300-pulse-clear-pin",
-  "Checked": null,
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": null,
-   "Type": null
+   "Name": "Pulse PowerCOR",
+   "Type": "Symmetrical"
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1500 Siaair Micro Pad",
+   "Name": "HK22 - Hyperflex",
+   "Type": "Solid Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2025-08-14",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -16697,8 +16738,34 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": null,
-  "SpecsByWeight": {},
+  "Source": "https://columbia300.com/products/pulse",
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.042,
+    "IntDiff": null,
+    "RG": 2.605
+   },
+   "13": {
+    "Diff": 0.042,
+    "IntDiff": null,
+    "RG": 2.582
+   },
+   "14": {
+    "Diff": 0.045,
+    "IntDiff": null,
+    "RG": 2.481
+   },
+   "15": {
+    "Diff": 0.045,
+    "IntDiff": null,
+    "RG": 2.468
+   },
+   "16": {
+    "Diff": 0.039,
+    "IntDiff": null,
+    "RG": 2.481
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "1996-08",
@@ -16716,20 +16783,23 @@
   "Aliases": [],
   "BallName": "Pulse Hybrid",
   "CatalogID": "columbia-300-pulse-hybrid",
-  "Checked": null,
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": null,
-   "Type": null
+   "Name": "Pulse PowerCOR",
+   "Type": "Symmetrical"
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1500 Siaair Micro Pad",
+   "Name": "HK22 - Hyperflex",
+   "Type": "Solid Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2025-08-14",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -16744,8 +16814,34 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": null,
-  "SpecsByWeight": {},
+  "Source": "https://columbia300.com/products/pulse",
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.042,
+    "IntDiff": null,
+    "RG": 2.605
+   },
+   "13": {
+    "Diff": 0.042,
+    "IntDiff": null,
+    "RG": 2.582
+   },
+   "14": {
+    "Diff": 0.045,
+    "IntDiff": null,
+    "RG": 2.481
+   },
+   "15": {
+    "Diff": 0.045,
+    "IntDiff": null,
+    "RG": 2.468
+   },
+   "16": {
+    "Diff": 0.039,
+    "IntDiff": null,
+    "RG": 2.481
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2026-03-17",
@@ -16763,20 +16859,23 @@
   "Aliases": [],
   "BallName": "Pulse Pearl",
   "CatalogID": "columbia-300-pulse-pearl",
-  "Checked": null,
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": null,
-   "Type": null
+   "Name": "Pulse PowerCOR",
+   "Type": "Symmetrical"
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1500 Siaair Micro Pad",
+   "Name": "HK22 - Hyperflex",
+   "Type": "Solid Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2025-08-14",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -16791,8 +16890,34 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": null,
-  "SpecsByWeight": {},
+  "Source": "https://columbia300.com/products/pulse",
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.042,
+    "IntDiff": null,
+    "RG": 2.605
+   },
+   "13": {
+    "Diff": 0.042,
+    "IntDiff": null,
+    "RG": 2.582
+   },
+   "14": {
+    "Diff": 0.045,
+    "IntDiff": null,
+    "RG": 2.481
+   },
+   "15": {
+    "Diff": 0.045,
+    "IntDiff": null,
+    "RG": 2.468
+   },
+   "16": {
+    "Diff": 0.039,
+    "IntDiff": null,
+    "RG": 2.481
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "1996-11",
@@ -16886,20 +17011,23 @@
   "Aliases": [],
   "BallName": "Pulse - White Pin",
   "CatalogID": "columbia-300-pulse-white-pin",
-  "Checked": null,
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": null,
-   "Type": null
+   "Name": "Pulse PowerCOR",
+   "Type": "Symmetrical"
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1500 Siaair Micro Pad",
+   "Name": "HK22 - Hyperflex",
+   "Type": "Solid Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2025-08-14",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -16914,8 +17042,34 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": null,
-  "SpecsByWeight": {},
+  "Source": "https://columbia300.com/products/pulse",
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.042,
+    "IntDiff": null,
+    "RG": 2.605
+   },
+   "13": {
+    "Diff": 0.042,
+    "IntDiff": null,
+    "RG": 2.582
+   },
+   "14": {
+    "Diff": 0.045,
+    "IntDiff": null,
+    "RG": 2.481
+   },
+   "15": {
+    "Diff": 0.045,
+    "IntDiff": null,
+    "RG": 2.468
+   },
+   "16": {
+    "Diff": 0.039,
+    "IntDiff": null,
+    "RG": 2.481
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2001-08",
@@ -21710,20 +21864,23 @@
   "Aliases": [],
   "BallName": "Scout Reactive Black/Red Pearl",
   "CatalogID": "columbia-300-scout-reactive-black-red-pearl",
-  "Checked": null,
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": null,
-   "Type": null
+   "Name": "Pancake",
+   "Type": "Symmetrical"
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "4000 Polished",
+   "Name": "Super-Flex",
+   "Type": "Pearl"
   },
-  "DateReleased": null,
+  "DateReleased": "2000-02-01",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -21738,8 +21895,24 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": null,
-  "SpecsByWeight": {},
+  "Source": "https://columbia300.com/products/scout-reactive-black-red",
+  "SpecsByWeight": {
+   "14": {
+    "Diff": 0.02,
+    "IntDiff": null,
+    "RG": 2.69
+   },
+   "15": {
+    "Diff": 0.02,
+    "IntDiff": null,
+    "RG": 2.65
+   },
+   "16": {
+    "Diff": 0.02,
+    "IntDiff": null,
+    "RG": 2.64
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2007-04",
@@ -29006,15 +29179,15 @@
   "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": "Encounter",
-   "Type": null
+   "Name": "Encounter Core",
+   "Type": "Asymmetrical"
   },
   "Cover": {
-   "Finish": null,
-   "Name": "Elastin 8.0 Supreme (Hybrid)",
-   "Type": null
+   "Finish": "800/800 Abralon, 1500/1500 Abranet",
+   "Name": "Reactive",
+   "Type": "Hybrid"
   },
-  "DateReleased": null,
+  "DateReleased": "2012-07-24",
   "FieldSources": {
    "BallName": "usbc",
    "Core": "mfg",
@@ -29034,32 +29207,17 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": "https://columbia300.com/products/wicked-encounter",
+  "Source": "https://columbia300.com/products/wicked",
   "SpecsByWeight": {
-   "12": {
-    "Diff": 0.039,
-    "IntDiff": null,
-    "RG": 2.6
-   },
-   "13": {
-    "Diff": 0.055,
-    "IntDiff": null,
-    "RG": 2.53
-   },
-   "14": {
-    "Diff": 0.05,
-    "IntDiff": 0.012,
-    "RG": 2.52
-   },
    "15": {
     "Diff": 0.052,
     "IntDiff": 0.013,
     "RG": 2.5
    },
    "16": {
-    "Diff": 0.047,
-    "IntDiff": 0.011,
-    "RG": 2.51
+    "Diff": 0.049,
+    "IntDiff": null,
+    "RG": 2.497
    }
   },
   "USBC": {
@@ -29079,20 +29237,23 @@
   "Aliases": [],
   "BallName": "Wicked Ultra",
   "CatalogID": "columbia-300-wicked-ultra",
-  "Checked": null,
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "2-Piece",
    "Type": null
   },
   "Cover": {
    "Finish": null,
-   "Name": null,
+   "Name": "Reactive",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -29107,8 +29268,14 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": null,
-  "SpecsByWeight": {},
+  "Source": "https://columbia300.com/products/wicked",
+  "SpecsByWeight": {
+   "16": {
+    "Diff": 0.049,
+    "IntDiff": null,
+    "RG": 2.497
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2004-05",

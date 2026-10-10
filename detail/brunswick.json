@@ -14058,20 +14058,23 @@
   "Aliases": [],
   "BallName": "Karma Urethane Solid",
   "CatalogID": "brunswick-karma-urethane-solid",
-  "Checked": null,
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": null,
-   "Type": null
+   "Name": "Medium RG Performance",
+   "Type": "Symmetrical"
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500 and 1500 Siaair Micro Pad",
+   "Name": "Urethane Solid",
+   "Type": "Urethane"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -14086,8 +14089,14 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": null,
-  "SpecsByWeight": {},
+  "Source": "https://brunswickbowling.com/products/balls/retired/karma-urethane",
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.04,
+    "IntDiff": null,
+    "RG": 2.539
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2012-06",
@@ -17609,20 +17618,23 @@
   "Aliases": [],
   "BallName": "Method Hybrid",
   "CatalogID": "brunswick-method-hybrid",
-  "Checked": null,
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Magnitude 055 High Diff",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500 and 3,000 Siaair Micro Pad",
+   "Name": "Synthesis Hybrid",
+   "Type": "Hybrid Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -17637,8 +17649,14 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": null,
-  "SpecsByWeight": {},
+  "Source": "https://brunswickbowling.com/products/balls/retired/method",
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.056,
+    "IntDiff": null,
+    "RG": 2.499
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2018-06-14",
@@ -17663,9 +17681,9 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500, 2000 Siaair Micro Pad",
-   "Name": "Synthesis Solid",
-   "Type": "Solid Reactive"
+   "Finish": "500 and 3,000 Siaair Micro Pad",
+   "Name": "Synthesis Hybrid",
+   "Type": "Hybrid Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
@@ -17687,10 +17705,10 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": "https://brunswickbowling.com/products/balls/retired/method-solid",
+  "Source": "https://brunswickbowling.com/products/balls/retired/method",
   "SpecsByWeight": {
    "15": {
-    "Diff": 0.055,
+    "Diff": 0.056,
     "IntDiff": null,
     "RG": 2.499
    }
@@ -18914,20 +18932,23 @@
   "Aliases": [],
   "BallName": "NeXXus f(P+R) LE Solid",
   "CatalogID": "brunswick-nexxus-f-pplusr-le-solid",
-  "Checked": null,
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Nexus Rotor",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500 and 1500 Siaair Micro Pad",
+   "Name": "Addaptive f(P+R) Solid",
+   "Type": "Solid Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -18942,8 +18963,14 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": null,
-  "SpecsByWeight": {},
+  "Source": "https://brunswickbowling.com/products/balls/retired/nexxus-fp-r",
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.056,
+    "IntDiff": 0.017,
+    "RG": 2.48
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2013-03",
@@ -19008,20 +19035,23 @@
   "Aliases": [],
   "BallName": "NeXXus f(P+R) Solid",
   "CatalogID": "brunswick-nexxus-f-pplusr-solid",
-  "Checked": null,
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Nexus Rotor",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500 and 1500 Siaair Micro Pad",
+   "Name": "Addaptive f(P+R) Solid",
+   "Type": "Solid Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -19036,8 +19066,14 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": null,
-  "SpecsByWeight": {},
+  "Source": "https://brunswickbowling.com/products/balls/retired/nexxus-fp-r",
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.056,
+    "IntDiff": 0.017,
+    "RG": 2.48
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2012-01",
@@ -22923,9 +22959,9 @@
    "Type": "Asymmetrical"
   },
   "Cover": {
-   "Finish": "500 Siaair / Crown Factory Compound",
-   "Name": "ECA-XR Pearl",
-   "Type": "Pearl Reactive"
+   "Finish": "500 and 1,000 Siaair Micro Pad",
+   "Name": "ECA-XR",
+   "Type": "Solid Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
@@ -22947,7 +22983,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": "https://brunswickbowling.com/products/balls/retired/quantum-bias-pearl",
+  "Source": "https://brunswickbowling.com/products/balls/retired/quantum-bias",
   "SpecsByWeight": {
    "15": {
     "Diff": 0.052,
@@ -23028,20 +23064,23 @@
   "Aliases": [],
   "BallName": "Quantum Bias Solid",
   "CatalogID": "brunswick-quantum-bias-solid",
-  "Checked": null,
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": null,
-   "Type": null
+   "Name": "Quantum Mushroom High RG Asymmetric",
+   "Type": "Asymmetrical"
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500 and 1,000 Siaair Micro Pad",
+   "Name": "ECA-XR",
+   "Type": "Solid Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -23056,8 +23095,14 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": null,
-  "SpecsByWeight": {},
+  "Source": "https://brunswickbowling.com/products/balls/retired/quantum-bias",
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.052,
+    "IntDiff": 0.013,
+    "RG": 2.563
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2018-06-14",
@@ -23122,20 +23167,23 @@
   "Aliases": [],
   "BallName": "Quantum Bias Urethane Blue",
   "CatalogID": "brunswick-quantum-bias-urethane-blue",
-  "Checked": null,
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": null,
-   "Type": null
+   "Name": "Quantum Mushroom High RG Asymmetric",
+   "Type": "Asymmetrical"
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500 and 1,000 Siaair Micro Pad",
+   "Name": "ECA-XR",
+   "Type": "Solid Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -23150,8 +23198,14 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": null,
-  "SpecsByWeight": {},
+  "Source": "https://brunswickbowling.com/products/balls/retired/quantum-bias",
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.052,
+    "IntDiff": 0.013,
+    "RG": 2.563
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2020-05-26",
@@ -26524,20 +26578,23 @@
   "Aliases": [],
   "BallName": "Rhino Black/Green/Orange Pearl",
   "CatalogID": "brunswick-rhino-black-green-orange-pearl",
-  "Checked": null,
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Light Bulb",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish",
+   "Name": "R-16",
+   "Type": "Pearl Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -26552,8 +26609,44 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": null,
-  "SpecsByWeight": {},
+  "Source": "https://brunswickbowling.com/products/balls/retired/rhino-black-green-orange",
+  "SpecsByWeight": {
+   "10": {
+    "Diff": 0.002,
+    "IntDiff": null,
+    "RG": 2.8
+   },
+   "11": {
+    "Diff": 0.002,
+    "IntDiff": null,
+    "RG": 2.769
+   },
+   "12": {
+    "Diff": 0.03,
+    "IntDiff": null,
+    "RG": 2.579
+   },
+   "13": {
+    "Diff": 0.03,
+    "IntDiff": null,
+    "RG": 2.558
+   },
+   "14": {
+    "Diff": 0.03,
+    "IntDiff": null,
+    "RG": 2.54
+   },
+   "15": {
+    "Diff": 0.03,
+    "IntDiff": null,
+    "RG": 2.524
+   },
+   "16": {
+    "Diff": 0.03,
+    "IntDiff": null,
+    "RG": 2.511
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2017-04-18",
@@ -33858,20 +33951,23 @@
   "Aliases": [],
   "BallName": "Uppercut Pearl",
   "CatalogID": "brunswick-uppercut-pearl",
-  "Checked": null,
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Melee",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000 Siaair / Crown Factory Compound",
+   "Name": "Savvy Hook 3.0",
+   "Type": "Pearl Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -33886,8 +33982,14 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": null,
-  "SpecsByWeight": {},
+  "Source": "https://brunswickbowling.com/products/balls/retired/uppercut",
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.05,
+    "IntDiff": null,
+    "RG": 2.487
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2019-12-17",

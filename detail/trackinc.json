@@ -268,20 +268,23 @@
   "Aliases": [],
   "BallName": "300T",
   "CatalogID": "track-inc-300t",
-  "Checked": null,
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": null,
-   "Type": null
+   "Name": "Track Symmetric",
+   "Type": "Symmetrical"
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "800, 1000, 2000, 4000 Abralon®",
+   "Name": "LMP Gen1T Solid",
    "Type": null
   },
-  "DateReleased": null,
+  "DateReleased": "2011-05-17",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -296,8 +299,24 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": null,
-  "SpecsByWeight": {},
+  "Source": "https://trackbowling.com/products/300t",
+  "SpecsByWeight": {
+   "14": {
+    "Diff": 0.036,
+    "IntDiff": null,
+    "RG": 2.56
+   },
+   "15": {
+    "Diff": 0.029,
+    "IntDiff": null,
+    "RG": 2.57
+   },
+   "16": {
+    "Diff": 0.023,
+    "IntDiff": null,
+    "RG": 2.58
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2011-05",
@@ -4468,20 +4487,23 @@
   "Aliases": [],
   "BallName": "Cyborg",
   "CatalogID": "track-inc-cyborg",
-  "Checked": null,
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": null,
-   "Type": null
+   "Name": "Cyborg",
+   "Type": "Asymmetrical"
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "500, 3000 Abralon®",
+   "Name": "QR-7 Hybrid",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -4496,8 +4518,29 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": null,
-  "SpecsByWeight": {},
+  "Source": "https://trackbowling.com/products/cyborg",
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.039,
+    "IntDiff": null,
+    "RG": 2.6
+   },
+   "14": {
+    "Diff": 0.044,
+    "IntDiff": null,
+    "RG": 2.5
+   },
+   "15": {
+    "Diff": 0.043,
+    "IntDiff": null,
+    "RG": 2.48
+   },
+   "16": {
+    "Diff": 0.037,
+    "IntDiff": null,
+    "RG": 2.49
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2016-06-16",

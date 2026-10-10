@@ -7,14 +7,14 @@
   "Colorway": null,
   "Core": {
    "Name": "High Rev Offset",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
-   "Finish": "500, 1000, 2000 Siaair Micro Pad",
-   "Name": "HK22 - Cohesion Hybrid",
-   "Type": "Hybrid Reactive"
+   "Finish": "500, 2000 Siaair Micro Pad",
+   "Name": "Neoflex 25",
+   "Type": "Pearl Reactive"
   },
-  "DateReleased": "2025-01-16",
+  "DateReleased": "2022-02-25",
   "FieldSources": {
    "BallName": "usbc",
    "Core": "mfg",
@@ -34,7 +34,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": "https://hammerbowling.com/products/3-d-offset-assault",
+  "Source": "https://hammerbowling.com/products/3-d-offset",
   "SpecsByWeight": {
    "12": {
     "Diff": 0.043,
@@ -83,14 +83,14 @@
   "Colorway": null,
   "Core": {
    "Name": "High Rev Offset",
-   "Type": null
+   "Type": "Asymmetrical"
   },
   "Cover": {
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound",
-   "Name": "HK22 - Neoflip 25",
+   "Finish": "500, 2000 Siaair Micro Pad",
+   "Name": "Neoflex 25",
    "Type": "Pearl Reactive"
   },
-  "DateReleased": "2022-11-18",
+  "DateReleased": "2022-02-25",
   "FieldSources": {
    "BallName": "usbc",
    "Core": "mfg",
@@ -110,7 +110,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": "https://hammerbowling.com/products/3-d-offset-attack",
+  "Source": "https://hammerbowling.com/products/3-d-offset",
   "SpecsByWeight": {
    "12": {
     "Diff": 0.043,
@@ -155,20 +155,23 @@
   "Aliases": [],
   "BallName": "3D Offset Hybrid",
   "CatalogID": "hammer-3d-offset-hybrid",
-  "Checked": null,
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": null,
-   "Type": null
+   "Name": "High Rev Offset",
+   "Type": "Asymmetrical"
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 2000 Siaair Micro Pad",
+   "Name": "Neoflex 25",
+   "Type": "Hybrid"
   },
-  "DateReleased": null,
+  "DateReleased": "2022-02-25",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -183,8 +186,34 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": null,
-  "SpecsByWeight": {},
+  "Source": "https://hammerbowling.com/products/3-d-offset",
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.043,
+    "IntDiff": 0.011,
+    "RG": 2.612
+   },
+   "13": {
+    "Diff": 0.043,
+    "IntDiff": 0.011,
+    "RG": 2.589
+   },
+   "14": {
+    "Diff": 0.053,
+    "IntDiff": 0.008,
+    "RG": 2.505
+   },
+   "15": {
+    "Diff": 0.053,
+    "IntDiff": 0.008,
+    "RG": 2.489
+   },
+   "16": {
+    "Diff": 0.046,
+    "IntDiff": 0.007,
+    "RG": 2.501
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2023-05-16",
@@ -860,20 +889,23 @@
   "Aliases": [],
   "BallName": "Anger Black-Red-Caramel",
   "CatalogID": "hammer-anger-black-red-caramel",
-  "Checked": null,
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Modified Infamous",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500, 1000, 1500 Siaair / Factory Compound",
+   "Name": "HK22 - CT Reactive Flip",
+   "Type": "Pearl Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2024-11-21",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -888,8 +920,34 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": null,
-  "SpecsByWeight": {},
+  "Source": "https://hammerbowling.com/products/anger",
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.04,
+    "IntDiff": null,
+    "RG": 2.608
+   },
+   "13": {
+    "Diff": 0.04,
+    "IntDiff": null,
+    "RG": 2.585
+   },
+   "14": {
+    "Diff": 0.049,
+    "IntDiff": null,
+    "RG": 2.603
+   },
+   "15": {
+    "Diff": 0.049,
+    "IntDiff": null,
+    "RG": 2.567
+   },
+   "16": {
+    "Diff": 0.041,
+    "IntDiff": null,
+    "RG": 2.572
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2024-11-05",
@@ -914,11 +972,11 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500, 2000 Siaair Micro Pad",
-   "Name": "Semtex Solid",
+   "Finish": "500, 1000, 1500 Siaair / Factory Compound",
+   "Name": "HK22 - CT Reactive Flip",
    "Type": "Solid Reactive"
   },
-  "DateReleased": "2025-07-10",
+  "DateReleased": "2024-11-21",
   "FieldSources": {
    "BallName": "usbc",
    "Core": "mfg",
@@ -938,7 +996,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": "https://hammerbowling.com/products/anger-solid",
+  "Source": "https://hammerbowling.com/products/anger",
   "SpecsByWeight": {
    "12": {
     "Diff": 0.04,
@@ -2620,20 +2678,23 @@
   "Aliases": [],
   "BallName": "Black Pearl Urethane Hammer (78D)",
   "CatalogID": "hammer-black-pearl-urethane-hammer-78d",
-  "Checked": null,
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "LED",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "500 Siaair Micro Pad",
+   "Name": "Urethane Pearl 78D",
+   "Type": "Pearl Urethane"
   },
-  "DateReleased": null,
+  "DateReleased": "2024-03-21",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -2648,8 +2709,34 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": null,
-  "SpecsByWeight": {},
+  "Source": "https://hammerbowling.com/products/black-pearl-urethane",
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.026,
+    "IntDiff": null,
+    "RG": 2.628
+   },
+   "13": {
+    "Diff": 0.02,
+    "IntDiff": null,
+    "RG": 2.631
+   },
+   "14": {
+    "Diff": 0.013,
+    "IntDiff": null,
+    "RG": 2.68
+   },
+   "15": {
+    "Diff": 0.015,
+    "IntDiff": null,
+    "RG": 2.65
+   },
+   "16": {
+    "Diff": 0.03,
+    "IntDiff": null,
+    "RG": 2.61
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2023-12-12",
@@ -20037,15 +20124,15 @@
   "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": "Super LED",
+   "Name": "(2)",
    "Type": null
   },
   "Cover": {
-   "Finish": "500 Siaair Micro Pad",
-   "Name": "Urethane Pearl 78D",
+   "Finish": "(9)",
+   "Name": "Urethane Pearl",
    "Type": "Pearl Urethane"
   },
-  "DateReleased": "2026-03-19",
+  "DateReleased": "2021-07-01",
   "FieldSources": {
    "BallName": "usbc",
    "Core": "mfg",
@@ -20065,32 +20152,32 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": "https://hammerbowling.com/products/purple-pearl-urethane-78d",
+  "Source": "https://hammerbowling.com/products/purple-pearl-urethane",
   "SpecsByWeight": {
    "12": {
-    "Diff": 0.04,
+    "Diff": 0.026,
     "IntDiff": null,
-    "RG": 2.624
+    "RG": 2.628
    },
    "13": {
-    "Diff": 0.04,
+    "Diff": 0.02,
     "IntDiff": null,
-    "RG": 2.601
+    "RG": 2.631
    },
    "14": {
-    "Diff": 0.034,
+    "Diff": 0.013,
     "IntDiff": null,
-    "RG": 2.634
+    "RG": 2.68
    },
    "15": {
-    "Diff": 0.034,
+    "Diff": 0.015,
     "IntDiff": null,
-    "RG": 2.632
+    "RG": 2.65
    },
    "16": {
-    "Diff": 0.034,
+    "Diff": 0.03,
     "IntDiff": null,
-    "RG": 2.583
+    "RG": 2.61
    }
   },
   "USBC": {
@@ -20110,20 +20197,23 @@
   "Aliases": [],
   "BallName": "Purple Pearl Urethane Hammer",
   "CatalogID": "hammer-purple-pearl-urethane-hammer",
-  "Checked": null,
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "(2)",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "(9)",
+   "Name": "Urethane Pearl",
+   "Type": "Pearl Urethane"
   },
-  "DateReleased": null,
+  "DateReleased": "2021-07-01",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -20138,8 +20228,34 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": null,
-  "SpecsByWeight": {},
+  "Source": "https://hammerbowling.com/products/purple-pearl-urethane",
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.026,
+    "IntDiff": null,
+    "RG": 2.628
+   },
+   "13": {
+    "Diff": 0.02,
+    "IntDiff": null,
+    "RG": 2.631
+   },
+   "14": {
+    "Diff": 0.013,
+    "IntDiff": null,
+    "RG": 2.68
+   },
+   "15": {
+    "Diff": 0.015,
+    "IntDiff": null,
+    "RG": 2.65
+   },
+   "16": {
+    "Diff": 0.03,
+    "IntDiff": null,
+    "RG": 2.61
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2021-05-11",
@@ -20157,20 +20273,23 @@
   "Aliases": [],
   "BallName": "Purple Pearl Urethane Hammer (Except Serial #'s Starting with a 6 or 7)",
   "CatalogID": "hammer-purple-pearl-urethane-hammer-except-serial-s-starting-with-a-6-or-7",
-  "Checked": null,
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "(2)",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "(9)",
+   "Name": "Urethane Pearl",
+   "Type": "Pearl Urethane"
   },
-  "DateReleased": null,
+  "DateReleased": "2021-07-01",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -20185,8 +20304,34 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": null,
-  "SpecsByWeight": {},
+  "Source": "https://hammerbowling.com/products/purple-pearl-urethane",
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.026,
+    "IntDiff": null,
+    "RG": 2.628
+   },
+   "13": {
+    "Diff": 0.02,
+    "IntDiff": null,
+    "RG": 2.631
+   },
+   "14": {
+    "Diff": 0.013,
+    "IntDiff": null,
+    "RG": 2.68
+   },
+   "15": {
+    "Diff": 0.015,
+    "IntDiff": null,
+    "RG": 2.65
+   },
+   "16": {
+    "Diff": 0.03,
+    "IntDiff": null,
+    "RG": 2.61
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2016-09-22",
@@ -20204,20 +20349,23 @@
   "Aliases": [],
   "BallName": "Purple Pearl Urethane Hammer (Korea)",
   "CatalogID": "hammer-purple-pearl-urethane-hammer-korea",
-  "Checked": null,
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "(2)",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "(9)",
+   "Name": "Urethane Pearl",
+   "Type": "Pearl Urethane"
   },
-  "DateReleased": null,
+  "DateReleased": "2021-07-01",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -20232,8 +20380,34 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": null,
-  "SpecsByWeight": {},
+  "Source": "https://hammerbowling.com/products/purple-pearl-urethane",
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.026,
+    "IntDiff": null,
+    "RG": 2.628
+   },
+   "13": {
+    "Diff": 0.02,
+    "IntDiff": null,
+    "RG": 2.631
+   },
+   "14": {
+    "Diff": 0.013,
+    "IntDiff": null,
+    "RG": 2.68
+   },
+   "15": {
+    "Diff": 0.015,
+    "IntDiff": null,
+    "RG": 2.65
+   },
+   "16": {
+    "Diff": 0.03,
+    "IntDiff": null,
+    "RG": 2.61
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2024-08-06",
@@ -20251,20 +20425,23 @@
   "Aliases": [],
   "BallName": "Purple Pearl Urethane Hammer (Purple Pin)",
   "CatalogID": "hammer-purple-pearl-urethane-hammer-purple-pin",
-  "Checked": null,
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "(2)",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "(9)",
+   "Name": "Urethane Pearl",
+   "Type": "Pearl Urethane"
   },
-  "DateReleased": null,
+  "DateReleased": "2021-07-01",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -20279,8 +20456,34 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": null,
-  "SpecsByWeight": {},
+  "Source": "https://hammerbowling.com/products/purple-pearl-urethane",
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.026,
+    "IntDiff": null,
+    "RG": 2.628
+   },
+   "13": {
+    "Diff": 0.02,
+    "IntDiff": null,
+    "RG": 2.631
+   },
+   "14": {
+    "Diff": 0.013,
+    "IntDiff": null,
+    "RG": 2.68
+   },
+   "15": {
+    "Diff": 0.015,
+    "IntDiff": null,
+    "RG": 2.65
+   },
+   "16": {
+    "Diff": 0.03,
+    "IntDiff": null,
+    "RG": 2.61
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2022-12-27",
