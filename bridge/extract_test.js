@@ -198,6 +198,13 @@ ok(fl.some(f => f.startsWith('out-of-range')) && mon.specs.weights[16].IntDiff =
 ok(X.decide(mon, X.matchRec(mon, by), fl).decision === 'pending', 'out-of-range -> pending');
 ok(X.decide(hy, X.matchRec(hy, by), X.verify(hy)).decision === 'auto', 'clean exact -> auto');
 const light = { specs: { weights: { 10: { RG: 2.87, Diff: 0.01 } } } }; ok(X.verify(light).length === 0, '10 lb RG 2.87 passes');
+/* v30.171 CAT-NEW-1 status from URL */
+ok(X.statusFromUrl('https://b.com/products/balls/current/combat-hybrid') === 'current' && X.statusFromUrl('https://b.com/products/balls/retired/x') === 'retired' && X.statusFromUrl('https://h.com/products/x') === 'unknown', 'status from URL');
+/* v30.171 Diff gate = USBC 0.060 */
+{ const g = { specs: { weights: { 16: { RG: 2.49, Diff: 0.060 }, 15: { RG: 2.50, Diff: 0.090 } } } }; const gf = X.verify(g);
+  ok(g.specs.weights[16].Diff === 0.060 && !gf.some(f => /:16:Diff/.test(f)), 'Diff 0.060 passes (USBC max)');
+  ok(g.specs.weights[15].Diff === null && gf.includes('out-of-range:15:Diff=0.09'), 'Diff 0.090 (300T 15 lb typo) rejected and nulled');
+  const g2 = { specs: { weights: { 15: { RG: 2.50, Diff: 0.061 } } } }; X.verify(g2); ok(g2.specs.weights[15].Diff === null, 'Diff 0.061 rejected'); }
 const bad = { specs: { weights: {}, released: '3024-09-03' } }; X.verify(bad); ok(bad.specs.released === null, 'source typo date dropped');
 const dup = [{ decision: 'auto', catalogId: 'a', specs: { weights: { 15: { RG: 2.5 } } } }, { decision: 'auto', catalogId: 'a', specs: { weights: { 15: { RG: 2.6 } } } }];
 X.resolveConflicts(dup); ok(dup.every(d => d.decision === 'pending'), 'two sources disagree -> both pending');
@@ -228,6 +235,7 @@ X.resolveConflicts(same); ok(same[0].decision === 'auto' && same[1].decision ===
   ok(!seen.some(u => u.includes('agg.com')), 'aggregator never fetched');
   ok(!seen.some(u => u.includes('/bags/')), 'non-ball craft pages skipped');
   const titles = res.staged.map(s => s.title);
+  ok(res.staged.find(s => s.title === 'Combat Hybrid').status === 'current' && res.staged.find(s => s.title === 'Anger Solid').status === 'unknown' && res.staged.find(s => s.title === 'HY-ROAD').status === 'current', 'staged rows carry status (craft URL, Shopify unknown, Storm listing)');
   ok(titles.includes('Anger Solid') && titles.includes('Combat Hybrid') && titles.includes('Apex Jackal') && titles.includes('HY-ROAD'), 'all four platforms staged: ' + titles);
   ok(!titles.includes('Towel'), 'non-ball shopify product dropped');
   const auto = res.staged.filter(s => s.decision === 'auto').map(s => s.catalogId).sort();
