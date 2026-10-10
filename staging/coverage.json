@@ -1,70 +1,10 @@
 {
-  "generated": "2026-10-10T14:18:23.036Z",
+  "generated": "2026-10-10T18:06:09.240Z",
   "since": 2023,
   "perSource": {
     "storm": {
       "pages": 1788,
       "parsed": 73,
-      "errors": 0,
-      "errorSample": []
-    },
-    "brunswick": {
-      "pages": 258,
-      "parsed": 258,
-      "errors": 0,
-      "errorSample": []
-    },
-    "hammer": {
-      "pages": 366,
-      "parsed": 197,
-      "errors": 3,
-      "errorSample": [
-        "https://hammerbowling.com/products/pure-hammer.json 429",
-        "https://hammerbowling.com/products/radioactive-vibe.json 429",
-        "https://hammerbowling.com/products/black-widow-hybrid-triple-roller.json 429"
-      ]
-    },
-    "dv8": {
-      "pages": 126,
-      "parsed": 126,
-      "errors": 0,
-      "errorSample": []
-    },
-    "radical": {
-      "pages": 129,
-      "parsed": 129,
-      "errors": 0,
-      "errorSample": []
-    },
-    "track": {
-      "pages": 181,
-      "parsed": 164,
-      "errors": 1,
-      "errorSample": [
-        "https://trackbowling.com/products/flaming-t-clear.json 429"
-      ]
-    },
-    "ebonite": {
-      "pages": 215,
-      "parsed": 191,
-      "errors": 1,
-      "errorSample": [
-        "https://ebonite.com/products/maxim-captain-galaxy.json 429"
-      ]
-    },
-    "columbia": {
-      "pages": 404,
-      "parsed": 386,
-      "errors": 3,
-      "errorSample": [
-        "https://columbia300.com/products/shock.json 429",
-        "https://columbia300.com/products/game-pearl.json 429",
-        "https://columbia300.com/products/nitrous-red-gold.json 429"
-      ]
-    },
-    "motiv": {
-      "pages": 206,
-      "parsed": 205,
       "errors": 0,
       "errorSample": []
     }
