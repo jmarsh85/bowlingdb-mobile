@@ -2939,6 +2939,27 @@
   "Source": "https://brunswickbowling.com/products/balls/retired/nexxus-fp-r",
   "Checked": "2026-10-10"
  },
+ "brunswick-nexxus-f-pplusr-pearl": {
+  "DateReleased": null,
+  "Core": {
+   "Name": "Nexus Rotor",
+   "Type": null
+  },
+  "Cover": {
+   "Name": "Addaptive f(P+R) Solid",
+   "Type": "Solid Reactive",
+   "Finish": "500 and 1500 Siaair Micro Pad"
+  },
+  "SpecsByWeight": {
+   "15": {
+    "RG": 2.48,
+    "Diff": 0.056,
+    "IntDiff": 0.017
+   }
+  },
+  "Source": "https://brunswickbowling.com/products/balls/retired/nexxus-fp-r",
+  "Checked": "2026-10-10"
+ },
  "brunswick-nexxus-f-pplusr-solid": {
   "DateReleased": null,
   "Core": {
@@ -3212,6 +3233,27 @@
   "Checked": "2026-10-10"
  },
  "brunswick-quantum-bias-solid": {
+  "DateReleased": null,
+  "Core": {
+   "Name": "Quantum Mushroom High RG Asymmetric",
+   "Type": "Asymmetrical"
+  },
+  "Cover": {
+   "Name": "ECA-XR",
+   "Type": "Solid Reactive",
+   "Finish": "500 and 1,000 Siaair Micro Pad"
+  },
+  "SpecsByWeight": {
+   "15": {
+    "RG": 2.563,
+    "Diff": 0.052,
+    "IntDiff": 0.013
+   }
+  },
+  "Source": "https://brunswickbowling.com/products/balls/retired/quantum-bias",
+  "Checked": "2026-10-10"
+ },
+ "brunswick-quantum-bias-urethane": {
   "DateReleased": null,
   "Core": {
    "Name": "Quantum Mushroom High RG Asymmetric",
@@ -27395,6 +27437,52 @@
   "Source": "https://www.motivbowling.com/products/balls/retired-balls/rebel-tank.html",
   "Checked": "2026-10-10"
  },
+ "motiv-recon-rx1-silver-pearl": {
+  "DateReleased": null,
+  "Core": {
+   "Name": "Recon",
+   "Type": null
+  },
+  "Cover": {
+   "Name": "MOTIVator-X",
+   "Type": null,
+   "Finish": "5500 Grit Laser Scan Polished"
+  },
+  "SpecsByWeight": {
+   "10": {
+    "RG": 2.75,
+    "Diff": 0.01,
+    "IntDiff": null
+   },
+   "11": {
+    "RG": 2.69,
+    "Diff": 0.022,
+    "IntDiff": null
+   },
+   "12": {
+    "RG": 2.62,
+    "Diff": 0.038,
+    "IntDiff": null
+   },
+   "13": {
+    "RG": 2.62,
+    "Diff": 0.03,
+    "IntDiff": null
+   },
+   "14": {
+    "RG": 2.61,
+    "Diff": 0.025,
+    "IntDiff": null
+   },
+   "15": {
+    "RG": 2.59,
+    "Diff": 0.025,
+    "IntDiff": null
+   }
+  },
+  "Source": "https://www.motivbowling.com/products/balls/retired-balls/recon-rx1-silver.html",
+  "Checked": "2026-10-10"
+ },
  "motiv-revolt-uprising": {
   "DateReleased": null,
   "Core": {
@@ -28584,6 +28672,51 @@
   },
   "Source": "https://www.motivbowling.com/products/balls/retired-balls/t10-limited-edition.html",
   "Checked": "2026-10-10"
+ },
+ "motiv-tag-cannon-green-blue-pearl": {
+  "DateReleased": null,
+  "Core": {
+   "Name": "Halogen™",
+   "Type": null
+  },
+  "Cover": {
+   "Name": "Agility™ SFP Reactive",
+   "Type": "Pearl Reactive",
+   "Finish": "5500 Grit LSP"
+  },
+  "SpecsByWeight": {
+   "12": {
+    "RG": 2.64,
+    "Diff": 0.031,
+    "IntDiff": null
+   },
+   "13": {
+    "RG": 2.59,
+    "Diff": 0.038,
+    "IntDiff": null
+   },
+   "14": {
+    "RG": 2.56,
+    "Diff": 0.038,
+    "IntDiff": null
+   },
+   "15": {
+    "RG": 2.55,
+    "Diff": 0.037,
+    "IntDiff": null
+   },
+   "16": {
+    "RG": 2.54,
+    "Diff": 0.036,
+    "IntDiff": null
+   }
+  },
+  "Source": "https://www.motivbowling.com/products/balls/retired-balls/tag-cannon.html",
+  "Checked": "2026-10-10",
+  "Corrected": {
+   "source": "maker",
+   "at": "2026-10-10"
+  }
  },
  "motiv-tank": {
   "DateReleased": null,
@@ -36345,27 +36478,27 @@
   "DateReleased": null,
   "Core": {
    "Name": "Modified Tri-Core",
-   "Type": "Symmetrical"
+   "Type": null
   },
   "Cover": {
-   "Name": "QR-5 Solid",
-   "Type": null,
-   "Finish": "500 / 2000 Abralon®"
+   "Name": "DR-7 Solid",
+   "Type": "Solid Reactive",
+   "Finish": "500, 1000, 2000 Siaair Micro Pad"
   },
   "SpecsByWeight": {
    "12": {
-    "RG": 2.6,
-    "Diff": 0.039,
+    "RG": 2.597,
+    "Diff": 0.04,
     "IntDiff": null
    },
    "13": {
-    "RG": 2.53,
-    "Diff": 0.055,
+    "RG": 2.574,
+    "Diff": 0.04,
     "IntDiff": null
    },
    "14": {
-    "RG": 2.49,
-    "Diff": 0.045,
+    "RG": 2.51,
+    "Diff": 0.038,
     "IntDiff": null
    },
    "15": {
@@ -36379,7 +36512,7 @@
     "IntDiff": null
    }
   },
-  "Source": "https://trackbowling.com/products/heat-x-treme",
+  "Source": "https://trackbowling.com/products/heat",
   "Checked": "2026-10-10"
  },
  "track-inc-heat-x-treme-polished": {
