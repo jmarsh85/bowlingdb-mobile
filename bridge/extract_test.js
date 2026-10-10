@@ -248,5 +248,18 @@ X.resolveConflicts(same); ok(same[0].decision === 'auto' && same[1].decision ===
   ok(r3.staged.some(x => x.source === 'hammer'), '--only run keeps the other sources');
   ok(r3.perSource.storm.carriedOver > 0 && r3.staged.some(x => x.source === 'storm' && x.decision === 'auto'), 'source returning nothing keeps last run rows');
   ok(r2.perSource.storm.debug === 'debug/storm.html' && fs.existsSync(path.join(tmp, 'st2', 'debug', 'storm.html')), 'zero-parse source writes a debug page');
+  /* v30.168: core type is read only where the page states it; Storm listing rows take the product page's other weights */
+  ok(X.statedCoreType(null, 'Asymmetric') === 'Asymmetrical' && X.statedCoreType('Symmetrical Core') === 'Symmetrical', 'stated core type read');
+  ok(X.statedCoreType('Rampart', null, 'Precision SD (Single Density)') === null, 'no symmetry word -> blank, never guessed');
+  const cc = X.parseCraft(CRAFT.replace('<tr><td>Core</td><td>Rampart</td></tr>', '<tr><td>Core</td><td>Rampart</td></tr><tr><td>Core Type</td><td>Asymmetric</td></tr>'), 'https://x/c', 'Brunswick')[0];
+  ok(cc.specs.coreType === 'Asymmetrical', 'craft Core Type row read');
+  ok(X.parseCraft(CRAFT, 'https://x/c', 'Brunswick')[0].specs.coreType === null, 'craft without a core type row stays blank');
+  const sb = X.parseShopifyBody(SHOP_BODY.replace('<li><strong>COVERSTOCK</strong>', '<li><strong>CORE TYPE</strong> Symmetric</li><li><strong>COVERSTOCK</strong>'), 'Anger', 'https://x/a', 'Hammer', null)[0];
+  ok(sb.specs.coreType === 'Symmetrical', 'shopify CORE TYPE read');
+  const lr = { specs: { weights: { 15: { RG: 2.48, Diff: 0.051, IntDiff: null } }, coreType: null, released: null } };
+  const pr = { imageUrl: 'https://i/p.png', specs: { weights: { 16: { RG: 2.47, Diff: 0.052 }, 15: { RG: 9, Diff: 9 } }, coreType: 'Symmetrical', released: '2022-10-01' } };
+  ok(X.mergeProduct(lr, pr) && lr.specs.weights[16].RG === 2.47 && lr.specs.weights[15].RG === 2.48, 'product page adds weights, listing weight kept');
+  ok(lr.specs.coreType === 'Symmetrical' && lr.specs.released === '2022-10-01' && lr.imageUrl === 'https://i/p.png', 'product page fills core type, date, image');
+  ok(X.mergeProduct(lr, pr) === false, 'nothing new -> no change');
   console.log('extract_test: ' + n + ' checks passed');
 })().catch(e => { console.error('FAIL', e.message); process.exit(1); });
