@@ -35,7 +35,8 @@
 (function (root) {
 'use strict';
 
-var CAT_VERSION  = 'v30.159';
+/* v30.169: shown in the app header when it differs from the build's EXPECTED_CATALOG_JS */
+var CAT_VERSION  = 'v30.170';
 var CAT_BASE     = 'https://raw.githubusercontent.com/jmarsh85/bowlingdb-mobile/dist/';
 var CAT_DB       = 'BowlingDB_Catalog';
 var CAT_DB_VER   = 1;
@@ -657,7 +658,24 @@ function filesKnown() {
   return _manifestOnce;
 }
 /* Resolves the detail entry for a CatalogID, or null. Never rejects. */
+/* v30.170: this device's own corrections (bowwwl-sourced) layered over a catalog
+   record, display only. Marked _local so the sheet can say so. */
+function withLocalCorrection(id, d) {
+  var o = localOverrides()[id];
+  if (!o) return d;
+  var x = JSON.parse(JSON.stringify(d || {}));
+  x.Cover = x.Cover || {}; x.Core = x.Core || {}; x.SpecsByWeight = x.SpecsByWeight || {};
+  if (o.coverType) x.Cover.Type = o.coverType; if (o.finish) x.Cover.Finish = o.finish;
+  if (o.core) x.Core.Name = o.core; if (o.coreType) x.Core.Type = o.coreType;
+  if (o.released) x.DateReleased = o.released;
+  Object.keys(o.weights || {}).forEach(function (w) { x.SpecsByWeight[w] = Object.assign({}, x.SpecsByWeight[w] || {}, o.weights[w]); });
+  x._local = { source: o.source, at: o.at };
+  return x;
+}
 function catDetail(entry) {
+  return catDetailRaw(entry).then(function (d) { return entry && (d || localOverrides()[entry.i]) ? withLocalCorrection(entry.i, d) : d; });
+}
+function catDetailRaw(entry) {
   if (!entry) return Promise.resolve(null);
   return filesKnown().then(function (files) {
     var key = shardKeyFor(files, entry.m);
@@ -865,7 +883,7 @@ function catAutoVerify(ball) {
   if (!SPEC_FIELDS.some(function (f) { return catSpecUnverified(ball, f); })) return Promise.resolve(0);
   return catLoad().then(function (rows) {
     var e = byIdIn(rows, ball.CatalogID);
-    return e ? catDetail(e) : null;
+    return e ? catDetailRaw(e) : null;   /* catalog only: device corrections never mark a field 'catalog' */
   }).then(function (d) {
     if (!d) return 0;
     var s = specsOf(d, parseInt(ball.Weight, 10) || 15);
@@ -1133,7 +1151,8 @@ function sheetHTML(e, rows) {
     var wt = _sheet.weight || 15;
     body += '<div style="font-size:11px;color:var(--t3);margin-top:8px;line-height:1.5">RG and Diff shown for ' + _shownW + ' lb' +
       (_shownW !== wt ? ' \u2014 <b style="color:var(--gold)">' + wt + ' lb is not published</b>' : (s.weights.length && s.weights.indexOf(wt) < 0 ? ' (not published for this weight)' : '')) + '.' +
-      (s.src ? ' Specs: ' + (/^https?:|^manufacturer$/.test(s.src) ? 'manufacturer' : esc(s.src)) + (s.checked ? ', checked ' + esc(s.checked) : '') + '.' : '') + '</div>';
+      (s.src ? ' Specs: ' + (/^https?:|^manufacturer$/.test(s.src) ? 'manufacturer' : esc(s.src)) + (s.checked ? ', checked ' + esc(s.checked) : '') + '.' : '') +
+      (_sheet.detail && _sheet.detail._local ? ' <span style="color:var(--teal)">Includes your corrections (this device' + (_sheet.detail._local.source === 'bowwwl' ? ', from bowwwl' : '') + ').</span>' : '') + '</div>';
     var met = metricScore(ballFromSpecs(s), parseFinish(s.finish));
     if (met) body += '<div style="margin-top:12px;padding:10px 12px;border-radius:10px;background:var(--bg3);font-size:13px;color:var(--t1)">' +
       'Strength <b>' + met.strength + '</b> · Shape <b>' + signed(met.shape) + '</b><span style="color:var(--t3);font-size:11px"> · factory finish' + (_shownW !== wt ? ', ' + _shownW + ' lb specs' : '') + '</span></div>';
@@ -1182,9 +1201,10 @@ function catAddDetail(id) {
     _sheet = { id: e.i, weight: null, detail: null, loaded: false };
     document.body.appendChild(overlay('cat-sheet-ov', 910));
     renderSheet();
-    catDetail(e).then(function (d) {
+    catDetailRaw(e).then(function (raw) {
       if (_sheet.id !== e.i) return;
-      _sheet.detail = d; _sheet.loaded = true; renderSheet();
+      /* shown with this device's corrections; Add to Arsenal stores only catalog values */
+      _sheet.raw = raw; _sheet.detail = (raw || localOverrides()[e.i]) ? withLocalCorrection(e.i, raw) : raw; _sheet.loaded = true; renderSheet();
     });
   });
 }
@@ -1223,7 +1243,7 @@ function catAddToArsenal() {
     var maxId = db.balls.reduce(function (m, b) { return Math.max(m, +b.BallID || 0); }, 0);
     if (!(db.ids.ball > maxId)) db.ids.ball = maxId + 1;
     var id = db.ids.ball++;
-    var rec = buildOwnedBall(e, _sheet.detail, _sheet.weight, id);
+    var rec = buildOwnedBall(e, _sheet.raw !== undefined ? _sheet.raw : _sheet.detail, _sheet.weight, id);
     db.balls.push(rec);
     if (root.saveDB) root.saveDB();
     catCloseAddSearch();
@@ -1269,7 +1289,7 @@ function renderFillRow() {
   catLoad().then(function (rows) {
     var e = byIdIn(rows, want);
     if (!e) return null;
-    return catDetail(e);
+    return catDetailRaw(e);
   }).then(function (d) {
     if (_pick.id !== want || !document.getElementById('cat-fill-row')) return;
     var wEl = document.getElementById('bef-wt');
@@ -1284,7 +1304,7 @@ function renderFillRow() {
   }).catch(function () {});
 }
 function catFillFromCatalog(mode) {
-  catLoad().then(function (rows) { return catDetail(byIdIn(rows, _pick.id)); }).then(function (d) {
+  catLoad().then(function (rows) { return catDetailRaw(byIdIn(rows, _pick.id)); }).then(function (d) {
     var wEl = document.getElementById('bef-wt');
     var s = specsOf(d, (wEl && parseInt(wEl.value, 10)) || 15), spec = ballFromSpecs(s);
     var plan = fillPlan(formValues(), (_pick.ball && _pick.ball.SpecSource) || {}, spec);
@@ -1429,6 +1449,7 @@ function apLoad() {
     _ap.issue = is.number; _ap.body = is.body; _ap.fromCache = false;
     apExtractStatus().then(function (run) { _ap.run = run; if (run) apRender(); });
     apReadStaged().then(function () { apRender(); }).catch(function () {});
+    apReadOverrides().then(function () { apRender(); }).catch(function () {});
   }).catch(function (e) {
     var l = apLS(), c = null; try { c = JSON.parse((l && l.getItem(AP_CACHE_KEY)) || 'null'); } catch (x) {}
     if (c) { _ap.issue = c.number; _ap.body = c.body; _ap.fromCache = true; }
@@ -1532,15 +1553,24 @@ function apRender() {
       '<span style="font-size:12px;font-weight:800;color:' + (on ? 'var(--teal)' : 'var(--t3)') + '">' + (on ? '✓ Approved' : 'Tap to approve') + '</span></div>' +
       '<div style="font-size:11px;color:var(--t3);line-height:1.45;margin-top:3px">' + esc(b.reason) + '</div>' +
       /* v30.168: the full staged record, close to the maker's spec sheet */
-      (_staged ? apSheetHTML(apStagedFor(_staged, b, p.catalogId)) : '<div style="font-size:16px;font-weight:800;color:var(--t1);margin:5px 0 3px">' + esc(b.specs) + '</div>' + apSheetHTML(null)) +
-      (b.url ? '<a href="' + esc(b.url) + '" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" style="font-size:12px;color:var(--teal);display:inline-block;margin-top:5px">Open source page ↗</a>' : '') +
-      '</div>';
+      (_staged ? apSheetHTML(apApplyOverride(apStagedFor(_staged, b, p.catalogId), overrideFor(p.catalogId))) : '<div style="font-size:16px;font-weight:800;color:var(--t1);margin:5px 0 3px">' + esc(b.specs) + '</div>' + apSheetHTML(null)) +
+      '<div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:6px">' +
+      (b.url ? '<a href="' + esc(b.url) + '" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" style="font-size:12px;color:var(--teal)">Open source page ↗</a>' : '') +
+      '<a href="#" onclick="event.preventDefault();event.stopPropagation();catApprovalsEdit(' + i + ')" style="font-size:12px;color:var(--teal);font-weight:700">Correct / fill gaps</a>' +
+      '</div></div>';
   }).join('');
   var _vb = (function () { var r = _ap._rows, e = r ? byIdIn(r, p.catalogId) : null; return e ? e.m : null; })();
+  /* bowwwl.com cross-check: a link only (personal-use reading); the app never fetches it */
+  var _ve = _ap._rows ? byIdIn(_ap._rows, p.catalogId) : null;
+  var _bl = bowwwlLinks(_ve ? _ve.m : (_vb || ''), _ve ? cleanName(_ve.n) : p.boxes[0].title);
+  var crossCheck = '<div style="margin-top:12px;padding:10px 12px;border-radius:10px;background:var(--bg3);font-size:12px;color:var(--t2);line-height:1.5">' +
+    'Second opinion: <a href="' + esc(_bl.page) + '" target="_blank" rel="noopener noreferrer" style="color:var(--teal)">bowwwl page ↗</a> · ' +
+    '<a href="' + esc(_bl.search) + '" target="_blank" rel="noopener noreferrer" style="color:var(--teal)">search ↗</a>' +
+    '<div style="font-size:11px;color:var(--t3)">For your own check only. If you use a value from it, choose bowwwl as the correction source.</div></div>';
   var verifyBtn = sourceForBrand(_vb) ? '<button style="' + BTN_G + 'margin-top:12px;width:100%;padding:10px" onclick="catVerifyNow(\'' + esc(_vb) + '\')">Verify now: re-read the ' + esc(sourceForBrand(_vb)) + ' site</button>' : '';
   var warn = apConflict(p.boxes) ? '<div style="font-size:12px;color:var(--gold);margin-top:10px;line-height:1.45">These approvals disagree, so neither will publish. Keep one.</div>' : '';
   ov.innerHTML = apHeader(sub) + status + filt +
-    '<div style="flex:1;overflow-y:auto;padding:4px 16px 12px">' + head + mineH + cards + warn + verifyBtn + '</div>' + apFooter(true);
+    '<div style="flex:1;overflow-y:auto;padding:4px 16px 12px">' + head + mineH + cards + warn + crossCheck + verifyBtn + '</div>' + apFooter(true);
   catLoad().then(function (rows) {
     var first = !_ap._rows; _ap._rows = rows;
     var e = byIdIn(rows, p.catalogId), el = document.getElementById('ap-entry');
@@ -1677,25 +1707,31 @@ function apRangeNotes(flags) {
 function apSheetHTML(r) {
   if (!r) return '<div style="font-size:11px;color:var(--t3);margin-top:6px">Full specs load with the staging file\u2026</div>';
   var d = apAsDetail(r), sp = r.specs || {}, gaps = specGaps(d) || [];
+  var ed = r._edited || {}, edw = ed.weights || {};
+  var tag = '<span style="font-size:9px;font-weight:800;color:var(--teal);margin-left:4px">EDITED</span>';
   var dash = '<span style="color:var(--gold)">missing</span>';
   var row = function (k, v) { return '<div style="display:flex;justify-content:space-between;gap:10px;padding:4px 0;border-bottom:1px solid var(--border1);font-size:12px">' +
     '<span style="color:var(--t3)">' + k + '</span><span style="color:var(--t1);text-align:right">' + v + '</span></div>'; };
   var dct = derivedCoverType(sp.coverName);
   var h = '<div style="margin-top:8px">' +
     row('Coverstock', sp.coverName ? esc(sp.coverName) : dash) +
-    row('Cover type', sp.coverType ? esc(sp.coverType) : (dct ? esc(dct) + ' <span style="font-size:10px;color:var(--t3)">from name</span>' : dash)) +
-    row('Factory finish', sp.finish ? esc(sp.finish) : dash) +
-    row('Core', sp.core ? esc(sp.core) : dash) +
-    row('Core type', sp.coreType ? esc(sp.coreType) : dash) +
-    row('Release date', sp.released ? esc(String(sp.released).slice(0, 10)) : '<span style="color:var(--t3)">\u2014</span>');
+    row('Cover type', sp.coverType ? esc(sp.coverType) + (ed.coverType ? tag : '') : (dct ? esc(dct) + ' <span style="font-size:10px;color:var(--t3)">from name</span>' : dash)) +
+    row('Factory finish', sp.finish ? esc(sp.finish) + (ed.finish ? tag : '') : dash) +
+    row('Core', sp.core ? esc(sp.core) + (ed.core ? tag : '') : dash) +
+    row('Core type', sp.coreType ? esc(sp.coreType) + (ed.coreType ? tag : '') : dash) +
+    row('Release date', sp.released ? esc(String(sp.released).slice(0, 10)) + (ed.released ? tag : '') : '<span style="color:var(--t3)">\u2014</span>');
   var ws = Object.keys(sp.weights || {}).map(Number).filter(isFinite).sort(function (a, b) { return b - a; });
   var f3 = function (v) { return v != null ? Number(v).toFixed(3) : '<span style="color:var(--gold)">\u2013</span>'; };
   h += '<table style="width:100%;border-collapse:collapse;margin-top:8px;font-size:12px"><tr style="color:var(--t3)"><td>Weight</td><td style="text-align:right">RG</td><td style="text-align:right">Diff</td><td style="text-align:right">Int</td></tr>' +
     (ws.length ? ws.map(function (w) { var x = sp.weights[w] || {};
-      return '<tr><td style="color:var(--t2)">' + w + ' lb</td><td style="text-align:right">' + f3(x.RG) + '</td><td style="text-align:right">' + f3(x.Diff) + '</td><td style="text-align:right">' + f3(x.IntDiff) + '</td></tr>'; }).join('')
+      var e = edw[w] || {}, mk = function (k) { return f3(x[k]) + (e[k] != null ? '<span style="color:var(--teal)">*</span>' : ''); };
+      return '<tr><td style="color:var(--t2)">' + w + ' lb</td><td style="text-align:right">' + mk('RG') + '</td><td style="text-align:right">' + mk('Diff') + '</td><td style="text-align:right">' + mk('IntDiff') + '</td></tr>'; }).join('')
       : '<tr><td colspan="4" style="color:var(--gold)">No weights read</td></tr>') + '</table>';
   if (ws.length && ws.indexOf(15) < 0) h += '<div style="font-size:11px;color:var(--gold);margin-top:4px">15 lb not on this page</div>';
-  var rn = apRangeNotes(r.flags);
+  /* a range failure that has since been corrected is shown as resolved */
+  var rn = apRangeNotes((r.flags || []).filter(function (f) { var m = /^out-of-range:(\d+):(\w+)=/.exec(f); return !(m && edw[m[1]] && edw[m[1]][m[2]] != null); }));
+  if (Object.keys(edw).length || Object.keys(ed).some(function (k) { return ['coverType','finish','core','coreType','released'].indexOf(k) >= 0; }))
+    h += '<div style="font-size:11px;color:var(--teal);margin-top:6px">* corrected by you \u00b7 source: ' + esc(ed.source === 'bowwwl' ? 'bowwwl.com (personal use)' : ed.source === 'other' ? 'other' : 'maker sheet') + (ed.note ? ' \u00b7 ' + esc(ed.note) : '') + '</div>';
   if (rn.length) h += '<div style="font-size:11px;color:var(--red);margin-top:6px;line-height:1.45">' + rn.map(esc).join('<br>') + '</div>';
   var sc = r.mfgScales || {}, scs = Object.keys(sc).map(function (k) { return esc(k.replace(/([A-Z])/g, ' $1').toLowerCase()) + ' ' + esc(sc[k]); });
   if (scs.length) h += '<div style="font-size:11px;color:var(--t3);margin-top:6px">Maker scale: ' + scs.join(' \u00b7 ') + '</div>';
@@ -1759,6 +1795,166 @@ function catVerifyNow(brand) {
     return null;
   });
 }
+
+/* ---------- v30.169 APP-3: corrections during review ----------
+   A correction is saved to staging/overrides.json on the `specs` branch
+   (GitHub contents API, the APP-1 token; needs Contents read and write):
+     { "<catalogId>": { coverType, finish, core, coreType, released,
+                        weights: { "15": { "Diff": 0.029 } },
+                        source: "maker" | "bowwwl" | "other", note, at } }
+   Only fields the bowler fills are stored; a blank input means "no change".
+   The source is kept per correction so bowwwl-sourced values can be credited
+   or removed before anything is shared. The publish step must merge this
+   file (bridge change, separate). */
+/* v30.170: corrections/ (not staging/), because specs-extract replaces staging/
+   on every run. Values sourced from bowwwl.com never go to the repo (public):
+   they stay on this device in LOCAL_OVR_KEY (bowlingdb_ prefix, so backups keep
+   them) and are merged into what this device shows. */
+var OVR_PATH = '/contents/corrections/overrides.json';
+var LOCAL_OVR_KEY = 'bowlingdb_spec_corrections_local';
+function localOverrides() { var l = apLS(); try { return JSON.parse((l && l.getItem(LOCAL_OVR_KEY)) || '{}') || {}; } catch (e) { return {}; } }
+function saveLocalOverride(id, o) { var l = apLS(); if (!l) return; var all = localOverrides(); all[id] = o; l.setItem(LOCAL_OVR_KEY, JSON.stringify(all)); }
+/* Pure: repo correction then this device's correction (device wins field by field). */
+function mergeOverrides(a, b) {
+  if (!a) return b || null; if (!b) return a;
+  var o = Object.assign({}, a, b); o.weights = {};
+  [a.weights || {}, b.weights || {}].forEach(function (ws) { Object.keys(ws).forEach(function (w) { o.weights[w] = Object.assign({}, o.weights[w] || {}, ws[w]); }); });
+  return o;
+}
+function overrideFor(id) { return mergeOverrides(_ovr && _ovr[id], localOverrides()[id]); }
+var _ovr = null, _ovrSha = null;
+function b64e(t) { return root.btoa(unescape(encodeURIComponent(t))); }
+function b64d(t) { return decodeURIComponent(escape(root.atob(String(t || '').replace(/\s/g, '')))); }
+function apReadOverrides(force) {
+  if (_ovr && !force) return Promise.resolve(_ovr);
+  return apGH(OVR_PATH + '?ref=specs').then(function (f) {
+    _ovrSha = f.sha; _ovr = JSON.parse(b64d(f.content) || '{}'); return _ovr;
+  }).catch(function (e) {
+    if (e.status === 404) { _ovr = {}; _ovrSha = null; return _ovr; }
+    throw e;
+  });
+}
+/* Pure: merge a correction over a staged record (returns a new record). */
+function apApplyOverride(r, o) {
+  if (!o) return r;
+  var sp = JSON.parse(JSON.stringify((r && r.specs) || {}));
+  ['coverType', 'finish', 'core', 'coreType', 'released', 'coverName'].forEach(function (k) { if (o[k] != null && o[k] !== '') sp[k] = o[k]; });
+  sp.weights = sp.weights || {};
+  Object.keys(o.weights || {}).forEach(function (w) {
+    sp.weights[w] = Object.assign({}, sp.weights[w] || {}, o.weights[w]);
+  });
+  return Object.assign({}, r || {}, { specs: sp, _edited: o });
+}
+/* Pure: form values -> correction object (blank = no change; numbers checked). */
+function apOverrideFrom(form) {
+  var o = {}, err = [];
+  ['coverType', 'finish', 'core', 'coreType', 'released'].forEach(function (k) { var v = String(form[k] || '').trim(); if (v) o[k] = v; });
+  var w = {};
+  Object.keys(form.weights || {}).forEach(function (lb) {
+    var x = form.weights[lb] || {}, y = {};
+    [['RG', 2.30, 2.90], ['Diff', 0, 0.080], ['IntDiff', 0, 0.040]].forEach(function (g) {
+      var v = String(x[g[0]] == null ? '' : x[g[0]]).trim();
+      if (!v) return;
+      var n = Number(v);
+      if (!isFinite(n) || n < g[1] || n > g[2]) err.push(g[0] + ' ' + lb + ' lb must be ' + g[1] + '\u2013' + g[2]);
+      else y[g[0]] = n;
+    });
+    if (Object.keys(y).length) w[lb] = y;
+  });
+  if (Object.keys(w).length) o.weights = w;
+  o.source = form.source || 'maker';
+  if (String(form.note || '').trim()) o.note = String(form.note).trim();
+  return { override: o, errors: err };
+}
+function apSaveOverride(catalogId, o) {
+  return apReadOverrides(true).then(function (all) {
+    var next = Object.assign({}, all);
+    o.at = new Date().toISOString().slice(0, 10);
+    next[catalogId] = o;
+    var body = { message: 'spec correction: ' + catalogId + ' (' + o.source + ')', content: b64e(JSON.stringify(next, null, 1)), branch: 'specs' };
+    if (_ovrSha) body.sha = _ovrSha;
+    return apGH(OVR_PATH, { method: 'PUT', body: body }).then(function (res) {
+      _ovr = next; _ovrSha = res && res.content ? res.content.sha : null; return next;
+    });
+  });
+}
+/* bowwwl.com page for a ball (personal-use lookup only; never fetched by the app). */
+function bowwwlSlug(t) { return String(t || '').toLowerCase().replace(/\+/g, ' plus').replace(/\binc\b\.?/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''); }
+function bowwwlLinks(brand, name) {
+  var q = encodeURIComponent('site:bowwwl.com ' + brand + ' ' + name);
+  return { page: 'https://www.bowwwl.com/bowling-ball-database/' + bowwwlSlug(brand) + '/' + bowwwlSlug(name), search: 'https://www.google.com/search?q=' + q };
+}
+
+/* ---------- correction sheet UI ---------- */
+var _apEdit = null;
+function catApprovalsEdit(i) {
+  var p = _ap.pages[_ap.idx]; if (!p) return;
+  var b = p.boxes[i];
+  var r = apApplyOverride(_staged ? apStagedFor(_staged, b, p.catalogId) : null, overrideFor(p.catalogId));
+  var sp = (r && r.specs) || {};
+  _apEdit = { catalogId: p.catalogId, i: i };
+  var inp = function (id, v, ph) { return '<input id="' + id + '" class="bdet-field-input" value="' + esc(v == null ? '' : v) + '" placeholder="' + esc(ph || '') + '" style="width:100%;box-sizing:border-box;font-size:15px">'; };
+  var lab = function (t) { return '<div style="font-size:11px;font-weight:700;color:var(--t3);margin:10px 0 4px;text-transform:uppercase;letter-spacing:.5px">' + t + '</div>'; };
+  var ws = [16, 15, 14, 13, 12];
+  var wrow = function (w) { var x = (sp.weights || {})[w] || {};
+    var c = function (k) { return '<input id="ape-' + w + '-' + k + '" inputmode="decimal" class="bdet-field-input" value="' + esc(x[k] == null ? '' : x[k]) + '" style="width:100%;box-sizing:border-box;font-size:14px;padding:6px">'; };
+    return '<tr><td style="color:var(--t2);font-size:13px;padding:3px 4px 3px 0">' + w + ' lb</td><td style="padding:3px">' + c('RG') + '</td><td style="padding:3px">' + c('Diff') + '</td><td style="padding:3px">' + c('IntDiff') + '</td></tr>'; };
+  var ov = overlay('ap-edit-ov', 920);
+  ov.innerHTML = '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 8px"><button style="' + BACK + '" onclick="catApprovalsEditClose()">‹</button>' +
+    '<div style="flex:1"><div style="font-size:17px;font-weight:800;color:var(--t1)">Correct specs</div><div style="font-size:11px;color:var(--t3)">' + esc(b.title) + ' · USBC ' + esc(p.catalogId) + '</div></div></div>' +
+    '<div style="flex:1;overflow-y:auto;padding:0 16px 16px">' +
+    '<div style="font-size:12px;color:var(--t2);line-height:1.5">Change or fill any field. Values shown are what the bridge read; edit them in place.</div>' +
+    lab('Cover type') + inp('ape-coverType', sp.coverType, 'e.g. Solid Reactive') +
+    lab('Factory finish') + inp('ape-finish', sp.finish, 'e.g. 2000 Abralon') +
+    lab('Core') + inp('ape-core', sp.core) +
+    lab('Core type') + '<select id="ape-coreType" class="bdet-field-input" style="width:100%;font-size:15px"><option value=""' + (!sp.coreType ? ' selected' : '') + '>—</option><option' + (/^sym/i.test(sp.coreType || '') ? ' selected' : '') + '>Symmetrical</option><option' + (/asym/i.test(sp.coreType || '') ? ' selected' : '') + '>Asymmetrical</option></select>' +
+    lab('Release date') + inp('ape-released', sp.released ? String(sp.released).slice(0, 10) : '', 'YYYY-MM-DD') +
+    lab('RG / Diff / Int Diff by weight') +
+    '<table style="width:100%;border-collapse:collapse"><tr style="font-size:11px;color:var(--t3)"><td></td><td>RG</td><td>Diff</td><td>Int</td></tr>' + ws.map(wrow).join('') + '</table>' +
+    lab('Source of this correction') + '<select id="ape-source" class="bdet-field-input" style="width:100%;font-size:15px">' +
+      '<option value="maker">Maker spec sheet / page</option><option value="bowwwl">bowwwl.com (personal use)</option><option value="other">Other</option></select>' +
+    lab('Note') + inp('ape-note', '', 'e.g. site shows 0.090, sheet PDF says 0.029') +
+    '<div style="font-size:11px;color:var(--t3);margin-top:6px;line-height:1.45">Maker / other corrections are saved to the repo and published with the ball. bowwwl values stay on this device and are never published.</div>' +
+    '<div id="ape-err" style="font-size:12px;color:var(--red);margin-top:8px;line-height:1.45"></div>' +
+    '</div><div style="padding:10px 16px;border-top:1px solid var(--border1)"><button style="' + BTN_P + 'width:100%;padding:12px" onclick="catApprovalsEditSave()">Save correction</button></div>';
+  document.body.appendChild(ov);
+}
+function catApprovalsEditClose() { var el = document.getElementById('ap-edit-ov'); if (el) el.parentNode.removeChild(el); _apEdit = null; }
+function catApprovalsEditSave() {
+  if (!_apEdit) return;
+  var g = function (id) { var el = document.getElementById(id); return el ? el.value : ''; };
+  var form = { coverType: g('ape-coverType'), finish: g('ape-finish'), core: g('ape-core'), coreType: g('ape-coreType'), released: g('ape-released'),
+               source: g('ape-source'), note: g('ape-note'), weights: {} };
+  [16, 15, 14, 13, 12].forEach(function (w) { form.weights[w] = { RG: g('ape-' + w + '-RG'), Diff: g('ape-' + w + '-Diff'), IntDiff: g('ape-' + w + '-IntDiff') }; });
+  /* Only what differs from the baseline is stored. The baseline includes the
+     OTHER store's corrections, so a bowwwl value shown in the form is never
+     saved to the repo as a maker correction, and repo values are not copied
+     into the device store (v30.170). */
+  var p = _ap.pages[_ap.idx], staged0 = (_staged && p) ? apStagedFor(_staged, p.boxes[_apEdit.i] || p.boxes[0], p.catalogId) : null;
+  var other = form.source === 'bowwwl' ? (_ovr && _ovr[p.catalogId]) : localOverrides()[p.catalogId];
+  var base = apApplyOverride(staged0, other), bs = (base && base.specs) || {};
+  ['coverType', 'finish', 'core', 'coreType', 'released'].forEach(function (k) { if (String(form[k]).trim() === String(bs[k] == null ? '' : bs[k]).slice(0, k === 'released' ? 10 : 999)) form[k] = ''; });
+  Object.keys(form.weights).forEach(function (w) { var x = form.weights[w], y = (bs.weights || {})[w] || {};
+    ['RG', 'Diff', 'IntDiff'].forEach(function (k) { if (x[k] !== '' && y[k] != null && Number(x[k]) === Number(y[k])) x[k] = ''; }); });
+  var res = apOverrideFrom(form), err = document.getElementById('ape-err');
+  if (res.errors.length) { if (err) err.textContent = res.errors.join('. '); return; }
+  var o = res.override;
+  if (!o.weights && !['coverType', 'finish', 'core', 'coreType', 'released'].some(function (k) { return o[k]; })) { if (err) err.textContent = 'Nothing changed.'; return; }
+  if (o.source === 'bowwwl') {
+    /* personal-use data: this device only, never committed */
+    o.at = new Date().toISOString().slice(0, 10);
+    saveLocalOverride(_apEdit.catalogId, mergeOverrides(localOverrides()[_apEdit.catalogId], o));
+    catApprovalsEditClose(); apRender(); if (root.toast) root.toast('Saved on this device only (bowwwl values are not published)');
+    return;
+  }
+  if (err) err.textContent = 'Saving…';
+  apSaveOverride(_apEdit.catalogId, o).then(function () {
+    catApprovalsEditClose(); apRender(); if (root.toast) root.toast('Correction saved');
+  }).catch(function (e) {
+    if (err) err.textContent = e.status === 403 || e.status === 404 ? 'The token needs Contents: Read and write for this repo (GitHub → token → Permissions).' : ('Not saved: ' + (e.status ? 'GitHub ' + e.status : 'offline'));
+  });
+}
+
 /* Latest specs-extract run, for the status line in Spec approvals. */
 function apExtractStatus() {
   return apGH('/actions/workflows/specs-extract.yml/runs?per_page=1').then(function (r) {
@@ -1769,10 +1965,11 @@ function apExtractStatus() {
 }
 
 
+root.CATALOG_JS_VERSION = CAT_VERSION;
 root.catPickerMount = catPickerMount;
 root.catApprovalsOpen = catApprovalsOpen; root.catApprovalsClose = catApprovalsClose; root.catApprovalsSaveToken = catApprovalsSaveToken;
 root.catApprovalsForgetToken = catApprovalsForgetToken; root.catApprovalsChangeToken = catApprovalsChangeToken; root.catApprovalsPage = catApprovalsPage; root.catApprovalsFilter = catApprovalsFilter;
-root.catApprovalsTick = catApprovalsTick; root.catAddSpecsOnly = catAddSpecsOnly; root.catVerifyNow = catVerifyNow; root.catImagesSet = catImagesSet;
+root.catApprovalsTick = catApprovalsTick; root.catApprovalsEdit = catApprovalsEdit; root.catApprovalsEditClose = catApprovalsEditClose; root.catApprovalsEditSave = catApprovalsEditSave; root.catAddSpecsOnly = catAddSpecsOnly; root.catVerifyNow = catVerifyNow; root.catImagesSet = catImagesSet;
 root.catImagesRefresh = catImagesRefresh; root.catImagesStatus = catImagesStatus; root.catImageFor = catImageFor; root.catApprovalsSend = catApprovalsSend; root.catApprovalsPublish = catApprovalsPublish; root.catPickerSearch = catPickerSearch;
 root.catPick = catPick; root.catUnlink = catUnlink; root.catPickValue = catPickValue;
 root.catLinkLabel = catLinkLabel; root.catReviewOpen = catReviewOpen;
@@ -1796,7 +1993,7 @@ root._catStep5 = { norm: norm, modelKey: modelKey, lookupIn: lookupIn, searchIn:
                    specsOf: specsOf, shardMap: shardMap, shardKeyFor: shardKeyFor, detailFiles: detailFiles,
                    buildOwnedBall: buildOwnedBall, ballFromSpecs: ballFromSpecs, fillPlan: fillPlan,
                    catSpecSource: catSpecSource, setFilled: function (f) { _filled = f; },
-                   imgLinksFrom: imgLinksFrom, apStagedFor: apStagedFor, apAsDetail: apAsDetail, apRangeNotes: apRangeNotes, derivedCoverType: derivedCoverType, specGaps: specGaps, nearestWeight: nearestWeight, addListHTML: addListHTML, sourceForBrand: sourceForBrand, apParseIssue: apParseIssue, apPages: apPages, apApplyTicks: apApplyTicks, apConflict: apConflict, apNums: apNums,
+                   imgLinksFrom: imgLinksFrom, sheetState: function () { return _sheet; }, mergeOverrides: mergeOverrides, withLocalCorrection: withLocalCorrection, apApplyOverride: apApplyOverride, apOverrideFrom: apOverrideFrom, bowwwlLinks: bowwwlLinks, apStagedFor: apStagedFor, apAsDetail: apAsDetail, apRangeNotes: apRangeNotes, derivedCoverType: derivedCoverType, specGaps: specGaps, nearestWeight: nearestWeight, addListHTML: addListHTML, sourceForBrand: sourceForBrand, apParseIssue: apParseIssue, apPages: apPages, apApplyTicks: apApplyTicks, apConflict: apConflict, apNums: apNums,
                    verifyPlan: verifyPlan, specMatch: specMatch, metricUnverified: metricUnverified, catSpecUnverified: catSpecUnverified,
                    metricScore: metricScore, parseFinish: parseFinish, rgBand: rgBand, diffBand: diffBand, coverClass: coverClass,
                    catMetric: catMetric, sheetHTML: sheetHTML, setSheet: function (x) { _sheet = x; } };
