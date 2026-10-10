@@ -2603,7 +2603,7 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
     </div>
     <div id="hdr-title" onclick="hdrTitleTap()"><span class="brand">Bowling</span>DB</div>
     <div id="hdr-title-popover"></div>
-    <span id="hdr-build-ref">v30.163 · 2026-10-09</span>
+    <span id="hdr-build-ref">v30.164 · 2026-10-09</span>
     <div id="hdr-right">
       <div class="hdr-icon-btn" id="hdr-delete-game-btn" onclick="confirmDeleteGame(G.gameID)" title="Delete Game" style="display:none">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -26619,7 +26619,7 @@ meta: {
 kind: 'bowlingdb-snapshot',
 snapshotVersion: 1,
 exportDate: new Date().toISOString(),
-exportSource: 'BowlingDB PWA v30.163',
+exportSource: 'BowlingDB PWA v30.164',
 includesBallImages: !!includeBallImages,
 excluded: Array.from(SNAPSHOT_LS_SKIP)
 },
@@ -28353,6 +28353,7 @@ return `
           ${line('Last check', when(s.lastAttemptAt))}
           ${s.lastError ? `<div style="font-size:11px;color:var(--red);margin:4px 0 6px;line-height:1.4">Last check failed: ${String(s.lastError).replace(/[<>&]/g,'')}</div>` : ''}
           ${s.count ? `<button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="catReviewOpen()">Review suggested matches</button><button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="catAuditOpen()">Check linked balls</button>` : ''}
+          <button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="if(typeof catApprovalsOpen==='function')catApprovalsOpen()">Spec approvals</button>
           <button class="btn btn-ghost btn-sm" style="margin-top:6px" id="cat-check-btn"
             onclick="this.disabled=true;this.textContent='Checking…';catCheck({force:true}).then(r=>{toast(r.status==='updated'?('Catalog updated: '+r.count.toLocaleString()+' balls'):r.status==='current'?'Catalog is up to date':('Catalog check failed: '+r.error),3500);openSettingsModal();})">Check for updates</button>
         `;
