@@ -18655,7 +18655,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/3-d-offset-assault",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-3d-offset-attack": {
   "DateReleased": "2022-11-18",
@@ -18696,7 +18696,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/3-d-offset-attack",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-anger-solid": {
   "DateReleased": "2025-07-10",
@@ -18737,7 +18737,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/anger-solid",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-arctic-vibe": {
   "DateReleased": "2024-05-16",
@@ -18788,7 +18788,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/arctic-vibe",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-black-widow-2-0": {
   "DateReleased": "2020-11-19",
@@ -18829,7 +18829,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/black-widow-2-0",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-black-widow-2-0-hybrid": {
   "DateReleased": "2022-02-23",
@@ -18870,7 +18870,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/black-widow-2-0-hybrid",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-black-widow-3-0": {
   "DateReleased": "2024-01-25",
@@ -18911,7 +18911,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/black-widow-3-0",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-black-widow-3-0-dynasty": {
   "DateReleased": "2026-01-15",
@@ -18952,7 +18952,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/black-widow-3-0-dynasty",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-black-widow-ghost-pearl": {
   "DateReleased": "2021-11-19",
@@ -18993,7 +18993,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/black-widow-ghost-pearl",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-black-widow-mania": {
   "DateReleased": "2025-01-16",
@@ -19034,7 +19034,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/black-widow-mania",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-black-widow-spare-plus": {
   "DateReleased": "2026-09-17",
@@ -19085,7 +19085,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/black-widow-spare-plus",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-black-widow-tour-v1": {
   "DateReleased": "2025-09-18",
@@ -19126,7 +19126,48 @@
    }
   },
   "Source": "https://hammerbowling.com/products/black-widow-tour-v1",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
+ },
+ "hammer-black-widow-urethane": {
+  "DateReleased": "2022-02-25",
+  "Core": {
+   "Name": "Gas Mask",
+   "Type": null
+  },
+  "Cover": {
+   "Name": "Urethane Pearl",
+   "Type": "Pearl Urethane",
+   "Finish": "360, 800 Siaair Micro Pad"
+  },
+  "SpecsByWeight": {
+   "12": {
+    "RG": 2.612,
+    "Diff": 0.043,
+    "IntDiff": 0.011
+   },
+   "13": {
+    "RG": 2.589,
+    "Diff": 0.043,
+    "IntDiff": 0.011
+   },
+   "14": {
+    "RG": 2.5,
+    "Diff": 0.056,
+    "IntDiff": 0.016
+   },
+   "15": {
+    "RG": 2.5,
+    "Diff": 0.058,
+    "IntDiff": 0.016
+   },
+   "16": {
+    "RG": 2.51,
+    "Diff": 0.048,
+    "IntDiff": 0.015
+   }
+  },
+  "Source": "https://hammerbowling.com/products/black-widow-urethane",
+  "Checked": "2026-10-10"
  },
  "hammer-black-widow-viz-a-ball": {
   "DateReleased": "2021-11-19",
@@ -19167,7 +19208,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/black-widow-viz-a-ball",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-bubblegum-vibe": {
   "DateReleased": "2025-07-10",
@@ -19218,7 +19259,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/bubblegum-vibe",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-dark-web": {
   "DateReleased": "2022-07-08",
@@ -19259,7 +19300,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/dark-web",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-dark-web-hybrid": {
   "DateReleased": "2023-07-13",
@@ -19300,7 +19341,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/dark-web-hybrid",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-deep-ocean-vibe": {
   "DateReleased": "2026-07-16",
@@ -19351,7 +19392,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/deep-ocean-vibe",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-envy": {
   "DateReleased": "2022-09-23",
@@ -19392,7 +19433,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/envy",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-envy-tour": {
   "DateReleased": "2022-02-23",
@@ -19433,7 +19474,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/envy-tour",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-envy-tour-pearl": {
   "DateReleased": "2023-09-21",
@@ -19474,7 +19515,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/envy-tour-pearl",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-extreme-envy": {
   "DateReleased": "2023-09-21",
@@ -19515,7 +19556,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/extreme-envy",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-fallout": {
   "DateReleased": "2026-07-16",
@@ -19556,7 +19597,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/fallout",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-fierce-phobia": {
   "DateReleased": null,
@@ -19597,7 +19638,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/fierce-phobia",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-fugitive": {
   "DateReleased": "2020-02-20",
@@ -19638,7 +19679,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/fugitive",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-fugitive-solid": {
   "DateReleased": "2020-08-06",
@@ -19679,7 +19720,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/fugitive-solid",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-full-effect": {
   "DateReleased": "2026-03-19",
@@ -19720,7 +19761,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/full-effect",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-gauntlet-fury": {
   "DateReleased": null,
@@ -19761,7 +19802,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/gauntlet-fury",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-hammerhead": {
   "DateReleased": "2025-03-20",
@@ -19802,7 +19843,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/hammerhead",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-hammerhead-pearl": {
   "DateReleased": "2026-01-15",
@@ -19843,7 +19884,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/hammerhead-pearl",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-hazmat": {
   "DateReleased": "2023-11-16",
@@ -19884,7 +19925,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/hazmat",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-hazmat-pearl": {
   "DateReleased": "2025-05-15",
@@ -19925,7 +19966,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/hazmat-pearl",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-hazmat-solid": {
   "DateReleased": "2024-07-11",
@@ -19966,7 +20007,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/hazmat-solid",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-infamous": {
   "DateReleased": "2021-09-17",
@@ -20007,7 +20048,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/infamous",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-maximum-effect": {
   "DateReleased": "2025-09-18",
@@ -20048,7 +20089,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/maximum-effect",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-nu-2-0": {
   "DateReleased": "2025-11-20",
@@ -20089,7 +20130,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/nu-2-0",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-nu-blue-hammer": {
   "DateReleased": "2023-11-16",
@@ -20130,7 +20171,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/nu-blue-hammer",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-obsession": {
   "DateReleased": "2021-02-18",
@@ -20171,7 +20212,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/obsession",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-obsession-tour": {
   "DateReleased": "2021-02-18",
@@ -20212,7 +20253,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/obsession-tour",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-ocean-vibe": {
   "DateReleased": "2022-07-08",
@@ -20263,7 +20304,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/ocean-vibe",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-pure-envy": {
   "DateReleased": "2024-09-19",
@@ -20304,7 +20345,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/pure-envy",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-pure-hammer": {
   "DateReleased": null,
@@ -20355,7 +20396,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/pure-hammer-black",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-purple-pearl-urethane-78d": {
   "DateReleased": "2026-03-19",
@@ -20396,7 +20437,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/purple-pearl-urethane-78d",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-radioactive-vibe": {
   "DateReleased": "2023-07-13",
@@ -20447,7 +20488,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/radioactive-vibe",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-raw-hammer-black": {
   "DateReleased": "2021-05-20",
@@ -20498,7 +20539,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/raw-hammer-black",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-raw-hammer-black-grey": {
   "DateReleased": "2026-05-14",
@@ -20549,7 +20590,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/raw-hammer-black-grey",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-raw-hammer-black-purple-teal": {
   "DateReleased": "2024-05-16",
@@ -20600,7 +20641,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/raw-hammer-black-purple-teal",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-raw-hammer-blue-silver-white": {
   "DateReleased": "2021-05-20",
@@ -20651,7 +20692,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/raw-hammer-blue-silver-white",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-raw-hammer-orange-black": {
   "DateReleased": "2021-05-20",
@@ -20702,7 +20743,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/raw-hammer-orange-black",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-raw-hammer-purple-pink-silver": {
   "DateReleased": "2021-05-20",
@@ -20753,7 +20794,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/raw-hammer-purple-pink-silver",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-raw-hammer-red-white-purple": {
   "DateReleased": "2026-05-14",
@@ -20804,7 +20845,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/raw-hammer-red-white-purple",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-raw-hammer-smoke-blue-gold": {
   "DateReleased": "2025-03-20",
@@ -20855,7 +20896,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/raw-hammer-smoke-blue-gold",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-redemption-hybrid": {
   "DateReleased": "2020-08-06",
@@ -20896,7 +20937,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/redemption-hybrid",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-redemption-pearl": {
   "DateReleased": "2020-02-20",
@@ -20937,7 +20978,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/redemption-pearl",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-redemption-solid": {
   "DateReleased": "2020-02-20",
@@ -20978,7 +21019,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/redemption-solid",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-rhodman-pearl": {
   "DateReleased": null,
@@ -21019,7 +21060,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/rhodman-pearl",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-rip-d": {
   "DateReleased": null,
@@ -21060,7 +21101,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/ripd",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-rip-d-solid": {
   "DateReleased": null,
@@ -21101,7 +21142,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/ripd-solid",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-scorpion": {
   "DateReleased": "2021-07-16",
@@ -21142,7 +21183,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/scorpion",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-scorpion-low-flare": {
   "DateReleased": "2024-01-25",
@@ -21183,7 +21224,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/scorpion-low-flare",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-scorpion-sting": {
   "DateReleased": "2022-09-23",
@@ -21224,7 +21265,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/scorpion-sting",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-scorpion-strike": {
   "DateReleased": "2024-07-11",
@@ -21265,7 +21306,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/scorpion-strike",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-sling-blade": {
   "DateReleased": null,
@@ -21316,7 +21357,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/sling-blade",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-spawn": {
   "DateReleased": "2026-05-14",
@@ -21357,7 +21398,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/spawn",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-statement-hybrid": {
   "DateReleased": null,
@@ -21398,7 +21439,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/statement-hybrid",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-statement-pearl": {
   "DateReleased": null,
@@ -21439,7 +21480,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/statement-pearl",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-statement-solid": {
   "DateReleased": null,
@@ -21480,7 +21521,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/statement-solid",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-web": {
   "DateReleased": null,
@@ -21521,7 +21562,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/web",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-web-m-b": {
   "DateReleased": "2020-11-19",
@@ -21562,7 +21603,48 @@
    }
   },
   "Source": "https://hammerbowling.com/products/web-m-b",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
+ },
+ "hammer-web-pearl": {
+  "DateReleased": "2021-07-16",
+  "Core": {
+   "Name": "Spheroid",
+   "Type": null
+  },
+  "Cover": {
+   "Name": "Aggression Pearl",
+   "Type": "Pearl Reactive",
+   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound"
+  },
+  "SpecsByWeight": {
+   "12": {
+    "RG": 2.608,
+    "Diff": 0.04,
+    "IntDiff": null
+   },
+   "13": {
+    "RG": 2.585,
+    "Diff": 0.04,
+    "IntDiff": null
+   },
+   "14": {
+    "RG": 2.51,
+    "Diff": 0.048,
+    "IntDiff": null
+   },
+   "15": {
+    "RG": 2.481,
+    "Diff": 0.048,
+    "IntDiff": null
+   },
+   "16": {
+    "RG": 2.5,
+    "Diff": 0.039,
+    "IntDiff": null
+   }
+  },
+  "Source": "https://hammerbowling.com/products/web-pearl",
+  "Checked": "2026-10-10"
  },
  "hammer-web-tour-edition": {
   "DateReleased": null,
@@ -21603,7 +21685,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/web-tour",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-web-tour-edition-hybrid": {
   "DateReleased": "2020-09-03",
@@ -21644,7 +21726,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/web-tour-edition-hybrid-2",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-zero-mercy-hybrid": {
   "DateReleased": "2026-09-17",
@@ -21685,7 +21767,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/zero-mercy-hybrid",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-zero-mercy-pearl": {
   "DateReleased": "2025-11-20",
@@ -21726,7 +21808,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/zero-mercy-pearl",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-zero-mercy-solid": {
   "DateReleased": "2025-11-20",
@@ -21767,7 +21849,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/zero-mercy-solid",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "hammer-zero-mercy-tour": {
   "DateReleased": "2026-09-17",
@@ -21808,7 +21890,7 @@
    }
   },
   "Source": "https://hammerbowling.com/products/zero-mercy-tour",
-  "Checked": "2026-10-08"
+  "Checked": "2026-10-10"
  },
  "motiv-2-cruel": {
   "DateReleased": null,
@@ -22131,6 +22213,57 @@
    }
   },
   "Source": "https://www.motivbowling.com/products/balls/entry-level/ascend-red-black-tangerine.html",
+  "Checked": "2026-10-08"
+ },
+ "motiv-ascent-apex": {
+  "DateReleased": null,
+  "Core": {
+   "Name": "Recon",
+   "Type": null
+  },
+  "Cover": {
+   "Name": "Fusion XL",
+   "Type": null,
+   "Finish": "5000 Grit Laser Scan Polished"
+  },
+  "SpecsByWeight": {
+   "10": {
+    "RG": 2.75,
+    "Diff": 0.01,
+    "IntDiff": null
+   },
+   "11": {
+    "RG": 2.69,
+    "Diff": 0.022,
+    "IntDiff": null
+   },
+   "12": {
+    "RG": 2.62,
+    "Diff": 0.038,
+    "IntDiff": null
+   },
+   "13": {
+    "RG": 2.62,
+    "Diff": 0.03,
+    "IntDiff": null
+   },
+   "14": {
+    "RG": 2.61,
+    "Diff": 0.025,
+    "IntDiff": null
+   },
+   "15": {
+    "RG": 2.59,
+    "Diff": 0.025,
+    "IntDiff": null
+   },
+   "16": {
+    "RG": 2.59,
+    "Diff": 0.018,
+    "IntDiff": null
+   }
+  },
+  "Source": "https://www.motivbowling.com/products/balls/retired-balls/ascent-apex-blue.html",
   "Checked": "2026-10-08"
  },
  "motiv-ascent-pearl-pink-purple": {
@@ -35151,6 +35284,47 @@
    }
   },
   "Source": "https://trackbowling.com/products/legion-pearl",
+  "Checked": "2026-10-08"
+ },
+ "track-inc-legion-solid": {
+  "DateReleased": null,
+  "Core": {
+   "Name": "LT-2",
+   "Type": null
+  },
+  "Cover": {
+   "Name": "Prime Response Solid",
+   "Type": "Solid Reactive",
+   "Finish": "500, 2000 Siaair Micro Pad"
+  },
+  "SpecsByWeight": {
+   "12": {
+    "RG": 2.593,
+    "Diff": 0.041,
+    "IntDiff": 0.014
+   },
+   "13": {
+    "RG": 2.597,
+    "Diff": 0.041,
+    "IntDiff": 0.014
+   },
+   "14": {
+    "RG": 2.51,
+    "Diff": 0.046,
+    "IntDiff": 0.012
+   },
+   "15": {
+    "RG": 2.5,
+    "Diff": 0.046,
+    "IntDiff": 0.011
+   },
+   "16": {
+    "RG": 2.51,
+    "Diff": 0.04,
+    "IntDiff": 0.01
+   }
+  },
+  "Source": "https://trackbowling.com/products/legion-solid",
   "Checked": "2026-10-08"
  },
  "track-inc-logix": {
