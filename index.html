@@ -3446,10 +3446,10 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
 /* v30.169: ONE place for the version. The header, the home screen label, the
    page title and backups all read these, so nothing can go stale on an update.
    Bump both lines (and CATALOG_JS_VERSION in catalog.js when it changes). */
-const APP_VERSION = 'v30.170';
+const APP_VERSION = 'v30.171';
 const APP_BUILD_DATE = '2026-10-10';
 /* catalog.js this build expects; an older file on the server shows a warning */
-const EXPECTED_CATALOG_JS = 'v30.170';
+const EXPECTED_CATALOG_JS = 'v30.171';
 function applyAppVersion() {
 const ref = document.getElementById('hdr-build-ref');
 const cat = (typeof window.CATALOG_JS_VERSION === 'string') ? window.CATALOG_JS_VERSION : null;
@@ -25302,8 +25302,12 @@ const _hasMet  = typeof catMetric === 'function';
 const strOn    = F.sort==='str-desc'|| F.sort==='str-asc';
 const strLbl   = strOn ? (F.sort==='str-asc'? 'Strength ↑': 'Strength ↓') : 'Strength';
 const strNext  = F.sort==='str-desc'? 'str-asc': 'str-desc';
+/* v30.171 MET-2: Compare puts the list in pick mode (2-4 balls) -> catalog.js comparison screen */
+const _hasCmp  = typeof catCompareOpen === 'function';
+const _pick    = Array.isArray(window._ballsPick) ? window._ballsPick : null;
 filterEl.innerHTML = `
     <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;-webkit-overflow-scrolling:touch;scrollbar-width:none;align-items:center">
+      ${_hasCmp?`<button class="ball-filter-chip${_pick?' on':''}" onclick="ballsPickToggle()">${_pick?'Cancel':'Compare'}</button>`:''}
       <button class="ball-filter-chip${hookOn?' on':''}"
         onclick="window._ballsScreenFilter.sort='${hookNext}';renderBallsScreen()">${hookLbl}</button>
       <button class="ball-filter-chip${nameOn?' on':''}"
@@ -25387,10 +25391,11 @@ const usageHTML = usage.count > 0 ? `
           <span style="font-size:9px;color:var(--t3);font-weight:600;letter-spacing:0.5px;text-transform:uppercase;margin-top:1px">Avg Pinfall</span>
         </div>
       </div>`: '';
-return `<div class="ball-card${b.Archived?' archived':''}">
+const _picked = _pick && _pick.includes(b.BallID);
+return `<div class="ball-card${b.Archived?' archived':''}"${_pick?` style="outline:2px solid ${_picked?'var(--teal)':'transparent'};outline-offset:-2px"`:''}>
       <div class="ball-card-top">
         <div class="ball-card-img">${thumb}</div>
-        <div class="ball-card-body" onclick="openBallDetailModal(${b.BallID});event.stopPropagation()">
+        <div class="ball-card-body" onclick="${_pick?`ballsPickTap(${b.BallID})`:`openBallDetailModal(${b.BallID})`};event.stopPropagation()">
           <div class="ball-card-name">${b.BallName}</div>
           <div class="ball-card-meta">${b.MFG||'—'} · ${prepLabel}</div>
         </div>
@@ -25409,7 +25414,25 @@ return `<div class="ball-card${b.Archived?' archived':''}">
       ${chipHTML ? `<div class="ball-card-chips">${chipHTML}</div>`: ''}
       ${usageHTML}
     </div>`;
-}).join('');
+}).join('') + (_pick ? `<div style="position:sticky;bottom:0;z-index:5;display:flex;align-items:center;gap:10px;padding:10px 12px;margin-top:8px;border-radius:14px;background:var(--bg2);border:1px solid var(--border2)">
+      <span style="flex:1;font-size:13px;color:var(--t2)">${_pick.length ? _pick.length + ' chosen' : 'Tap 2\u20134 balls'}</span>
+      <button class="btn btn-primary" style="width:auto;padding:9px 18px;margin:0${_pick.length<2?';opacity:.45':''}" ${_pick.length<2?'disabled':''} onclick="ballsPickGo()">Compare</button>
+    </div>` : '');
+}
+function ballsPickToggle() { window._ballsPick = Array.isArray(window._ballsPick) ? null : []; renderBallsScreen(); }
+function ballsPickTap(id) {
+const p = window._ballsPick || (window._ballsPick = []);
+const i = p.indexOf(id);
+if (i >= 0) p.splice(i, 1);
+else if (p.length >= 4) { if (typeof toast === 'function') toast('Up to 4 balls'); return; }
+else p.push(id);
+renderBallsScreen();
+}
+function ballsPickGo() {
+const p = window._ballsPick || [];
+if (p.length < 2 || typeof catCompareOpen !== 'function') return;
+window._ballsPick = null; renderBallsScreen();
+catCompareOpen(p.map(id => 'o:' + id));
 }
 function openBallOptions(ballID) {
 const b = db.balls.find(x=>x.BallID==ballID);
@@ -34251,8 +34274,11 @@ const hookBar = b.HookRating != null ? `
         <div style="background:linear-gradient(90deg,var(--teal),var(--purple));height:100%;width:${b.HookRating*10}%;border-radius:4px"></div>
       </div>
     </div>`: '';
+/* v30.171 MET-2: compare this ball (column 1) with up to 3 owned or catalog balls */
+const cmpBtn = typeof catCompareOpen === 'function'
+? `<button class="bdet-action-btn secondary" style="width:100%;padding:9px;margin-top:12px" onclick="catCompareOpen(['o:${b.BallID}'])">Compare with other balls</button>`: '';
 return urlBtn + hookBar +
-`<div style="background:var(--bg2);border-radius:12px;padding:0 14px">${specsHTML}</div>`;
+`<div style="background:var(--bg2);border-radius:12px;padding:0 14px">${specsHTML}</div>` + cmpBtn;
 }
 function _bdetSpecsEditHTML(b) {
 const v = (field, fallback='') => _escHtml(String((b && b[field] != null ? b[field] : ((_bdet.fetchData && _bdet.fetchData[field] != null) ? _bdet.fetchData[field] : fallback))));
