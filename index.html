@@ -1810,7 +1810,7 @@ transition:transform 0.28s cubic-bezier(0.32,0.72,0,1);
 .modal-sheet textarea { min-width:0; max-width:100%; box-sizing:border-box; }
 .modal-sheet .btn { min-width:0; }
 .toast {
-position:fixed; z-index:200;
+position:fixed; z-index:1100; /* v30.166: above modals (1010) and catalog screens, so a toast is never hidden */
 bottom:calc(var(--safe-b) + 78px);
 left:50%;
 max-width:calc(100vw - 40px);
@@ -2603,7 +2603,7 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
     </div>
     <div id="hdr-title" onclick="hdrTitleTap()"><span class="brand">Bowling</span>DB</div>
     <div id="hdr-title-popover"></div>
-    <span id="hdr-build-ref">v30.165 · 2026-10-09</span>
+    <span id="hdr-build-ref">v30.166 · 2026-10-09</span>
     <div id="hdr-right">
       <div class="hdr-icon-btn" id="hdr-delete-game-btn" onclick="confirmDeleteGame(G.gameID)" title="Delete Game" style="display:none">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -26619,7 +26619,7 @@ meta: {
 kind: 'bowlingdb-snapshot',
 snapshotVersion: 1,
 exportDate: new Date().toISOString(),
-exportSource: 'BowlingDB PWA v30.165',
+exportSource: 'BowlingDB PWA v30.166',
 includesBallImages: !!includeBallImages,
 excluded: Array.from(SNAPSHOT_LS_SKIP)
 },
