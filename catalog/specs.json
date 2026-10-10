@@ -27364,6 +27364,37 @@
   "Source": "https://www.motivbowling.com/products/balls/retired-balls/raptor-talon.html",
   "Checked": "2026-10-10"
  },
+ "motiv-rebel-tank-pearl": {
+  "DateReleased": null,
+  "Core": {
+   "Name": "Halogen",
+   "Type": null
+  },
+  "Cover": {
+   "Name": "DMX Pearl Urethane",
+   "Type": null,
+   "Finish": "4000 Grit Laser Scan Sanded"
+  },
+  "SpecsByWeight": {
+   "14": {
+    "RG": 2.56,
+    "Diff": 0.038,
+    "IntDiff": null
+   },
+   "15": {
+    "RG": 2.55,
+    "Diff": 0.037,
+    "IntDiff": null
+   },
+   "16": {
+    "RG": 2.54,
+    "Diff": 0.036,
+    "IntDiff": null
+   }
+  },
+  "Source": "https://www.motivbowling.com/products/balls/retired-balls/rebel-tank.html",
+  "Checked": "2026-10-10"
+ },
  "motiv-revolt-uprising": {
   "DateReleased": null,
   "Core": {
@@ -35941,7 +35972,130 @@
   "Source": "https://trackbowling.com/products/cypher-pearl",
   "Checked": "2026-10-10"
  },
+ "track-inc-heat-2-pearl": {
+  "DateReleased": null,
+  "Core": {
+   "Name": "Modified Tri-Core",
+   "Type": null
+  },
+  "Cover": {
+   "Name": "DR-7 Solid",
+   "Type": "Solid Reactive",
+   "Finish": "500, 1000, 2000 Siaair Micro Pad"
+  },
+  "SpecsByWeight": {
+   "12": {
+    "RG": 2.597,
+    "Diff": 0.04,
+    "IntDiff": null
+   },
+   "13": {
+    "RG": 2.574,
+    "Diff": 0.04,
+    "IntDiff": null
+   },
+   "14": {
+    "RG": 2.51,
+    "Diff": 0.038,
+    "IntDiff": null
+   },
+   "15": {
+    "RG": 2.5,
+    "Diff": 0.038,
+    "IntDiff": null
+   },
+   "16": {
+    "RG": 2.51,
+    "Diff": 0.033,
+    "IntDiff": null
+   }
+  },
+  "Source": "https://trackbowling.com/products/heat",
+  "Checked": "2026-10-10"
+ },
  "track-inc-heat-black-purple-silver": {
+  "DateReleased": null,
+  "Core": {
+   "Name": "Modified Tri-Core",
+   "Type": null
+  },
+  "Cover": {
+   "Name": "DR-7 Solid",
+   "Type": "Solid Reactive",
+   "Finish": "500, 1000, 2000 Siaair Micro Pad"
+  },
+  "SpecsByWeight": {
+   "12": {
+    "RG": 2.597,
+    "Diff": 0.04,
+    "IntDiff": null
+   },
+   "13": {
+    "RG": 2.574,
+    "Diff": 0.04,
+    "IntDiff": null
+   },
+   "14": {
+    "RG": 2.51,
+    "Diff": 0.038,
+    "IntDiff": null
+   },
+   "15": {
+    "RG": 2.5,
+    "Diff": 0.038,
+    "IntDiff": null
+   },
+   "16": {
+    "RG": 2.51,
+    "Diff": 0.033,
+    "IntDiff": null
+   }
+  },
+  "Source": "https://trackbowling.com/products/heat",
+  "Checked": "2026-10-10"
+ },
+ "track-inc-heat-black-purple-silver-orange-pin": {
+  "DateReleased": null,
+  "Core": {
+   "Name": "Modified Tri-Core",
+   "Type": null
+  },
+  "Cover": {
+   "Name": "DR-7 Solid",
+   "Type": "Solid Reactive",
+   "Finish": "500, 1000, 2000 Siaair Micro Pad"
+  },
+  "SpecsByWeight": {
+   "12": {
+    "RG": 2.597,
+    "Diff": 0.04,
+    "IntDiff": null
+   },
+   "13": {
+    "RG": 2.574,
+    "Diff": 0.04,
+    "IntDiff": null
+   },
+   "14": {
+    "RG": 2.51,
+    "Diff": 0.038,
+    "IntDiff": null
+   },
+   "15": {
+    "RG": 2.5,
+    "Diff": 0.038,
+    "IntDiff": null
+   },
+   "16": {
+    "RG": 2.51,
+    "Diff": 0.033,
+    "IntDiff": null
+   }
+  },
+  "Source": "https://trackbowling.com/products/heat",
+  "Checked": "2026-10-10"
+ },
+ "track-inc-heat-blast": {
   "DateReleased": null,
   "Core": {
    "Name": "Modified Tri-Core",
@@ -36027,27 +36181,27 @@
   "DateReleased": null,
   "Core": {
    "Name": "Modified Tri-Core",
-   "Type": "Symmetrical"
+   "Type": null
   },
   "Cover": {
-   "Name": "Qr-7 Pearl",
-   "Type": null,
-   "Finish": "500, 1000 Abralon® Polished With Power House Factory Finish Polish"
+   "Name": "DR-7 Solid",
+   "Type": "Solid Reactive",
+   "Finish": "500, 1000, 2000 Siaair Micro Pad"
   },
   "SpecsByWeight": {
    "12": {
-    "RG": 2.6,
-    "Diff": 0.039,
+    "RG": 2.597,
+    "Diff": 0.04,
     "IntDiff": null
    },
    "13": {
-    "RG": 2.53,
-    "Diff": 0.055,
+    "RG": 2.574,
+    "Diff": 0.04,
     "IntDiff": null
    },
    "14": {
-    "RG": 2.49,
-    "Diff": 0.045,
+    "RG": 2.51,
+    "Diff": 0.038,
     "IntDiff": null
    },
    "15": {
@@ -36061,34 +36215,34 @@
     "IntDiff": null
    }
   },
-  "Source": "https://trackbowling.com/products/heat-lava",
+  "Source": "https://trackbowling.com/products/heat",
   "Checked": "2026-10-10"
  },
  "track-inc-heat-maroon-pearl": {
   "DateReleased": null,
   "Core": {
    "Name": "Modified Tri-Core",
-   "Type": "Symmetrical"
+   "Type": null
   },
   "Cover": {
-   "Name": "Dr-5 Pearl",
-   "Type": null,
-   "Finish": "500, 2000 Abralon® Polished With Power House Factory Finish Polish"
+   "Name": "DR-7 Solid",
+   "Type": "Solid Reactive",
+   "Finish": "500, 1000, 2000 Siaair Micro Pad"
   },
   "SpecsByWeight": {
    "12": {
-    "RG": 2.6,
-    "Diff": 0.039,
+    "RG": 2.597,
+    "Diff": 0.04,
     "IntDiff": null
    },
    "13": {
-    "RG": 2.53,
-    "Diff": 0.055,
+    "RG": 2.574,
+    "Diff": 0.04,
     "IntDiff": null
    },
    "14": {
-    "RG": 2.49,
-    "Diff": 0.045,
+    "RG": 2.51,
+    "Diff": 0.038,
     "IntDiff": null
    },
    "15": {
@@ -36102,7 +36256,89 @@
     "IntDiff": null
    }
   },
-  "Source": "https://trackbowling.com/products/heat-original",
+  "Source": "https://trackbowling.com/products/heat",
+  "Checked": "2026-10-10"
+ },
+ "track-inc-heat-ultraviolet": {
+  "DateReleased": null,
+  "Core": {
+   "Name": "Modified Tri-Core",
+   "Type": null
+  },
+  "Cover": {
+   "Name": "DR-7 Solid",
+   "Type": "Solid Reactive",
+   "Finish": "500, 1000, 2000 Siaair Micro Pad"
+  },
+  "SpecsByWeight": {
+   "12": {
+    "RG": 2.597,
+    "Diff": 0.04,
+    "IntDiff": null
+   },
+   "13": {
+    "RG": 2.574,
+    "Diff": 0.04,
+    "IntDiff": null
+   },
+   "14": {
+    "RG": 2.51,
+    "Diff": 0.038,
+    "IntDiff": null
+   },
+   "15": {
+    "RG": 2.5,
+    "Diff": 0.038,
+    "IntDiff": null
+   },
+   "16": {
+    "RG": 2.51,
+    "Diff": 0.033,
+    "IntDiff": null
+   }
+  },
+  "Source": "https://trackbowling.com/products/heat",
+  "Checked": "2026-10-10"
+ },
+ "track-inc-heat-wave": {
+  "DateReleased": null,
+  "Core": {
+   "Name": "Modified Tri-Core",
+   "Type": null
+  },
+  "Cover": {
+   "Name": "DR-7 Solid",
+   "Type": "Solid Reactive",
+   "Finish": "500, 1000, 2000 Siaair Micro Pad"
+  },
+  "SpecsByWeight": {
+   "12": {
+    "RG": 2.597,
+    "Diff": 0.04,
+    "IntDiff": null
+   },
+   "13": {
+    "RG": 2.574,
+    "Diff": 0.04,
+    "IntDiff": null
+   },
+   "14": {
+    "RG": 2.51,
+    "Diff": 0.038,
+    "IntDiff": null
+   },
+   "15": {
+    "RG": 2.5,
+    "Diff": 0.038,
+    "IntDiff": null
+   },
+   "16": {
+    "RG": 2.51,
+    "Diff": 0.033,
+    "IntDiff": null
+   }
+  },
+  "Source": "https://trackbowling.com/products/heat",
   "Checked": "2026-10-10"
  },
  "track-inc-heat-x-treme": {
@@ -36144,6 +36380,47 @@
    }
   },
   "Source": "https://trackbowling.com/products/heat-x-treme",
+  "Checked": "2026-10-10"
+ },
+ "track-inc-heat-x-treme-polished": {
+  "DateReleased": null,
+  "Core": {
+   "Name": "Modified Tri-Core",
+   "Type": null
+  },
+  "Cover": {
+   "Name": "DR-7 Solid",
+   "Type": "Solid Reactive",
+   "Finish": "500, 1000, 2000 Siaair Micro Pad"
+  },
+  "SpecsByWeight": {
+   "12": {
+    "RG": 2.597,
+    "Diff": 0.04,
+    "IntDiff": null
+   },
+   "13": {
+    "RG": 2.574,
+    "Diff": 0.04,
+    "IntDiff": null
+   },
+   "14": {
+    "RG": 2.51,
+    "Diff": 0.038,
+    "IntDiff": null
+   },
+   "15": {
+    "RG": 2.5,
+    "Diff": 0.038,
+    "IntDiff": null
+   },
+   "16": {
+    "RG": 2.51,
+    "Diff": 0.033,
+    "IntDiff": null
+   }
+  },
+  "Source": "https://trackbowling.com/products/heat",
   "Checked": "2026-10-10"
  },
  "track-inc-hx05": {
