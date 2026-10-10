@@ -1,63 +1,48 @@
 'use strict';
-const assert = require('assert'), fs = require('fs'), os = require('os'), path = require('path');
-const P = require('./probe.js');
+const assert = require('assert'); const P = require('./publish.js'); const B = require('../catalog/build_catalog.js');
 let n = 0; const ok = (c, m) => { assert.ok(c, m); n++; };
-
-// robots
-const rb = P.parseRobots(`User-agent: Googlebot\nDisallow: /\n\nUser-agent: *\nDisallow: /cart\nDisallow: /search?*\nAllow: /cart/public\nSitemap: https://x.com/sm.xml\n\nUser-agent: Bing\nUser-agent: *\nDisallow: /tmp`);
-ok(rb.sitemaps[0] === 'https://x.com/sm.xml', 'sitemap line');
-ok(rb.disallow.includes('/cart') && rb.disallow.includes('/tmp'), 'star groups collected');
-ok(!rb.disallow.includes('/'), 'googlebot-only rule ignored');
-ok(!P.allowed(rb, 'https://x.com/cart/abc'), 'disallowed');
-ok(P.allowed(rb, 'https://x.com/cart/public/1'), 'longer allow wins');
-ok(!P.allowed(rb, 'https://x.com/search?q=1'), 'wildcard');
-ok(P.allowed(rb, 'https://x.com/products/phaze-ii'), 'default allow');
-
-// sitemap
-const si = P.parseSitemap('<sitemapindex><sitemap><loc>https://x.com/a.xml</loc></sitemap></sitemapindex>');
-ok(si.isIndex && si.locs[0] === 'https://x.com/a.xml', 'sitemap index');
-const us = P.parseSitemap('<urlset><url><loc> https://x.com/p/phaze-ii-pearl?a=1&amp;b=2 </loc></url></urlset>');
-ok(!us.isIndex && us.locs[0] === 'https://x.com/p/phaze-ii-pearl?a=1&b=2', 'urlset + entity');
-
-// discovery
-const rows = [{ i: 'storm-phaze-ii', m: 'Storm', n: 'Phaze II', y: '2024' }, { i: 'storm-ion-pro', m: 'Storm', n: 'ION Pro', y: '2024' },
-              { i: 'rotogrip-perfect-gem', m: 'Roto Grip', n: 'Perfect Gem', y: '2026' }, { i: 'motiv-x', m: 'Motiv', n: 'Jackal', y: '2025' }];
-const d = P.discovery(rows, ['Storm', 'Roto Grip'], ['https://s.com/phaze-ii-bbmphz2', 'https://s.com/perfect-gem-rg1']);
-ok(d.total === 3 && d.found === 2 && d.rate === 0.667, 'discovery rate ' + JSON.stringify([d.total, d.found, d.rate]));
-ok(d.misses[0].n === 'ION Pro', 'miss listed');
-
-// end-to-end with mock fetch
-(async () => {
-  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'probe-'));
-  fs.writeFileSync(path.join(tmp, 'index.json'), JSON.stringify(rows));
-  fs.writeFileSync(path.join(tmp, 'src.json'), JSON.stringify({ userAgent: 't', delayMs: 0, samplePages: 2,
-    sources: [{ id: 's', kind: 'manufacturer', base: 'https://s.com', brands: ['Storm', 'Roto Grip'] },
-              { id: 'agg', kind: 'aggregator', base: 'https://a.com', brands: [] },
-              { id: 'down', kind: 'manufacturer', base: 'https://down.com', brands: ['Motiv'] }] }));
-  const pages = {
-    'https://s.com/robots.txt': 'User-agent: *\nDisallow: /perfect\nSitemap: https://s.com/si.xml',
-    'https://s.com/si.xml': '<sitemapindex><sitemap><loc>https://s.com/p.xml</loc></sitemap></sitemapindex>',
-    'https://s.com/p.xml': '<urlset><url><loc>https://s.com/phaze-ii-bbmphz2</loc></url><url><loc>https://s.com/perfect-gem-rg1</loc></url></urlset>',
-    'https://s.com/phaze-ii-bbmphz2': '<html>RG 2.48</html>',
-    'https://a.com/robots.txt': 'User-agent: *\nDisallow:',
-  };
-  const fetched = [];
-  const mock = async (u) => {
-    fetched.push(u);
-    if (u.startsWith('https://down.com')) throw new Error('ENOTFOUND');
-    const t = pages[u];
-    return { status: t == null ? 404 : 200, url: u, arrayBuffer: async () => Buffer.from(t || '') };
-  };
-  const sum = await P.main(['--index', path.join(tmp, 'index.json'), '--out', path.join(tmp, 'out'), '--sources', path.join(tmp, 'src.json'), '--since', '2023'], mock);
-  const s = sum.sources.find(x => x.id === 's');
-  ok(s.urlCount === 2 && s.discovery.found === 2, 'nested sitemap discovered');
-  ok(s.samples.length === 1 && s.samples[0].file, 'robots-disallowed sample skipped, allowed saved');
-  ok(!fetched.includes('https://s.com/perfect-gem-rg1'), 'never fetched a disallowed page');
-  ok(fs.existsSync(path.join(tmp, 'out', 'pages', s.samples[0].file)), 'fixture written');
-  const a = sum.sources.find(x => x.id === 'agg');
-  ok(a.samples.length === 0 && !fetched.some(u => u.startsWith('https://a.com/') && !/robots|sitemap/.test(u)), 'aggregator: no page fetches');
-  const dn = sum.sources.find(x => x.id === 'down');
-  ok(dn.robots.status === 0 && dn.urlCount === 0, 'dead source recorded, run continues');
-  ok(/\| s \| 200/.test(fs.readFileSync(path.join(tmp, 'out', 'SUMMARY.md'), 'utf8')), 'summary table');
-  console.log('probe_test: ' + n + ' checks passed');
-})().catch(e => { console.error('FAIL', e.message); process.exit(1); });
+const rec = (o) => Object.assign({ decision: 'auto', catalogId: 'brunswick-combat', url: 'https://b/combat', fetched: '2026-10-07',
+  specs: { core: 'Rampart', coverName: 'Alpha Premier Pearl', coverType: 'Pearl Reactive', finish: '500, 1500 Siaair', released: '2025-08-14',
+    weights: { 15: { RG: 2.502, Diff: 0.051, IntDiff: 0.019 }, 16: { RG: 2.515, Diff: 0.043, IntDiff: 0.016 } } },
+  mfgScales: { brunswickStrength: 94 }, imageUrl: 'https://img' }, o);
+let r = P.publish([rec({}), rec({ decision: 'pending', catalogId: 'brunswick-x', url: 'u2' }), rec({ catalogId: 'storm-hy-road', url: 'u3',
+  specs: { core: 'Inverted Fe2', coreType: 'Symmetrical', weights: { 16: { RG: 2.52, Diff: 0.058, IntDiff: null } } } })]);
+const e = r.specs['brunswick-combat'];
+ok(r.report.published === 2 && !r.specs['brunswick-x'], 'auto published, pending not');
+ok(e.SpecsByWeight['15'].RG === 2.502 && e.Core.Name === 'Rampart' && e.Cover.Type === 'Pearl Reactive' && e.DateReleased === '2025-08-14', 'shape');
+ok(e.Source === 'https://b/combat' && e.Checked === '2026-10-07', 'provenance carried');
+ok(!JSON.stringify(r.specs).includes('94') && !JSON.stringify(r.specs).includes('https://img'), 'mfg scales + image never published');
+ok(r.specs['storm-hy-road'].Core.Type === 'Symmetrical', 'core type mapped when stated');
+r = P.publish([rec({ specs: { weights: {} } })]); ok(r.report.skippedNoWeights === 1 && r.report.published === 0, 'no weights -> not published');
+r = P.publish([rec({}), rec({ url: 'other', specs: { weights: { 15: { RG: 2.6, Diff: 0.04 } } } })]);
+ok(r.report.conflicts[0] === 'brunswick-combat' && !r.specs['brunswick-combat'], 'two sources disagree -> neither published');
+r = P.publish([rec({ decision: 'pending', catalogId: null, url: 'v' })], [{ url: 'v', catalogId: 'brunswick-combat', action: 'approve' }]);
+ok(r.specs['brunswick-combat'] && r.report.approved === 1, 'ticked box publishes a pending row');
+r = P.publish([rec({ decision: 'pending', catalogId: null, url: 'fam', candidates: ['x-black', 'x-cherry'] })],
+  [{ url: 'fam', catalogId: 'x-black', action: 'approve' }, { url: 'fam', catalogId: 'x-cherry', action: 'approve' }]);
+ok(r.specs['x-black'] && r.specs['x-cherry'], 'one family page, two ticked colourways');
+r = P.publish([rec({}), rec({ url: 'mine', decision: 'pending', specs: { weights: { 15: { RG: 2.6, Diff: 0.04 } } } })],
+  [{ url: 'mine', catalogId: 'brunswick-combat', action: 'approve' }]);
+ok(r.specs['brunswick-combat'].SpecsByWeight['15'].RG === 2.6, 'your approval beats auto');
+r = P.publish([rec({})], [{ url: 'https://b/combat', action: 'reject' }]); ok(r.report.published === 0, 'reject wins over auto');
+/* end to end through the real build_catalog.js */
+const rows = [{ mfg: 'Brunswick', ballName: 'Combat', approvalISO: '2025-08-01', approvalDateOK: true },
+              { mfg: 'Brunswick', ballName: 'Zebra', approvalISO: '2024-01-01', approvalDateOK: true }];
+const pub = P.publish([rec({})]).specs;
+const b = B.build(rows, pub, '2026-10-06');
+const shard = b.shards['brunswick'];
+const c = shard.find(x => x.CatalogID === 'brunswick-combat'), z = shard.find(x => x.CatalogID === 'brunswick-zebra');
+ok(c.SpecsByWeight['15'].Diff === 0.051 && c.Cover.Name === 'Alpha Premier Pearl' && c.DateReleased === '2025-08-14', 'merged into detail shard by build_catalog');
+ok(Object.keys(z.SpecsByWeight).length === 0 && b.review.missingSpecs.includes('brunswick-zebra'), 'unmatched ball untouched');
+ok(c.USBC.ApprovedDate === '2025-08-01' && c.DateReleased !== c.USBC.ApprovedDate, 'release date is not the approval date');
+/* v30.171 CAT-NEW-1/3: status + cover/core codes reach the index */
+{ const pubS = P.publish([rec({ status: 'retired' }), rec({ catalogId: 'brunswick-zebra', url: 'z', status: 'unknown' })]).specs;
+  ok(pubS['brunswick-combat'].Status === 'retired' && !('Status' in pubS['brunswick-zebra']), 'Status published; unknown left out');
+  const bs = B.build(rows, pubS, '2026-10-06'), ix = bs.index.find(x => x.i === 'brunswick-combat'), iz = bs.index.find(x => x.i === 'brunswick-zebra');
+  ok(ix.r === 1 && !('r' in iz), 'index r=1 retired; absent when unknown');
+  ok(ix.cv === 'P' && iz.cv === 'P', 'cover code from stated type');
+  ok(B.build(rows, P.publish([rec({ status: 'current' })]).specs, 'x').index.find(x => x.i === 'brunswick-combat').r === 0, 'current -> r=0');
+  ok(B.coverCode({ Type: null, Name: 'Hybrid Reactive' }) === 'H' && B.coverCode({ Type: null, Name: 'Pearl Hybrid' }) === null, 'name only when it names one class');
+  ok(B.coverCode({ Type: 'Urethane' }) === 'U' && B.coverCode({ Type: 'Solid Reactive' }) === 'S' && B.coverCode({ Type: 'Polyester' }) === null, 'type classes');
+  ok(B.coreCode({ Type: 'Asymmetrical' }) === 'a' && B.coreCode({ Type: 'Symmetrical' }) === 's' && B.coreCode({}) === null, 'core codes'); }
+console.log('publish_test: ' + n + ' checks passed');
