@@ -1428,6 +1428,7 @@ function apLoad() {
   return apFlush().catch(function () {}).then(apFetchIssue).then(function (is) {
     _ap.issue = is.number; _ap.body = is.body; _ap.fromCache = false;
     apExtractStatus().then(function (run) { _ap.run = run; if (run) apRender(); });
+    apReadStaged().then(function () { apRender(); }).catch(function () {});
   }).catch(function (e) {
     var l = apLS(), c = null; try { c = JSON.parse((l && l.getItem(AP_CACHE_KEY)) || 'null'); } catch (x) {}
     if (c) { _ap.issue = c.number; _ap.body = c.body; _ap.fromCache = true; }
@@ -1529,8 +1530,9 @@ function apRender() {
       '<div style="display:flex;justify-content:space-between;gap:8px;align-items:center">' +
       '<span style="font-size:12px;font-weight:700;color:var(--t2)">' + esc(b.source) + '</span>' +
       '<span style="font-size:12px;font-weight:800;color:' + (on ? 'var(--teal)' : 'var(--t3)') + '">' + (on ? '✓ Approved' : 'Tap to approve') + '</span></div>' +
-      '<div style="font-size:16px;font-weight:800;color:var(--t1);margin:5px 0 3px">' + esc(b.specs) + '</div>' +
-      '<div style="font-size:11px;color:var(--t3);line-height:1.45">' + esc(b.reason) + '</div>' +
+      '<div style="font-size:11px;color:var(--t3);line-height:1.45;margin-top:3px">' + esc(b.reason) + '</div>' +
+      /* v30.168: the full staged record, close to the maker's spec sheet */
+      (_staged ? apSheetHTML(apStagedFor(_staged, b, p.catalogId)) : '<div style="font-size:16px;font-weight:800;color:var(--t1);margin:5px 0 3px">' + esc(b.specs) + '</div>' + apSheetHTML(null)) +
       (b.url ? '<a href="' + esc(b.url) + '" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" style="font-size:12px;color:var(--teal);display:inline-block;margin-top:5px">Open source page ↗</a>' : '') +
       '</div>';
   }).join('');
@@ -1633,13 +1635,76 @@ function imgLinksFrom(staged) {
   });
   return out;
 }
-function catImagesRefresh() {
+/* The full staged records (every field and weight the bridge read), read once
+   per session with the APP-1 token. Shared by IMG-1 and the approval cards. */
+var _staged = null, _stagedP = null;
+function apReadStaged(force) {
+  if (_staged && !force) return Promise.resolve(_staged);
+  if (_stagedP && !force) return _stagedP;
   if (!apToken()) return Promise.reject(new Error('Add the GitHub token in Spec approvals first'));
   var h = { 'Accept': 'application/vnd.github.raw+json', 'Authorization': 'Bearer ' + apToken(), 'X-GitHub-Api-Version': '2022-11-28' };
-  return env.fetch(AP_API + '/contents/staging/specs_staging.json?ref=specs', { headers: h, cache: 'no-store' }).then(function (r) {
+  _stagedP = env.fetch(AP_API + '/contents/staging/specs_staging.json?ref=specs', { headers: h, cache: 'no-store' }).then(function (r) {
     if (!r.ok) { var e = new Error('GitHub ' + r.status); e.status = r.status; throw e; }
     return r.json();
-  }).then(function (staged) {
+  }).then(function (rows) { _staged = rows || []; _stagedP = null; return _staged; }, function (e) { _stagedP = null; throw e; });
+  return _stagedP;
+}
+/* Pure: the staged record behind one checklist box (same page, same USBC ball). */
+function apStagedFor(staged, box, catalogId) {
+  var hit = null;
+  (staged || []).forEach(function (r) {
+    if (hit) return;
+    var sameBall = r.catalogId === catalogId || (r.candidates || []).indexOf(catalogId) >= 0;
+    var samePage = box.url ? r.url === box.url : (!r.url && r.title === box.title);
+    if (sameBall && samePage) hit = r;
+  });
+  return hit;
+}
+/* Pure: staged record -> catalog-detail shape, so specGaps() judges it the same way. */
+function apAsDetail(r) {
+  var sp = (r && r.specs) || {}, sbw = {};
+  Object.keys(sp.weights || {}).forEach(function (w) { var x = sp.weights[w] || {}; sbw[w] = { RG: x.RG, Diff: x.Diff, IntDiff: x.IntDiff }; });
+  return { Cover: { Name: sp.coverName || null, Type: sp.coverType || null, Finish: sp.finish || null },
+           Core: { Name: sp.core || null, Type: sp.coreType || null }, DateReleased: sp.released || null, SpecsByWeight: sbw };
+}
+/* Pure: "out-of-range:15:Diff=0.54" -> readable notes (the value itself was dropped by the bridge). */
+function apRangeNotes(flags) {
+  return (flags || []).map(function (f) {
+    var m = /^out-of-range:(\d+):(\w+)=(.+)$/.exec(f);
+    return m ? (m[2] === 'IntDiff' ? 'Int Diff' : m[2]) + ' ' + m[1] + ' lb read as ' + m[3] + ' \u2014 outside the allowed range, dropped' : null;
+  }).filter(Boolean);
+}
+function apSheetHTML(r) {
+  if (!r) return '<div style="font-size:11px;color:var(--t3);margin-top:6px">Full specs load with the staging file\u2026</div>';
+  var d = apAsDetail(r), sp = r.specs || {}, gaps = specGaps(d) || [];
+  var dash = '<span style="color:var(--gold)">missing</span>';
+  var row = function (k, v) { return '<div style="display:flex;justify-content:space-between;gap:10px;padding:4px 0;border-bottom:1px solid var(--border1);font-size:12px">' +
+    '<span style="color:var(--t3)">' + k + '</span><span style="color:var(--t1);text-align:right">' + v + '</span></div>'; };
+  var dct = derivedCoverType(sp.coverName);
+  var h = '<div style="margin-top:8px">' +
+    row('Coverstock', sp.coverName ? esc(sp.coverName) : dash) +
+    row('Cover type', sp.coverType ? esc(sp.coverType) : (dct ? esc(dct) + ' <span style="font-size:10px;color:var(--t3)">from name</span>' : dash)) +
+    row('Factory finish', sp.finish ? esc(sp.finish) : dash) +
+    row('Core', sp.core ? esc(sp.core) : dash) +
+    row('Core type', sp.coreType ? esc(sp.coreType) : dash) +
+    row('Release date', sp.released ? esc(String(sp.released).slice(0, 10)) : '<span style="color:var(--t3)">\u2014</span>');
+  var ws = Object.keys(sp.weights || {}).map(Number).filter(isFinite).sort(function (a, b) { return b - a; });
+  var f3 = function (v) { return v != null ? Number(v).toFixed(3) : '<span style="color:var(--gold)">\u2013</span>'; };
+  h += '<table style="width:100%;border-collapse:collapse;margin-top:8px;font-size:12px"><tr style="color:var(--t3)"><td>Weight</td><td style="text-align:right">RG</td><td style="text-align:right">Diff</td><td style="text-align:right">Int</td></tr>' +
+    (ws.length ? ws.map(function (w) { var x = sp.weights[w] || {};
+      return '<tr><td style="color:var(--t2)">' + w + ' lb</td><td style="text-align:right">' + f3(x.RG) + '</td><td style="text-align:right">' + f3(x.Diff) + '</td><td style="text-align:right">' + f3(x.IntDiff) + '</td></tr>'; }).join('')
+      : '<tr><td colspan="4" style="color:var(--gold)">No weights read</td></tr>') + '</table>';
+  if (ws.length && ws.indexOf(15) < 0) h += '<div style="font-size:11px;color:var(--gold);margin-top:4px">15 lb not on this page</div>';
+  var rn = apRangeNotes(r.flags);
+  if (rn.length) h += '<div style="font-size:11px;color:var(--red);margin-top:6px;line-height:1.45">' + rn.map(esc).join('<br>') + '</div>';
+  var sc = r.mfgScales || {}, scs = Object.keys(sc).map(function (k) { return esc(k.replace(/([A-Z])/g, ' $1').toLowerCase()) + ' ' + esc(sc[k]); });
+  if (scs.length) h += '<div style="font-size:11px;color:var(--t3);margin-top:6px">Maker scale: ' + scs.join(' \u00b7 ') + '</div>';
+  h += '<div style="font-size:12px;font-weight:700;margin-top:8px;color:' + (gaps.length ? 'var(--gold)' : 'var(--teal)') + '">' +
+    (gaps.length ? 'Missing: ' + esc(gaps.join(', ')) : '\u2713 Complete') + '</div></div>';
+  return h;
+}
+function catImagesRefresh() {
+  return apReadStaged(true).then(function (staged) {
     var map = imgLinksFrom(staged);
     var l = apLS(); if (l) l.setItem(IMG_LINKS_KEY, JSON.stringify({ at: Date.now(), map: map }));
     _imgMap = map;
@@ -1731,7 +1796,7 @@ root._catStep5 = { norm: norm, modelKey: modelKey, lookupIn: lookupIn, searchIn:
                    specsOf: specsOf, shardMap: shardMap, shardKeyFor: shardKeyFor, detailFiles: detailFiles,
                    buildOwnedBall: buildOwnedBall, ballFromSpecs: ballFromSpecs, fillPlan: fillPlan,
                    catSpecSource: catSpecSource, setFilled: function (f) { _filled = f; },
-                   imgLinksFrom: imgLinksFrom, derivedCoverType: derivedCoverType, specGaps: specGaps, nearestWeight: nearestWeight, addListHTML: addListHTML, sourceForBrand: sourceForBrand, apParseIssue: apParseIssue, apPages: apPages, apApplyTicks: apApplyTicks, apConflict: apConflict, apNums: apNums,
+                   imgLinksFrom: imgLinksFrom, apStagedFor: apStagedFor, apAsDetail: apAsDetail, apRangeNotes: apRangeNotes, derivedCoverType: derivedCoverType, specGaps: specGaps, nearestWeight: nearestWeight, addListHTML: addListHTML, sourceForBrand: sourceForBrand, apParseIssue: apParseIssue, apPages: apPages, apApplyTicks: apApplyTicks, apConflict: apConflict, apNums: apNums,
                    verifyPlan: verifyPlan, specMatch: specMatch, metricUnverified: metricUnverified, catSpecUnverified: catSpecUnverified,
                    metricScore: metricScore, parseFinish: parseFinish, rgBand: rgBand, diffBand: diffBand, coverClass: coverClass,
                    catMetric: catMetric, sheetHTML: sheetHTML, setSheet: function (x) { _sheet = x; } };
