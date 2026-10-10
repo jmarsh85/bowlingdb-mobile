@@ -284,8 +284,20 @@ function stormCandidates(rows, haveIds, prefixes, since) {
   return out;
 }
 
+/* v30.171 CAT-NEW-1 (LOCKED 2026-10-10): current/retired as the maker's site states it.
+   Storm: listing = current, unlisted product page = retired (set in extractSource).
+   Brunswick/DV8/Radical: /products/balls/current|retired/. Everything else: unknown
+   (the app then treats USBC approval over 3 years ago as likely discontinued). */
+function statusFromUrl(u) {
+  const m = /\/products\/balls\/(current|retired)\//.exec(String(u || ''));
+  return m ? m[1] : 'unknown';
+}
+
 /* ---------- match + verify + decide (pure) ---------- */
-const GATES = { RG: [2.40, 2.85], Diff: [0, 0.080], IntDiff: [0, 0.040] };
+/* v30.171 (locked 2026-10-10): Diff max = USBC's 0.060 (was 0.080). No approved
+   ball can exceed it, so a higher value is a source error (Track 300T 15 lb 0.090).
+   Same value as DIFF_MAX in the app's correction form (catalog.js). */
+const GATES = { RG: [2.40, 2.85], Diff: [0, 0.060], IntDiff: [0, 0.040] };
 const RG_MAX_LIGHT = 2.90;   // 12 lb and under genuinely reach ~2.87
 function verify(rec) {
   const flags = [];
@@ -440,6 +452,7 @@ async function extractSource(src, cfg, fetchImpl, limit, log, ctx) {
       if (!allowed(robots, u)) break;
       const r = await get(u); if (r.status !== 200) { if (p === 1) errors.push(u + ' ' + r.status); break; }   // past the last page is normal
       const items = parseStormListing(r.text, src.base); if (!items.length) break;
+      items.forEach(x => { x.status = 'current'; });   // v30.171 CAT-NEW-1: on the listing = current
       recs.push(...items); pagesSeen++; if (limit && recs.length >= limit) break;
     }
     log(src.id + ': ' + pagesSeen + ' listing pages, ' + recs.length + ' balls');
@@ -467,6 +480,7 @@ async function extractSource(src, cfg, fetchImpl, limit, log, ctx) {
         const r = await get(u); tried++; pagesSeen++;
         if (r.status !== 200) continue;            // retired page gone: expected, not an error
         const items = parseStormProduct(r.text, u, c.brand).filter(x => Object.keys(x.specs.weights).length);
+        items.forEach(x => { x.status = 'retired'; });   // reached only via an unlisted product page
         if (items.length) { recs.push(...items); hit++; }
         if (limit && tried >= limit) break;
       }
@@ -493,7 +507,7 @@ async function extractSource(src, cfg, fetchImpl, limit, log, ctx) {
       } else {
         const r = await get(u); pages++;
         if (r.status !== 200) { errors.push(u + ' ' + r.status); continue; }
-        recs.push(...(plat === 'craft' ? parseCraft(r.text, u, SITE_BRAND[src.id]) : parseMotiv(r.text, u)));
+        recs.push(...(plat === 'craft' ? parseCraft(r.text, u, SITE_BRAND[src.id]) : parseMotiv(r.text, u)).map(x => Object.assign(x, { status: x.status || statusFromUrl(u) })));
       }
     } catch (e) { errors.push(u + ' ' + (e.message || e)); }
   }
@@ -521,7 +535,7 @@ async function main(argv, fetchImpl, log = s => process.stdout.write(s + '\n')) 
       parsed++;
       const flags = verify(rec), m = matchRec(rec, byBrand), d = decide(rec, m, flags);
       const base = { source: s.id, platform: PLATFORM[s.id], brand: canonBrand(rec.brand), title: rec.title, url: rec.url, sku: rec.sku || null,
-        flags, specs: rec.specs, mfgScales: rec.mfgScales, imageUrl: rec.imageUrl, fetched, method: 'parser' };
+        flags, specs: rec.specs, mfgScales: rec.mfgScales, imageUrl: rec.imageUrl, fetched, method: 'parser', status: rec.status || 'unknown' };
       const gatesOk = !flags.some(f => f === 'no-weight-specs' || f.startsWith('out-of-range'));
       const at = autoTargets(rec, m, idName);
       if (at.auto.length && gatesOk) {
@@ -584,6 +598,6 @@ async function main(argv, fetchImpl, log = s => process.stdout.write(s + '\n')) 
   return { staged, coverage: cov, perSource };
 }
 
-module.exports = { statedCoreType, mergeProduct, colourOnly, extraWords, autoTargets, close, parseStormProduct, stormSlug, learnStormPrefixes, stormCandidates, htmlToText, weightTable, kvLines, parseDate, parseCraft, parseShopifyBody, parseMotiv, parseStormListing,
+module.exports = { statusFromUrl, statedCoreType, mergeProduct, colourOnly, extraWords, autoTargets, close, parseStormProduct, stormSlug, learnStormPrefixes, stormCandidates, htmlToText, weightTable, kvLines, parseDate, parseCraft, parseShopifyBody, parseMotiv, parseStormListing,
   verify, matchRec, decide, resolveConflicts, coverage, indexByBrand, titleKey, norm, main };
 if (require.main === module) main(process.argv.slice(2), globalThis.fetch).catch(e => { console.error(e); process.exit(1); });
