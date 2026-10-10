@@ -68,6 +68,16 @@ function uniqueID(base, taken) {
 }
 
 /* -------------------------------------------------------------- */
+/* v30.171: same classes as the app's coverClass(); name only for Pearl/Hybrid/Solid (v30.167 rule). */
+function coverCode(cv) {
+  const t = ((cv && cv.Type) || '').toLowerCase(), n = ((cv && cv.Name) || '').toLowerCase();
+  const pick = s => /polyester|plastic|spare/.test(s) ? null : (/urethane/.test(s) && !/reactive/.test(s)) ? 'U'
+    : /hybrid/.test(s) ? 'H' : /pearl/.test(s) ? 'P' : /solid/.test(s) ? 'S' : null;
+  if (t) return pick(t);
+  const hits = ['pearl', 'hybrid', 'solid'].filter(w => new RegExp('\\b' + w).test(n));
+  return hits.length === 1 ? pick(hits[0]) : (/urethane/.test(n) && !/reactive/.test(n) ? 'U' : null);
+}
+function coreCode(co) { const t = (co && co.Type) || ''; return /asym/i.test(t) ? 'a' : /sym/i.test(t) ? 's' : null; }
 function build(rows, specsByKey, listVersion) {
   const review = {
     listVersion,
@@ -118,6 +128,7 @@ function build(rows, specsByKey, listVersion) {
       SpecsByWeight: (specs && specs.SpecsByWeight) || {},
       Source: (specs && specs.Source) || null,     // v30.159: manufacturer page the specs came from
       Checked: (specs && specs.Checked) || null,   // date the bridge fetched it
+      Status: (specs && specs.Status) || null,     // v30.171: 'current' | 'retired' from the maker's site
       USBC: {
         Approved: true,
         ApprovedDate: r.approvalISO,
@@ -156,6 +167,10 @@ function build(rows, specsByKey, listVersion) {
     t: !!e.Images.Thumb,
     /* v30.159: published specs flag for the search-row dot; absent when none (keeps index small) */
     ...(Object.keys(e.SpecsByWeight || {}).length ? { s: 1 } : {}),
+    /* v30.171 Add a Ball bubbles: r 1 retired / 0 current (absent = unknown), cv cover class, co core */
+    ...(e.Status === 'retired' ? { r: 1 } : e.Status === 'current' ? { r: 0 } : {}),
+    ...(coverCode(e.Cover) ? { cv: coverCode(e.Cover) } : {}),
+    ...(coreCode(e.Core) ? { co: coreCode(e.Core) } : {}),
   }));
 
   /* detail sharded by manufacturer — Storm is one request, not 400 */
@@ -243,4 +258,4 @@ function main() {
 }
 
 if (require.main === module) main();
-module.exports = { build, catalogID, stable, sha };
+module.exports = { build, catalogID, stable, sha, coverCode, coreCode };
