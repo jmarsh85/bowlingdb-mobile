@@ -9173,20 +9173,23 @@
   "Aliases": [],
   "BallName": "Recon RX1 Silver Pearl",
   "CatalogID": "motiv-recon-rx1-silver-pearl",
-  "Checked": null,
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Recon",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "5500 Grit Laser Scan Polished",
+   "Name": "MOTIVator-X",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -9201,8 +9204,39 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": null,
-  "SpecsByWeight": {},
+  "Source": "https://www.motivbowling.com/products/balls/retired-balls/recon-rx1-silver.html",
+  "SpecsByWeight": {
+   "10": {
+    "Diff": 0.01,
+    "IntDiff": null,
+    "RG": 2.75
+   },
+   "11": {
+    "Diff": 0.022,
+    "IntDiff": null,
+    "RG": 2.69
+   },
+   "12": {
+    "Diff": 0.038,
+    "IntDiff": null,
+    "RG": 2.62
+   },
+   "13": {
+    "Diff": 0.03,
+    "IntDiff": null,
+    "RG": 2.62
+   },
+   "14": {
+    "Diff": 0.025,
+    "IntDiff": null,
+    "RG": 2.61
+   },
+   "15": {
+    "Diff": 0.025,
+    "IntDiff": null,
+    "RG": 2.59
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2010-12",
@@ -11836,20 +11870,23 @@
   "Aliases": [],
   "BallName": "Tag (Cannon) Green/Blue Pearl",
   "CatalogID": "motiv-tag-cannon-green-blue-pearl",
-  "Checked": null,
+  "Checked": "2026-10-10",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Halogen™",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "5500 Grit LSP",
+   "Name": "Agility™ SFP Reactive",
+   "Type": "Pearl Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -11864,8 +11901,34 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": null,
-  "SpecsByWeight": {},
+  "Source": "https://www.motivbowling.com/products/balls/retired-balls/tag-cannon.html",
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.031,
+    "IntDiff": null,
+    "RG": 2.64
+   },
+   "13": {
+    "Diff": 0.038,
+    "IntDiff": null,
+    "RG": 2.59
+   },
+   "14": {
+    "Diff": 0.038,
+    "IntDiff": null,
+    "RG": 2.56
+   },
+   "15": {
+    "Diff": 0.037,
+    "IntDiff": null,
+    "RG": 2.55
+   },
+   "16": {
+    "Diff": 0.036,
+    "IntDiff": null,
+    "RG": 2.54
+   }
+  },
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2017-06-06",

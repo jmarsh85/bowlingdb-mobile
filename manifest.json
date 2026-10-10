@@ -1,5 +1,5 @@
 {
- "build": "699abf6611d6343a",
+ "build": "f4d8909e92318894",
  "files": {
   "detail/3g.json": {
    "bytes": 3529,
@@ -162,8 +162,8 @@
    "path": "detail/bowltech.json"
   },
   "detail/brunswick.json": {
-   "bytes": 734356,
-   "hash": "d0c4d4a637c1e0f7",
+   "bytes": 734907,
+   "hash": "a4eadf6a7cee0bbb",
    "path": "detail/brunswick.json"
   },
   "detail/bulldogbowlingproducts.json": {
@@ -482,8 +482,8 @@
    "path": "detail/morich.json"
   },
   "detail/motiv.json": {
-   "bytes": 281006,
-   "hash": "ee1c764b8d46d0a6",
+   "bytes": 282161,
+   "hash": "d120f50c123f7c1d",
    "path": "detail/motiv.json"
   },
   "detail/naturalenemies.json": {
@@ -702,8 +702,8 @@
    "path": "detail/tayoto.json"
   },
   "detail/trackinc.json": {
-   "bytes": 381029,
-   "hash": "ed9473f25ed517cd",
+   "bytes": 381037,
+   "hash": "90d7d2f975d11437",
    "path": "detail/trackinc.json"
   },
   "detail/ubb.json": {
@@ -782,8 +782,8 @@
    "path": "detail/yuean.json"
   },
   "index.json": {
-   "bytes": 1299285,
-   "hash": "2e1f996b460cb276",
+   "bytes": 1299325,
+   "hash": "8900ed86b4412452",
    "path": "index.json"
   },
   "usbc.json": {

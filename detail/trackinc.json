@@ -6508,12 +6508,12 @@
   "Colorway": null,
   "Core": {
    "Name": "Modified Tri-Core",
-   "Type": "Symmetrical"
+   "Type": null
   },
   "Cover": {
-   "Finish": "500 / 2000 Abralon®",
-   "Name": "QR-5 Solid",
-   "Type": null
+   "Finish": "500, 1000, 2000 Siaair Micro Pad",
+   "Name": "DR-7 Solid",
+   "Type": "Solid Reactive"
   },
   "DateReleased": null,
   "FieldSources": {
@@ -6535,22 +6535,22 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": "https://trackbowling.com/products/heat-x-treme",
+  "Source": "https://trackbowling.com/products/heat",
   "SpecsByWeight": {
    "12": {
-    "Diff": 0.039,
+    "Diff": 0.04,
     "IntDiff": null,
-    "RG": 2.6
+    "RG": 2.597
    },
    "13": {
-    "Diff": 0.055,
+    "Diff": 0.04,
     "IntDiff": null,
-    "RG": 2.53
+    "RG": 2.574
    },
    "14": {
-    "Diff": 0.045,
+    "Diff": 0.038,
     "IntDiff": null,
-    "RG": 2.49
+    "RG": 2.51
    },
    "15": {
     "Diff": 0.038,
