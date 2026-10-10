@@ -1234,7 +1234,281 @@ function catSpecSource(oldBall, fields) {
   return src;
 }
 
-root.catPickerMount = catPickerMount; root.catPickerSearch = catPickerSearch;
+
+/* ---------- APP-1: in-app spec approvals (design rev 7, sec 15) ----------
+   Pages through the open "Spec approvals" issue one USBC ball at a time.
+   Tapping a source ticks its box in the SAME issue through the GitHub API,
+   so D8, the R1-R4 auto rules and specs-publish are unchanged; the app is a
+   front end to the checklist, not a second approval store.
+
+   Box line format (bridge/approvals.js render):
+     - [ ] **Title** -> `catalogId` . RG x / Diff y @15 lb . [source](url) <!--a:url|catalogId-->
+   under "### <source> -- <reason label> (n)" headings.
+
+   Token: fine-grained, this repo only (Issues read/write; Actions read/write
+   for Publish). Kept in localStorage 'bdbgh_token' -- outside the bowlingdb_
+   prefix, so snapshots never include it. Ticks made offline queue in
+   'bdbgh_ap_queue' and are sent when the app is next online. */
+var AP_REPO = 'jmarsh85/bowlingdb-mobile';
+var AP_API = 'https://api.github.com/repos/' + AP_REPO;
+var AP_TOKEN_KEY = 'bdbgh_token', AP_QUEUE_KEY = 'bdbgh_ap_queue', AP_CACHE_KEY = 'bdbgh_ap_cache';
+var AP_LINE = /^(\s*-\s*\[)([ xX])(\]\s*\*\*(.*?)\*\*\s*\S+\s*`([^`]+)`\s*·\s*(.*?)(?:\s*·\s*\[source\]\(([^)]*)\))?\s*<!--a:([^>]*?)-->)\s*$/;
+
+/* Pure: issue body -> boxes, in issue order. */
+function apParseIssue(body) {
+  var out = [], src = '', label = '';
+  String(body || '').split('\n').forEach(function (line) {
+    var h = /^###\s+(.*?)\s+—\s+(.*?)\s+\(\d+\)\s*$/.exec(line);
+    if (h) { src = h[1]; label = h[2]; return; }
+    var m = AP_LINE.exec(line);
+    if (!m) return;
+    out.push({ tok: m[8], ticked: m[2] !== ' ', title: m[4], catalogId: m[5], specs: m[6], url: m[7] || null, source: src, reason: label });
+  });
+  return out;
+}
+/* Pure: boxes -> pages, one per USBC ball, first-seen order. */
+function apPages(boxes) {
+  var by = {}, order = [];
+  boxes.forEach(function (b) {
+    if (!by[b.catalogId]) { by[b.catalogId] = []; order.push(b.catalogId); }
+    by[b.catalogId].push(b);
+  });
+  return order.map(function (id) { return { catalogId: id, boxes: by[id] }; });
+}
+/* Pure: apply {tok: true|false} to the body. Lines are found by their hidden
+   token, so a body re-rendered by specs-extract in between still matches. */
+function apApplyTicks(body, changes) {
+  return String(body || '').split('\n').map(function (line) {
+    var m = AP_LINE.exec(line);
+    if (!m || !(m[8] in changes)) return line;
+    return m[1] + (changes[m[8]] ? 'x' : ' ') + m[3];
+  }).join('\n');
+}
+/* Pure: numbers from "RG 2.49 / Diff 0.050 / Int 0.016 @15 lb" */
+function apNums(specs) {
+  var g = function (k) { var m = new RegExp(k + '\\s+([0-9.]+)').exec(specs || ''); return m ? +m[1] : null; };
+  return { rg: g('RG'), diff: g('Diff'), int: g('Int') };
+}
+/* Pure: ticked boxes on one ball that disagree publish nothing (D8). R3 tolerance. */
+function apConflict(boxes) {
+  var t = boxes.filter(function (b) { return b.ticked; }).map(function (b) { return apNums(b.specs); });
+  for (var i = 1; i < t.length; i++) {
+    var a = t[0], b = t[i];
+    var off = function (x, y, tol) { return x != null && y != null && Math.abs(x - y) > tol + 1e-9; };
+    if (off(a.rg, b.rg, 0.002) || off(a.diff, b.diff, 0.001) || off(a.int, b.int, 0.001)) return true;
+  }
+  return false;
+}
+
+var _ap = { body: null, issue: null, pages: [], idx: 0, uncheckedOnly: true, busy: false, err: null, fromCache: false };
+function apLS() { try { return env.ls(); } catch (e) { return null; } }
+function apToken() { var l = apLS(); return l ? (l.getItem(AP_TOKEN_KEY) || '') : ''; }
+function apQueue() { var l = apLS(); try { return JSON.parse((l && l.getItem(AP_QUEUE_KEY)) || '{}'); } catch (e) { return {}; } }
+function apSetQueue(q) { var l = apLS(); if (l) l.setItem(AP_QUEUE_KEY, JSON.stringify(q)); }
+function apGH(path, opt) {
+  opt = opt || {};
+  var h = { 'Accept': 'application/vnd.github+json', 'Authorization': 'Bearer ' + apToken(), 'X-GitHub-Api-Version': '2022-11-28' };
+  if (opt.body) h['Content-Type'] = 'application/json';
+  return env.fetch(AP_API + path, { method: opt.method || 'GET', headers: h, body: opt.body ? JSON.stringify(opt.body) : undefined, cache: 'no-store' })
+    .then(function (r) {
+      if (r.status === 204) return null;
+      if (!r.ok) return r.text().then(function (t) { var e = new Error('GitHub ' + r.status); e.status = r.status; e.detail = t; throw e; });
+      return r.json();
+    });
+}
+function apFetchIssue() {
+  return apGH('/issues?labels=spec-approvals&state=open&per_page=1').then(function (list) {
+    var is = list && list[0];
+    if (!is) throw new Error('No open "Spec approvals" issue. Run specs-extract first.');
+    var l = apLS(); if (l) l.setItem(AP_CACHE_KEY, JSON.stringify({ number: is.number, body: is.body, at: Date.now() }));
+    return { number: is.number, body: is.body || '' };
+  });
+}
+/* Sends queued ticks: re-reads the issue first, applies, writes back. */
+function apFlush() {
+  var q = apQueue();
+  if (!Object.keys(q).length || !apToken()) return Promise.resolve(0);
+  if (root.navigator && root.navigator.onLine === false) return Promise.resolve(0);
+  return apFetchIssue().then(function (is) {
+    var nb = apApplyTicks(is.body, q);
+    var n = Object.keys(q).length;
+    if (nb === is.body) { apSetQueue({}); return n; }
+    return apGH('/issues/' + is.number, { method: 'PATCH', body: { body: nb } }).then(function () {
+      var l = apLS(); if (l) l.setItem(AP_CACHE_KEY, JSON.stringify({ number: is.number, body: nb, at: Date.now() }));
+      apSetQueue({});
+      return n;
+    });
+  });
+}
+function apLoad() {
+  _ap.busy = true; _ap.err = null; apRender();
+  return apFlush().catch(function () {}).then(apFetchIssue).then(function (is) {
+    _ap.issue = is.number; _ap.body = is.body; _ap.fromCache = false;
+  }).catch(function (e) {
+    var l = apLS(), c = null; try { c = JSON.parse((l && l.getItem(AP_CACHE_KEY)) || 'null'); } catch (x) {}
+    if (c) { _ap.issue = c.number; _ap.body = c.body; _ap.fromCache = true; }
+    _ap.err = e.status === 401 ? 'GitHub rejected the token (401). Check it or make a new one.'
+      : e.status === 403 || e.status === 404 ? 'The token cannot read this repo\'s issues (' + e.status + '). Check its repo and Issues permission.'
+      : (e.message || String(e));
+  }).then(function () {
+    apBuildPages(true); _ap.busy = false; apRender();
+  });
+}
+/* Merges queued ticks into the view so offline taps show immediately. */
+function apBuildPages(reset) {
+  var q = apQueue();
+  var boxes = apParseIssue(_ap.body).map(function (b) { if (b.tok in q) b.ticked = !!q[b.tok]; return b; });
+  var all = apPages(boxes);
+  _ap.allCount = all.length;
+  _ap.doneCount = all.filter(function (p) { return p.boxes.some(function (b) { return b.ticked; }); }).length;
+  var keep = _ap.pages[_ap.idx] && _ap.pages[_ap.idx].catalogId;
+  _ap.pages = _ap.uncheckedOnly && reset ? all.filter(function (p) { return !p.boxes.some(function (b) { return b.ticked; }); }) : (reset ? all : _ap.pages.map(function (p) {
+    return all.filter(function (x) { return x.catalogId === p.catalogId; })[0] || p;
+  }));
+  if (reset) _ap.idx = 0;
+  else if (keep) { var i = _ap.pages.map(function (p) { return p.catalogId; }).indexOf(keep); if (i >= 0) _ap.idx = i; }
+}
+
+/* ---------- UI ---------- */
+function catApprovalsOpen() {
+  if (typeof document === 'undefined') return;
+  catApprovalsClose();
+  document.body.appendChild(overlay('ap-ov', 905));
+  _ap.idx = 0; _ap.pages = []; _ap.body = null;
+  if (!apToken()) { apRender(); return; }
+  apLoad();
+}
+function catApprovalsClose() { var el = document.getElementById('ap-ov'); if (el) el.parentNode.removeChild(el); }
+function apHeader(sub) {
+  return '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 8px">' +
+    '<button style="' + BACK + '" onclick="catApprovalsClose()">‹</button>' +
+    '<div style="flex:1;min-width:0"><div style="font-size:17px;font-weight:800;color:var(--t1)">Spec approvals</div>' +
+    '<div style="font-size:11px;color:var(--t3)">' + sub + '</div></div></div>';
+}
+function apTokenHTML() {
+  return apHeader('Connect to GitHub') +
+    '<div style="padding:8px 16px;overflow-y:auto;flex:1;font-size:13px;color:var(--t2);line-height:1.55">' +
+    '<p style="margin:0 0 10px">The app ticks boxes in your <b>Spec approvals</b> issue, so it needs a GitHub token for this one repo.</p>' +
+    '<p style="margin:0 0 10px">GitHub → Settings → Developer settings → Fine-grained tokens → Generate. Repository: <b>bowlingdb-mobile</b> only. Permissions: <b>Issues</b> read and write; <b>Actions</b> read and write (for Publish).</p>' +
+    '<p style="margin:0 0 12px;color:var(--t3);font-size:12px">Stored on this device only and never included in backups.</p>' +
+    '<input id="ap-token" class="bdet-field-input" type="password" autocomplete="off" placeholder="github_pat_…" style="width:100%;box-sizing:border-box">' +
+    '<button style="' + BTN_P + 'width:100%;margin-top:10px;padding:11px" onclick="catApprovalsSaveToken()">Save and load</button>' +
+    '</div>';
+}
+function catApprovalsSaveToken() {
+  var el = document.getElementById('ap-token'); var v = el ? el.value.trim() : '';
+  if (!v) return;
+  var l = apLS(); if (l) l.setItem(AP_TOKEN_KEY, v);
+  apLoad();
+}
+function catApprovalsChangeToken() {
+  if (root.confirm && !root.confirm('Remove the GitHub token from this device? You can paste a new one next.')) return;
+  catApprovalsForgetToken();
+}
+function catApprovalsForgetToken() {
+  var l = apLS(); if (l) { l.removeItem(AP_TOKEN_KEY); l.removeItem(AP_CACHE_KEY); }
+  _ap.body = null; _ap.pages = []; apRender();
+}
+function apRender() {
+  var ov = document.getElementById('ap-ov');
+  if (!ov) return;
+  if (!apToken()) { ov.innerHTML = apTokenHTML(); return; }
+  if (_ap.busy && _ap.body == null) { ov.innerHTML = apHeader('Loading…') + '<div style="padding:30px;text-align:center;color:var(--t3);font-size:13px">Reading the approvals issue…</div>'; return; }
+  var qn = Object.keys(apQueue()).length;
+  var status = (_ap.err ? '<div style="font-size:12px;color:var(--red);margin:0 16px 8px;line-height:1.45">' + esc(_ap.err) + '</div>' : '') +
+    (_ap.fromCache ? '<div style="font-size:11px;color:var(--gold);margin:0 16px 6px">Offline copy. Ticks are saved and sent when you are back online.</div>' : '');
+  var p = _ap.pages[_ap.idx];
+  var sub = _ap.body == null ? '' : (_ap.doneCount + ' of ' + _ap.allCount + ' balls approved' + (qn ? ' · ' + qn + ' waiting to send' : ''));
+  var filt = '<label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--t2);margin:0 16px 8px">' +
+    '<input type="checkbox" ' + (_ap.uncheckedOnly ? 'checked ' : '') + 'onchange="catApprovalsFilter(this.checked)"> Only balls with nothing approved</label>';
+  if (!p) {
+    ov.innerHTML = apHeader(sub) + status + filt + '<div style="padding:30px 16px;text-align:center;color:var(--t2);font-size:13px;line-height:1.6">' +
+      (_ap.body == null ? 'Nothing loaded.' : 'Nothing left to review here.') + '</div>' + apFooter(false);
+    return;
+  }
+  var head = '<div id="ap-entry" style="font-size:15px;font-weight:700;color:var(--t1);margin-bottom:2px">' + esc(p.boxes[0].title) + '</div>' +
+    '<div style="font-size:11px;color:var(--t3);margin-bottom:4px">USBC ' + esc(p.catalogId) + '</div>';
+  var mine = appBalls().filter(function (b) { return b.CatalogID === p.catalogId; });
+  var mineH = mine.length ? '<div style="font-size:12px;color:var(--t2);margin:6px 0 4px;padding:8px;border-radius:9px;background:var(--bg3)">Your ball: RG ' +
+    esc(mine[0].RG != null ? mine[0].RG : '–') + ' / Diff ' + esc(mine[0].Differential != null ? mine[0].Differential : '–') + ' @' + esc(mine[0].Weight || '?') + ' lb</div>' : '';
+  var cards = p.boxes.map(function (b, i) {
+    var on = b.ticked;
+    return '<div onclick="catApprovalsTick(' + i + ')" style="cursor:pointer;margin-top:8px;padding:11px 12px;border-radius:12px;border:1px solid ' +
+      (on ? 'var(--teal)' : 'var(--border1)') + ';background:' + (on ? 'rgba(0,217,217,0.08)' : 'var(--bg2)') + '">' +
+      '<div style="display:flex;justify-content:space-between;gap:8px;align-items:center">' +
+      '<span style="font-size:12px;font-weight:700;color:var(--t2)">' + esc(b.source) + '</span>' +
+      '<span style="font-size:12px;font-weight:800;color:' + (on ? 'var(--teal)' : 'var(--t3)') + '">' + (on ? '✓ Approved' : 'Tap to approve') + '</span></div>' +
+      '<div style="font-size:16px;font-weight:800;color:var(--t1);margin:5px 0 3px">' + esc(b.specs) + '</div>' +
+      '<div style="font-size:11px;color:var(--t3);line-height:1.45">' + esc(b.reason) + '</div>' +
+      (b.url ? '<a href="' + esc(b.url) + '" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" style="font-size:12px;color:var(--teal);display:inline-block;margin-top:5px">Open source page ↗</a>' : '') +
+      '</div>';
+  }).join('');
+  var warn = apConflict(p.boxes) ? '<div style="font-size:12px;color:var(--gold);margin-top:10px;line-height:1.45">These approvals disagree, so neither will publish. Keep one.</div>' : '';
+  ov.innerHTML = apHeader(sub) + status + filt +
+    '<div style="flex:1;overflow-y:auto;padding:4px 16px 12px">' + head + mineH + cards + warn + '</div>' + apFooter(true);
+  catLoad().then(function (rows) {
+    var e = byIdIn(rows, p.catalogId), el = document.getElementById('ap-entry');
+    if (e && el && _ap.pages[_ap.idx] === p) el.innerHTML = entryLine(e);
+  });
+}
+function apFooter(paging) {
+  var n = _ap.pages.length, qn = Object.keys(apQueue()).length;
+  return '<div style="padding:10px 16px;border-top:1px solid var(--border1);display:flex;flex-direction:column;gap:8px">' +
+    (paging ? '<div style="display:flex;gap:8px;align-items:center">' +
+      '<button style="' + BTN_G + 'flex:1;padding:11px" ' + (_ap.idx > 0 ? '' : 'disabled ') + 'onclick="catApprovalsPage(-1)">‹ Prev</button>' +
+      '<span style="font-size:12px;color:var(--t2);min-width:70px;text-align:center">' + (_ap.idx + 1) + ' of ' + n + '</span>' +
+      '<button style="' + BTN_G + 'flex:1;padding:11px" ' + (_ap.idx < n - 1 ? '' : 'disabled ') + 'onclick="catApprovalsPage(1)">Next ›</button></div>' : '') +
+    '<div style="display:flex;gap:8px">' +
+      (qn ? '<button style="' + BTN_P + 'flex:1;padding:10px" onclick="catApprovalsSend()">Send ' + qn + ' now</button>' : '') +
+      '<button style="' + BTN_P + 'flex:1;padding:10px" onclick="catApprovalsPublish()">Publish approvals</button>' +
+      '<button style="' + BTN_G + 'padding:10px" onclick="catApprovalsChangeToken()">Change token</button></div></div>';
+}
+function catApprovalsPage(d) {
+  _ap.idx = Math.max(0, Math.min(_ap.pages.length - 1, _ap.idx + d));
+  apRender();
+  var sc = document.querySelector('#ap-ov [style*="overflow-y:auto"]'); if (sc) sc.scrollTop = 0;
+}
+function catApprovalsFilter(on) { _ap.uncheckedOnly = !!on; apBuildPages(true); apRender(); }
+var _apSendTimer = null;
+function catApprovalsTick(i) {
+  var p = _ap.pages[_ap.idx]; if (!p) return;
+  var b = p.boxes[i]; if (!b) return;
+  var q = apQueue(); q[b.tok] = !b.ticked; apSetQueue(q);
+  if (root.haptic) try { root.haptic('light'); } catch (e) {}
+  apBuildPages(false); apRender();
+  clearTimeout(_apSendTimer);
+  _apSendTimer = setTimeout(function () { catApprovalsSend(true); }, 1500);
+}
+function catApprovalsSend(quiet) {
+  return apFlush().then(function (n) {
+    if (n && !quiet && root.toast) root.toast(n + ' approval change' + (n === 1 ? '' : 's') + ' sent');
+    if (n) { _ap.err = null; _ap.fromCache = false; var l = apLS(); try { var c = JSON.parse(l.getItem(AP_CACHE_KEY)); if (c) _ap.body = c.body; } catch (e) {} }
+    apBuildPages(false); apRender();
+  }).catch(function (e) {
+    _ap.err = 'Not sent yet (' + (e.status ? 'GitHub ' + e.status : 'offline') + '). Saved on this device; it will retry.';
+    apRender();
+  });
+}
+/* Runs the specs-publish workflow on the repo's default branch. */
+function catApprovalsPublish() {
+  var go = function () {
+    return apGH('').then(function (repo) {
+      return apGH('/actions/workflows/specs-publish.yml/dispatches', { method: 'POST', body: { ref: repo.default_branch || 'main' } });
+    }).then(function () {
+      if (root.toast) root.toast('specs-publish started. The catalog updates when it finishes (a few minutes).');
+    }).catch(function (e) {
+      if (root.toast) root.toast(e.status === 403 || e.status === 404 ? 'Token needs Actions read and write to publish' : ('Publish failed: ' + (e.status ? 'GitHub ' + e.status : 'offline')));
+    });
+  };
+  var q = Object.keys(apQueue()).length;
+  return (q ? apFlush() : Promise.resolve(0)).then(go, go);
+}
+if (typeof root.addEventListener === 'function') root.addEventListener('online', function () { apFlush().catch(function () {}); });
+
+root.catPickerMount = catPickerMount;
+root.catApprovalsOpen = catApprovalsOpen; root.catApprovalsClose = catApprovalsClose; root.catApprovalsSaveToken = catApprovalsSaveToken;
+root.catApprovalsForgetToken = catApprovalsForgetToken; root.catApprovalsChangeToken = catApprovalsChangeToken; root.catApprovalsPage = catApprovalsPage; root.catApprovalsFilter = catApprovalsFilter;
+root.catApprovalsTick = catApprovalsTick; root.catApprovalsSend = catApprovalsSend; root.catApprovalsPublish = catApprovalsPublish; root.catPickerSearch = catPickerSearch;
 root.catPick = catPick; root.catUnlink = catUnlink; root.catPickValue = catPickValue;
 root.catLinkLabel = catLinkLabel; root.catReviewOpen = catReviewOpen;
 root.catReviewLink = catReviewLink; root.catReviewSkip = catReviewSkip;
@@ -1257,6 +1531,7 @@ root._catStep5 = { norm: norm, modelKey: modelKey, lookupIn: lookupIn, searchIn:
                    specsOf: specsOf, shardMap: shardMap, shardKeyFor: shardKeyFor, detailFiles: detailFiles,
                    buildOwnedBall: buildOwnedBall, ballFromSpecs: ballFromSpecs, fillPlan: fillPlan,
                    catSpecSource: catSpecSource, setFilled: function (f) { _filled = f; },
+                   apParseIssue: apParseIssue, apPages: apPages, apApplyTicks: apApplyTicks, apConflict: apConflict, apNums: apNums,
                    verifyPlan: verifyPlan, specMatch: specMatch, metricUnverified: metricUnverified, catSpecUnverified: catSpecUnverified,
                    metricScore: metricScore, parseFinish: parseFinish, rgBand: rgBand, diffBand: diffBand, coverClass: coverClass,
                    catMetric: catMetric, sheetHTML: sheetHTML, setSheet: function (x) { _sheet = x; } };
