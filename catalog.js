@@ -476,6 +476,10 @@ function catLinkLabel(b) {
     if (!el) return;
     var e = byIdIn(rows, b.CatalogID);
     el.innerHTML = e ? entryLine(e) : (rows.length ? 'Linked (not in current catalog)' : 'Linked');
+    /* DATA-2: confirm matching legacy specs; a second render finds nothing left, so no loop */
+    catAutoVerify(b).then(function (n) {
+      if (n && typeof root._bdetRenderSpecs === 'function' && document.getElementById(slot)) root._bdetRenderSpecs();
+    });
   });
   return '<span id="' + slot + '">Linked</span>';
 }
@@ -740,15 +744,25 @@ function metricScore(ball, fin) {
   if (C == null || S == null) return null;
   var D = ball.Differential != null && ball.Differential !== '' ? clamp(+ball.Differential / 0.060, 0, 1) : null;
   var R = ball.RG != null && ball.RG !== '' ? clamp((2.60 - +ball.RG) / 0.14, 0, 1) : null;
+  /* v30.163 MET-3 (locked 2026-10-09): James's bands feed Strength as half of
+     the RG and Diff parts. Band scores: Diff Low 0 / Med .5 / High 1; RG Low 1 /
+     Med .5 / High 0 (earlier hook = stronger, MET-1's direction). Rank check vs
+     Perfect Scale on 20 owned balls: raw 0.69, bands only 0.62, blend 0.70
+     (met3_check.js). Shape stays on the raw numbers. */
+  var Db = MET3_DIFF[diffBand(ball.Differential)], Rb = MET3_RG[rgBand(ball.RG)];
+  var Ds = D == null ? null : (Db == null ? D : (D + Db) / 2);
+  var Rs = R == null ? null : (Rb == null ? R : (R + Rb) / 2);
   var asym = ball.IntDiff != null && ball.IntDiff !== '' ? clamp(+ball.IntDiff / 0.020, 0, 1)
            : (/asym/i.test(ball.CoreType || '') ? 0.5 : (ball.CoreType ? 0 : null));
-  var parts = { cover: C, surface: S, diff: D, rg: R }, num = 0, den = 0, k;
+  var parts = { cover: C, surface: S, diff: Ds, rg: Rs }, num = 0, den = 0, k;
   for (k in MET_W) if (parts[k] != null) { num += MET_W[k] * parts[k]; den += MET_W[k]; }
   var pearl = cc === 'pearl' ? 1 : cc === 'hybrid' ? 0.5 : (cc === 'urethane' || cc === 'plastic') ? 0 : 0.2;
   var sp = { surface: 1 - S, rg: R == null ? null : 1 - R, asym: asym, pearl: pearl }, sn = 0, sd = 0;
   for (k in MET_SW) if (sp[k] != null) { sn += MET_SW[k] * sp[k]; sd += MET_SW[k]; }
   return { strength: Math.floor(100 * num / den), shape: Math.floor(100 * (sn / sd) - 50) };
 }
+var MET3_DIFF = { Low: 0, Med: 0.5, High: 1 };
+var MET3_RG   = { Low: 1, Med: 0.5, High: 0 };
 /* Latest surfacing record for an owned ball (ties on date -> highest id). */
 function latestSurface(ballID) {
   var list = [];
@@ -768,19 +782,92 @@ function catMetric(ball) {
   var cur = surf ? metricScore(ball, surf) : null;
   var use = cur || fac;
   if (!use) return null;
-  return { strength: use.strength, shape: use.shape, factory: fac, current: !!cur };
+  return { strength: use.strength, shape: use.shape, factory: fac, current: !!cur, approx: metricUnverified(ball) };
 }
+/* ---------- DATA-2: legacy spec provenance (locked 2026-10-09) ----------
+   An owned ball's spec field is UNVERIFIED when it has a value but no
+   SpecSource tag ('catalog' or 'user'): Access import or a pre-v30.158 AI
+   fetch. Catalog-only balls (no BallID) are the catalog itself. */
+var MET_FIELDS = ['Coverstock', 'CoverName', 'BoxFinish', 'RG', 'Differential', 'IntDiff', 'CoreType'];
+function catSpecUnverified(ball, f) {
+  if (!ball || ball.BallID == null) return false;
+  var v = ball[f];
+  if (v == null || v === '') return false;
+  var t = (ball.SpecSource || {})[f];
+  return t !== 'catalog' && t !== 'user';
+}
+function metricUnverified(ball) {
+  return MET_FIELDS.some(function (f) { return catSpecUnverified(ball, f); });
+}
+/* Within rounding (R3): RG 0.002, Diff / Int Diff 0.001; text after normalising. */
+function normTxt(v) { return String(v == null ? '' : v).toLowerCase().replace(/[^a-z0-9]/g, ''); }
+function specMatch(f, owned, cat) {
+  var a = owned[f], c = cat[f];
+  if (a == null || a === '' || c == null || c === '') return false;
+  if (f === 'RG') return Math.abs(+a - +c) <= 0.002 + 1e-9;
+  if (f === 'Differential' || f === 'IntDiff') return Math.abs(+a - +c) <= 0.001 + 1e-9;
+  if (f === 'Coverstock') { var x = coverClass(a, owned.CoverName), y = coverClass(c, cat.CoverName); return !!x && x === y; }
+  if (f === 'CoreType') { var k = function (t) { return /asym/i.test(t) ? 'a' : /sym/i.test(t) ? 's' : normTxt(t); }; return k(a) === k(c); }
+  if (f === 'BoxFinish') {
+    var pa = parseFinish(a), pc = parseFinish(c);
+    if (pa && pc) return pa.grit === pc.grit && pa.polished === pc.polished;
+    return normTxt(a) === normTxt(c);
+  }
+  if (f === 'DateReleased') return String(a).slice(0, 7) === String(c).slice(0, 7);
+  return normTxt(a) === normTxt(c);
+}
+/* Pure: the tag changes auto-verify would make. Only untagged fields that
+   match move to 'catalog'; 'user' and 'catalog' tags are never touched,
+   and a mismatch stays unverified (Apply is offered in Edit Ball). */
+function verifyPlan(ball, spec) {
+  var out = [];
+  SPEC_FIELDS.forEach(function (f) {
+    if (catSpecUnverified(ball, f) && specMatch(f, ball, spec)) out.push(f);
+  });
+  return out;
+}
+/* Resolves to the number of fields newly verified. Never rejects. */
+function catAutoVerify(ball) {
+  if (!ball || !ball.CatalogID || ball.BallID == null) return Promise.resolve(0);
+  if (!SPEC_FIELDS.some(function (f) { return catSpecUnverified(ball, f); })) return Promise.resolve(0);
+  return catLoad().then(function (rows) {
+    var e = byIdIn(rows, ball.CatalogID);
+    return e ? catDetail(e) : null;
+  }).then(function (d) {
+    if (!d) return 0;
+    var s = specsOf(d, parseInt(ball.Weight, 10) || 15);
+    if (!hasAnySpec(s)) return 0;
+    var f = verifyPlan(ball, ballFromSpecs(s));
+    if (!f.length) return 0;
+    ball.SpecSource = ball.SpecSource || {};
+    f.forEach(function (k) { ball.SpecSource[k] = 'catalog'; });
+    if (root.saveDB) root.saveDB();
+    return f.length;
+  }).catch(function () { return 0; });
+}
+var _verifyAllOnce = null;
+function catAutoVerifyAll() {
+  if (_verifyAllOnce) return _verifyAllOnce;
+  var list = appBalls().filter(function (b) { return b.CatalogID; });
+  _verifyAllOnce = list.reduce(function (p, b) {
+    return p.then(function (n) { return catAutoVerify(b).then(function (k) { return n + k; }); });
+  }, Promise.resolve(0)).then(function (n) { _verifyAllOnce = null; return n; });
+  return _verifyAllOnce;
+}
+var UNVERIFIED_TAG = '<span title="Not confirmed by the catalog or by you" style="font-size:9px;font-weight:700;color:var(--gold);border:1px solid rgba(214,169,76,0.45);border-radius:3px;padding:0 3px;margin-left:5px;vertical-align:1px">unverified</span>';
+function catUnverifiedTag(ball, f) { return catSpecUnverified(ball, f) ? UNVERIFIED_TAG : ''; }
 function signed(n) { return (n > 0 ? '+' : '') + n; }
 function catMetricChip(ball) {
   var m = catMetric(ball);
-  return m ? 'S' + m.strength + ' · ' + signed(m.shape) : '';
+  return m ? 'S' + (m.approx ? '~' : '') + m.strength + ' · ' + signed(m.shape) : '';
 }
 function catMetricHTML(ball) {
   var m = catMetric(ball);
   if (!m) return '<span style="color:var(--t3)">Not enough specs</span>';
-  var h = 'Strength <b>' + m.strength + '</b> · Shape <b>' + signed(m.shape) + '</b>';
+  var h = 'Strength <b>' + (m.approx ? '~' : '') + m.strength + '</b> · Shape <b>' + signed(m.shape) + '</b>';
   if (m.current && m.factory && (m.factory.strength !== m.strength || m.factory.shape !== m.shape))
     h += '<div style="font-size:11px;color:var(--t3);margin-top:2px">Current surface · factory ' + m.factory.strength + ' · ' + signed(m.factory.shape) + '</div>';
+  if (m.approx) h += '<div style="font-size:11px;color:var(--t3);margin-top:2px">~ built on unverified specs</div>';
   return h;
 }
 
@@ -1082,7 +1169,8 @@ function fillPlan(owned, tags, spec) {
     if (c == null || c === '') return;
     var cur = owned[f];
     if (cur == null || cur === '') fill.push(f);
-    else if (tags && tags[f] === 'catalog' && !sameVal(cur, c)) apply.push(f);
+    /* DATA-2: untagged (unverified) values are offered too; 'user' never is */
+    else if ((!tags || tags[f] !== 'user') && !sameVal(cur, c)) apply.push(f);
   });
   return { fill: fill, apply: apply };
 }
@@ -1118,7 +1206,7 @@ function catFillFromCatalog(mode) {
     var s = specsOf(d, (wEl && parseInt(wEl.value, 10)) || 15), spec = ballFromSpecs(s);
     var plan = fillPlan(formValues(), (_pick.ball && _pick.ball.SpecSource) || {}, spec);
     var list = mode === 'apply' ? plan.apply : plan.fill;
-    if (mode === 'apply' && list.length && root.confirm && !root.confirm('Replace ' + list.length + ' catalog-sourced value(s) with the catalog\'s current specs?')) return;
+    if (mode === 'apply' && list.length && root.confirm && !root.confirm('Replace ' + list.length + ' value(s) with the catalog\'s current specs? Values you entered yourself are never replaced.')) return;
     list.forEach(function (f) {
       var el = document.getElementById(FIELD_INPUT[f]);
       if (!el) return;
@@ -1156,6 +1244,8 @@ root.catAddSearch = catAddSearch; root.catAddManual = catAddManual; root.catAddB
 root.catAddDetail = catAddDetail; root.catSheetClose = catSheetClose; root.catSheetWeight = catSheetWeight;
 root.catAddToArsenal = catAddToArsenal; root.catFillFromCatalog = catFillFromCatalog;
 root.catSpecSource = catSpecSource; root.catDetail = catDetail;
+root.catSpecUnverified = catSpecUnverified; root.catUnverifiedTag = catUnverifiedTag;
+root.catAutoVerify = catAutoVerify; root.catAutoVerifyAll = catAutoVerifyAll;
 root.catMetric = catMetric; root.catRGBand = catRGBand; root.catMetricChip = catMetricChip; root.catMetricHTML = catMetricHTML;
 root.catIdentityLocked = catIdentityLocked; root.catAuditOpen = catAuditOpen;
 root.catLookup = function (mfg, name) { return catLoad().then(function (rows) { return lookupIn(rows, mfg, name); }); };
@@ -1167,6 +1257,7 @@ root._catStep5 = { norm: norm, modelKey: modelKey, lookupIn: lookupIn, searchIn:
                    specsOf: specsOf, shardMap: shardMap, shardKeyFor: shardKeyFor, detailFiles: detailFiles,
                    buildOwnedBall: buildOwnedBall, ballFromSpecs: ballFromSpecs, fillPlan: fillPlan,
                    catSpecSource: catSpecSource, setFilled: function (f) { _filled = f; },
+                   verifyPlan: verifyPlan, specMatch: specMatch, metricUnverified: metricUnverified, catSpecUnverified: catSpecUnverified,
                    metricScore: metricScore, parseFinish: parseFinish, rgBand: rgBand, diffBand: diffBand, coverClass: coverClass,
                    catMetric: catMetric, sheetHTML: sheetHTML, setSheet: function (x) { _sheet = x; } };
 
