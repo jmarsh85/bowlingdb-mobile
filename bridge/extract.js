@@ -122,6 +122,19 @@ function parseDate(s) {
 }
 
 /* ---------- platform parsers: html -> [{title, brand, url, specs, mfgScales, imageUrl}] ---------- */
+/* v30.168 (2026-10-10): core type was never read for craft or Shopify pages.
+   Only what the page STATES: a "Core Type" / "Symmetry" label, or the word
+   Symmetric / Asymmetric inside the core's own label. Nothing is inferred
+   from numbers (an Int Diff value does not make a core asymmetric here). */
+function statedCoreType(...vals) {
+  for (const v of vals) {
+    if (!v) continue;
+    const t = String(v);
+    if (/\basym/i.test(t)) return 'Asymmetrical';
+    if (/\bsym/i.test(t)) return 'Symmetrical';
+  }
+  return null;
+}
 function parseCraft(html, url, brand) {
   const text = htmlToText(html), kv = kvLines(text);
   const title = firstH1(html);
@@ -130,6 +143,7 @@ function parseCraft(html, url, brand) {
   const lvl = /^level \| (.+)$/im.exec(text); if (lvl) scales.level = lvl[1];
   return [{ title, brand, url, imageUrl: metaContent(html, 'og:image'), mfgScales: scales,
     specs: { core: kv['core'] || null, coverName: kv['coverstock'] || null, coverType: kv['cover type'] || null,
+             coreType: statedCoreType(kv['core type'], kv['symmetry'], kv['core shape'], kv['core']),
              finish: kv['finish'] || null, released: parseDate(kv['release date']), weights: withFallback(weightTable(text), text) } }];
 }
 function parseShopifyBody(bodyHtml, title, url, brand, imageUrl) {
@@ -144,6 +158,7 @@ function parseShopifyBody(bodyHtml, title, url, brand, imageUrl) {
   return [{ title, brand, url, imageUrl, mfgScales: {},
     specs: { core: pick('core', /^CORE:?\s+(.+)$/im), coverName: pick('coverstock', /^COVERSTOCK:?\s+(.+)$/im),
              coverType: pick('cover type', /^COVER TYPE:?\s+(.+)$/im), finish: pick('finish', /^FINISH:?\s+(.+)$/im),
+             coreType: statedCoreType(pick('core type', /^CORE TYPE:?\s+(.+)$/im), pick('symmetry', /^SYMMETRY:?\s+(.+)$/im), pick('core', /^CORE:?\s+(.+)$/im)),
              released: parseDate(pick('release date', /^RELEASE DATE:?\s+(.+)$/im)), weights } }];
 }
 function parseMotiv(html, url) {
@@ -157,7 +172,9 @@ function parseMotiv(html, url) {
     const d = /^\s*(\d{1,2}\/\d{1,2}\/\d{4})/.exec(after); if (d) released = parseDate(d[1]); }
   const scales = {}; ['length', 'backend', 'hook'].forEach(k => { if (kv[k] && /^\d+$/.test(kv[k])) scales['motiv' + k[0].toUpperCase() + k.slice(1)] = +kv[k]; });
   return [{ title, brand: 'Motiv', url, imageUrl: metaContent(html, 'og:image'), mfgScales: scales,
-    specs: { core: kv['weight block'] || null, coverName: kv['cover stock'] || kv['coverstock'] || null, coverType: null,
+    specs: { core: kv['weight block'] || null, coverName: kv['cover stock'] || kv['coverstock'] || null,
+             coverType: kv['cover type'] || kv['coverstock type'] || null,
+             coreType: statedCoreType(kv['core type'], kv['symmetry'], kv['weight block']),
              finish: kv['finish'] || null, released, weights: withFallback(weights, text) } }];
 }
 /* Storm listing page: many balls per page, one weight each.
@@ -198,6 +215,17 @@ function parseStormListing(html, base) {
   return out;
 }
 
+/* Pure: fills a listing record from its product page. Only adds what the
+   listing lacks: other weights, core type, release date, finish. A weight
+   the listing already has keeps the listing's numbers. */
+function mergeProduct(rec, pr) {
+  let added = 0;
+  const w = rec.specs.weights = rec.specs.weights || {};
+  for (const k in (pr.specs.weights || {})) if (!w[k]) { w[k] = pr.specs.weights[k]; added++; }
+  for (const f of ['coreType', 'released', 'finish', 'core', 'coverName']) if (!rec.specs[f] && pr.specs[f]) { rec.specs[f] = pr.specs[f]; added++; }
+  if (!rec.imageUrl && pr.imageUrl) rec.imageUrl = pr.imageUrl;
+  return added > 0;
+}
 /* Storm product page (retired balls keep their pages, just unlisted):
    "16 pounds RG: 2.48 Diff: 0.051", "Coverstock: R2S Pearl Reactive", "Release Date: October 2022" */
 const STORM_PAGE_LABELS = ['Coverstock', 'Core', 'Finish', 'Factory Finish', 'Color', 'Release Date', 'Fragrance', 'Symmetry', 'Weight Block'];
@@ -415,6 +443,19 @@ async function extractSource(src, cfg, fetchImpl, limit, log, ctx) {
       recs.push(...items); pagesSeen++; if (limit && recs.length >= limit) break;
     }
     log(src.id + ': ' + pagesSeen + ' listing pages, ' + recs.length + ' balls');
+    /* v30.168: the listing shows ONE weight per ball, so 15 lb was often blank.
+       Read each listed ball's own product page for the full weight table. */
+    let filled = 0;
+    for (const rec of recs.slice()) {
+      if (!rec.url || Object.keys(rec.specs.weights || {}).length > 1) continue;
+      if (limit && filled >= limit) break;
+      if (!allowed(robots, rec.url)) continue;
+      const r = await get(rec.url); pagesSeen++;
+      if (r.status !== 200) continue;
+      const pr = parseStormProduct(r.text, rec.url, rec.brand)[0];
+      if (pr && mergeProduct(rec, pr)) filled++;
+    }
+    log(src.id + ': product pages read for weights ' + filled);
     if (ctx && ctx.rows && !(limit && recs.length >= limit)) {
       const byBrand = indexByBrand(ctx.rows), have = new Set();
       recs.forEach(r => { const m = matchRec(r, byBrand); if (m.catalogId) have.add(m.catalogId); });
@@ -543,6 +584,6 @@ async function main(argv, fetchImpl, log = s => process.stdout.write(s + '\n')) 
   return { staged, coverage: cov, perSource };
 }
 
-module.exports = { colourOnly, extraWords, autoTargets, close, parseStormProduct, stormSlug, learnStormPrefixes, stormCandidates, htmlToText, weightTable, kvLines, parseDate, parseCraft, parseShopifyBody, parseMotiv, parseStormListing,
+module.exports = { statedCoreType, mergeProduct, colourOnly, extraWords, autoTargets, close, parseStormProduct, stormSlug, learnStormPrefixes, stormCandidates, htmlToText, weightTable, kvLines, parseDate, parseCraft, parseShopifyBody, parseMotiv, parseStormListing,
   verify, matchRec, decide, resolveConflicts, coverage, indexByBrand, titleKey, norm, main };
 if (require.main === module) main(process.argv.slice(2), globalThis.fetch).catch(e => { console.error(e); process.exit(1); });
