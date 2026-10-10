@@ -476,6 +476,9 @@ function catLinkLabel(b) {
     if (!el) return;
     var e = byIdIn(rows, b.CatalogID);
     el.innerHTML = e ? entryLine(e) : (rows.length ? 'Linked (not in current catalog)' : 'Linked');
+    /* APP-2: only offered while something is still unverified */
+    if (e && sourceForBrand(e.m) && SPEC_FIELDS.some(function (f) { return catSpecUnverified(b, f); }))
+      el.innerHTML += '<div><button style="' + BTN_G + 'margin-top:6px;padding:5px 10px;font-size:11px" onclick="catVerifyNow(\'' + esc(e.m) + '\')">Verify now</button></div>';
     /* DATA-2: confirm matching legacy specs; a second render finds nothing left, so no loop */
     catAutoVerify(b).then(function (n) {
       if (n && typeof root._bdetRenderSpecs === 'function' && document.getElementById(slot)) root._bdetRenderSpecs();
@@ -890,6 +893,13 @@ function thumbHTML(e, size) {
   try { if (mine && typeof root.getBallImgSrc === 'function') src = root.getBallImgSrc(mine.BallID, 'cover'); } catch (x) {}
   if (src) return '<img src="' + esc(src) + '" alt="" style="width:' + px + 'px;height:' + px + 'px;border-radius:50%;object-fit:cover;flex-shrink:0">';
   var c = brandColor(e.m), ini = esc(String(e.m || '?').trim().charAt(0).toUpperCase());
+  /* IMG-1: manufacturer image on this device only; falls back to the initial if it fails to load */
+  var dev = catImageFor(e.i);
+  if (dev) return '<span style="position:relative;display:inline-flex;width:' + px + 'px;height:' + px + 'px;flex-shrink:0">' +
+    '<img src="' + esc(dev) + '" alt="" referrerpolicy="no-referrer" loading="lazy" onerror="this.style.display=\'none\';this.nextSibling.style.display=\'flex\'" ' +
+    'style="width:' + px + 'px;height:' + px + 'px;border-radius:50%;object-fit:contain;background:#fff;flex-shrink:0">' +
+    '<div style="display:none;width:' + px + 'px;height:' + px + 'px;border-radius:50%;flex-shrink:0;align-items:center;justify-content:center;' +
+    'background:radial-gradient(circle at 32% 28%,rgba(255,255,255,0.35),' + c + ' 45%,rgba(0,0,0,0.55));color:#fff;font-weight:800;font-size:' + Math.round(px * 0.4) + 'px">' + ini + '</div></span>';
   return '<div style="width:' + px + 'px;height:' + px + 'px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;' +
     'background:radial-gradient(circle at 32% 28%,rgba(255,255,255,0.35),' + c + ' 45%,rgba(0,0,0,0.55));color:#fff;font-weight:800;font-size:' + Math.round(px * 0.4) + 'px">' + ini + '</div>';
 }
@@ -1344,6 +1354,7 @@ function apLoad() {
   _ap.busy = true; _ap.err = null; apRender();
   return apFlush().catch(function () {}).then(apFetchIssue).then(function (is) {
     _ap.issue = is.number; _ap.body = is.body; _ap.fromCache = false;
+    apExtractStatus().then(function (run) { _ap.run = run; if (run) apRender(); });
   }).catch(function (e) {
     var l = apLS(), c = null; try { c = JSON.parse((l && l.getItem(AP_CACHE_KEY)) || 'null'); } catch (x) {}
     if (c) { _ap.issue = c.number; _ap.body = c.body; _ap.fromCache = true; }
@@ -1419,6 +1430,8 @@ function apRender() {
     (_ap.fromCache ? '<div style="font-size:11px;color:var(--gold);margin:0 16px 6px">Offline copy. Ticks are saved and sent when you are back online.</div>' : '');
   var p = _ap.pages[_ap.idx];
   var sub = _ap.body == null ? '' : (_ap.doneCount + ' of ' + _ap.allCount + ' balls approved' + (qn ? ' · ' + qn + ' waiting to send' : ''));
+  if (_ap.run) status += '<div style="font-size:11px;color:var(--t3);margin:0 16px 6px">Last extract: ' + esc(_ap.run.status === 'completed' ? (_ap.run.conclusion === 'success' ? 'finished' : (_ap.run.conclusion || 'finished')) : _ap.run.status === 'in_progress' ? 'running' : _ap.run.status) +
+    ' · ' + esc(String(_ap.run.at || '').slice(0, 16).replace('T', ' ')) + ' UTC</div>';
   var filt = '<label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--t2);margin:0 16px 8px">' +
     '<input type="checkbox" ' + (_ap.uncheckedOnly ? 'checked ' : '') + 'onchange="catApprovalsFilter(this.checked)"> Only balls with nothing approved</label>';
   if (!p) {
@@ -1443,12 +1456,16 @@ function apRender() {
       (b.url ? '<a href="' + esc(b.url) + '" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" style="font-size:12px;color:var(--teal);display:inline-block;margin-top:5px">Open source page ↗</a>' : '') +
       '</div>';
   }).join('');
+  var _vb = (function () { var r = _ap._rows, e = r ? byIdIn(r, p.catalogId) : null; return e ? e.m : null; })();
+  var verifyBtn = sourceForBrand(_vb) ? '<button style="' + BTN_G + 'margin-top:12px;width:100%;padding:10px" onclick="catVerifyNow(\'' + esc(_vb) + '\')">Verify now: re-read the ' + esc(sourceForBrand(_vb)) + ' site</button>' : '';
   var warn = apConflict(p.boxes) ? '<div style="font-size:12px;color:var(--gold);margin-top:10px;line-height:1.45">These approvals disagree, so neither will publish. Keep one.</div>' : '';
   ov.innerHTML = apHeader(sub) + status + filt +
-    '<div style="flex:1;overflow-y:auto;padding:4px 16px 12px">' + head + mineH + cards + warn + '</div>' + apFooter(true);
+    '<div style="flex:1;overflow-y:auto;padding:4px 16px 12px">' + head + mineH + cards + warn + verifyBtn + '</div>' + apFooter(true);
   catLoad().then(function (rows) {
+    var first = !_ap._rows; _ap._rows = rows;
     var e = byIdIn(rows, p.catalogId), el = document.getElementById('ap-entry');
     if (e && el && _ap.pages[_ap.idx] === p) el.innerHTML = entryLine(e);
+    if (first && _ap.pages[_ap.idx] === p) apRender();   // once, so Verify now knows the brand
   });
 }
 function apFooter(paging) {
@@ -1505,10 +1522,110 @@ function catApprovalsPublish() {
 }
 if (typeof root.addEventListener === 'function') root.addEventListener('online', function () { apFlush().catch(function () {}); });
 
+/* ---------- IMG-1: manufacturer images on this device (design rev 7, sec 15) ----------
+   The bridge already records each page's image link (staging `imageUrl`,
+   never published to the catalog). With the toggle on, this device reads
+   those links from staging/specs_staging.json on the `specs` branch (GitHub
+   API, the APP-1 token) and shows the image straight from the
+   manufacturer's site; sw.js keeps a copy for offline. Nothing is copied
+   into the repo or the catalog, and other users never see these images.
+   Links and the toggle live under the bdbimg_ prefix, outside backups. */
+var IMG_ON_KEY = 'bdbimg_on', IMG_LINKS_KEY = 'bdbimg_links';
+var _imgMap = null;
+function imgOn() { var l = apLS(); return !!(l && l.getItem(IMG_ON_KEY) === '1'); }
+function imgMap() {
+  if (_imgMap) return _imgMap;
+  var l = apLS(); try { var o = JSON.parse((l && l.getItem(IMG_LINKS_KEY)) || 'null'); _imgMap = (o && o.map) || {}; } catch (e) { _imgMap = {}; }
+  return _imgMap;
+}
+/* Pure: staged rows -> {catalogId: imageUrl}. Only a row that names ONE USBC
+   ball counts (catalogId, or a single candidate): a colourway family page's
+   image shows a different colour, so it is not used for its siblings.
+   Published-tier rows (auto) win over pending ones. */
+function imgLinksFrom(staged) {
+  var out = {}, rank = {};
+  var tier = function (d) { return d === 'auto' || d === 'approved' ? 2 : d === 'pending' ? 1 : 0; };
+  (staged || []).forEach(function (r) {
+    var u = r && r.imageUrl; if (!u) return;
+    u = String(u); if (u.indexOf('//') === 0) u = 'https:' + u;
+    if (!/^https:\/\//.test(u)) return;
+    var ids = r.catalogId ? [r.catalogId] : ((r.candidates || []).length === 1 ? r.candidates : []);
+    var t = tier(r.decision);
+    ids.forEach(function (id) { if (!(id in rank) || t > rank[id]) { out[id] = u; rank[id] = t; } });
+  });
+  return out;
+}
+function catImagesRefresh() {
+  if (!apToken()) return Promise.reject(new Error('Add the GitHub token in Spec approvals first'));
+  var h = { 'Accept': 'application/vnd.github.raw+json', 'Authorization': 'Bearer ' + apToken(), 'X-GitHub-Api-Version': '2022-11-28' };
+  return env.fetch(AP_API + '/contents/staging/specs_staging.json?ref=specs', { headers: h, cache: 'no-store' }).then(function (r) {
+    if (!r.ok) { var e = new Error('GitHub ' + r.status); e.status = r.status; throw e; }
+    return r.json();
+  }).then(function (staged) {
+    var map = imgLinksFrom(staged);
+    var l = apLS(); if (l) l.setItem(IMG_LINKS_KEY, JSON.stringify({ at: Date.now(), map: map }));
+    _imgMap = map;
+    return Object.keys(map).length;
+  });
+}
+function catImagesSet(on) {
+  var l = apLS(); if (!l) return Promise.resolve(0);
+  if (!on) { l.setItem(IMG_ON_KEY, '0'); return Promise.resolve(0); }
+  l.setItem(IMG_ON_KEY, '1');
+  return Object.keys(imgMap()).length ? Promise.resolve(Object.keys(imgMap()).length) : catImagesRefresh();
+}
+function catImagesStatus() {
+  var l = apLS(), at = null; try { at = (JSON.parse(l.getItem(IMG_LINKS_KEY)) || {}).at || null; } catch (e) {}
+  return { on: imgOn(), count: Object.keys(imgMap()).length, at: at, token: !!apToken() };
+}
+/* Image for a catalog entry on this device, or null. */
+function catImageFor(id) { return (imgOn() && id) ? (imgMap()[id] || null) : null; }
+
+/* ---------- APP-2: Verify now (design rev 7, sec 15) ----------
+   Starts specs-extract for the ball's manufacturer site (the workflow's
+   `only` input takes a source id; a single-page run would need a workflow
+   change). Results land in the Spec approvals issue; auto rows reach the
+   catalog after Publish. */
+var VERIFY_KEY = 'bdbgh_verify';
+var BRAND_SOURCE = [[/storm/, 'storm'], [/brunswick/, 'brunswick'], [/dv8/, 'dv8'], [/radical/, 'radical'], [/hammer/, 'hammer'],
+                    [/track/, 'track'], [/ebonite/, 'ebonite'], [/columbia/, 'columbia'], [/motiv/, 'motiv']];
+/* Pure: manufacturer name -> bridge source id, or null. */
+function sourceForBrand(m) {
+  var t = String(m || '').toLowerCase();
+  for (var i = 0; i < BRAND_SOURCE.length; i++) if (BRAND_SOURCE[i][0].test(t)) return BRAND_SOURCE[i][1];
+  return null;
+}
+function catVerifyNow(brand) {
+  var src = sourceForBrand(brand);
+  if (!src) { if (root.toast) root.toast('No manufacturer site in the bridge for ' + (brand || 'this brand') + ' yet'); return Promise.resolve(null); }
+  if (!apToken()) { catApprovalsOpen(); return Promise.resolve(null); }
+  return apGH('').then(function (repo) {
+    return apGH('/actions/workflows/specs-extract.yml/dispatches', { method: 'POST',
+      body: { ref: repo.default_branch || 'main', inputs: { only: src, limit: '0', since: '2023' } } });
+  }).then(function () {
+    var l = apLS(); if (l) l.setItem(VERIFY_KEY, JSON.stringify({ src: src, at: Date.now() }));
+    if (root.toast) root.toast('Checking ' + src + ' (a few minutes). Results appear in Spec approvals; auto specs need Publish.');
+    return src;
+  }).catch(function (e) {
+    if (root.toast) root.toast(e.status === 403 || e.status === 404 ? 'Token needs Actions read and write' : ('Verify failed: ' + (e.status ? 'GitHub ' + e.status : 'offline')));
+    return null;
+  });
+}
+/* Latest specs-extract run, for the status line in Spec approvals. */
+function apExtractStatus() {
+  return apGH('/actions/workflows/specs-extract.yml/runs?per_page=1').then(function (r) {
+    var run = r && r.workflow_runs && r.workflow_runs[0];
+    if (!run) return null;
+    return { status: run.status, conclusion: run.conclusion, at: run.created_at, url: run.html_url };
+  }).catch(function () { return null; });
+}
+
+
 root.catPickerMount = catPickerMount;
 root.catApprovalsOpen = catApprovalsOpen; root.catApprovalsClose = catApprovalsClose; root.catApprovalsSaveToken = catApprovalsSaveToken;
 root.catApprovalsForgetToken = catApprovalsForgetToken; root.catApprovalsChangeToken = catApprovalsChangeToken; root.catApprovalsPage = catApprovalsPage; root.catApprovalsFilter = catApprovalsFilter;
-root.catApprovalsTick = catApprovalsTick; root.catApprovalsSend = catApprovalsSend; root.catApprovalsPublish = catApprovalsPublish; root.catPickerSearch = catPickerSearch;
+root.catApprovalsTick = catApprovalsTick; root.catVerifyNow = catVerifyNow; root.catImagesSet = catImagesSet;
+root.catImagesRefresh = catImagesRefresh; root.catImagesStatus = catImagesStatus; root.catImageFor = catImageFor; root.catApprovalsSend = catApprovalsSend; root.catApprovalsPublish = catApprovalsPublish; root.catPickerSearch = catPickerSearch;
 root.catPick = catPick; root.catUnlink = catUnlink; root.catPickValue = catPickValue;
 root.catLinkLabel = catLinkLabel; root.catReviewOpen = catReviewOpen;
 root.catReviewLink = catReviewLink; root.catReviewSkip = catReviewSkip;
@@ -1531,7 +1648,7 @@ root._catStep5 = { norm: norm, modelKey: modelKey, lookupIn: lookupIn, searchIn:
                    specsOf: specsOf, shardMap: shardMap, shardKeyFor: shardKeyFor, detailFiles: detailFiles,
                    buildOwnedBall: buildOwnedBall, ballFromSpecs: ballFromSpecs, fillPlan: fillPlan,
                    catSpecSource: catSpecSource, setFilled: function (f) { _filled = f; },
-                   apParseIssue: apParseIssue, apPages: apPages, apApplyTicks: apApplyTicks, apConflict: apConflict, apNums: apNums,
+                   imgLinksFrom: imgLinksFrom, sourceForBrand: sourceForBrand, apParseIssue: apParseIssue, apPages: apPages, apApplyTicks: apApplyTicks, apConflict: apConflict, apNums: apNums,
                    verifyPlan: verifyPlan, specMatch: specMatch, metricUnverified: metricUnverified, catSpecUnverified: catSpecUnverified,
                    metricScore: metricScore, parseFinish: parseFinish, rgBand: rgBand, diffBand: diffBand, coverClass: coverClass,
                    catMetric: catMetric, sheetHTML: sheetHTML, setSheet: function (x) { _sheet = x; } };
