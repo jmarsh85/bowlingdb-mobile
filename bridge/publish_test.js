@@ -46,4 +46,7 @@ ok(c.USBC.ApprovedDate === '2025-08-01' && c.DateReleased !== c.USBC.ApprovedDat
   ok(B.coverCode({ Type: null, Name: 'Hybrid Reactive' }) === 'H' && B.coverCode({ Type: null, Name: 'Pearl Hybrid' }) === null, 'name only when it names one class');
   ok(B.coverCode({ Type: 'Urethane' }) === 'U' && B.coverCode({ Type: 'Solid Reactive' }) === 'S' && B.coverCode({ Type: 'Polyester' }) === null, 'type classes');
   ok(B.coreCode({ Type: 'Asymmetrical' }) === 'a' && B.coreCode({ Type: 'Symmetrical' }) === 's' && B.coreCode({}) === null, 'core codes'); }
+{ const v = B.vocabOf(B.build(rows, P.publish([rec({}), rec({ catalogId: 'brunswick-zebra', url: 'z', specs: Object.assign({}, rec({}).specs, { core: 'RAMPART ' }) })]).specs, 'x').entries);
+  ok(v.core.length === 1 && v.core[0].n === 2 && v.core[0].b.join() === 'Brunswick', 'vocab: one core, used twice, case/space folded: ' + JSON.stringify(v.core));
+  ok(v.coverName[0].v === 'Alpha Premier Pearl' && v.coverType[0].v === 'Pearl Reactive' && v.finish.length === 1, 'vocab: cover name/type/finish'); }
 console.log('publish_test: ' + n + ' checks passed');
