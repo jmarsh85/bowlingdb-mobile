@@ -36,7 +36,7 @@
 'use strict';
 
 /* v30.169: shown in the app header when it differs from the build's EXPECTED_CATALOG_JS */
-var CAT_VERSION  = 'v30.178';
+var CAT_VERSION  = 'v30.179';
 var CAT_BASE     = 'https://raw.githubusercontent.com/jmarsh85/bowlingdb-mobile/dist/';
 var CAT_DB       = 'BowlingDB_Catalog';
 var CAT_DB_VER   = 1;
@@ -2793,12 +2793,15 @@ function catLookSave() {
 }
 /* Open-page + paste buttons, shared by Correct specs and Look up. */
 function spButtonsHTML(bw, pasteCall, makerUrl) {
+  var pdfCall = pasteCall === 'catSpAp()' ? 'catSpApPdf()' : 'catSpBallPdf()';
   return '<div style="display:flex;gap:6px"><a href="' + esc(bw.page) + '" target="_blank" rel="noopener noreferrer" style="' + BTN_G + 'flex:1;padding:10px;text-align:center;text-decoration:none;font-size:13px">1. Open bowwwl \u2197</a>' +
     '<button style="' + BTN_P + 'flex:1;padding:10px;font-size:13px" onclick="' + pasteCall + '">2. Paste page &amp; fill</button></div>' +
     '<div style="font-size:11px;color:var(--t3);margin-top:4px;line-height:1.45">In Safari: long-press the page text, <b>Select All</b>, <b>Copy</b>, come back and tap 2. ' +
     (makerUrl ? '<a href="' + esc(makerUrl) + '" target="_blank" rel="noopener noreferrer" style="color:var(--teal)">Maker page \u2197</a> \u00b7 ' : '') +
     '<a href="' + esc(bw.search) + '" target="_blank" rel="noopener noreferrer" style="color:var(--teal)">Search \u2197</a> \u00b7 ' +
-    '<span onclick="catShortcutHelp()" style="color:var(--teal);cursor:pointer">Faster: the Shortcut</span></div>';
+    '<span onclick="catShortcutHelp()" style="color:var(--teal);cursor:pointer">Faster: the Shortcut</span></div>' +
+    '<div style="display:flex;gap:6px;align-items:center;margin-top:6px"><button style="' + BTN_G + 'flex:1;padding:9px;font-size:12px" onclick="' + pdfCall + '">Read a saved page (PDF)</button>' +
+    '<span onclick="catPdfHelp()" style="font-size:12px;color:var(--teal);cursor:pointer;white-space:nowrap">How?</span></div>';
 }
 /* v30.177: "Copy page text" Shortcut. Run from Safari's Share sheet, it reads the
    whole page (including collapsed tabs and accordions that Select All misses),
@@ -3026,7 +3029,7 @@ function catSpAp() {
     ['coreType', 'Core type', 'ape-coreType'], ['released', 'Release date', 'ape-released']].map(function (a) { return { k: a[0], label: a[1], inputId: a[2], cur: g(a[2]) }; });
   [16, 15, 14, 13, 12].forEach(function (w) { [['RG', 'RG'], ['Diff', 'Diff'], ['IntDiff', 'Int Diff']].forEach(function (a) {
     rows.push({ w: w, wk: a[0], label: w + ' lb ' + a[1], inputId: 'ape-' + w + '-' + a[0], cur: g('ape-' + w + '-' + a[0]) }); }); });
-  spReadClipboard(function (text) {
+  (_spReader === 'pdf' ? spReadPdf : spReadClipboard)(function (text) {
     spOpen({ name: _apEdit.ballName, title: _apEdit.ballName, catalogId: _apEdit.catalogId, rows: rows, after: function (n, pp) {
       /* source follows the copied page's site (Shortcut adds it); a plain paste is assumed bowwwl, as button 1 opens bowwwl */
       if (n) { var so = document.getElementById('ape-source'); if (so) so.value = (pp && pp.source) || 'bowwwl'; }
@@ -3042,12 +3045,85 @@ function catSpBall() {
   var rows = [['coverName', 'Coverstock', 'lk-CoverName'], ['coverType', 'Cover type', 'lk-Coverstock'], ['finish', 'Factory finish', 'lk-BoxFinish'], ['core', 'Core', 'lk-CoreShort'],
     ['coreType', 'Core type', 'lk-CoreType'], ['released', 'Release date', 'lk-DateReleased']].map(function (a) { return { k: a[0], label: a[1], inputId: a[2], cur: g(a[2]) }; });
   [['RG', 'RG', 'lk-RG'], ['Diff', 'Diff', 'lk-Differential'], ['IntDiff', 'Int Diff', 'lk-IntDiff']].forEach(function (a) { rows.push({ w: w, wk: a[0], label: a[1] + ' (' + w + ' lb)', inputId: a[2], cur: g(a[2]) }); });
-  spReadClipboard(function (text) {
+  (_spReader === 'pdf' ? spReadPdf : spReadClipboard)(function (text) {
     var p = parseSpecText(text, w, _lk.name || b.BallName);
     /* your own ball's Cover type is a class (Solid / Pearl / Hybrid / Urethane) */
     if (p.fields.coverType || p.fields.coverName) { var cc = coverClass(p.fields.coverType, p.fields.coverName); if (cc) p.fields.coverType = cc.charAt(0).toUpperCase() + cc.slice(1); }
     spOpen({ name: _lk.name || b.BallName, title: b.BallName, catalogId: b.CatalogID, rows: rows }, p);
   });
+}
+
+/* ---------- v30.179: read a saved page PDF ----------
+   For when the Shortcut can't run: in Safari take a screenshot, choose
+   Full Page, Save PDF to Files; then pick the PDF here. iOS full-page
+   screenshots and Print-to-PDF keep the page's real text, so pdf.js (loaded
+   from cdnjs only when used) reads it back into lines for parseSpecText. */
+var PDFJS_URL = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.mjs';
+var PDFJS_WORKER = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs';
+var _pdfjsP = null;
+function pdfLib() {
+  if (!_pdfjsP) _pdfjsP = import(PDFJS_URL).then(function (m) { m.GlobalWorkerOptions.workerSrc = PDFJS_WORKER; return m; }, function (e) { _pdfjsP = null; throw e; });
+  return _pdfjsP;
+}
+/* Pure: pdf.js text items of one page -> lines in reading order. Items on the same baseline join;
+   a wide gap becomes " | " so "Coverstock      R2S Pearl" reads as label | value. */
+function pdfItemsToLines(items) {
+  var it = (items || []).filter(function (x) { return x && typeof x.str === 'string' && x.str.trim() !== ''; })
+    .map(function (x) { return { s: x.str, x: x.transform[4], y: x.transform[5], w: x.width || 0 }; })
+    .sort(function (a, b) { return Math.abs(b.y - a.y) > 2.5 ? b.y - a.y : a.x - b.x; });
+  var lines = [], cur = null;
+  it.forEach(function (x) {
+    if (cur && Math.abs(cur.y - x.y) <= 2.5) {
+      var gap = x.x - cur.end;
+      cur.t += (gap > 24 ? ' | ' : gap > 1 ? ' ' : '') + x.s;
+      cur.end = x.x + x.w;
+    } else { if (cur) lines.push(cur.t); cur = { y: x.y, t: x.s, end: x.x + x.w }; }
+  });
+  if (cur) lines.push(cur.t);
+  return lines.map(function (l) { return l.replace(/\s+/g, ' ').trim(); }).filter(Boolean);
+}
+function pdfToText(buf) {
+  return pdfLib().then(function (lib) { return lib.getDocument({ data: new Uint8Array(buf) }).promise; }).then(function (doc) {
+    var pages = [], n = Math.min(doc.numPages, 12);
+    var next = function (i) {
+      if (i > n) return Promise.resolve(pages.join('\n'));
+      return doc.getPage(i).then(function (pg) { return pg.getTextContent(); }).then(function (tc) { pages.push(pdfItemsToLines(tc.items).join('\n')); return next(i + 1); });
+    };
+    return next(1);
+  });
+}
+/* Opens the file picker (must run inside the tap), reads the PDF, hands back its text. */
+function spReadPdf(done) {
+  var inp = document.createElement('input');
+  inp.type = 'file'; inp.accept = 'application/pdf,.pdf'; inp.style.display = 'none';
+  inp.addEventListener('change', function () {
+    var f = inp.files && inp.files[0]; inp.parentNode && inp.parentNode.removeChild(inp);
+    if (!f) return;
+    if (!/pdf/i.test(f.type) && !/\.pdf$/i.test(f.name)) { if (root.toast) root.toast('Pick a PDF (a screenshot saved as Full Page is a PDF)'); return; }
+    if (root.toast) root.toast('Reading the PDF\u2026');
+    f.arrayBuffer().then(pdfToText).then(function (t) {
+      if (!t.trim()) { if (root.toast) root.toast('No text in that PDF. Use Full Page (not a photo) when saving.'); return; }
+      done(t);
+    }, function (e) { if (root.toast) root.toast('Could not read the PDF' + (typeof navigator !== 'undefined' && navigator.onLine === false ? ' (offline: the reader loads once online)' : '')); });
+  });
+  document.body.appendChild(inp);
+  inp.click();
+}
+var _spReader = null;   // null = clipboard; 'pdf' = saved page PDF
+function catSpApPdf() { _spReader = 'pdf'; try { catSpAp(); } finally { _spReader = null; } }
+function catSpBallPdf() { _spReader = 'pdf'; try { catSpBall(); } finally { _spReader = null; } }
+function catPdfHelp() {
+  var ov = overlay('pdh-ov', 1050);
+  var step = function (n, t) { return '<div style="display:flex;gap:10px;padding:7px 0"><div style="flex:0 0 22px;height:22px;border-radius:11px;background:var(--teal);color:#000;font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center">' + n + '</div><div style="flex:1;font-size:13px;color:var(--t1);line-height:1.5">' + t + '</div></div>'; };
+  ov.innerHTML = '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 8px"><button style="' + BACK + '" onclick="var e=document.getElementById(\'pdh-ov\');e.parentNode.removeChild(e)">\u2039</button>' +
+    '<div style="flex:1"><div style="font-size:17px;font-weight:800;color:var(--t1)">Save the page as a PDF</div><div style="font-size:11px;color:var(--t3)">No setup needed</div></div></div>' +
+    '<div style="flex:1;overflow-y:auto;padding:0 16px 16px">' +
+    step(1, 'On the ball\u2019s page in Safari, take a screenshot (side button + volume up).') +
+    step(2, 'Tap the screenshot preview, then <b>Full Page</b> at the top.') +
+    step(3, 'Tap <b>Done</b> \u203a <b>Save PDF to Files</b>.') +
+    step(4, 'Back here, tap <b>Read a saved page (PDF)</b> and pick it.') +
+    '<div style="font-size:12px;color:var(--t3);line-height:1.5;margin-top:8px">A Full Page screenshot keeps the page\u2019s text, so the app can read it. A normal (photo) screenshot has no text to read.</div></div>';
+  document.body.appendChild(ov);
 }
 
 /* ---------- v30.174: bowwwl first in "Correct specs" ----------
@@ -3581,7 +3657,7 @@ function catCompareAdd(x) {
 
 root.CATALOG_JS_VERSION = CAT_VERSION;
 root.catPickerMount = catPickerMount;
-root.catApprovalsOpen = catApprovalsOpen; root.catShortcutHelp = catShortcutHelp; root.catShortcutCopy = catShortcutCopy; root.catShortcutClose = catShortcutClose; root.catSpAp = catSpAp; root.catSpBall = catSpBall; root.catSpToggle = catSpToggle; root.catSpEdit = catSpEdit; root.catSpClose = catSpClose; root.catSpApply = catSpApply; root.catSpManualGo = catSpManualGo; root.catSpManualClose = catSpManualClose; root.catLookAp = catLookAp; root.catLookBall = catLookBall; root.catLookTab = catLookTab; root.catLookPaste = catLookPaste; root.catLookOk = catLookOk; root.catLookSave = catLookSave; root.catLookClose = catLookClose; root.catPasteOpen = catPasteOpen; root.catPasteClose = catPasteClose; root.catPasteClip = catPasteClip; root.catPasteShow = catPasteShow; root.catFillToggle = catFillToggle; root.catFillClose = catFillClose; root.catFillConfirm = catFillConfirm; root.catPageOpen = catPageOpen; root.catPageClose = catPageClose; root.catPageUseSel = catPageUseSel; root.catPageUseVal = catPageUseVal; root.catPageImg = catPageImg; root.catPickOpen = catPickOpen; root.catPickFilter = catPickFilter; root.catPickChoose = catPickChoose; root.catPickClose = catPickClose; root.catSpecReviewOpen = catSpecReviewOpen; root.catSpecReviewClose = catSpecReviewClose; root.catSpecReviewAct = catSpecReviewAct; root.catSpecReviewBulk = catSpecReviewBulk; root.catSpecReviewPage = catSpecReviewPage; root.catTagPick = catTagPick; root.catTagCancel = catTagCancel; root.catVerifyRefresh = catVerifyRefresh; root.catVerifyDismiss = catVerifyDismiss; root.catVerifyRetry = catVerifyRetry; root.catVerifyOpenApprovals = catVerifyOpenApprovals; root.catVerifyPublish = catVerifyPublish; root.catVerifyApply = catVerifyApply; root.catVerifyTick = vfyTick; root.catVerifyState = vfyActive; root.catApprovalsRetryStaged = catApprovalsRetryStaged; root.apStagedErrText = apStagedErrText; root.catApprovalsClose = catApprovalsClose; root.catApprovalsSaveToken = catApprovalsSaveToken;
+root.catApprovalsOpen = catApprovalsOpen; root.catSpApPdf = catSpApPdf; root.catSpBallPdf = catSpBallPdf; root.catPdfHelp = catPdfHelp; root.catShortcutHelp = catShortcutHelp; root.catShortcutCopy = catShortcutCopy; root.catShortcutClose = catShortcutClose; root.catSpAp = catSpAp; root.catSpBall = catSpBall; root.catSpToggle = catSpToggle; root.catSpEdit = catSpEdit; root.catSpClose = catSpClose; root.catSpApply = catSpApply; root.catSpManualGo = catSpManualGo; root.catSpManualClose = catSpManualClose; root.catLookAp = catLookAp; root.catLookBall = catLookBall; root.catLookTab = catLookTab; root.catLookPaste = catLookPaste; root.catLookOk = catLookOk; root.catLookSave = catLookSave; root.catLookClose = catLookClose; root.catPasteOpen = catPasteOpen; root.catPasteClose = catPasteClose; root.catPasteClip = catPasteClip; root.catPasteShow = catPasteShow; root.catFillToggle = catFillToggle; root.catFillClose = catFillClose; root.catFillConfirm = catFillConfirm; root.catPageOpen = catPageOpen; root.catPageClose = catPageClose; root.catPageUseSel = catPageUseSel; root.catPageUseVal = catPageUseVal; root.catPageImg = catPageImg; root.catPickOpen = catPickOpen; root.catPickFilter = catPickFilter; root.catPickChoose = catPickChoose; root.catPickClose = catPickClose; root.catSpecReviewOpen = catSpecReviewOpen; root.catSpecReviewClose = catSpecReviewClose; root.catSpecReviewAct = catSpecReviewAct; root.catSpecReviewBulk = catSpecReviewBulk; root.catSpecReviewPage = catSpecReviewPage; root.catTagPick = catTagPick; root.catTagCancel = catTagCancel; root.catVerifyRefresh = catVerifyRefresh; root.catVerifyDismiss = catVerifyDismiss; root.catVerifyRetry = catVerifyRetry; root.catVerifyOpenApprovals = catVerifyOpenApprovals; root.catVerifyPublish = catVerifyPublish; root.catVerifyApply = catVerifyApply; root.catVerifyTick = vfyTick; root.catVerifyState = vfyActive; root.catApprovalsRetryStaged = catApprovalsRetryStaged; root.apStagedErrText = apStagedErrText; root.catApprovalsClose = catApprovalsClose; root.catApprovalsSaveToken = catApprovalsSaveToken;
 root.catApprovalsForgetToken = catApprovalsForgetToken; root.catApprovalsChangeToken = catApprovalsChangeToken; root.catApprovalsPage = catApprovalsPage; root.catApprovalsFilter = catApprovalsFilter;
 root.catApprovalsTick = catApprovalsTick; root.catApprovalsEdit = catApprovalsEdit; root.catApprovalsEditClose = catApprovalsEditClose; root.catApprovalsEditSave = catApprovalsEditSave; root.catAddSpecsOnly = catAddSpecsOnly; root.catVerifyNow = catVerifyNow; root.catImagesSet = catImagesSet;
 root.catImagesRefresh = catImagesRefresh; root.catImagesStatus = catImagesStatus; root.catImageFor = catImageFor; root.catApprovalsSend = catApprovalsSend; root.catApprovalsPublish = catApprovalsPublish; root.catPickerSearch = catPickerSearch;
@@ -3612,7 +3688,7 @@ root._catStep5 = { norm: norm, modelKey: modelKey, lookupIn: lookupIn, searchIn:
                    buildOwnedBall: buildOwnedBall, ballFromSpecs: ballFromSpecs, fillPlan: fillPlan,
                    catSpecSource: catSpecSource, setFilled: function (f) { _filled = f; },
                    imgLinksFrom: imgLinksFrom, sheetState: function () { return _sheet; }, mergeOverrides: mergeOverrides, withLocalCorrection: withLocalCorrection, apApplyOverride: apApplyOverride, apOverrideFrom: apOverrideFrom, bowwwlLinks: bowwwlLinks, apStagedFor: apStagedFor, apAsDetail: apAsDetail, apRangeNotes: apRangeNotes, derivedCoverType: derivedCoverType, specGaps: specGaps, nearestWeight: nearestWeight, addListHTML: addListHTML, sourceForBrand: sourceForBrand, apParseIssue: apParseIssue, apPages: apPages, apApplyTicks: apApplyTicks, apConflict: apConflict, apNums: apNums,
-                   verifyPlan: verifyPlan, spLdLines: spLdLines, SHORTCUT_JS: SHORTCUT_JS, srvEditValue: srvEditValue, parseSpecText: parseSpecText, lkTabs: lkTabs, lkPasteValue: lkPasteValue, lkBallChanges: lkBallChanges, pageMismatch: pageMismatch, pasteLines: pasteLines, plausibleText: plausibleText, proseFields: proseFields, pgvClean: pgvClean, vocabMerge: vocabMerge, vocabSplit: vocabSplit, familyOf: familyOf, srvRows: srvRows, srvApply: srvApply, srvStagedRow: srvStagedRow, vfyPagesFor: vfyPagesFor, vfyEstimateFrom: vfyEstimateFrom, tagLine: tagLine, tagLines: tagLines, tagValueFor: tagValueFor, vfyPickRun: vfyPickRun, vfyClassify: vfyClassify, vfyCardHTML: vfyCardHTML, specMatch: specMatch, coreNameMatch: coreNameMatch, DIFF_MAX: DIFF_MAX, metricUnverified: metricUnverified, catSpecUnverified: catSpecUnverified,
+                   verifyPlan: verifyPlan, pdfItemsToLines: pdfItemsToLines, spLdLines: spLdLines, SHORTCUT_JS: SHORTCUT_JS, srvEditValue: srvEditValue, parseSpecText: parseSpecText, lkTabs: lkTabs, lkPasteValue: lkPasteValue, lkBallChanges: lkBallChanges, pageMismatch: pageMismatch, pasteLines: pasteLines, plausibleText: plausibleText, proseFields: proseFields, pgvClean: pgvClean, vocabMerge: vocabMerge, vocabSplit: vocabSplit, familyOf: familyOf, srvRows: srvRows, srvApply: srvApply, srvStagedRow: srvStagedRow, vfyPagesFor: vfyPagesFor, vfyEstimateFrom: vfyEstimateFrom, tagLine: tagLine, tagLines: tagLines, tagValueFor: tagValueFor, vfyPickRun: vfyPickRun, vfyClassify: vfyClassify, vfyCardHTML: vfyCardHTML, specMatch: specMatch, coreNameMatch: coreNameMatch, DIFF_MAX: DIFF_MAX, metricUnverified: metricUnverified, catSpecUnverified: catSpecUnverified,
                    metricScore: metricScore, parseFinish: parseFinish, rgBand: rgBand, diffBand: diffBand, coverClass: coverClass,
                    catMetric: catMetric, sheetHTML: sheetHTML, cmpColOwned: cmpColOwned, cmpColCatalog: cmpColCatalog, cmpRows: cmpRows,
                    cmpHTML: cmpHTML, cmpState: function () { return _cmp; }, setSheet: function (x) { _sheet = x; } };
