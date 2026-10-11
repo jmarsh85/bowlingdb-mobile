@@ -13,6 +13,7 @@ ok(e.SpecsByWeight['15'].RG === 2.502 && e.Core.Name === 'Rampart' && e.Cover.Ty
 ok(e.Source === 'https://b/combat' && e.Checked === '2026-10-07', 'provenance carried');
 ok(!JSON.stringify(r.specs).includes('94') && !JSON.stringify(r.specs).includes('https://img'), 'mfg scales + image never published');
 ok(r.specs['storm-hy-road'].Core.Type === 'Symmetrical', 'core type mapped when stated');
+{ const rr = P.publish([rec({ rawText: 'Coverstock: SECRET-RAW-LINE' })]); ok(!JSON.stringify(rr.specs).includes('SECRET-RAW-LINE'), 'rawText never published (v30.172)'); }
 r = P.publish([rec({ specs: { weights: {} } })]); ok(r.report.skippedNoWeights === 1 && r.report.published === 0, 'no weights -> not published');
 r = P.publish([rec({}), rec({ url: 'other', specs: { weights: { 15: { RG: 2.6, Diff: 0.04 } } } })]);
 ok(r.report.conflicts[0] === 'brunswick-combat' && !r.specs['brunswick-combat'], 'two sources disagree -> neither published');
