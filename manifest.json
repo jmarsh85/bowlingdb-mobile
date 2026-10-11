@@ -1,5 +1,5 @@
 {
- "build": "89f2054ec623bf23",
+ "build": "4b5fb0e109b0cad5",
  "files": {
   "detail/3g.json": {
    "bytes": 3601,
@@ -162,8 +162,8 @@
    "path": "detail/bowltech.json"
   },
   "detail/brunswick.json": {
-   "bytes": 749257,
-   "hash": "b20c8a770a853c80",
+   "bytes": 744792,
+   "hash": "bd60603e71a7acf7",
    "path": "detail/brunswick.json"
   },
   "detail/bulldogbowlingproducts.json": {
@@ -207,8 +207,8 @@
    "path": "detail/coactorent.json"
   },
   "detail/columbia300.json": {
-   "bytes": 578592,
-   "hash": "28b28286753878da",
+   "bytes": 577491,
+   "hash": "31b0a586d483096b",
    "path": "detail/columbia300.json"
   },
   "detail/cometandco.json": {
@@ -242,8 +242,8 @@
    "path": "detail/dqa.json"
   },
   "detail/dv8.json": {
-   "bytes": 149560,
-   "hash": "8bc7df4fd0a2b749",
+   "bytes": 147983,
+   "hash": "36c3b1f1cb783085",
    "path": "detail/dv8.json"
   },
   "detail/dynothane.json": {
@@ -252,8 +252,8 @@
    "path": "detail/dynothane.json"
   },
   "detail/ebonite.json": {
-   "bytes": 807409,
-   "hash": "60f91feab655ae9d",
+   "bytes": 806315,
+   "hash": "092588c708e2186e",
    "path": "detail/ebonite.json"
   },
   "detail/elitebowlersparadise.json": {
@@ -292,8 +292,8 @@
    "path": "detail/genesisbowlingcoltd.json"
   },
   "detail/hammer.json": {
-   "bytes": 636505,
-   "hash": "3fe03a6e3aa0a58d",
+   "bytes": 634971,
+   "hash": "2001abcdd730b70f",
    "path": "detail/hammer.json"
   },
   "detail/hardball.json": {
@@ -482,8 +482,8 @@
    "path": "detail/morich.json"
   },
   "detail/motiv.json": {
-   "bytes": 286085,
-   "hash": "29a382c77018aa36",
+   "bytes": 286196,
+   "hash": "919c688943f9945d",
    "path": "detail/motiv.json"
   },
   "detail/naturalenemies.json": {
@@ -577,8 +577,8 @@
    "path": "detail/quantum.json"
   },
   "detail/radical.json": {
-   "bytes": 187633,
-   "hash": "8ccfbca5a84a198a",
+   "bytes": 184930,
+   "hash": "e1aedf4f04d8904d",
    "path": "detail/radical.json"
   },
   "detail/rev.json": {
@@ -597,8 +597,8 @@
    "path": "detail/robbys.json"
   },
   "detail/rotogrip.json": {
-   "bytes": 425286,
-   "hash": "77a265d81670ca44",
+   "bytes": 425642,
+   "hash": "1f11f6133bcbe994",
    "path": "detail/rotogrip.json"
   },
   "detail/round1.json": {
@@ -647,8 +647,8 @@
    "path": "detail/squarebowlingproducts.json"
   },
   "detail/storm.json": {
-   "bytes": 896428,
-   "hash": "01b6a10f5d2092d2",
+   "bytes": 895600,
+   "hash": "4bf863383a55569d",
    "path": "detail/storm.json"
   },
   "detail/stormhighscoreproducts.json": {
@@ -702,8 +702,8 @@
    "path": "detail/tayoto.json"
   },
   "detail/trackinc.json": {
-   "bytes": 386609,
-   "hash": "26c4671a0806da56",
+   "bytes": 382589,
+   "hash": "f0a61e7b2a2fef31",
    "path": "detail/trackinc.json"
   },
   "detail/ubb.json": {
@@ -782,8 +782,8 @@
    "path": "detail/yuean.json"
   },
   "index.json": {
-   "bytes": 1320533,
-   "hash": "0be69a8ba78fd53a",
+   "bytes": 1320603,
+   "hash": "9c1d7afe07b88b1f",
    "path": "index.json"
   },
   "usbc.json": {
@@ -792,8 +792,8 @@
    "path": "usbc.json"
   },
   "vocab.json": {
-   "bytes": 108742,
-   "hash": "4df5cf4aea55b967",
+   "bytes": 91419,
+   "hash": "a37f428c2e61778e",
    "path": "vocab.json"
   }
  },

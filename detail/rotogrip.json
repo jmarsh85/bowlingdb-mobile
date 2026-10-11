@@ -2171,7 +2171,7 @@
   },
   "Cover": {
    "Finish": "Reacta Gloss",
-   "Name": "Based on years of testing and research, we found this direct",
+   "Name": null,
    "Type": null
   },
   "DateReleased": "2023-07-28",
@@ -4651,12 +4651,12 @@
   "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
-   "Name": "Sometimes evolution can spark new life into technology from ",
+   "Name": null,
    "Type": null
   },
   "Cover": {
    "Finish": "Reacta Gloss",
-   "Name": "Bottom line, this coverstock technology just flat out crushe",
+   "Name": null,
    "Type": null
   },
   "DateReleased": "2015-12",
@@ -7526,20 +7526,23 @@
   "Aliases": [],
   "BallName": "Hustle (Glow) Mint-Fuchsia-Lemon",
   "CatalogID": "roto-grip-hustle-glow-mint-fuchsia-lemon",
-  "Checked": null,
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
-   "Name": null,
-   "Type": null
+   "Name": "Hustle",
+   "Type": "Symmetrical"
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "Power Edge",
+   "Name": "VTC Pearl Reactive",
+   "Type": "Pearl Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2025-05",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -7554,9 +7557,20 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": null,
-  "SpecsByWeight": {},
-  "Status": null,
+  "Source": "https://www.stormbowling.com/roto-grip-hustle-bowling-ball-glow",
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.03,
+    "IntDiff": null,
+    "RG": 2.53
+   },
+   "16": {
+    "Diff": 0.03,
+    "IntDiff": null,
+    "RG": 2.53
+   }
+  },
+  "Status": "current",
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2025-03-04",
@@ -8726,20 +8740,23 @@
   "Aliases": [],
   "BallName": "Hustle (SOS) Soot/Onyx/Sky",
   "CatalogID": "roto-grip-hustle-sos-soot-onyx-sky",
-  "Checked": null,
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
-   "Name": null,
-   "Type": null
+   "Name": "Hustle",
+   "Type": "Symmetrical"
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "4000 Grit",
+   "Name": "VTC Hybrid",
    "Type": null
   },
-  "DateReleased": null,
+  "DateReleased": "2026-06-26",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -8754,9 +8771,15 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": null,
-  "SpecsByWeight": {},
-  "Status": null,
+  "Source": "https://www.stormbowling.com/roto-grip-hustle-sos-bowling-ball",
+  "SpecsByWeight": {
+   "16": {
+    "Diff": 0.03,
+    "IntDiff": null,
+    "RG": 2.53
+   }
+  },
+  "Status": "current",
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2026-03-31",
@@ -8966,20 +8989,23 @@
   "Aliases": [],
   "BallName": "Hustle (VP) Vanilla/Popsicle",
   "CatalogID": "roto-grip-hustle-vp-vanilla-popsicle",
-  "Checked": null,
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
-   "Name": null,
-   "Type": null
+   "Name": "Hustle",
+   "Type": "Symmetrical"
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
-   "Type": null
+   "Finish": "Power Edge",
+   "Name": "VTC Pearl",
+   "Type": "Pearl Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2026-06-26",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -8994,9 +9020,20 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": null,
-  "SpecsByWeight": {},
-  "Status": null,
+  "Source": "https://www.stormbowling.com/roto-grip-hustle-vp-bowling-ball",
+  "SpecsByWeight": {
+   "15": {
+    "Diff": 0.03,
+    "IntDiff": null,
+    "RG": 2.532
+   },
+   "16": {
+    "Diff": 0.03,
+    "IntDiff": null,
+    "RG": 2.53
+   }
+  },
+  "Status": "current",
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2026-04-07",
@@ -9602,12 +9639,12 @@
   "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
-   "Name": "From the beginning, the end goal for the Hyped Core was to c",
+   "Name": null,
    "Type": null
   },
   "Cover": {
    "Finish": "Reacta Gloss",
-   "Name": "Versatile Traction Control (VTC) was formulated with durabil",
+   "Name": null,
    "Type": null
   },
   "DateReleased": "2021-08",
@@ -10211,7 +10248,7 @@
   },
   "Cover": {
    "Finish": "4000-Grit Abralon",
-   "Name": "Derived from countless hours of mixing, formulating, and tes",
+   "Name": null,
    "Type": null
   },
   "DateReleased": "2022-07-08",
@@ -10326,7 +10363,7 @@
   },
   "Cover": {
    "Finish": "2000-Grit Abralon",
-   "Name": "Derived from countless hours of mixing, formulating, and tes",
+   "Name": null,
    "Type": null
   },
   "DateReleased": "2021-11-19",
@@ -20582,12 +20619,12 @@
   "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
-   "Name": "By placing the TORQUE SPHERE just above the inner equator of",
+   "Name": null,
    "Type": null
   },
   "Cover": {
    "Finish": "2000-Grit Abralon",
-   "Name": "First used in a pearlized form on the RST X-2, we felt there",
+   "Name": null,
    "Type": null
   },
   "DateReleased": "2023-01-16",

@@ -47691,6 +47691,7 @@
   "k": "motiv|jackalclearpoly",
   "m": "Motiv",
   "n": "Jackal Clear Poly",
+  "s": 1,
   "t": false,
   "y": "2022"
  },
@@ -47717,7 +47718,6 @@
  },
  {
   "c": null,
-  "cv": "P",
   "i": "motiv-jackal-fury",
   "k": "motiv|jackalfury",
   "m": "Motiv",
@@ -47750,7 +47750,6 @@
  },
  {
   "c": null,
-  "co": "a",
   "i": "motiv-jackal-howl",
   "k": "motiv|jackalhowl",
   "m": "Motiv",
@@ -48882,8 +48881,7 @@
  },
  {
   "c": null,
-  "co": "s",
-  "cv": "P",
+  "cv": "U",
   "i": "motiv-tank-rampage-pearl",
   "k": "motiv|tankrampagepearl",
   "m": "Motiv",
@@ -56019,10 +56017,14 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "roto-grip-hustle-glow-mint-fuchsia-lemon",
   "k": "rotogrip|hustleglowmintfuchsialemon",
   "m": "Roto Grip",
   "n": "Hustle (Glow) Mint-Fuchsia-Lemon",
+  "r": 0,
+  "s": 1,
   "t": false,
   "y": "2025"
  },
@@ -56244,10 +56246,14 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "H",
   "i": "roto-grip-hustle-sos-soot-onyx-sky",
   "k": "rotogrip|hustlesossootonyxsky",
   "m": "Roto Grip",
   "n": "Hustle (SOS) Soot/Onyx/Sky",
+  "r": 0,
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -56289,10 +56295,14 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "roto-grip-hustle-vp-vanilla-popsicle",
   "k": "rotogrip|hustlevpvanillapopsicle",
   "m": "Roto Grip",
   "n": "Hustle (VP) Vanilla/Popsicle",
+  "r": 0,
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -58473,7 +58483,6 @@
  },
  {
   "c": null,
-  "cv": "P",
   "i": "roto-grip-tnt",
   "k": "rotogrip|tnt",
   "m": "Roto Grip",
@@ -70100,7 +70109,6 @@
  {
   "c": null,
   "co": "s",
-  "cv": "P",
   "i": "track-inc-300c",
   "k": "trackinc|300c",
   "m": "Track Inc.",
@@ -70256,7 +70264,6 @@
  },
  {
   "c": null,
-  "cv": "P",
   "i": "track-inc-505a",
   "k": "trackinc|505a",
   "m": "Track Inc.",

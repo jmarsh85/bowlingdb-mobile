@@ -4586,20 +4586,23 @@
   "Aliases": [],
   "BallName": "Jackal Clear Poly",
   "CatalogID": "motiv-jackal-clear-poly",
-  "Checked": null,
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Predator",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
-   "Name": null,
+   "Finish": "3000 Grit LSS",
+   "Name": "Turmoil HFP Reactive",
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -4614,8 +4617,24 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": null,
-  "SpecsByWeight": {},
+  "Source": "https://www.motivbowling.com/products/balls/retired-balls/jackal.html",
+  "SpecsByWeight": {
+   "14": {
+    "Diff": 0.06,
+    "IntDiff": 0.015,
+    "RG": 2.48
+   },
+   "15": {
+    "Diff": 0.06,
+    "IntDiff": 0.015,
+    "RG": 2.46
+   },
+   "16": {
+    "Diff": 0.06,
+    "IntDiff": 0.015,
+    "RG": 2.46
+   }
+  },
   "Status": null,
   "USBC": {
    "Approved": true,
@@ -4771,12 +4790,12 @@
   "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
-   "Name": "Predator™ V2",
+   "Name": "Predator",
    "Type": null
   },
   "Cover": {
    "Finish": "3000 Grit LSS",
-   "Name": "Coercion™ Pearl",
+   "Name": "Turmoil HFP Reactive",
    "Type": null
   },
   "DateReleased": null,
@@ -4799,22 +4818,22 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": "https://www.motivbowling.com/products/balls/exclusives/jackal-fury.html",
+  "Source": "https://www.motivbowling.com/products/balls/retired-balls/jackal.html",
   "SpecsByWeight": {
    "14": {
-    "Diff": 0.049,
-    "IntDiff": 0.014,
-    "RG": 2.51
+    "Diff": 0.06,
+    "IntDiff": 0.015,
+    "RG": 2.48
    },
    "15": {
-    "Diff": 0.054,
+    "Diff": 0.06,
     "IntDiff": 0.015,
-    "RG": 2.47
+    "RG": 2.46
    },
    "16": {
-    "Diff": 0.047,
-    "IntDiff": 0.013,
-    "RG": 2.48
+    "Diff": 0.06,
+    "IntDiff": 0.015,
+    "RG": 2.46
    }
   },
   "Status": null,
@@ -4972,12 +4991,12 @@
   "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
-   "Name": "Predator™ V2 Asymmetric",
-   "Type": "Asymmetrical"
+   "Name": "Predator",
+   "Type": null
   },
   "Cover": {
    "Finish": "3000 Grit LSS",
-   "Name": "Coercion™ HFS Reactive",
+   "Name": "Turmoil HFP Reactive",
    "Type": null
   },
   "DateReleased": null,
@@ -5000,32 +5019,22 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": "https://www.motivbowling.com/products/balls/exclusives/jackal-howl.html",
+  "Source": "https://www.motivbowling.com/products/balls/retired-balls/jackal.html",
   "SpecsByWeight": {
-   "12": {
-    "Diff": 0.03,
-    "IntDiff": 0.01,
-    "RG": 2.64
-   },
-   "13": {
-    "Diff": 0.04,
-    "IntDiff": 0.011,
-    "RG": 2.57
-   },
    "14": {
-    "Diff": 0.049,
-    "IntDiff": 0.014,
-    "RG": 2.51
+    "Diff": 0.06,
+    "IntDiff": 0.015,
+    "RG": 2.48
    },
    "15": {
-    "Diff": 0.054,
+    "Diff": 0.06,
     "IntDiff": 0.015,
-    "RG": 2.47
+    "RG": 2.46
    },
    "16": {
-    "Diff": 0.047,
-    "IntDiff": 0.013,
-    "RG": 2.48
+    "Diff": 0.06,
+    "IntDiff": 0.015,
+    "RG": 2.46
    }
   },
   "Status": null,
@@ -5260,7 +5269,7 @@
   "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
-   "Name": "Predator™ V2 (16#-14#) / Sinister™ (13#-12#)",
+   "Name": null,
    "Type": null
   },
   "Cover": {
@@ -12351,12 +12360,12 @@
   "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
-   "Name": "Gear™ V2 Symmetrical",
-   "Type": "Symmetrical"
+   "Name": "Gear V2",
+   "Type": null
   },
   "Cover": {
-   "Finish": "1000 Grit LSS",
-   "Name": "Frixion™ M6 Pearl MCP",
+   "Finish": "3000 Grit LSS",
+   "Name": "Alchemy Urethane",
    "Type": null
   },
   "DateReleased": null,
@@ -12379,7 +12388,7 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": "https://www.motivbowling.com/products/balls/retired-balls/tank-rampage-pearl.html",
+  "Source": "https://www.motivbowling.com/products/balls/retired-balls/tank-rampage.html",
   "SpecsByWeight": {
    "14": {
     "Diff": 0.02,

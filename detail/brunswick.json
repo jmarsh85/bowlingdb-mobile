@@ -212,7 +212,7 @@
   },
   "Cover": {
    "Finish": "500, 1000, 2000 Siaair Micro Pad",
-   "Name": "HK22 - Savvy Hook Solid",
+   "Name": null,
    "Type": "Solid Reactive"
   },
   "DateReleased": "2025-10-23",
@@ -384,7 +384,7 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500 Siaair, Rough Buff",
+   "Finish": null,
    "Name": "Activator™ Plus",
    "Type": null
   },
@@ -825,7 +825,7 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound",
+   "Finish": null,
    "Name": "Activator Plus 3.0 Pearl",
    "Type": "Pearl Reactive"
   },
@@ -1695,7 +1695,7 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "Rough Buff, High Gloss",
+   "Finish": null,
    "Name": "Urethane",
    "Type": null
   },
@@ -2088,8 +2088,8 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound",
-   "Name": "HK22 - A.X.H. Pearl",
+   "Finish": null,
+   "Name": null,
    "Type": "Pearl Reactive"
   },
   "DateReleased": "2024-04-18",
@@ -2881,11 +2881,11 @@
   "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
-   "Name": "Brute Low RG / Low Differential Symmetrical",
+   "Name": null,
    "Type": "Symmetrical"
   },
   "Cover": {
-   "Finish": "500 Siaair / Royal Compound / Royal Shine",
+   "Finish": null,
    "Name": "Fortify Hybrid Reactive",
    "Type": "Hybrid Reactive"
   },
@@ -2938,7 +2938,7 @@
   "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
-   "Name": "Brute Low RG / Low Differential Symmetrical",
+   "Name": null,
    "Type": "Symmetrical"
   },
   "Cover": {
@@ -3785,7 +3785,7 @@
    "Type": "Symmetrical"
   },
   "Cover": {
-   "Finish": "500 Siaair, Rough Buff",
+   "Finish": null,
    "Name": "CFT v4.5",
    "Type": null
   },
@@ -3890,7 +3890,7 @@
    "Type": "Asymmetrical"
   },
   "Cover": {
-   "Finish": "500, 800, and 4000 Siaair Micro Pad",
+   "Finish": null,
    "Name": "CFT Alpha-Max",
    "Type": null
   },
@@ -4043,7 +4043,7 @@
    "Type": "Symmetrical"
   },
   "Cover": {
-   "Finish": "500, 2000 and 4000 Siaair Micro Pad",
+   "Finish": null,
    "Name": "CFT Maxxed-Out Solid",
    "Type": null
   },
@@ -4454,8 +4454,8 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound",
-   "Name": "HK22C - Alpha Premier Pearl",
+   "Finish": null,
+   "Name": null,
    "Type": "Pearl Reactive"
   },
   "DateReleased": "2025-08-14",
@@ -4609,7 +4609,7 @@
   },
   "Cover": {
    "Finish": "500, 1500 Siaair Micro Pad",
-   "Name": "HK22C² - Alpha Premier Solid",
+   "Name": null,
    "Type": "Solid Reactive"
   },
   "DateReleased": "2026-08-13",
@@ -5635,8 +5635,8 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound",
-   "Name": "HK22 - Savvy Hook Hybrid",
+   "Finish": null,
+   "Name": null,
    "Type": "Hybrid Reactive"
   },
   "DateReleased": "2025-04-17",
@@ -5712,8 +5712,8 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound",
-   "Name": "HK22 - Savvy Hook Pearl",
+   "Finish": null,
+   "Name": null,
    "Type": "Pearl Reactive"
   },
   "DateReleased": "2026-02-19",
@@ -5894,7 +5894,7 @@
    "Type": "Symmetrical"
   },
   "Cover": {
-   "Finish": "500 and 1,000 Siaair / Crown Factory Compound",
+   "Finish": null,
    "Name": "3C Pearl Reactive",
    "Type": "Pearl Reactive"
   },
@@ -6056,7 +6056,7 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500 Siaair, Rough Buff, High Gloss",
+   "Finish": null,
    "Name": "PowrKoil™ 18",
    "Type": "Pearl Reactive"
   },
@@ -6113,8 +6113,8 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500, 1000, 2000 Siaair / Crown Factory Compound",
-   "Name": "HK22 - PowerKoil 26",
+   "Finish": null,
+   "Name": null,
    "Type": "Solid Reactive"
   },
   "DateReleased": "2025-12-11",
@@ -6200,8 +6200,8 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500, 1000, 2000 Siaair / Crown Factory Compound",
-   "Name": "HK22 - PowerKoil 26",
+   "Finish": null,
+   "Name": null,
    "Type": "Solid Reactive"
   },
   "DateReleased": "2025-12-11",
@@ -7055,8 +7055,8 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish",
-   "Name": "HK22 - PowerKoil 26",
+   "Finish": null,
+   "Name": null,
    "Type": "Pearl Reactive"
   },
   "DateReleased": "2025-12-11",
@@ -7623,7 +7623,7 @@
   },
   "Cover": {
    "Finish": "500, 2000 Siaair Micro Pad",
-   "Name": "A.C.T. 3.0 Solid",
+   "Name": null,
    "Type": "Solid Reactive"
   },
   "DateReleased": null,
@@ -7727,8 +7727,8 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound",
-   "Name": "HK22 - A.C.T. 3.0 Hybrid",
+   "Finish": null,
+   "Name": null,
    "Type": "Hybrid Reactive"
   },
   "DateReleased": "2022-10-21",
@@ -8849,7 +8849,7 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound",
+   "Finish": null,
    "Name": "Activator Plus 3.0 Pearl",
    "Type": "Pearl Reactive"
   },
@@ -8926,8 +8926,8 @@
    "Type": "Asymmetrical"
   },
   "Cover": {
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound",
-   "Name": "HK22C - EVO Hybrid",
+   "Finish": null,
+   "Name": null,
    "Type": "Hybrid Reactive"
   },
   "DateReleased": "2025-10-23",
@@ -9003,8 +9003,8 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound",
-   "Name": "HK22 - SH 4.0 Pearl",
+   "Finish": null,
+   "Name": null,
    "Type": "Pearl Reactive"
   },
   "DateReleased": "2023-10-19",
@@ -9081,7 +9081,7 @@
   },
   "Cover": {
    "Finish": "500, 2000 Siaair Micro Pad",
-   "Name": "HK22C - SH 4.0 Hybrid",
+   "Name": null,
    "Type": "Hybrid Reactive"
   },
   "DateReleased": "2024-10-24",
@@ -9326,7 +9326,7 @@
   "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
-   "Name": "M.A.C.E. (Mechanical Asymmetric Core Engineering)",
+   "Name": null,
    "Type": "Asymmetrical"
   },
   "Cover": {
@@ -9627,7 +9627,7 @@
    "Type": "Symmetrical"
   },
   "Cover": {
-   "Finish": "500 Siaair / Royal Compound / Royal Shine",
+   "Finish": null,
    "Name": "Relativity V Max",
    "Type": null
   },
@@ -10143,7 +10143,7 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500 Siaair / Royal Compound / Royal Shine",
+   "Finish": null,
    "Name": "Fortify Reactive",
    "Type": "Pearl Reactive"
   },
@@ -10536,7 +10536,7 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500, 1000, 2000 Siaair / Crown Factory Compound",
+   "Finish": null,
    "Name": "PK-26 Pearl Reactive",
    "Type": "Pearl Reactive"
   },
@@ -10714,7 +10714,7 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500, 1000, 2000 Siaair / Crown Factory Compound",
+   "Finish": null,
    "Name": "PK-26 Pearl Reactive",
    "Type": "Pearl Reactive"
   },
@@ -10796,7 +10796,7 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500, 1000, 2000 Siaair / Crown Factory Compound",
+   "Finish": null,
    "Name": "PK-26 Hybrid Reactive",
    "Type": "Hybrid Reactive"
   },
@@ -10878,7 +10878,7 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500, 1000, 2000 Siaair / Crown Factory Compound",
+   "Finish": null,
    "Name": "PK-26 Hybrid Reactive",
    "Type": "Hybrid Reactive"
   },
@@ -11934,7 +11934,7 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500, 1000 Siaair / Crown Factory Compound",
+   "Finish": null,
    "Name": "Activator Plus 2.0 Pearl",
    "Type": "Pearl Reactive"
   },
@@ -12289,7 +12289,7 @@
   },
   "Cover": {
    "Finish": "500, 2000 Siaair Micro Pad",
-   "Name": "HK22C - EVO Hybrid",
+   "Name": null,
    "Type": "Hybrid Reactive"
   },
   "DateReleased": "2025-02-20",
@@ -12365,7 +12365,7 @@
    "Type": "Symmetrical"
   },
   "Cover": {
-   "Finish": "500, 1000 Siaair / Crown Factory Compound",
+   "Finish": null,
    "Name": "Relativity Pearl 3.0",
    "Type": "Pearl Reactive"
   },
@@ -13191,7 +13191,7 @@
   },
   "Cover": {
    "Finish": "500, 2000 Siaair Micro Pad",
-   "Name": "A.X.H. Hybrid (Activator Xtreme Hook)",
+   "Name": null,
    "Type": "Hybrid Reactive"
   },
   "DateReleased": "2023-06-22",
@@ -13247,8 +13247,8 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound",
-   "Name": "HK22C - EVO Solid",
+   "Finish": null,
+   "Name": null,
    "Type": "Solid Reactive"
   },
   "DateReleased": "2025-08-14",
@@ -13324,8 +13324,8 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound",
-   "Name": "HK22C - EVO Pearl",
+   "Finish": null,
+   "Name": null,
    "Type": "Pearl Reactive"
   },
   "DateReleased": "2026-06-11",
@@ -13449,8 +13449,8 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound",
-   "Name": "HK22 - Evolution Pearl",
+   "Finish": null,
+   "Name": null,
    "Type": "Pearl Reactive"
   },
   "DateReleased": "2024-06-13",
@@ -13526,7 +13526,7 @@
    "Type": "Symmetrical"
   },
   "Cover": {
-   "Finish": "500 and 1000 Siaair / Crown Factory Compound",
+   "Finish": null,
    "Name": "Relativity 2.0 Hybrid",
    "Type": "Hybrid Reactive"
   },
@@ -14168,7 +14168,7 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500 Siaair, Rough Buff, High Gloss",
+   "Finish": null,
    "Name": "PowrKoil™ 18 Solid",
    "Type": "Solid Reactive"
   },
@@ -14282,7 +14282,7 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500 Siaair, Rough Buff, High Gloss",
+   "Finish": null,
    "Name": "Activator Plus",
    "Type": "Pearl Reactive"
   },
@@ -14891,7 +14891,7 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500, 1000, and 2000 Siaair Micro Pad",
+   "Finish": null,
    "Name": "Propel X Solid",
    "Type": null
   },
@@ -14948,7 +14948,7 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500, 1500 Siaair, Rough Buff",
+   "Finish": null,
    "Name": "Propel X",
    "Type": null
   },
@@ -15608,7 +15608,7 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500 Siair, Rough Buff",
+   "Finish": null,
    "Name": "Activator Plus",
    "Type": "Pearl Reactive"
   },
@@ -16286,7 +16286,7 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500 Siaair / Royal Compound / Royal Shine",
+   "Finish": null,
    "Name": "Honor Roll A+ Pearl Reactive",
    "Type": "Pearl Reactive"
   },
@@ -16688,7 +16688,7 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "600 - Wet Sand",
+   "Finish": null,
    "Name": "PlaZma Reactive Solid",
    "Type": "Solid"
   },
@@ -16841,7 +16841,7 @@
    "Type": "Symmetrical"
   },
   "Cover": {
-   "Finish": "500 Siaair / Rough Buff / High Gloss",
+   "Finish": null,
    "Name": "Addaptive f(P2) Pearl",
    "Type": "Pearl Reactive"
   },
@@ -17108,7 +17108,7 @@
    "Type": "Symmetrical"
   },
   "Cover": {
-   "Finish": "500 Siaair / Royal Compound / Royal Shine",
+   "Finish": null,
    "Name": "Savvy Solid Reactive",
    "Type": "Solid Reactive"
   },
@@ -17384,7 +17384,7 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500, 1000 Siaair / Crown Factory Compound",
+   "Finish": null,
    "Name": "Savvy Hook 2.0 Pearl",
    "Type": "Pearl Reactive"
   },
@@ -17441,8 +17441,8 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound",
-   "Name": "A.X.H. Pearl",
+   "Finish": null,
+   "Name": null,
    "Type": "Pearl Reactive"
   },
   "DateReleased": "2023-08-19",
@@ -17642,7 +17642,7 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound",
+   "Finish": null,
    "Name": "Savvy Hook 3.0 Pearl",
    "Type": "Pearl Reactive"
   },
@@ -17892,7 +17892,7 @@
   },
   "Cover": {
    "Finish": "500, 1500 Siaair Micro Pad",
-   "Name": "HK22C - EVO Solid",
+   "Name": null,
    "Type": "Solid Reactive"
   },
   "DateReleased": "2024-08-15",
@@ -21371,7 +21371,7 @@
   },
   "Cover": {
    "Finish": "500, 1500, 3000 Siaair Micro Pad",
-   "Name": "HK22 - Evolution Hybrid",
+   "Name": null,
    "Type": "Hybrid Reactive"
   },
   "DateReleased": "2023-10-19",
@@ -22307,7 +22307,7 @@
   "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
-   "Name": "DISC (Differential Increasing Slide Cylinders)",
+   "Name": null,
    "Type": null
   },
   "Cover": {
@@ -22963,7 +22963,7 @@
   },
   "Cover": {
    "Finish": "500, 2000 Siaair Micro Pad",
-   "Name": "A.C.T. 2.0 (Activator Composite Technology)",
+   "Name": null,
    "Type": "Solid Reactive"
   },
   "DateReleased": null,
@@ -23019,8 +23019,8 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500, 1000 Siaair / Crown Factory Compound",
-   "Name": "A.C.T. 2.0 Hybrid",
+   "Finish": null,
+   "Name": null,
    "Type": "Hybrid Reactive"
   },
   "DateReleased": null,
@@ -24060,7 +24060,7 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound",
+   "Finish": null,
    "Name": "Evolution Reactive",
    "Type": "Pearl Reactive"
   },
@@ -24117,8 +24117,8 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound",
-   "Name": "HK22 - Evolution Reactive",
+   "Finish": null,
+   "Name": null,
    "Type": "Pearl Reactive"
   },
   "DateReleased": "2023-08-17",
@@ -26955,7 +26955,7 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish",
+   "Finish": null,
    "Name": "R-16",
    "Type": "Pearl Reactive"
   },
@@ -27042,7 +27042,7 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish",
+   "Finish": null,
    "Name": "R-16",
    "Type": "Pearl Reactive"
   },
@@ -27129,7 +27129,7 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish",
+   "Finish": null,
    "Name": "R-16",
    "Type": "Pearl Reactive"
   },
@@ -27216,7 +27216,7 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish",
+   "Finish": null,
    "Name": "R-16",
    "Type": "Pearl Reactive"
   },
@@ -27303,7 +27303,7 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish",
+   "Finish": null,
    "Name": "R-16",
    "Type": "Pearl Reactive"
   },
@@ -27390,7 +27390,7 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish",
+   "Finish": null,
    "Name": "R-16",
    "Type": "Pearl Reactive"
   },
@@ -27525,7 +27525,7 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish",
+   "Finish": null,
    "Name": "R-16",
    "Type": "Pearl Reactive"
   },
@@ -27756,7 +27756,7 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish",
+   "Finish": null,
    "Name": "R-16",
    "Type": "Pearl Reactive"
   },
@@ -27843,7 +27843,7 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish",
+   "Finish": null,
    "Name": "R-16",
    "Type": "Solid Reactive"
   },
@@ -28737,7 +28737,7 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish",
+   "Finish": null,
    "Name": "R-16",
    "Type": "Pearl Reactive"
   },
@@ -28824,7 +28824,7 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish",
+   "Finish": null,
    "Name": "R-16",
    "Type": "Pearl Reactive"
   },
@@ -29007,7 +29007,7 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish",
+   "Finish": null,
    "Name": "R-16",
    "Type": "Pearl Reactive"
   },
@@ -29906,7 +29906,7 @@
   "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
-   "Name": "M.A.C.E. (Mechanical Asymmetric Core Engineering)",
+   "Name": null,
    "Type": "Asymmetrical"
   },
   "Cover": {
@@ -31081,7 +31081,7 @@
   },
   "Cover": {
    "Finish": "500 Siaair / Royal Compound",
-   "Name": "CPTv2 - Control Reactive",
+   "Name": null,
    "Type": "Solid Reactive"
   },
   "DateReleased": null,
@@ -31137,8 +31137,8 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500 Siaair / Royal Compound / Royal Shine",
-   "Name": "CPTv2 - Flip Reactive",
+   "Finish": null,
+   "Name": null,
    "Type": "Pearl Reactive"
   },
   "DateReleased": null,
@@ -31530,7 +31530,7 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound",
+   "Finish": null,
    "Name": "Activator Plus 2.0 Hybrid",
    "Type": "Hybrid Reactive"
   },
@@ -31779,8 +31779,8 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound",
-   "Name": "HK22C² - EVO Pearl",
+   "Finish": null,
+   "Name": null,
    "Type": "Pearl Reactive"
   },
   "DateReleased": "2026-04-16",
@@ -31856,7 +31856,7 @@
    "Type": "Symmetrical"
   },
   "Cover": {
-   "Finish": "500 Siaair / Rough Buff / High Gloss",
+   "Finish": null,
    "Name": "SK13 Reactive",
    "Type": "Pearl Reactive"
   },
@@ -31913,7 +31913,7 @@
    "Type": "Symmetrical"
   },
   "Cover": {
-   "Finish": "500 Siaair / Rough Buff / High Gloss",
+   "Finish": null,
    "Name": "SK13 Reactive",
    "Type": "Pearl Reactive"
   },
@@ -32018,7 +32018,7 @@
    "Type": "Symmetrical"
   },
   "Cover": {
-   "Finish": "500 Siaair / Rough Buff / High Gloss",
+   "Finish": null,
    "Name": "SK13 Reactive",
    "Type": "Pearl Reactive"
   },
@@ -32075,7 +32075,7 @@
    "Type": "Symmetrical"
   },
   "Cover": {
-   "Finish": "500 Siaair / Rough Buff / High Gloss",
+   "Finish": null,
    "Name": "SK13 Reactive",
    "Type": "Pearl Reactive"
   },
@@ -32525,7 +32525,7 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500, 1,000 and 3,000 Siaair Micro Pad",
+   "Finish": null,
    "Name": "URG (Ultra Responsive Grit)",
    "Type": "Pearl Reactive"
   },
@@ -33416,7 +33416,7 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish",
+   "Finish": null,
    "Name": "R-16",
    "Type": "Pearl Reactive"
   },
@@ -33503,7 +33503,7 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish",
+   "Finish": null,
    "Name": "R-16",
    "Type": "Pearl Reactive"
   },
@@ -33590,7 +33590,7 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish",
+   "Finish": null,
    "Name": "R-16",
    "Type": "Pearl Reactive"
   },
@@ -33677,7 +33677,7 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish",
+   "Finish": null,
    "Name": "R-16",
    "Type": "Pearl Reactive"
   },
@@ -33764,7 +33764,7 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish",
+   "Finish": null,
    "Name": "R-16",
    "Type": "Pearl Reactive"
   },
@@ -33851,7 +33851,7 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish",
+   "Finish": null,
    "Name": "R-16",
    "Type": "Pearl Reactive"
   },
@@ -33938,7 +33938,7 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish",
+   "Finish": null,
    "Name": "R-16",
    "Type": "Pearl Reactive"
   },
@@ -34025,7 +34025,7 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish",
+   "Finish": null,
    "Name": "R-16",
    "Type": "Pearl Reactive"
   },
@@ -34362,7 +34362,7 @@
   },
   "Cover": {
    "Finish": "500, 2000 Siaair Micro Pad",
-   "Name": "HK22 - A.C.T. 3.0 Hybrid",
+   "Name": null,
    "Type": "Hybrid Reactive"
   },
   "DateReleased": "2024-02-22",
@@ -34639,7 +34639,7 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500, 1000 Siaair / Crown Factory Compound",
+   "Finish": null,
    "Name": "Savvy Hook 3.0",
    "Type": "Pearl Reactive"
   },
@@ -35098,8 +35098,8 @@
    "Type": "Asymmetrical"
   },
   "Cover": {
-   "Finish": "500, 1000, 1500 Siaar / Crown Factory Compound",
-   "Name": "HK22C - EVO Pearl",
+   "Finish": null,
+   "Name": null,
    "Type": "Pearl Reactive"
   },
   "DateReleased": "2024-08-15",
@@ -35538,7 +35538,7 @@
    "Type": "Symmetrical"
   },
   "Cover": {
-   "Finish": "500 Siaair / Royal Compound / Royal Shine",
+   "Finish": null,
    "Name": "3C Solid Reactive",
    "Type": "Solid Reactive"
   },
@@ -36093,8 +36093,8 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound",
-   "Name": "HK22 - Savvy Hook Hybrid",
+   "Finish": null,
+   "Name": null,
    "Type": "Hybrid Reactive"
   },
   "DateReleased": "2026-08-13",
@@ -36262,11 +36262,11 @@
   "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
-   "Name": "M.A.C.E. (Mechanical Asymmetric Core Engineering)",
+   "Name": null,
    "Type": "Asymmetrical"
   },
   "Cover": {
-   "Finish": "500 Siaair, Rough Buff",
+   "Finish": null,
    "Name": "Propel™ X",
    "Type": null
   },
@@ -37263,7 +37263,7 @@
   },
   "Cover": {
    "Finish": "500, 1000 Siaair Micro Pad",
-   "Name": "A. X. H. (Activator Xtreme Hook)",
+   "Name": null,
    "Type": "Solid Reactive"
   },
   "DateReleased": null,
@@ -37320,7 +37320,7 @@
   },
   "Cover": {
    "Finish": "500, 1000, 1500 Siaair Micro Pad",
-   "Name": "A. X. H. Hybrid (Activator Xtreme Hook)",
+   "Name": null,
    "Type": "Hybrid Reactive"
   },
   "DateReleased": null,
@@ -37376,8 +37376,8 @@
    "Type": null
   },
   "Cover": {
-   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish",
-   "Name": "A. X. H. (Activator Xtreme Hook)",
+   "Finish": null,
+   "Name": null,
    "Type": "Pearl Reactive"
   },
   "DateReleased": null,
