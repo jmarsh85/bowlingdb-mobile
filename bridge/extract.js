@@ -121,6 +121,28 @@ function parseDate(s) {
   const d = new Date(t + ' UTC'); return isNaN(d) ? null : d.toISOString().slice(0, 10);
 }
 
+/* v30.174: a spec text field is a short name, not page prose. Storm product
+   pages put marketing paragraphs under "Coverstock:" / "Weight Block:"
+   headings (e.g. "Traditionally, the term...", "Firmly ensconced at the...");
+   those must never reach staging or the catalog. */
+const TEXT_MAX = { core: 40, coverName: 45, coverType: 30, finish: 40 };
+function plausibleText(field, v) {
+  if (v == null) return null;
+  const s = String(v).replace(/\s+/g, ' ').trim();
+  if (!s) return null;
+  if (s.length > (TEXT_MAX[field] || 40) || s.split(' ').length > 6) return null;
+  if (/[.!?;]\s+\S|,\s(?!\d)|\s[-\u2013\u2014]\s/.test(s)) return null;                      // sentence or clause punctuation
+  if (/^(this|that|it|its|our|we|you|your|with|when|while|for|if|from|traditionally|firmly|featuring|introducing|designed|built|created|using|combining)\b/i.test(s)) return null;
+  if (/\b(is|are|was|were|has|have|had|will|be|been|that|which|who|ensconced|provides?|delivers?|offers?|gives?)\b/i.test(s)) return null;
+  return s;
+}
+/* Nulls implausible text fields in place; returns the fields dropped. */
+function cleanTextFields(specs) {
+  const out = [];
+  if (!specs) return out;
+  for (const f of Object.keys(TEXT_MAX)) if (specs[f] != null && !plausibleText(f, specs[f])) { specs[f] = null; out.push(f); }
+  return out;
+}
 /* v30.172 CAT-NEW-2: the spec text the parser read, for tap-to-tag in the
    app's correction sheet. Spec lines only (labels or 0.xxx / 2.xxx numbers),
    short lines, de-duplicated, capped at RAW_CAP. Kept in staging, never published. */
@@ -613,10 +635,12 @@ async function main(argv, fetchImpl, log = s => process.stdout.write(s + '\n')) 
   sources.forEach((s, i) => {
     const r = runs[i]; let parsed = 0;
     for (const rec of r.recs) {
+      const dropped = cleanTextFields(rec.specs);   // v30.174: page prose is never a value
       const hasSpecs = rec.specs && (Object.keys(rec.specs.weights || {}).length || rec.specs.core || rec.specs.coverName);
       if (!hasSpecs) continue;             // not a ball page (bags, shoes, accessories)
       parsed++;
       const flags = verify(rec), m = matchRec(rec, byBrand), d = decide(rec, m, flags);
+      dropped.forEach(f => flags.push('text-rejected:' + f));
       let page = null;
       if (rec.snap && rec.url && (rec.snap.lines.length || rec.snap.images.length)) { page = pageKey(rec.url); snaps[page] = rec.snap; }
       const base = { source: s.id, platform: PLATFORM[s.id], brand: canonBrand(rec.brand), title: rec.title, url: rec.url, sku: rec.sku || null, page,
@@ -699,6 +723,6 @@ async function main(argv, fetchImpl, log = s => process.stdout.write(s + '\n')) 
   return { staged, coverage: cov, perSource };
 }
 
-module.exports = { specBlock, RAW_CAP, pageSnap, pageImages, pageKey, statusFromUrl, statedCoreType, mergeProduct, colourOnly, extraWords, autoTargets, close, parseStormProduct, stormSlug, learnStormPrefixes, stormCandidates, htmlToText, weightTable, kvLines, parseDate, parseCraft, parseShopifyBody, parseMotiv, parseStormListing,
+module.exports = { plausibleText, cleanTextFields, specBlock, RAW_CAP, pageSnap, pageImages, pageKey, statusFromUrl, statedCoreType, mergeProduct, colourOnly, extraWords, autoTargets, close, parseStormProduct, stormSlug, learnStormPrefixes, stormCandidates, htmlToText, weightTable, kvLines, parseDate, parseCraft, parseShopifyBody, parseMotiv, parseStormListing,
   verify, matchRec, decide, resolveConflicts, coverage, indexByBrand, titleKey, norm, main };
 if (require.main === module) main(process.argv.slice(2), globalThis.fetch).catch(e => { console.error(e); process.exit(1); });
