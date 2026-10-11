@@ -36,7 +36,7 @@
 'use strict';
 
 /* v30.169: shown in the app header when it differs from the build's EXPECTED_CATALOG_JS */
-var CAT_VERSION  = 'v30.171';
+var CAT_VERSION  = 'v30.172';
 var CAT_BASE     = 'https://raw.githubusercontent.com/jmarsh85/bowlingdb-mobile/dist/';
 var CAT_DB       = 'BowlingDB_Catalog';
 var CAT_DB_VER   = 1;
@@ -1528,7 +1528,10 @@ function apLoad() {
   return apFlush().catch(function () {}).then(apFetchIssue).then(function (is) {
     _ap.issue = is.number; _ap.body = is.body; _ap.fromCache = false;
     apExtractStatus().then(function (run) { _ap.run = run; if (run) apRender(); });
-    apReadStaged().then(function () { apRender(); }).catch(function () {});
+    /* v30.172: a failed staging read used to be swallowed, leaving every card on the
+       one-line summary with "Full specs load..." forever. Keep the reason and show it. */
+    _ap.stagedErr = null;
+    apReadStaged().then(function () { _ap.stagedErr = null; apRender(); }, function (e) { _ap.stagedErr = apStagedErrText(e); apRender(); });
     apReadOverrides().then(function () { apRender(); }).catch(function () {});
   }).catch(function (e) {
     var l = apLS(), c = null; try { c = JSON.parse((l && l.getItem(AP_CACHE_KEY)) || 'null'); } catch (x) {}
@@ -1784,7 +1787,23 @@ function apRangeNotes(flags) {
     return m ? (m[2] === 'IntDiff' ? 'Int Diff' : m[2]) + ' ' + m[1] + ' lb read as ' + m[3] + ' \u2014 outside the allowed range, dropped' : null;
   }).filter(Boolean);
 }
+/* Pure: why the staging file did not load, in plain words. */
+function apStagedErrText(e) {
+  var st = e && e.status;
+  if (st === 401) return 'Full specs did not load: GitHub rejected the token (401).';
+  if (st === 403) return 'Full specs did not load: the token cannot read repo files (403). Give it Contents: Read-only.';
+  if (st === 404) return 'Full specs did not load: no staging file on the specs branch (404), or the token lacks Contents: Read-only. Run specs-extract, or check the token.';
+  if (root.navigator && root.navigator.onLine === false) return 'Full specs did not load: you are offline.';
+  return 'Full specs did not load: ' + ((e && e.message) || String(e));
+}
+function catApprovalsRetryStaged() {
+  _ap.stagedErr = null; apRender();
+  return apReadStaged(true).then(function () { apRender(); }, function (e) { _ap.stagedErr = apStagedErrText(e); apRender(); });
+}
 function apSheetHTML(r) {
+  if (!r && _ap.stagedErr) return '<div style="font-size:11px;color:var(--red);margin-top:6px;line-height:1.45">' + esc(_ap.stagedErr) +
+    ' <span onclick="event.stopPropagation();catApprovalsRetryStaged()" style="color:var(--teal);font-weight:700;cursor:pointer;white-space:nowrap">Retry</span></div>';
+  if (!r && _staged) return '<div style="font-size:11px;color:var(--t3);margin-top:6px">Not in the current staging file (a newer extract may have replaced it).</div>';
   if (!r) return '<div style="font-size:11px;color:var(--t3);margin-top:6px">Full specs load with the staging file\u2026</div>';
   var d = apAsDetail(r), sp = r.specs || {}, gaps = specGaps(d) || [];
   var ed = r._edited || {}, edw = ed.weights || {};
@@ -2261,7 +2280,7 @@ function catCompareAdd(x) {
 
 root.CATALOG_JS_VERSION = CAT_VERSION;
 root.catPickerMount = catPickerMount;
-root.catApprovalsOpen = catApprovalsOpen; root.catApprovalsClose = catApprovalsClose; root.catApprovalsSaveToken = catApprovalsSaveToken;
+root.catApprovalsOpen = catApprovalsOpen; root.catApprovalsRetryStaged = catApprovalsRetryStaged; root.apStagedErrText = apStagedErrText; root.catApprovalsClose = catApprovalsClose; root.catApprovalsSaveToken = catApprovalsSaveToken;
 root.catApprovalsForgetToken = catApprovalsForgetToken; root.catApprovalsChangeToken = catApprovalsChangeToken; root.catApprovalsPage = catApprovalsPage; root.catApprovalsFilter = catApprovalsFilter;
 root.catApprovalsTick = catApprovalsTick; root.catApprovalsEdit = catApprovalsEdit; root.catApprovalsEditClose = catApprovalsEditClose; root.catApprovalsEditSave = catApprovalsEditSave; root.catAddSpecsOnly = catAddSpecsOnly; root.catVerifyNow = catVerifyNow; root.catImagesSet = catImagesSet;
 root.catImagesRefresh = catImagesRefresh; root.catImagesStatus = catImagesStatus; root.catImageFor = catImageFor; root.catApprovalsSend = catApprovalsSend; root.catApprovalsPublish = catApprovalsPublish; root.catPickerSearch = catPickerSearch;
