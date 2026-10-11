@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-10T21:06:09.903Z",
+  "generated": "2026-10-11T01:24:35.439Z",
   "since": 2023,
   "perSource": {
     "storm": {
@@ -16,12 +16,12 @@
     },
     "hammer": {
       "pages": 366,
-      "parsed": 197,
+      "parsed": 196,
       "errors": 3,
       "errorSample": [
-        "https://hammerbowling.com/products/the-big-deal.json 429",
-        "https://hammerbowling.com/products/nu-blue-hammer.json 429",
-        "https://hammerbowling.com/products/rocio-restrepo.json 429"
+        "https://hammerbowling.com/products/hawg-zilla.json 429",
+        "https://hammerbowling.com/products/ocean-vibe.json 429",
+        "https://hammerbowling.com/products/full-effect.json 429"
       ]
     },
     "dv8": {
@@ -41,15 +41,16 @@
       "parsed": 163,
       "errors": 1,
       "errorSample": [
-        "https://trackbowling.com/products/alias.json 429"
+        "https://trackbowling.com/products/hx05.json 429"
       ]
     },
     "ebonite": {
       "pages": 215,
-      "parsed": 191,
-      "errors": 1,
+      "parsed": 190,
+      "errors": 2,
       "errorSample": [
-        "https://ebonite.com/products/magic.json 429"
+        "https://ebonite.com/products/maxim-purple-bronze.json 429",
+        "https://ebonite.com/products/game-breaker-5-hybrid.json 429"
       ]
     },
     "columbia": {
@@ -57,9 +58,9 @@
       "parsed": 386,
       "errors": 3,
       "errorSample": [
-        "https://columbia300.com/products/scout-r-hi-flare.json 429",
-        "https://columbia300.com/products/formula.json 429",
-        "https://columbia300.com/products/dynamic-swing.json 429"
+        "https://columbia300.com/products/super-beast-ti-1.json 429",
+        "https://columbia300.com/products/jazz-red-blue.json 429",
+        "https://columbia300.com/products/swerve-fx.json 429"
       ]
     },
     "motiv": {
@@ -86,8 +87,8 @@
     },
     "Columbia 300": {
       "all": 553,
-      "auto": 170,
-      "pending": 74,
+      "auto": 171,
+      "pending": 72,
       "recent": 20,
       "recentAuto": 15
     },
@@ -100,14 +101,14 @@
     },
     "Ebonite": {
       "all": 814,
-      "auto": 125,
+      "auto": 126,
       "pending": 21,
       "recent": 61,
       "recentAuto": 16
     },
     "Hammer": {
       "all": 653,
-      "auto": 73,
+      "auto": 72,
       "pending": 101,
       "recent": 114,
       "recentAuto": 38
