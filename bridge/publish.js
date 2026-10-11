@@ -18,6 +18,7 @@
 'use strict';
 const fs = require('fs');
 
+const { cleanTextFields } = require('./extract.js');
 function toSpecsEntry(r) {
   const s = r.specs || {}, sbw = {};
   for (const w of Object.keys(s.weights || {}).sort()) {
@@ -61,7 +62,9 @@ function publish(staged, decisions, overrides) {
   const tiers = {};   // id -> {approved:[entry], auto:[entry]}
   const add = (id, tier, r) => {
     const o = ovFor(id);
-    const e = toSpecsEntry(applyOverride(r, o));
+    /* v30.174: rows staged before the text gate get it here; your corrections are applied after, untouched */
+    const rc = Object.assign({}, r, { specs: Object.assign({}, r.specs || {}) }); cleanTextFields(rc.specs);
+    const e = toSpecsEntry(applyOverride(rc, o));
     if (o) e.Corrected = { source: o.source || 'maker', at: o.at || null };
     if (!Object.keys(e.SpecsByWeight).length) { report.skippedNoWeights++; return; }
     ((tiers[id] = tiers[id] || { approved: [], auto: [] })[tier]).push(e);
