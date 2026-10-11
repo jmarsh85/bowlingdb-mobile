@@ -36,7 +36,7 @@
 'use strict';
 
 /* v30.169: shown in the app header when it differs from the build's EXPECTED_CATALOG_JS */
-var CAT_VERSION  = 'v30.181';
+var CAT_VERSION  = 'v30.182';
 var CAT_BASE     = 'https://raw.githubusercontent.com/jmarsh85/bowlingdb-mobile/dist/';
 var CAT_DB       = 'BowlingDB_Catalog';
 var CAT_DB_VER   = 1;
@@ -3154,7 +3154,12 @@ var BW_FILES = 'https://www.bowwwl.com/sites/default/files/';
 var BW_IMG_BASE = BW_FILES + 'balls/';
 var CORE_LINKS_KEY = 'bdbimg_core';
 var _catImgObj = {};   // catalogId or "core:<key>" -> object URL of a stored file
-var _mi = { tab: 'mine', slot: 'cover', page: 0, q: '', found: {}, busy: {}, all: null, coreAll: null };
+var _mi = { tab: 'mine', slot: 'cover', page: 0, q: '', found: {}, busy: {}, all: null, coreAll: null, scan: null };
+/* v30.182: bowwwl finds (links) and misses survive closing the app, so a long scan is never lost and never repeated */
+var SCAN_KEY = 'bdbimg_scan';
+function scanMem() { var l = apLS(); try { var o = JSON.parse((l && l.getItem(SCAN_KEY)) || 'null'); return o && o.found ? o : { found: {}, miss: {} }; } catch (e) { return { found: {}, miss: {} }; } }
+function scanSave(m) { var l = apLS(); if (l) try { l.setItem(SCAN_KEY, JSON.stringify(m)); } catch (e) {} }
+function scanNote(fk, url) { var m = scanMem(); if (url) { m.found[fk] = url; delete m.miss[fk]; } else if (url === null) { m.miss[fk] = 1; delete m.found[fk]; } else { delete m.found[fk]; } scanSave(m); }
 function slugBw(t) {
   return String(t || '').toLowerCase().replace(/^\*+\s*/, '').replace(/&/g, ' and ').replace(/\+/g, ' plus ').replace(/['\u2019\u00ae\u2122"]/g, '')
     .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
@@ -3171,17 +3176,25 @@ function bowwwlImgCandidates(brand, name) {
 }
 /* Pure: a core's name without "core"/"weight block" and symmetry words. */
 function coreBase(name) {
-  return String(name || '').replace(/[\u2122\u00ae]/g, '').replace(/\b(?:a?symmetric(?:al)?|weight\s*block|core)\b/ig, ' ').replace(/\s+/g, ' ').trim();
+  return String(name || '').replace(/[\u2122\u00ae]/g, '').replace(/\b(?:a?symmetric(?:al)?|weight\s*block|mass\s*bias|core)\b/ig, ' ').replace(/\s+/g, ' ').trim();
 }
 /* Pure: one key per core (brand + core name), so balls sharing a core share its picture. */
 function brandSlug(brand) { return slugBw(brand).replace(/-(?:inc|bowling|international|industries|co)$/, ''); }   // "Track Inc" = "Track"
 function coreKeyOf(brand, coreName) { var b = brandSlug(brand), c = slugBw(coreBase(coreName)); return b && c ? b + '|' + c : null; }
 /* Pure: bowwwl core picture addresses ("brunswick-rampart-core.png"). */
 function bowwwlCoreCandidates(brand, coreName) {
-  var b = brandSlug(brand), c = slugBw(coreBase(coreName)); if (!b || !c) return [];
+  var b = brandSlug(brand); if (!b) return [];
+  /* bowwwl core titles carry extras ("Centrex Symmetrical Mass Bias Core"); try the
+     full name, the name without symmetry / mass-bias / core words, and its first word */
+  var raw = String(coreName || '').replace(/[\u2122\u00ae]/g, '');
+  var full = slugBw(raw.replace(/\bcore\b/ig, ' '));
+  var base = slugBw(coreBase(raw).replace(/\bmass\s*bias\b|\bmb\b/ig, ' '));
+  var first = base.split('-')[0];
+  var names = [base, full, first].filter(function (x, i, a) { return x && a.indexOf(x) === i && !(x === first && x.length < 3); });
   var out = [];
-  [b + '-' + c + '-core', b + '-' + c].forEach(function (x) { ['.png', '.jpg'].forEach(function (e) { out.push(BW_FILES + 'cores/' + x + e); }); });
-  return out;
+  names.forEach(function (c) { [b + '-' + c + '-core', b + '-' + c].forEach(function (x) { out.push(BW_FILES + 'cores/' + x + '.png'); }); });
+  names.forEach(function (c) { out.push(BW_FILES + 'cores/' + b + '-' + c + '-core.jpg'); });
+  return out.slice(0, 9);
 }
 function coreLinks() { var l = apLS(); try { return JSON.parse((l && l.getItem(CORE_LINKS_KEY)) || '{}') || {}; } catch (e) { return {}; } }
 function coreLinkSet(k, url) { var l = apLS(); if (!l) return; var m = coreLinks(); if (url) m[k] = url; else delete m[k]; l.setItem(CORE_LINKS_KEY, JSON.stringify(m)); }
@@ -3282,6 +3295,7 @@ function catImagesOpen() {
   if (mb && mb.classList.contains('open') && typeof root.closeModal === 'function') root.closeModal();
   var ov = overlay('mi-ov', 906); document.body.appendChild(ov);
   _mi.page = 0; _mi.found = {}; _mi.busy = {}; _mi.all = null; _mi.coreAll = null; _mi.slot = 'cover';
+  var sm = scanMem(); Object.keys(sm.found).forEach(function (fk) { _mi.found[fk] = { url: sm.found[fk], how: 'bowwwl', link: true }; });
   ov.innerHTML = '<div style="padding:30px;text-align:center;color:var(--t3)">Loading\u2026</div>';
   catLoad().then(function (rows) { _mi.rows = rows; _mi.all = miCoverRows(rows); miRender(); });
 }
@@ -3301,9 +3315,12 @@ function miRender() {
   var ov = document.getElementById('mi-ov'); if (!ov || !_mi.all) return;
   var set = miSet(), loading = !set;
   var list = miList(), pages = Math.max(1, Math.ceil(list.length / MI_PAGE)); _mi.page = Math.min(_mi.page, pages - 1);
+  var sm = scanMem(); list.forEach(function (r) { if (sm.miss[miFk(r.key)] && !_mi.found[miFk(r.key)]) r.miss = true; });
   var shown = list.slice(_mi.page * MI_PAGE, _mi.page * MI_PAGE + MI_PAGE);
+  miSrcLoad(shown);
   var seg = function (k, t, on, call) { return '<button onclick="' + call + '(\'' + k + '\')" style="flex:1;padding:8px;border-radius:9px;font-size:13px;font-weight:700;border:1px solid ' + (on ? 'var(--teal)' : 'var(--border1)') + ';background:' + (on ? 'rgba(0,217,217,0.12)' : 'transparent') + ';color:' + (on ? 'var(--teal)' : 'var(--t2)') + '">' + t + '</button>'; };
-  var nFound = shown.filter(function (r) { return _mi.found[miFk(r.key)]; }).length;
+  var nFound = list.filter(function (r) { return _mi.found[miFk(r.key)]; }).length;
+  var todo = list.filter(function (r) { return !_mi.found[miFk(r.key)] && !r.miss && (_mi.slot === 'cover' || r.coreKey); }).length;
   var row = function (r) {
     var f = _mi.found[miFk(r.key)], busy = _mi.busy[miFk(r.key)];
     var pic = f ? '<img src="' + esc(f.url) + '" referrerpolicy="no-referrer" style="width:52px;height:52px;border-radius:' + (_mi.slot === 'core' ? '10px' : '50%') + ';object-fit:contain;background:#fff;flex-shrink:0">' :
@@ -3314,9 +3331,10 @@ function miRender() {
       '<button style="' + BTN_G + 'padding:6px 8px;font-size:12px" onclick="catImagesPaste(\'' + r.key + '\')">Paste</button>' +
       '<button style="' + BTN_G + 'padding:6px 8px;font-size:12px" onclick="catImagesPhoto(\'' + r.key + '\')">Photo</button>';
     var sub = esc(r.brand || '') + (r.sub ? ' \u00b7 ' + esc(r.sub) : r.year ? ' \u00b7 ' + esc(r.year) : '');
+    var fl = f ? '' : miFindLinks(r);
     return '<div style="display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--border1)">' + pic +
       '<div style="flex:1;min-width:0"><div style="font-size:14px;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(r.name) + (_mi.slot === 'core' && _mi.tab === 'cat' ? ' core' : '') + '</div>' +
-      '<div style="font-size:11px;color:var(--t3)">' + sub + (r.miss ? ' \u00b7 <span style="color:var(--gold)">not on bowwwl under this name</span>' : f ? ' \u00b7 <span style="color:var(--teal)">' + esc(f.how) + '</span>' : '') + '</div></div>' +
+      '<div style="font-size:11px;color:var(--t3)">' + sub + (r.miss ? ' \u00b7 <span style="color:var(--gold)">not on bowwwl under this name</span>' : f ? ' \u00b7 <span style="color:var(--teal)">' + esc(f.how) + '</span>' : '') + '</div>' + fl + '</div>' +
       '<div style="display:flex;gap:4px;flex-shrink:0">' + acts + '</div></div>';
   };
   var hint = _mi.slot === 'core' ? 'Core pictures are kept per core: one picture covers every ball with that core, yours and the catalog\u2019s.' : '';
@@ -3329,15 +3347,64 @@ function miRender() {
     '<div style="flex:1;overflow-y:auto;padding:0 16px 10px">' + (loading ? '<div style="padding:30px 0;text-align:center;color:var(--t3);font-size:13px">Reading core names from the catalog\u2026</div>' : shown.length ? shown.map(row).join('') :
       '<div style="padding:30px 0;text-align:center;color:var(--t2);font-size:13px">' + (_mi.q ? 'No match.' : 'Nothing missing here.') + '</div>') +
     (hint ? '<div style="font-size:11px;color:var(--t3);line-height:1.5;margin-top:10px">' + hint + '</div>' : '') +
-    '<div style="font-size:11px;color:var(--t3);line-height:1.5;margin-top:8px"><b>Paste</b>: in Safari long-press the picture and tap Copy. <b>Photo</b>: a picture saved to Photos or Files. <b>bowwwl</b> looks for bowwwl\u2019s picture; it asks bowwwl only when you tap.</div>' +
+    '<div style="font-size:11px;color:var(--t3);line-height:1.5;margin-top:8px"><b>Find</b> opens the ball on bowwwl, the maker\u2019s site or a web image search; long-press the picture there, tap Copy, come back and tap <b>Paste</b>. <b>Photo</b>: a picture saved to Photos or Files. <b>bowwwl</b> / <b>Check bowwwl for all</b> look for bowwwl\u2019s picture files; only when you tap.</div>' +
     '<div style="display:flex;gap:6px;margin-top:12px"><button style="' + BTN_G + 'flex:1;padding:9px;font-size:12px" onclick="catImagesExport()">Save pictures to a file</button>' +
       '<button style="' + BTN_G + 'flex:1;padding:9px;font-size:12px" onclick="catImagesImport()">Restore from a file</button></div></div>' +
     '<div style="padding:10px 16px;border-top:1px solid var(--border1);display:flex;flex-direction:column;gap:8px">' +
-      '<div style="display:flex;gap:6px">' + (shown.length ? '<button style="' + BTN_G + 'flex:1;padding:10px;font-size:13px" onclick="catImagesTryPage()">Try bowwwl for these ' + shown.length + '</button>' : '') +
+      (_mi.scan ? '<div style="font-size:12px;color:var(--t2)">Checking bowwwl: ' + _mi.scan.done + ' of ' + _mi.scan.total + ' \u00b7 found ' + _mi.scan.found +
+        '<div style="height:5px;border-radius:3px;background:var(--bg3);margin-top:5px"><div style="height:5px;border-radius:3px;background:var(--teal);width:' + Math.round(100 * _mi.scan.done / Math.max(1, _mi.scan.total)) + '%"></div></div></div>' : '') +
+      '<div style="display:flex;gap:6px">' + (_mi.scan ? '<button style="' + BTN_G + 'flex:1;padding:10px;font-size:13px" onclick="catImagesScanStop()">Stop</button>' :
+        todo ? '<button style="' + BTN_G + 'flex:1;padding:10px;font-size:13px" onclick="catImagesScanAll()">Check bowwwl for all ' + todo + '</button>' : '') +
       (nFound ? '<button style="' + BTN_P + 'flex:1;padding:10px;font-size:13px" onclick="catImagesUseAll()">Use all found (' + nFound + ')</button>' : '') + '</div>' +
       '<div style="display:flex;gap:8px;align-items:center"><button style="' + BTN_G + 'flex:1;padding:9px" ' + (_mi.page > 0 ? '' : 'disabled ') + 'onclick="catImagesPage(-1)">\u2039 Prev</button>' +
       '<span style="font-size:12px;color:var(--t2);min-width:70px;text-align:center">' + (_mi.page + 1) + ' of ' + pages + '</span>' +
       '<button style="' + BTN_G + 'flex:1;padding:9px" ' + (_mi.page < pages - 1 ? '' : 'disabled ') + 'onclick="catImagesPage(1)">Next \u203a</button></div></div>';
+}
+/* v30.182: check bowwwl for every ball in the list (not just the page): two at a time with a
+   short pause, stoppable; finds and misses are remembered (bdbimg_scan) so nothing is asked twice. */
+function catImagesScanAll() {
+  if (_mi.scan) return Promise.resolve();
+  var list = miList().filter(function (r) { return !_mi.found[miFk(r.key)] && !r.miss && (_mi.slot === 'cover' || r.coreKey); });
+  if (!list.length) return Promise.resolve();
+  var mins = Math.max(1, Math.round(list.length * 1.2 / 60));
+  if (root.confirm && !root.confirm('Check bowwwl for ' + list.length + ' picture' + (list.length === 1 ? '' : 's') + '? About ' + mins + ' min; keep the app open. You can stop any time, and what is found is kept for review.')) return Promise.resolve();
+  var scan = _mi.scan = { total: list.length, done: 0, found: 0, stop: false }, i = 0, last = 0;
+  var tick = function () { var t = env.now(); if (t - last > 700) { last = t; miRender(); } };
+  var worker = function () {
+    if (scan.stop || i >= list.length) return Promise.resolve();
+    var r = list[i++];
+    return catImagesTry(r.key).then(function (u) { scan.done++; if (u) scan.found++; tick(); })
+      .then(function () { return new Promise(function (res) { setTimeout(res, 200); }); }).then(worker);
+  };
+  return Promise.all([worker(), worker()]).then(function () {
+    _mi.scan = null; miRender();
+    if (root.toast) root.toast((scan.stop ? 'Stopped: ' : 'Done: ') + scan.found + ' found of ' + scan.done + ' checked');
+  });
+}
+function catImagesScanStop() { if (_mi.scan) _mi.scan.stop = true; }
+/* Find links: the ball on bowwwl, the maker's page (or a maker-site search), a web image search. */
+var MAKER_SITE = { storm: 'stormbowling.com', 'roto-grip': 'rotogrip.com', '900-global': '900global.com', brunswick: 'brunswickbowling.com', dv8: 'dv8bowling.com',
+  radical: 'radicalbowling.com', hammer: 'hammerbowling.com', ebonite: 'ebonite.com', track: 'trackbowling.com', columbia: 'columbia300.com', 'columbia-300': 'columbia300.com',
+  motiv: 'motivbowling.com', swag: 'swagbowling.com', 'lord-field': 'lordfield.com', 'global-900': '900global.com' };
+function miFindLinks(r) {
+  var isCore = _mi.slot === 'core', ballName = r.ballName || r.name;
+  var bw = bowwwlLinks(r.brand || '', isCore && _mi.tab === 'cat' ? (r.firstBall || '') : ballName);
+  var q = (r.brand || '') + ' ' + (isCore ? (r.coreName || (_mi.tab === 'cat' ? r.name : '')) + ' core' : ballName) + ' bowling ball';
+  var site = MAKER_SITE[brandSlug(r.brand)];
+  var maker = r.src || (site ? 'https://www.google.com/search?q=' + encodeURIComponent('site:' + site + ' ' + (isCore ? (r.coreName || r.name) + ' core' : ballName)) : null);
+  var a = function (u, t) { return '<a href="' + esc(u) + '" target="_blank" rel="noopener noreferrer" style="color:var(--teal);text-decoration:none">' + t + '</a>'; };
+  return '<div style="font-size:11px;margin-top:2px;color:var(--t3)">Find: ' + ((!isCore || _mi.tab === 'mine' || r.firstBall) ? a(bw.page, 'bowwwl \u2197') + ' \u00b7 ' : '') +
+    (maker ? a(maker, 'maker \u2197') + ' \u00b7 ' : '') + a('https://www.google.com/search?tbm=isch&q=' + encodeURIComponent(q), 'web \u2197') + '</div>';
+}
+/* Loads the maker page address (catalog Source) and, for catalog cores, a ball name, for the rows on screen. */
+function miSrcLoad(rows) {
+  var need = rows.filter(function (r) { return !r.srcTried; }); if (!need.length || !_mi.rows) return;
+  need.forEach(function (r) { r.srcTried = true; });
+  Promise.all(need.map(function (r) {
+    var id = r.catId || (r.balls && r.balls[0]); var e = id ? byIdIn(_mi.rows, id) : null; if (!e) return null;
+    if (r.balls && !r.firstBall) r.firstBall = cleanName(e.n);
+    return catDetailRaw(e).then(function (d) { if (d && /^https:\/\//.test(d.Source || '')) r.src = d.Source; }, function () {});
+  })).then(function () { if (!_mi.scan) miRender(); });
 }
 function miByKey(k) { var set = miSet(); if (!set) return null; var l = set.mine.concat(set.cat); for (var i = 0; i < l.length; i++) if (l[i].key === k) return l[i]; return null; }
 function catImagesTab(k) { _mi.tab = k; _mi.page = 0; miRender(); }
@@ -3352,7 +3419,8 @@ function catImagesTry(k) {
   return next(0).then(function (u) {
     delete _mi.busy[fk];
     if (u) { _mi.found[fk] = { url: u, how: 'bowwwl', link: true }; delete r.miss; } else r.miss = true;
-    miRender(); return u;
+    scanNote(fk, u || null);
+    if (!_mi.scan) miRender(); return u;
   });
 }
 function catImagesTryPage() {
@@ -3382,7 +3450,7 @@ function catImagesPhoto(k) {
   });
   document.body.appendChild(inp); inp.click();
 }
-function catImagesDrop(k) { delete _mi.found[miFk(k)]; miRender(); }
+function catImagesDrop(k) { delete _mi.found[miFk(k)]; scanNote(miFk(k), undefined); miRender(); }
 /* Puts a picture on one of your balls (cover or core slot) unless it already has one there (or force). */
 function miOwnSet(b, slot, f, force) {
   if (!force && ownPic(b, slot)) return Promise.resolve();
@@ -3414,11 +3482,11 @@ function miStore(r, f) {
     });
   }
   imgPersist();
-  return Promise.all(jobs).then(function () { if (root.saveDB) root.saveDB(); });
+  return Promise.all(jobs).then(function () { if (!_mi.bulk && root.saveDB) root.saveDB(); });
 }
 function miAfterStore(keys) {
   var set = miSet();
-  keys.forEach(function (k) { delete _mi.found[miFk(k)]; });
+  keys.forEach(function (k) { delete _mi.found[miFk(k)]; scanNote(miFk(k), undefined); });
   if (_mi.slot === 'core') {
     var done = {}; keys.forEach(function (k) { var r = miByKey(k); if (r && r.coreKey) done[r.coreKey] = 1; });
     set.mine = set.mine.filter(function (r) { return keys.indexOf(r.key) < 0 && !(r.coreKey && done[r.coreKey]); });
@@ -3437,8 +3505,9 @@ function catImagesUseAll() {
   var pre = _mi.slot === 'core' ? 'core' : '';
   var ks = Object.keys(_mi.found).filter(function (fk) { return pre ? fk.indexOf('core') === 0 : fk.indexOf('core') !== 0; })
     .map(function (fk) { return fk.slice(pre.length); }).filter(function (k) { return miByKey(k); });
+  _mi.bulk = true;
   return ks.reduce(function (p, k) { return p.then(function () { return miStore(miByKey(k), _mi.found[miFk(k)]); }); }, Promise.resolve())
-    .then(function () { miAfterStore(ks); if (root.toast) root.toast(ks.length + ' picture' + (ks.length === 1 ? '' : 's') + ' saved on this device'); });
+    .then(function () { _mi.bulk = false; if (root.saveDB) root.saveDB(); miAfterStore(ks); if (root.toast) root.toast(ks.length + ' picture' + (ks.length === 1 ? '' : 's') + ' saved on this device'); });
 }
 /* Save / Restore: every stored catalog and core picture (files and links) in one file you keep. */
 function blobToData(b) { return new Promise(function (res) { var r = new FileReader(); r.onload = function () { res(r.result); }; r.onerror = function () { res(null); }; r.readAsDataURL(b); }); }
@@ -4007,7 +4076,7 @@ function catCompareAdd(x) {
 
 root.CATALOG_JS_VERSION = CAT_VERSION;
 root.catPickerMount = catPickerMount;
-root.catApprovalsOpen = catApprovalsOpen; root.catImagesSlot = catImagesSlot; root.catImagesExport = catImagesExport; root.catImagesImport = catImagesImport; root.catCoreImageFor = catCoreImageFor; root.catImagesOpen = catImagesOpen; root.catImagesClose = catImagesClose; root.catImagesTab = catImagesTab; root.catImagesFilter = catImagesFilter; root.catImagesPage = catImagesPage; root.catImagesTry = catImagesTry; root.catImagesTryPage = catImagesTryPage; root.catImagesPaste = catImagesPaste; root.catImagesPhoto = catImagesPhoto; root.catImagesDrop = catImagesDrop; root.catImagesUse = catImagesUse; root.catImagesUseAll = catImagesUseAll; root.catSpApPdf = catSpApPdf; root.catSpBallPdf = catSpBallPdf; root.catPdfHelp = catPdfHelp; root.catShortcutHelp = catShortcutHelp; root.catShortcutCopy = catShortcutCopy; root.catShortcutClose = catShortcutClose; root.catSpAp = catSpAp; root.catSpBall = catSpBall; root.catSpToggle = catSpToggle; root.catSpEdit = catSpEdit; root.catSpClose = catSpClose; root.catSpApply = catSpApply; root.catSpManualGo = catSpManualGo; root.catSpManualClose = catSpManualClose; root.catLookAp = catLookAp; root.catLookBall = catLookBall; root.catLookTab = catLookTab; root.catLookPaste = catLookPaste; root.catLookOk = catLookOk; root.catLookSave = catLookSave; root.catLookClose = catLookClose; root.catPasteOpen = catPasteOpen; root.catPasteClose = catPasteClose; root.catPasteClip = catPasteClip; root.catPasteShow = catPasteShow; root.catFillToggle = catFillToggle; root.catFillClose = catFillClose; root.catFillConfirm = catFillConfirm; root.catPageOpen = catPageOpen; root.catPageClose = catPageClose; root.catPageUseSel = catPageUseSel; root.catPageUseVal = catPageUseVal; root.catPageImg = catPageImg; root.catPickOpen = catPickOpen; root.catPickFilter = catPickFilter; root.catPickChoose = catPickChoose; root.catPickClose = catPickClose; root.catSpecReviewOpen = catSpecReviewOpen; root.catSpecReviewClose = catSpecReviewClose; root.catSpecReviewAct = catSpecReviewAct; root.catSpecReviewBulk = catSpecReviewBulk; root.catSpecReviewPage = catSpecReviewPage; root.catTagPick = catTagPick; root.catTagCancel = catTagCancel; root.catVerifyRefresh = catVerifyRefresh; root.catVerifyDismiss = catVerifyDismiss; root.catVerifyRetry = catVerifyRetry; root.catVerifyOpenApprovals = catVerifyOpenApprovals; root.catVerifyPublish = catVerifyPublish; root.catVerifyApply = catVerifyApply; root.catVerifyTick = vfyTick; root.catVerifyState = vfyActive; root.catApprovalsRetryStaged = catApprovalsRetryStaged; root.apStagedErrText = apStagedErrText; root.catApprovalsClose = catApprovalsClose; root.catApprovalsSaveToken = catApprovalsSaveToken;
+root.catApprovalsOpen = catApprovalsOpen; root.catImagesScanAll = catImagesScanAll; root.catImagesScanStop = catImagesScanStop; root.catImagesSlot = catImagesSlot; root.catImagesExport = catImagesExport; root.catImagesImport = catImagesImport; root.catCoreImageFor = catCoreImageFor; root.catImagesOpen = catImagesOpen; root.catImagesClose = catImagesClose; root.catImagesTab = catImagesTab; root.catImagesFilter = catImagesFilter; root.catImagesPage = catImagesPage; root.catImagesTry = catImagesTry; root.catImagesTryPage = catImagesTryPage; root.catImagesPaste = catImagesPaste; root.catImagesPhoto = catImagesPhoto; root.catImagesDrop = catImagesDrop; root.catImagesUse = catImagesUse; root.catImagesUseAll = catImagesUseAll; root.catSpApPdf = catSpApPdf; root.catSpBallPdf = catSpBallPdf; root.catPdfHelp = catPdfHelp; root.catShortcutHelp = catShortcutHelp; root.catShortcutCopy = catShortcutCopy; root.catShortcutClose = catShortcutClose; root.catSpAp = catSpAp; root.catSpBall = catSpBall; root.catSpToggle = catSpToggle; root.catSpEdit = catSpEdit; root.catSpClose = catSpClose; root.catSpApply = catSpApply; root.catSpManualGo = catSpManualGo; root.catSpManualClose = catSpManualClose; root.catLookAp = catLookAp; root.catLookBall = catLookBall; root.catLookTab = catLookTab; root.catLookPaste = catLookPaste; root.catLookOk = catLookOk; root.catLookSave = catLookSave; root.catLookClose = catLookClose; root.catPasteOpen = catPasteOpen; root.catPasteClose = catPasteClose; root.catPasteClip = catPasteClip; root.catPasteShow = catPasteShow; root.catFillToggle = catFillToggle; root.catFillClose = catFillClose; root.catFillConfirm = catFillConfirm; root.catPageOpen = catPageOpen; root.catPageClose = catPageClose; root.catPageUseSel = catPageUseSel; root.catPageUseVal = catPageUseVal; root.catPageImg = catPageImg; root.catPickOpen = catPickOpen; root.catPickFilter = catPickFilter; root.catPickChoose = catPickChoose; root.catPickClose = catPickClose; root.catSpecReviewOpen = catSpecReviewOpen; root.catSpecReviewClose = catSpecReviewClose; root.catSpecReviewAct = catSpecReviewAct; root.catSpecReviewBulk = catSpecReviewBulk; root.catSpecReviewPage = catSpecReviewPage; root.catTagPick = catTagPick; root.catTagCancel = catTagCancel; root.catVerifyRefresh = catVerifyRefresh; root.catVerifyDismiss = catVerifyDismiss; root.catVerifyRetry = catVerifyRetry; root.catVerifyOpenApprovals = catVerifyOpenApprovals; root.catVerifyPublish = catVerifyPublish; root.catVerifyApply = catVerifyApply; root.catVerifyTick = vfyTick; root.catVerifyState = vfyActive; root.catApprovalsRetryStaged = catApprovalsRetryStaged; root.apStagedErrText = apStagedErrText; root.catApprovalsClose = catApprovalsClose; root.catApprovalsSaveToken = catApprovalsSaveToken;
 root.catApprovalsForgetToken = catApprovalsForgetToken; root.catApprovalsChangeToken = catApprovalsChangeToken; root.catApprovalsPage = catApprovalsPage; root.catApprovalsFilter = catApprovalsFilter;
 root.catApprovalsTick = catApprovalsTick; root.catApprovalsEdit = catApprovalsEdit; root.catApprovalsEditClose = catApprovalsEditClose; root.catApprovalsEditSave = catApprovalsEditSave; root.catAddSpecsOnly = catAddSpecsOnly; root.catVerifyNow = catVerifyNow; root.catImagesSet = catImagesSet;
 root.catImagesRefresh = catImagesRefresh; root.catImagesStatus = catImagesStatus; root.catImageFor = catImageFor; root.catApprovalsSend = catApprovalsSend; root.catApprovalsPublish = catApprovalsPublish; root.catPickerSearch = catPickerSearch;
