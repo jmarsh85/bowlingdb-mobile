@@ -175,5 +175,16 @@
   },
   "source": "other",
   "at": "2026-10-11"
+ },
+ "roto-grip-hustle-vp-vanilla-popsicle": {
+  "coverType": "Pearl Reactive",
+  "weights": {
+   "15": {
+    "RG": 2.532,
+    "Diff": 0.03
+   }
+  },
+  "source": "other",
+  "at": "2026-10-11"
  }
 }
