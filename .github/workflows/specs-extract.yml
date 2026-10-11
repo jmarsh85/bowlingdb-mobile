@@ -1,4 +1,5 @@
 name: specs-extract
+run-name: specs-extract ${{ inputs.only || 'all' }}${{ inputs.pages != '' && ' pages' || '' }}
 # Spec bridge stages 1-5: discover -> extract -> match -> verify -> decide.
 # STAGING ONLY: writes staging/ to the `specs` branch. Never touches main or dist.
 # A site that returns nothing keeps its rows from the previous run (--previous).
@@ -14,6 +15,9 @@ on:
       since:
         description: 'Year for the "recent" coverage columns'
         default: '2023'
+      pages:
+        description: 'Only these page URLs (comma-separated; needs only=). Verify now uses this.'
+        default: ''
 permissions:
   contents: write
   issues: write
@@ -35,11 +39,13 @@ jobs:
           node bridge/extract_test.js
           node bridge/approvals_test.js
       - name: Extract
+        env:
+          PAGES: ${{ inputs.pages }}
         run: |
           ARGS="--index published/index.json --out out --since ${{ inputs.since }} --limit ${{ inputs.limit }}"
           if [ -f specs/staging/specs_staging.json ]; then ARGS="$ARGS --previous specs/staging/specs_staging.json"; fi
           if [ -n "${{ inputs.only }}" ]; then ARGS="$ARGS --only ${{ inputs.only }}"; fi
-          node bridge/extract.js $ARGS
+          if [ -n "$PAGES" ]; then node bridge/extract.js $ARGS --pages "$PAGES"; else node bridge/extract.js $ARGS; fi
           cat out/SUMMARY.md >> "$GITHUB_STEP_SUMMARY"
       - name: Commit to specs branch
         working-directory: specs
