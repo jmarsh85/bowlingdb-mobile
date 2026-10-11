@@ -16,7 +16,7 @@
    node bridge/extract.js --index published/index.json --out staging [--only storm] [--limit 20]
 */
 'use strict';
-const fs = require('fs'), path = require('path');
+const fs = require('fs'), path = require('path'), crypto = require('crypto');
 const { parseRobots, allowed, parseSitemap } = require('./probe.js');
 
 /* ---------- normalizer (same as catalog/normalize.js modelKey path) ---------- */
@@ -139,6 +139,39 @@ function specBlock(...texts) {
   }
   return out.join('\n') || null;
 }
+
+/* v30.173 CAT-NEW-6: page snapshot for the app's Page view (select text, pick an image).
+   Short lines only (<= SNAP_LINE_MAX): spec tables, labels and lists stay, long
+   marketing paragraphs are dropped, keeping to "facts only". Image links are the
+   page's own product images (no icons/logos), kept private like imageUrl.
+   Written to staging/pages/<key>.json, never published. */
+const SNAP_TEXT_CAP = 12000, SNAP_LINE_MAX = 200, SNAP_IMG_MAX = 24;
+const IMG_JUNK = /logo|icon|sprite|badge|flag|payment|placeholder|loader|spinner|favicon|social|banner|swatch|\.svg/i;
+function absUrl(u, base) { try { return new URL(String(u).trim().replace(/^\/\//, 'https://'), base).href; } catch (e) { return null; } }
+function pageImages(html, base, extra) {
+  const out = [], seen = new Set();
+  const add = u => { const a = u && absUrl(decode(u), base); if (!a || !/^https:/.test(a) || IMG_JUNK.test(a) || !/\.(jpe?g|png|webp)(\?|$)/i.test(a)) return;
+    const k = a.replace(/\?.*$/, '').replace(/_(\d+x\d*|\d*x\d+)(?=\.)/, ''); if (seen.has(k) || out.length >= SNAP_IMG_MAX) return; seen.add(k); out.push(a); };
+  (extra || []).forEach(add);
+  add(metaContent(html, 'og:image'));
+  for (const m of String(html || '').matchAll(/<img\b[^>]*>/gi)) {
+    const t = m[0], ss = /\bsrcset=["']([^"']+)["']/i.exec(t);
+    if (ss) { const c = ss[1].split(',').map(x => x.trim().split(/\s+/)[0]).filter(Boolean); add(c[c.length - 1]); }
+    else add((/\b(?:data-src|src)=["']([^"']+)["']/i.exec(t) || [])[1]);
+  }
+  return out;
+}
+function pageSnap(html, url, title, extraImgs) {
+  const lines = [], seen = new Set(); let n = 0;
+  for (const raw of htmlToText(html).split('\n')) {
+    const l = raw.trim(); if (!l || l.length > SNAP_LINE_MAX) continue;
+    const k = l.toLowerCase(); if (seen.has(k)) continue; seen.add(k);
+    if (n + l.length + 1 > SNAP_TEXT_CAP) break;
+    lines.push(l); n += l.length + 1;
+  }
+  return { url, title: title || null, lines, images: pageImages(html, url, extraImgs) };
+}
+function pageKey(url) { return crypto.createHash('sha1').update(String(url)).digest('hex').slice(0, 16); }
 
 /* ---------- platform parsers: html -> [{title, brand, url, specs, mfgScales, imageUrl}] ---------- */
 /* v30.168 (2026-10-10): core type was never read for craft or Shopify pages.
@@ -465,6 +498,30 @@ async function extractSource(src, cfg, fetchImpl, limit, log, ctx) {
   const get = async u => { const r = await get0(u); if (!firstPage && r.status === 200 && !/robots\.txt|sitemap/i.test(u)) firstPage = { url: u, text: r.text }; return r; };
   const rb = await get(src.base + '/robots.txt'); const robots = rb.status === 200 ? parseRobots(rb.text) : parseRobots('');
   const host = new URL(src.base).host.replace(/^www\./, '');
+  /* v30.173 single-page mode (Verify now): re-read only these pages of this source */
+  if (ctx && ctx.pages && ctx.pages.length) {
+    let pages = 0;
+    for (const u of ctx.pages) {
+      if (!allowed(robots, u)) { errors.push(u + ' disallowed'); continue; }
+      const prev = (ctx.prevByUrl && ctx.prevByUrl[u]) || {};
+      try {
+        if (plat === 'shopify') {
+          const r = await get(u + '.json'); pages++;
+          if (r.status !== 200) { errors.push(u + '.json ' + r.status); continue; }
+          const p = JSON.parse(r.text).product || {};
+          recs.push(...parseShopifyBody(p.body_html || '', p.title, u, SITE_BRAND[src.id], (p.image && p.image.src) || null).map(x => Object.assign(x,
+            { status: prev.status || statusFromUrl(u), snap: pageSnap(p.body_html || '', u, p.title, (p.images || []).map(i => i && i.src)) })));
+        } else {
+          const r = await get(u); pages++;
+          if (r.status !== 200) { errors.push(u + ' ' + r.status); continue; }
+          const items = plat === 'storm' ? parseStormProduct(r.text, u, prev.brand || 'Storm') : plat === 'craft' ? parseCraft(r.text, u, SITE_BRAND[src.id]) : parseMotiv(r.text, u);
+          recs.push(...items.map(x => Object.assign(x, { title: x.title || prev.title || null, status: prev.status || statusFromUrl(u), snap: pageSnap(r.text, u, x.title || prev.title) })));
+        }
+      } catch (e) { errors.push(u + ' ' + (e.message || e)); }
+    }
+    log(src.id + ': single-page mode, ' + pages + ' of ' + ctx.pages.length + ' pages read');
+    return { recs, errors, pages, firstPage };
+  }
   if (plat === 'storm') {
     let pagesSeen = 0;
     for (let p = 1; p <= 30; p++) {
@@ -486,6 +543,7 @@ async function extractSource(src, cfg, fetchImpl, limit, log, ctx) {
       const r = await get(rec.url); pagesSeen++;
       if (r.status !== 200) continue;
       const pr = parseStormProduct(r.text, rec.url, rec.brand)[0];
+      rec.snap = pageSnap(r.text, rec.url, rec.title);
       if (pr && mergeProduct(rec, pr)) filled++;
     }
     log(src.id + ': product pages read for weights ' + filled);
@@ -500,7 +558,7 @@ async function extractSource(src, cfg, fetchImpl, limit, log, ctx) {
         const r = await get(u); tried++; pagesSeen++;
         if (r.status !== 200) continue;            // retired page gone: expected, not an error
         const items = parseStormProduct(r.text, u, c.brand).filter(x => Object.keys(x.specs.weights).length);
-        items.forEach(x => { x.status = 'retired'; });   // reached only via an unlisted product page
+        items.forEach(x => { x.status = 'retired'; x.snap = pageSnap(r.text, u, x.title); });   // reached only via an unlisted product page
         if (items.length) { recs.push(...items); hit++; }
         if (limit && tried >= limit) break;
       }
@@ -523,11 +581,12 @@ async function extractSource(src, cfg, fetchImpl, limit, log, ctx) {
         if (r.status !== 200) { errors.push(u + '.json ' + r.status); continue; }
         const p = JSON.parse(r.text).product || {};
         const img = (p.image && p.image.src) || null;
-        recs.push(...parseShopifyBody(p.body_html || '', p.title, u, SITE_BRAND[src.id], img));
+        recs.push(...parseShopifyBody(p.body_html || '', p.title, u, SITE_BRAND[src.id], img).map(x => Object.assign(x,
+          { snap: pageSnap(p.body_html || '', u, p.title, (p.images || []).map(i => i && i.src)) })));
       } else {
         const r = await get(u); pages++;
         if (r.status !== 200) { errors.push(u + ' ' + r.status); continue; }
-        recs.push(...(plat === 'craft' ? parseCraft(r.text, u, SITE_BRAND[src.id]) : parseMotiv(r.text, u)).map(x => Object.assign(x, { status: x.status || statusFromUrl(u) })));
+        recs.push(...(plat === 'craft' ? parseCraft(r.text, u, SITE_BRAND[src.id]) : parseMotiv(r.text, u)).map(x => Object.assign(x, { status: x.status || statusFromUrl(u), snap: pageSnap(r.text, u, x.title) })));
       }
     } catch (e) { errors.push(u + ' ' + (e.message || e)); }
   }
@@ -540,13 +599,17 @@ async function main(argv, fetchImpl, log = s => process.stdout.write(s + '\n')) 
   const cfg = JSON.parse(fs.readFileSync(arg('sources') || path.join(__dirname, 'sources.json'), 'utf8'));
   const rows = JSON.parse(fs.readFileSync(arg('index'), 'utf8'));
   const out = arg('out') || 'staging', only = arg('only'), limit = +(arg('limit') || 0), since = +(arg('since') || 2023);
+  const pageList = String(arg('pages') || '').split(',').map(x => x.trim()).filter(x => /^https?:\/\//.test(x));
+  if (pageList.length && !only) throw new Error('--pages needs --only <source>');
+  const prevPath0 = arg('previous'), prev0 = prevPath0 && fs.existsSync(prevPath0) ? JSON.parse(fs.readFileSync(prevPath0, 'utf8')) : [];
+  const prevByUrl = {}; prev0.forEach(r => { if (r.url && !prevByUrl[r.url]) prevByUrl[r.url] = r; });
   fs.mkdirSync(out, { recursive: true });
   const byBrand = indexByBrand(rows);
   const idName = {}; rows.forEach(r => { idName[r.i] = r.n; });
   const sources = cfg.sources.filter(s => s.kind === 'manufacturer' && PLATFORM[s.id] && (!only || s.id === only));
   const stormSince = +(arg('storm-since') || 2000);
-  const runs = await Promise.all(sources.map(s => extractSource(s, cfg, fetchImpl, limit, log, { rows, stormSince }).catch(e => ({ recs: [], errors: [String(e)], pages: 0 }))));
-  const fetched = new Date().toISOString().slice(0, 10), staged = [], perSource = {};
+  const runs = await Promise.all(sources.map(s => extractSource(s, cfg, fetchImpl, limit, log, { rows, stormSince, pages: pageList, prevByUrl }).catch(e => ({ recs: [], errors: [String(e)], pages: 0 }))));
+  const fetched = new Date().toISOString().slice(0, 10), staged = [], perSource = {}, snaps = {};
   sources.forEach((s, i) => {
     const r = runs[i]; let parsed = 0;
     for (const rec of r.recs) {
@@ -554,7 +617,9 @@ async function main(argv, fetchImpl, log = s => process.stdout.write(s + '\n')) 
       if (!hasSpecs) continue;             // not a ball page (bags, shoes, accessories)
       parsed++;
       const flags = verify(rec), m = matchRec(rec, byBrand), d = decide(rec, m, flags);
-      const base = { source: s.id, platform: PLATFORM[s.id], brand: canonBrand(rec.brand), title: rec.title, url: rec.url, sku: rec.sku || null,
+      let page = null;
+      if (rec.snap && rec.url && (rec.snap.lines.length || rec.snap.images.length)) { page = pageKey(rec.url); snaps[page] = rec.snap; }
+      const base = { source: s.id, platform: PLATFORM[s.id], brand: canonBrand(rec.brand), title: rec.title, url: rec.url, sku: rec.sku || null, page,
         flags, specs: rec.specs, mfgScales: rec.mfgScales, imageUrl: rec.imageUrl, rawText: rec.rawText || null, fetched, method: 'parser', status: rec.status || 'unknown' };
       const gatesOk = !flags.some(f => f === 'no-weight-specs' || f.startsWith('out-of-range'));
       const at = autoTargets(rec, m, idName);
@@ -577,9 +642,17 @@ async function main(argv, fetchImpl, log = s => process.stdout.write(s + '\n')) 
   });
   const prevPath = arg('previous');
   if (prevPath && fs.existsSync(prevPath)) {
-    const prev = JSON.parse(fs.readFileSync(prevPath, 'utf8'));
+    const prev = prev0;
+    if (pageList.length) {
+      /* single-page mode: this source keeps every row except the pages just re-read */
+      const redone = new Set(staged.map(r => r.url));
+      for (const s of sources) {
+        const kept = prev.filter(r => r.source === s.id && !redone.has(r.url));
+        staged.push(...kept); perSource[s.id].carriedOver = kept.length;
+      }
+    }
     for (const s of sources) {
-      if (perSource[s.id].parsed > 0) continue;
+      if (pageList.length || perSource[s.id].parsed > 0) continue;
       const kept = prev.filter(r => r.source === s.id);
       if (kept.length) { staged.push(...kept); perSource[s.id].carriedOver = kept.length;
         log(s.id + ': returned nothing, kept ' + kept.length + ' rows from the previous run'); }
@@ -587,6 +660,14 @@ async function main(argv, fetchImpl, log = s => process.stdout.write(s + '\n')) 
     /* --only runs: every other source keeps its previous rows, so a partial run never shrinks staging */
     const ran = new Set(sources.map(s => s.id));
     staged.push(...prev.filter(r => !ran.has(r.source)));
+  }
+  /* page snapshots: new ones from this run, plus the previous file for every carried-over row */
+  fs.mkdirSync(path.join(out, 'pages'), { recursive: true });
+  for (const k in snaps) fs.writeFileSync(path.join(out, 'pages', k + '.json'), JSON.stringify(snaps[k]));
+  const prevPages = prevPath && path.join(path.dirname(prevPath), 'pages');
+  for (const r of staged) if (r.page && !snaps[r.page]) {
+    const f = prevPages && path.join(prevPages, r.page + '.json');
+    if (f && fs.existsSync(f)) fs.copyFileSync(f, path.join(out, 'pages', r.page + '.json')); else r.page = null;
   }
   resolveConflicts(staged);
   staged.sort((a, b) => (a.brand + a.title).localeCompare(b.brand + b.title));
@@ -618,6 +699,6 @@ async function main(argv, fetchImpl, log = s => process.stdout.write(s + '\n')) 
   return { staged, coverage: cov, perSource };
 }
 
-module.exports = { specBlock, RAW_CAP, statusFromUrl, statedCoreType, mergeProduct, colourOnly, extraWords, autoTargets, close, parseStormProduct, stormSlug, learnStormPrefixes, stormCandidates, htmlToText, weightTable, kvLines, parseDate, parseCraft, parseShopifyBody, parseMotiv, parseStormListing,
+module.exports = { specBlock, RAW_CAP, pageSnap, pageImages, pageKey, statusFromUrl, statedCoreType, mergeProduct, colourOnly, extraWords, autoTargets, close, parseStormProduct, stormSlug, learnStormPrefixes, stormCandidates, htmlToText, weightTable, kvLines, parseDate, parseCraft, parseShopifyBody, parseMotiv, parseStormListing,
   verify, matchRec, decide, resolveConflicts, coverage, indexByBrand, titleKey, norm, main };
 if (require.main === module) main(process.argv.slice(2), globalThis.fetch).catch(e => { console.error(e); process.exit(1); });
