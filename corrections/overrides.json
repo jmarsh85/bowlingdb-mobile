@@ -162,5 +162,18 @@
   "coverType": "Pearl Reactive",
   "source": "maker",
   "at": "2026-10-10"
+ },
+ "roto-grip-hustle-glow-mint-fuchsia-lemon": {
+  "coverName": "VTC Pearl Reactive",
+  "coverType": "Pearl Reactive",
+  "released": "2025-05",
+  "weights": {
+   "15": {
+    "RG": 2.53,
+    "Diff": 0.03
+   }
+  },
+  "source": "other",
+  "at": "2026-10-11"
  }
 }
