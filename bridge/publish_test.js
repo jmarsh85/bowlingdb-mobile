@@ -49,4 +49,9 @@ ok(c.USBC.ApprovedDate === '2025-08-01' && c.DateReleased !== c.USBC.ApprovedDat
 { const v = B.vocabOf(B.build(rows, P.publish([rec({}), rec({ catalogId: 'brunswick-zebra', url: 'z', specs: Object.assign({}, rec({}).specs, { core: 'RAMPART ' }) })]).specs, 'x').entries);
   ok(v.core.length === 1 && v.core[0].n === 2 && v.core[0].b.join() === 'Brunswick', 'vocab: one core, used twice, case/space folded: ' + JSON.stringify(v.core));
   ok(v.coverName[0].v === 'Alpha Premier Pearl' && v.coverType[0].v === 'Pearl Reactive' && v.finish.length === 1, 'vocab: cover name/type/finish'); }
+{ const bad = rec({ specs: Object.assign({}, rec({}).specs, { coverName: 'Traditionally, the term hybrid has been used', core: 'Firmly ensconced at the center' }) });
+  const r1 = P.publish([bad]).specs['brunswick-combat'];
+  ok(r1 && r1.Cover.Name === null && r1.Core.Name === null && Object.keys(r1.SpecsByWeight).length, 'old staged prose not published, numbers are');
+  const r2 = P.publish([bad], [], { 'brunswick-combat': { coverName: 'Rogue Pearl', source: 'maker' } }).specs['brunswick-combat'];
+  ok(r2.Cover.Name === 'Rogue Pearl', 'your correction still wins'); }
 console.log('publish_test: ' + n + ' checks passed');
