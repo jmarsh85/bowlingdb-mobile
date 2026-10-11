@@ -300,5 +300,11 @@ X.resolveConflicts(same); ok(same[0].decision === 'auto' && same[1].decision ===
   const stgR = JSON.parse(fs.readFileSync(path.join(tmp, 'st', 'specs_staging.json'), 'utf8'));
   ok(stgR.length && stgR.every(r => r.rawText == null || (typeof r.rawText === 'string' && r.rawText.length <= X.RAW_CAP)) && stgR.some(r => /RG|Diff/i.test(r.rawText || '')), 'staged rows carry rawText');
   ok(!stgR.some(r => /Unbeatable/.test(r.rawText || '')), 'rawText has no marketing copy');
+  /* v30.174: page prose under a spec heading is never a value */
+  ok(X.plausibleText('coverName', 'Traditionally, the term "hybrid" has been used') === null && X.plausibleText('core', 'Firmly ensconced at the center of the ball') === null, 'prose rejected');
+  ok(X.plausibleText('coverName', 'R2S Pearl Reactive') && X.plausibleText('finish', '500, 1000, 2000 Abralon') && X.plausibleText('core', 'Atomic Asymmetric') && X.plausibleText('finish', '4000-grit Abralon'), 'real names kept');
+  const sp = X.parseStormProduct('<h1>INFINITE PHYSIX</h1><p>Coverstock: Traditionally, the term hybrid has been used to describe</p><p>Weight Block: Firmly ensconced at the center of the ball is the Atomic</p><p>15 lbs RG 2.48 Diff 0.053</p>', 'https://s/ip', 'Storm')[0];
+  const dr = X.cleanTextFields(sp.specs);
+  ok(sp.specs.coverName === null && sp.specs.core === null && dr.join() === 'core,coverName' && sp.specs.weights[15].RG === 2.48, 'storm prose dropped, numbers kept: ' + dr);
   console.log('extract_test: ' + n + ' checks passed');
 })().catch(e => { console.error('FAIL', e.message); process.exit(1); });
