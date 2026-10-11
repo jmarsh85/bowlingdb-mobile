@@ -36,7 +36,7 @@
 'use strict';
 
 /* v30.169: shown in the app header when it differs from the build's EXPECTED_CATALOG_JS */
-var CAT_VERSION  = 'v30.183';
+var CAT_VERSION  = 'v30.184';
 var CAT_BASE     = 'https://raw.githubusercontent.com/jmarsh85/bowlingdb-mobile/dist/';
 var CAT_DB       = 'BowlingDB_Catalog';
 var CAT_DB_VER   = 1;
@@ -1231,7 +1231,7 @@ function ballFromSpecs(s) {
 /* v30.181: the core picture (kept on this device) beside the ball, when there is one */
 function sheetCoreHTML(e) {
   var d = _sheet && _sheet.loaded ? _sheet.detail : null, nm = d && d.Core && d.Core.Name;
-  var u = nm ? catCoreImageFor(e.m, nm) : null;
+  var u = (nm ? catCoreImageFor(e.m, nm) : null) || _catImgObj['core:id-' + e.i] || coreLinks()['id-' + e.i] || null;
   return u ? '<img src="' + esc(u) + '" alt="core" referrerpolicy="no-referrer" onerror="this.style.display=\'none\'" style="width:110px;height:110px;border-radius:14px;object-fit:contain;background:#fff">' : '';
 }
 function sheetHTML(e, rows) {
@@ -3258,7 +3258,7 @@ function ownPic(b, slot) { try { return typeof root.getBallImgSrc === 'function'
 function miCoverRows(rows) {
   var mine = appBalls().filter(function (b) { return !b.Archived && b.BallID != null && !ownPic(b, 'cover'); })
     .map(function (b) { var e = b.CatalogID ? byIdIn(rows, b.CatalogID) : null;
-      return { key: 'b' + b.BallID, ballId: b.BallID, catId: b.CatalogID || null, brand: e ? e.m : b.MFG, name: e ? cleanName(e.n) : b.BallName, year: e ? e.y : '' }; });
+      return { key: 'b' + b.BallID, ballId: b.BallID, catId: b.CatalogID || null, brand: e ? e.m : b.MFG, name: e ? cleanName(e.n) : b.BallName, year: e ? e.y : '', coreName: b.CoreShort || null }; });
   var cat = (rows || []).filter(function (e) { return e.s && !catImageFor(e.i); })
     .sort(function (a, b) { return String(b.y || '').localeCompare(String(a.y || '')) || String(a.m).localeCompare(String(b.m)); })
     .map(function (e) { return { key: 'c' + e.i, ballId: null, catId: e.i, brand: e.m, name: cleanName(e.n), year: e.y }; });
@@ -3290,6 +3290,28 @@ function miCoreRows(rows) {
 }
 function miSet() { return _mi.slot === 'core' ? _mi.coreAll : _mi.all; }
 function miFk(k) { return (_mi.slot === 'core' ? 'core' : '') + k; }
+/* v30.184: in Cover mode a row also carries its core picture ("ball" / "core" parts). */
+function fkFor(k, part) { return part === 'core' && _mi.slot === 'cover' ? 'rc' + k : miFk(k); }
+function rowCoreKey(r) { return r.coreKey || (r.coreName && plausibleText('core', r.coreName) ? coreKeyOf(r.brand, r.coreName) : null); }
+function coreRowOf(r) {
+  var k = rowCoreKey(r) || 'id-' + (r.catId || ('b' + r.ballId));
+  return { coreKey: k, ballId: r.ballId, catId: r.catId, balls: r.catId ? [r.catId] : null };
+}
+/* core name + whether a core picture is already kept, for a Cover row (loads its catalog detail once) */
+function miEnsureCore(r) {
+  if (r.coreTried) return Promise.resolve(r);
+  var e = r.catId && _mi.rows ? byIdIn(_mi.rows, r.catId) : null;
+  return (e ? catDetailRaw(e).catch(function () { return null; }) : Promise.resolve(null)).then(function (d) {
+    r.coreTried = true;
+    if (!r.coreName && d && d.Core && d.Core.Name && plausibleText('core', d.Core.Name)) r.coreName = d.Core.Name;
+    var ck = rowCoreKey(r); if (ck) r.coreKey = ck;
+    var have = ck ? (_catImgObj['core:' + ck] || coreLinks()[ck]) : null;
+    var b = r.ballId != null ? appBalls().filter(function (x) { return x.BallID == r.ballId; })[0] : null;
+    if (!have && b) have = ownPic(b, 'core');
+    r.coreHave = have || null;
+    return r;
+  });
+}
 function catImagesOpen() {
   var mb = document.getElementById('modal-bg');
   if (mb && mb.classList.contains('open') && typeof root.closeModal === 'function') root.closeModal();
@@ -3319,9 +3341,11 @@ function miRender() {
   var shown = list.slice(_mi.page * MI_PAGE, _mi.page * MI_PAGE + MI_PAGE);
   miSrcLoad(shown);
   var seg = function (k, t, on, call) { return '<button onclick="' + call + '(\'' + k + '\')" style="flex:1;padding:8px;border-radius:9px;font-size:13px;font-weight:700;border:1px solid ' + (on ? 'var(--teal)' : 'var(--border1)') + ';background:' + (on ? 'rgba(0,217,217,0.12)' : 'transparent') + ';color:' + (on ? 'var(--teal)' : 'var(--t2)') + '">' + t + '</button>'; };
-  var nFound = list.filter(function (r) { return _mi.found[miFk(r.key)]; }).length;
-  var todo = list.filter(function (r) { return !_mi.found[miFk(r.key)] && !r.miss && (_mi.slot === 'cover' || r.coreKey); }).length;
+  list.forEach(function (r) { if (_mi.slot === 'cover' && sm.miss[fkFor(r.key, 'core')] && !_mi.found[fkFor(r.key, 'core')]) r.coreMiss = true; });
+  var nFound = list.filter(function (r) { return _mi.found[miFk(r.key)] || (_mi.slot === 'cover' && _mi.found[fkFor(r.key, 'core')]); }).length;
+  var todo = list.filter(miNeedsCheck).length;
   var row = function (r) {
+    if (_mi.slot === 'cover') return rowCover(r);
     var f = _mi.found[miFk(r.key)], busy = _mi.busy[miFk(r.key)];
     var pic = f ? '<img src="' + esc(f.url) + '" referrerpolicy="no-referrer" style="width:52px;height:52px;border-radius:' + (_mi.slot === 'core' ? '10px' : '50%') + ';object-fit:contain;background:#fff;flex-shrink:0">' :
       '<div style="width:52px;height:52px;border-radius:' + (_mi.slot === 'core' ? '10px' : '50%') + ';flex-shrink:0;background:var(--bg3);display:flex;align-items:center;justify-content:center;color:var(--t3);font-size:11px">' + (busy ? '\u2026' : r.miss ? 'none' : '') + '</div>';
@@ -3337,7 +3361,8 @@ function miRender() {
       '<div style="font-size:11px;color:var(--t3)">' + sub + (r.miss ? ' \u00b7 <span style="color:var(--gold)">not on bowwwl under this name</span>' : f ? ' \u00b7 <span style="color:var(--teal)">' + esc(f.how) + '</span>' : '') + '</div>' + fl + '</div>' +
       '<div style="display:flex;gap:4px;flex-shrink:0">' + acts + '</div></div>';
   };
-  var hint = _mi.slot === 'core' ? 'Core pictures are kept per core: one picture covers every ball with that core, yours and the catalog\u2019s.' : '';
+  var hint = _mi.slot === 'core' ? 'Core pictures are kept per core: one picture covers every ball with that core, yours and the catalog\u2019s.' :
+    'Each ball takes its picture and its core picture here: copy one, Paste it on its line, copy the other, Paste, then Use. A core picture is kept per core, so other balls with that core get it too.';
   ov.innerHTML = '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 6px"><button style="' + BACK + '" onclick="catImagesClose()">\u2039</button>' +
     '<div style="flex:1"><div style="font-size:17px;font-weight:800;color:var(--t1)">Ball images</div><div style="font-size:11px;color:var(--t3)">Missing pictures \u00b7 kept on this device</div></div></div>' +
     '<div style="display:flex;gap:6px;padding:0 16px 6px">' + seg('cover', 'Cover', _mi.slot === 'cover', 'catImagesSlot') + seg('core', 'Core', _mi.slot === 'core', 'catImagesSlot') + '</div>' +
@@ -3362,9 +3387,15 @@ function miRender() {
 }
 /* v30.182: check bowwwl for every ball in the list (not just the page): two at a time with a
    short pause, stoppable; finds and misses are remembered (bdbimg_scan) so nothing is asked twice. */
+function miNeedsCheck(r) {
+  var ball = !_mi.found[miFk(r.key)] && !r.miss && (_mi.slot === 'cover' || r.coreKey);
+  if (_mi.slot !== 'cover') return ball;
+  var core = !r.coreHave && !_mi.found[fkFor(r.key, 'core')] && !r.coreMiss && !scanMem().miss[fkFor(r.key, 'core')] && (!r.coreTried || r.coreKey);
+  return ball || core;
+}
 function catImagesScanAll() {
   if (_mi.scan) return Promise.resolve();
-  var list = miList().filter(function (r) { return !_mi.found[miFk(r.key)] && !r.miss && (_mi.slot === 'cover' || r.coreKey); });
+  var list = miList().filter(miNeedsCheck);
   if (!list.length) return Promise.resolve();
   var mins = Math.max(1, Math.round(list.length * 1.2 / 60));
   if (root.confirm && !root.confirm('Check bowwwl for ' + list.length + ' picture' + (list.length === 1 ? '' : 's') + '? About ' + mins + ' min; keep the app open. You can stop any time, and what is found is kept for review.')) return Promise.resolve();
@@ -3373,7 +3404,14 @@ function catImagesScanAll() {
   var worker = function () {
     if (scan.stop || i >= list.length) return Promise.resolve();
     var r = list[i++];
-    return catImagesTry(r.key).then(function (u) { scan.done++; if (u) scan.found++; tick(); })
+    var ball = !_mi.found[miFk(r.key)] && !r.miss && (_mi.slot === 'cover' || r.coreKey);
+    return (ball ? catImagesTry(r.key) : Promise.resolve(null)).then(function (u) {
+      if (_mi.slot !== 'cover') return [u];
+      return miEnsureCore(r).then(function () {
+        var want = r.coreKey && !r.coreHave && !_mi.found[fkFor(r.key, 'core')] && !r.coreMiss && !scanMem().miss[fkFor(r.key, 'core')];
+        return want ? catImagesTry(r.key, 'core').then(function (c) { return [u, c]; }) : [u];
+      });
+    }).then(function (us) { scan.done++; us.forEach(function (u) { if (u) scan.found++; }); tick(); })
       .then(function () { return new Promise(function (res) { setTimeout(res, 200); }); }).then(worker);
   };
   return Promise.all([worker(), worker()]).then(function () {
@@ -3393,42 +3431,76 @@ function miFindLinks(r) {
   var site = MAKER_SITE[brandSlug(r.brand)];
   var maker = r.src || (site ? 'https://www.google.com/search?q=' + encodeURIComponent('site:' + site + ' ' + (isCore ? (r.coreName || r.name) + ' core' : ballName)) : null);
   var a = function (u, t) { return '<a href="' + esc(u) + '" target="_blank" rel="noopener noreferrer" style="color:var(--teal);text-decoration:none">' + t + '</a>'; };
-  return '<div style="font-size:11px;margin-top:2px;color:var(--t3)">Find: ' + ((!isCore || _mi.tab === 'mine' || r.firstBall) ? a(bw.page, 'bowwwl \u2197') + ' \u00b7 ' : '') +
-    (maker ? a(maker, 'maker \u2197') + ' \u00b7 ' : '') + a('https://www.google.com/search?tbm=isch&q=' + encodeURIComponent(q), 'web \u2197') + '</div>';
+  var coreWeb = !isCore && r.coreName ? ' \u00b7 ' + a('https://www.google.com/search?tbm=isch&q=' + encodeURIComponent((r.brand || '') + ' ' + coreBase(r.coreName) + ' core'), 'core web \u2197') : '';
+  return '<div style="font-size:11px;margin-top:4px;color:var(--t3)">Find: ' + ((!isCore || _mi.tab === 'mine' || r.firstBall) ? a(bw.page, 'bowwwl \u2197') + ' \u00b7 ' : '') +
+    (maker ? a(maker, 'maker \u2197') + ' \u00b7 ' : '') + a('https://www.google.com/search?tbm=isch&q=' + encodeURIComponent(q), 'web \u2197') + coreWeb + '</div>';
 }
 /* Loads the maker page address (catalog Source) and, for catalog cores, a ball name, for the rows on screen. */
 function miSrcLoad(rows) {
   var need = rows.filter(function (r) { return !r.srcTried; }); if (!need.length || !_mi.rows) return;
   need.forEach(function (r) { r.srcTried = true; });
   Promise.all(need.map(function (r) {
-    var id = r.catId || (r.balls && r.balls[0]); var e = id ? byIdIn(_mi.rows, id) : null; if (!e) return null;
+    var id = r.catId || (r.balls && r.balls[0]); var e = id ? byIdIn(_mi.rows, id) : null; if (!e) return Promise.resolve(null);
     if (r.balls && !r.firstBall) r.firstBall = cleanName(e.n);
     return catDetailRaw(e).then(function (d) { if (d && /^https:\/\//.test(d.Source || '')) r.src = d.Source; }, function () {});
-  })).then(function () { if (!_mi.scan) miRender(); });
+  }).concat(_mi.slot === 'cover' ? need.map(miEnsureCore) : [])).then(function () { if (!_mi.scan) miRender(); });
+}
+/* v30.184: a Cover-mode row = the ball picture and its core picture, each with its own bowwwl / Paste / Photo,
+   one Use for both. A core already kept for that core (or on your ball) shows as done. */
+function rowCover(r) {
+  var k = r.key, fb = _mi.found[miFk(k)], fc = _mi.found[fkFor(k, 'core')];
+  var bb = _mi.busy[miFk(k)], bc = _mi.busy[fkFor(k, 'core')];
+  var pill = function (t, call, on) { return '<button style="' + (on ? BTN_P : BTN_G) + 'padding:5px 9px;font-size:12px" onclick="' + call + '">' + t + '</button>'; };
+  var thumb = function (url, round, busy, miss) {
+    return url ? '<img src="' + esc(url) + '" referrerpolicy="no-referrer" style="width:48px;height:48px;border-radius:' + (round ? '50%' : '10px') + ';object-fit:contain;background:#fff;flex-shrink:0">' :
+      '<div style="width:48px;height:48px;border-radius:' + (round ? '50%' : '10px') + ';flex-shrink:0;background:var(--bg3);display:flex;align-items:center;justify-content:center;color:var(--t3);font-size:10px">' + (busy ? '\u2026' : miss ? 'none' : round ? 'ball' : 'core') + '</div>';
+  };
+  var q = function (s2) { return '\'' + k + '\'' + (s2 ? ',\'' + s2 + '\'' : ''); };
+  var line = function (label, part, f, have, miss, canBw) {
+    var st = f ? '<span style="color:var(--teal);font-size:12px">' + esc(f.how) + '</span> ' + pill('\u2715', 'catImagesDrop(' + q(part) + ')') :
+      have ? '<span style="color:var(--teal);font-size:12px">\u2713 kept' + (part === 'core' && r.coreName ? ' (' + esc(coreBase(r.coreName)) + ')' : '') + '</span>' :
+      (canBw ? pill('bowwwl', 'catImagesTry(' + q(part) + ')') : '') + pill('Paste', 'catImagesPaste(' + q(part) + ')') + pill('Photo', 'catImagesPhoto(' + q(part) + ')') +
+      (miss ? '<span style="color:var(--gold);font-size:11px">not on bowwwl</span>' : '');
+    return '<div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-top:5px"><span style="width:34px;font-size:11px;font-weight:700;color:var(--t3)">' + label + '</span>' + st + '</div>';
+  };
+  var coreSub = r.coreName ? coreBase(r.coreName) + ' core' : (r.coreTried ? 'core name unknown' : '');
+  return '<div style="padding:9px 0;border-bottom:1px solid var(--border1)">' +
+    '<div style="display:flex;gap:8px;align-items:center">' + thumb(fb && fb.url, true, bb, r.miss) + thumb((fc && fc.url) || r.coreHave, false, bc, r.coreMiss) +
+      '<div style="flex:1;min-width:0"><div style="font-size:14px;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(r.name) + '</div>' +
+      '<div style="font-size:11px;color:var(--t3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(r.brand || '') + (r.year ? ' \u00b7 ' + esc(r.year) : '') + (coreSub ? ' \u00b7 ' + esc(coreSub) : '') + '</div></div>' +
+      (fb || fc ? pill('Use', 'catImagesUse(' + q() + ')', true) : '') + '</div>' +
+    line('Ball', 'ball', fb, false, r.miss, true) +
+    line('Core', 'core', fc, r.coreHave && !fc, r.coreMiss, !!rowCoreKey(r) || !r.coreTried) +
+    (fb && (fc || r.coreHave) ? '' : miFindLinks(r)) + '</div>';
 }
 function miByKey(k) { var set = miSet(); if (!set) return null; var l = set.mine.concat(set.cat); for (var i = 0; i < l.length; i++) if (l[i].key === k) return l[i]; return null; }
 function catImagesTab(k) { _mi.tab = k; _mi.page = 0; miRender(); }
 function catImagesFilter(q) { _mi.q = q; _mi.page = 0; miRender(); var el = document.querySelector('#mi-ov input[type=search]'); if (el) { el.focus(); el.setSelectionRange(q.length, q.length); } }
 function catImagesPage(d) { _mi.page += d; miRender(); var b = document.querySelector('#mi-ov > div[style*="overflow-y"]'); if (b) b.scrollTop = 0; }
-function catImagesTry(k) {
-  var r = miByKey(k), fk = miFk(k); if (!r || _mi.busy[fk]) return Promise.resolve(null);
-  var c = _mi.slot === 'core' ? (r.coreKey ? bowwwlCoreCandidates(r.brand, r.coreName || r.name) : []) : bowwwlImgCandidates(r.brand, r.name);
-  if (!c.length) return Promise.resolve(null);
-  _mi.busy[fk] = true; miRender();
+function catImagesTry(k, part) {
+  var r = miByKey(k), fk = fkFor(k, part); if (!r || _mi.busy[fk]) return Promise.resolve(null);
+  var coreOf = _mi.slot === 'core' || part === 'core';
+  var pre = part === 'core' && _mi.slot === 'cover' ? miEnsureCore(r) : Promise.resolve(r);
+  return pre.then(function () {
+  var c = coreOf ? (rowCoreKey(r) ? bowwwlCoreCandidates(r.brand, r.coreName || r.name) : []) : bowwwlImgCandidates(r.brand, r.name);
+  if (!c.length) { if (part === 'core' && root.toast && !_mi.scan) root.toast('Core name unknown: use Paste or Photo for the core'); return null; }
+  _mi.busy[fk] = true; if (!_mi.scan) miRender();
   var next = function (i) { return i >= c.length ? Promise.resolve(null) : imgProbe(c[i]).then(function (u) { return u || next(i + 1); }); };
   return next(0).then(function (u) {
     delete _mi.busy[fk];
-    if (u) { _mi.found[fk] = { url: u, how: 'bowwwl', link: true }; delete r.miss; } else r.miss = true;
+    var mk = part === 'core' && _mi.slot === 'cover' ? 'coreMiss' : 'miss';
+    if (u) { _mi.found[fk] = { url: u, how: 'bowwwl', link: true }; delete r[mk]; } else r[mk] = true;
     scanNote(fk, u || null);
     if (!_mi.scan) miRender(); return u;
+  });
   });
 }
 function catImagesTryPage() {
   var list = miList().slice(_mi.page * MI_PAGE, _mi.page * MI_PAGE + MI_PAGE).filter(function (r) { return !_mi.found[miFk(r.key)] && !r.miss; });
   return list.reduce(function (p, r) { return p.then(function () { return catImagesTry(r.key); }); }, Promise.resolve());
 }
-function catImagesPaste(k) {
-  var fk = miFk(k);
+function catImagesPaste(k, part) {
+  var fk = fkFor(k, part);
   var take = function (blob, url) { if (blob) return imgShrink(blob).then(function (b) { _mi.found[fk] = { blob: b, url: URL.createObjectURL(b), how: 'pasted picture' }; miRender(); });
     if (url) return imgProbe(url).then(function (u) { if (u) { _mi.found[fk] = { url: u, how: 'pasted link', link: true }; miRender(); } else if (root.toast) root.toast('That address did not load as a picture'); }); };
   var cb = typeof navigator !== 'undefined' && navigator.clipboard;
@@ -3441,8 +3513,8 @@ function catImagesPaste(k) {
   if (root.toast) root.toast('Paste is not available here; use Photo');
   return Promise.resolve();
 }
-function catImagesPhoto(k) {
-  var fk = miFk(k);
+function catImagesPhoto(k, part) {
+  var fk = fkFor(k, part);
   var inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'image/*'; inp.style.display = 'none';
   inp.addEventListener('change', function () {
     var f = inp.files && inp.files[0]; if (inp.parentNode) inp.parentNode.removeChild(inp); if (!f) return;
@@ -3450,7 +3522,11 @@ function catImagesPhoto(k) {
   });
   document.body.appendChild(inp); inp.click();
 }
-function catImagesDrop(k) { delete _mi.found[miFk(k)]; scanNote(miFk(k), undefined); miRender(); }
+function catImagesDrop(k, part) {
+  var parts = part ? [part] : ['ball', 'core'];
+  parts.forEach(function (p) { var fk = fkFor(k, p); delete _mi.found[fk]; scanNote(fk, undefined); });
+  miRender();
+}
 /* Puts a picture on one of your balls (cover or core slot) unless it already has one there (or force). */
 function miOwnSet(b, slot, f, force) {
   if (!force && ownPic(b, slot)) return Promise.resolve();
@@ -3465,9 +3541,9 @@ function miOwnSet(b, slot, f, force) {
   return Promise.resolve();
 }
 /* Stores one found picture. */
-function miStore(r, f) {
+function miStore(r, f, slot) {
   var jobs = [], balls = appBalls();
-  if (_mi.slot === 'cover') {
+  if ((slot || _mi.slot) === 'cover') {
     if (r.catId) jobs.push(f.blob ? catImgPut(r.catId, f.blob).then(function () { imgPickSet(r.catId, null); }) : Promise.resolve(imgPickSet(r.catId, f.url)));
     balls.filter(function (b) { return r.ballId != null ? b.BallID == r.ballId : (r.catId && b.CatalogID === r.catId); })
       .forEach(function (b) { jobs.push(miOwnSet(b, 'cover', f, r.ballId != null)); });
@@ -3497,17 +3573,34 @@ function miAfterStore(keys) {
   }
   miRender();
 }
+/* Stores what a row has found: in Cover mode the ball and/or its core. Resolves true when the row's main picture was stored. */
+function miUseRow(k) {
+  var r = miByKey(k); if (!r) return Promise.resolve(false);
+  var fb = _mi.found[miFk(k)], fc = _mi.slot === 'cover' ? _mi.found[fkFor(k, 'core')] : null;
+  /* one after the other: both write the same picture record of your ball */
+  var first = fb ? miStore(r, fb, _mi.slot) : Promise.resolve(), jobs = [first];
+  if (fc) jobs.push(first.then(function () { return miStore(coreRowOf(r), fc, 'core'); }).then(function () {
+    r.coreHave = fc.url; delete _mi.found[fkFor(k, 'core')]; scanNote(fkFor(k, 'core'), undefined);
+    /* every other row with the same core now has it too */
+    var ck = rowCoreKey(r), set = miSet();
+    if (ck && set) set.mine.concat(set.cat).forEach(function (x) { if (x !== r && rowCoreKey(x) === ck && !_mi.found[fkFor(x.key, 'core')]) x.coreHave = fc.url; });
+  }));
+  return Promise.all(jobs).then(function () { return !!fb; });
+}
 function catImagesUse(k) {
-  var r = miByKey(k), f = _mi.found[miFk(k)]; if (!r || !f) return Promise.resolve();
-  return miStore(r, f).then(function () { miAfterStore([k]); if (root.toast) root.toast('Picture saved on this device'); }, function () { if (root.toast) root.toast('Could not save that picture'); });
+  return miUseRow(k).then(function (main) {
+    if (main) miAfterStore([k]); else miRender();
+    if (root.toast) root.toast('Saved on this device');
+  }, function () { if (root.toast) root.toast('Could not save that picture'); });
 }
 function catImagesUseAll() {
-  var pre = _mi.slot === 'core' ? 'core' : '';
-  var ks = Object.keys(_mi.found).filter(function (fk) { return pre ? fk.indexOf('core') === 0 : fk.indexOf('core') !== 0; })
-    .map(function (fk) { return fk.slice(pre.length); }).filter(function (k) { return miByKey(k); });
+  var rows = miList().filter(function (r) { return _mi.found[miFk(r.key)] || (_mi.slot === 'cover' && _mi.found[fkFor(r.key, 'core')]); });
+  var done = [], n = 0;
   _mi.bulk = true;
-  return ks.reduce(function (p, k) { return p.then(function () { return miStore(miByKey(k), _mi.found[miFk(k)]); }); }, Promise.resolve())
-    .then(function () { _mi.bulk = false; if (root.saveDB) root.saveDB(); miAfterStore(ks); if (root.toast) root.toast(ks.length + ' picture' + (ks.length === 1 ? '' : 's') + ' saved on this device'); });
+  return rows.reduce(function (p, r) { return p.then(function () {
+    n += (_mi.found[miFk(r.key)] ? 1 : 0) + (_mi.slot === 'cover' && _mi.found[fkFor(r.key, 'core')] ? 1 : 0);
+    return miUseRow(r.key).then(function (main) { if (main) done.push(r.key); }); }); }, Promise.resolve())
+    .then(function () { _mi.bulk = false; if (root.saveDB) root.saveDB(); miAfterStore(done); if (root.toast) root.toast(n + ' picture' + (n === 1 ? '' : 's') + ' saved on this device'); });
 }
 /* Save / Restore: every stored catalog and core picture (files and links) in one file you keep. */
 function blobToData(b) { return new Promise(function (res) { var r = new FileReader(); r.onload = function () { res(r.result); }; r.onerror = function () { res(null); }; r.readAsDataURL(b); }); }
