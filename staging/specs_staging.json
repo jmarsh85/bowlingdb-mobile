@@ -72506,11 +72506,13 @@
   "url": "https://www.stormbowling.com/roto-grip-clone-bowling-ball",
   "sku": null,
   "page": "4fdb44931bc07460",
-  "flags": [],
+  "flags": [
+   "text-rejected:coverName"
+  ],
   "specs": {
    "core": "Cloned ET Asymmetric",
    "coreType": "Asymmetrical",
-   "coverName": "Based on years of testing and research, we found this direct",
+   "coverName": null,
    "coverType": null,
    "finish": "Reacta Gloss",
    "released": "2023-07-28",
@@ -72633,11 +72635,14 @@
   "url": "https://www.stormbowling.com/roto-grip-exotic-gem-bowling-ball",
   "sku": null,
   "page": "3868b76124fc130a",
-  "flags": [],
+  "flags": [
+   "text-rejected:core",
+   "text-rejected:coverName"
+  ],
   "specs": {
-   "core": "Sometimes evolution can spark new life into technology from ",
+   "core": null,
    "coreType": null,
-   "coverName": "Bottom line, this coverstock technology just flat out crushe",
+   "coverName": null,
    "coverType": null,
    "finish": "Reacta Gloss",
    "released": "2015-12",
@@ -72994,11 +72999,14 @@
   "url": "https://www.stormbowling.com/roto-grip-hyped-pearl-bowling-ball",
   "sku": null,
   "page": "5ec3c2ba72d5d003",
-  "flags": [],
+  "flags": [
+   "text-rejected:core",
+   "text-rejected:coverName"
+  ],
   "specs": {
-   "core": "From the beginning, the end goal for the Hyped Core was to c",
+   "core": null,
    "coreType": null,
-   "coverName": "Versatile Traction Control (VTC) was formulated with durabil",
+   "coverName": null,
    "coverType": null,
    "finish": "Reacta Gloss",
    "released": "2021-08",
@@ -73082,11 +73090,13 @@
   "url": "https://www.stormbowling.com/roto-grip-idol-cosmos-bowling-ball",
   "sku": null,
   "page": "7511d451c180873a",
-  "flags": [],
+  "flags": [
+   "text-rejected:coverName"
+  ],
   "specs": {
    "core": "Ikon Symmetric",
    "coreType": "Symmetrical",
-   "coverName": "Derived from countless hours of mixing, formulating, and tes",
+   "coverName": null,
    "coverType": null,
    "finish": "4000-Grit Abralon",
    "released": "2022-07-08",
@@ -73131,11 +73141,13 @@
   "url": "https://www.stormbowling.com/roto-grip-idol-helios-bowling-ball",
   "sku": null,
   "page": "58c1cffba787b868",
-  "flags": [],
+  "flags": [
+   "text-rejected:coverName"
+  ],
   "specs": {
    "core": "Ikon Symmetric",
    "coreType": "Symmetrical",
-   "coverName": "Derived from countless hours of mixing, formulating, and tes",
+   "coverName": null,
    "coverType": null,
    "finish": "2000-Grit Abralon",
    "released": "2021-11-19",
@@ -73295,11 +73307,14 @@
   "url": "https://www.stormbowling.com/roto-grip-tnt-bowling-ball",
   "sku": null,
   "page": "e5e4e86ce71d727c",
-  "flags": [],
+  "flags": [
+   "text-rejected:core",
+   "text-rejected:coverName"
+  ],
   "specs": {
-   "core": "By placing the TORQUE SPHERE just above the inner equator of",
+   "core": null,
    "coreType": null,
-   "coverName": "First used in a pearlized form on the RST X-2, we felt there",
+   "coverName": null,
    "coverType": null,
    "finish": "2000-Grit Abralon",
    "released": "2023-01-16",
@@ -73578,11 +73593,14 @@
   "url": "https://www.stormbowling.com/storm-absolute-bowling-ball",
   "sku": null,
   "page": "1a375b0f8c97d760",
-  "flags": [],
+  "flags": [
+   "text-rejected:core",
+   "text-rejected:coverName"
+  ],
   "specs": {
-   "core": "In most cases, an extra slug, or weighted disk, is needed to",
+   "core": null,
    "coreType": null,
-   "coverName": "R2S Deep is cleaner through the front compared to the flagsh",
+   "coverName": null,
    "coverType": null,
    "finish": "Reacta Gloss",
    "released": "2023-01",
@@ -73861,11 +73879,14 @@
   "url": "https://www.stormbowling.com/storm-fate-bowling-ball",
   "sku": null,
   "page": "cb76134929c4ee25",
-  "flags": [],
+  "flags": [
+   "text-rejected:core",
+   "text-rejected:coverName"
+  ],
   "specs": {
-   "core": "Compared to the Dual-Drive, Piston, and Piston LD, the F-8 C",
+   "core": null,
    "coreType": null,
-   "coverName": "Traditionally, the term “hybrid” suggests that both solid an",
+   "coverName": null,
    "coverType": null,
    "finish": "Reacta Gloss",
    "released": "2022-11",
@@ -74142,11 +74163,14 @@
   "url": "https://www.stormbowling.com/storm-infinite-physix-bowling-ball",
   "sku": null,
   "page": "b35186cd6561fcc8",
-  "flags": [],
+  "flags": [
+   "text-rejected:core",
+   "text-rejected:coverName"
+  ],
   "specs": {
-   "core": "Firmly ensconced at the top of the Storm performance heap is",
+   "core": null,
    "coreType": null,
-   "coverName": "Traditionally, the term “hybrid” suggests that both solid an",
+   "coverName": null,
    "coverType": null,
    "finish": "4000-grit Abralon",
    "released": "2022-07",
@@ -74649,11 +74673,14 @@
   "url": "https://www.stormbowling.com/storm-nova-bowling-ball",
   "sku": null,
   "page": "42943c1b633ed67d",
-  "flags": [],
+  "flags": [
+   "text-rejected:core",
+   "text-rejected:coverName"
+  ],
   "specs": {
-   "core": "Weight blocks like the Ignition Core rev up fast and finish ",
+   "core": null,
    "coreType": null,
-   "coverName": "Slightly more aggressive than the famed R2S coverstock mater",
+   "coverName": null,
    "coverType": null,
    "finish": "3000-grit Abralon",
    "released": "2022-01",
@@ -74698,11 +74725,14 @@
   "url": "https://www.stormbowling.com/storm-phaze-4-bowling-ball",
   "sku": null,
   "page": "058e85e2b8d8d8a8",
-  "flags": [],
+  "flags": [
+   "text-rejected:core",
+   "text-rejected:coverName"
+  ],
   "specs": {
-   "core": "This low RG gem has a strong heart. Being one of the most ag",
+   "core": null,
    "coreType": null,
-   "coverName": "The Phaze series’ aggressive nature has carried over to the ",
+   "coverName": null,
    "coverType": null,
    "finish": "1500-grit Polished",
    "released": "2022-02",
@@ -74827,11 +74857,14 @@
   "url": "https://www.stormbowling.com/storm-phaze-v-bowling-ball",
   "sku": null,
   "page": "97019ff477779055",
-  "flags": [],
+  "flags": [
+   "text-rejected:core",
+   "text-rejected:coverName"
+  ],
   "specs": {
-   "core": "This low RG gem has a strong heart. Being one of the most ag",
+   "core": null,
    "coreType": null,
-   "coverName": "The Phaze series’ aggressive nature has carried over to the ",
+   "coverName": null,
    "coverType": null,
    "finish": null,
    "released": "2022-10",
@@ -74991,11 +75024,14 @@
   "url": "https://www.stormbowling.com/storm-sun-storm-limited-edition-bowling-ball",
   "sku": null,
   "page": "524a1687b48c483c",
-  "flags": [],
+  "flags": [
+   "text-rejected:core",
+   "text-rejected:coverName"
+  ],
   "specs": {
-   "core": "Workable and forgiving, the C3 Centripetal Control Core is a",
+   "core": null,
    "coreType": null,
-   "coverName": "SPEC stands for “Storm Performance Enhanced Coverstock”. The",
+   "coverName": null,
    "coverType": null,
    "finish": "4K-Fast",
    "released": "2022-12",

@@ -6,7 +6,7 @@ Auto-applied by rule: same-name-reapproval 9, colourway 28, majority 1.
 
 | source | pages | ball pages | auto | pending | errors |
 |---|---|---|---|---|---|
-| storm (kept 73 from last run) | 1 | 1 | 56 | 18 | 0 |
+| storm | 1788 | 73 | 56 | 18 | 0 |
 
 | brand | USBC rows | specs (auto) | pending | 2023+ rows | 2023+ auto |
 |---|---|---|---|---|---|

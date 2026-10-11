@@ -1,13 +1,12 @@
 {
-  "generated": "2026-10-11T03:09:52.019Z",
+  "generated": "2026-10-11T04:50:11.300Z",
   "since": 2023,
   "perSource": {
     "storm": {
-      "pages": 1,
-      "parsed": 1,
+      "pages": 1788,
+      "parsed": 73,
       "errors": 0,
-      "errorSample": [],
-      "carriedOver": 73
+      "errorSample": []
     }
   },
   "coverage": {
