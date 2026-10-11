@@ -248,6 +248,28 @@ X.resolveConflicts(same); ok(same[0].decision === 'auto' && same[1].decision ===
   ok(/auto\*\*/.test(md) && /Pending reasons:/.test(md) && /\| source \| pending reason/.test(md), 'summary written with pending breakdown');
   ok(JSON.parse(fs.readFileSync(path.join(tmp, 'st', 'pending_samples.json'), 'utf8')).some(d => d.reason === 'no-usbc'), 'pending samples file');
   ok(!fs.readFileSync(path.join(tmp, 'st', 'specs_staging.json'), 'utf8').includes('Unbeatable'), 'no marketing text in staging');
+  /* v30.173 CAT-NEW-6: page snapshots */
+  const ch = res.staged.find(s => s.title === 'Combat Hybrid');
+  const snapF = ch.page && path.join(tmp, 'st', 'pages', ch.page + '.json');
+  ok(snapF && fs.existsSync(snapF), 'snapshot file per page');
+  const sn = JSON.parse(fs.readFileSync(snapF, 'utf8'));
+  ok(sn.url === ch.url && sn.lines.some(l => /Rampart/.test(l)) && sn.lines.every(l => l.length <= 200), 'snapshot keeps short lines: ' + sn.lines.slice(0, 5));
+  ok(X.pageSnap('<p>' + 'x'.repeat(300) + '</p><p>Core | Atomic</p>', 'https://a/b').lines.join() === 'Core | Atomic', 'long paragraphs dropped');
+  const im = X.pageImages('<meta property="og:image" content="https://a/og.jpg"><img src="/i/ball.png?v=1"><img src="/logo.png"><img srcset="/s/a_200x.jpg 200w, /s/a_800x.jpg 800w"><img src="https://a/i/ball.png?v=2">', 'https://a/p/x');
+  ok(JSON.stringify(im) === JSON.stringify(['https://a/og.jpg', 'https://a/i/ball.png?v=1', 'https://a/s/a_800x.jpg']), 'images: absolute, no logos, largest srcset, de-duplicated: ' + im);
+  const an = res.staged.find(s => s.title === 'Anger Solid');
+  ok(an.page && JSON.parse(fs.readFileSync(path.join(tmp, 'st', 'pages', an.page + '.json'), 'utf8')).lines.length > 0, 'shopify snapshot');
+  ok(!fs.readFileSync(path.join(tmp, 'st', 'specs_staging.json'), 'utf8').includes('"lines"'), 'snapshots kept out of the staging file');
+  /* v30.173: single-page mode re-reads only the listed pages, keeps every other row and its snapshot */
+  const seenBefore = seen.length;
+  const r4 = await X.main(['--index', path.join(tmp, 'index.json'), '--out', path.join(tmp, 'st4'), '--sources', path.join(tmp, 'src.json'), '--only', 'craft-brunswick'.replace('craft-brunswick', res.staged.find(s => s.title === 'Combat Hybrid').source),
+    '--pages', ch.url, '--previous', path.join(tmp, 'st', 'specs_staging.json')], mock, () => {});
+  const fetched4 = seen.slice(seenBefore).filter(u => !/robots/.test(u));
+  ok(JSON.stringify(fetched4) === JSON.stringify([ch.url]), 'only the page itself fetched: ' + fetched4);
+  ok(r4.staged.length === res.staged.length && r4.staged.filter(x => x.url === ch.url).length === 1, 'same rows, the page replaced not duplicated');
+  ok(r4.staged.filter(x => x.page).every(x => fs.existsSync(path.join(tmp, 'st4', 'pages', x.page + '.json'))) && r4.staged.find(x => x.title === 'Anger Solid').page, 'carried rows keep their snapshots');
+  let thrown = null; try { await X.main(['--index', path.join(tmp, 'index.json'), '--out', path.join(tmp, 'st5'), '--sources', path.join(tmp, 'src.json'), '--pages', ch.url], mock, () => {}); } catch (e) { thrown = e; }
+  ok(thrown && /--only/.test(thrown.message), '--pages needs --only');
   pages['https://s.com/products/equipment/bowling-balls/'] = '<html><body><div>unrecognised layout</div></body></html>';
   delete pages['https://s.com/storm-phaze-v-bowling-ball'];
   const r2 = await X.main(['--index', path.join(tmp, 'index.json'), '--out', path.join(tmp, 'st2'), '--sources', path.join(tmp, 'src.json'), '--only', 'storm'], mock, () => {});
