@@ -9782,97 +9782,7 @@
   "Source": "https://columbia300.com/products/pulse",
   "Checked": "2026-10-11"
  },
- "columbia-300-pulse-clear-pin": {
-  "DateReleased": "2025-08-14",
-  "Core": {
-   "Name": "Pulse PowerCOR",
-   "Type": "Symmetrical"
-  },
-  "Cover": {
-   "Name": null,
-   "Type": "Solid Reactive",
-   "Finish": "500, 1500 Siaair Micro Pad"
-  },
-  "SpecsByWeight": {
-   "12": {
-    "RG": 2.605,
-    "Diff": 0.042,
-    "IntDiff": null
-   },
-   "13": {
-    "RG": 2.582,
-    "Diff": 0.042,
-    "IntDiff": null
-   },
-   "14": {
-    "RG": 2.481,
-    "Diff": 0.045,
-    "IntDiff": null
-   },
-   "15": {
-    "RG": 2.468,
-    "Diff": 0.045,
-    "IntDiff": null
-   },
-   "16": {
-    "RG": 2.481,
-    "Diff": 0.039,
-    "IntDiff": null
-   }
-  },
-  "Source": "https://columbia300.com/products/pulse",
-  "Checked": "2026-10-11",
-  "Corrected": {
-   "source": "maker",
-   "at": "2026-10-10"
-  }
- },
  "columbia-300-pulse-hybrid": {
-  "DateReleased": "2025-08-14",
-  "Core": {
-   "Name": "Pulse PowerCOR",
-   "Type": "Symmetrical"
-  },
-  "Cover": {
-   "Name": null,
-   "Type": "Solid Reactive",
-   "Finish": "500, 1500 Siaair Micro Pad"
-  },
-  "SpecsByWeight": {
-   "12": {
-    "RG": 2.605,
-    "Diff": 0.042,
-    "IntDiff": null
-   },
-   "13": {
-    "RG": 2.582,
-    "Diff": 0.042,
-    "IntDiff": null
-   },
-   "14": {
-    "RG": 2.481,
-    "Diff": 0.045,
-    "IntDiff": null
-   },
-   "15": {
-    "RG": 2.468,
-    "Diff": 0.045,
-    "IntDiff": null
-   },
-   "16": {
-    "RG": 2.481,
-    "Diff": 0.039,
-    "IntDiff": null
-   }
-  },
-  "Source": "https://columbia300.com/products/pulse",
-  "Checked": "2026-10-11",
-  "Corrected": {
-   "source": "maker",
-   "at": "2026-10-10"
-  }
- },
- "columbia-300-pulse-pearl": {
   "DateReleased": "2025-08-14",
   "Core": {
    "Name": "Pulse PowerCOR",
@@ -9957,51 +9867,6 @@
   },
   "Source": "https://columbia300.com/products/pulse",
   "Checked": "2026-10-11"
- },
- "columbia-300-pulse-white-pin": {
-  "DateReleased": "2025-08-14",
-  "Core": {
-   "Name": "Pulse PowerCOR",
-   "Type": "Symmetrical"
-  },
-  "Cover": {
-   "Name": null,
-   "Type": "Solid Reactive",
-   "Finish": "500, 1500 Siaair Micro Pad"
-  },
-  "SpecsByWeight": {
-   "12": {
-    "RG": 2.605,
-    "Diff": 0.042,
-    "IntDiff": null
-   },
-   "13": {
-    "RG": 2.582,
-    "Diff": 0.042,
-    "IntDiff": null
-   },
-   "14": {
-    "RG": 2.481,
-    "Diff": 0.045,
-    "IntDiff": null
-   },
-   "15": {
-    "RG": 2.468,
-    "Diff": 0.045,
-    "IntDiff": null
-   },
-   "16": {
-    "RG": 2.481,
-    "Diff": 0.039,
-    "IntDiff": null
-   }
-  },
-  "Source": "https://columbia300.com/products/pulse",
-  "Checked": "2026-10-11",
-  "Corrected": {
-   "source": "maker",
-   "at": "2026-10-10"
-  }
  },
  "columbia-300-pure-madness": {
   "DateReleased": "2024-02-22",
@@ -10613,41 +10478,6 @@
   },
   "Source": "https://columbia300.com/products/scout-r-particle-hi-flare",
   "Checked": "2026-10-11"
- },
- "columbia-300-scout-reactive-black-red-pearl": {
-  "DateReleased": "2000-02-01",
-  "Core": {
-   "Name": "Pancake",
-   "Type": "Symmetrical"
-  },
-  "Cover": {
-   "Name": "Super-Flex",
-   "Type": "Pearl",
-   "Finish": "4000 Polished"
-  },
-  "SpecsByWeight": {
-   "14": {
-    "RG": 2.69,
-    "Diff": 0.02,
-    "IntDiff": null
-   },
-   "15": {
-    "RG": 2.65,
-    "Diff": 0.02,
-    "IntDiff": null
-   },
-   "16": {
-    "RG": 2.64,
-    "Diff": 0.02,
-    "IntDiff": null
-   }
-  },
-  "Source": "https://columbia300.com/products/scout-reactive-black-red",
-  "Checked": "2026-10-11",
-  "Corrected": {
-   "source": "maker",
-   "at": "2026-10-10"
-  }
  },
  "columbia-300-scout-reactive-blue-gold": {
   "DateReleased": null,
@@ -11692,27 +11522,6 @@
    "source": "maker",
    "at": "2026-10-10"
   }
- },
- "columbia-300-wicked-ultra": {
-  "DateReleased": null,
-  "Core": {
-   "Name": "2-Piece",
-   "Type": null
-  },
-  "Cover": {
-   "Name": "Reactive",
-   "Type": null,
-   "Finish": null
-  },
-  "SpecsByWeight": {
-   "16": {
-    "RG": 2.497,
-    "Diff": 0.049,
-    "IntDiff": null
-   }
-  },
-  "Source": "https://columbia300.com/products/wicked",
-  "Checked": "2026-10-11"
  },
  "columbia-300-world-beater": {
   "DateReleased": null,
@@ -21826,15 +21635,15 @@
   "Checked": "2026-10-11"
  },
  "hammer-purple-pearl-urethane-hammer-except-serial-s-starting-with-a-6-or-7": {
-  "DateReleased": "2021-07-01",
+  "DateReleased": "2021-07",
   "Core": {
-   "Name": "(2)",
-   "Type": null
+   "Name": "LED",
+   "Type": "Symmetrical"
   },
   "Cover": {
    "Name": "Urethane Pearl",
    "Type": "Pearl Urethane",
-   "Finish": "(9)"
+   "Finish": "500, 1000, 2000 Siaair Micro Pad"
   },
   "SpecsByWeight": {
    "12": {
@@ -21864,7 +21673,11 @@
    }
   },
   "Source": "https://hammerbowling.com/products/purple-pearl-urethane",
-  "Checked": "2026-10-11"
+  "Checked": "2026-10-11",
+  "Corrected": {
+   "source": "other",
+   "at": "2026-10-11"
+  }
  },
  "hammer-purple-pearl-urethane-hammer-korea": {
   "DateReleased": "2021-07-01",
@@ -21910,13 +21723,13 @@
  "hammer-purple-pearl-urethane-hammer-purple-pin": {
   "DateReleased": "2021-07-01",
   "Core": {
-   "Name": "(2)",
-   "Type": null
+   "Name": "LED",
+   "Type": "Symmetrical"
   },
   "Cover": {
    "Name": "Urethane Pearl",
    "Type": "Pearl Urethane",
-   "Finish": "(9)"
+   "Finish": "500, 1000, 2000 Siaair Micro Pad"
   },
   "SpecsByWeight": {
    "12": {
@@ -21946,7 +21759,11 @@
    }
   },
   "Source": "https://hammerbowling.com/products/purple-pearl-urethane",
-  "Checked": "2026-10-11"
+  "Checked": "2026-10-11",
+  "Corrected": {
+   "source": "maker",
+   "at": "2026-10-11"
+  }
  },
  "hammer-radioactive-vibe": {
   "DateReleased": "2023-07-13",
@@ -23118,7 +22935,7 @@
   "DateReleased": "2021-07-16",
   "Core": {
    "Name": "Spheroid",
-   "Type": null
+   "Type": "Symmetrical"
   },
   "Cover": {
    "Name": "Aggression Pearl",
@@ -23153,7 +22970,11 @@
    }
   },
   "Source": "https://hammerbowling.com/products/web-pearl",
-  "Checked": "2026-10-11"
+  "Checked": "2026-10-11",
+  "Corrected": {
+   "source": "maker",
+   "at": "2026-10-11"
+  }
  },
  "hammer-web-tour-edition": {
   "DateReleased": null,
@@ -25550,37 +25371,6 @@
   "Checked": "2026-10-11"
  },
  "motiv-jackal-chase": {
-  "DateReleased": null,
-  "Core": {
-   "Name": "Predator",
-   "Type": null
-  },
-  "Cover": {
-   "Name": "Turmoil HFP Reactive",
-   "Type": null,
-   "Finish": "3000 Grit LSS"
-  },
-  "SpecsByWeight": {
-   "14": {
-    "RG": 2.48,
-    "Diff": 0.06,
-    "IntDiff": 0.015
-   },
-   "15": {
-    "RG": 2.46,
-    "Diff": 0.06,
-    "IntDiff": 0.015
-   },
-   "16": {
-    "RG": 2.46,
-    "Diff": 0.06,
-    "IntDiff": 0.015
-   }
-  },
-  "Source": "https://www.motivbowling.com/products/balls/retired-balls/jackal.html",
-  "Checked": "2026-10-11"
- },
- "motiv-jackal-clear-poly": {
   "DateReleased": null,
   "Core": {
    "Name": "Predator",
