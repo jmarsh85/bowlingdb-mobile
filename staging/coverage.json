@@ -1,73 +1,13 @@
 {
-  "generated": "2026-10-11T03:04:05.612Z",
+  "generated": "2026-10-11T03:09:52.019Z",
   "since": 2023,
   "perSource": {
     "storm": {
-      "pages": 1788,
-      "parsed": 73,
+      "pages": 1,
+      "parsed": 1,
       "errors": 0,
-      "errorSample": []
-    },
-    "brunswick": {
-      "pages": 258,
-      "parsed": 258,
-      "errors": 0,
-      "errorSample": []
-    },
-    "hammer": {
-      "pages": 366,
-      "parsed": 196,
-      "errors": 3,
-      "errorSample": [
-        "https://hammerbowling.com/products/the-sauce-black-violet-gold.json 429",
-        "https://hammerbowling.com/products/black-widow-3-0.json 429",
-        "https://hammerbowling.com/products/ronnie-russell.json 429"
-      ]
-    },
-    "dv8": {
-      "pages": 126,
-      "parsed": 126,
-      "errors": 0,
-      "errorSample": []
-    },
-    "radical": {
-      "pages": 129,
-      "parsed": 129,
-      "errors": 0,
-      "errorSample": []
-    },
-    "track": {
-      "pages": 181,
-      "parsed": 162,
-      "errors": 2,
-      "errorSample": [
-        "https://trackbowling.com/products/920t.json 429",
-        "https://trackbowling.com/products/sensor.json 500"
-      ]
-    },
-    "ebonite": {
-      "pages": 215,
-      "parsed": 191,
-      "errors": 1,
-      "errorSample": [
-        "https://ebonite.com/products/lane-breaker.json 429"
-      ]
-    },
-    "columbia": {
-      "pages": 404,
-      "parsed": 386,
-      "errors": 3,
-      "errorSample": [
-        "https://columbia300.com/products/scout-purple.json 429",
-        "https://columbia300.com/products/fever-red.json 429",
-        "https://columbia300.com/products/command.json 429"
-      ]
-    },
-    "motiv": {
-      "pages": 206,
-      "parsed": 205,
-      "errors": 0,
-      "errorSample": []
+      "errorSample": [],
+      "carriedOver": 73
     }
   },
   "coverage": {
