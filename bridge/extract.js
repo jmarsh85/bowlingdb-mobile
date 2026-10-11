@@ -121,6 +121,25 @@ function parseDate(s) {
   const d = new Date(t + ' UTC'); return isNaN(d) ? null : d.toISOString().slice(0, 10);
 }
 
+/* v30.172 CAT-NEW-2: the spec text the parser read, for tap-to-tag in the
+   app's correction sheet. Spec lines only (labels or 0.xxx / 2.xxx numbers),
+   short lines, de-duplicated, capped at RAW_CAP. Kept in staging, never published. */
+const RAW_CAP = 2000;
+const RAW_KEY = /\b(rg|radius of gyration|diff\w*|differential|int(?:ermediate)?\.?\s*diff\w*|mass bias|mb\s*diff|psa|a?symm?\w*|cover\s*stock|coverstock|cover\s*type|cover|core|weight block|finish|grit|abralon|polish\w*|release date|lbs?|pounds?|durometer|flare\w*)\b/i;
+const RAW_NUM = /(?:^|[^\d])[0-2]?\.\d{2,3}\b/;
+const RAW_JUNK = /\u00a9|cookie|add to cart|privacy|newsletter|subscribe|shipping|sign in|log in|\$\s?\d/i;
+function specBlock(...texts) {
+  const seen = new Set(), out = []; let n = 0;
+  for (const t of texts) for (const raw of String(t || '').split('\n')) {
+    const l = raw.replace(/\s+/g, ' ').trim();
+    if (!l || l.length > 160 || RAW_JUNK.test(l) || !(RAW_KEY.test(l) || RAW_NUM.test(l))) continue;
+    const k = l.toLowerCase(); if (seen.has(k)) continue; seen.add(k);
+    if (n + l.length + 1 > RAW_CAP) return out.join('\n');
+    out.push(l); n += l.length + 1;
+  }
+  return out.join('\n') || null;
+}
+
 /* ---------- platform parsers: html -> [{title, brand, url, specs, mfgScales, imageUrl}] ---------- */
 /* v30.168 (2026-10-10): core type was never read for craft or Shopify pages.
    Only what the page STATES: a "Core Type" / "Symmetry" label, or the word
@@ -141,7 +160,7 @@ function parseCraft(html, url, brand) {
   const scales = {};
   const rs = /reaction shape strength:?\s*(\d{1,3})/i.exec(text); if (rs) scales.brunswickStrength = +rs[1];
   const lvl = /^level \| (.+)$/im.exec(text); if (lvl) scales.level = lvl[1];
-  return [{ title, brand, url, imageUrl: metaContent(html, 'og:image'), mfgScales: scales,
+  return [{ title, brand, url, imageUrl: metaContent(html, 'og:image'), mfgScales: scales, rawText: specBlock(text),
     specs: { core: kv['core'] || null, coverName: kv['coverstock'] || null, coverType: kv['cover type'] || null,
              coreType: statedCoreType(kv['core type'], kv['symmetry'], kv['core shape'], kv['core']),
              finish: kv['finish'] || null, released: parseDate(kv['release date']), weights: withFallback(weightTable(text), text) } }];
@@ -155,7 +174,7 @@ function parseShopifyBody(bodyHtml, title, url, brand, imageUrl) {
   if (!Object.keys(weights).length) Object.assign(weights, withFallback(weightTable(text), text));
   const kv = kvLines(text);
   const pick = (k, re) => kv[k] || lab(re);
-  return [{ title, brand, url, imageUrl, mfgScales: {},
+  return [{ title, brand, url, imageUrl, mfgScales: {}, rawText: specBlock(text),
     specs: { core: pick('core', /^CORE:?\s+(.+)$/im), coverName: pick('coverstock', /^COVERSTOCK:?\s+(.+)$/im),
              coverType: pick('cover type', /^COVER TYPE:?\s+(.+)$/im), finish: pick('finish', /^FINISH:?\s+(.+)$/im),
              coreType: statedCoreType(pick('core type', /^CORE TYPE:?\s+(.+)$/im), pick('symmetry', /^SYMMETRY:?\s+(.+)$/im), pick('core', /^CORE:?\s+(.+)$/im)),
@@ -171,7 +190,7 @@ function parseMotiv(html, url) {
   if (title) { const i = text.indexOf(title); const after = i >= 0 ? text.slice(i + title.length, i + title.length + 60) : '';
     const d = /^\s*(\d{1,2}\/\d{1,2}\/\d{4})/.exec(after); if (d) released = parseDate(d[1]); }
   const scales = {}; ['length', 'backend', 'hook'].forEach(k => { if (kv[k] && /^\d+$/.test(kv[k])) scales['motiv' + k[0].toUpperCase() + k.slice(1)] = +kv[k]; });
-  return [{ title, brand: 'Motiv', url, imageUrl: metaContent(html, 'og:image'), mfgScales: scales,
+  return [{ title, brand: 'Motiv', url, imageUrl: metaContent(html, 'og:image'), mfgScales: scales, rawText: specBlock(text),
     specs: { core: kv['weight block'] || null, coverName: kv['cover stock'] || kv['coverstock'] || null,
              coverType: kv['cover type'] || kv['coverstock type'] || null,
              coreType: statedCoreType(kv['core type'], kv['symmetry'], kv['weight block']),
@@ -208,7 +227,7 @@ function parseStormListing(html, base) {
     const scales = {}; if (/^\d+$/.test(f['matchmaker'] || '')) scales.stormMatchMaker = +f['matchmaker'];
     const href = a ? a[1] : null;
     out.push({ title, brand: clean(f['brand']) || 'Storm', url: href ? (href.startsWith('http') ? href : base + href) : null, sku,
-      imageUrl: null, mfgScales: scales,
+      imageUrl: null, mfgScales: scales, rawText: specBlock(Object.keys(f).map(k => k.replace(/\b\w/g, c => c.toUpperCase()) + ': ' + clean(f[k])).join('\n')),
       specs: { core: clean(f['weight block']), coverName: clean(f['coverstock']), coverType: null, finish: clean(f['finish']),
                coreType: clean(f['symmetry']), released: parseDate(f['release date']), weights } });
   });
@@ -224,6 +243,7 @@ function mergeProduct(rec, pr) {
   for (const k in (pr.specs.weights || {})) if (!w[k]) { w[k] = pr.specs.weights[k]; added++; }
   for (const f of ['coreType', 'released', 'finish', 'core', 'coverName']) if (!rec.specs[f] && pr.specs[f]) { rec.specs[f] = pr.specs[f]; added++; }
   if (!rec.imageUrl && pr.imageUrl) rec.imageUrl = pr.imageUrl;
+  if (pr.rawText) rec.rawText = specBlock(rec.rawText, pr.rawText);   // listing lines first, then the page's
   return added > 0;
 }
 /* Storm product page (retired balls keep their pages, just unlisted):
@@ -241,7 +261,7 @@ function parseStormProduct(html, url, brand) {
   const tm = (s, n) => s ? s.replace(/[\u2122\u00ae]/g, '').trim().slice(0, n) : null;
   const core = tm(f['core'] || f['weight block'], 60);
   const title = firstH1(html) || (/^([^\n]+?)\s*\n\s*SKU:/m.exec(text) || [])[1] || null;
-  return [{ title, brand, url, imageUrl: metaContent(html, 'og:image'), mfgScales: {},
+  return [{ title, brand, url, imageUrl: metaContent(html, 'og:image'), mfgScales: {}, rawText: specBlock(text),
     specs: { core: core ? core.replace(/\s*(A)?symmetrical\s*Core$/i, '').replace(/\s*Core$/i, '') : null,
              coreType: core && /asymmetric/i.test(core) ? 'Asymmetrical' : core && /symmetric/i.test(core) ? 'Symmetrical' : null,
              coverName: tm(f['coverstock'], 60), coverType: null, finish: tm(f['finish'] || f['factory finish'], 40),
@@ -535,7 +555,7 @@ async function main(argv, fetchImpl, log = s => process.stdout.write(s + '\n')) 
       parsed++;
       const flags = verify(rec), m = matchRec(rec, byBrand), d = decide(rec, m, flags);
       const base = { source: s.id, platform: PLATFORM[s.id], brand: canonBrand(rec.brand), title: rec.title, url: rec.url, sku: rec.sku || null,
-        flags, specs: rec.specs, mfgScales: rec.mfgScales, imageUrl: rec.imageUrl, fetched, method: 'parser', status: rec.status || 'unknown' };
+        flags, specs: rec.specs, mfgScales: rec.mfgScales, imageUrl: rec.imageUrl, rawText: rec.rawText || null, fetched, method: 'parser', status: rec.status || 'unknown' };
       const gatesOk = !flags.some(f => f === 'no-weight-specs' || f.startsWith('out-of-range'));
       const at = autoTargets(rec, m, idName);
       if (at.auto.length && gatesOk) {
@@ -598,6 +618,6 @@ async function main(argv, fetchImpl, log = s => process.stdout.write(s + '\n')) 
   return { staged, coverage: cov, perSource };
 }
 
-module.exports = { statusFromUrl, statedCoreType, mergeProduct, colourOnly, extraWords, autoTargets, close, parseStormProduct, stormSlug, learnStormPrefixes, stormCandidates, htmlToText, weightTable, kvLines, parseDate, parseCraft, parseShopifyBody, parseMotiv, parseStormListing,
+module.exports = { specBlock, RAW_CAP, statusFromUrl, statedCoreType, mergeProduct, colourOnly, extraWords, autoTargets, close, parseStormProduct, stormSlug, learnStormPrefixes, stormCandidates, htmlToText, weightTable, kvLines, parseDate, parseCraft, parseShopifyBody, parseMotiv, parseStormListing,
   verify, matchRec, decide, resolveConflicts, coverage, indexByBrand, titleKey, norm, main };
 if (require.main === module) main(process.argv.slice(2), globalThis.fetch).catch(e => { console.error(e); process.exit(1); });
