@@ -36,7 +36,7 @@
 'use strict';
 
 /* v30.169: shown in the app header when it differs from the build's EXPECTED_CATALOG_JS */
-var CAT_VERSION  = 'v30.175';
+var CAT_VERSION  = 'v30.176';
 var CAT_BASE     = 'https://raw.githubusercontent.com/jmarsh85/bowlingdb-mobile/dist/';
 var CAT_DB       = 'BowlingDB_Catalog';
 var CAT_DB_VER   = 1;
@@ -2350,9 +2350,27 @@ function srvRecount(p) {
   var b = p.ball; p.rows = srvRows(b, p.pub, p.pend);
 }
 function srvCommit(msg) { if (root.saveDB) root.saveDB(); if (msg && root.toast) root.toast(msg); srvRender(); }
+/* Pure: an edited value for a field -> {v} or {err}. */
+function srvEditValue(f, raw) {
+  var t = String(raw == null ? '' : raw).trim();
+  if (!t) return { err: 'Enter a value, or Cancel' };
+  var lim = { RG: [2.30, 2.90], Differential: [0, 0.060], IntDiff: [0, 0.040] }[f];
+  if (lim) { var n = Number(t); if (!isFinite(n)) return { err: 'Enter a number' }; if (n < lim[0] || n > lim[1]) return { err: (SRV_LABEL[f] || f) + ' must be ' + lim[0] + '\u2013' + lim[1] }; return { v: n }; }
+  if (f === 'CoreType') { if (/asym/i.test(t)) return { v: 'Asymmetrical' }; if (/sym/i.test(t)) return { v: 'Symmetrical' }; return { err: 'Symmetrical or Asymmetrical' }; }
+  if (f === 'DateReleased') { var r = tagValueFor('ape-released', t); return r.v ? { v: r.v } : { err: 'Use a date like 2025-10 or October 2025' }; }
+  return { v: t };
+}
 function catSpecReviewAct(i, action) {
   var p = _srv.pages[_srv.idx]; if (!p) return;
   var r = p.rows[i]; if (!r) return;
+  if (action === 'edit') { _srv.editing = i; _srv.editErr = null; srvRender(); var el = document.getElementById('srv-edit'); if (el) el.focus(); return; }
+  if (action === 'editcancel') { _srv.editing = null; _srv.editErr = null; srvRender(); return; }
+  if (action === 'editsave') {
+    var ed = document.getElementById('srv-edit'), res = srvEditValue(r.f, ed && ed.value);
+    if (res.err) { _srv.editErr = res.err; srvRender(); var e2 = document.getElementById('srv-edit'); if (e2) e2.value = ed.value; return; }
+    p.ball[r.f] = res.v; p.ball.SpecSource = p.ball.SpecSource || {}; p.ball.SpecSource[r.f] = 'user';
+    _srv.editing = null; _srv.editErr = null; srvRecount(p); srvCommit('Saved as verified by you'); return;
+  }
   if (srvApply(p.ball, r, action)) { srvRecount(p); srvCommit(null); }
 }
 /* scope: 'ball' (this page) or 'all'; what: 'matches' | 'differences' */
@@ -2369,7 +2387,8 @@ function catSpecReviewBulk(scope, what) {
   });
   srvCommit(n + ' field' + (n === 1 ? '' : 's') + ' confirmed');
 }
-function catSpecReviewPage(d) { _srv.idx = Math.max(0, Math.min(_srv.pages.length - 1, _srv.idx + d)); srvRender(); }
+function catSpecReviewPage(d) { _srv.editing = null; _srv.editErr = null;
+  _srv.idx = Math.max(0, Math.min(_srv.pages.length - 1, _srv.idx + d)); srvRender(); }
 function srvRender() {
   var ov = typeof document !== 'undefined' && document.getElementById('srv-ov'); if (!ov) return;
   var head = function (sub) { return '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 8px"><button style="' + BACK + '" onclick="catSpecReviewClose()">\u2039</button>' +
@@ -2387,13 +2406,20 @@ function srvRender() {
       r.kind === 'fill' ? '<span style="color:var(--t3)">you have none</span>' : '<span style="color:var(--t3)">no catalog value</span>';
     var pendTag = r.cat && r.cat.src === 'pending' ? ' <span style="font-size:9px;font-weight:800;color:var(--gold);border:1px solid rgba(214,169,76,0.45);border-radius:3px;padding:0 3px">PENDING</span>' : '';
     var btn = function (lbl, act, primary) { return '<button style="' + (primary ? BTN_P : BTN_G) + 'padding:6px 10px;font-size:12px" onclick="catSpecReviewAct(' + i + ',\'' + act + '\')">' + lbl + '</button>'; };
-    var acts = r.kind === 'match' ? btn('Confirm', 'use', true) : r.kind === 'differ' ? btn('Keep mine', 'keep') + btn('Use catalog', 'use', true) :
-      r.kind === 'fill' ? btn('Use catalog', 'use', true) : btn('Keep mine', 'keep');
+    var acts = btn('Edit', 'edit') + (r.kind === 'match' ? btn('Confirm', 'use', true) : r.kind === 'differ' ? btn('Keep mine', 'keep') + btn('Use catalog', 'use', true) :
+      r.kind === 'fill' ? btn('Use catalog', 'use', true) : btn('Keep mine', 'keep'));
+    /* v30.176: Edit -> your own value in place (starts from the catalog's, else yours) */
+    if (_srv.editing === i) {
+      var start = r.cat ? srvFmt(r.f, r.cat.v) : srvFmt(r.f, r.mine); if (start === '\u2014') start = '';
+      var isNum = r.f === 'RG' || r.f === 'Differential' || r.f === 'IntDiff';
+      acts = '<input id="srv-edit" class="bdet-field-input" value="' + esc(start) + '"' + (isNum ? ' inputmode="decimal"' : r.f === 'DateReleased' ? ' placeholder="YYYY-MM-DD"' : '') + ' style="flex:1;min-width:0;font-size:15px">' +
+        btn('Cancel', 'editcancel') + btn('Save', 'editsave', true);
+    }
     return '<div style="padding:9px 0;border-bottom:1px solid var(--border1)">' +
       '<div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:var(--t2)"><span>' + SRV_LABEL[r.f] + '</span>' + chip + '</div>' +
       '<div style="display:flex;gap:10px;font-size:13px;color:var(--t1);margin:3px 0 6px"><div style="flex:1"><div style="font-size:10px;color:var(--t3)">Yours</div>' + esc(srvFmt(r.f, r.mine)) + '</div>' +
       '<div style="flex:1"><div style="font-size:10px;color:var(--t3)">Catalog' + pendTag + '</div>' + esc(srvFmt(r.f, r.cat && r.cat.v)) + '</div></div>' +
-      '<div style="display:flex;gap:6px;justify-content:flex-end">' + acts + '</div></div>';
+      '<div style="display:flex;gap:6px;justify-content:flex-end;align-items:stretch">' + acts + '</div>' + (_srv.editing === i && _srv.editErr ? '<div style="font-size:12px;color:var(--red);margin-top:4px">' + esc(_srv.editErr) + '</div>' : '') + '</div>';
   }).join('') : '<div style="padding:16px 0;color:var(--teal);font-size:13px">\u2713 All reviewed for this ball.</div>';
   var nM = p.rows.filter(function (r) { return r.kind === 'match'; }).length, nD = p.rows.filter(function (r) { return r.kind === 'differ' || r.kind === 'fill'; }).length;
   var wNote = p.pubWeights.length && p.pubWeights.indexOf(String(p.weight)) < 0 ? '<div style="font-size:11px;color:var(--gold);margin-top:2px">Catalog has no ' + p.weight + ' lb numbers (published: ' + esc(p.pubWeights.join(', ')) + ' lb), so RG / Diff are not compared.</div>' : '';
@@ -2708,26 +2734,26 @@ function catLookBall(ballId) {
   var name = b.BallName, brand = b.MFG;
   catLoad().then(function (rows) { var e = b.CatalogID ? byIdIn(rows, b.CatalogID) : null; if (e) { name = cleanName(e.n); brand = e.m; } return e ? catDetailRaw(e) : null; }, function () { return null; })
   .then(function (d) {
-    _lk = { tabs: lkTabs(brand, name, d && /^https:/.test(d.Source || '') ? d.Source : null), active: 0, mode: 'ball', ballId: b.BallID, brand: brand, ok: {} };
+    _lk = { tabs: lkTabs(brand, name, d && /^https:/.test(d.Source || '') ? d.Source : null), active: 0, mode: 'ball', ballId: b.BallID, brand: brand, name: name, ok: {} };
     var ov = overlay('lk-ov', 940);
     var row = function (f) {
       var id = 'lk-' + f[0], v = b[f[0]], ver = (v == null || v === '' || catSpecUnverified(b, f[0])) ? '' : '<span style="font-size:10px;color:var(--teal);margin-left:6px">\u2713 verified</span>';
       var input = f[2] === 'core' ? '<select id="' + id + '" class="bdet-field-input" style="flex:1;font-size:15px"><option value=""' + (!v ? ' selected' : '') + '>\u2014</option><option' + (/^sym/i.test(v || '') ? ' selected' : '') + '>Symmetrical</option><option' + (/asym/i.test(v || '') ? ' selected' : '') + '>Asymmetrical</option></select>' :
         '<input id="' + id + '" class="bdet-field-input" value="' + esc(v == null ? '' : (f[2] === 'num' && isFinite(parseFloat(v)) ? parseFloat(v).toFixed(3).replace(/0$/, '') : v)) + '"' + (f[2] === 'num' ? ' inputmode="decimal"' : '') + (f[2] === 'date' ? ' placeholder="YYYY-MM-DD"' : '') + ' style="flex:1;min-width:0;box-sizing:border-box;font-size:15px">';
       return '<div style="padding:6px 0"><div style="font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">' + f[1] + ver + '</div>' +
-        '<div style="display:flex;gap:6px;align-items:stretch">' + input + (f[2] !== 'core' ? lkPasteBtn(id, f[2]) : '') +
+        '<div style="display:flex;gap:6px;align-items:stretch">' + input +
         (f[3] ? '<button style="' + BTN_G + 'padding:0 10px;font-size:13px" onclick="catPickOpen(\'' + id + '\')" aria-label="Pick">\u25be</button>' : '') +
         '<button id="lk-ok-' + f[0] + '" style="' + BTN_G + 'padding:0 10px;font-size:13px" onclick="catLookOk(\'' + f[0] + '\')" aria-label="Correct as is">\u2713</button></div></div>';
     };
     ov.innerHTML = '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 6px"><button style="' + BACK + '" onclick="catLookClose()">\u2039</button>' +
       '<div style="flex:1;min-width:0"><div style="font-size:17px;font-weight:800;color:var(--t1)">Look up</div><div style="font-size:11px;color:var(--t3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(b.BallName) + ' \u00b7 ' + esc(brand || '') + ' \u00b7 your ' + esc(b.Weight || 15) + ' lb</div></div></div>' +
       '<div data-lk-body style="flex:1;overflow-y:auto;padding:4px 16px 12px;min-height:0">' +
-        '<div style="font-size:11px;color:var(--t3);line-height:1.45;margin-bottom:4px">Copy in the page, paste here. \u2713 marks a value correct as it is. Saved values count as verified by you.</div>' +
+        spButtonsHTML(bowwwlLinks(brand || '', name), 'catSpBall()', _lk.tabs[1] && _lk.tabs[1].k === 'maker' ? _lk.tabs[1].url : null) +
+        '<div style="font-size:11px;color:var(--t3);line-height:1.45;margin:8px 0 4px">\u2713 marks a value correct as it is. Saved values count as verified by you.</div>' +
         LK_FIELDS.map(row).join('') + '<div id="lk-err" style="font-size:12px;color:var(--red);min-height:16px;margin-top:6px"></div></div>' +
       '<div style="padding:10px 16px;border-top:1px solid var(--border1);display:flex;gap:8px"><button style="' + BTN_G + 'padding:11px" onclick="catLookClose()">Cancel</button>' +
       '<button style="' + BTN_P + 'flex:1;padding:11px" onclick="catLookSave()">Save to ball</button></div>';
     document.body.appendChild(ov);
-    lkMount(ov, ov.querySelector('[data-lk-body]'));
   });
 }
 function catLookOk(f) {
@@ -2765,7 +2791,187 @@ function catLookSave() {
   if (root.toast) root.toast(n ? n + ' field' + (n === 1 ? '' : 's') + ' saved as verified by you' : 'Nothing changed');
   if (typeof root._bdetRenderSpecs === 'function') try { root._bdetRenderSpecs(); } catch (x) {}
 }
+/* Open-page + paste buttons, shared by Correct specs and Look up. */
+function spButtonsHTML(bw, pasteCall, makerUrl) {
+  return '<div style="display:flex;gap:6px"><a href="' + esc(bw.page) + '" target="_blank" rel="noopener noreferrer" style="' + BTN_G + 'flex:1;padding:10px;text-align:center;text-decoration:none;font-size:13px">1. Open bowwwl \u2197</a>' +
+    '<button style="' + BTN_P + 'flex:1;padding:10px;font-size:13px" onclick="' + pasteCall + '">2. Paste page &amp; fill</button></div>' +
+    '<div style="font-size:11px;color:var(--t3);margin-top:4px;line-height:1.45">In Safari: long-press the page text, <b>Select All</b>, <b>Copy</b>, come back and tap 2. ' +
+    (makerUrl ? '<a href="' + esc(makerUrl) + '" target="_blank" rel="noopener noreferrer" style="color:var(--teal)">Maker page \u2197</a> \u00b7 ' : '') +
+    '<a href="' + esc(bw.search) + '" target="_blank" rel="noopener noreferrer" style="color:var(--teal)">Search \u2197</a></div>';
+}
 function catLookClose() { lkUnmount(); var el = document.getElementById('lk-ov'); if (el) el.parentNode.removeChild(el); }
+
+/* ---------- v30.176: Paste page & fill ----------
+   In-app frames are refused by the spec sites, and picking words one at a
+   time on iOS is slow. Instead: open the ball's page in Safari, Select All,
+   Copy, come back, tap "Paste page & fill". The app reads the whole copied
+   page, finds the spec labels it knows (bowwwl, maker and review-site
+   layouts), and shows what it found in a review list: tick, edit, apply.
+   The app still never fetches a site itself. */
+var SP_LABELS = [
+  ['intDiff', /^(?:int(?:ermediate)?\.?\s*diff(?:erential)?\.?|mass\s*bias(?:\s*diff(?:erential)?)?|mb\s*diff\.?|psa)/i],
+  ['diff', /^(?:total\s*diff(?:erential)?\.?|differential|diff\.?)/i],
+  ['rg', /^(?:rg|radius\s*of\s*gyration)/i],
+  ['coverType', /^(?:cover\s*type|coverstock\s*type|cover\s*stock\s*type)/i],
+  ['coverName', /^(?:cover\s*name|coverstock(?:\s*name)?|cover\s*stock|cover)/i],
+  ['finish', /^(?:box\s*finish|factory\s*finish|out[\s-]*of[\s-]*(?:the[\s-]*)?box\s*finish|finish)/i],
+  ['coreType', /^(?:core\s*type|core\s*symmetry|symmetry)/i],
+  ['core', /^(?:core\s*name|weight\s*block|core)/i],
+  ['released', /^(?:release\s*date|released|launch\s*date)/i]];
+var SP_NUM = /(?:^|[^\d.])([0-2]?\.\d{2,3})(?!\d)/;
+var SP_WT = /\b(1[0-6])\s*(?:#|lbs?\.?|pounds?)(?![a-z])/i;
+/* Pure: whole copied page -> {fields, weights, found[], nameSeen}. weight = the ball's weight for unlabelled numbers. */
+function parseSpecText(text, weight, name) {
+  var out = { fields: {}, weights: {}, found: [], nameSeen: null };
+  var lines = String(text || '').replace(/\r/g, '').replace(/\u00a0/g, ' ').split('\n')
+    .map(function (l) { return l.replace(/\t+/g, ' | ').replace(/^[\s\u2022\u00b7*\-\u2013|]+/, '').replace(/\s+/g, ' ').trim(); })
+    .filter(Boolean);
+  var w0 = parseInt(weight, 10) || 15;
+  var setF = function (k, v) {
+    if (k in out.fields || v == null) return;
+    v = String(v).replace(/[\u2122\u00ae]/g, '').replace(/^[:|#\-\s]+/, '').replace(/\s*\|\s*$/, '').trim();
+    if (k === 'released') { var r = tagValueFor('ape-released', v.split(/\s+\|\s+|\s{2,}/)[0]); if (!r.v) return; v = r.v; }
+    else if (k === 'coreType') { if (/asym/i.test(v)) v = 'Asymmetrical'; else if (/sym/i.test(v)) v = 'Symmetrical'; else return; }
+    else { v = v.split(/\s+\|\s+/)[0]; if (!plausibleText(k === 'core' ? 'core' : k, v)) return; }
+    out.fields[k] = v; out.found.push(k);
+  };
+  var setN = function (k, raw, line) {
+    var m = SP_NUM.exec(' ' + raw); if (!m) return;
+    var n = Number(m[1].charAt(0) === '.' ? '0' + m[1] : m[1]);
+    var lim = { rg: [2.30, 2.90], diff: [0, 0.080], intDiff: [0, 0.040] }[k];
+    if (!(n >= lim[0] && n <= lim[1])) return;
+    var wm = SP_WT.exec(line), w = wm ? +wm[1] : w0;
+    var slot = out.weights[w] = out.weights[w] || {};
+    var key = { rg: 'RG', diff: 'Diff', intDiff: 'IntDiff' }[k];
+    if (slot[key] == null) { slot[key] = n; if (out.found.indexOf(k) < 0) out.found.push(k); }
+  };
+  lines.forEach(function (l, i) {
+    var lab = l.replace(/^(1[0-6])\s*(?:#|lbs?\.?|pounds?)\s*[|:]?\s*(?=[a-z])/i, '');   // "16 lbs RG 2.48 ...": the label follows the weight
+    for (var j = 0; j < SP_LABELS.length; j++) {
+      var m = SP_LABELS[j][1].exec(lab); if (!m) continue;
+      if (/[a-z]/.test(lab.charAt(m[0].length))) continue;            // "Coreless", "Finished": not a label (a capital may follow: "Cover NameR2S")
+      var k = SP_LABELS[j][0], rest = lab.slice(m[0].length).replace(/^\s*[:|#\-\u2013]?\s*/, '');
+      if (!rest && lines[i + 1] && !SP_LABELS.some(function (x) { return x[1].test(lines[i + 1]); })) rest = lines[i + 1];   // value on the next line
+      if (k === 'rg' || k === 'diff' || k === 'intDiff') {
+        /* "16 lb RG 2.48 Diff 0.051 Int 0.012" on one line: read each label's own number */
+        setN(k, rest, l);
+        var dm = /\b(?:total\s*)?diff(?:erential)?\.?\s*[:|]?\s*([0-2]?\.\d{2,3})/i.exec(rest); if (k === 'rg' && dm) setN('diff', dm[1], l);
+        var im = /\b(?:int(?:ermediate)?\.?\s*diff\.?|psa|mass\s*bias|mb)\s*[:|]?\s*([0-2]?\.\d{2,3})/i.exec(rest); if (k !== 'intDiff' && im) setN('intDiff', im[1], l);
+      } else setF(k, rest);
+      break;
+    }
+    /* weight table rows without a label first: "15 lb | 2.48 | 0.051 | 0.012" */
+    var wr = /^(1[0-6])\s*(?:#|lbs?\.?|pounds?)\s*[|:]?\s*([0-2]?\.\d{2,3})\s*\|?\s*([0-2]?\.\d{2,3})(?:\s*\|?\s*([0-2]?\.\d{2,3}))?/i.exec(l);
+    if (wr) { var ww = +wr[1], s = out.weights[ww] = out.weights[ww] || {};
+      var a = Number(wr[2]), b = Number(wr[3]);
+      if (s.RG == null && a >= 2.3 && a <= 2.9) s.RG = a; if (s.Diff == null && b <= 0.08) s.Diff = b;
+      if (wr[4] != null && s.IntDiff == null && Number(wr[4]) <= 0.04) s.IntDiff = Number(wr[4]);
+      ['rg', 'diff'].forEach(function (k) { if (out.found.indexOf(k) < 0) out.found.push(k); }); }
+  });
+  if (!out.fields.coreType && out.fields.core && /asym|sym/i.test(out.fields.core)) out.fields.coreType = /asym/i.test(out.fields.core) ? 'Asymmetrical' : 'Symmetrical';
+  if (name) { var f = foldName(name), all = foldName(text); out.nameSeen = !!f && all.indexOf(f) >= 0; }
+  return out;
+}
+/* Clipboard read with a manual fallback box. done(text) */
+function spReadClipboard(done) {
+  if (typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.readText) {
+    navigator.clipboard.readText().then(function (t) { if (t && t.trim()) done(t); else spManual(done); }, function () { spManual(done); });
+  } else spManual(done);
+}
+var _spDone = null;
+function spManual(done) {
+  _spDone = done;
+  var ov = overlay('spm-ov', 945);
+  ov.innerHTML = '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 8px"><button style="' + BACK + '" onclick="catSpManualClose()">\u2039</button>' +
+    '<div style="flex:1"><div style="font-size:17px;font-weight:800;color:var(--t1)">Paste the page</div><div style="font-size:11px;color:var(--t3)">Long-press the box and tap Paste.</div></div></div>' +
+    '<div style="flex:1;padding:0 16px 16px"><textarea id="spm-txt" class="bdet-field-input" style="width:100%;height:60%;box-sizing:border-box;font-size:14px"></textarea></div>' +
+    '<div style="padding:10px 16px;border-top:1px solid var(--border1)"><button style="' + BTN_P + 'width:100%;padding:11px" onclick="catSpManualGo()">Read it</button></div>';
+  document.body.appendChild(ov);
+}
+function catSpManualGo() { var el = document.getElementById('spm-txt'), t = el ? el.value : '', d = _spDone; catSpManualClose(); if (d && t.trim()) d(t); }
+function catSpManualClose() { var el = document.getElementById('spm-ov'); if (el) el.parentNode.removeChild(el); }
+/* Review list. target: { name, weight, rows:[{k, label, cur, inputId, num?}] , apply(values), title } */
+var _sp = null;
+function spOpen(target, parsed) {
+  var rows = [];
+  target.rows.forEach(function (r) {
+    var v = r.w != null ? ((parsed.weights[r.w] || {})[r.wk]) : parsed.fields[r.k];
+    if (v == null || v === '') return;
+    var vs = r.wk ? Number(v).toFixed(3) : String(v);
+    var same = r.cur != null && String(r.cur).trim() !== '' && (r.wk ? Math.abs(Number(r.cur) - Number(v)) < 1e-9 : foldName(r.cur) === foldName(vs));
+    rows.push({ r: r, v: vs, on: !same, same: same });
+  });
+  _sp = { target: target, rows: rows, parsed: parsed };
+  spRender();
+}
+function spRender() {
+  var t = _sp.target, p = _sp.parsed;
+  var warn = p.nameSeen === false ? '<div style="font-size:12px;color:var(--gold);line-height:1.5;margin:4px 0 8px">\u201c' + esc(t.name) + '\u201d does not appear in what you copied. Check it is the right ball\u2019s page.</div>' : '';
+  var list = _sp.rows.map(function (x, i) {
+    return '<div style="display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--border1)">' +
+      '<input type="checkbox" ' + (x.on ? 'checked' : '') + ' onchange="catSpToggle(' + i + ',this.checked)" style="margin-top:22px;width:18px;height:18px">' +
+      '<div style="flex:1;min-width:0"><div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:var(--t2)"><span>' + esc(x.r.label) + '</span>' +
+      (x.same ? '<span style="color:var(--teal);font-weight:600">\u2713 same as now</span>' : x.r.cur != null && String(x.r.cur) !== '' ? '<span style="color:var(--t3);font-weight:600">now: ' + esc(String(x.r.cur)) + '</span>' : '<span style="color:var(--t3);font-weight:600">empty now</span>') + '</div>' +
+      '<input id="sp-v-' + i + '" class="bdet-field-input" value="' + esc(x.v) + '" oninput="catSpEdit(' + i + ',this.value)"' + (x.r.wk ? ' inputmode="decimal"' : '') + ' style="width:100%;box-sizing:border-box;font-size:15px;margin-top:4px"></div></div>';
+  }).join('');
+  var n = _sp.rows.filter(function (x) { return x.on; }).length;
+  var ov = document.getElementById('sp-ov') || overlay('sp-ov', 945);
+  ov.innerHTML = '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 8px"><button style="' + BACK + '" onclick="catSpClose()">\u2039</button>' +
+    '<div style="flex:1;min-width:0"><div style="font-size:17px;font-weight:800;color:var(--t1)">Found on the page</div><div style="font-size:11px;color:var(--t3)">' + esc(t.title || '') + '</div></div></div>' +
+    '<div style="flex:1;overflow-y:auto;padding:0 16px 12px">' + warn +
+    (list || '<div style="padding:24px 0;color:var(--t2);font-size:13px;line-height:1.6">No specs found in what you copied. In Safari, long-press the page text, tap <b>Select All</b>, then <b>Copy</b>, and try again.</div>') +
+    (list ? '<div style="font-size:11px;color:var(--t3);margin-top:8px;line-height:1.45">Edit any value before applying. Unticked rows are left alone.</div>' : '') + '</div>' +
+    '<div style="padding:10px 16px;border-top:1px solid var(--border1);display:flex;gap:8px"><button style="' + BTN_G + 'padding:11px" onclick="catSpClose()">Cancel</button>' +
+    '<button style="' + BTN_P + 'flex:1;padding:11px" ' + (n ? '' : 'disabled ') + 'onclick="catSpApply()">Apply ' + n + '</button></div>';
+  if (!ov.parentNode) document.body.appendChild(ov);
+}
+function catSpToggle(i, on) { if (_sp && _sp.rows[i]) { _sp.rows[i].on = !!on; spRender(); } }
+function catSpEdit(i, v) { if (_sp && _sp.rows[i]) { _sp.rows[i].v = v; if (!_sp.rows[i].on) { _sp.rows[i].on = true; var cb = document.querySelectorAll('#sp-ov input[type=checkbox]')[i]; if (cb) cb.checked = true; } } }
+function catSpClose() { var el = document.getElementById('sp-ov'); if (el) el.parentNode.removeChild(el); _sp = null; }
+function catSpApply() {
+  if (!_sp) return;
+  var n = 0, t = _sp.target;
+  _sp.rows.forEach(function (x) {
+    if (!x.on) return;
+    var el = document.getElementById(x.r.inputId); if (!el) return;
+    var v = String(x.v).trim();
+    if (el.tagName === 'SELECT') { if (/asym/i.test(v)) v = 'Asymmetrical'; else if (/sym/i.test(v)) v = 'Symmetrical'; }
+    el.value = v; el.style.boxShadow = '0 0 0 2px var(--teal)'; (function (e) { setTimeout(function () { e.style.boxShadow = ''; }, 900); })(el); n++;
+  });
+  if (t.after) t.after(n);
+  catSpClose();
+  if (root.toast) root.toast(n + ' field' + (n === 1 ? '' : 's') + ' filled. Check, then save.');
+}
+/* Correct specs sheet */
+function catSpAp() {
+  if (!_apEdit) return;
+  var g = function (id) { var el = document.getElementById(id); return el ? el.value : null; };
+  var rows = [['coverName', 'Coverstock', 'ape-coverName'], ['coverType', 'Cover type', 'ape-coverType'], ['finish', 'Factory finish', 'ape-finish'], ['core', 'Core', 'ape-core'],
+    ['coreType', 'Core type', 'ape-coreType'], ['released', 'Release date', 'ape-released']].map(function (a) { return { k: a[0], label: a[1], inputId: a[2], cur: g(a[2]) }; });
+  [16, 15, 14, 13, 12].forEach(function (w) { [['RG', 'RG'], ['Diff', 'Diff'], ['IntDiff', 'Int Diff']].forEach(function (a) {
+    rows.push({ w: w, wk: a[0], label: w + ' lb ' + a[1], inputId: 'ape-' + w + '-' + a[0], cur: g('ape-' + w + '-' + a[0]) }); }); });
+  spReadClipboard(function (text) {
+    spOpen({ name: _apEdit.ballName, title: _apEdit.ballName, rows: rows, after: function (n) {
+      if (n) { var so = document.getElementById('ape-source'); if (so && so.value === 'maker' && _spFrom === 'bowwwl') so.value = 'bowwwl'; }
+    } }, parseSpecText(text, 15, _apEdit.ballName));
+  });
+}
+var _spFrom = 'bowwwl';
+/* Ball Detail Look up sheet */
+function catSpBall() {
+  var b = appBalls().filter(function (x) { return x.BallID == _lk.ballId; })[0]; if (!b) return;
+  var g = function (id) { var el = document.getElementById(id); return el ? el.value : null; };
+  var w = parseInt(b.Weight, 10) || 15;
+  var rows = [['coverName', 'Coverstock', 'lk-CoverName'], ['coverType', 'Cover type', 'lk-Coverstock'], ['finish', 'Factory finish', 'lk-BoxFinish'], ['core', 'Core', 'lk-CoreShort'],
+    ['coreType', 'Core type', 'lk-CoreType'], ['released', 'Release date', 'lk-DateReleased']].map(function (a) { return { k: a[0], label: a[1], inputId: a[2], cur: g(a[2]) }; });
+  [['RG', 'RG', 'lk-RG'], ['Diff', 'Diff', 'lk-Differential'], ['IntDiff', 'Int Diff', 'lk-IntDiff']].forEach(function (a) { rows.push({ w: w, wk: a[0], label: a[1] + ' (' + w + ' lb)', inputId: a[2], cur: g(a[2]) }); });
+  spReadClipboard(function (text) {
+    var p = parseSpecText(text, w, _lk.name || b.BallName);
+    /* your own ball's Cover type is a class (Solid / Pearl / Hybrid / Urethane) */
+    if (p.fields.coverType || p.fields.coverName) { var cc = coverClass(p.fields.coverType, p.fields.coverName); if (cc) p.fields.coverType = cc.charAt(0).toUpperCase() + cc.slice(1); }
+    spOpen({ name: _lk.name || b.BallName, title: b.BallName, rows: rows }, p);
+  });
+}
 
 /* ---------- v30.174: bowwwl first in "Correct specs" ----------
    The maker page the bridge matched is sometimes a sibling in the lineage
@@ -3001,7 +3207,7 @@ function catApprovalsEdit(i) {
   var _bw = bowwwlLinks(_ee ? _ee.m : (r && r.brand) || '', _bn), _mm = r ? pageMismatch(r.title, _bn) : null;
   var inp = function (id, v, ph) { return '<div class="ape-f"><input id="' + id + '" class="bdet-field-input" value="' + esc(v == null ? '' : v) + '" placeholder="' + esc(ph || '') + '" style="width:100%;box-sizing:border-box;font-size:15px"></div>'; };
   /* v30.173 CAT-NEW-7: type, or pick a value already in use */
-  var inpP = function (id, v, ph) { return '<div style="display:flex;gap:6px;align-items:stretch"><div class="ape-f" style="flex:1">' + inp(id, v, ph).replace(/^<div class="ape-f">|<\/div>$/g, '') + '</div>' + lkPasteBtn(id, 'text') +
+  var inpP = function (id, v, ph) { return '<div style="display:flex;gap:6px;align-items:stretch"><div class="ape-f" style="flex:1">' + inp(id, v, ph).replace(/^<div class="ape-f">|<\/div>$/g, '') + '</div>' +
     '<button style="' + BTN_G + 'padding:0 12px;font-size:13px" onclick="catPickOpen(\'' + id + '\')" aria-label="Pick">\u25be</button></div>'; };
   var lab = function (t) { return '<div style="font-size:11px;font-weight:700;color:var(--t3);margin:10px 0 4px;text-transform:uppercase;letter-spacing:.5px">' + t + '</div>'; };
   var ws = [16, 15, 14, 13, 12];
@@ -3014,10 +3220,8 @@ function catApprovalsEdit(i) {
     '<div data-lk-body style="flex:1;overflow-y:auto;padding:0 16px 16px;min-height:0">' +
     '<div style="font-size:12px;color:var(--t2);line-height:1.5">Change or fill any field. Values shown are what the bridge read; edit them in place.</div>' +
     '<div style="font-size:11px;font-weight:700;color:var(--t3);margin:10px 0 4px;text-transform:uppercase;letter-spacing:.5px">Look it up on bowwwl</div>' +
-    '<button id="lk-toggle" style="' + BTN_P + 'width:100%;padding:10px" onclick="catLookAp()">Look up here (split view)</button>' +
-    '<div style="display:flex;gap:6px;margin-top:6px"><a href="' + esc(_bw.page) + '" target="_blank" rel="noopener noreferrer" style="' + BTN_G + 'flex:1;padding:9px;text-align:center;text-decoration:none;font-size:12px">bowwwl in Safari \u2197</a>' +
-    '<button style="' + BTN_G + 'flex:1;padding:9px;font-size:12px" onclick="catPasteOpen()">Paste from bowwwl</button></div>' +
-    '<div style="font-size:11px;color:var(--t3);margin-top:4px;line-height:1.45">Values used from a paste make this a bowwwl correction (kept on this device). <a href="' + esc(_bw.search) + '" target="_blank" rel="noopener noreferrer" style="color:var(--teal)">Search instead \u2197</a></div>' +
+    spButtonsHTML(_bw, 'catSpAp()') +
+    '<div style="font-size:11px;color:var(--t3);margin-top:4px;line-height:1.45">Values filled from a paste make this a bowwwl correction (kept on this device). <span onclick="catPasteOpen()" style="color:var(--teal);cursor:pointer">Pick by hand instead</span></div>' +
     (_mm ? '<div style="font-size:12px;color:var(--gold);line-height:1.5;margin-top:10px">The maker page read was \u201c' + esc(_mm.page) + '\u201d, not \u201c' + esc(_mm.ball) + '\u201d: it may be a sibling ball, so its values may be wrong.</div>' : '') +
     tagPanelHTML(r && r.rawText, r && r.page) +
     lab('Coverstock') + inpP('ape-coverName', sp.coverName, 'e.g. R2S Pearl Reactive') +
@@ -3298,7 +3502,7 @@ function catCompareAdd(x) {
 
 root.CATALOG_JS_VERSION = CAT_VERSION;
 root.catPickerMount = catPickerMount;
-root.catApprovalsOpen = catApprovalsOpen; root.catLookAp = catLookAp; root.catLookBall = catLookBall; root.catLookTab = catLookTab; root.catLookPaste = catLookPaste; root.catLookOk = catLookOk; root.catLookSave = catLookSave; root.catLookClose = catLookClose; root.catPasteOpen = catPasteOpen; root.catPasteClose = catPasteClose; root.catPasteClip = catPasteClip; root.catPasteShow = catPasteShow; root.catFillToggle = catFillToggle; root.catFillClose = catFillClose; root.catFillConfirm = catFillConfirm; root.catPageOpen = catPageOpen; root.catPageClose = catPageClose; root.catPageUseSel = catPageUseSel; root.catPageUseVal = catPageUseVal; root.catPageImg = catPageImg; root.catPickOpen = catPickOpen; root.catPickFilter = catPickFilter; root.catPickChoose = catPickChoose; root.catPickClose = catPickClose; root.catSpecReviewOpen = catSpecReviewOpen; root.catSpecReviewClose = catSpecReviewClose; root.catSpecReviewAct = catSpecReviewAct; root.catSpecReviewBulk = catSpecReviewBulk; root.catSpecReviewPage = catSpecReviewPage; root.catTagPick = catTagPick; root.catTagCancel = catTagCancel; root.catVerifyRefresh = catVerifyRefresh; root.catVerifyDismiss = catVerifyDismiss; root.catVerifyRetry = catVerifyRetry; root.catVerifyOpenApprovals = catVerifyOpenApprovals; root.catVerifyPublish = catVerifyPublish; root.catVerifyApply = catVerifyApply; root.catVerifyTick = vfyTick; root.catVerifyState = vfyActive; root.catApprovalsRetryStaged = catApprovalsRetryStaged; root.apStagedErrText = apStagedErrText; root.catApprovalsClose = catApprovalsClose; root.catApprovalsSaveToken = catApprovalsSaveToken;
+root.catApprovalsOpen = catApprovalsOpen; root.catSpAp = catSpAp; root.catSpBall = catSpBall; root.catSpToggle = catSpToggle; root.catSpEdit = catSpEdit; root.catSpClose = catSpClose; root.catSpApply = catSpApply; root.catSpManualGo = catSpManualGo; root.catSpManualClose = catSpManualClose; root.catLookAp = catLookAp; root.catLookBall = catLookBall; root.catLookTab = catLookTab; root.catLookPaste = catLookPaste; root.catLookOk = catLookOk; root.catLookSave = catLookSave; root.catLookClose = catLookClose; root.catPasteOpen = catPasteOpen; root.catPasteClose = catPasteClose; root.catPasteClip = catPasteClip; root.catPasteShow = catPasteShow; root.catFillToggle = catFillToggle; root.catFillClose = catFillClose; root.catFillConfirm = catFillConfirm; root.catPageOpen = catPageOpen; root.catPageClose = catPageClose; root.catPageUseSel = catPageUseSel; root.catPageUseVal = catPageUseVal; root.catPageImg = catPageImg; root.catPickOpen = catPickOpen; root.catPickFilter = catPickFilter; root.catPickChoose = catPickChoose; root.catPickClose = catPickClose; root.catSpecReviewOpen = catSpecReviewOpen; root.catSpecReviewClose = catSpecReviewClose; root.catSpecReviewAct = catSpecReviewAct; root.catSpecReviewBulk = catSpecReviewBulk; root.catSpecReviewPage = catSpecReviewPage; root.catTagPick = catTagPick; root.catTagCancel = catTagCancel; root.catVerifyRefresh = catVerifyRefresh; root.catVerifyDismiss = catVerifyDismiss; root.catVerifyRetry = catVerifyRetry; root.catVerifyOpenApprovals = catVerifyOpenApprovals; root.catVerifyPublish = catVerifyPublish; root.catVerifyApply = catVerifyApply; root.catVerifyTick = vfyTick; root.catVerifyState = vfyActive; root.catApprovalsRetryStaged = catApprovalsRetryStaged; root.apStagedErrText = apStagedErrText; root.catApprovalsClose = catApprovalsClose; root.catApprovalsSaveToken = catApprovalsSaveToken;
 root.catApprovalsForgetToken = catApprovalsForgetToken; root.catApprovalsChangeToken = catApprovalsChangeToken; root.catApprovalsPage = catApprovalsPage; root.catApprovalsFilter = catApprovalsFilter;
 root.catApprovalsTick = catApprovalsTick; root.catApprovalsEdit = catApprovalsEdit; root.catApprovalsEditClose = catApprovalsEditClose; root.catApprovalsEditSave = catApprovalsEditSave; root.catAddSpecsOnly = catAddSpecsOnly; root.catVerifyNow = catVerifyNow; root.catImagesSet = catImagesSet;
 root.catImagesRefresh = catImagesRefresh; root.catImagesStatus = catImagesStatus; root.catImageFor = catImageFor; root.catApprovalsSend = catApprovalsSend; root.catApprovalsPublish = catApprovalsPublish; root.catPickerSearch = catPickerSearch;
@@ -3329,7 +3533,7 @@ root._catStep5 = { norm: norm, modelKey: modelKey, lookupIn: lookupIn, searchIn:
                    buildOwnedBall: buildOwnedBall, ballFromSpecs: ballFromSpecs, fillPlan: fillPlan,
                    catSpecSource: catSpecSource, setFilled: function (f) { _filled = f; },
                    imgLinksFrom: imgLinksFrom, sheetState: function () { return _sheet; }, mergeOverrides: mergeOverrides, withLocalCorrection: withLocalCorrection, apApplyOverride: apApplyOverride, apOverrideFrom: apOverrideFrom, bowwwlLinks: bowwwlLinks, apStagedFor: apStagedFor, apAsDetail: apAsDetail, apRangeNotes: apRangeNotes, derivedCoverType: derivedCoverType, specGaps: specGaps, nearestWeight: nearestWeight, addListHTML: addListHTML, sourceForBrand: sourceForBrand, apParseIssue: apParseIssue, apPages: apPages, apApplyTicks: apApplyTicks, apConflict: apConflict, apNums: apNums,
-                   verifyPlan: verifyPlan, lkTabs: lkTabs, lkPasteValue: lkPasteValue, lkBallChanges: lkBallChanges, pageMismatch: pageMismatch, pasteLines: pasteLines, plausibleText: plausibleText, proseFields: proseFields, pgvClean: pgvClean, vocabMerge: vocabMerge, vocabSplit: vocabSplit, familyOf: familyOf, srvRows: srvRows, srvApply: srvApply, srvStagedRow: srvStagedRow, vfyPagesFor: vfyPagesFor, vfyEstimateFrom: vfyEstimateFrom, tagLine: tagLine, tagLines: tagLines, tagValueFor: tagValueFor, vfyPickRun: vfyPickRun, vfyClassify: vfyClassify, vfyCardHTML: vfyCardHTML, specMatch: specMatch, coreNameMatch: coreNameMatch, DIFF_MAX: DIFF_MAX, metricUnverified: metricUnverified, catSpecUnverified: catSpecUnverified,
+                   verifyPlan: verifyPlan, srvEditValue: srvEditValue, parseSpecText: parseSpecText, lkTabs: lkTabs, lkPasteValue: lkPasteValue, lkBallChanges: lkBallChanges, pageMismatch: pageMismatch, pasteLines: pasteLines, plausibleText: plausibleText, proseFields: proseFields, pgvClean: pgvClean, vocabMerge: vocabMerge, vocabSplit: vocabSplit, familyOf: familyOf, srvRows: srvRows, srvApply: srvApply, srvStagedRow: srvStagedRow, vfyPagesFor: vfyPagesFor, vfyEstimateFrom: vfyEstimateFrom, tagLine: tagLine, tagLines: tagLines, tagValueFor: tagValueFor, vfyPickRun: vfyPickRun, vfyClassify: vfyClassify, vfyCardHTML: vfyCardHTML, specMatch: specMatch, coreNameMatch: coreNameMatch, DIFF_MAX: DIFF_MAX, metricUnverified: metricUnverified, catSpecUnverified: catSpecUnverified,
                    metricScore: metricScore, parseFinish: parseFinish, rgBand: rgBand, diffBand: diffBand, coverClass: coverClass,
                    catMetric: catMetric, sheetHTML: sheetHTML, cmpColOwned: cmpColOwned, cmpColCatalog: cmpColCatalog, cmpRows: cmpRows,
                    cmpHTML: cmpHTML, cmpState: function () { return _cmp; }, setSheet: function (x) { _sheet = x; } };
