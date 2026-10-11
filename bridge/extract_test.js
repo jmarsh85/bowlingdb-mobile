@@ -269,5 +269,14 @@ X.resolveConflicts(same); ok(same[0].decision === 'auto' && same[1].decision ===
   ok(X.mergeProduct(lr, pr) && lr.specs.weights[16].RG === 2.47 && lr.specs.weights[15].RG === 2.48, 'product page adds weights, listing weight kept');
   ok(lr.specs.coreType === 'Symmetrical' && lr.specs.released === '2022-10-01' && lr.imageUrl === 'https://i/p.png', 'product page fills core type, date, image');
   ok(X.mergeProduct(lr, pr) === false, 'nothing new -> no change');
+  /* v30.172 CAT-NEW-2: rawText = the spec lines the parser read */
+  const sbk = X.specBlock('Unbeatable Ball Motion! The original Anger introduced a whole new level of hook for every bowler on every lane condition and more words here to pass the cap\nCoverstock: R2S Pearl Reactive\n16 lb RG 2.48 Diff 0.051\nAdd to cart $189.95\nCoverstock: R2S Pearl Reactive\nFinish: 1500 Grit Polished\nShop all bags');
+  ok(sbk === 'Coverstock: R2S Pearl Reactive\n16 lb RG 2.48 Diff 0.051\nFinish: 1500 Grit Polished', 'specBlock keeps spec lines once, drops marketing, prices, junk: ' + JSON.stringify(sbk));
+  const bigR = Array.from({ length: 400 }, (_, i) => 'RG 2.' + String(400 + i)).join('\n');
+  ok(X.specBlock(bigR).length <= X.RAW_CAP && /\nRG 2\.\d+$/.test(X.specBlock(bigR)), 'capped at a line boundary');
+  ok(X.specBlock('', null) === null, 'nothing -> null');
+  const stgR = JSON.parse(fs.readFileSync(path.join(tmp, 'st', 'specs_staging.json'), 'utf8'));
+  ok(stgR.length && stgR.every(r => r.rawText == null || (typeof r.rawText === 'string' && r.rawText.length <= X.RAW_CAP)) && stgR.some(r => /RG|Diff/i.test(r.rawText || '')), 'staged rows carry rawText');
+  ok(!stgR.some(r => /Unbeatable/.test(r.rawText || '')), 'rawText has no marketing copy');
   console.log('extract_test: ' + n + ' checks passed');
 })().catch(e => { console.error('FAIL', e.message); process.exit(1); });
