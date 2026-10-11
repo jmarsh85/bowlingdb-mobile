@@ -36,7 +36,7 @@
 'use strict';
 
 /* v30.169: shown in the app header when it differs from the build's EXPECTED_CATALOG_JS */
-var CAT_VERSION  = 'v30.172';
+var CAT_VERSION  = 'v30.173';
 var CAT_BASE     = 'https://raw.githubusercontent.com/jmarsh85/bowlingdb-mobile/dist/';
 var CAT_DB       = 'BowlingDB_Catalog';
 var CAT_DB_VER   = 1;
@@ -481,7 +481,7 @@ function catLinkLabel(b) {
     /* v30.172 CAT-NEW-4: the progress card replaces the button while a check runs for this ball */
     var _va = vfyActive(), _vmine = _va && _va.catalogId === e.i;
     if (e && sourceForBrand(e.m) && (_vmine || SPEC_FIELDS.some(function (f) { return catSpecUnverified(b, f); })))
-      el.innerHTML += vfySlotHTML(e.i, '<div><button style="' + BTN_G + 'margin-top:6px;padding:5px 10px;font-size:11px" onclick="catVerifyNow(\'' + esc(e.m) + '\',\'' + esc(e.i) + '\',' + JSON.stringify(b.BallID).replace(/"/g, '&quot;') + ')">Verify now</button></div>');
+      el.innerHTML += vfySlotHTML(e.i, '<div><button style="' + BTN_G + 'margin-top:6px;padding:5px 10px;font-size:11px" onclick="catVerifyNow(\'' + esc(e.m) + '\',\'' + esc(e.i) + '\',' + JSON.stringify(b.BallID).replace(/"/g, '&quot;') + ')">Verify now</button> <button style="' + BTN_G + 'margin-top:6px;padding:5px 10px;font-size:11px" onclick="catSpecReviewOpen(' + JSON.stringify(b.BallID).replace(/"/g, '&quot;') + ')">Review specs</button></div>');
     /* DATA-2: confirm matching legacy specs; a second render finds nothing left, so no loop */
     catAutoVerify(b).then(function (n) {
       if (n && typeof root._bdetRenderSpecs === 'function' && document.getElementById(slot)) root._bdetRenderSpecs();
@@ -1818,7 +1818,7 @@ function apSheetHTML(r) {
     '<span style="color:var(--t3)">' + k + '</span><span style="color:var(--t1);text-align:right">' + v + '</span></div>'; };
   var dct = derivedCoverType(sp.coverName);
   var h = '<div style="margin-top:8px">' +
-    row('Coverstock', sp.coverName ? esc(sp.coverName) : dash) +
+    row('Coverstock', sp.coverName ? esc(sp.coverName) + (ed.coverName ? tag : '') : dash) +
     row('Cover type', sp.coverType ? esc(sp.coverType) + (ed.coverType ? tag : '') : (dct ? esc(dct) + ' <span style="font-size:10px;color:var(--t3)">from name</span>' : dash)) +
     row('Factory finish', sp.finish ? esc(sp.finish) + (ed.finish ? tag : '') : dash) +
     row('Core', sp.core ? esc(sp.core) + (ed.core ? tag : '') : dash) +
@@ -1834,7 +1834,7 @@ function apSheetHTML(r) {
   if (ws.length && ws.indexOf(15) < 0) h += '<div style="font-size:11px;color:var(--gold);margin-top:4px">15 lb not on this page</div>';
   /* a range failure that has since been corrected is shown as resolved */
   var rn = apRangeNotes((r.flags || []).filter(function (f) { var m = /^out-of-range:(\d+):(\w+)=/.exec(f); return !(m && edw[m[1]] && edw[m[1]][m[2]] != null); }));
-  if (Object.keys(edw).length || Object.keys(ed).some(function (k) { return ['coverType','finish','core','coreType','released'].indexOf(k) >= 0; }))
+  if (Object.keys(edw).length || Object.keys(ed).some(function (k) { return ['coverName','coverType','finish','core','coreType','released'].indexOf(k) >= 0; }))
     h += '<div style="font-size:11px;color:var(--teal);margin-top:6px">* corrected by you \u00b7 source: ' + esc(ed.source === 'bowwwl' ? 'bowwwl.com (personal use)' : ed.source === 'other' ? 'other' : 'maker sheet') + (ed.note ? ' \u00b7 ' + esc(ed.note) : '') + '</div>';
   if (rn.length) h += '<div style="font-size:11px;color:var(--red);margin-top:6px;line-height:1.45">' + rn.map(esc).join('<br>') + '</div>';
   var sc = r.mfgScales || {}, scs = Object.keys(sc).map(function (k) { return esc(k.replace(/([A-Z])/g, ' $1').toLowerCase()) + ' ' + esc(sc[k]); });
@@ -1867,7 +1867,11 @@ function catImagesStatus() {
   return { on: imgOn(), count: Object.keys(imgMap()).length, at: at, token: !!apToken() };
 }
 /* Image for a catalog entry on this device, or null. */
-function catImageFor(id) { return (imgOn() && id) ? (imgMap()[id] || null) : null; }
+function catImageFor(id) {
+  if (!id) return null;
+  var pk = imgPicks()[id]; if (pk) return pk;          // v30.173: picked in Page view, this device only
+  return imgOn() ? (imgMap()[id] || null) : null;
+}
 
 /* ---------- APP-2: Verify now (design rev 7, sec 15) ----------
    Starts specs-extract for the ball's manufacturer site (the workflow's
@@ -1893,7 +1897,7 @@ function sourceForBrand(m) {
 var VFY_STEPS = ['extract', 'results', 'approve', 'publish', 'rebuild', 'recheck'];
 var VFY_LABEL = { extract: 'Re-read the maker\u2019s site', results: 'Results for this ball', approve: 'Approve',
   publish: 'Publish', rebuild: 'Catalog rebuild', recheck: 'Re-check this ball' };
-var VFY_POLL_MS = 15000, VFY_START_GRACE_MS = 6 * 60000, VFY_REFRESH_GRACE_MS = 6 * 60000;
+var VFY_POLL_MS = 15000, VFY_START_GRACE_MS = 10 * 60000, VFY_REFRESH_GRACE_MS = 6 * 60000;
 var _vfyBusy = false, _vfyTimer = null;
 function vfyState() { var l = apLS(); try { return JSON.parse((l && l.getItem(VERIFY_KEY)) || 'null'); } catch (e) { return null; } }
 function vfySave(s) { var l = apLS(); if (l) { if (s) l.setItem(VERIFY_KEY, JSON.stringify(s)); else l.removeItem(VERIFY_KEY); } vfyPaint(); }
@@ -1923,6 +1927,28 @@ function vfyClassify(rows, boxes, id) {
   if (mine.length) return { kind: 'nospecs', reasons: mine.map(function (r) { return r.reason; }).filter(Boolean), sources: srcs };
   return { kind: 'missing' };
 }
+/* v30.173: pages already known for this ball (staging rows naming it, this source). */
+function vfyPagesFor(rows, id, src) {
+  var out = [];
+  (rows || []).forEach(function (r) {
+    if (!r.url || (src && r.source !== src)) return;
+    if (r.catalogId === id || (r.candidates || []).indexOf(id) >= 0) { if (out.indexOf(r.url) < 0) out.push(r.url); }
+  });
+  return out.slice(0, 5);
+}
+/* Pure: minutes a past whole-site run took, from a runs list (run-name "specs-extract <src>"). */
+function vfyEstimateFrom(runs, src) {
+  var dur = function (r) { var a = Date.parse(r.run_started_at || r.created_at), b = Date.parse(r.updated_at); return isFinite(a) && isFinite(b) && b > a ? Math.round((b - a) / 60000) : null; };
+  var ok = (runs || []).filter(function (r) { return r.status === 'completed' && r.conclusion === 'success'; });
+  var mine = ok.filter(function (r) { return r.display_title === 'specs-extract ' + src; })[0];
+  if (mine && dur(mine) != null) return { min: Math.max(1, dur(mine)), basis: src };
+  var all = ok.filter(function (r) { return r.display_title === 'specs-extract all'; })[0];
+  if (all && dur(all) != null) return { min: Math.max(1, dur(all)), basis: 'all' };
+  return null;
+}
+function vfyEstimate(src) {
+  return apGH('/actions/workflows/specs-extract.yml/runs?per_page=30').then(function (r) { return vfyEstimateFrom(r && r.workflow_runs, src); }, function () { return null; });
+}
 function catVerifyNow(brand, catalogId, ballId) {
   var src = sourceForBrand(brand);
   if (!src) { if (root.toast) root.toast('No manufacturer site in the bridge for ' + (brand || 'this brand') + ' yet'); return Promise.resolve(null); }
@@ -1930,18 +1956,32 @@ function catVerifyNow(brand, catalogId, ballId) {
   var cur = vfyActive();
   if (cur && !cur.done && cur.catalogId !== catalogId && root.confirm &&
       !root.confirm('A check for ' + (cur.title || cur.catalogId) + ' is still running. Replace it with this one?')) return Promise.resolve(null);
-  var base = 0, title = null;
+  var base = 0, title = null, pages = [], est = null;
   return catLoad().then(function (rows) { var e = byIdIn(rows, catalogId); title = e ? cleanName(e.n) : null; }, function () {})
-  .then(function () { return vfyLatestId('specs-extract.yml'); }).then(function (id) { base = id; return apGH(''); }).then(function (repo) {
-    return apGH('/actions/workflows/specs-extract.yml/dispatches', { method: 'POST',
-      body: { ref: repo.default_branch || 'main', inputs: { only: src, limit: '0', since: '2023' } } });
-  }).then(function () {
-    vfySave({ v: 2, src: src, brand: brand, catalogId: catalogId || null, ballId: ballId == null ? null : ballId,
-      title: title, step: 'extract', at: env.now(), base: base, log: {} });
-    if (root.toast) root.toast('Checking the ' + src + ' site. Progress shows on this ball.');
-    vfyArm(); return src;
+  .then(function () { return apReadStaged().then(function (rows) { pages = vfyPagesFor(rows, catalogId, src); }, function () {}); })
+  .then(function () {
+    if (pages.length) return true;
+    /* no page known: only a whole-site run can look for it, which is slow */
+    return vfyEstimate(src).then(function (e) {
+      est = e;
+      var t = e ? 'about ' + e.min + ' min' + (e.basis === 'all' ? ' (last full run; one site is usually shorter)' : '') : 'up to 30 min or more';
+      return !root.confirm || root.confirm('No page is known for ' + (title || 'this ball') + ' yet, so this re-reads the whole ' + src + ' site. Last time that took ' + t + '. Start it?');
+    });
+  }).then(function (go) {
+    if (!go) return null;
+    return vfyLatestId('specs-extract.yml').then(function (id) { base = id; return apGH(''); }).then(function (repo) {
+      var inputs = { only: src, limit: '0', since: '2023' };
+      if (pages.length) inputs.pages = pages.join(',');
+      return apGH('/actions/workflows/specs-extract.yml/dispatches', { method: 'POST', body: { ref: repo.default_branch || 'main', inputs: inputs } });
+    }).then(function () {
+      vfySave({ v: 2, src: src, brand: brand, catalogId: catalogId || null, ballId: ballId == null ? null : ballId,
+        title: title, step: 'extract', at: env.now(), base: base, log: {}, mode: pages.length ? 'pages' : 'site', pages: pages.length, est: est ? est.min : null });
+      if (root.toast) root.toast(pages.length ? 'Re-reading this ball\u2019s page (1\u20133 min).' : 'Re-reading the ' + src + ' site. Progress shows on this ball.');
+      vfyArm(); return src;
+    });
   }).catch(function (e) {
-    if (root.toast) root.toast(e.status === 403 || e.status === 404 ? 'Token needs Actions read and write' : ('Verify failed: ' + (e.status ? 'GitHub ' + e.status : 'offline')));
+    if (root.toast) root.toast(e.status === 422 ? 'Upload the new specs-extract.yml (it adds the pages input)' :
+      e.status === 403 || e.status === 404 ? 'Token needs Actions read and write' : ('Verify failed: ' + (e.status ? 'GitHub ' + e.status : 'offline')));
     return null;
   });
 }
@@ -2062,7 +2102,8 @@ function vfyCardHTML(s) {
     var done = s.done && !stop ? true : i < at, cur = i === at && !(s.done && !stop);
     var mark = done ? '<span style="color:var(--teal)">\u2713</span>' : cur ? (s.err ? '<span style="color:var(--red)">!</span>' : '<span style="color:var(--gold)">\u25cf</span>') : '<span style="color:var(--t3)">\u25cb</span>';
     var sub = '';
-    if (k === 'extract') sub = s.src + (cur && !s.err ? ' \u00b7 a few minutes' : '') + (s.runUrl ? ' \u00b7 <a href="' + esc(s.runUrl) + '" target="_blank" rel="noopener noreferrer" style="color:var(--teal)">run \u2197</a>' : '');
+    if (k === 'extract') sub = (s.mode === 'pages' ? 'This ball\u2019s page' + (s.pages > 1 ? 's (' + s.pages + ')' : '') + (cur && !s.err ? ' \u00b7 1\u20133 min' : '') :
+      'Whole ' + s.src + ' site' + (cur && !s.err ? ' \u00b7 ' + (s.est ? 'about ' + s.est + ' min' : 'up to 30 min or more') : '')) + (s.runUrl ? ' \u00b7 <a href="' + esc(s.runUrl) + '" target="_blank" rel="noopener noreferrer" style="color:var(--teal)">run \u2197</a>' : '');
     if (k === 'results' && s.result) sub = s.result.kind === 'auto' ? 'Matched, publishes without approval' : s.result.kind === 'approve' ? s.result.boxes + ' to review' :
       s.result.kind === 'nospecs' ? 'Page found, but no usable specs' + (s.result.reasons && s.result.reasons.length ? ' (' + esc(s.result.reasons.join(', ')) + ')' : '') : 'Not found on the maker\u2019s site';
     if (k === 'approve' && i < at) sub = s.approve === 'auto' ? 'Not needed' : 'Approved';
@@ -2156,6 +2197,157 @@ if (typeof document !== 'undefined' && document.addEventListener) {
   setTimeout(function () { if (vfyActive()) { vfyPaint(); vfyArm(); vfyTick(); } }, 1500);
 }
 
+/* ---------- v30.173 CAT-NEW-8: Review my specs ----------
+   Pages through owned, catalog-linked balls with unverified (or empty) spec
+   fields. Each field: your value beside the catalog's (published, or pending
+   from staging, labelled), with Keep mine / Use catalog, per ball and in bulk.
+   No extract run. Tags: Keep mine -> 'user'; Use catalog -> 'catalog' when the
+   value is published, 'user' when it is pending (you vouched for it). Numbers
+   only at the ball's own weight (never the nearest published weight). */
+var SRV_LABEL = { CoverName: 'Coverstock', Coverstock: 'Cover type', BoxFinish: 'Factory finish', CoreShort: 'Core', CoreType: 'Core type',
+  RG: 'RG', Differential: 'Diff', IntDiff: 'Int Diff', DateReleased: 'Release date' };
+var SRV_ORDER = ['CoverName', 'Coverstock', 'BoxFinish', 'CoreShort', 'CoreType', 'RG', 'Differential', 'IntDiff', 'DateReleased'];
+var _srv = { pages: [], idx: 0, busy: false, err: null, focus: null, noStaged: false };
+/* Pure: best staging row for a USBC ball (auto, then pending naming it, then a colourway family). */
+function srvStagedRow(rows, id) {
+  var pick = function (f) { return (rows || []).filter(f)[0] || null; };
+  return pick(function (r) { return r.decision === 'auto' && r.catalogId === id; }) ||
+    pick(function (r) { return r.decision === 'pending' && r.catalogId === id; }) ||
+    pick(function (r) { return r.decision === 'pending' && (r.candidates || []).indexOf(id) >= 0; });
+}
+/* Pure: review rows for one ball. pub / pend are ballFromSpecs() shapes (or {}). */
+function srvRows(ball, pub, pend) {
+  var out = [], has = function (v) { return v != null && v !== ''; };
+  var tagOf = function (f) { return (ball.SpecSource || {})[f]; };
+  var catObj = {};
+  SRV_ORDER.forEach(function (f) { catObj[f] = has(pub[f]) ? pub[f] : has(pend[f]) ? pend[f] : null; });
+  SRV_ORDER.forEach(function (f) {
+    var mine = ball[f], t = tagOf(f);
+    if (t === 'user' || t === 'catalog') return;                     // already verified
+    var cv = has(pub[f]) ? { v: pub[f], src: 'published' } : has(pend[f]) ? { v: pend[f], src: 'pending' } : null;
+    if (!has(mine) && !cv) return;                                    // nothing either side
+    var kind = !has(mine) ? 'fill' : !cv ? 'nocat' : specMatch(f, ball, catObj) ? 'match' : 'differ';
+    out.push({ f: f, mine: has(mine) ? mine : null, cat: cv, kind: kind });
+  });
+  return out;
+}
+/* Mutates the ball. action: 'keep' | 'use'. Returns true when something changed. */
+function srvApply(ball, row, action) {
+  ball.SpecSource = ball.SpecSource || {};
+  if (action === 'keep' && row.mine != null) { ball.SpecSource[row.f] = 'user'; return true; }
+  if (action === 'use' && row.cat) { ball[row.f] = row.cat.v; ball.SpecSource[row.f] = row.cat.src === 'published' ? 'catalog' : 'user'; return true; }
+  return false;
+}
+function srvFmt(f, v) {
+  if (v == null) return '\u2014';
+  if (f === 'RG' || f === 'Differential' || f === 'IntDiff') { var n = parseFloat(v); return isFinite(n) ? n.toFixed(3) : String(v); }
+  return String(v);
+}
+function srvLoad() {
+  _srv.busy = true; srvRender();
+  var balls = appBalls().filter(function (b) { return b.CatalogID && b.BallID != null && !b.Archived; });
+  var staged = null;
+  var stP = apToken() ? apReadStaged().then(function (r) { staged = r; }, function () { _srv.noStaged = true; }) : Promise.resolve(_srv.noStaged = true);
+  return Promise.all([catLoad(), stP]).then(function (res) {
+    var rows = res[0];
+    return balls.reduce(function (p, b) {
+      return p.then(function (acc) {
+        var e = byIdIn(rows, b.CatalogID), w = parseInt(b.Weight, 10) || 15;
+        return (e ? catDetailRaw(e) : Promise.resolve(null)).catch(function () { return null; }).then(function (d) {
+          var pub = d ? ballFromSpecs(specsOf(d, w)) : {};
+          var sr = staged ? srvStagedRow(staged, b.CatalogID) : null;
+          var pend = sr ? ballFromSpecs(specsOf(apAsDetail(apApplyOverride(sr, overrideFor(b.CatalogID))), w)) : {};
+          var rws = srvRows(b, pub, pend);
+          if (rws.length) acc.push({ ball: b, entry: e, weight: w, pubWeights: d ? Object.keys(d.SpecsByWeight || {}) : [], rows: rws, pub: pub, pend: pend });
+          return acc;
+        });
+      });
+    }, Promise.resolve([]));
+  }).then(function (pages) {
+    pages.sort(function (a, b) { return String(a.ball.BallName).localeCompare(String(b.ball.BallName)); });
+    _srv.pages = pages; _srv.idx = 0; _srv.err = null;
+    if (_srv.focus != null) { var i = pages.map(function (p) { return p.ball.BallID; }).indexOf(_srv.focus); if (i >= 0) _srv.idx = i; _srv.focus = null; }
+  }).catch(function (e) { _srv.err = e.message || String(e); }).then(function () { _srv.busy = false; srvRender(); });
+}
+function catSpecReviewOpen(ballId) {
+  if (typeof document === 'undefined') return;
+  var mb = document.getElementById('modal-bg');
+  if (mb && mb.classList.contains('open') && typeof root.closeModal === 'function') root.closeModal();
+  catSpecReviewClose();
+  document.body.appendChild(overlay('srv-ov', 906));
+  _srv.focus = ballId == null ? null : ballId;
+  return srvLoad();
+}
+function catSpecReviewClose() {
+  var el = document.getElementById('srv-ov'); if (el) el.parentNode.removeChild(el);
+  if (typeof root._bdetRenderSpecs === 'function' && document.getElementById('bdet-pane-specs')) try { root._bdetRenderSpecs(); } catch (e) {}
+}
+function srvRecount(p) {
+  var b = p.ball; p.rows = srvRows(b, p.pub, p.pend);
+}
+function srvCommit(msg) { if (root.saveDB) root.saveDB(); if (msg && root.toast) root.toast(msg); srvRender(); }
+function catSpecReviewAct(i, action) {
+  var p = _srv.pages[_srv.idx]; if (!p) return;
+  var r = p.rows[i]; if (!r) return;
+  if (srvApply(p.ball, r, action)) { srvRecount(p); srvCommit(null); }
+}
+/* scope: 'ball' (this page) or 'all'; what: 'matches' | 'differences' */
+function catSpecReviewBulk(scope, what) {
+  var list = scope === 'all' ? _srv.pages : [_srv.pages[_srv.idx]].filter(Boolean);
+  var n = 0;
+  if (what === 'differences' && root.confirm && !root.confirm('Replace ' + (scope === 'all' ? 'every' : 'this ball\u2019s') + ' differing value with the catalog\u2019s?')) return;
+  list.forEach(function (p) {
+    p.rows.forEach(function (r) {
+      if (what === 'matches' && r.kind === 'match') n += srvApply(p.ball, r, 'use') ? 1 : 0;
+      if (what === 'differences' && (r.kind === 'differ' || r.kind === 'fill')) n += srvApply(p.ball, r, 'use') ? 1 : 0;
+    });
+    srvRecount(p);
+  });
+  srvCommit(n + ' field' + (n === 1 ? '' : 's') + ' confirmed');
+}
+function catSpecReviewPage(d) { _srv.idx = Math.max(0, Math.min(_srv.pages.length - 1, _srv.idx + d)); srvRender(); }
+function srvRender() {
+  var ov = typeof document !== 'undefined' && document.getElementById('srv-ov'); if (!ov) return;
+  var head = function (sub) { return '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 8px"><button style="' + BACK + '" onclick="catSpecReviewClose()">\u2039</button>' +
+    '<div style="flex:1;min-width:0"><div style="font-size:17px;font-weight:800;color:var(--t1)">Review my specs</div><div style="font-size:11px;color:var(--t3)">' + sub + '</div></div></div>'; };
+  if (_srv.busy) { ov.innerHTML = head('Loading\u2026') + '<div style="padding:30px;text-align:center;color:var(--t3);font-size:13px">Comparing your balls with the catalog\u2026</div>'; return; }
+  var pending = _srv.pages.filter(function (p) { return p.rows.length; });
+  var allMatches = 0; _srv.pages.forEach(function (p) { p.rows.forEach(function (r) { if (r.kind === 'match') allMatches++; }); });
+  var p = _srv.pages[_srv.idx];
+  var note = (_srv.err ? '<div style="font-size:12px;color:var(--red);margin:0 16px 8px">' + esc(_srv.err) + '</div>' : '') +
+    (_srv.noStaged ? '<div style="font-size:11px;color:var(--t3);margin:0 16px 6px">Published catalog only (pending specs need the GitHub token).</div>' : '');
+  if (!p) { ov.innerHTML = head('Nothing to review') + note + '<div style="padding:30px 16px;text-align:center;color:var(--t2);font-size:13px;line-height:1.6">Every linked ball\u2019s specs are verified, or the catalog has nothing to compare yet.</div>'; return; }
+  var b = p.ball;
+  var rowsH = p.rows.length ? p.rows.map(function (r, i) {
+    var chip = r.kind === 'match' ? '<span style="color:var(--teal)">\u2713 same</span>' : r.kind === 'differ' ? '<span style="color:var(--gold)">differs</span>' :
+      r.kind === 'fill' ? '<span style="color:var(--t3)">you have none</span>' : '<span style="color:var(--t3)">no catalog value</span>';
+    var pendTag = r.cat && r.cat.src === 'pending' ? ' <span style="font-size:9px;font-weight:800;color:var(--gold);border:1px solid rgba(214,169,76,0.45);border-radius:3px;padding:0 3px">PENDING</span>' : '';
+    var btn = function (lbl, act, primary) { return '<button style="' + (primary ? BTN_P : BTN_G) + 'padding:6px 10px;font-size:12px" onclick="catSpecReviewAct(' + i + ',\'' + act + '\')">' + lbl + '</button>'; };
+    var acts = r.kind === 'match' ? btn('Confirm', 'use', true) : r.kind === 'differ' ? btn('Keep mine', 'keep') + btn('Use catalog', 'use', true) :
+      r.kind === 'fill' ? btn('Use catalog', 'use', true) : btn('Keep mine', 'keep');
+    return '<div style="padding:9px 0;border-bottom:1px solid var(--border1)">' +
+      '<div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:var(--t2)"><span>' + SRV_LABEL[r.f] + '</span>' + chip + '</div>' +
+      '<div style="display:flex;gap:10px;font-size:13px;color:var(--t1);margin:3px 0 6px"><div style="flex:1"><div style="font-size:10px;color:var(--t3)">Yours</div>' + esc(srvFmt(r.f, r.mine)) + '</div>' +
+      '<div style="flex:1"><div style="font-size:10px;color:var(--t3)">Catalog' + pendTag + '</div>' + esc(srvFmt(r.f, r.cat && r.cat.v)) + '</div></div>' +
+      '<div style="display:flex;gap:6px;justify-content:flex-end">' + acts + '</div></div>';
+  }).join('') : '<div style="padding:16px 0;color:var(--teal);font-size:13px">\u2713 All reviewed for this ball.</div>';
+  var nM = p.rows.filter(function (r) { return r.kind === 'match'; }).length, nD = p.rows.filter(function (r) { return r.kind === 'differ' || r.kind === 'fill'; }).length;
+  var wNote = p.pubWeights.length && p.pubWeights.indexOf(String(p.weight)) < 0 ? '<div style="font-size:11px;color:var(--gold);margin-top:2px">Catalog has no ' + p.weight + ' lb numbers (published: ' + esc(p.pubWeights.join(', ')) + ' lb), so RG / Diff are not compared.</div>' : '';
+  ov.innerHTML = head(pending.length + ' ball' + (pending.length === 1 ? '' : 's') + ' to review') + note +
+    '<div style="flex:1;overflow-y:auto;padding:4px 16px 12px">' +
+    '<div style="font-size:15px;font-weight:700;color:var(--t1)">' + esc(b.BallName) + '</div>' +
+    '<div style="font-size:11px;color:var(--t3)">' + (p.entry ? entryLine(p.entry) : 'USBC ' + esc(b.CatalogID)) + ' \u00b7 your ' + esc(p.weight) + ' lb</div>' + wNote +
+    '<div style="display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 2px">' +
+      (nM ? '<button style="' + BTN_P + 'padding:8px 10px;font-size:12px" onclick="catSpecReviewBulk(\'ball\',\'matches\')">Confirm ' + nM + ' match' + (nM === 1 ? '' : 'es') + '</button>' : '') +
+      (nD ? '<button style="' + BTN_G + 'padding:8px 10px;font-size:12px" onclick="catSpecReviewBulk(\'ball\',\'differences\')">Use catalog for ' + nD + '</button>' : '') + '</div>' +
+    rowsH + '</div>' +
+    '<div style="padding:10px 16px;border-top:1px solid var(--border1);display:flex;flex-direction:column;gap:8px">' +
+      '<div style="display:flex;gap:8px;align-items:center"><button style="' + BTN_G + 'flex:1;padding:11px" ' + (_srv.idx > 0 ? '' : 'disabled ') + 'onclick="catSpecReviewPage(-1)">\u2039 Prev</button>' +
+      '<span style="font-size:12px;color:var(--t2);min-width:70px;text-align:center">' + (_srv.idx + 1) + ' of ' + _srv.pages.length + '</span>' +
+      '<button style="' + BTN_G + 'flex:1;padding:11px" ' + (_srv.idx < _srv.pages.length - 1 ? '' : 'disabled ') + 'onclick="catSpecReviewPage(1)">Next \u203a</button></div>' +
+      (allMatches ? '<button style="' + BTN_P + 'padding:10px" onclick="catSpecReviewBulk(\'all\',\'matches\')">Confirm all ' + allMatches + ' matches on every ball</button>' : '') + '</div>';
+}
+
 /* ---------- v30.169 APP-3: corrections during review ----------
    A correction is saved to staging/overrides.json on the `specs` branch
    (GitHub contents API, the APP-1 token; needs Contents read and write):
@@ -2212,7 +2404,7 @@ function apApplyOverride(r, o) {
 var DIFF_MAX = 0.060;
 function apOverrideFrom(form) {
   var o = {}, err = [];
-  ['coverType', 'finish', 'core', 'coreType', 'released'].forEach(function (k) { var v = String(form[k] || '').trim(); if (v) o[k] = v; });
+  ['coverName', 'coverType', 'finish', 'core', 'coreType', 'released'].forEach(function (k) { var v = String(form[k] || '').trim(); if (v) o[k] = v; });
   var w = {};
   Object.keys(form.weights || {}).forEach(function (lb) {
     var x = form.weights[lb] || {}, y = {};
@@ -2251,6 +2443,174 @@ function bowwwlLinks(brand, name) {
 
 /* ---------- correction sheet UI ---------- */
 var _apEdit = null;
+/* ---------- v30.173 CAT-NEW-7: pick lists for reusable spec values ----------
+   Values already in use for core, coverstock, cover type and finish: the
+   catalog's vocab.json (every published value, count, makers), plus staging
+   rows and your own balls, so lists work before the next catalog-refresh.
+   The ball's brand family is listed first: cores and covers are shared
+   inside a family (same parent company), rarely across. */
+var FAMILY = [[/storm|roto ?grip|900 ?global/i, 'Storm \u00b7 Roto Grip \u00b7 900 Global'],
+  [/brunswick|dv8|radical|ebonite|hammer|track|columbia/i, 'Brunswick \u00b7 DV8 \u00b7 Radical \u00b7 Ebonite \u00b7 Hammer \u00b7 Track \u00b7 Columbia 300'],
+  [/motiv/i, 'Motiv']];
+function familyOf(m) { var t = String(m || ''); for (var i = 0; i < FAMILY.length; i++) if (FAMILY[i][0].test(t)) return FAMILY[i][1]; return null; }
+var VOCAB_FIELDS = { 'ape-core': 'core', 'ape-coverName': 'coverName', 'ape-coverType': 'coverType', 'ape-finish': 'finish' };
+var _vocab = null, _vocabP = null;
+function vocabKey(v) { return String(v || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim(); }
+/* Pure: merge lists of {v, n, b[]} by folded value; extra = [{field, v, brand}]. */
+function vocabMerge(dist, extra) {
+  var out = {};
+  ['core', 'coverName', 'coverType', 'finish'].forEach(function (k) {
+    var m = {}, order = [];
+    var add = function (v, n, brands) {
+      var key = vocabKey(v); if (!key) return;
+      if (!m[key]) { m[key] = { v: String(v).trim(), n: 0, b: [] }; order.push(key); }
+      m[key].n += n; (brands || []).forEach(function (x) { if (x && m[key].b.indexOf(x) < 0) m[key].b.push(x); });
+    };
+    ((dist && dist[k]) || []).forEach(function (o) { add(o.v, o.n || 1, o.b); });
+    (extra || []).forEach(function (o) { if (o.field === k) add(o.v, 1, [o.brand]); });
+    out[k] = order.map(function (x) { return m[x]; }).sort(function (a, b) { return b.n - a.n || a.v.localeCompare(b.v); });
+  });
+  return out;
+}
+/* Pure: split a list by the brand's family, filtered by typed text. */
+function vocabSplit(list, brand, q) {
+  var fam = familyOf(brand), qq = vocabKey(q), same = [], other = [];
+  (list || []).forEach(function (o) {
+    if (qq && vocabKey(o.v).indexOf(qq) < 0) return;
+    (fam && o.b.some(function (x) { return familyOf(x) === fam; }) ? same : other).push(o);
+  });
+  return { family: fam, same: same, other: other };
+}
+function vocabLoad() {
+  if (_vocab) return Promise.resolve(_vocab);
+  if (_vocabP) return _vocabP;
+  var extra = [];
+  appBalls().forEach(function (b) {
+    [['CoreShort', 'core'], ['CoverName', 'coverName'], ['Coverstock', 'coverType'], ['BoxFinish', 'finish']].forEach(function (p) { if (b[p[0]]) extra.push({ field: p[1], v: b[p[0]], brand: b.MFG }); });
+  });
+  (_staged || []).forEach(function (r) { var sp = r.specs || {};
+    [['core', 'core'], ['coverName', 'coverName'], ['coverType', 'coverType'], ['finish', 'finish']].forEach(function (p) { if (sp[p[0]]) extra.push({ field: p[1], v: sp[p[0]], brand: r.brand }); }); });
+  _vocabP = env.fetch(CAT_BASE + 'vocab.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }, function () { return null; })
+    .then(function (dist) { _vocab = vocabMerge(dist, extra); _vocabP = null; return _vocab; });
+  return _vocabP;
+}
+var _vp = { field: null, brand: null };
+function catPickOpen(fieldId) {
+  var k = VOCAB_FIELDS[fieldId]; if (!k) return;
+  var p = _ap.pages[_ap.idx], e = p && _ap._rows ? byIdIn(_ap._rows, p.catalogId) : null;
+  _vp = { field: fieldId, brand: e ? e.m : null };
+  var ov = overlay('vp-ov', 930);
+  ov.innerHTML = '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 8px"><button style="' + BACK + '" onclick="catPickClose()">\u2039</button>' +
+    '<div style="flex:1"><div style="font-size:17px;font-weight:800;color:var(--t1)">' + ({ core: 'Core', coverName: 'Coverstock', coverType: 'Cover type', finish: 'Factory finish' }[k]) + '</div>' +
+    '<div style="font-size:11px;color:var(--t3)">Values already in use</div></div></div>' +
+    '<div style="padding:0 16px 8px"><input id="vp-q" class="bdet-field-input" type="search" placeholder="Filter" autocomplete="off" autocorrect="off" autocapitalize="off" oninput="catPickFilter(this.value)" style="width:100%;box-sizing:border-box;font-size:15px"></div>' +
+    '<div id="vp-list" style="flex:1;overflow-y:auto;padding:0 16px 16px"><div style="color:var(--t3);font-size:13px;padding:20px 0;text-align:center">Loading\u2026</div></div>';
+  document.body.appendChild(ov);
+  vocabLoad().then(function () { catPickFilter(''); });
+}
+function catPickFilter(q) {
+  var el = document.getElementById('vp-list'); if (!el || !_vocab) return;
+  var sp = vocabSplit(_vocab[VOCAB_FIELDS[_vp.field]], _vp.brand, q);
+  var item = function (o) { return '<div onclick="catPickChoose(' + esc(JSON.stringify(o.v)).replace(/"/g, '&quot;') + ')" style="padding:10px 2px;border-bottom:1px solid var(--border1);cursor:pointer">' +
+    '<div style="font-size:14px;color:var(--t1)">' + esc(o.v) + '</div><div style="font-size:11px;color:var(--t3)">' + o.n + ' ball' + (o.n === 1 ? '' : 's') + ' \u00b7 ' + esc(o.b.slice(0, 4).join(', ')) + (o.b.length > 4 ? '\u2026' : '') + '</div></div>'; };
+  var sec = function (t, list) { return list.length ? '<div style="font-size:11px;font-weight:700;color:var(--t3);margin:12px 0 2px;text-transform:uppercase;letter-spacing:.5px">' + esc(t) + '</div>' + list.slice(0, 150).map(item).join('') : ''; };
+  var h = (sp.family ? sec(sp.family, sp.same) + sec('Other makers', sp.other) : sec('All makers', sp.other));
+  el.innerHTML = h || '<div style="color:var(--t3);font-size:13px;padding:20px 0;text-align:center">' + (q ? 'No match. Close and type it in.' : 'No values yet.') + '</div>';
+}
+function catPickChoose(v) {
+  var el = document.getElementById(_vp.field); if (el) { el.value = v; el.style.boxShadow = '0 0 0 2px var(--teal)'; setTimeout(function () { el.style.boxShadow = ''; }, 700); }
+  catPickClose();
+}
+function catPickClose() { var el = document.getElementById('vp-ov'); if (el) el.parentNode.removeChild(el); }
+
+/* ---------- v30.173 CAT-NEW-6: Page view (bridge snapshot) ----------
+   The bridge keeps each page's short text lines and product image links in
+   staging/pages/<key>.json (never published). The correction sheet opens it
+   full screen: select any text (long-press, like Safari) or tap a number,
+   then "Use" -> tap the field. Tap an image to show it for this ball on this
+   device only (bdbimg_pick, outside backups, like IMG-1). */
+var IMG_PICK_KEY = 'bdbimg_pick';
+var _pages = {}, _pgSel = '', _pgSnap = null;
+function imgPicks() { var l = apLS(); try { return JSON.parse((l && l.getItem(IMG_PICK_KEY)) || '{}') || {}; } catch (e) { return {}; } }
+function imgPickSet(id, url) { var l = apLS(); if (!l) return; var m = imgPicks(); if (url) m[id] = url; else delete m[id]; l.setItem(IMG_PICK_KEY, JSON.stringify(m)); }
+function apReadPage(key) {
+  if (_pages[key]) return Promise.resolve(_pages[key]);
+  if (!apToken()) return Promise.reject(new Error('Add the GitHub token in Spec approvals first'));
+  var h = { 'Accept': 'application/vnd.github.raw+json', 'Authorization': 'Bearer ' + apToken(), 'X-GitHub-Api-Version': '2022-11-28' };
+  return env.fetch(AP_API + '/contents/staging/pages/' + encodeURIComponent(key) + '.json?ref=specs', { headers: h, cache: 'no-store' }).then(function (r) {
+    if (!r.ok) { var e = new Error(r.status === 404 ? 'No snapshot for this page yet (it appears after the next specs-extract).' : 'GitHub ' + r.status); e.status = r.status; throw e; }
+    return r.json();
+  }).then(function (j) { _pages[key] = j; return j; });
+}
+function catPageOpen() {
+  if (!_apEdit || !_apEdit.page) return;
+  var ov = overlay('pgv-ov', 925);
+  ov.innerHTML = '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 8px"><button style="' + BACK + '" onclick="catPageClose()">\u2039</button>' +
+    '<div style="flex:1;min-width:0"><div style="font-size:17px;font-weight:800;color:var(--t1)">Page</div><div id="pgv-sub" style="font-size:11px;color:var(--t3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Loading\u2026</div></div></div>' +
+    '<div id="pgv-body" style="flex:1;overflow-y:auto;padding:0 16px 16px"></div>' +
+    '<div id="pgv-bar" style="display:none;padding:10px 16px;border-top:1px solid var(--border1);gap:8px;align-items:center"></div>';
+  document.body.appendChild(ov);
+  _pgSel = '';
+  apReadPage(_apEdit.page).then(function (snap) { _pgSnap = snap; pgvRender(); }, function (e) {
+    var b = document.getElementById('pgv-body'); if (b) b.innerHTML = '<div style="padding:30px 0;text-align:center;color:var(--red);font-size:13px;line-height:1.5">' + esc(e.message || String(e)) + '</div>';
+    var s = document.getElementById('pgv-sub'); if (s) s.textContent = '';
+  });
+}
+function pgvRender() {
+  var snap = _pgSnap, b = document.getElementById('pgv-body'); if (!b || !snap) return;
+  var sub = document.getElementById('pgv-sub');
+  if (sub) sub.innerHTML = esc(snap.title || '') + (snap.url ? ' \u00b7 <a href="' + esc(snap.url) + '" target="_blank" rel="noopener noreferrer" style="color:var(--teal)">open on site \u2197</a>' : '');
+  var cur = _apEdit ? imgPicks()[_apEdit.catalogId] : null;
+  var imgs = (snap.images || []).map(function (u, i) {
+    var on = cur === u;
+    return '<div onclick="catPageImg(' + i + ')" style="position:relative;flex:0 0 31%;aspect-ratio:1;border-radius:10px;overflow:hidden;background:var(--bg3);border:2px solid ' + (on ? 'var(--teal)' : 'transparent') + ';cursor:pointer">' +
+      '<img src="' + esc(u) + '" referrerpolicy="no-referrer" loading="lazy" onerror="this.parentNode.style.display=\'none\'" style="width:100%;height:100%;object-fit:contain">' +
+      (on ? '<span style="position:absolute;top:4px;right:4px;font-size:10px;font-weight:800;color:#000;background:var(--teal);border-radius:6px;padding:1px 5px">IN USE</span>' : '') + '</div>';
+  }).join('');
+  var lines = (snap.lines || []).map(function (l) {
+    return '<div style="padding:3px 0;line-height:1.7">' + tagLine(l).map(function (p) {
+      if (!p.tok || p.tok.kind !== 'num') return esc(p.t);   // numbers only: a weight is not a field value
+      return '<span onclick="catPageUseVal(' + esc(JSON.stringify(p.tok.v)).replace(/"/g, '&quot;') + ')" style="color:' + (p.tok.kind === 'wt' ? 'var(--gold)' : 'var(--teal)') + ';font-weight:700;text-decoration:underline;cursor:pointer">' + esc(p.t) + '</span>';
+    }).join('') + '</div>';
+  }).join('');
+  b.innerHTML = (imgs ? '<div style="font-size:11px;font-weight:700;color:var(--t3);margin:4px 0 6px;text-transform:uppercase;letter-spacing:.5px">Images \u00b7 tap to use on this device</div>' +
+      '<div style="display:flex;flex-wrap:wrap;gap:6px">' + imgs + '</div>' : '') +
+    '<div style="font-size:11px;font-weight:700;color:var(--t3);margin:14px 0 4px;text-transform:uppercase;letter-spacing:.5px">Text \u00b7 select any of it, or tap a number</div>' +
+    '<div id="pgv-text" style="font-size:13px;color:var(--t1);-webkit-user-select:text;user-select:text;padding:6px 10px;border-radius:10px;background:var(--bg2)">' +
+      (lines || '<span style="color:var(--t3)">No text kept for this page.</span>') + '</div>';
+}
+function pgvBar() {
+  var bar = document.getElementById('pgv-bar'); if (!bar) return;
+  if (!_pgSel) { bar.style.display = 'none'; bar.innerHTML = ''; return; }
+  bar.style.display = 'flex';
+  bar.innerHTML = '<div style="flex:1;min-width:0;font-size:12px;color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">\u201c' + esc(_pgSel) + '\u201d</div>' +
+    '<button style="' + BTN_P + 'padding:9px 14px" onpointerdown="event.preventDefault()" onmousedown="event.preventDefault()" onclick="catPageUseSel()">Use</button>';
+}
+/* Pure: tidy a selection into a field value (one line, trimmed, capped). */
+function pgvClean(t) { return String(t || '').replace(/\s+/g, ' ').replace(/^[\s:|,;\-\u2013]+|[\s:|,;\-\u2013]+$/g, '').slice(0, 80); }
+if (typeof document !== 'undefined' && document.addEventListener) document.addEventListener('selectionchange', function () {
+  var box = document.getElementById('pgv-text'); if (!box) return;
+  var sel = root.getSelection && root.getSelection(), t = sel ? pgvClean(sel.toString()) : '';
+  if (t && sel.anchorNode && box.contains(sel.anchorNode)) { _pgSel = t; pgvBar(); }
+  else if (!t && _pgSel) { /* keep the last selection until Use or a new one: a tap on Use can collapse it first */ }
+});
+function catPageUseSel() { if (_pgSel) catPageUseVal(_pgSel); }
+function catPageUseVal(v) {
+  var t = pgvClean(v); if (!t) return;
+  catPageClose();
+  _tag.val = t; _tag.key = null; tagPaint();
+  var bar = document.getElementById('ape-tagbar'); if (bar && bar.scrollIntoView) bar.scrollIntoView({ block: 'nearest' });
+}
+function catPageImg(i) {
+  if (!_apEdit || !_pgSnap) return;
+  var u = (_pgSnap.images || [])[i]; if (!u) return;
+  var cur = imgPicks()[_apEdit.catalogId];
+  if (cur === u) { if (!root.confirm || root.confirm('Stop using this image for this ball?')) imgPickSet(_apEdit.catalogId, null); }
+  else if (!root.confirm || root.confirm('Use this image for this ball on this device? It is never published.')) { imgPickSet(_apEdit.catalogId, u); if (root.toast) root.toast('Image set on this device'); }
+  pgvRender();
+}
+function catPageClose() { var el = document.getElementById('pgv-ov'); if (el) el.parentNode.removeChild(el); _pgSel = ''; _pgSnap = null; if (root.getSelection) try { root.getSelection().removeAllRanges(); } catch (e) {} }
+
 /* ---------- v30.172 CAT-NEW-2: tap-to-tag (LOCKED: value first, then field) ----------
    The bridge keeps the spec lines it read (staging rawText, never published).
    The correction sheet shows them with tappable values: numbers, weights and
@@ -2301,12 +2661,14 @@ function tagValueFor(fieldId, v) {
     m = /^(\d{4})$/.exec(s); if (m) return { v: m[1] };
     return { err: 'Release date needs a date, e.g. October 2022' };
   }
-  if (/^ape-(coverType|finish|core|note)$/.test(fieldId)) return { v: s.replace(/[\u2122\u00ae]/g, '').trim() };
+  if (/^ape-(coverName|coverType|finish|core|note)$/.test(fieldId)) return { v: s.replace(/[\u2122\u00ae]/g, '').trim() };
   return { err: 'That field does not take tapped values' };
 }
-function tagPanelHTML(raw) {
+function tagPanelHTML(raw, page) {
   _tag = { lines: tagLines(raw), val: null, key: null, row: null };
-  if (!_tag.lines.length) return '';
+  var bar = '<div id="ape-tagbar" style="display:none;position:sticky;top:0;z-index:2;margin-top:6px;padding:8px 10px;border-radius:10px;background:var(--bg2);border:1px solid var(--teal);font-size:12px;color:var(--t1)"></div>';
+  var pageBtn = page ? '<button style="' + BTN_P + 'width:100%;padding:10px;margin-top:6px" onclick="catPageOpen()">Open the page: select text or pick an image \u203a</button>' : '';
+  if (!_tag.lines.length) return page ? '<div style="font-size:11px;font-weight:700;color:var(--t3);margin:10px 0 4px;text-transform:uppercase;letter-spacing:.5px">From the page</div>' + pageBtn + bar : '';
   var body = _tag.lines.map(function (parts, i) {
     return '<div style="padding:3px 0;line-height:1.9">' + parts.map(function (p, j) {
       if (!p.tok) return '<span style="color:var(--t3)">' + esc(p.t) + '</span>';
@@ -2317,8 +2679,7 @@ function tagPanelHTML(raw) {
   }).join('');
   return '<div style="font-size:11px;font-weight:700;color:var(--t3);margin:10px 0 4px;text-transform:uppercase;letter-spacing:.5px">From the page</div>' +
     '<div style="font-size:12px;color:var(--t2);line-height:1.5;margin-bottom:4px">Tap a value, then the field it belongs to.</div>' +
-    '<div id="ape-tags" style="max-height:190px;overflow-y:auto;padding:6px 10px;border-radius:10px;background:var(--bg3);font-size:12px">' + body + '</div>' +
-    '<div id="ape-tagbar" style="display:none;position:sticky;top:0;z-index:2;margin-top:6px;padding:8px 10px;border-radius:10px;background:var(--bg2);border:1px solid var(--teal);font-size:12px;color:var(--t1)"></div>';
+    '<div id="ape-tags" style="max-height:190px;overflow-y:auto;padding:6px 10px;border-radius:10px;background:var(--bg3);font-size:12px">' + body + '</div>' + pageBtn + bar;
 }
 function tagPaint() {
   var ov = document.getElementById('ap-edit-ov'); if (!ov) return;
@@ -2356,8 +2717,11 @@ function catApprovalsEdit(i) {
   var b = p.boxes[i];
   var r = apApplyOverride(_staged ? apStagedFor(_staged, b, p.catalogId) : null, overrideFor(p.catalogId));
   var sp = (r && r.specs) || {};
-  _apEdit = { catalogId: p.catalogId, i: i };
+  _apEdit = { catalogId: p.catalogId, i: i, page: (r && r.page) || null };
   var inp = function (id, v, ph) { return '<div class="ape-f"><input id="' + id + '" class="bdet-field-input" value="' + esc(v == null ? '' : v) + '" placeholder="' + esc(ph || '') + '" style="width:100%;box-sizing:border-box;font-size:15px"></div>'; };
+  /* v30.173 CAT-NEW-7: type, or pick a value already in use */
+  var inpP = function (id, v, ph) { return '<div style="display:flex;gap:6px;align-items:stretch"><div class="ape-f" style="flex:1">' + inp(id, v, ph).replace(/^<div class="ape-f">|<\/div>$/g, '') + '</div>' +
+    '<button style="' + BTN_G + 'padding:0 12px;font-size:13px" onclick="catPickOpen(\'' + id + '\')" aria-label="Pick">\u25be</button></div>'; };
   var lab = function (t) { return '<div style="font-size:11px;font-weight:700;color:var(--t3);margin:10px 0 4px;text-transform:uppercase;letter-spacing:.5px">' + t + '</div>'; };
   var ws = [16, 15, 14, 13, 12];
   var wrow = function (w) { var x = (sp.weights || {})[w] || {};
@@ -2368,10 +2732,11 @@ function catApprovalsEdit(i) {
     '<div style="flex:1"><div style="font-size:17px;font-weight:800;color:var(--t1)">Correct specs</div><div style="font-size:11px;color:var(--t3)">' + esc(b.title) + ' · USBC ' + esc(p.catalogId) + '</div></div></div>' +
     '<div style="flex:1;overflow-y:auto;padding:0 16px 16px">' +
     '<div style="font-size:12px;color:var(--t2);line-height:1.5">Change or fill any field. Values shown are what the bridge read; edit them in place.</div>' +
-    tagPanelHTML(r && r.rawText) +
-    lab('Cover type') + inp('ape-coverType', sp.coverType, 'e.g. Solid Reactive') +
-    lab('Factory finish') + inp('ape-finish', sp.finish, 'e.g. 2000 Abralon') +
-    lab('Core') + inp('ape-core', sp.core) +
+    tagPanelHTML(r && r.rawText, r && r.page) +
+    lab('Coverstock') + inpP('ape-coverName', sp.coverName, 'e.g. R2S Pearl Reactive') +
+    lab('Cover type') + inpP('ape-coverType', sp.coverType, 'e.g. Solid Reactive') +
+    lab('Factory finish') + inpP('ape-finish', sp.finish, 'e.g. 2000 Abralon') +
+    lab('Core') + inpP('ape-core', sp.core) +
     lab('Core type') + '<div class="ape-f"><select id="ape-coreType" class="bdet-field-input" style="width:100%;font-size:15px"><option value=""' + (!sp.coreType ? ' selected' : '') + '>—</option><option' + (/^sym/i.test(sp.coreType || '') ? ' selected' : '') + '>Symmetrical</option><option' + (/asym/i.test(sp.coreType || '') ? ' selected' : '') + '>Asymmetrical</option></select></div>' +
     lab('Release date') + inp('ape-released', sp.released ? String(sp.released).slice(0, 10) : '', 'YYYY-MM-DD') +
     lab('RG / Diff / Int Diff by weight') +
@@ -2392,7 +2757,7 @@ function catApprovalsEditClose() { var el = document.getElementById('ap-edit-ov'
 function catApprovalsEditSave() {
   if (!_apEdit) return;
   var g = function (id) { var el = document.getElementById(id); return el ? el.value : ''; };
-  var form = { coverType: g('ape-coverType'), finish: g('ape-finish'), core: g('ape-core'), coreType: g('ape-coreType'), released: g('ape-released'),
+  var form = { coverName: g('ape-coverName'), coverType: g('ape-coverType'), finish: g('ape-finish'), core: g('ape-core'), coreType: g('ape-coreType'), released: g('ape-released'),
                source: g('ape-source'), note: g('ape-note'), weights: {} };
   [16, 15, 14, 13, 12].forEach(function (w) { form.weights[w] = { RG: g('ape-' + w + '-RG'), Diff: g('ape-' + w + '-Diff'), IntDiff: g('ape-' + w + '-IntDiff') }; });
   /* Only what differs from the baseline is stored. The baseline includes the
@@ -2402,13 +2767,13 @@ function catApprovalsEditSave() {
   var p = _ap.pages[_ap.idx], staged0 = (_staged && p) ? apStagedFor(_staged, p.boxes[_apEdit.i] || p.boxes[0], p.catalogId) : null;
   var other = form.source === 'bowwwl' ? (_ovr && _ovr[p.catalogId]) : localOverrides()[p.catalogId];
   var base = apApplyOverride(staged0, other), bs = (base && base.specs) || {};
-  ['coverType', 'finish', 'core', 'coreType', 'released'].forEach(function (k) { if (String(form[k]).trim() === String(bs[k] == null ? '' : bs[k]).slice(0, k === 'released' ? 10 : 999)) form[k] = ''; });
+  ['coverName', 'coverType', 'finish', 'core', 'coreType', 'released'].forEach(function (k) { if (String(form[k]).trim() === String(bs[k] == null ? '' : bs[k]).slice(0, k === 'released' ? 10 : 999)) form[k] = ''; });
   Object.keys(form.weights).forEach(function (w) { var x = form.weights[w], y = (bs.weights || {})[w] || {};
     ['RG', 'Diff', 'IntDiff'].forEach(function (k) { if (x[k] !== '' && y[k] != null && Number(x[k]) === Number(y[k])) x[k] = ''; }); });
   var res = apOverrideFrom(form), err = document.getElementById('ape-err');
   if (res.errors.length) { if (err) err.textContent = res.errors.join('. '); return; }
   var o = res.override;
-  if (!o.weights && !['coverType', 'finish', 'core', 'coreType', 'released'].some(function (k) { return o[k]; })) { if (err) err.textContent = 'Nothing changed.'; return; }
+  if (!o.weights && !['coverName', 'coverType', 'finish', 'core', 'coreType', 'released'].some(function (k) { return o[k]; })) { if (err) err.textContent = 'Nothing changed.'; return; }
   if (o.source === 'bowwwl') {
     /* personal-use data: this device only, never committed */
     o.at = new Date().toISOString().slice(0, 10);
@@ -2646,7 +3011,7 @@ function catCompareAdd(x) {
 
 root.CATALOG_JS_VERSION = CAT_VERSION;
 root.catPickerMount = catPickerMount;
-root.catApprovalsOpen = catApprovalsOpen; root.catTagPick = catTagPick; root.catTagCancel = catTagCancel; root.catVerifyRefresh = catVerifyRefresh; root.catVerifyDismiss = catVerifyDismiss; root.catVerifyRetry = catVerifyRetry; root.catVerifyOpenApprovals = catVerifyOpenApprovals; root.catVerifyPublish = catVerifyPublish; root.catVerifyApply = catVerifyApply; root.catVerifyTick = vfyTick; root.catVerifyState = vfyActive; root.catApprovalsRetryStaged = catApprovalsRetryStaged; root.apStagedErrText = apStagedErrText; root.catApprovalsClose = catApprovalsClose; root.catApprovalsSaveToken = catApprovalsSaveToken;
+root.catApprovalsOpen = catApprovalsOpen; root.catPageOpen = catPageOpen; root.catPageClose = catPageClose; root.catPageUseSel = catPageUseSel; root.catPageUseVal = catPageUseVal; root.catPageImg = catPageImg; root.catPickOpen = catPickOpen; root.catPickFilter = catPickFilter; root.catPickChoose = catPickChoose; root.catPickClose = catPickClose; root.catSpecReviewOpen = catSpecReviewOpen; root.catSpecReviewClose = catSpecReviewClose; root.catSpecReviewAct = catSpecReviewAct; root.catSpecReviewBulk = catSpecReviewBulk; root.catSpecReviewPage = catSpecReviewPage; root.catTagPick = catTagPick; root.catTagCancel = catTagCancel; root.catVerifyRefresh = catVerifyRefresh; root.catVerifyDismiss = catVerifyDismiss; root.catVerifyRetry = catVerifyRetry; root.catVerifyOpenApprovals = catVerifyOpenApprovals; root.catVerifyPublish = catVerifyPublish; root.catVerifyApply = catVerifyApply; root.catVerifyTick = vfyTick; root.catVerifyState = vfyActive; root.catApprovalsRetryStaged = catApprovalsRetryStaged; root.apStagedErrText = apStagedErrText; root.catApprovalsClose = catApprovalsClose; root.catApprovalsSaveToken = catApprovalsSaveToken;
 root.catApprovalsForgetToken = catApprovalsForgetToken; root.catApprovalsChangeToken = catApprovalsChangeToken; root.catApprovalsPage = catApprovalsPage; root.catApprovalsFilter = catApprovalsFilter;
 root.catApprovalsTick = catApprovalsTick; root.catApprovalsEdit = catApprovalsEdit; root.catApprovalsEditClose = catApprovalsEditClose; root.catApprovalsEditSave = catApprovalsEditSave; root.catAddSpecsOnly = catAddSpecsOnly; root.catVerifyNow = catVerifyNow; root.catImagesSet = catImagesSet;
 root.catImagesRefresh = catImagesRefresh; root.catImagesStatus = catImagesStatus; root.catImageFor = catImageFor; root.catApprovalsSend = catApprovalsSend; root.catApprovalsPublish = catApprovalsPublish; root.catPickerSearch = catPickerSearch;
@@ -2677,7 +3042,7 @@ root._catStep5 = { norm: norm, modelKey: modelKey, lookupIn: lookupIn, searchIn:
                    buildOwnedBall: buildOwnedBall, ballFromSpecs: ballFromSpecs, fillPlan: fillPlan,
                    catSpecSource: catSpecSource, setFilled: function (f) { _filled = f; },
                    imgLinksFrom: imgLinksFrom, sheetState: function () { return _sheet; }, mergeOverrides: mergeOverrides, withLocalCorrection: withLocalCorrection, apApplyOverride: apApplyOverride, apOverrideFrom: apOverrideFrom, bowwwlLinks: bowwwlLinks, apStagedFor: apStagedFor, apAsDetail: apAsDetail, apRangeNotes: apRangeNotes, derivedCoverType: derivedCoverType, specGaps: specGaps, nearestWeight: nearestWeight, addListHTML: addListHTML, sourceForBrand: sourceForBrand, apParseIssue: apParseIssue, apPages: apPages, apApplyTicks: apApplyTicks, apConflict: apConflict, apNums: apNums,
-                   verifyPlan: verifyPlan, tagLine: tagLine, tagLines: tagLines, tagValueFor: tagValueFor, vfyPickRun: vfyPickRun, vfyClassify: vfyClassify, vfyCardHTML: vfyCardHTML, specMatch: specMatch, coreNameMatch: coreNameMatch, DIFF_MAX: DIFF_MAX, metricUnverified: metricUnverified, catSpecUnverified: catSpecUnverified,
+                   verifyPlan: verifyPlan, pgvClean: pgvClean, vocabMerge: vocabMerge, vocabSplit: vocabSplit, familyOf: familyOf, srvRows: srvRows, srvApply: srvApply, srvStagedRow: srvStagedRow, vfyPagesFor: vfyPagesFor, vfyEstimateFrom: vfyEstimateFrom, tagLine: tagLine, tagLines: tagLines, tagValueFor: tagValueFor, vfyPickRun: vfyPickRun, vfyClassify: vfyClassify, vfyCardHTML: vfyCardHTML, specMatch: specMatch, coreNameMatch: coreNameMatch, DIFF_MAX: DIFF_MAX, metricUnverified: metricUnverified, catSpecUnverified: catSpecUnverified,
                    metricScore: metricScore, parseFinish: parseFinish, rgBand: rgBand, diffBand: diffBand, coverClass: coverClass,
                    catMetric: catMetric, sheetHTML: sheetHTML, cmpColOwned: cmpColOwned, cmpColCatalog: cmpColCatalog, cmpRows: cmpRows,
                    cmpHTML: cmpHTML, cmpState: function () { return _cmp; }, setSheet: function (x) { _sheet = x; } };
