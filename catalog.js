@@ -478,8 +478,10 @@ function catLinkLabel(b) {
     var e = byIdIn(rows, b.CatalogID);
     el.innerHTML = e ? entryLine(e) : (rows.length ? 'Linked (not in current catalog)' : 'Linked');
     /* APP-2: only offered while something is still unverified */
-    if (e && sourceForBrand(e.m) && SPEC_FIELDS.some(function (f) { return catSpecUnverified(b, f); }))
-      el.innerHTML += '<div><button style="' + BTN_G + 'margin-top:6px;padding:5px 10px;font-size:11px" onclick="catVerifyNow(\'' + esc(e.m) + '\')">Verify now</button></div>';
+    /* v30.172 CAT-NEW-4: the progress card replaces the button while a check runs for this ball */
+    var _va = vfyActive(), _vmine = _va && _va.catalogId === e.i;
+    if (e && sourceForBrand(e.m) && (_vmine || SPEC_FIELDS.some(function (f) { return catSpecUnverified(b, f); })))
+      el.innerHTML += vfySlotHTML(e.i, '<div><button style="' + BTN_G + 'margin-top:6px;padding:5px 10px;font-size:11px" onclick="catVerifyNow(\'' + esc(e.m) + '\',\'' + esc(e.i) + '\',' + JSON.stringify(b.BallID).replace(/"/g, '&quot;') + ')">Verify now</button></div>');
     /* DATA-2: confirm matching legacy specs; a second render finds nothing left, so no loop */
     catAutoVerify(b).then(function (n) {
       if (n && typeof root._bdetRenderSpecs === 'function' && document.getElementById(slot)) root._bdetRenderSpecs();
@@ -1540,7 +1542,10 @@ function apLoad() {
       : e.status === 403 || e.status === 404 ? 'The token cannot read this repo\'s issues (' + e.status + '). Check its repo and Issues permission.'
       : (e.message || String(e));
   }).then(function () {
-    apBuildPages(true); _ap.busy = false; apRender();
+    if (_ap.focus) _ap.uncheckedOnly = false;
+    apBuildPages(true);
+    if (_ap.focus) { var fi = _ap.pages.map(function (p) { return p.catalogId; }).indexOf(_ap.focus); if (fi >= 0) _ap.idx = fi; _ap.focus = null; }
+    _ap.busy = false; apRender();
   });
 }
 /* Merges queued ticks into the view so offline taps show immediately. */
@@ -1650,7 +1655,7 @@ function apRender() {
     'Second opinion: <a href="' + esc(_bl.page) + '" target="_blank" rel="noopener noreferrer" style="color:var(--teal)">bowwwl page ↗</a> · ' +
     '<a href="' + esc(_bl.search) + '" target="_blank" rel="noopener noreferrer" style="color:var(--teal)">search ↗</a>' +
     '<div style="font-size:11px;color:var(--t3)">For your own check only. If you use a value from it, choose bowwwl as the correction source.</div></div>';
-  var verifyBtn = sourceForBrand(_vb) ? '<button style="' + BTN_G + 'margin-top:12px;width:100%;padding:10px" onclick="catVerifyNow(\'' + esc(_vb) + '\')">Verify now: re-read the ' + esc(sourceForBrand(_vb)) + ' site</button>' : '';
+  var verifyBtn = sourceForBrand(_vb) ? vfySlotHTML(p.catalogId, '<button style="' + BTN_G + 'margin-top:12px;width:100%;padding:10px" onclick="catVerifyNow(\'' + esc(_vb) + '\',\'' + esc(p.catalogId) + '\')">Verify now: re-read the ' + esc(sourceForBrand(_vb)) + ' site</button>') : '';
   var warn = apConflict(p.boxes) ? '<div style="font-size:12px;color:var(--gold);margin-top:10px;line-height:1.45">These approvals disagree, so neither will publish. Keep one.</div>' : '';
   ov.innerHTML = apHeader(sub) + status + filt +
     '<div style="flex:1;overflow-y:auto;padding:4px 16px 12px">' + head + mineH + cards + warn + crossCheck + verifyBtn + '</div>' + apFooter(true);
@@ -1686,6 +1691,8 @@ function catApprovalsTick(i) {
   var q = apQueue(); q[b.tok] = !b.ticked; apSetQueue(q);
   if (root.haptic) try { root.haptic('light'); } catch (e) {}
   apBuildPages(false); apRender();
+  /* v30.172: a running Verify chain waiting on this ball moves on at once */
+  var _vs = vfyActive(); if (_vs && _vs.step === 'approve' && _vs.catalogId === p.catalogId) setTimeout(vfyTick, 300);
   clearTimeout(_apSendTimer);
   _apSendTimer = setTimeout(function () { catApprovalsSend(true); }, 1500);
 }
@@ -1702,9 +1709,7 @@ function catApprovalsSend(quiet) {
 /* Runs the specs-publish workflow on the repo's default branch. */
 function catApprovalsPublish() {
   var go = function () {
-    return apGH('').then(function (repo) {
-      return apGH('/actions/workflows/specs-publish.yml/dispatches', { method: 'POST', body: { ref: repo.default_branch || 'main' } });
-    }).then(function () {
+    return vfyDispatchPublish().then(function () {
       if (root.toast) root.toast('specs-publish started. The catalog updates when it finishes (a few minutes).');
     }).catch(function (e) {
       if (root.toast) root.toast(e.status === 403 || e.status === 404 ? 'Token needs Actions read and write to publish' : ('Publish failed: ' + (e.status ? 'GitHub ' + e.status : 'offline')));
@@ -1878,21 +1883,277 @@ function sourceForBrand(m) {
   for (var i = 0; i < BRAND_SOURCE.length; i++) if (BRAND_SOURCE[i][0].test(t)) return BRAND_SOURCE[i][1];
   return null;
 }
-function catVerifyNow(brand) {
+/* ---------- v30.172 CAT-NEW-4: Verify now, end to end ----------
+   One chain at a time, kept in bdbgh_verify so it resumes after the app is
+   closed. Steps: extract -> results -> approve -> publish -> rebuild -> recheck.
+   A run is found as the first run of that workflow with an id above the
+   newest id seen just before the dispatch (ids only grow; the dispatch API
+   returns no run id, and the phone clock can drift from GitHub's).
+   Polls every 15 s while the app is visible. Publish is always a tap. */
+var VFY_STEPS = ['extract', 'results', 'approve', 'publish', 'rebuild', 'recheck'];
+var VFY_LABEL = { extract: 'Re-read the maker\u2019s site', results: 'Results for this ball', approve: 'Approve',
+  publish: 'Publish', rebuild: 'Catalog rebuild', recheck: 'Re-check this ball' };
+var VFY_POLL_MS = 15000, VFY_START_GRACE_MS = 6 * 60000, VFY_REFRESH_GRACE_MS = 6 * 60000;
+var _vfyBusy = false, _vfyTimer = null;
+function vfyState() { var l = apLS(); try { return JSON.parse((l && l.getItem(VERIFY_KEY)) || 'null'); } catch (e) { return null; } }
+function vfySave(s) { var l = apLS(); if (l) { if (s) l.setItem(VERIFY_KEY, JSON.stringify(s)); else l.removeItem(VERIFY_KEY); } vfyPaint(); }
+/* old v30.165 record {src, at} has no step: treat as nothing running */
+function vfyActive() { var s = vfyState(); return s && s.v === 2 ? s : null; }
+function vfyLatestId(wf) {
+  return apGH('/actions/workflows/' + wf + '/runs?per_page=1').then(function (r) {
+    var run = r && r.workflow_runs && r.workflow_runs[0]; return run ? run.id : 0;
+  });
+}
+/* Pure: the run this chain started, from a runs list (newest first). */
+function vfyPickRun(runs, baseId, event) {
+  var hit = null;
+  (runs || []).forEach(function (r) { if (r.id > (baseId || 0) && (!event || r.event === event) && (!hit || r.id < hit.id)) hit = r; });
+  return hit;
+}
+function vfyFindRun(wf, baseId, event) {
+  return apGH('/actions/workflows/' + wf + '/runs?per_page=10').then(function (r) { return vfyPickRun(r && r.workflow_runs, baseId, event); });
+}
+/* Pure: what the extract left for this ball. rows = staging, boxes = issue boxes. */
+function vfyClassify(rows, boxes, id) {
+  var mine = (rows || []).filter(function (r) { return r.catalogId === id || (r.candidates || []).indexOf(id) >= 0; });
+  var bx = (boxes || []).filter(function (b) { return b.catalogId === id; });
+  var srcs = mine.map(function (r) { return r.source; }).filter(function (x, i, a) { return x && a.indexOf(x) === i; });
+  if (mine.some(function (r) { return r.decision === 'auto' && r.catalogId === id; })) return { kind: 'auto', sources: srcs };
+  if (bx.length) return { kind: 'approve', boxes: bx.length, ticked: bx.some(function (b) { return b.ticked; }), sources: srcs };
+  if (mine.length) return { kind: 'nospecs', reasons: mine.map(function (r) { return r.reason; }).filter(Boolean), sources: srcs };
+  return { kind: 'missing' };
+}
+function catVerifyNow(brand, catalogId, ballId) {
   var src = sourceForBrand(brand);
   if (!src) { if (root.toast) root.toast('No manufacturer site in the bridge for ' + (brand || 'this brand') + ' yet'); return Promise.resolve(null); }
   if (!apToken()) { catApprovalsOpen(); return Promise.resolve(null); }
-  return apGH('').then(function (repo) {
+  var cur = vfyActive();
+  if (cur && !cur.done && cur.catalogId !== catalogId && root.confirm &&
+      !root.confirm('A check for ' + (cur.title || cur.catalogId) + ' is still running. Replace it with this one?')) return Promise.resolve(null);
+  var base = 0, title = null;
+  return catLoad().then(function (rows) { var e = byIdIn(rows, catalogId); title = e ? cleanName(e.n) : null; }, function () {})
+  .then(function () { return vfyLatestId('specs-extract.yml'); }).then(function (id) { base = id; return apGH(''); }).then(function (repo) {
     return apGH('/actions/workflows/specs-extract.yml/dispatches', { method: 'POST',
       body: { ref: repo.default_branch || 'main', inputs: { only: src, limit: '0', since: '2023' } } });
   }).then(function () {
-    var l = apLS(); if (l) l.setItem(VERIFY_KEY, JSON.stringify({ src: src, at: Date.now() }));
-    if (root.toast) root.toast('Checking ' + src + ' (a few minutes). Results appear in Spec approvals; auto specs need Publish.');
-    return src;
+    vfySave({ v: 2, src: src, brand: brand, catalogId: catalogId || null, ballId: ballId == null ? null : ballId,
+      title: title, step: 'extract', at: env.now(), base: base, log: {} });
+    if (root.toast) root.toast('Checking the ' + src + ' site. Progress shows on this ball.');
+    vfyArm(); return src;
   }).catch(function (e) {
     if (root.toast) root.toast(e.status === 403 || e.status === 404 ? 'Token needs Actions read and write' : ('Verify failed: ' + (e.status ? 'GitHub ' + e.status : 'offline')));
     return null;
   });
+}
+/* One poll. Advances as far as it can, then saves. Never rejects. */
+function vfyTick() {
+  var s = vfyActive();
+  if (!s || s.done || s.err || _vfyBusy || !apToken()) return Promise.resolve(s);
+  _vfyBusy = true;
+  var go = function () {
+    if (s.step === 'extract') {
+      return vfyFindRun('specs-extract.yml', s.base, 'workflow_dispatch').then(function (run) {
+        if (!run) { if (env.now() - s.at > VFY_START_GRACE_MS) s.err = 'The extract run did not start. Check Actions on GitHub, then retry.'; return false; }
+        s.runUrl = run.html_url;
+        if (run.status !== 'completed') { s.log.extract = 'running'; return false; }
+        if (run.conclusion !== 'success') { s.err = 'specs-extract ' + (run.conclusion || 'failed') + '.'; s.retry = 'extract'; return false; }
+        s.log.extract = 'done'; s.step = 'results'; return true;
+      });
+    }
+    if (s.step === 'results') {
+      return apReadStaged(true).then(function (rows) {
+        return apFetchIssue().then(function (is) { return apParseIssue(is.body); }, function () { return []; }).then(function (boxes) {
+          var c = vfyClassify(rows, boxes, s.catalogId);
+          s.result = c;
+          if (c.kind === 'missing' || c.kind === 'nospecs') { s.done = true; s.stopped = c.kind; return false; }
+          s.step = c.kind === 'auto' ? 'publish' : 'approve';
+          if (c.kind === 'auto') s.approve = 'auto';
+          return true;
+        });
+      });
+    }
+    if (s.step === 'approve') {
+      return apFetchIssue().then(function (is) {
+        var q = apQueue();
+        var bx = apParseIssue(is.body).filter(function (b) { return b.catalogId === s.catalogId; })
+          .map(function (b) { if (b.tok in q) b.ticked = !!q[b.tok]; return b; });
+        var t = bx.filter(function (b) { return b.ticked; });
+        if (t.length && !apConflict(bx)) { s.approve = 'ticked'; s.step = 'publish'; return true; }
+        s.waiting = t.length ? 'conflict' : 'approve'; return false;
+      });
+    }
+    if (s.step === 'publish') {
+      if (!s.pub) { s.waiting = 'publish'; return Promise.resolve(false); }
+      return vfyFindRun('specs-publish.yml', s.pub.base, 'workflow_dispatch').then(function (run) {
+        if (!run) { if (env.now() - s.pub.at > VFY_START_GRACE_MS) { s.err = 'The publish run did not start.'; s.retry = 'publish'; } return false; }
+        s.pubUrl = run.html_url;
+        if (run.status !== 'completed') return false;
+        if (run.conclusion !== 'success') { s.err = 'specs-publish ' + (run.conclusion || 'failed') + '.'; s.retry = 'publish'; return false; }
+        s.pub.done = env.now();
+        /* specs.json unchanged -> the workflow skips "Re-run catalog-refresh" */
+        return apGH('/actions/runs/' + run.id + '/jobs').then(function (j) {
+          var st = []; ((j && j.jobs) || []).forEach(function (x) { st = st.concat(x.steps || []); });
+          var re = st.filter(function (x) { return /catalog-refresh/i.test(x.name || ''); })[0];
+          s.unchanged = !!(re && re.conclusion === 'skipped');
+        }, function () {}).then(function () { s.step = 'rebuild'; return true; });
+      });
+    }
+    if (s.step === 'rebuild') {
+      var finish = function () { return catCheck({ force: true }).then(function (r) { s.rebuilt = r && r.status; s.step = 'recheck'; return true; }, function () { s.step = 'recheck'; return true; }); };
+      if (s.unchanged) return finish();
+      return vfyFindRun('catalog-refresh.yml', s.pub.refreshBase, null).then(function (run) {
+        if (!run) { if (env.now() - (s.pub.done || s.pub.at) > VFY_REFRESH_GRACE_MS) { s.unchanged = true; return finish(); } return false; }
+        s.refreshUrl = run.html_url;
+        if (run.status !== 'completed') return false;
+        if (run.conclusion !== 'success') { s.err = 'catalog-refresh ' + (run.conclusion || 'failed') + '.'; s.retry = 'rebuild'; return false; }
+        return finish();
+      });
+    }
+    if (s.step === 'recheck') {
+      return vfyRecheck(s).then(function () { s.done = true; return false; });
+    }
+    return Promise.resolve(false);
+  };
+  var loop = function () { return go().then(function (more) { s.waiting = more ? null : s.waiting; return more && !s.done && !s.err ? loop() : null; }); };
+  return loop().catch(function (e) {
+    if (e && (e.status === 401 || e.status === 403)) s.err = 'GitHub ' + e.status + ': check the token (Actions, Contents, Issues).';
+    else s.note = 'Offline or GitHub busy; trying again.';
+  }).then(function () {
+    var cur = vfyActive();
+    if (cur && cur.at === s.at) { if (!s.err) delete s.note; vfySave(s); }   // never overwrite a newer chain
+    _vfyBusy = false; vfyArm(); return s;
+  });
+}
+/* Step 6: re-run auto-verify for the owned ball(s) linked to this USBC ball. */
+function vfyRecheck(s) {
+  var mine = appBalls().filter(function (b) { return b.CatalogID === s.catalogId && (s.ballId == null || b.BallID == s.ballId); });
+  return catLoad().then(function (rows) { var e = byIdIn(rows, s.catalogId); return e ? catDetailRaw(e) : null; }).then(function (d) {
+    s.catSpecs = !!(d && Object.keys(d.SpecsByWeight || {}).length);
+    return mine.reduce(function (p, b) {
+      return p.then(function () {
+        return catAutoVerify(b).then(function () {
+          var sp = d ? ballFromSpecs(specsOf(d, parseInt(b.Weight, 10) || 15)) : {};
+          var ver = SPEC_FIELDS.filter(function (f) { return (b.SpecSource || {})[f] === 'catalog' && b[f] != null && b[f] !== ''; });
+          var dif = SPEC_FIELDS.filter(function (f) { return catSpecUnverified(b, f) && sp[f] != null && sp[f] !== '' && !specMatch(f, b, sp); });
+          var none = SPEC_FIELDS.filter(function (f) { return catSpecUnverified(b, f) && (sp[f] == null || sp[f] === ''); });
+          s.check = s.check || {}; s.check[b.BallID] = { name: b.BallName, verified: ver, differ: dif, nocat: none };
+        });
+      });
+    }, Promise.resolve());
+  }).catch(function () {});
+}
+function vfyArm() {
+  if (_vfyTimer || typeof setInterval !== 'function') return;
+  var s = vfyActive(); if (!s || s.done) return;
+  _vfyTimer = setInterval(function () {
+    var c = vfyActive();
+    if (!c || c.done) { clearInterval(_vfyTimer); _vfyTimer = null; return; }
+    if (typeof document !== 'undefined' && document.visibilityState === 'hidden') return;
+    vfyTick();
+  }, VFY_POLL_MS);
+}
+var FIELD_LABEL = { BoxFinish: 'Factory finish', Coverstock: 'Cover type', CoverName: 'Coverstock', CoreType: 'Core type', CoreShort: 'Core',
+  RG: 'RG', Differential: 'Diff', IntDiff: 'Int Diff', DateReleased: 'Release date' };
+/* Pure: the progress card. */
+function vfyCardHTML(s) {
+  if (!s) return '';
+  var at = VFY_STEPS.indexOf(s.step), stop = s.stopped;
+  var line = function (k, i) {
+    var done = s.done && !stop ? true : i < at, cur = i === at && !(s.done && !stop);
+    var mark = done ? '<span style="color:var(--teal)">\u2713</span>' : cur ? (s.err ? '<span style="color:var(--red)">!</span>' : '<span style="color:var(--gold)">\u25cf</span>') : '<span style="color:var(--t3)">\u25cb</span>';
+    var sub = '';
+    if (k === 'extract') sub = s.src + (cur && !s.err ? ' \u00b7 a few minutes' : '') + (s.runUrl ? ' \u00b7 <a href="' + esc(s.runUrl) + '" target="_blank" rel="noopener noreferrer" style="color:var(--teal)">run \u2197</a>' : '');
+    if (k === 'results' && s.result) sub = s.result.kind === 'auto' ? 'Matched, publishes without approval' : s.result.kind === 'approve' ? s.result.boxes + ' to review' :
+      s.result.kind === 'nospecs' ? 'Page found, but no usable specs' + (s.result.reasons && s.result.reasons.length ? ' (' + esc(s.result.reasons.join(', ')) + ')' : '') : 'Not found on the maker\u2019s site';
+    if (k === 'approve' && i < at) sub = s.approve === 'auto' ? 'Not needed' : 'Approved';
+    if (k === 'approve' && cur && s.waiting === 'conflict') sub = 'Your approvals disagree; keep one';
+    if (k === 'publish' && cur && s.pub && !s.err) sub = 'Running' + (s.pubUrl ? ' \u00b7 <a href="' + esc(s.pubUrl) + '" target="_blank" rel="noopener noreferrer" style="color:var(--teal)">run \u2197</a>' : '');
+    if (k === 'rebuild' && (cur || done) && s.unchanged) sub = 'Specs unchanged, no rebuild';
+    if (k === 'rebuild' && cur && !s.unchanged && !s.err) sub = 'Waiting for catalog-refresh';
+    return '<div style="display:flex;gap:8px;padding:3px 0;font-size:12px;color:' + (done || cur ? 'var(--t1)' : 'var(--t3)') + '"><span style="width:12px;text-align:center">' + mark + '</span>' +
+      '<div style="flex:1">' + VFY_LABEL[k] + (sub ? '<div style="font-size:11px;color:var(--t3)">' + sub + '</div>' : '') + '</div></div>';
+  };
+  var h = '<div style="margin-top:10px;padding:10px 12px;border-radius:12px;border:1px solid var(--border1);background:var(--bg2);text-align:left">' +
+    '<div style="font-size:12px;font-weight:800;color:var(--t2);margin-bottom:4px">Verify now' + (s.title ? ' \u00b7 ' + esc(s.title) : '') + '</div>' +
+    VFY_STEPS.map(line).join('');
+  if (s.err) h += '<div style="font-size:11px;color:var(--red);margin-top:6px;line-height:1.45">' + esc(s.err) + '</div>';
+  else if (s.note) h += '<div style="font-size:11px;color:var(--t3);margin-top:6px">' + esc(s.note) + '</div>';
+  if (s.done && s.check) Object.keys(s.check).forEach(function (id) {
+    var c = s.check[id], L = function (a) { return a.map(function (f) { return FIELD_LABEL[f] || f; }).join(', '); };
+    h += '<div style="font-size:11px;margin-top:6px;line-height:1.5">' +
+      (c.verified.length ? '<div style="color:var(--teal)">Verified: ' + esc(L(c.verified)) + '</div>' : '') +
+      (c.differ.length ? '<div style="color:var(--gold)">Still differs from the catalog: ' + esc(L(c.differ)) + '</div>' : '') +
+      (c.nocat.length ? '<div style="color:var(--t3)">No catalog value yet: ' + esc(L(c.nocat)) + '</div>' : '') +
+      (!c.differ.length && !c.nocat.length ? '<div style="color:var(--teal)">Nothing left unverified.</div>' : '') + '</div>' +
+      (c.differ.length ? '<button style="' + BTN_P + 'margin-top:6px;padding:8px 10px" onclick="catVerifyApply(' + esc(JSON.stringify(id)).replace(/"/g, '&quot;') + ')">Review and Apply in Edit</button>' : '');
+  });
+  if (s.done && !s.check && !stop) h += '<div style="font-size:11px;color:var(--t3);margin-top:6px">' + (s.catSpecs ? 'The catalog now has specs for this ball.' : 'The catalog has no specs for this ball yet.') + '</div>';
+  var btns = [];
+  if (!s.done && !s.err && s.step === 'approve') btns.push('<button style="' + BTN_P + 'flex:1;padding:9px" onclick="catVerifyOpenApprovals()">Open in Spec approvals</button>');
+  if (!s.done && !s.err && s.step === 'publish' && !s.pub) btns.push('<button style="' + BTN_P + 'flex:1;padding:9px" onclick="catVerifyPublish()">Publish</button>');
+  if (s.err) btns.push('<button style="' + BTN_P + 'flex:1;padding:9px" onclick="catVerifyRetry()">Retry</button>');
+  if (!s.done && !s.err) btns.push('<button style="' + BTN_G + 'padding:9px" onclick="catVerifyRefresh()">Check now</button>');
+  btns.push('<button style="' + BTN_G + 'padding:9px" onclick="catVerifyDismiss()">' + (s.done ? 'Done' : 'Stop') + '</button>');
+  return h + '<div style="display:flex;gap:6px;margin-top:8px">' + btns.join('') + '</div></div>';
+}
+/* Fills every on-screen slot for the active chain's ball. */
+function vfyPaint() {
+  if (typeof document === 'undefined') return;
+  var s = vfyActive();
+  Array.prototype.forEach.call(document.querySelectorAll('.vfy-slot'), function (el) {
+    el.innerHTML = s && el.getAttribute('data-cat') === s.catalogId ? vfyCardHTML(s) : (el.getAttribute('data-idle') || '');
+  });
+}
+/* Slot markup: idle = what to show when no chain runs for this ball (the Verify now button). */
+function vfySlotHTML(catalogId, idle) {
+  var s = vfyActive();
+  return '<div class="vfy-slot" data-cat="' + esc(catalogId) + '" data-idle="' + esc(idle || '') + '">' + (s && s.catalogId === catalogId ? vfyCardHTML(s) : (idle || '')) + '</div>';
+}
+function catVerifyRefresh() { var s = vfyActive(); if (s) { delete s.waiting; vfySave(s); } return vfyTick(); }
+function catVerifyDismiss() {
+  var s = vfyActive();
+  if (s && !s.done && root.confirm && !root.confirm('Stop following this check? Runs already started on GitHub keep going.')) return;
+  clearInterval(_vfyTimer); _vfyTimer = null; vfySave(null);
+}
+function catVerifyRetry() {
+  var s = vfyActive(); if (!s) return Promise.resolve(null);
+  if (s.retry === 'extract' || (!s.retry && s.step === 'extract')) return catVerifyNow(s.brand, s.catalogId, s.ballId);
+  if (s.retry === 'publish') s.pub = null;
+  delete s.err; delete s.retry; vfySave(s); return vfyTick();
+}
+function catVerifyOpenApprovals() { var s = vfyActive(); if (!s) return; _ap.focus = s.catalogId; catApprovalsOpen(); }
+/* Publish from the card or the approvals footer: note the newest ids first so the chain can find its runs. */
+function vfyDispatchPublish() {
+  var pb = 0, rb = 0;
+  /* a baseline we cannot read is null: publish still goes, the chain just cannot follow it */
+  return vfyLatestId('specs-publish.yml').catch(function () { return null; }).then(function (id) { pb = id; return vfyLatestId('catalog-refresh.yml').catch(function () { return null; }); })
+    .then(function (id) { rb = id; return apGH(''); })
+    .then(function (repo) { return apGH('/actions/workflows/specs-publish.yml/dispatches', { method: 'POST', body: { ref: repo.default_branch || 'main' } }); })
+    .then(function () {
+      var s = vfyActive();
+      if (s && !s.done && !s.err && s.step === 'publish' && !s.pub && pb != null && rb != null) { s.pub = { base: pb, refreshBase: rb, at: env.now() }; delete s.waiting; vfySave(s); vfyArm(); }
+      return true;
+    });
+}
+function catVerifyPublish() {
+  var q = Object.keys(apQueue()).length;
+  return (q ? apFlush() : Promise.resolve(0)).catch(function () {}).then(vfyDispatchPublish).then(function () {
+    if (root.toast) root.toast('specs-publish started. Progress shows on the ball.');
+  }, function (e) {
+    if (root.toast) root.toast(e.status === 403 || e.status === 404 ? 'Token needs Actions read and write to publish' : ('Publish failed: ' + (e.status ? 'GitHub ' + e.status : 'offline')));
+  });
+}
+function catVerifyApply(ballId) {
+  catApprovalsClose();
+  var p = typeof root.navToBall === 'function' ? Promise.resolve(root.navToBall(isFinite(+ballId) ? +ballId : ballId)) : Promise.resolve();
+  return p.then(function () {
+    var btn = document.getElementById('bdet-edit-toggle-btn');
+    if (btn && /Edit/.test(btn.textContent) && !/Cancel/.test(btn.textContent) && typeof root._bdetToggleEdit === 'function') root._bdetToggleEdit();
+  });
+}
+if (typeof document !== 'undefined' && document.addEventListener) {
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible' && vfyActive()) vfyTick(); });
+  setTimeout(function () { if (vfyActive()) { vfyPaint(); vfyArm(); vfyTick(); } }, 1500);
 }
 
 /* ---------- v30.169 APP-3: corrections during review ----------
@@ -1990,27 +2251,128 @@ function bowwwlLinks(brand, name) {
 
 /* ---------- correction sheet UI ---------- */
 var _apEdit = null;
+/* ---------- v30.172 CAT-NEW-2: tap-to-tag (LOCKED: value first, then field) ----------
+   The bridge keeps the spec lines it read (staging rawText, never published).
+   The correction sheet shows them with tappable values: numbers, weights and
+   short phrases (the text after "Label:" or "Label |"). Tap a value, then the
+   field it belongs to. Numbers are range-checked like typed ones. A weight
+   tap marks that row of the table, as a place marker only. */
+var TAG_NUM = /(^|[^\d.])((?:[0-2])?\.\d{2,3})(?![\d])/g;
+var TAG_WT = /\b(1[0-6])\s*(?:lbs?\.?|#|pounds?)(?![a-z])/gi;
+var _tag = { lines: [], val: null, key: null, row: null };
+/* Pure: one line -> parts [{t}|{t, tok:{kind, v}}], tokens in reading order. */
+function tagLine(line) {
+  var hits = [], m;
+  TAG_NUM.lastIndex = 0; while ((m = TAG_NUM.exec(line))) hits.push({ i: m.index + m[1].length, t: m[2], kind: 'num', v: m[2].charAt(0) === '.' ? '0' + m[2] : m[2] });
+  TAG_WT.lastIndex = 0; while ((m = TAG_WT.exec(line))) hits.push({ i: m.index, t: m[0], kind: 'wt', v: m[1] });
+  /* phrase = value after the first "Label:" / "Label |", when short and not just a number */
+  var sep = /^([A-Za-z][A-Za-z .()\/-]{1,28}?)\s*(?::|\s\|)\s*(.+)$/.exec(line);
+  if (sep) {
+    var val = sep[2].replace(/\s*\|.*$/, '').trim(), at = line.indexOf(val, sep[1].length);
+    var overlaps = hits.some(function (h) { return h.i >= at && h.i < at + val.length; });
+    if (val && val.length <= 40 && !/^[\d.\s]+$/.test(val) && !overlaps) hits.push({ i: at, t: val, kind: 'phrase', v: val });
+  }
+  hits.sort(function (a, b) { return a.i - b.i; });
+  var out = [], pos = 0;
+  hits.forEach(function (h) { if (h.i < pos) return; if (h.i > pos) out.push({ t: line.slice(pos, h.i) }); out.push({ t: h.t, tok: { kind: h.kind, v: h.v } }); pos = h.i + h.t.length; });
+  if (pos < line.length) out.push({ t: line.slice(pos) });
+  return out;
+}
+function tagLines(raw) { return String(raw || '').split('\n').map(function (l) { return l.trim(); }).filter(Boolean).map(tagLine); }
+var MONTH_N = { january: 1, february: 2, march: 3, april: 4, may: 5, june: 6, july: 7, august: 8, september: 9, october: 10, november: 11, december: 12 };
+/* Pure: what a tapped value becomes in a field, or why it cannot go there. */
+function tagValueFor(fieldId, v) {
+  var s = String(v == null ? '' : v).trim(), w = /^ape-(\d+)-(RG|Diff|IntDiff)$/.exec(fieldId);
+  if (w) {
+    var lim = { RG: [2.30, 2.90], Diff: [0, DIFF_MAX], IntDiff: [0, 0.040] }[w[2]], n = Number(s);
+    if (!/^\d*\.?\d+$/.test(s) || !isFinite(n)) return { err: 'Pick a number for ' + (w[2] === 'IntDiff' ? 'Int Diff' : w[2]) };
+    if (n < lim[0] || n > lim[1]) return { err: (w[2] === 'IntDiff' ? 'Int Diff' : w[2]) + ' ' + w[1] + ' lb must be ' + lim[0] + '\u2013' + lim[1] + ' (read ' + s + ')' };
+    return { v: s.charAt(0) === '.' ? '0' + s : s };
+  }
+  if (fieldId === 'ape-coreType') {
+    if (/asym/i.test(s)) return { v: 'Asymmetrical' };
+    if (/sym/i.test(s)) return { v: 'Symmetrical' };
+    return { err: 'Core type takes Symmetrical or Asymmetrical' };
+  }
+  if (fieldId === 'ape-released') {
+    var m = /^(\d{4})-(\d{2})(?:-(\d{2}))?/.exec(s); if (m) return { v: m[0] };
+    m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(s); if (m) return { v: m[3] + '-' + ('0' + m[1]).slice(-2) + '-' + ('0' + m[2]).slice(-2) };
+    m = /^([A-Za-z]+)\.?\s+(\d{4})$/.exec(s); if (m && MONTH_N[m[1].toLowerCase()]) return { v: m[2] + '-' + ('0' + MONTH_N[m[1].toLowerCase()]).slice(-2) };
+    m = /^(\d{4})$/.exec(s); if (m) return { v: m[1] };
+    return { err: 'Release date needs a date, e.g. October 2022' };
+  }
+  if (/^ape-(coverType|finish|core|note)$/.test(fieldId)) return { v: s.replace(/[\u2122\u00ae]/g, '').trim() };
+  return { err: 'That field does not take tapped values' };
+}
+function tagPanelHTML(raw) {
+  _tag = { lines: tagLines(raw), val: null, key: null, row: null };
+  if (!_tag.lines.length) return '';
+  var body = _tag.lines.map(function (parts, i) {
+    return '<div style="padding:3px 0;line-height:1.9">' + parts.map(function (p, j) {
+      if (!p.tok) return '<span style="color:var(--t3)">' + esc(p.t) + '</span>';
+      var col = p.tok.kind === 'wt' ? 'var(--gold)' : 'var(--teal)';
+      return '<span data-tag="' + i + '-' + j + '" onclick="catTagPick(' + i + ',' + j + ')" style="cursor:pointer;padding:2px 6px;border-radius:7px;border:1px solid ' + col +
+        ';color:' + col + ';font-weight:700;white-space:nowrap">' + esc(p.t) + '</span>';
+    }).join('') + '</div>';
+  }).join('');
+  return '<div style="font-size:11px;font-weight:700;color:var(--t3);margin:10px 0 4px;text-transform:uppercase;letter-spacing:.5px">From the page</div>' +
+    '<div style="font-size:12px;color:var(--t2);line-height:1.5;margin-bottom:4px">Tap a value, then the field it belongs to.</div>' +
+    '<div id="ape-tags" style="max-height:190px;overflow-y:auto;padding:6px 10px;border-radius:10px;background:var(--bg3);font-size:12px">' + body + '</div>' +
+    '<div id="ape-tagbar" style="display:none;position:sticky;top:0;z-index:2;margin-top:6px;padding:8px 10px;border-radius:10px;background:var(--bg2);border:1px solid var(--teal);font-size:12px;color:var(--t1)"></div>';
+}
+function tagPaint() {
+  var ov = document.getElementById('ap-edit-ov'); if (!ov) return;
+  ov.classList.toggle('tagging', !!_tag.val);
+  Array.prototype.forEach.call(ov.querySelectorAll('[data-tag]'), function (el) { el.style.background = el.getAttribute('data-tag') === _tag.key ? 'rgba(0,217,217,0.18)' : 'transparent'; });
+  Array.prototype.forEach.call(ov.querySelectorAll('tr[data-w]'), function (tr) { tr.style.background = tr.getAttribute('data-w') === _tag.row ? 'rgba(214,169,76,0.14)' : ''; });
+  var bar = document.getElementById('ape-tagbar');
+  if (bar) { bar.style.display = _tag.val ? 'block' : 'none';
+    bar.innerHTML = _tag.val ? 'Tap a field for <b>' + esc(_tag.val) + '</b> <span onclick="catTagCancel()" style="float:right;color:var(--teal);font-weight:700;cursor:pointer">Cancel</span>' : ''; }
+}
+function catTagPick(i, j) {
+  var p = (_tag.lines[i] || [])[j]; if (!p || !p.tok) return;
+  if (p.tok.kind === 'wt') { _tag.row = _tag.row === p.tok.v ? null : p.tok.v; tagPaint(); return; }
+  var key = i + '-' + j;
+  if (_tag.key === key) { _tag.val = null; _tag.key = null; } else { _tag.val = p.tok.v; _tag.key = key; }
+  tagPaint();
+}
+function catTagCancel() { _tag.val = null; _tag.key = null; tagPaint(); }
+/* Field tap while a value is picked (inputs ignore pointer events then, so no keyboard). */
+function tagFieldTap(ev) {
+  if (!_tag.val) return;
+  var box = ev.target && ev.target.closest ? ev.target.closest('.ape-f') : null; if (!box) return;
+  var el = box.querySelector('input,select'); if (!el) return;
+  ev.preventDefault(); ev.stopPropagation();
+  var r = tagValueFor(el.id, _tag.val), err = document.getElementById('ape-err');
+  if (r.err) { if (err) err.textContent = r.err; return; }
+  el.value = el.id === 'ape-note' && el.value ? el.value + '; ' + r.v : r.v;
+  if (err) err.textContent = '';
+  el.style.boxShadow = '0 0 0 2px var(--teal)'; setTimeout(function () { el.style.boxShadow = ''; }, 700);
+  if (root.haptic) try { root.haptic('light'); } catch (x) {}
+  _tag.val = null; _tag.key = null; tagPaint();
+}
 function catApprovalsEdit(i) {
   var p = _ap.pages[_ap.idx]; if (!p) return;
   var b = p.boxes[i];
   var r = apApplyOverride(_staged ? apStagedFor(_staged, b, p.catalogId) : null, overrideFor(p.catalogId));
   var sp = (r && r.specs) || {};
   _apEdit = { catalogId: p.catalogId, i: i };
-  var inp = function (id, v, ph) { return '<input id="' + id + '" class="bdet-field-input" value="' + esc(v == null ? '' : v) + '" placeholder="' + esc(ph || '') + '" style="width:100%;box-sizing:border-box;font-size:15px">'; };
+  var inp = function (id, v, ph) { return '<div class="ape-f"><input id="' + id + '" class="bdet-field-input" value="' + esc(v == null ? '' : v) + '" placeholder="' + esc(ph || '') + '" style="width:100%;box-sizing:border-box;font-size:15px"></div>'; };
   var lab = function (t) { return '<div style="font-size:11px;font-weight:700;color:var(--t3);margin:10px 0 4px;text-transform:uppercase;letter-spacing:.5px">' + t + '</div>'; };
   var ws = [16, 15, 14, 13, 12];
   var wrow = function (w) { var x = (sp.weights || {})[w] || {};
     var c = function (k) { return '<input id="ape-' + w + '-' + k + '" inputmode="decimal" class="bdet-field-input" value="' + esc(x[k] == null ? '' : x[k]) + '" style="width:100%;box-sizing:border-box;font-size:14px;padding:6px">'; };
-    return '<tr><td style="color:var(--t2);font-size:13px;padding:3px 4px 3px 0">' + w + ' lb</td><td style="padding:3px">' + c('RG') + '</td><td style="padding:3px">' + c('Diff') + '</td><td style="padding:3px">' + c('IntDiff') + '</td></tr>'; };
+    return '<tr data-w="' + w + '"><td style="color:var(--t2);font-size:13px;padding:3px 4px 3px 0">' + w + ' lb</td><td class="ape-f" style="padding:3px">' + c('RG') + '</td><td class="ape-f" style="padding:3px">' + c('Diff') + '</td><td class="ape-f" style="padding:3px">' + c('IntDiff') + '</td></tr>'; };
   var ov = overlay('ap-edit-ov', 920);
   ov.innerHTML = '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 8px"><button style="' + BACK + '" onclick="catApprovalsEditClose()">‹</button>' +
     '<div style="flex:1"><div style="font-size:17px;font-weight:800;color:var(--t1)">Correct specs</div><div style="font-size:11px;color:var(--t3)">' + esc(b.title) + ' · USBC ' + esc(p.catalogId) + '</div></div></div>' +
     '<div style="flex:1;overflow-y:auto;padding:0 16px 16px">' +
     '<div style="font-size:12px;color:var(--t2);line-height:1.5">Change or fill any field. Values shown are what the bridge read; edit them in place.</div>' +
+    tagPanelHTML(r && r.rawText) +
     lab('Cover type') + inp('ape-coverType', sp.coverType, 'e.g. Solid Reactive') +
     lab('Factory finish') + inp('ape-finish', sp.finish, 'e.g. 2000 Abralon') +
     lab('Core') + inp('ape-core', sp.core) +
-    lab('Core type') + '<select id="ape-coreType" class="bdet-field-input" style="width:100%;font-size:15px"><option value=""' + (!sp.coreType ? ' selected' : '') + '>—</option><option' + (/^sym/i.test(sp.coreType || '') ? ' selected' : '') + '>Symmetrical</option><option' + (/asym/i.test(sp.coreType || '') ? ' selected' : '') + '>Asymmetrical</option></select>' +
+    lab('Core type') + '<div class="ape-f"><select id="ape-coreType" class="bdet-field-input" style="width:100%;font-size:15px"><option value=""' + (!sp.coreType ? ' selected' : '') + '>—</option><option' + (/^sym/i.test(sp.coreType || '') ? ' selected' : '') + '>Symmetrical</option><option' + (/asym/i.test(sp.coreType || '') ? ' selected' : '') + '>Asymmetrical</option></select></div>' +
     lab('Release date') + inp('ape-released', sp.released ? String(sp.released).slice(0, 10) : '', 'YYYY-MM-DD') +
     lab('RG / Diff / Int Diff by weight') +
     '<table style="width:100%;border-collapse:collapse"><tr style="font-size:11px;color:var(--t3)"><td></td><td>RG</td><td>Diff</td><td>Int</td></tr>' + ws.map(wrow).join('') + '</table>' +
@@ -2021,6 +2383,10 @@ function catApprovalsEdit(i) {
     '<div id="ape-err" style="font-size:12px;color:var(--red);margin-top:8px;line-height:1.45"></div>' +
     '</div><div style="padding:10px 16px;border-top:1px solid var(--border1)"><button style="' + BTN_P + 'width:100%;padding:12px" onclick="catApprovalsEditSave()">Save correction</button></div>';
   document.body.appendChild(ov);
+  if (!document.getElementById('ape-tag-css')) { var st = document.createElement('style'); st.id = 'ape-tag-css';
+    st.textContent = '#ap-edit-ov.tagging .ape-f input,#ap-edit-ov.tagging .ape-f select{pointer-events:none;outline:1px dashed var(--teal);outline-offset:1px}';
+    document.head.appendChild(st); }
+  ov.addEventListener('click', tagFieldTap, true);
 }
 function catApprovalsEditClose() { var el = document.getElementById('ap-edit-ov'); if (el) el.parentNode.removeChild(el); _apEdit = null; }
 function catApprovalsEditSave() {
@@ -2280,7 +2646,7 @@ function catCompareAdd(x) {
 
 root.CATALOG_JS_VERSION = CAT_VERSION;
 root.catPickerMount = catPickerMount;
-root.catApprovalsOpen = catApprovalsOpen; root.catApprovalsRetryStaged = catApprovalsRetryStaged; root.apStagedErrText = apStagedErrText; root.catApprovalsClose = catApprovalsClose; root.catApprovalsSaveToken = catApprovalsSaveToken;
+root.catApprovalsOpen = catApprovalsOpen; root.catTagPick = catTagPick; root.catTagCancel = catTagCancel; root.catVerifyRefresh = catVerifyRefresh; root.catVerifyDismiss = catVerifyDismiss; root.catVerifyRetry = catVerifyRetry; root.catVerifyOpenApprovals = catVerifyOpenApprovals; root.catVerifyPublish = catVerifyPublish; root.catVerifyApply = catVerifyApply; root.catVerifyTick = vfyTick; root.catVerifyState = vfyActive; root.catApprovalsRetryStaged = catApprovalsRetryStaged; root.apStagedErrText = apStagedErrText; root.catApprovalsClose = catApprovalsClose; root.catApprovalsSaveToken = catApprovalsSaveToken;
 root.catApprovalsForgetToken = catApprovalsForgetToken; root.catApprovalsChangeToken = catApprovalsChangeToken; root.catApprovalsPage = catApprovalsPage; root.catApprovalsFilter = catApprovalsFilter;
 root.catApprovalsTick = catApprovalsTick; root.catApprovalsEdit = catApprovalsEdit; root.catApprovalsEditClose = catApprovalsEditClose; root.catApprovalsEditSave = catApprovalsEditSave; root.catAddSpecsOnly = catAddSpecsOnly; root.catVerifyNow = catVerifyNow; root.catImagesSet = catImagesSet;
 root.catImagesRefresh = catImagesRefresh; root.catImagesStatus = catImagesStatus; root.catImageFor = catImageFor; root.catApprovalsSend = catApprovalsSend; root.catApprovalsPublish = catApprovalsPublish; root.catPickerSearch = catPickerSearch;
@@ -2311,7 +2677,7 @@ root._catStep5 = { norm: norm, modelKey: modelKey, lookupIn: lookupIn, searchIn:
                    buildOwnedBall: buildOwnedBall, ballFromSpecs: ballFromSpecs, fillPlan: fillPlan,
                    catSpecSource: catSpecSource, setFilled: function (f) { _filled = f; },
                    imgLinksFrom: imgLinksFrom, sheetState: function () { return _sheet; }, mergeOverrides: mergeOverrides, withLocalCorrection: withLocalCorrection, apApplyOverride: apApplyOverride, apOverrideFrom: apOverrideFrom, bowwwlLinks: bowwwlLinks, apStagedFor: apStagedFor, apAsDetail: apAsDetail, apRangeNotes: apRangeNotes, derivedCoverType: derivedCoverType, specGaps: specGaps, nearestWeight: nearestWeight, addListHTML: addListHTML, sourceForBrand: sourceForBrand, apParseIssue: apParseIssue, apPages: apPages, apApplyTicks: apApplyTicks, apConflict: apConflict, apNums: apNums,
-                   verifyPlan: verifyPlan, specMatch: specMatch, coreNameMatch: coreNameMatch, DIFF_MAX: DIFF_MAX, metricUnverified: metricUnverified, catSpecUnverified: catSpecUnverified,
+                   verifyPlan: verifyPlan, tagLine: tagLine, tagLines: tagLines, tagValueFor: tagValueFor, vfyPickRun: vfyPickRun, vfyClassify: vfyClassify, vfyCardHTML: vfyCardHTML, specMatch: specMatch, coreNameMatch: coreNameMatch, DIFF_MAX: DIFF_MAX, metricUnverified: metricUnverified, catSpecUnverified: catSpecUnverified,
                    metricScore: metricScore, parseFinish: parseFinish, rgBand: rgBand, diffBand: diffBand, coverClass: coverClass,
                    catMetric: catMetric, sheetHTML: sheetHTML, cmpColOwned: cmpColOwned, cmpColCatalog: cmpColCatalog, cmpRows: cmpRows,
                    cmpHTML: cmpHTML, cmpState: function () { return _cmp; }, setSheet: function (x) { _sheet = x; } };
