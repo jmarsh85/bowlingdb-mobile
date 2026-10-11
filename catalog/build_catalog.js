@@ -205,6 +205,24 @@ function writeIfChanged(file, body, manifest, key) {
   return true;
 }
 
+/* v30.173 CAT-NEW-7: every value already published for the reusable spec
+   fields, with how often and which makers use it, for the app's pick lists. */
+function vocabOf(entries) {
+  const F = { core: e => e.Core && e.Core.Name, coreType: e => e.Core && e.Core.Type, coverName: e => e.Cover && e.Cover.Name,
+              coverType: e => e.Cover && e.Cover.Type, finish: e => e.Cover && e.Cover.Finish };
+  const out = {};
+  for (const k in F) {
+    const m = new Map();
+    for (const e of entries) {
+      const v = F[k](e); if (v == null || String(v).trim() === '') continue;
+      const t = String(v).trim(), key = t.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+      const o = m.get(key) || { v: t, n: 0, b: [] }; o.n++; if (e.MFG && !o.b.includes(e.MFG)) o.b.push(e.MFG); m.set(key, o);
+    }
+    out[k] = [...m.values()].map(o => ({ v: o.v, n: o.n, b: o.b.sort() })).sort((a, b) => b.n - a.n || a.v.localeCompare(b.v));
+  }
+  return out;
+}
+
 function main() {
   const args = process.argv.slice(2);
   const rowsPath = args.find(a => !a.startsWith('--') &&
@@ -230,6 +248,7 @@ function main() {
 
   changed = writeIfChanged(path.join(outDir, 'index.json'), stable(index), manifest, 'index.json') || changed;
   changed = writeIfChanged(path.join(outDir, 'usbc.json'),  stable(usbc),  manifest, 'usbc.json')  || changed;
+  changed = writeIfChanged(path.join(outDir, 'vocab.json'), stable(vocabOf(entries)), manifest, 'vocab.json') || changed;
   for (const [s, list] of Object.entries(shards)) {
     const key = `detail/${s}.json`;
     changed = writeIfChanged(path.join(outDir, key), stable(list), manifest, key) || changed;
@@ -258,4 +277,4 @@ function main() {
 }
 
 if (require.main === module) main();
-module.exports = { build, catalogID, stable, sha, coverCode, coreCode };
+module.exports = { build, catalogID, stable, sha, coverCode, coreCode, vocabOf };
