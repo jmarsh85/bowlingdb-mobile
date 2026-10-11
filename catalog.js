@@ -36,7 +36,7 @@
 'use strict';
 
 /* v30.169: shown in the app header when it differs from the build's EXPECTED_CATALOG_JS */
-var CAT_VERSION  = 'v30.174';
+var CAT_VERSION  = 'v30.175';
 var CAT_BASE     = 'https://raw.githubusercontent.com/jmarsh85/bowlingdb-mobile/dist/';
 var CAT_DB       = 'BowlingDB_Catalog';
 var CAT_DB_VER   = 1;
@@ -479,9 +479,11 @@ function catLinkLabel(b) {
     el.innerHTML = e ? entryLine(e) : (rows.length ? 'Linked (not in current catalog)' : 'Linked');
     /* APP-2: only offered while something is still unverified */
     /* v30.172 CAT-NEW-4: the progress card replaces the button while a check runs for this ball */
-    var _va = vfyActive(), _vmine = _va && _va.catalogId === e.i;
+    var _va = vfyActive(), _vmine = !!(e && _va && _va.catalogId === e.i);
     if (e && sourceForBrand(e.m) && (_vmine || SPEC_FIELDS.some(function (f) { return catSpecUnverified(b, f); })))
       el.innerHTML += vfySlotHTML(e.i, '<div><button style="' + BTN_G + 'margin-top:6px;padding:5px 10px;font-size:11px" onclick="catVerifyNow(\'' + esc(e.m) + '\',\'' + esc(e.i) + '\',' + JSON.stringify(b.BallID).replace(/"/g, '&quot;') + ')">Verify now</button> <button style="' + BTN_G + 'margin-top:6px;padding:5px 10px;font-size:11px" onclick="catSpecReviewOpen(' + JSON.stringify(b.BallID).replace(/"/g, '&quot;') + ')">Review specs</button></div>');
+    /* v30.175: Look up (split view: bowwwl / maker page above your fields) */
+    if (e) el.innerHTML += '<div><button style="' + BTN_G + 'margin-top:6px;padding:5px 10px;font-size:11px" onclick="catLookBall(' + JSON.stringify(b.BallID).replace(/"/g, '&quot;') + ')">Look up</button></div>';
     /* DATA-2: confirm matching legacy specs; a second render finds nothing left, so no loop */
     catAutoVerify(b).then(function (n) {
       if (n && typeof root._bdetRenderSpecs === 'function' && document.getElementById(slot)) root._bdetRenderSpecs();
@@ -2515,7 +2517,8 @@ var FAMILY = [[/storm|roto ?grip|900 ?global/i, 'Storm \u00b7 Roto Grip \u00b7 9
   [/brunswick|dv8|radical|ebonite|hammer|track|columbia/i, 'Brunswick \u00b7 DV8 \u00b7 Radical \u00b7 Ebonite \u00b7 Hammer \u00b7 Track \u00b7 Columbia 300'],
   [/motiv/i, 'Motiv']];
 function familyOf(m) { var t = String(m || ''); for (var i = 0; i < FAMILY.length; i++) if (FAMILY[i][0].test(t)) return FAMILY[i][1]; return null; }
-var VOCAB_FIELDS = { 'ape-core': 'core', 'ape-coverName': 'coverName', 'ape-coverType': 'coverType', 'ape-finish': 'finish' };
+var VOCAB_FIELDS = { 'ape-core': 'core', 'ape-coverName': 'coverName', 'ape-coverType': 'coverType', 'ape-finish': 'finish',
+  'lk-CoreShort': 'core', 'lk-CoverName': 'coverName', 'lk-Coverstock': 'coverType', 'lk-BoxFinish': 'finish' };
 var _vocab = null, _vocabP = null;
 function vocabKey(v) { return String(v || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim(); }
 /* Pure: merge lists of {v, n, b[]} by folded value; extra = [{field, v, brand}]. */
@@ -2560,8 +2563,8 @@ var _vp = { field: null, brand: null };
 function catPickOpen(fieldId) {
   var k = VOCAB_FIELDS[fieldId]; if (!k) return;
   var p = _ap.pages[_ap.idx], e = p && _ap._rows ? byIdIn(_ap._rows, p.catalogId) : null;
-  _vp = { field: fieldId, brand: e ? e.m : null };
-  var ov = overlay('vp-ov', 930);
+  _vp = { field: fieldId, brand: /^lk-/.test(fieldId) ? _lk.brand : (e ? e.m : null) };
+  var ov = overlay('vp-ov', 950);
   ov.innerHTML = '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 8px"><button style="' + BACK + '" onclick="catPickClose()">\u2039</button>' +
     '<div style="flex:1"><div style="font-size:17px;font-weight:800;color:var(--t1)">' + ({ core: 'Core', coverName: 'Coverstock', coverType: 'Cover type', finish: 'Factory finish' }[k]) + '</div>' +
     '<div style="font-size:11px;color:var(--t3)">Values already in use</div></div></div>' +
@@ -2604,6 +2607,166 @@ function apReadPage(key) {
     return r.json();
   }).then(function (j) { _pages[key] = j; return j; });
 }
+/* ---------- v30.175: Look-up split view (approvals + Ball Detail) ----------
+   The web page (bowwwl first, then the maker's page) is shown live inside the
+   app, above the fields being filled, with a draggable divider. Copy in the
+   page (long-press), paste below (long-press, or the field's paste button),
+   without leaving the screen. The app does not fetch or keep the page: the
+   phone loads it in a frame, like a browser. Some sites refuse to be shown
+   in a frame; the bar under the page offers Safari for those. Values you
+   save onto your own ball are marked verified by you ('user'). */
+var LK_SPLIT_KEY = 'bdblk_split';
+var _lk = { tabs: [], active: 0, mode: null, ballId: null, brand: null, timer: null };
+function lkRatio() { var l = apLS(), v = l ? parseFloat(l.getItem(LK_SPLIT_KEY)) : NaN; return isFinite(v) && v >= 0.2 && v <= 0.8 ? v : 0.5; }
+/* Pure: tab list for a ball (bowwwl page, maker page when known). */
+function lkTabs(brand, name, makerUrl) {
+  var bw = bowwwlLinks(brand || '', name || ''), out = [{ k: 'bowwwl', label: 'bowwwl', url: bw.page }];
+  if (makerUrl && /^https:\/\//.test(makerUrl)) out.push({ k: 'maker', label: 'Maker page', url: makerUrl });
+  out.push({ k: 'search', label: 'Search', url: bw.search, safariOnly: true });
+  return out;
+}
+function lkPaneHTML(h) {
+  var t = _lk.tabs[_lk.active] || {};
+  var tabs = _lk.tabs.map(function (x, i) {
+    if (x.safariOnly) return '<a href="' + esc(x.url) + '" target="_blank" rel="noopener noreferrer" style="font-size:12px;color:var(--t2);padding:6px 8px;text-decoration:none">' + esc(x.label) + ' \u2197</a>';
+    return '<button onclick="catLookTab(' + i + ')" style="font-size:12px;font-weight:700;padding:6px 10px;border-radius:8px;border:1px solid ' + (i === _lk.active ? 'var(--teal)' : 'var(--border1)') +
+      ';background:' + (i === _lk.active ? 'rgba(0,217,217,0.12)' : 'transparent') + ';color:' + (i === _lk.active ? 'var(--teal)' : 'var(--t2)') + '">' + esc(x.label) + '</button>';
+  }).join('');
+  return '<div id="lk-pane" style="height:' + h + 'px;flex:0 0 auto;display:flex;flex-direction:column;border-top:1px solid var(--border1)">' +
+    '<div style="display:flex;gap:6px;align-items:center;padding:6px 12px;overflow-x:auto">' + tabs +
+      '<a id="lk-safari" href="' + esc(t.url || '#') + '" target="_blank" rel="noopener noreferrer" style="margin-left:auto;font-size:12px;color:var(--teal);white-space:nowrap">Safari \u2197</a></div>' +
+    '<iframe id="lk-frame" src="' + esc(t.url || 'about:blank') + '" referrerpolicy="no-referrer" style="flex:1;width:100%;border:0;background:#fff"></iframe>' +
+    '<div id="lk-hint" style="font-size:10px;color:var(--t3);padding:3px 12px">Page blank? That site blocks in-app view: use Safari \u2197.</div></div>' +
+    '<div id="lk-handle" style="flex:0 0 auto;height:22px;display:flex;align-items:center;justify-content:center;touch-action:none;cursor:row-resize;background:var(--bg2)">' +
+      '<div style="width:46px;height:5px;border-radius:3px;background:var(--t3);opacity:.6"></div></div>';
+}
+/* Inserts the pane above `body` inside overlay `ov`, wires the divider. */
+function lkMount(ov, body) {
+  lkUnmount();
+  var h = Math.round((ov.clientHeight || 700) * lkRatio());
+  var wrap = document.createElement('div'); wrap.id = 'lk-wrap'; wrap.style.display = 'contents';
+  wrap.innerHTML = lkPaneHTML(h);
+  ov.insertBefore(wrap, body);
+  var handle = document.getElementById('lk-handle'), pane = document.getElementById('lk-pane'), frame = document.getElementById('lk-frame');
+  var start = null;
+  handle.addEventListener('pointerdown', function (e) { start = { y: e.clientY, h: pane.offsetHeight }; frame.style.pointerEvents = 'none'; try { handle.setPointerCapture(e.pointerId); } catch (x) {} e.preventDefault(); });
+  handle.addEventListener('pointermove', function (e) {
+    if (!start) return;
+    var H = ov.clientHeight || 700, nh = Math.max(H * 0.2, Math.min(H * 0.8, start.h + e.clientY - start.y));
+    pane.style.height = Math.round(nh) + 'px';
+  });
+  var end = function () { if (!start) return; start = null; frame.style.pointerEvents = ''; var l = apLS(); if (l) l.setItem(LK_SPLIT_KEY, String((pane.offsetHeight / (ov.clientHeight || 700)).toFixed(3))); };
+  handle.addEventListener('pointerup', end); handle.addEventListener('pointercancel', end);
+}
+function lkUnmount() { var w = document.getElementById('lk-wrap'); if (w) w.parentNode.removeChild(w); }
+function catLookTab(i) {
+  if (!_lk.tabs[i] || _lk.tabs[i].safariOnly) return;
+  _lk.active = i;
+  var pane = document.getElementById('lk-pane'); if (!pane) return;
+  var h = pane.offsetHeight, wrap = document.getElementById('lk-wrap');
+  wrap.innerHTML = lkPaneHTML(h);
+  var ov = wrap.parentNode, body = wrap.nextSibling; lkMount(ov, body);
+  document.getElementById('lk-pane').style.height = h + 'px';
+}
+/* Pure: tidy a pasted value for a field kind. */
+function lkPasteValue(kind, t) {
+  var s = String(t || '').replace(/\s+/g, ' ').trim();
+  if (kind === 'num') { var m = /(?:^|[^\d.])((?:[0-2])?\.\d{2,3})(?!\d)/.exec(' ' + s); return m ? (m[1].charAt(0) === '.' ? '0' + m[1] : m[1]) : null; }
+  if (kind === 'date') { var r = tagValueFor('ape-released', s); return r.v || null; }
+  return pgvClean(s) || null;
+}
+function catLookPaste(id, kind) {
+  if (!(typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.readText)) { if (root.toast) root.toast('Long-press the field and tap Paste'); return; }
+  navigator.clipboard.readText().then(function (t) {
+    var v = lkPasteValue(kind, t), el = document.getElementById(id);
+    if (!el) return;
+    if (v == null) { if (root.toast) root.toast(kind === 'num' ? 'No number like 2.48 or 0.051 in what you copied' : 'Nothing to paste'); return; }
+    el.value = v; el.style.boxShadow = '0 0 0 2px var(--teal)'; setTimeout(function () { el.style.boxShadow = ''; }, 700);
+  }, function () { if (root.toast) root.toast('Long-press the field and tap Paste instead'); });
+}
+function lkPasteBtn(id, kind) {
+  return (typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.readText) ?
+    '<button style="' + BTN_G + 'padding:0 10px;font-size:12px" onclick="catLookPaste(\'' + id + '\',\'' + kind + '\')" aria-label="Paste">Paste</button>' : '';
+}
+/* --- approvals: the Correct specs sheet gains the pane --- */
+function catLookAp() {
+  var ov = document.getElementById('ap-edit-ov'); if (!ov || !_apEdit) return;
+  if (document.getElementById('lk-wrap')) { lkUnmount(); lkBtnPaint(); return; }
+  var e = _ap._rows ? byIdIn(_ap._rows, _apEdit.catalogId) : null;
+  _lk = { tabs: lkTabs(e ? e.m : '', _apEdit.ballName, _apEdit.url), active: 0, mode: 'ap', ballId: null, brand: e ? e.m : null };
+  var body = ov.querySelector('[data-lk-body]'); lkMount(ov, body); lkBtnPaint();
+  var tg = document.getElementById('lk-toggle'); if (tg && body) body.scrollTop = Math.max(0, tg.offsetTop - body.offsetTop - 6);   // fields straight under the page
+}
+function lkBtnPaint() { var b = document.getElementById('lk-toggle'); if (b) b.textContent = document.getElementById('lk-wrap') ? 'Hide look-up' : 'Look up here (split view)'; }
+/* --- Ball Detail: Look up opens the pane over your ball's spec fields --- */
+var LK_FIELDS = [['CoverName', 'Coverstock', 'text', 'coverName'], ['Coverstock', 'Cover type', 'text', 'coverType'], ['BoxFinish', 'Factory finish', 'text', 'finish'],
+  ['CoreShort', 'Core', 'text', 'core'], ['CoreType', 'Core type', 'core', null], ['RG', 'RG', 'num', null], ['Differential', 'Diff', 'num', null], ['IntDiff', 'Int Diff', 'num', null],
+  ['DateReleased', 'Release date', 'date', null]];
+var LK_RANGE = { RG: [2.30, 2.90], Differential: [0, 0.060], IntDiff: [0, 0.040] };
+function catLookBall(ballId) {
+  var b = appBalls().filter(function (x) { return x.BallID == ballId; })[0]; if (!b) return;
+  var name = b.BallName, brand = b.MFG;
+  catLoad().then(function (rows) { var e = b.CatalogID ? byIdIn(rows, b.CatalogID) : null; if (e) { name = cleanName(e.n); brand = e.m; } return e ? catDetailRaw(e) : null; }, function () { return null; })
+  .then(function (d) {
+    _lk = { tabs: lkTabs(brand, name, d && /^https:/.test(d.Source || '') ? d.Source : null), active: 0, mode: 'ball', ballId: b.BallID, brand: brand, ok: {} };
+    var ov = overlay('lk-ov', 940);
+    var row = function (f) {
+      var id = 'lk-' + f[0], v = b[f[0]], ver = (v == null || v === '' || catSpecUnverified(b, f[0])) ? '' : '<span style="font-size:10px;color:var(--teal);margin-left:6px">\u2713 verified</span>';
+      var input = f[2] === 'core' ? '<select id="' + id + '" class="bdet-field-input" style="flex:1;font-size:15px"><option value=""' + (!v ? ' selected' : '') + '>\u2014</option><option' + (/^sym/i.test(v || '') ? ' selected' : '') + '>Symmetrical</option><option' + (/asym/i.test(v || '') ? ' selected' : '') + '>Asymmetrical</option></select>' :
+        '<input id="' + id + '" class="bdet-field-input" value="' + esc(v == null ? '' : (f[2] === 'num' && isFinite(parseFloat(v)) ? parseFloat(v).toFixed(3).replace(/0$/, '') : v)) + '"' + (f[2] === 'num' ? ' inputmode="decimal"' : '') + (f[2] === 'date' ? ' placeholder="YYYY-MM-DD"' : '') + ' style="flex:1;min-width:0;box-sizing:border-box;font-size:15px">';
+      return '<div style="padding:6px 0"><div style="font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">' + f[1] + ver + '</div>' +
+        '<div style="display:flex;gap:6px;align-items:stretch">' + input + (f[2] !== 'core' ? lkPasteBtn(id, f[2]) : '') +
+        (f[3] ? '<button style="' + BTN_G + 'padding:0 10px;font-size:13px" onclick="catPickOpen(\'' + id + '\')" aria-label="Pick">\u25be</button>' : '') +
+        '<button id="lk-ok-' + f[0] + '" style="' + BTN_G + 'padding:0 10px;font-size:13px" onclick="catLookOk(\'' + f[0] + '\')" aria-label="Correct as is">\u2713</button></div></div>';
+    };
+    ov.innerHTML = '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 6px"><button style="' + BACK + '" onclick="catLookClose()">\u2039</button>' +
+      '<div style="flex:1;min-width:0"><div style="font-size:17px;font-weight:800;color:var(--t1)">Look up</div><div style="font-size:11px;color:var(--t3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(b.BallName) + ' \u00b7 ' + esc(brand || '') + ' \u00b7 your ' + esc(b.Weight || 15) + ' lb</div></div></div>' +
+      '<div data-lk-body style="flex:1;overflow-y:auto;padding:4px 16px 12px;min-height:0">' +
+        '<div style="font-size:11px;color:var(--t3);line-height:1.45;margin-bottom:4px">Copy in the page, paste here. \u2713 marks a value correct as it is. Saved values count as verified by you.</div>' +
+        LK_FIELDS.map(row).join('') + '<div id="lk-err" style="font-size:12px;color:var(--red);min-height:16px;margin-top:6px"></div></div>' +
+      '<div style="padding:10px 16px;border-top:1px solid var(--border1);display:flex;gap:8px"><button style="' + BTN_G + 'padding:11px" onclick="catLookClose()">Cancel</button>' +
+      '<button style="' + BTN_P + 'flex:1;padding:11px" onclick="catLookSave()">Save to ball</button></div>';
+    document.body.appendChild(ov);
+    lkMount(ov, ov.querySelector('[data-lk-body]'));
+  });
+}
+function catLookOk(f) {
+  _lk.ok[f] = !_lk.ok[f];
+  var bt = document.getElementById('lk-ok-' + f);
+  if (bt) { bt.style.background = _lk.ok[f] ? 'rgba(0,217,217,0.18)' : ''; bt.style.color = _lk.ok[f] ? 'var(--teal)' : ''; bt.style.borderColor = _lk.ok[f] ? 'var(--teal)' : ''; }
+}
+/* Pure: form values -> {changes:{field:value}, err} against the ball, range-checked. */
+function lkBallChanges(b, form, ok) {
+  var ch = {}, err = null;
+  LK_FIELDS.forEach(function (f) {
+    var k = f[0], raw = String(form[k] == null ? '' : form[k]).trim(), cur = b[k];
+    if (f[2] === 'num') {
+      if (raw === '') { if (cur != null && cur !== '') ch[k] = null; return; }
+      var n = Number(raw), lim = LK_RANGE[k];
+      if (!isFinite(n)) { err = err || (f[1] + ' must be a number'); return; }
+      if (n < lim[0] || n > lim[1]) { err = err || (f[1] + ' must be ' + lim[0] + '\u2013' + lim[1]); return; }
+      if (cur == null || cur === '' || Math.abs(Number(cur) - n) > 1e-9) ch[k] = n;
+    } else if (raw !== String(cur == null ? '' : cur)) ch[k] = raw || null;
+  });
+  var verify = Object.keys(ok || {}).filter(function (k) { return ok[k] && !(k in ch) && b[k] != null && b[k] !== ''; });
+  return { changes: ch, verify: verify, err: err };
+}
+function catLookSave() {
+  var b = appBalls().filter(function (x) { return x.BallID == _lk.ballId; })[0]; if (!b) return;
+  var form = {}; LK_FIELDS.forEach(function (f) { var el = document.getElementById('lk-' + f[0]); form[f[0]] = el ? el.value : b[f[0]]; });
+  var r = lkBallChanges(b, form, _lk.ok), errEl = document.getElementById('lk-err');
+  if (r.err) { if (errEl) errEl.textContent = r.err; return; }
+  b.SpecSource = b.SpecSource || {};
+  Object.keys(r.changes).forEach(function (k) { b[k] = r.changes[k]; if (r.changes[k] == null) delete b.SpecSource[k]; else b.SpecSource[k] = 'user'; });
+  r.verify.forEach(function (k) { b.SpecSource[k] = 'user'; });
+  var n = Object.keys(r.changes).length + r.verify.length;
+  if (root.saveDB) root.saveDB();
+  catLookClose();
+  if (root.toast) root.toast(n ? n + ' field' + (n === 1 ? '' : 's') + ' saved as verified by you' : 'Nothing changed');
+  if (typeof root._bdetRenderSpecs === 'function') try { root._bdetRenderSpecs(); } catch (x) {}
+}
+function catLookClose() { lkUnmount(); var el = document.getElementById('lk-ov'); if (el) el.parentNode.removeChild(el); }
+
 /* ---------- v30.174: bowwwl first in "Correct specs" ----------
    The maker page the bridge matched is sometimes a sibling in the lineage
    (e.g. "Jackal" read for Jackal Fury). bowwwl lists each ball on its own
@@ -2834,11 +2997,11 @@ function catApprovalsEdit(i) {
   var r = apApplyOverride(_staged ? apStagedFor(_staged, b, p.catalogId) : null, overrideFor(p.catalogId));
   var sp = (r && r.specs) || {};
   var _ee = _ap._rows ? byIdIn(_ap._rows, p.catalogId) : null, _bn = _ee ? cleanName(_ee.n) : b.title;
-  _apEdit = { catalogId: p.catalogId, i: i, page: (r && r.page) || null, ballName: _bn };
+  _apEdit = { catalogId: p.catalogId, i: i, page: (r && r.page) || null, ballName: _bn, url: (r && r.url) || null };
   var _bw = bowwwlLinks(_ee ? _ee.m : (r && r.brand) || '', _bn), _mm = r ? pageMismatch(r.title, _bn) : null;
   var inp = function (id, v, ph) { return '<div class="ape-f"><input id="' + id + '" class="bdet-field-input" value="' + esc(v == null ? '' : v) + '" placeholder="' + esc(ph || '') + '" style="width:100%;box-sizing:border-box;font-size:15px"></div>'; };
   /* v30.173 CAT-NEW-7: type, or pick a value already in use */
-  var inpP = function (id, v, ph) { return '<div style="display:flex;gap:6px;align-items:stretch"><div class="ape-f" style="flex:1">' + inp(id, v, ph).replace(/^<div class="ape-f">|<\/div>$/g, '') + '</div>' +
+  var inpP = function (id, v, ph) { return '<div style="display:flex;gap:6px;align-items:stretch"><div class="ape-f" style="flex:1">' + inp(id, v, ph).replace(/^<div class="ape-f">|<\/div>$/g, '') + '</div>' + lkPasteBtn(id, 'text') +
     '<button style="' + BTN_G + 'padding:0 12px;font-size:13px" onclick="catPickOpen(\'' + id + '\')" aria-label="Pick">\u25be</button></div>'; };
   var lab = function (t) { return '<div style="font-size:11px;font-weight:700;color:var(--t3);margin:10px 0 4px;text-transform:uppercase;letter-spacing:.5px">' + t + '</div>'; };
   var ws = [16, 15, 14, 13, 12];
@@ -2848,11 +3011,12 @@ function catApprovalsEdit(i) {
   var ov = overlay('ap-edit-ov', 920);
   ov.innerHTML = '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 8px"><button style="' + BACK + '" onclick="catApprovalsEditClose()">‹</button>' +
     '<div style="flex:1"><div style="font-size:17px;font-weight:800;color:var(--t1)">Correct specs</div><div style="font-size:11px;color:var(--t3)">' + esc(b.title) + ' · USBC ' + esc(p.catalogId) + '</div></div></div>' +
-    '<div style="flex:1;overflow-y:auto;padding:0 16px 16px">' +
+    '<div data-lk-body style="flex:1;overflow-y:auto;padding:0 16px 16px;min-height:0">' +
     '<div style="font-size:12px;color:var(--t2);line-height:1.5">Change or fill any field. Values shown are what the bridge read; edit them in place.</div>' +
     '<div style="font-size:11px;font-weight:700;color:var(--t3);margin:10px 0 4px;text-transform:uppercase;letter-spacing:.5px">Look it up on bowwwl</div>' +
-    '<div style="display:flex;gap:6px"><a href="' + esc(_bw.page) + '" target="_blank" rel="noopener noreferrer" style="' + BTN_G + 'flex:1;padding:10px;text-align:center;text-decoration:none">Open bowwwl \u2197</a>' +
-    '<button style="' + BTN_P + 'flex:1;padding:10px" onclick="catPasteOpen()">Paste from bowwwl</button></div>' +
+    '<button id="lk-toggle" style="' + BTN_P + 'width:100%;padding:10px" onclick="catLookAp()">Look up here (split view)</button>' +
+    '<div style="display:flex;gap:6px;margin-top:6px"><a href="' + esc(_bw.page) + '" target="_blank" rel="noopener noreferrer" style="' + BTN_G + 'flex:1;padding:9px;text-align:center;text-decoration:none;font-size:12px">bowwwl in Safari \u2197</a>' +
+    '<button style="' + BTN_G + 'flex:1;padding:9px;font-size:12px" onclick="catPasteOpen()">Paste from bowwwl</button></div>' +
     '<div style="font-size:11px;color:var(--t3);margin-top:4px;line-height:1.45">Values used from a paste make this a bowwwl correction (kept on this device). <a href="' + esc(_bw.search) + '" target="_blank" rel="noopener noreferrer" style="color:var(--teal)">Search instead \u2197</a></div>' +
     (_mm ? '<div style="font-size:12px;color:var(--gold);line-height:1.5;margin-top:10px">The maker page read was \u201c' + esc(_mm.page) + '\u201d, not \u201c' + esc(_mm.ball) + '\u201d: it may be a sibling ball, so its values may be wrong.</div>' : '') +
     tagPanelHTML(r && r.rawText, r && r.page) +
@@ -3134,7 +3298,7 @@ function catCompareAdd(x) {
 
 root.CATALOG_JS_VERSION = CAT_VERSION;
 root.catPickerMount = catPickerMount;
-root.catApprovalsOpen = catApprovalsOpen; root.catPasteOpen = catPasteOpen; root.catPasteClose = catPasteClose; root.catPasteClip = catPasteClip; root.catPasteShow = catPasteShow; root.catFillToggle = catFillToggle; root.catFillClose = catFillClose; root.catFillConfirm = catFillConfirm; root.catPageOpen = catPageOpen; root.catPageClose = catPageClose; root.catPageUseSel = catPageUseSel; root.catPageUseVal = catPageUseVal; root.catPageImg = catPageImg; root.catPickOpen = catPickOpen; root.catPickFilter = catPickFilter; root.catPickChoose = catPickChoose; root.catPickClose = catPickClose; root.catSpecReviewOpen = catSpecReviewOpen; root.catSpecReviewClose = catSpecReviewClose; root.catSpecReviewAct = catSpecReviewAct; root.catSpecReviewBulk = catSpecReviewBulk; root.catSpecReviewPage = catSpecReviewPage; root.catTagPick = catTagPick; root.catTagCancel = catTagCancel; root.catVerifyRefresh = catVerifyRefresh; root.catVerifyDismiss = catVerifyDismiss; root.catVerifyRetry = catVerifyRetry; root.catVerifyOpenApprovals = catVerifyOpenApprovals; root.catVerifyPublish = catVerifyPublish; root.catVerifyApply = catVerifyApply; root.catVerifyTick = vfyTick; root.catVerifyState = vfyActive; root.catApprovalsRetryStaged = catApprovalsRetryStaged; root.apStagedErrText = apStagedErrText; root.catApprovalsClose = catApprovalsClose; root.catApprovalsSaveToken = catApprovalsSaveToken;
+root.catApprovalsOpen = catApprovalsOpen; root.catLookAp = catLookAp; root.catLookBall = catLookBall; root.catLookTab = catLookTab; root.catLookPaste = catLookPaste; root.catLookOk = catLookOk; root.catLookSave = catLookSave; root.catLookClose = catLookClose; root.catPasteOpen = catPasteOpen; root.catPasteClose = catPasteClose; root.catPasteClip = catPasteClip; root.catPasteShow = catPasteShow; root.catFillToggle = catFillToggle; root.catFillClose = catFillClose; root.catFillConfirm = catFillConfirm; root.catPageOpen = catPageOpen; root.catPageClose = catPageClose; root.catPageUseSel = catPageUseSel; root.catPageUseVal = catPageUseVal; root.catPageImg = catPageImg; root.catPickOpen = catPickOpen; root.catPickFilter = catPickFilter; root.catPickChoose = catPickChoose; root.catPickClose = catPickClose; root.catSpecReviewOpen = catSpecReviewOpen; root.catSpecReviewClose = catSpecReviewClose; root.catSpecReviewAct = catSpecReviewAct; root.catSpecReviewBulk = catSpecReviewBulk; root.catSpecReviewPage = catSpecReviewPage; root.catTagPick = catTagPick; root.catTagCancel = catTagCancel; root.catVerifyRefresh = catVerifyRefresh; root.catVerifyDismiss = catVerifyDismiss; root.catVerifyRetry = catVerifyRetry; root.catVerifyOpenApprovals = catVerifyOpenApprovals; root.catVerifyPublish = catVerifyPublish; root.catVerifyApply = catVerifyApply; root.catVerifyTick = vfyTick; root.catVerifyState = vfyActive; root.catApprovalsRetryStaged = catApprovalsRetryStaged; root.apStagedErrText = apStagedErrText; root.catApprovalsClose = catApprovalsClose; root.catApprovalsSaveToken = catApprovalsSaveToken;
 root.catApprovalsForgetToken = catApprovalsForgetToken; root.catApprovalsChangeToken = catApprovalsChangeToken; root.catApprovalsPage = catApprovalsPage; root.catApprovalsFilter = catApprovalsFilter;
 root.catApprovalsTick = catApprovalsTick; root.catApprovalsEdit = catApprovalsEdit; root.catApprovalsEditClose = catApprovalsEditClose; root.catApprovalsEditSave = catApprovalsEditSave; root.catAddSpecsOnly = catAddSpecsOnly; root.catVerifyNow = catVerifyNow; root.catImagesSet = catImagesSet;
 root.catImagesRefresh = catImagesRefresh; root.catImagesStatus = catImagesStatus; root.catImageFor = catImageFor; root.catApprovalsSend = catApprovalsSend; root.catApprovalsPublish = catApprovalsPublish; root.catPickerSearch = catPickerSearch;
@@ -3165,7 +3329,7 @@ root._catStep5 = { norm: norm, modelKey: modelKey, lookupIn: lookupIn, searchIn:
                    buildOwnedBall: buildOwnedBall, ballFromSpecs: ballFromSpecs, fillPlan: fillPlan,
                    catSpecSource: catSpecSource, setFilled: function (f) { _filled = f; },
                    imgLinksFrom: imgLinksFrom, sheetState: function () { return _sheet; }, mergeOverrides: mergeOverrides, withLocalCorrection: withLocalCorrection, apApplyOverride: apApplyOverride, apOverrideFrom: apOverrideFrom, bowwwlLinks: bowwwlLinks, apStagedFor: apStagedFor, apAsDetail: apAsDetail, apRangeNotes: apRangeNotes, derivedCoverType: derivedCoverType, specGaps: specGaps, nearestWeight: nearestWeight, addListHTML: addListHTML, sourceForBrand: sourceForBrand, apParseIssue: apParseIssue, apPages: apPages, apApplyTicks: apApplyTicks, apConflict: apConflict, apNums: apNums,
-                   verifyPlan: verifyPlan, pageMismatch: pageMismatch, pasteLines: pasteLines, plausibleText: plausibleText, proseFields: proseFields, pgvClean: pgvClean, vocabMerge: vocabMerge, vocabSplit: vocabSplit, familyOf: familyOf, srvRows: srvRows, srvApply: srvApply, srvStagedRow: srvStagedRow, vfyPagesFor: vfyPagesFor, vfyEstimateFrom: vfyEstimateFrom, tagLine: tagLine, tagLines: tagLines, tagValueFor: tagValueFor, vfyPickRun: vfyPickRun, vfyClassify: vfyClassify, vfyCardHTML: vfyCardHTML, specMatch: specMatch, coreNameMatch: coreNameMatch, DIFF_MAX: DIFF_MAX, metricUnverified: metricUnverified, catSpecUnverified: catSpecUnverified,
+                   verifyPlan: verifyPlan, lkTabs: lkTabs, lkPasteValue: lkPasteValue, lkBallChanges: lkBallChanges, pageMismatch: pageMismatch, pasteLines: pasteLines, plausibleText: plausibleText, proseFields: proseFields, pgvClean: pgvClean, vocabMerge: vocabMerge, vocabSplit: vocabSplit, familyOf: familyOf, srvRows: srvRows, srvApply: srvApply, srvStagedRow: srvStagedRow, vfyPagesFor: vfyPagesFor, vfyEstimateFrom: vfyEstimateFrom, tagLine: tagLine, tagLines: tagLines, tagValueFor: tagValueFor, vfyPickRun: vfyPickRun, vfyClassify: vfyClassify, vfyCardHTML: vfyCardHTML, specMatch: specMatch, coreNameMatch: coreNameMatch, DIFF_MAX: DIFF_MAX, metricUnverified: metricUnverified, catSpecUnverified: catSpecUnverified,
                    metricScore: metricScore, parseFinish: parseFinish, rgBand: rgBand, diffBand: diffBand, coverClass: coverClass,
                    catMetric: catMetric, sheetHTML: sheetHTML, cmpColOwned: cmpColOwned, cmpColCatalog: cmpColCatalog, cmpRows: cmpRows,
                    cmpHTML: cmpHTML, cmpState: function () { return _cmp; }, setSheet: function (x) { _sheet = x; } };
