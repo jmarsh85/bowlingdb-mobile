@@ -36,7 +36,7 @@
 'use strict';
 
 /* v30.169: shown in the app header when it differs from the build's EXPECTED_CATALOG_JS */
-var CAT_VERSION  = 'v30.179';
+var CAT_VERSION  = 'v30.181';
 var CAT_BASE     = 'https://raw.githubusercontent.com/jmarsh85/bowlingdb-mobile/dist/';
 var CAT_DB       = 'BowlingDB_Catalog';
 var CAT_DB_VER   = 1;
@@ -1228,6 +1228,12 @@ function ballFromSpecs(s) {
     DateReleased: s.released ? String(s.released).slice(0, 10) : null,
   };
 }
+/* v30.181: the core picture (kept on this device) beside the ball, when there is one */
+function sheetCoreHTML(e) {
+  var d = _sheet && _sheet.loaded ? _sheet.detail : null, nm = d && d.Core && d.Core.Name;
+  var u = nm ? catCoreImageFor(e.m, nm) : null;
+  return u ? '<img src="' + esc(u) + '" alt="core" referrerpolicy="no-referrer" onerror="this.style.display=\'none\'" style="width:110px;height:110px;border-radius:14px;object-fit:contain;background:#fff">' : '';
+}
 function sheetHTML(e, rows) {
   var s = specsOf(_sheet.detail, _sheet.weight || 15);
   /* v30.167 (locked): your weight not published -> show the nearest published
@@ -1267,7 +1273,7 @@ function sheetHTML(e, rows) {
   return '<div style="padding:12px 16px 4px;display:flex;justify-content:space-between;align-items:center"><button onclick="catSheetClose()" style="' + BACK + '" aria-label="Back">‹</button>' +
     '<button onclick="catCompareFromSheet()" style="' + BTN_G + 'padding:8px 14px;font-size:13px">Compare</button></div>' +   /* v30.171 MET-2 */
     '<div style="flex:1;overflow-y:auto;padding:0 16px 16px;-webkit-overflow-scrolling:touch">' +
-      '<div style="display:flex;justify-content:center;margin:6px 0 12px">' + thumbHTML(e, 150) + '</div>' +
+      '<div style="display:flex;justify-content:center;align-items:center;gap:14px;margin:6px 0 12px">' + thumbHTML(e, 150) + sheetCoreHTML(e) + '</div>' +
       '<div style="text-align:center;font-size:26px;font-weight:800;color:var(--t1)">' + esc(cleanName(e.n)) + '</div>' +
       '<div style="text-align:center;font-size:17px;color:var(--t2);margin-top:2px">' + esc(e.m) + '</div>' +
       '<div style="text-align:center;margin-top:8px">' + chips + '</div>' +
@@ -1930,6 +1936,7 @@ function catImagesStatus() {
 /* Image for a catalog entry on this device, or null. */
 function catImageFor(id) {
   if (!id) return null;
+  if (_catImgObj[id]) return _catImgObj[id];            // v30.180: picture file stored on this device
   var pk = imgPicks()[id]; if (pk) return pk;          // v30.173: picked in Page view, this device only
   return imgOn() ? (imgMap()[id] || null) : null;
 }
@@ -3126,6 +3133,349 @@ function catPdfHelp() {
   document.body.appendChild(ov);
 }
 
+/* ---------- v30.180/181: Ball images (catch-up), covers and cores ----------
+   Lists balls with no picture: your own balls first, then the catalog. A
+   Cover / Core switch picks which picture. Per row, three ways in, all kept on
+   this device only:
+     bowwwl  - tries bowwwl's picture file (named after the ball, or for cores
+               after the core); only when you tap, never in the background
+     Paste   - a copied picture (Safari: long-press, Copy) or its address
+     Photo   - a picture from Photos / Files
+   Nothing is stored until "Use" (or "Use all found").
+   Cores are kept per core (brand + core name), so one picture serves every
+   ball with that core, in the catalog and in your arsenal.
+   Storage: links in localStorage (bdbimg_pick for covers, bdbimg_core for
+   cores), files shrunk to 480 px JPEG in IndexedDB "bdb_catimg" (keys:
+   catalog id, or "core:<key>"). Kept until you remove them; the app asks iOS
+   to keep its storage, and Save / Restore moves them to a file you keep.
+   Your own balls: the existing picture store (ImagePath / CoreImagePath,
+   ballImages). A stored picture never replaces one a ball already has. */
+var BW_FILES = 'https://www.bowwwl.com/sites/default/files/';
+var BW_IMG_BASE = BW_FILES + 'balls/';
+var CORE_LINKS_KEY = 'bdbimg_core';
+var _catImgObj = {};   // catalogId or "core:<key>" -> object URL of a stored file
+var _mi = { tab: 'mine', slot: 'cover', page: 0, q: '', found: {}, busy: {}, all: null, coreAll: null };
+function slugBw(t) {
+  return String(t || '').toLowerCase().replace(/^\*+\s*/, '').replace(/&/g, ' and ').replace(/\+/g, ' plus ').replace(/['\u2019\u00ae\u2122"]/g, '')
+    .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+}
+/* Pure: bowwwl image addresses to try for a ball, most likely first. */
+function bowwwlImgCandidates(brand, name) {
+  var b = brandSlug(brand), n = slugBw(name); if (!b || !n) return [];
+  var bases = [b + '-' + n];
+  var n2 = n.replace(/-(\d+)-0$/, '-$1');                       // "Black Widow 2.0" -> black-widow-2
+  if (n2 !== n) bases.push(b + '-' + n2);
+  var out = [];
+  bases.forEach(function (x) { ['.png', '.jpg'].forEach(function (e) { out.push(BW_IMG_BASE + x + e); }); });
+  return out;
+}
+/* Pure: a core's name without "core"/"weight block" and symmetry words. */
+function coreBase(name) {
+  return String(name || '').replace(/[\u2122\u00ae]/g, '').replace(/\b(?:a?symmetric(?:al)?|weight\s*block|core)\b/ig, ' ').replace(/\s+/g, ' ').trim();
+}
+/* Pure: one key per core (brand + core name), so balls sharing a core share its picture. */
+function brandSlug(brand) { return slugBw(brand).replace(/-(?:inc|bowling|international|industries|co)$/, ''); }   // "Track Inc" = "Track"
+function coreKeyOf(brand, coreName) { var b = brandSlug(brand), c = slugBw(coreBase(coreName)); return b && c ? b + '|' + c : null; }
+/* Pure: bowwwl core picture addresses ("brunswick-rampart-core.png"). */
+function bowwwlCoreCandidates(brand, coreName) {
+  var b = brandSlug(brand), c = slugBw(coreBase(coreName)); if (!b || !c) return [];
+  var out = [];
+  [b + '-' + c + '-core', b + '-' + c].forEach(function (x) { ['.png', '.jpg'].forEach(function (e) { out.push(BW_FILES + 'cores/' + x + e); }); });
+  return out;
+}
+function coreLinks() { var l = apLS(); try { return JSON.parse((l && l.getItem(CORE_LINKS_KEY)) || '{}') || {}; } catch (e) { return {}; } }
+function coreLinkSet(k, url) { var l = apLS(); if (!l) return; var m = coreLinks(); if (url) m[k] = url; else delete m[k]; l.setItem(CORE_LINKS_KEY, JSON.stringify(m)); }
+function catCoreImageFor(brand, coreName) {
+  var k = coreKeyOf(brand, coreName); if (!k) return null;
+  return _catImgObj['core:' + k] || coreLinks()[k] || null;
+}
+function catImgDB() {
+  return new Promise(function (res, rej) {
+    var idb = env.idb(); if (!idb) return rej(new Error('no IndexedDB'));
+    var r = idb.open('bdb_catimg', 1);
+    r.onupgradeneeded = function () { r.result.createObjectStore('img'); };
+    r.onsuccess = function () { res(r.result); }; r.onerror = function () { rej(r.error); };
+  });
+}
+function imgPersist() { try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) {} }
+function catImgPut(id, blob) {
+  imgPersist();
+  return catImgDB().then(function (db) { return new Promise(function (res, rej) {
+    var t = db.transaction('img', 'readwrite'); t.objectStore('img').put({ blob: blob, at: env.now() }, id);
+    t.oncomplete = function () { res(true); }; t.onerror = function () { rej(t.error); }; }); })
+    .then(function () { if (_catImgObj[id]) try { URL.revokeObjectURL(_catImgObj[id]); } catch (e) {} _catImgObj[id] = URL.createObjectURL(blob); });
+}
+function catImgAll() {
+  return catImgDB().then(function (db) { return new Promise(function (res) {
+    var out = [], rq = db.transaction('img', 'readonly').objectStore('img').openCursor();
+    rq.onsuccess = function () { var c = rq.result; if (!c) return res(out); out.push({ key: c.key, value: c.value }); c.continue(); };
+    rq.onerror = function () { res(out); }; }); });
+}
+function catImgWarm() {
+  return catImgAll().then(function (all) { all.forEach(function (x) { if (x.value && x.value.blob) _catImgObj[x.key] = URL.createObjectURL(x.value.blob); }); }).catch(function () {});
+}
+if (typeof document !== 'undefined' && typeof URL !== 'undefined' && URL.createObjectURL) setTimeout(catImgWarm, 800);
+/* Loads an image address; resolves with it when it shows, else null. */
+function imgProbe(url, ms) {
+  return new Promise(function (res) {
+    var im = new Image(), done = false, fin = function (v) { if (!done) { done = true; res(v); } };
+    im.referrerPolicy = 'no-referrer';
+    im.onload = function () { fin(im.naturalWidth > 40 ? url : null); }; im.onerror = function () { fin(null); };
+    setTimeout(function () { fin(null); }, ms || 8000);
+    im.src = url;
+  });
+}
+/* Shrinks a picture to at most 480 px (JPEG on white) so hundreds fit on the phone. */
+function imgShrink(blob) {
+  return new Promise(function (res) {
+    var u = URL.createObjectURL(blob), im = new Image();
+    im.onload = function () {
+      var k = Math.min(1, 480 / Math.max(im.naturalWidth, im.naturalHeight)), w = Math.round(im.naturalWidth * k), h = Math.round(im.naturalHeight * k);
+      var c = document.createElement('canvas'); c.width = w; c.height = h; var x = c.getContext('2d');
+      x.fillStyle = '#fff'; x.fillRect(0, 0, w, h); x.drawImage(im, 0, 0, w, h); URL.revokeObjectURL(u);
+      c.toBlob(function (b) { res(b || blob); }, 'image/jpeg', 0.86);
+    };
+    im.onerror = function () { URL.revokeObjectURL(u); res(blob); };
+    im.src = u;
+  });
+}
+function ownPic(b, slot) { try { return typeof root.getBallImgSrc === 'function' ? root.getBallImgSrc(b.BallID, slot) : (slot === 'cover' ? b.ImagePath : b.CoreImagePath); } catch (e) { return null; } }
+/* Rows. Cover: your balls without a cover picture; catalog balls with specs and no picture.
+   Core: your balls without a core picture; catalog cores (brand + core name) with no picture. */
+function miCoverRows(rows) {
+  var mine = appBalls().filter(function (b) { return !b.Archived && b.BallID != null && !ownPic(b, 'cover'); })
+    .map(function (b) { var e = b.CatalogID ? byIdIn(rows, b.CatalogID) : null;
+      return { key: 'b' + b.BallID, ballId: b.BallID, catId: b.CatalogID || null, brand: e ? e.m : b.MFG, name: e ? cleanName(e.n) : b.BallName, year: e ? e.y : '' }; });
+  var cat = (rows || []).filter(function (e) { return e.s && !catImageFor(e.i); })
+    .sort(function (a, b) { return String(b.y || '').localeCompare(String(a.y || '')) || String(a.m).localeCompare(String(b.m)); })
+    .map(function (e) { return { key: 'c' + e.i, ballId: null, catId: e.i, brand: e.m, name: cleanName(e.n), year: e.y }; });
+  return { mine: mine, cat: cat };
+}
+function miCoreRows(rows) {
+  var spec = (rows || []).filter(function (e) { return e.s; });
+  var cores = {};
+  return spec.reduce(function (p, e) {
+    return p.then(function () { return catDetailRaw(e).catch(function () { return null; }).then(function (d) {
+      var nm = d && d.Core && d.Core.Name; var k = nm && plausibleText('core', nm) ? coreKeyOf(e.m, nm) : null; if (!k) return;
+      var c = cores[k] = cores[k] || { key: 'k' + k, coreKey: k, brand: e.m, name: coreBase(nm) || nm, balls: [], year: '' };
+      c.balls.push(e.i); if (String(e.y || '') > c.year) c.year = String(e.y || ''); }); });
+  }, Promise.resolve()).then(function () {
+    var cat = Object.keys(cores).map(function (k) { return cores[k]; }).filter(function (c) { return !catCoreImageFor(c.brand, c.name); })
+      .sort(function (a, b) { return b.year.localeCompare(a.year) || String(a.brand).localeCompare(String(b.brand)); })
+      .map(function (c) { c.sub = c.balls.length + ' ball' + (c.balls.length === 1 ? '' : 's'); return c; });
+    var mine = appBalls().filter(function (b) { return !b.Archived && b.BallID != null && !ownPic(b, 'core'); }).map(function (b) {
+      var e = b.CatalogID ? byIdIn(rows, b.CatalogID) : null, brand = e ? e.m : b.MFG;
+      var nm = b.CoreShort, k = null;
+      if (!nm && b.CatalogID) { var hit = Object.keys(cores).filter(function (x) { return cores[x].balls.indexOf(b.CatalogID) >= 0; })[0]; if (hit) nm = cores[hit].name; }
+      if (nm && plausibleText('core', nm)) k = coreKeyOf(brand, nm);
+      return { key: 'b' + b.BallID, ballId: b.BallID, catId: b.CatalogID || null, coreKey: k, brand: brand, name: b.BallName, sub: nm ? coreBase(nm) + ' core' : 'core name unknown', coreName: nm || null };
+    });
+    /* a core picture already kept on this phone is offered straight away */
+    mine.forEach(function (r) { var u = r.coreKey ? (_catImgObj['core:' + r.coreKey] || coreLinks()[r.coreKey]) : null; if (u) _mi.found['core' + r.key] = { url: u, how: 'saved core picture', link: !/^blob:/.test(u) }; });
+    return { mine: mine, cat: cat };
+  });
+}
+function miSet() { return _mi.slot === 'core' ? _mi.coreAll : _mi.all; }
+function miFk(k) { return (_mi.slot === 'core' ? 'core' : '') + k; }
+function catImagesOpen() {
+  var mb = document.getElementById('modal-bg');
+  if (mb && mb.classList.contains('open') && typeof root.closeModal === 'function') root.closeModal();
+  var ov = overlay('mi-ov', 906); document.body.appendChild(ov);
+  _mi.page = 0; _mi.found = {}; _mi.busy = {}; _mi.all = null; _mi.coreAll = null; _mi.slot = 'cover';
+  ov.innerHTML = '<div style="padding:30px;text-align:center;color:var(--t3)">Loading\u2026</div>';
+  catLoad().then(function (rows) { _mi.rows = rows; _mi.all = miCoverRows(rows); miRender(); });
+}
+function catImagesClose() { var el = document.getElementById('mi-ov'); if (el) el.parentNode.removeChild(el); }
+function catImagesSlot(s) {
+  _mi.slot = s; _mi.page = 0;
+  if (s === 'core' && !_mi.coreAll) { miRender(); miCoreRows(_mi.rows).then(function (c) { _mi.coreAll = c; miRender(); }); return; }
+  miRender();
+}
+function miList() {
+  var set = miSet(); if (!set) return [];
+  var l = _mi.tab === 'mine' ? set.mine : set.cat, q = foldName(_mi.q);
+  return q ? l.filter(function (r) { return foldName(r.brand + ' ' + r.name + ' ' + (r.sub || '')).indexOf(q) >= 0; }) : l;
+}
+var MI_PAGE = 20;
+function miRender() {
+  var ov = document.getElementById('mi-ov'); if (!ov || !_mi.all) return;
+  var set = miSet(), loading = !set;
+  var list = miList(), pages = Math.max(1, Math.ceil(list.length / MI_PAGE)); _mi.page = Math.min(_mi.page, pages - 1);
+  var shown = list.slice(_mi.page * MI_PAGE, _mi.page * MI_PAGE + MI_PAGE);
+  var seg = function (k, t, on, call) { return '<button onclick="' + call + '(\'' + k + '\')" style="flex:1;padding:8px;border-radius:9px;font-size:13px;font-weight:700;border:1px solid ' + (on ? 'var(--teal)' : 'var(--border1)') + ';background:' + (on ? 'rgba(0,217,217,0.12)' : 'transparent') + ';color:' + (on ? 'var(--teal)' : 'var(--t2)') + '">' + t + '</button>'; };
+  var nFound = shown.filter(function (r) { return _mi.found[miFk(r.key)]; }).length;
+  var row = function (r) {
+    var f = _mi.found[miFk(r.key)], busy = _mi.busy[miFk(r.key)];
+    var pic = f ? '<img src="' + esc(f.url) + '" referrerpolicy="no-referrer" style="width:52px;height:52px;border-radius:' + (_mi.slot === 'core' ? '10px' : '50%') + ';object-fit:contain;background:#fff;flex-shrink:0">' :
+      '<div style="width:52px;height:52px;border-radius:' + (_mi.slot === 'core' ? '10px' : '50%') + ';flex-shrink:0;background:var(--bg3);display:flex;align-items:center;justify-content:center;color:var(--t3);font-size:11px">' + (busy ? '\u2026' : r.miss ? 'none' : '') + '</div>';
+    var canBw = _mi.slot === 'cover' || r.coreKey;
+    var acts = f ? '<button style="' + BTN_P + 'padding:6px 10px;font-size:12px" onclick="catImagesUse(\'' + r.key + '\')">Use</button><button style="' + BTN_G + 'padding:6px 10px;font-size:12px" onclick="catImagesDrop(\'' + r.key + '\')">\u2715</button>' :
+      (canBw ? '<button style="' + BTN_G + 'padding:6px 8px;font-size:12px" onclick="catImagesTry(\'' + r.key + '\')">bowwwl</button>' : '') +
+      '<button style="' + BTN_G + 'padding:6px 8px;font-size:12px" onclick="catImagesPaste(\'' + r.key + '\')">Paste</button>' +
+      '<button style="' + BTN_G + 'padding:6px 8px;font-size:12px" onclick="catImagesPhoto(\'' + r.key + '\')">Photo</button>';
+    var sub = esc(r.brand || '') + (r.sub ? ' \u00b7 ' + esc(r.sub) : r.year ? ' \u00b7 ' + esc(r.year) : '');
+    return '<div style="display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--border1)">' + pic +
+      '<div style="flex:1;min-width:0"><div style="font-size:14px;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(r.name) + (_mi.slot === 'core' && _mi.tab === 'cat' ? ' core' : '') + '</div>' +
+      '<div style="font-size:11px;color:var(--t3)">' + sub + (r.miss ? ' \u00b7 <span style="color:var(--gold)">not on bowwwl under this name</span>' : f ? ' \u00b7 <span style="color:var(--teal)">' + esc(f.how) + '</span>' : '') + '</div></div>' +
+      '<div style="display:flex;gap:4px;flex-shrink:0">' + acts + '</div></div>';
+  };
+  var hint = _mi.slot === 'core' ? 'Core pictures are kept per core: one picture covers every ball with that core, yours and the catalog\u2019s.' : '';
+  ov.innerHTML = '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 6px"><button style="' + BACK + '" onclick="catImagesClose()">\u2039</button>' +
+    '<div style="flex:1"><div style="font-size:17px;font-weight:800;color:var(--t1)">Ball images</div><div style="font-size:11px;color:var(--t3)">Missing pictures \u00b7 kept on this device</div></div></div>' +
+    '<div style="display:flex;gap:6px;padding:0 16px 6px">' + seg('cover', 'Cover', _mi.slot === 'cover', 'catImagesSlot') + seg('core', 'Core', _mi.slot === 'core', 'catImagesSlot') + '</div>' +
+    '<div style="display:flex;gap:6px;padding:0 16px 8px">' + seg('mine', 'My balls' + (set ? ' (' + set.mine.length + ')' : ''), _mi.tab === 'mine', 'catImagesTab') +
+      seg('cat', (_mi.slot === 'core' ? 'Catalog cores' : 'Catalog') + (set ? ' (' + set.cat.length + ')' : ''), _mi.tab === 'cat', 'catImagesTab') + '</div>' +
+    '<div style="padding:0 16px 6px"><input class="bdet-field-input" type="search" placeholder="Filter by brand or name" value="' + esc(_mi.q) + '" oninput="catImagesFilter(this.value)" style="width:100%;box-sizing:border-box;font-size:15px"></div>' +
+    '<div style="flex:1;overflow-y:auto;padding:0 16px 10px">' + (loading ? '<div style="padding:30px 0;text-align:center;color:var(--t3);font-size:13px">Reading core names from the catalog\u2026</div>' : shown.length ? shown.map(row).join('') :
+      '<div style="padding:30px 0;text-align:center;color:var(--t2);font-size:13px">' + (_mi.q ? 'No match.' : 'Nothing missing here.') + '</div>') +
+    (hint ? '<div style="font-size:11px;color:var(--t3);line-height:1.5;margin-top:10px">' + hint + '</div>' : '') +
+    '<div style="font-size:11px;color:var(--t3);line-height:1.5;margin-top:8px"><b>Paste</b>: in Safari long-press the picture and tap Copy. <b>Photo</b>: a picture saved to Photos or Files. <b>bowwwl</b> looks for bowwwl\u2019s picture; it asks bowwwl only when you tap.</div>' +
+    '<div style="display:flex;gap:6px;margin-top:12px"><button style="' + BTN_G + 'flex:1;padding:9px;font-size:12px" onclick="catImagesExport()">Save pictures to a file</button>' +
+      '<button style="' + BTN_G + 'flex:1;padding:9px;font-size:12px" onclick="catImagesImport()">Restore from a file</button></div></div>' +
+    '<div style="padding:10px 16px;border-top:1px solid var(--border1);display:flex;flex-direction:column;gap:8px">' +
+      '<div style="display:flex;gap:6px">' + (shown.length ? '<button style="' + BTN_G + 'flex:1;padding:10px;font-size:13px" onclick="catImagesTryPage()">Try bowwwl for these ' + shown.length + '</button>' : '') +
+      (nFound ? '<button style="' + BTN_P + 'flex:1;padding:10px;font-size:13px" onclick="catImagesUseAll()">Use all found (' + nFound + ')</button>' : '') + '</div>' +
+      '<div style="display:flex;gap:8px;align-items:center"><button style="' + BTN_G + 'flex:1;padding:9px" ' + (_mi.page > 0 ? '' : 'disabled ') + 'onclick="catImagesPage(-1)">\u2039 Prev</button>' +
+      '<span style="font-size:12px;color:var(--t2);min-width:70px;text-align:center">' + (_mi.page + 1) + ' of ' + pages + '</span>' +
+      '<button style="' + BTN_G + 'flex:1;padding:9px" ' + (_mi.page < pages - 1 ? '' : 'disabled ') + 'onclick="catImagesPage(1)">Next \u203a</button></div></div>';
+}
+function miByKey(k) { var set = miSet(); if (!set) return null; var l = set.mine.concat(set.cat); for (var i = 0; i < l.length; i++) if (l[i].key === k) return l[i]; return null; }
+function catImagesTab(k) { _mi.tab = k; _mi.page = 0; miRender(); }
+function catImagesFilter(q) { _mi.q = q; _mi.page = 0; miRender(); var el = document.querySelector('#mi-ov input[type=search]'); if (el) { el.focus(); el.setSelectionRange(q.length, q.length); } }
+function catImagesPage(d) { _mi.page += d; miRender(); var b = document.querySelector('#mi-ov > div[style*="overflow-y"]'); if (b) b.scrollTop = 0; }
+function catImagesTry(k) {
+  var r = miByKey(k), fk = miFk(k); if (!r || _mi.busy[fk]) return Promise.resolve(null);
+  var c = _mi.slot === 'core' ? (r.coreKey ? bowwwlCoreCandidates(r.brand, r.coreName || r.name) : []) : bowwwlImgCandidates(r.brand, r.name);
+  if (!c.length) return Promise.resolve(null);
+  _mi.busy[fk] = true; miRender();
+  var next = function (i) { return i >= c.length ? Promise.resolve(null) : imgProbe(c[i]).then(function (u) { return u || next(i + 1); }); };
+  return next(0).then(function (u) {
+    delete _mi.busy[fk];
+    if (u) { _mi.found[fk] = { url: u, how: 'bowwwl', link: true }; delete r.miss; } else r.miss = true;
+    miRender(); return u;
+  });
+}
+function catImagesTryPage() {
+  var list = miList().slice(_mi.page * MI_PAGE, _mi.page * MI_PAGE + MI_PAGE).filter(function (r) { return !_mi.found[miFk(r.key)] && !r.miss; });
+  return list.reduce(function (p, r) { return p.then(function () { return catImagesTry(r.key); }); }, Promise.resolve());
+}
+function catImagesPaste(k) {
+  var fk = miFk(k);
+  var take = function (blob, url) { if (blob) return imgShrink(blob).then(function (b) { _mi.found[fk] = { blob: b, url: URL.createObjectURL(b), how: 'pasted picture' }; miRender(); });
+    if (url) return imgProbe(url).then(function (u) { if (u) { _mi.found[fk] = { url: u, how: 'pasted link', link: true }; miRender(); } else if (root.toast) root.toast('That address did not load as a picture'); }); };
+  var cb = typeof navigator !== 'undefined' && navigator.clipboard;
+  if (cb && cb.read) return cb.read().then(function (items) {
+    for (var i = 0; i < items.length; i++) { var t = items[i].types.filter(function (x) { return /^image\//.test(x); })[0]; if (t) return items[i].getType(t).then(function (b) { return take(b); }); }
+    for (var j = 0; j < items.length; j++) if (items[j].types.indexOf('text/plain') >= 0) return items[j].getType('text/plain').then(function (b) { return b.text(); }).then(function (s) { var m = /https?:\/\/\S+/.exec(s); return m ? take(null, m[0]) : (root.toast && root.toast('Copy the picture first (long-press it in Safari, Copy)')); });
+    if (root.toast) root.toast('Copy the picture first (long-press it in Safari, Copy)');
+  }, function () { if (root.toast) root.toast('Allow paste, or use Photo instead'); });
+  if (cb && cb.readText) return cb.readText().then(function (s) { var m = /https?:\/\/\S+/.exec(s || ''); return m ? take(null, m[0]) : (root.toast && root.toast('Copy the picture\u2019s address first')); });
+  if (root.toast) root.toast('Paste is not available here; use Photo');
+  return Promise.resolve();
+}
+function catImagesPhoto(k) {
+  var fk = miFk(k);
+  var inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'image/*'; inp.style.display = 'none';
+  inp.addEventListener('change', function () {
+    var f = inp.files && inp.files[0]; if (inp.parentNode) inp.parentNode.removeChild(inp); if (!f) return;
+    imgShrink(f).then(function (b) { _mi.found[fk] = { blob: b, url: URL.createObjectURL(b), how: 'photo' }; miRender(); });
+  });
+  document.body.appendChild(inp); inp.click();
+}
+function catImagesDrop(k) { delete _mi.found[miFk(k)]; miRender(); }
+/* Puts a picture on one of your balls (cover or core slot) unless it already has one there (or force). */
+function miOwnSet(b, slot, f, force) {
+  if (!force && ownPic(b, slot)) return Promise.resolve();
+  if (f.blob && typeof root.idbSaveBallImages === 'function') {
+    return Promise.resolve(typeof root.idbGetBallImages === 'function' ? root.idbGetBallImages(b.BallID) : null).then(function (rec) {
+      rec = rec ? Object.assign({}, rec) : { BallID: Number(b.BallID), coverBlob: null, coreBlob: null };
+      rec[slot === 'cover' ? 'coverBlob' : 'coreBlob'] = f.blob;
+      return root.idbSaveBallImages(rec).then(function () { if (typeof root._ballImgCacheSet === 'function') root._ballImgCacheSet(Number(b.BallID), slot, f.blob); });
+    });
+  }
+  if (!f.blob && !/^blob:/.test(f.url)) { if (slot === 'cover') b.ImagePath = f.url; else b.CoreImagePath = f.url; }
+  return Promise.resolve();
+}
+/* Stores one found picture. */
+function miStore(r, f) {
+  var jobs = [], balls = appBalls();
+  if (_mi.slot === 'cover') {
+    if (r.catId) jobs.push(f.blob ? catImgPut(r.catId, f.blob).then(function () { imgPickSet(r.catId, null); }) : Promise.resolve(imgPickSet(r.catId, f.url)));
+    balls.filter(function (b) { return r.ballId != null ? b.BallID == r.ballId : (r.catId && b.CatalogID === r.catId); })
+      .forEach(function (b) { jobs.push(miOwnSet(b, 'cover', f, r.ballId != null)); });
+  } else {
+    if (r.coreKey) jobs.push(f.blob ? catImgPut('core:' + r.coreKey, f.blob).then(function () { coreLinkSet(r.coreKey, null); }) : Promise.resolve(coreLinkSet(r.coreKey, f.url)));
+    /* the ball listed, and every ball of yours with this core that has no core picture */
+    balls.forEach(function (b) {
+      var mine = r.ballId != null && b.BallID == r.ballId;
+      var same = r.coreKey && b.CoreShort && coreKeyOf(b.MFG, b.CoreShort) === r.coreKey;
+      var linked = r.balls && b.CatalogID && r.balls.indexOf(b.CatalogID) >= 0;
+      if (mine || same || linked) jobs.push(miOwnSet(b, 'core', f, mine));
+    });
+  }
+  imgPersist();
+  return Promise.all(jobs).then(function () { if (root.saveDB) root.saveDB(); });
+}
+function miAfterStore(keys) {
+  var set = miSet();
+  keys.forEach(function (k) { delete _mi.found[miFk(k)]; });
+  if (_mi.slot === 'core') {
+    var done = {}; keys.forEach(function (k) { var r = miByKey(k); if (r && r.coreKey) done[r.coreKey] = 1; });
+    set.mine = set.mine.filter(function (r) { return keys.indexOf(r.key) < 0 && !(r.coreKey && done[r.coreKey]); });
+    set.cat = set.cat.filter(function (r) { return keys.indexOf(r.key) < 0 && !done[r.coreKey]; });
+  } else {
+    set.mine = set.mine.filter(function (r) { return keys.indexOf(r.key) < 0; });
+    set.cat = set.cat.filter(function (r) { return keys.indexOf(r.key) < 0 && !(r.catId && catImageFor(r.catId)); });
+  }
+  miRender();
+}
+function catImagesUse(k) {
+  var r = miByKey(k), f = _mi.found[miFk(k)]; if (!r || !f) return Promise.resolve();
+  return miStore(r, f).then(function () { miAfterStore([k]); if (root.toast) root.toast('Picture saved on this device'); }, function () { if (root.toast) root.toast('Could not save that picture'); });
+}
+function catImagesUseAll() {
+  var pre = _mi.slot === 'core' ? 'core' : '';
+  var ks = Object.keys(_mi.found).filter(function (fk) { return pre ? fk.indexOf('core') === 0 : fk.indexOf('core') !== 0; })
+    .map(function (fk) { return fk.slice(pre.length); }).filter(function (k) { return miByKey(k); });
+  return ks.reduce(function (p, k) { return p.then(function () { return miStore(miByKey(k), _mi.found[miFk(k)]); }); }, Promise.resolve())
+    .then(function () { miAfterStore(ks); if (root.toast) root.toast(ks.length + ' picture' + (ks.length === 1 ? '' : 's') + ' saved on this device'); });
+}
+/* Save / Restore: every stored catalog and core picture (files and links) in one file you keep. */
+function blobToData(b) { return new Promise(function (res) { var r = new FileReader(); r.onload = function () { res(r.result); }; r.onerror = function () { res(null); }; r.readAsDataURL(b); }); }
+function dataToBlob(d) { var m = /^data:([^;]+);base64,(.*)$/.exec(d || ''); if (!m) return null; var bin = atob(m[2]), a = new Uint8Array(bin.length); for (var i = 0; i < bin.length; i++) a[i] = bin.charCodeAt(i); return new Blob([a], { type: m[1] }); }
+function catImagesExport() {
+  return catImgAll().catch(function () { return []; }).then(function (all) {
+    return all.reduce(function (p, x) { return p.then(function (acc) { return x.value && x.value.blob ? blobToData(x.value.blob).then(function (d) { if (d) acc[x.key] = d; return acc; }) : acc; }); }, Promise.resolve({}));
+  }).then(function (files) {
+    var out = { kind: 'bowlingdb-pictures', v: 1, at: new Date().toISOString(), covers: imgPicks(), cores: coreLinks(), files: files };
+    var blob = new Blob([JSON.stringify(out)], { type: 'application/json' }), a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = 'BowlingDB_pictures_' + out.at.slice(0, 10) + '.json'; document.body.appendChild(a); a.click(); a.parentNode.removeChild(a);
+    if (root.toast) root.toast(Object.keys(files).length + ' files and ' + (Object.keys(out.covers).length + Object.keys(out.cores).length) + ' links saved');
+    return out;
+  });
+}
+/* Pure-ish: merges a pictures file; never removes or replaces what is already here. */
+function catImagesMerge(o) {
+  if (!o || o.kind !== 'bowlingdb-pictures') return Promise.reject(new Error('Not a BowlingDB pictures file'));
+  var n = 0, pk = imgPicks(), cl = coreLinks();
+  Object.keys(o.covers || {}).forEach(function (k) { if (!pk[k] && !_catImgObj[k]) { imgPickSet(k, o.covers[k]); n++; } });
+  Object.keys(o.cores || {}).forEach(function (k) { if (!cl[k] && !_catImgObj['core:' + k]) { coreLinkSet(k, o.cores[k]); n++; } });
+  return Object.keys(o.files || {}).reduce(function (p, k) {
+    return p.then(function () { if (_catImgObj[k]) return; var b = dataToBlob(o.files[k]); if (b) { n++; return catImgPut(k, b); } });
+  }, Promise.resolve()).then(function () { return n; });
+}
+function catImagesImport() {
+  var inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'application/json,.json'; inp.style.display = 'none';
+  inp.addEventListener('change', function () {
+    var f = inp.files && inp.files[0]; if (inp.parentNode) inp.parentNode.removeChild(inp); if (!f) return;
+    f.text().then(function (t) { return catImagesMerge(JSON.parse(t)); }).then(function (n) {
+      if (root.toast) root.toast(n + ' picture' + (n === 1 ? '' : 's') + ' restored');
+      if (_mi.rows) { _mi.all = miCoverRows(_mi.rows); _mi.coreAll = null; if (_mi.slot === 'core') catImagesSlot('core'); else miRender(); }
+    }, function (e) { if (root.toast) root.toast(e.message || 'Could not read that file'); });
+  });
+  document.body.appendChild(inp); inp.click();
+}
+
 /* ---------- v30.174: bowwwl first in "Correct specs" ----------
    The maker page the bridge matched is sometimes a sibling in the lineage
    (e.g. "Jackal" read for Jackal Fury). bowwwl lists each ball on its own
@@ -3657,7 +4007,7 @@ function catCompareAdd(x) {
 
 root.CATALOG_JS_VERSION = CAT_VERSION;
 root.catPickerMount = catPickerMount;
-root.catApprovalsOpen = catApprovalsOpen; root.catSpApPdf = catSpApPdf; root.catSpBallPdf = catSpBallPdf; root.catPdfHelp = catPdfHelp; root.catShortcutHelp = catShortcutHelp; root.catShortcutCopy = catShortcutCopy; root.catShortcutClose = catShortcutClose; root.catSpAp = catSpAp; root.catSpBall = catSpBall; root.catSpToggle = catSpToggle; root.catSpEdit = catSpEdit; root.catSpClose = catSpClose; root.catSpApply = catSpApply; root.catSpManualGo = catSpManualGo; root.catSpManualClose = catSpManualClose; root.catLookAp = catLookAp; root.catLookBall = catLookBall; root.catLookTab = catLookTab; root.catLookPaste = catLookPaste; root.catLookOk = catLookOk; root.catLookSave = catLookSave; root.catLookClose = catLookClose; root.catPasteOpen = catPasteOpen; root.catPasteClose = catPasteClose; root.catPasteClip = catPasteClip; root.catPasteShow = catPasteShow; root.catFillToggle = catFillToggle; root.catFillClose = catFillClose; root.catFillConfirm = catFillConfirm; root.catPageOpen = catPageOpen; root.catPageClose = catPageClose; root.catPageUseSel = catPageUseSel; root.catPageUseVal = catPageUseVal; root.catPageImg = catPageImg; root.catPickOpen = catPickOpen; root.catPickFilter = catPickFilter; root.catPickChoose = catPickChoose; root.catPickClose = catPickClose; root.catSpecReviewOpen = catSpecReviewOpen; root.catSpecReviewClose = catSpecReviewClose; root.catSpecReviewAct = catSpecReviewAct; root.catSpecReviewBulk = catSpecReviewBulk; root.catSpecReviewPage = catSpecReviewPage; root.catTagPick = catTagPick; root.catTagCancel = catTagCancel; root.catVerifyRefresh = catVerifyRefresh; root.catVerifyDismiss = catVerifyDismiss; root.catVerifyRetry = catVerifyRetry; root.catVerifyOpenApprovals = catVerifyOpenApprovals; root.catVerifyPublish = catVerifyPublish; root.catVerifyApply = catVerifyApply; root.catVerifyTick = vfyTick; root.catVerifyState = vfyActive; root.catApprovalsRetryStaged = catApprovalsRetryStaged; root.apStagedErrText = apStagedErrText; root.catApprovalsClose = catApprovalsClose; root.catApprovalsSaveToken = catApprovalsSaveToken;
+root.catApprovalsOpen = catApprovalsOpen; root.catImagesSlot = catImagesSlot; root.catImagesExport = catImagesExport; root.catImagesImport = catImagesImport; root.catCoreImageFor = catCoreImageFor; root.catImagesOpen = catImagesOpen; root.catImagesClose = catImagesClose; root.catImagesTab = catImagesTab; root.catImagesFilter = catImagesFilter; root.catImagesPage = catImagesPage; root.catImagesTry = catImagesTry; root.catImagesTryPage = catImagesTryPage; root.catImagesPaste = catImagesPaste; root.catImagesPhoto = catImagesPhoto; root.catImagesDrop = catImagesDrop; root.catImagesUse = catImagesUse; root.catImagesUseAll = catImagesUseAll; root.catSpApPdf = catSpApPdf; root.catSpBallPdf = catSpBallPdf; root.catPdfHelp = catPdfHelp; root.catShortcutHelp = catShortcutHelp; root.catShortcutCopy = catShortcutCopy; root.catShortcutClose = catShortcutClose; root.catSpAp = catSpAp; root.catSpBall = catSpBall; root.catSpToggle = catSpToggle; root.catSpEdit = catSpEdit; root.catSpClose = catSpClose; root.catSpApply = catSpApply; root.catSpManualGo = catSpManualGo; root.catSpManualClose = catSpManualClose; root.catLookAp = catLookAp; root.catLookBall = catLookBall; root.catLookTab = catLookTab; root.catLookPaste = catLookPaste; root.catLookOk = catLookOk; root.catLookSave = catLookSave; root.catLookClose = catLookClose; root.catPasteOpen = catPasteOpen; root.catPasteClose = catPasteClose; root.catPasteClip = catPasteClip; root.catPasteShow = catPasteShow; root.catFillToggle = catFillToggle; root.catFillClose = catFillClose; root.catFillConfirm = catFillConfirm; root.catPageOpen = catPageOpen; root.catPageClose = catPageClose; root.catPageUseSel = catPageUseSel; root.catPageUseVal = catPageUseVal; root.catPageImg = catPageImg; root.catPickOpen = catPickOpen; root.catPickFilter = catPickFilter; root.catPickChoose = catPickChoose; root.catPickClose = catPickClose; root.catSpecReviewOpen = catSpecReviewOpen; root.catSpecReviewClose = catSpecReviewClose; root.catSpecReviewAct = catSpecReviewAct; root.catSpecReviewBulk = catSpecReviewBulk; root.catSpecReviewPage = catSpecReviewPage; root.catTagPick = catTagPick; root.catTagCancel = catTagCancel; root.catVerifyRefresh = catVerifyRefresh; root.catVerifyDismiss = catVerifyDismiss; root.catVerifyRetry = catVerifyRetry; root.catVerifyOpenApprovals = catVerifyOpenApprovals; root.catVerifyPublish = catVerifyPublish; root.catVerifyApply = catVerifyApply; root.catVerifyTick = vfyTick; root.catVerifyState = vfyActive; root.catApprovalsRetryStaged = catApprovalsRetryStaged; root.apStagedErrText = apStagedErrText; root.catApprovalsClose = catApprovalsClose; root.catApprovalsSaveToken = catApprovalsSaveToken;
 root.catApprovalsForgetToken = catApprovalsForgetToken; root.catApprovalsChangeToken = catApprovalsChangeToken; root.catApprovalsPage = catApprovalsPage; root.catApprovalsFilter = catApprovalsFilter;
 root.catApprovalsTick = catApprovalsTick; root.catApprovalsEdit = catApprovalsEdit; root.catApprovalsEditClose = catApprovalsEditClose; root.catApprovalsEditSave = catApprovalsEditSave; root.catAddSpecsOnly = catAddSpecsOnly; root.catVerifyNow = catVerifyNow; root.catImagesSet = catImagesSet;
 root.catImagesRefresh = catImagesRefresh; root.catImagesStatus = catImagesStatus; root.catImageFor = catImageFor; root.catApprovalsSend = catApprovalsSend; root.catApprovalsPublish = catApprovalsPublish; root.catPickerSearch = catPickerSearch;
@@ -3688,7 +4038,7 @@ root._catStep5 = { norm: norm, modelKey: modelKey, lookupIn: lookupIn, searchIn:
                    buildOwnedBall: buildOwnedBall, ballFromSpecs: ballFromSpecs, fillPlan: fillPlan,
                    catSpecSource: catSpecSource, setFilled: function (f) { _filled = f; },
                    imgLinksFrom: imgLinksFrom, sheetState: function () { return _sheet; }, mergeOverrides: mergeOverrides, withLocalCorrection: withLocalCorrection, apApplyOverride: apApplyOverride, apOverrideFrom: apOverrideFrom, bowwwlLinks: bowwwlLinks, apStagedFor: apStagedFor, apAsDetail: apAsDetail, apRangeNotes: apRangeNotes, derivedCoverType: derivedCoverType, specGaps: specGaps, nearestWeight: nearestWeight, addListHTML: addListHTML, sourceForBrand: sourceForBrand, apParseIssue: apParseIssue, apPages: apPages, apApplyTicks: apApplyTicks, apConflict: apConflict, apNums: apNums,
-                   verifyPlan: verifyPlan, pdfItemsToLines: pdfItemsToLines, spLdLines: spLdLines, SHORTCUT_JS: SHORTCUT_JS, srvEditValue: srvEditValue, parseSpecText: parseSpecText, lkTabs: lkTabs, lkPasteValue: lkPasteValue, lkBallChanges: lkBallChanges, pageMismatch: pageMismatch, pasteLines: pasteLines, plausibleText: plausibleText, proseFields: proseFields, pgvClean: pgvClean, vocabMerge: vocabMerge, vocabSplit: vocabSplit, familyOf: familyOf, srvRows: srvRows, srvApply: srvApply, srvStagedRow: srvStagedRow, vfyPagesFor: vfyPagesFor, vfyEstimateFrom: vfyEstimateFrom, tagLine: tagLine, tagLines: tagLines, tagValueFor: tagValueFor, vfyPickRun: vfyPickRun, vfyClassify: vfyClassify, vfyCardHTML: vfyCardHTML, specMatch: specMatch, coreNameMatch: coreNameMatch, DIFF_MAX: DIFF_MAX, metricUnverified: metricUnverified, catSpecUnverified: catSpecUnverified,
+                   verifyPlan: verifyPlan, coreKeyOf: coreKeyOf, coreBase: coreBase, bowwwlCoreCandidates: bowwwlCoreCandidates, bowwwlImgCandidates: bowwwlImgCandidates, slugBw: slugBw, pdfItemsToLines: pdfItemsToLines, spLdLines: spLdLines, SHORTCUT_JS: SHORTCUT_JS, srvEditValue: srvEditValue, parseSpecText: parseSpecText, lkTabs: lkTabs, lkPasteValue: lkPasteValue, lkBallChanges: lkBallChanges, pageMismatch: pageMismatch, pasteLines: pasteLines, plausibleText: plausibleText, proseFields: proseFields, pgvClean: pgvClean, vocabMerge: vocabMerge, vocabSplit: vocabSplit, familyOf: familyOf, srvRows: srvRows, srvApply: srvApply, srvStagedRow: srvStagedRow, vfyPagesFor: vfyPagesFor, vfyEstimateFrom: vfyEstimateFrom, tagLine: tagLine, tagLines: tagLines, tagValueFor: tagValueFor, vfyPickRun: vfyPickRun, vfyClassify: vfyClassify, vfyCardHTML: vfyCardHTML, specMatch: specMatch, coreNameMatch: coreNameMatch, DIFF_MAX: DIFF_MAX, metricUnverified: metricUnverified, catSpecUnverified: catSpecUnverified,
                    metricScore: metricScore, parseFinish: parseFinish, rgBand: rgBand, diffBand: diffBand, coverClass: coverClass,
                    catMetric: catMetric, sheetHTML: sheetHTML, cmpColOwned: cmpColOwned, cmpColCatalog: cmpColCatalog, cmpRows: cmpRows,
                    cmpHTML: cmpHTML, cmpState: function () { return _cmp; }, setSheet: function (x) { _sheet = x; } };
