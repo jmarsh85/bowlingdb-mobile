@@ -36,7 +36,7 @@
 'use strict';
 
 /* v30.169: shown in the app header when it differs from the build's EXPECTED_CATALOG_JS */
-var CAT_VERSION  = 'v30.173';
+var CAT_VERSION  = 'v30.174';
 var CAT_BASE     = 'https://raw.githubusercontent.com/jmarsh85/bowlingdb-mobile/dist/';
 var CAT_DB       = 'BowlingDB_Catalog';
 var CAT_DB_VER   = 1;
@@ -1192,13 +1192,36 @@ function specRows(e, s) {
   ];
 }
 /* owned-ball shape of the catalog specs (also used by Add to Arsenal and Fill) */
+/* v30.174: a spec text field is a short name, not page prose (same rule as
+   the bridge's plausibleText). Catalog values that fail it are treated as
+   missing everywhere the app offers them: Fill, Apply, Review my specs. */
+var TEXT_MAX = { core: 40, coverName: 45, coverType: 30, finish: 40 };
+function plausibleText(field, v) {
+  if (v == null) return null;
+  var s = String(v).replace(/\s+/g, ' ').trim();
+  if (!s) return null;
+  if (s.length > (TEXT_MAX[field] || 40) || s.split(' ').length > 6) return null;
+  if (/[.!?;]\s+\S|,\s(?!\d)|\s[-\u2013\u2014]\s/.test(s)) return null;
+  if (/^(this|that|it|its|our|we|you|your|with|when|while|for|if|from|traditionally|firmly|featuring|introducing|designed|built|created|using|combining)\b/i.test(s)) return null;
+  if (/\b(is|are|was|were|has|have|had|will|be|been|that|which|who|ensconced|provides?|delivers?|offers?|gives?)\b/i.test(s)) return null;
+  return s;
+}
+/* Pure: which text fields of a specsOf() result are page prose. */
+function proseFields(s) {
+  var out = [];
+  if (!s) return out;
+  [['coverName', 'coverName', 'Coverstock'], ['coreName', 'core', 'Core'], ['finish', 'finish', 'Factory finish'], ['coverType', 'coverType', 'Cover type']].forEach(function (p) {
+    if (s[p[0]] != null && s[p[0]] !== '' && !plausibleText(p[1], s[p[0]])) out.push(p[2]);
+  });
+  return out;
+}
 function ballFromSpecs(s) {
   var cc = coverClass(s.coverType, s.coverName);
   var coreT = s.coreType ? (/asym/i.test(s.coreType) ? 'Asymmetrical' : /sym/i.test(s.coreType) ? 'Symmetrical' : s.coreType) : null;
   return {
-    BoxFinish: s.finish || null,
-    Coverstock: cc ? cc.charAt(0).toUpperCase() + cc.slice(1) : (s.coverType || null),
-    CoverName: s.coverName || null, CoreType: coreT, CoreShort: s.coreName || null,
+    BoxFinish: plausibleText('finish', s.finish),
+    Coverstock: cc ? cc.charAt(0).toUpperCase() + cc.slice(1) : plausibleText('coverType', s.coverType),
+    CoverName: plausibleText('coverName', s.coverName), CoreType: coreT, CoreShort: plausibleText('core', s.coreName),
     RG: s.rg, Differential: s.diff, IntDiff: s.intDiff,
     DateReleased: s.released ? String(s.released).slice(0, 10) : null,
   };
@@ -1385,21 +1408,54 @@ function renderFillRow() {
     slot.innerHTML = h ? '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">' + h + '</div>' : '';
   }).catch(function () {});
 }
+/* v30.174: Fill and Apply open a review list first. Each value can be
+   unticked; nothing changes until "Apply". Page prose is never offered. */
+var _fr = null;
 function catFillFromCatalog(mode) {
   catLoad().then(function (rows) { return catDetailRaw(byIdIn(rows, _pick.id)); }).then(function (d) {
     var wEl = document.getElementById('bef-wt');
     var s = specsOf(d, (wEl && parseInt(wEl.value, 10)) || 15), spec = ballFromSpecs(s);
     var plan = fillPlan(formValues(), (_pick.ball && _pick.ball.SpecSource) || {}, spec);
-    var list = mode === 'apply' ? plan.apply : plan.fill;
-    if (mode === 'apply' && list.length && root.confirm && !root.confirm('Replace ' + list.length + ' value(s) with the catalog\'s current specs? Values you entered yourself are never replaced.')) return;
-    list.forEach(function (f) {
-      var el = document.getElementById(FIELD_INPUT[f]);
-      if (!el) return;
-      el.value = spec[f]; _filled[f] = spec[f];
-    });
-    if (root.toast) root.toast(list.length + ' field' + (list.length === 1 ? '' : 's') + ' filled from catalog. Save to keep.');
-    renderFillRow();
+    var list = mode === 'apply' ? plan.apply : plan.fill, cur = formValues();
+    _fr = { mode: mode, spec: spec, list: list, on: list.map(function () { return true; }), prose: proseFields(s) };
+    frRender(cur);
   });
+}
+function frRender(cur) {
+  var lbl = function (f) { return (typeof SRV_LABEL !== 'undefined' && SRV_LABEL[f]) || FIELD_LABEL[f] || f; };
+  var fmt = function (f, v) { return srvFmt(f, v); };
+  var rows = _fr.list.map(function (f, i) {
+    return '<label style="display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--border1)">' +
+      '<input type="checkbox" ' + (_fr.on[i] ? 'checked' : '') + ' onchange="catFillToggle(' + i + ',this.checked)" style="margin-top:3px;width:18px;height:18px">' +
+      '<div style="flex:1"><div style="font-size:12px;font-weight:700;color:var(--t2)">' + esc(lbl(f)) + '</div>' +
+      '<div style="font-size:13px;color:var(--t1);margin-top:2px">' + (_fr.mode === 'apply' ? '<span style="color:var(--t3);text-decoration:line-through">' + esc(fmt(f, cur[f])) + '</span> \u2192 ' : '') +
+      '<b>' + esc(fmt(f, _fr.spec[f])) + '</b></div></div></label>';
+  }).join('');
+  var n = _fr.on.filter(Boolean).length;
+  var ov = overlay('fr-ov', 935);
+  ov.innerHTML = '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 8px"><button style="' + BACK + '" onclick="catFillClose()">\u2039</button>' +
+    '<div style="flex:1"><div style="font-size:17px;font-weight:800;color:var(--t1)">' + (_fr.mode === 'apply' ? 'Review catalog changes' : 'Review catalog values') + '</div>' +
+    '<div style="font-size:11px;color:var(--t3)">Untick anything that looks wrong. Values you entered yourself are never offered.</div></div></div>' +
+    '<div style="flex:1;overflow-y:auto;padding:0 16px 12px">' + (rows || '<div style="padding:20px 0;color:var(--t3);font-size:13px">Nothing to change.</div>') +
+    (_fr.prose.length ? '<div style="font-size:11px;color:var(--gold);margin-top:10px;line-height:1.5">Not offered: ' + esc(_fr.prose.join(', ')) + ' (the catalog holds page text there, not a value). Fix it in Spec approvals.</div>' : '') + '</div>' +
+    '<div style="padding:10px 16px;border-top:1px solid var(--border1);display:flex;gap:8px"><button style="' + BTN_G + 'padding:11px" onclick="catFillClose()">Cancel</button>' +
+    '<button style="' + BTN_P + 'flex:1;padding:11px" ' + (n ? '' : 'disabled ') + 'onclick="catFillConfirm()">Apply ' + n + '</button></div>';
+  var old = document.getElementById('fr-ov'); if (old && old !== ov) old.parentNode.removeChild(old);
+  if (!ov.parentNode) document.body.appendChild(ov);
+}
+function catFillToggle(i, on) { if (_fr) { _fr.on[i] = !!on; frRender(formValues()); } }
+function catFillClose() { var el = document.getElementById('fr-ov'); if (el) el.parentNode.removeChild(el); _fr = null; }
+function catFillConfirm() {
+  if (!_fr) return;
+  var n = 0;
+  _fr.list.forEach(function (f, i) {
+    if (!_fr.on[i]) return;
+    var el = document.getElementById(FIELD_INPUT[f]); if (!el) return;
+    el.value = _fr.spec[f]; _filled[f] = _fr.spec[f]; n++;
+  });
+  catFillClose();
+  if (root.toast) root.toast(n + ' field' + (n === 1 ? '' : 's') + ' filled from catalog. Save to keep.');
+  renderFillRow();
 }
 /* Called by _bdetSave. Tiers only move up: a value the user changes becomes 'user';
    one written by Fill/Apply and saved unchanged is 'catalog'; untouched keeps its tag. */
@@ -1494,7 +1550,10 @@ function apGH(path, opt) {
   opt = opt || {};
   var h = { 'Accept': 'application/vnd.github+json', 'Authorization': 'Bearer ' + apToken(), 'X-GitHub-Api-Version': '2022-11-28' };
   if (opt.body) h['Content-Type'] = 'application/json';
-  return env.fetch(AP_API + path, { method: opt.method || 'GET', headers: h, body: opt.body ? JSON.stringify(opt.body) : undefined, cache: 'no-store' })
+  /* v30.174: give up after 25 s so a stalled request cannot hang a caller */
+  var ac = typeof AbortController === 'function' ? new AbortController() : null, tm = ac ? setTimeout(function () { ac.abort(); }, 25000) : null;
+  return env.fetch(AP_API + path, { method: opt.method || 'GET', headers: h, body: opt.body ? JSON.stringify(opt.body) : undefined, cache: 'no-store', signal: ac ? ac.signal : undefined })
+    .then(function (r) { if (tm) clearTimeout(tm); return r; }, function (e) { if (tm) clearTimeout(tm); throw e; })
     .then(function (r) {
       if (r.status === 204) return null;
       if (!r.ok) return r.text().then(function (t) { var e = new Error('GitHub ' + r.status); e.status = r.status; e.detail = t; throw e; });
@@ -1898,7 +1957,8 @@ var VFY_STEPS = ['extract', 'results', 'approve', 'publish', 'rebuild', 'recheck
 var VFY_LABEL = { extract: 'Re-read the maker\u2019s site', results: 'Results for this ball', approve: 'Approve',
   publish: 'Publish', rebuild: 'Catalog rebuild', recheck: 'Re-check this ball' };
 var VFY_POLL_MS = 15000, VFY_START_GRACE_MS = 10 * 60000, VFY_REFRESH_GRACE_MS = 6 * 60000;
-var _vfyBusy = false, _vfyTimer = null;
+var _vfyBusy = false, _vfyBusyAt = 0, _vfyTickId = 0, _vfyTimer = null;
+var VFY_BUSY_MAX_MS = 60000;   // v30.174: a request that never answers (phone slept mid-fetch) must not freeze the chain
 function vfyState() { var l = apLS(); try { return JSON.parse((l && l.getItem(VERIFY_KEY)) || 'null'); } catch (e) { return null; } }
 function vfySave(s) { var l = apLS(); if (l) { if (s) l.setItem(VERIFY_KEY, JSON.stringify(s)); else l.removeItem(VERIFY_KEY); } vfyPaint(); }
 /* old v30.165 record {src, at} has no step: treat as nothing running */
@@ -1988,8 +2048,9 @@ function catVerifyNow(brand, catalogId, ballId) {
 /* One poll. Advances as far as it can, then saves. Never rejects. */
 function vfyTick() {
   var s = vfyActive();
-  if (!s || s.done || s.err || _vfyBusy || !apToken()) return Promise.resolve(s);
-  _vfyBusy = true;
+  if (!s || s.done || s.err || !apToken()) return Promise.resolve(s);
+  if (_vfyBusy && env.now() - _vfyBusyAt < VFY_BUSY_MAX_MS) return Promise.resolve(s);
+  _vfyBusy = true; _vfyBusyAt = env.now(); var myTick = ++_vfyTickId;
   var go = function () {
     if (s.step === 'extract') {
       return vfyFindRun('specs-extract.yml', s.base, 'workflow_dispatch').then(function (run) {
@@ -2060,6 +2121,7 @@ function vfyTick() {
     else s.note = 'Offline or GitHub busy; trying again.';
   }).then(function () {
     var cur = vfyActive();
+    if (myTick !== _vfyTickId) return s;                                    // a newer tick took over; drop this late answer
     if (cur && cur.at === s.at) { if (!s.err) delete s.note; vfySave(s); }   // never overwrite a newer chain
     _vfyBusy = false; vfyArm(); return s;
   });
@@ -2150,7 +2212,7 @@ function vfySlotHTML(catalogId, idle) {
   var s = vfyActive();
   return '<div class="vfy-slot" data-cat="' + esc(catalogId) + '" data-idle="' + esc(idle || '') + '">' + (s && s.catalogId === catalogId ? vfyCardHTML(s) : (idle || '')) + '</div>';
 }
-function catVerifyRefresh() { var s = vfyActive(); if (s) { delete s.waiting; vfySave(s); } return vfyTick(); }
+function catVerifyRefresh() { var s = vfyActive(); if (s) { delete s.waiting; vfySave(s); } _vfyBusy = false; return vfyTick(); }
 function catVerifyDismiss() {
   var s = vfyActive();
   if (s && !s.done && root.confirm && !root.confirm('Stop following this check? Runs already started on GitHub keep going.')) return;
@@ -2462,7 +2524,7 @@ function vocabMerge(dist, extra) {
   ['core', 'coverName', 'coverType', 'finish'].forEach(function (k) {
     var m = {}, order = [];
     var add = function (v, n, brands) {
-      var key = vocabKey(v); if (!key) return;
+      var key = vocabKey(v); if (!key || !plausibleText(k === 'core' ? 'core' : k, v)) return;   // v30.174: no page prose in lists
       if (!m[key]) { m[key] = { v: String(v).trim(), n: 0, b: [] }; order.push(key); }
       m[key].n += n; (brands || []).forEach(function (x) { if (x && m[key].b.indexOf(x) < 0) m[key].b.push(x); });
     };
@@ -2542,8 +2604,61 @@ function apReadPage(key) {
     return r.json();
   }).then(function (j) { _pages[key] = j; return j; });
 }
+/* ---------- v30.174: bowwwl first in "Correct specs" ----------
+   The maker page the bridge matched is sometimes a sibling in the lineage
+   (e.g. "Jackal" read for Jackal Fury). bowwwl lists each ball on its own
+   page. The app still never fetches bowwwl (permission pending): you open
+   it in Safari, copy the specs, and paste here. The paste opens in the same
+   Page view (select text or tap a number, then a field). A value used from
+   a paste sets the correction's source to bowwwl, so it stays on this device. */
+function foldName(t) { return String(t || '').toLowerCase().replace(/^\*+\s*/, '').replace(/[^a-z0-9]+/g, ' ').trim(); }
+/* Pure: the page title names a different ball than the USBC entry (null = fine or unknown). */
+function pageMismatch(title, name) {
+  var a = foldName(title), b = foldName(name);
+  if (!a || !b || a === b) return null;
+  return { page: String(title).trim(), ball: String(name).trim() };
+}
+/* Pure: pasted text -> snapshot lines ("Label<TAB>Value" -> "Label | Value"). */
+function pasteLines(t) {
+  var seen = {}, out = [];
+  String(t || '').split(/\r?\n/).forEach(function (l) {
+    var x = l.replace(/\t+/g, ' | ').replace(/\s+/g, ' ').trim();
+    if (!x || x.length > 200 || seen[x.toLowerCase()]) return;
+    seen[x.toLowerCase()] = 1; out.push(x);
+  });
+  return out.slice(0, 400);
+}
+function catPasteOpen() {
+  var ov = overlay('pst-ov', 925);
+  ov.innerHTML = '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 8px"><button style="' + BACK + '" onclick="catPasteClose()">\u2039</button>' +
+    '<div style="flex:1"><div style="font-size:17px;font-weight:800;color:var(--t1)">Paste from bowwwl</div>' +
+    '<div style="font-size:11px;color:var(--t3)">In Safari: select the specs on the ball\u2019s page, Copy, then paste below.</div></div></div>' +
+    '<div style="flex:1;overflow-y:auto;padding:0 16px 16px">' +
+    '<textarea id="pst-txt" class="bdet-field-input" rows="12" placeholder="Long-press here and tap Paste" style="width:100%;box-sizing:border-box;font-size:14px;line-height:1.45"></textarea>' +
+    (typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.readText ? '<button style="' + BTN_G + 'width:100%;padding:10px;margin-top:8px" onclick="catPasteClip()">Paste from clipboard</button>' : '') + '</div>' +
+    '<div style="padding:10px 16px;border-top:1px solid var(--border1)"><button style="' + BTN_P + 'width:100%;padding:11px" onclick="catPasteShow()">Show and tag \u203a</button></div>';
+  document.body.appendChild(ov);
+}
+function catPasteClip() {
+  navigator.clipboard.readText().then(function (t) { var el = document.getElementById('pst-txt'); if (el) el.value = t; }, function () { if (root.toast) root.toast('Long-press the box and tap Paste instead'); });
+}
+function catPasteClose() { var el = document.getElementById('pst-ov'); if (el) el.parentNode.removeChild(el); }
+function catPasteShow() {
+  var el = document.getElementById('pst-txt'), lines = pasteLines(el && el.value);
+  if (!lines.length) { if (root.toast) root.toast('Nothing pasted yet'); return; }
+  catPasteClose();
+  pgvOpenSnap({ title: 'Pasted from bowwwl', url: null, lines: lines, images: [], src: 'bowwwl' });
+}
 function catPageOpen() {
   if (!_apEdit || !_apEdit.page) return;
+  pgvShell();
+  apReadPage(_apEdit.page).then(function (snap) { _pgSnap = snap; pgvRender(); }, function (e) {
+    var b = document.getElementById('pgv-body'); if (b) b.innerHTML = '<div style="padding:30px 0;text-align:center;color:var(--red);font-size:13px;line-height:1.5">' + esc(e.message || String(e)) + '</div>';
+    var s = document.getElementById('pgv-sub'); if (s) s.textContent = '';
+  });
+}
+function pgvOpenSnap(snap) { pgvShell(); _pgSnap = snap; pgvRender(); }
+function pgvShell() {
   var ov = overlay('pgv-ov', 925);
   ov.innerHTML = '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 8px"><button style="' + BACK + '" onclick="catPageClose()">\u2039</button>' +
     '<div style="flex:1;min-width:0"><div style="font-size:17px;font-weight:800;color:var(--t1)">Page</div><div id="pgv-sub" style="font-size:11px;color:var(--t3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Loading\u2026</div></div></div>' +
@@ -2551,14 +2666,11 @@ function catPageOpen() {
     '<div id="pgv-bar" style="display:none;padding:10px 16px;border-top:1px solid var(--border1);gap:8px;align-items:center"></div>';
   document.body.appendChild(ov);
   _pgSel = '';
-  apReadPage(_apEdit.page).then(function (snap) { _pgSnap = snap; pgvRender(); }, function (e) {
-    var b = document.getElementById('pgv-body'); if (b) b.innerHTML = '<div style="padding:30px 0;text-align:center;color:var(--red);font-size:13px;line-height:1.5">' + esc(e.message || String(e)) + '</div>';
-    var s = document.getElementById('pgv-sub'); if (s) s.textContent = '';
-  });
 }
 function pgvRender() {
   var snap = _pgSnap, b = document.getElementById('pgv-body'); if (!b || !snap) return;
   var sub = document.getElementById('pgv-sub');
+  var mm = snap.src !== 'bowwwl' && _apEdit ? pageMismatch(snap.title, _apEdit.ballName) : null;
   if (sub) sub.innerHTML = esc(snap.title || '') + (snap.url ? ' \u00b7 <a href="' + esc(snap.url) + '" target="_blank" rel="noopener noreferrer" style="color:var(--teal)">open on site \u2197</a>' : '');
   var cur = _apEdit ? imgPicks()[_apEdit.catalogId] : null;
   var imgs = (snap.images || []).map(function (u, i) {
@@ -2573,7 +2685,8 @@ function pgvRender() {
       return '<span onclick="catPageUseVal(' + esc(JSON.stringify(p.tok.v)).replace(/"/g, '&quot;') + ')" style="color:' + (p.tok.kind === 'wt' ? 'var(--gold)' : 'var(--teal)') + ';font-weight:700;text-decoration:underline;cursor:pointer">' + esc(p.t) + '</span>';
     }).join('') + '</div>';
   }).join('');
-  b.innerHTML = (imgs ? '<div style="font-size:11px;font-weight:700;color:var(--t3);margin:4px 0 6px;text-transform:uppercase;letter-spacing:.5px">Images \u00b7 tap to use on this device</div>' +
+  b.innerHTML = (mm ? '<div style="font-size:12px;color:var(--gold);line-height:1.5;margin:2px 0 10px">This page is for \u201c' + esc(mm.page) + '\u201d, not \u201c' + esc(mm.ball) + '\u201d. It may be a sibling ball; check bowwwl.</div>' : '') +
+    (imgs ? '<div style="font-size:11px;font-weight:700;color:var(--t3);margin:4px 0 6px;text-transform:uppercase;letter-spacing:.5px">Images \u00b7 tap to use on this device</div>' +
       '<div style="display:flex;flex-wrap:wrap;gap:6px">' + imgs + '</div>' : '') +
     '<div style="font-size:11px;font-weight:700;color:var(--t3);margin:14px 0 4px;text-transform:uppercase;letter-spacing:.5px">Text \u00b7 select any of it, or tap a number</div>' +
     '<div id="pgv-text" style="font-size:13px;color:var(--t1);-webkit-user-select:text;user-select:text;padding:6px 10px;border-radius:10px;background:var(--bg2)">' +
@@ -2597,8 +2710,9 @@ if (typeof document !== 'undefined' && document.addEventListener) document.addEv
 function catPageUseSel() { if (_pgSel) catPageUseVal(_pgSel); }
 function catPageUseVal(v) {
   var t = pgvClean(v); if (!t) return;
+  var src = _pgSnap && _pgSnap.src;
   catPageClose();
-  _tag.val = t; _tag.key = null; tagPaint();
+  _tag.val = t; _tag.key = null; _tag.src = src || null; tagPaint();
   var bar = document.getElementById('ape-tagbar'); if (bar && bar.scrollIntoView) bar.scrollIntoView({ block: 'nearest' });
 }
 function catPageImg(i) {
@@ -2667,7 +2781,7 @@ function tagValueFor(fieldId, v) {
 function tagPanelHTML(raw, page) {
   _tag = { lines: tagLines(raw), val: null, key: null, row: null };
   var bar = '<div id="ape-tagbar" style="display:none;position:sticky;top:0;z-index:2;margin-top:6px;padding:8px 10px;border-radius:10px;background:var(--bg2);border:1px solid var(--teal);font-size:12px;color:var(--t1)"></div>';
-  var pageBtn = page ? '<button style="' + BTN_P + 'width:100%;padding:10px;margin-top:6px" onclick="catPageOpen()">Open the page: select text or pick an image \u203a</button>' : '';
+  var pageBtn = page ? '<button style="' + BTN_G + 'width:100%;padding:10px;margin-top:6px" onclick="catPageOpen()">Maker page: select text or pick an image \u203a</button>' : '';
   if (!_tag.lines.length) return page ? '<div style="font-size:11px;font-weight:700;color:var(--t3);margin:10px 0 4px;text-transform:uppercase;letter-spacing:.5px">From the page</div>' + pageBtn + bar : '';
   var body = _tag.lines.map(function (parts, i) {
     return '<div style="padding:3px 0;line-height:1.9">' + parts.map(function (p, j) {
@@ -2710,14 +2824,18 @@ function tagFieldTap(ev) {
   if (err) err.textContent = '';
   el.style.boxShadow = '0 0 0 2px var(--teal)'; setTimeout(function () { el.style.boxShadow = ''; }, 700);
   if (root.haptic) try { root.haptic('light'); } catch (x) {}
-  _tag.val = null; _tag.key = null; tagPaint();
+  /* a value taken from a bowwwl paste: the correction's source becomes bowwwl (kept on this device) */
+  if (_tag.src === 'bowwwl') { var so = document.getElementById('ape-source'); if (so && so.value !== 'bowwwl') { so.value = 'bowwwl'; if (root.toast) root.toast('Source set to bowwwl: this correction stays on this device'); } }
+  _tag.val = null; _tag.key = null; _tag.src = null; tagPaint();
 }
 function catApprovalsEdit(i) {
   var p = _ap.pages[_ap.idx]; if (!p) return;
   var b = p.boxes[i];
   var r = apApplyOverride(_staged ? apStagedFor(_staged, b, p.catalogId) : null, overrideFor(p.catalogId));
   var sp = (r && r.specs) || {};
-  _apEdit = { catalogId: p.catalogId, i: i, page: (r && r.page) || null };
+  var _ee = _ap._rows ? byIdIn(_ap._rows, p.catalogId) : null, _bn = _ee ? cleanName(_ee.n) : b.title;
+  _apEdit = { catalogId: p.catalogId, i: i, page: (r && r.page) || null, ballName: _bn };
+  var _bw = bowwwlLinks(_ee ? _ee.m : (r && r.brand) || '', _bn), _mm = r ? pageMismatch(r.title, _bn) : null;
   var inp = function (id, v, ph) { return '<div class="ape-f"><input id="' + id + '" class="bdet-field-input" value="' + esc(v == null ? '' : v) + '" placeholder="' + esc(ph || '') + '" style="width:100%;box-sizing:border-box;font-size:15px"></div>'; };
   /* v30.173 CAT-NEW-7: type, or pick a value already in use */
   var inpP = function (id, v, ph) { return '<div style="display:flex;gap:6px;align-items:stretch"><div class="ape-f" style="flex:1">' + inp(id, v, ph).replace(/^<div class="ape-f">|<\/div>$/g, '') + '</div>' +
@@ -2732,6 +2850,11 @@ function catApprovalsEdit(i) {
     '<div style="flex:1"><div style="font-size:17px;font-weight:800;color:var(--t1)">Correct specs</div><div style="font-size:11px;color:var(--t3)">' + esc(b.title) + ' · USBC ' + esc(p.catalogId) + '</div></div></div>' +
     '<div style="flex:1;overflow-y:auto;padding:0 16px 16px">' +
     '<div style="font-size:12px;color:var(--t2);line-height:1.5">Change or fill any field. Values shown are what the bridge read; edit them in place.</div>' +
+    '<div style="font-size:11px;font-weight:700;color:var(--t3);margin:10px 0 4px;text-transform:uppercase;letter-spacing:.5px">Look it up on bowwwl</div>' +
+    '<div style="display:flex;gap:6px"><a href="' + esc(_bw.page) + '" target="_blank" rel="noopener noreferrer" style="' + BTN_G + 'flex:1;padding:10px;text-align:center;text-decoration:none">Open bowwwl \u2197</a>' +
+    '<button style="' + BTN_P + 'flex:1;padding:10px" onclick="catPasteOpen()">Paste from bowwwl</button></div>' +
+    '<div style="font-size:11px;color:var(--t3);margin-top:4px;line-height:1.45">Values used from a paste make this a bowwwl correction (kept on this device). <a href="' + esc(_bw.search) + '" target="_blank" rel="noopener noreferrer" style="color:var(--teal)">Search instead \u2197</a></div>' +
+    (_mm ? '<div style="font-size:12px;color:var(--gold);line-height:1.5;margin-top:10px">The maker page read was \u201c' + esc(_mm.page) + '\u201d, not \u201c' + esc(_mm.ball) + '\u201d: it may be a sibling ball, so its values may be wrong.</div>' : '') +
     tagPanelHTML(r && r.rawText, r && r.page) +
     lab('Coverstock') + inpP('ape-coverName', sp.coverName, 'e.g. R2S Pearl Reactive') +
     lab('Cover type') + inpP('ape-coverType', sp.coverType, 'e.g. Solid Reactive') +
@@ -3011,7 +3134,7 @@ function catCompareAdd(x) {
 
 root.CATALOG_JS_VERSION = CAT_VERSION;
 root.catPickerMount = catPickerMount;
-root.catApprovalsOpen = catApprovalsOpen; root.catPageOpen = catPageOpen; root.catPageClose = catPageClose; root.catPageUseSel = catPageUseSel; root.catPageUseVal = catPageUseVal; root.catPageImg = catPageImg; root.catPickOpen = catPickOpen; root.catPickFilter = catPickFilter; root.catPickChoose = catPickChoose; root.catPickClose = catPickClose; root.catSpecReviewOpen = catSpecReviewOpen; root.catSpecReviewClose = catSpecReviewClose; root.catSpecReviewAct = catSpecReviewAct; root.catSpecReviewBulk = catSpecReviewBulk; root.catSpecReviewPage = catSpecReviewPage; root.catTagPick = catTagPick; root.catTagCancel = catTagCancel; root.catVerifyRefresh = catVerifyRefresh; root.catVerifyDismiss = catVerifyDismiss; root.catVerifyRetry = catVerifyRetry; root.catVerifyOpenApprovals = catVerifyOpenApprovals; root.catVerifyPublish = catVerifyPublish; root.catVerifyApply = catVerifyApply; root.catVerifyTick = vfyTick; root.catVerifyState = vfyActive; root.catApprovalsRetryStaged = catApprovalsRetryStaged; root.apStagedErrText = apStagedErrText; root.catApprovalsClose = catApprovalsClose; root.catApprovalsSaveToken = catApprovalsSaveToken;
+root.catApprovalsOpen = catApprovalsOpen; root.catPasteOpen = catPasteOpen; root.catPasteClose = catPasteClose; root.catPasteClip = catPasteClip; root.catPasteShow = catPasteShow; root.catFillToggle = catFillToggle; root.catFillClose = catFillClose; root.catFillConfirm = catFillConfirm; root.catPageOpen = catPageOpen; root.catPageClose = catPageClose; root.catPageUseSel = catPageUseSel; root.catPageUseVal = catPageUseVal; root.catPageImg = catPageImg; root.catPickOpen = catPickOpen; root.catPickFilter = catPickFilter; root.catPickChoose = catPickChoose; root.catPickClose = catPickClose; root.catSpecReviewOpen = catSpecReviewOpen; root.catSpecReviewClose = catSpecReviewClose; root.catSpecReviewAct = catSpecReviewAct; root.catSpecReviewBulk = catSpecReviewBulk; root.catSpecReviewPage = catSpecReviewPage; root.catTagPick = catTagPick; root.catTagCancel = catTagCancel; root.catVerifyRefresh = catVerifyRefresh; root.catVerifyDismiss = catVerifyDismiss; root.catVerifyRetry = catVerifyRetry; root.catVerifyOpenApprovals = catVerifyOpenApprovals; root.catVerifyPublish = catVerifyPublish; root.catVerifyApply = catVerifyApply; root.catVerifyTick = vfyTick; root.catVerifyState = vfyActive; root.catApprovalsRetryStaged = catApprovalsRetryStaged; root.apStagedErrText = apStagedErrText; root.catApprovalsClose = catApprovalsClose; root.catApprovalsSaveToken = catApprovalsSaveToken;
 root.catApprovalsForgetToken = catApprovalsForgetToken; root.catApprovalsChangeToken = catApprovalsChangeToken; root.catApprovalsPage = catApprovalsPage; root.catApprovalsFilter = catApprovalsFilter;
 root.catApprovalsTick = catApprovalsTick; root.catApprovalsEdit = catApprovalsEdit; root.catApprovalsEditClose = catApprovalsEditClose; root.catApprovalsEditSave = catApprovalsEditSave; root.catAddSpecsOnly = catAddSpecsOnly; root.catVerifyNow = catVerifyNow; root.catImagesSet = catImagesSet;
 root.catImagesRefresh = catImagesRefresh; root.catImagesStatus = catImagesStatus; root.catImageFor = catImageFor; root.catApprovalsSend = catApprovalsSend; root.catApprovalsPublish = catApprovalsPublish; root.catPickerSearch = catPickerSearch;
@@ -3042,7 +3165,7 @@ root._catStep5 = { norm: norm, modelKey: modelKey, lookupIn: lookupIn, searchIn:
                    buildOwnedBall: buildOwnedBall, ballFromSpecs: ballFromSpecs, fillPlan: fillPlan,
                    catSpecSource: catSpecSource, setFilled: function (f) { _filled = f; },
                    imgLinksFrom: imgLinksFrom, sheetState: function () { return _sheet; }, mergeOverrides: mergeOverrides, withLocalCorrection: withLocalCorrection, apApplyOverride: apApplyOverride, apOverrideFrom: apOverrideFrom, bowwwlLinks: bowwwlLinks, apStagedFor: apStagedFor, apAsDetail: apAsDetail, apRangeNotes: apRangeNotes, derivedCoverType: derivedCoverType, specGaps: specGaps, nearestWeight: nearestWeight, addListHTML: addListHTML, sourceForBrand: sourceForBrand, apParseIssue: apParseIssue, apPages: apPages, apApplyTicks: apApplyTicks, apConflict: apConflict, apNums: apNums,
-                   verifyPlan: verifyPlan, pgvClean: pgvClean, vocabMerge: vocabMerge, vocabSplit: vocabSplit, familyOf: familyOf, srvRows: srvRows, srvApply: srvApply, srvStagedRow: srvStagedRow, vfyPagesFor: vfyPagesFor, vfyEstimateFrom: vfyEstimateFrom, tagLine: tagLine, tagLines: tagLines, tagValueFor: tagValueFor, vfyPickRun: vfyPickRun, vfyClassify: vfyClassify, vfyCardHTML: vfyCardHTML, specMatch: specMatch, coreNameMatch: coreNameMatch, DIFF_MAX: DIFF_MAX, metricUnverified: metricUnverified, catSpecUnverified: catSpecUnverified,
+                   verifyPlan: verifyPlan, pageMismatch: pageMismatch, pasteLines: pasteLines, plausibleText: plausibleText, proseFields: proseFields, pgvClean: pgvClean, vocabMerge: vocabMerge, vocabSplit: vocabSplit, familyOf: familyOf, srvRows: srvRows, srvApply: srvApply, srvStagedRow: srvStagedRow, vfyPagesFor: vfyPagesFor, vfyEstimateFrom: vfyEstimateFrom, tagLine: tagLine, tagLines: tagLines, tagValueFor: tagValueFor, vfyPickRun: vfyPickRun, vfyClassify: vfyClassify, vfyCardHTML: vfyCardHTML, specMatch: specMatch, coreNameMatch: coreNameMatch, DIFF_MAX: DIFF_MAX, metricUnverified: metricUnverified, catSpecUnverified: catSpecUnverified,
                    metricScore: metricScore, parseFinish: parseFinish, rgBand: rgBand, diffBand: diffBand, coverClass: coverClass,
                    catMetric: catMetric, sheetHTML: sheetHTML, cmpColOwned: cmpColOwned, cmpColCatalog: cmpColCatalog, cmpRows: cmpRows,
                    cmpHTML: cmpHTML, cmpState: function () { return _cmp; }, setSheet: function (x) { _sheet = x; } };
