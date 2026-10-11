@@ -2440,10 +2440,13 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "900-global-portal",
   "k": "900global|portal",
   "m": "900 Global",
   "n": "Portal",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2026"
@@ -2999,20 +3002,26 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "900-global-vengeance",
   "k": "900global|vengeance",
   "m": "900 Global",
   "n": "Vengeance",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2025"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "H",
   "i": "900-global-vengeance-returns",
   "k": "900global|vengeancereturns",
   "m": "900 Global",
   "n": "Vengeance Returns",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2026"
@@ -3037,10 +3046,13 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "900-global-viking-conquest",
   "k": "900global|vikingconquest",
   "m": "900 Global",
   "n": "Viking Conquest",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2026"
@@ -10350,6 +10362,7 @@
   "k": "brunswick|absolutenirvana",
   "m": "Brunswick",
   "n": "Absolute Nirvana",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2016"
@@ -10374,10 +10387,12 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "brunswick-alert",
   "k": "brunswick|alert",
   "m": "Brunswick",
   "n": "Alert",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2025"
@@ -10406,6 +10421,7 @@
   "k": "brunswick|anaconda",
   "m": "Brunswick",
   "n": "Anaconda",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2010"
@@ -10484,10 +10500,12 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-attitude",
   "k": "brunswick|attitude",
   "m": "Brunswick",
   "n": "Attitude",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2022"
@@ -10503,10 +10521,12 @@
  },
  {
   "c": null,
+  "cv": "U",
   "i": "brunswick-attitude-control",
   "k": "brunswick|attitudecontrol",
   "m": "Brunswick",
   "n": "Attitude Control",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2022"
@@ -10531,10 +10551,12 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "brunswick-aura",
   "k": "brunswick|aura",
   "m": "Brunswick",
   "n": "Aura",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2012"
@@ -10604,10 +10626,12 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-avalanche-black-electric-green",
   "k": "brunswick|avalancheblackelectricgreen",
   "m": "Brunswick",
   "n": "Avalanche Black/Electric Green",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2009"
@@ -10623,30 +10647,36 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-avalanche-slide",
   "k": "brunswick|avalancheslide",
   "m": "Brunswick",
   "n": "Avalanche Slide",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2008"
  },
  {
   "c": null,
+  "cv": "S",
   "i": "brunswick-avalanche-solid",
   "k": "brunswick|avalanchesolid",
   "m": "Brunswick",
   "n": "Avalanche Solid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2008"
  },
  {
   "c": null,
+  "cv": "U",
   "i": "brunswick-avalanche-urethane",
   "k": "brunswick|avalancheurethane",
   "m": "Brunswick",
   "n": "Avalanche Urethane",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2010"
@@ -10716,10 +10746,12 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-beyond-infinity",
   "k": "brunswick|beyondinfinity",
   "m": "Brunswick",
   "n": "Beyond Infinity",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2024"
@@ -10861,20 +10893,26 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "H",
   "i": "brunswick-brute",
   "k": "brunswick|brute",
   "m": "Brunswick",
   "n": "Brute",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2014"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "H",
   "i": "brunswick-brute-strength",
   "k": "brunswick|brutestrength",
   "m": "Brunswick",
   "n": "Brute Strength",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2015"
@@ -10989,20 +11027,24 @@
  },
  {
   "c": null,
+  "co": "a",
   "i": "brunswick-c-system-2-5",
   "k": "brunswick|csystem25",
   "m": "Brunswick",
   "n": "C*(System) 2.5",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2009"
  },
  {
   "c": null,
+  "co": "a",
   "i": "brunswick-c-system-3-5",
   "k": "brunswick|csystem35",
   "m": "Brunswick",
   "n": "C*(System) 3.5",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2009"
@@ -11027,10 +11069,12 @@
  },
  {
   "c": null,
+  "co": "s",
   "i": "brunswick-c-system-4-5",
   "k": "brunswick|csystem45",
   "m": "Brunswick",
   "n": "C*(System) 4.5",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2010"
@@ -11046,10 +11090,12 @@
  },
  {
   "c": null,
+  "co": "a",
   "i": "brunswick-c-system-alpha-max",
   "k": "brunswick|csystemalphamax",
   "m": "Brunswick",
   "n": "C*(System) Alpha-Max",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2010"
@@ -11074,30 +11120,38 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "brunswick-c-system-maxxed-out",
   "k": "brunswick|csystemmaxxedout",
   "m": "Brunswick",
   "n": "C*(System) Maxxed-Out",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2012"
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-c-system-ulti-max",
   "k": "brunswick|csystemultimax",
   "m": "Brunswick",
   "n": "C*(System) Ulti-Max",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2011"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "brunswick-c-system-versa-max",
   "k": "brunswick|csystemversamax",
   "m": "Brunswick",
   "n": "C*(System) Versa-Max",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2012"
@@ -11149,30 +11203,36 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-combat",
   "k": "brunswick|combat",
   "m": "Brunswick",
   "n": "Combat",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2025"
  },
  {
   "c": null,
+  "cv": "H",
   "i": "brunswick-combat-hybrid",
   "k": "brunswick|combathybrid",
   "m": "Brunswick",
   "n": "Combat Hybrid",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2026"
  },
  {
   "c": null,
+  "cv": "S",
   "i": "brunswick-combat-solid",
   "k": "brunswick|combatsolid",
   "m": "Brunswick",
   "n": "Combat Solid",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2026"
@@ -11296,10 +11356,12 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "brunswick-copperhead",
   "k": "brunswick|copperhead",
   "m": "Brunswick",
   "n": "Copperhead",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2008"
@@ -11333,10 +11395,12 @@
  },
  {
   "c": null,
+  "cv": "U",
   "i": "brunswick-crown-78u",
   "k": "brunswick|crown78u",
   "m": "Brunswick",
   "n": "Crown 78U",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2025"
@@ -11352,20 +11416,24 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "brunswick-crown-victory",
   "k": "brunswick|crownvictory",
   "m": "Brunswick",
   "n": "Crown Victory",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2025"
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-crown-victory-pearl",
   "k": "brunswick|crownvictorypearl",
   "m": "Brunswick",
   "n": "Crown Victory Pearl",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2026"
@@ -11381,30 +11449,39 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "H",
   "i": "brunswick-cutting-edge-hybrid",
   "k": "brunswick|cuttingedgehybrid",
   "m": "Brunswick",
   "n": "Cutting Edge Hybrid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2018"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "brunswick-cutting-edge-pearl",
   "k": "brunswick|cuttingedgepearl",
   "m": "Brunswick",
   "n": "Cutting Edge Pearl",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2018"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "brunswick-cutting-edge-solid",
   "k": "brunswick|cuttingedgesolid",
   "m": "Brunswick",
   "n": "Cutting Edge Solid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2018"
@@ -11420,30 +11497,36 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-damage",
   "k": "brunswick|damage",
   "m": "Brunswick",
   "n": "Damage",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2010"
  },
  {
   "c": null,
+  "cv": "S",
   "i": "brunswick-danger-zone",
   "k": "brunswick|dangerzone",
   "m": "Brunswick",
   "n": "(Danger) Zone",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2025"
  },
  {
   "c": null,
+  "cv": "S",
   "i": "brunswick-danger-zone-2",
   "k": "brunswick|dangerzone",
   "m": "Brunswick",
   "n": "Danger Zone",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "1996"
@@ -11594,10 +11677,12 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-danger-zone-purple-ice",
   "k": "brunswick|dangerzonepurpleice",
   "m": "Brunswick",
   "n": "(Danger) Zone Purple Ice",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2025"
@@ -11694,10 +11779,12 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "brunswick-defender",
   "k": "brunswick|defender",
   "m": "Brunswick",
   "n": "Defender",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2022"
@@ -11713,10 +11800,12 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "brunswick-defender-hybrid",
   "k": "brunswick|defenderhybrid",
   "m": "Brunswick",
   "n": "Defender Hybrid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2022"
@@ -11750,10 +11839,12 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "brunswick-diamondback",
   "k": "brunswick|diamondback",
   "m": "Brunswick",
   "n": "Diamondback",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2009"
@@ -11922,40 +12013,49 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-endeavor",
   "k": "brunswick|endeavor",
   "m": "Brunswick",
   "n": "Endeavor",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2024"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "H",
   "i": "brunswick-energize",
   "k": "brunswick|energize",
   "m": "Brunswick",
   "n": "Energize",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2025"
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-ethos",
   "k": "brunswick|ethos",
   "m": "Brunswick",
   "n": "Ethos",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2023"
  },
  {
   "c": null,
+  "cv": "H",
   "i": "brunswick-ethos-hybrid",
   "k": "brunswick|ethoshybrid",
   "m": "Brunswick",
   "n": "Ethos Hybrid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2024"
@@ -11971,10 +12071,12 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "brunswick-ethos-solid",
   "k": "brunswick|ethossolid",
   "m": "Brunswick",
   "n": "Ethos Solid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2025"
@@ -11990,10 +12092,13 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "brunswick-evil-siege",
   "k": "brunswick|evilsiege",
   "m": "Brunswick",
   "n": "Evil Siege",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2009"
@@ -12045,20 +12150,25 @@
  },
  {
   "c": null,
+  "co": "s",
   "i": "brunswick-fanatic",
   "k": "brunswick|fanatic",
   "m": "Brunswick",
   "n": "Fanatic",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2016"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "U",
   "i": "brunswick-fanatic-btu",
   "k": "brunswick|fanaticbtu",
   "m": "Brunswick",
   "n": "Fanatic BTU",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2016"
@@ -12074,20 +12184,25 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "brunswick-fanatic-ss",
   "k": "brunswick|fanaticss",
   "m": "Brunswick",
   "n": "Fanatic SS",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2017"
  },
  {
   "c": null,
+  "cv": "S",
   "i": "brunswick-fearless",
   "k": "brunswick|fearless",
   "m": "Brunswick",
   "n": "Fearless",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2018"
@@ -12139,20 +12254,24 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-fortera-exile",
   "k": "brunswick|forteraexile",
   "m": "Brunswick",
   "n": "Fortera Exile",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2014"
  },
  {
   "c": null,
+  "cv": "H",
   "i": "brunswick-fortera-intrigue",
   "k": "brunswick|forteraintrigue",
   "m": "Brunswick",
   "n": "Fortera Intrigue",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2014"
@@ -12195,20 +12314,24 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "brunswick-fury-emerald-black",
   "k": "brunswick|furyemeraldblack",
   "m": "Brunswick",
   "n": "Fury Emerald/Black",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2026"
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-fury-orange-red",
   "k": "brunswick|furyorangered",
   "m": "Brunswick",
   "n": "Fury Orange/Red",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2026"
@@ -12233,30 +12356,36 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-fury-pink-ice-silver",
   "k": "brunswick|furypinkicesilver",
   "m": "Brunswick",
   "n": "Fury Pink/Ice/Silver",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2026"
  },
  {
   "c": null,
+  "cv": "H",
   "i": "brunswick-fury-purple-blue",
   "k": "brunswick|furypurpleblue",
   "m": "Brunswick",
   "n": "Fury Purple/Blue",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2026"
  },
  {
   "c": null,
+  "cv": "H",
   "i": "brunswick-fury-red-blue-black",
   "k": "brunswick|furyredblueblack",
   "m": "Brunswick",
   "n": "Fury Red/Blue/Black",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2026"
@@ -12416,10 +12545,12 @@
  },
  {
   "c": null,
+  "cv": "U",
   "i": "brunswick-groove-urethane",
   "k": "brunswick|grooveurethane",
   "m": "Brunswick",
   "n": "Groove Urethane",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2005"
@@ -12444,20 +12575,24 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-hero",
   "k": "brunswick|hero",
   "m": "Brunswick",
   "n": "Hero",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2019"
  },
  {
   "c": null,
+  "cv": "S",
   "i": "brunswick-hero-solid",
   "k": "brunswick|herosolid",
   "m": "Brunswick",
   "n": "Hero Solid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2020"
@@ -12509,20 +12644,25 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "brunswick-hypnotize",
   "k": "brunswick|hypnotize",
   "m": "Brunswick",
   "n": "Hypnotize",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2025"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "brunswick-igniter-pearl",
   "k": "brunswick|igniterpearl",
   "m": "Brunswick",
   "n": "Igniter Pearl",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2020"
@@ -12673,30 +12813,36 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "brunswick-infinity",
   "k": "brunswick|infinity",
   "m": "Brunswick",
   "n": "Infinity",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2023"
  },
  {
   "c": null,
+  "cv": "S",
   "i": "brunswick-infinity-quest",
   "k": "brunswick|infinityquest",
   "m": "Brunswick",
   "n": "Infinity Quest",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2025"
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-infinity-quest-pearl",
   "k": "brunswick|infinityquestpearl",
   "m": "Brunswick",
   "n": "Infinity Quest Pearl",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2026"
@@ -12712,30 +12858,38 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-intense-mindset",
   "k": "brunswick|intensemindset",
   "m": "Brunswick",
   "n": "Intense Mindset",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2024"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "H",
   "i": "brunswick-jagged-edge-hybrid",
   "k": "brunswick|jaggededgehybrid",
   "m": "Brunswick",
   "n": "Jagged Edge Hybrid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2019"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "brunswick-jagged-edge-solid",
   "k": "brunswick|jaggededgesolid",
   "m": "Brunswick",
   "n": "Jagged Edge Solid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2019"
@@ -12841,40 +12995,49 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "brunswick-karma-black-blue-solid",
   "k": "brunswick|karmablackbluesolid",
   "m": "Brunswick",
   "n": "Karma Black/Blue Solid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2011"
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-karma-blue-green-pearl",
   "k": "brunswick|karmabluegreenpearl",
   "m": "Brunswick",
   "n": "Karma Blue/Green Pearl",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2011"
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-karma-purple-pink-pearl",
   "k": "brunswick|karmapurplepinkpearl",
   "m": "Brunswick",
   "n": "Karma Purple/Pink Pearl",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2012"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "U",
   "i": "brunswick-karma-urethane-solid",
   "k": "brunswick|karmaurethanesolid",
   "m": "Brunswick",
   "n": "Karma Urethane Solid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2012"
@@ -12894,6 +13057,7 @@
   "k": "brunswick|kingpin",
   "m": "Brunswick",
   "n": "Kingpin",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2017"
@@ -12909,70 +13073,84 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-kingpin-gold-special-edition",
   "k": "brunswick|kingpingoldspecialedition",
   "m": "Brunswick",
   "n": "Kingpin Gold Special Edition",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2018"
  },
  {
   "c": null,
+  "cv": "S",
   "i": "brunswick-kingpin-max",
   "k": "brunswick|kingpinmax",
   "m": "Brunswick",
   "n": "Kingpin Max",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2018"
  },
  {
   "c": null,
+  "cv": "S",
   "i": "brunswick-kingpin-rule",
   "k": "brunswick|kingpinrule",
   "m": "Brunswick",
   "n": "Kingpin Rule",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2018"
  },
  {
   "c": null,
+  "cv": "S",
   "i": "brunswick-knock-out",
   "k": "brunswick|knockout",
   "m": "Brunswick",
   "n": "Knock Out",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2020"
  },
  {
   "c": null,
+  "cv": "S",
   "i": "brunswick-knock-out-black-blue",
   "k": "brunswick|knockoutblackblue",
   "m": "Brunswick",
   "n": "Knock Out Black/Blue",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2021"
  },
  {
   "c": null,
+  "cv": "S",
   "i": "brunswick-knock-out-bruiser",
   "k": "brunswick|knockoutbruiser",
   "m": "Brunswick",
   "n": "Knock Out Bruiser",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2022"
  },
  {
   "c": null,
+  "cv": "S",
   "i": "brunswick-lethal-revolver",
   "k": "brunswick|lethalrevolver",
   "m": "Brunswick",
   "n": "Lethal Revolver",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2011"
@@ -12983,6 +13161,7 @@
   "k": "brunswick|loadedrevolver",
   "m": "Brunswick",
   "n": "Loaded Revolver",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2010"
@@ -13052,30 +13231,38 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "brunswick-magnitude-035",
   "k": "brunswick|magnitude035",
   "m": "Brunswick",
   "n": "Magnitude 035",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2017"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "brunswick-magnitude-035-pearl",
   "k": "brunswick|magnitude035pearl",
   "m": "Brunswick",
   "n": "Magnitude 035 Pearl",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2017"
  },
  {
   "c": null,
+  "cv": "S",
   "i": "brunswick-magnitude-055",
   "k": "brunswick|magnitude055",
   "m": "Brunswick",
   "n": "Magnitude 055",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2017"
@@ -13100,10 +13287,12 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-massive-damage",
   "k": "brunswick|massivedamage",
   "m": "Brunswick",
   "n": "Massive Damage",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2011"
@@ -13128,10 +13317,12 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "brunswick-mastermind",
   "k": "brunswick|mastermind",
   "m": "Brunswick",
   "n": "Mastermind",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2013"
@@ -13165,10 +13356,12 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-mastermind-brainiac",
   "k": "brunswick|mastermindbrainiac",
   "m": "Brunswick",
   "n": "Mastermind Brainiac",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2015"
@@ -13184,30 +13377,37 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "H",
   "i": "brunswick-mastermind-einstein",
   "k": "brunswick|mastermindeinstein",
   "m": "Brunswick",
   "n": "Mastermind Einstein",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2015"
  },
  {
   "c": null,
+  "cv": "H",
   "i": "brunswick-mastermind-genius",
   "k": "brunswick|mastermindgenius",
   "m": "Brunswick",
   "n": "Mastermind Genius",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2014"
  },
  {
   "c": null,
+  "cv": "S",
   "i": "brunswick-mastermind-intellect",
   "k": "brunswick|mastermindintellect",
   "m": "Brunswick",
   "n": "Mastermind Intellect",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2014"
@@ -13223,10 +13423,12 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-mastermind-scholar",
   "k": "brunswick|mastermindscholar",
   "m": "Brunswick",
   "n": "Mastermind Scholar",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2015"
@@ -13242,10 +13444,13 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "brunswick-mastermind-strategy",
   "k": "brunswick|mastermindstrategy",
   "m": "Brunswick",
   "n": "Mastermind Strategy",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2016"
@@ -13297,10 +13502,12 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "brunswick-maxxx-zone",
   "k": "brunswick|maxxxzone",
   "m": "Brunswick",
   "n": "Maxxx Zone",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2008"
@@ -13325,30 +13532,39 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "brunswick-meanstreak",
   "k": "brunswick|meanstreak",
   "m": "Brunswick",
   "n": "Meanstreak",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2012"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "brunswick-meanstreak-beatdown",
   "k": "brunswick|meanstreakbeatdown",
   "m": "Brunswick",
   "n": "Meanstreak Beatdown",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2013"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "H",
   "i": "brunswick-meanstreak-brawler",
   "k": "brunswick|meanstreakbrawler",
   "m": "Brunswick",
   "n": "Meanstreak Brawler",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2013"
@@ -13373,40 +13589,52 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "brunswick-melee",
   "k": "brunswick|melee",
   "m": "Brunswick",
   "n": "Melee",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2013"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "brunswick-melee-cross",
   "k": "brunswick|meleecross",
   "m": "Brunswick",
   "n": "Melee Cross",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2014"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "brunswick-melee-hook",
   "k": "brunswick|meleehook",
   "m": "Brunswick",
   "n": "Melee Hook",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2015"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "brunswick-melee-jab",
   "k": "brunswick|meleejab",
   "m": "Brunswick",
   "n": "Melee Jab",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2014"
@@ -13422,20 +13650,24 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-melee-jab-blood-red",
   "k": "brunswick|meleejabbloodred",
   "m": "Brunswick",
   "n": "Melee Jab Blood Red",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2020"
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-melee-jab-carbon",
   "k": "brunswick|meleejabcarbon",
   "m": "Brunswick",
   "n": "Melee Jab Carbon",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2022"
@@ -13469,10 +13701,12 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-melee-jab-midnight-blue",
   "k": "brunswick|meleejabmidnightblue",
   "m": "Brunswick",
   "n": "Melee Jab Midnight Blue",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2021"
@@ -13515,30 +13749,36 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "brunswick-mesmerize",
   "k": "brunswick|mesmerize",
   "m": "Brunswick",
   "n": "Mesmerize",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2024"
  },
  {
   "c": null,
+  "cv": "H",
   "i": "brunswick-method-hybrid",
   "k": "brunswick|methodhybrid",
   "m": "Brunswick",
   "n": "Method Hybrid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2018"
  },
  {
   "c": null,
+  "cv": "H",
   "i": "brunswick-method-solid",
   "k": "brunswick|methodsolid",
   "m": "Brunswick",
   "n": "Method Solid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2019"
@@ -13572,10 +13812,12 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "brunswick-mindset",
   "k": "brunswick|mindset",
   "m": "Brunswick",
   "n": "Mindset",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2023"
@@ -13726,10 +13968,12 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-nexus-f-p-pearl",
   "k": "brunswick|nexusfppearl",
   "m": "Brunswick",
   "n": "NeXus f(P) Pearl",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2011"
@@ -13745,10 +13989,12 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "brunswick-nexus-f-pplusf-solid",
   "k": "brunswick|nexusfpplusfsolid",
   "m": "Brunswick",
   "n": "NeXus f(P+F) Solid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2011"
@@ -13773,30 +14019,36 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "brunswick-nexxus-f-pplusr-le-solid",
   "k": "brunswick|nexxusfpplusrlesolid",
   "m": "Brunswick",
   "n": "NeXXus f(P+R) LE Solid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2013"
  },
  {
   "c": null,
+  "cv": "S",
   "i": "brunswick-nexxus-f-pplusr-pearl",
   "k": "brunswick|nexxusfpplusrpearl",
   "m": "Brunswick",
   "n": "NeXXus f(P+R) Pearl",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2012"
  },
  {
   "c": null,
+  "cv": "S",
   "i": "brunswick-nexxus-f-pplusr-solid",
   "k": "brunswick|nexxusfpplusrsolid",
   "m": "Brunswick",
   "n": "NeXXus f(P+R) Solid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2012"
@@ -13866,10 +14118,12 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-nexxxus-f-ppluss",
   "k": "brunswick|nexxxusfppluss",
   "m": "Brunswick",
   "n": "NeXXXus f(P+S)",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2012"
@@ -13912,10 +14166,12 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "brunswick-nirvana",
   "k": "brunswick|nirvana",
   "m": "Brunswick",
   "n": "Nirvana",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2015"
@@ -14156,10 +14412,12 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "brunswick-perfect-mindset",
   "k": "brunswick|perfectmindset",
   "m": "Brunswick",
   "n": "Perfect Mindset",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2023"
@@ -14328,10 +14586,12 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-power-groove-reactive-purple-silver",
   "k": "brunswick|powergroovereactivepurplesilver",
   "m": "Brunswick",
   "n": "Power Groove Reactive Purple/Silver",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2004"
@@ -14410,10 +14670,12 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "brunswick-prism-hybrid",
   "k": "brunswick|prismhybrid",
   "m": "Brunswick",
   "n": "Prism Hybrid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2019"
@@ -14438,30 +14700,36 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "brunswick-prism-solid",
   "k": "brunswick|prismsolid",
   "m": "Brunswick",
   "n": "Prism Solid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2019"
  },
  {
   "c": null,
+  "cv": "S",
   "i": "brunswick-prism-warp",
   "k": "brunswick|prismwarp",
   "m": "Brunswick",
   "n": "Prism Warp",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2020"
  },
  {
   "c": null,
+  "cv": "H",
   "i": "brunswick-prism-warp-hybrid",
   "k": "brunswick|prismwarphybrid",
   "m": "Brunswick",
   "n": "Prism Warp Hybrid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2020"
@@ -14504,10 +14772,12 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-python",
   "k": "brunswick|python",
   "m": "Brunswick",
   "n": "Python",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2009"
@@ -14532,50 +14802,65 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "brunswick-quantum-bias-pearl",
   "k": "brunswick|quantumbiaspearl",
   "m": "Brunswick",
   "n": "Quantum Bias Pearl",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2019"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "brunswick-quantum-bias-purple",
   "k": "brunswick|quantumbiaspurple",
   "m": "Brunswick",
   "n": "Quantum Bias Purple",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2021"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "brunswick-quantum-bias-solid",
   "k": "brunswick|quantumbiassolid",
   "m": "Brunswick",
   "n": "Quantum Bias Solid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2018"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "brunswick-quantum-bias-urethane",
   "k": "brunswick|quantumbiasurethane",
   "m": "Brunswick",
   "n": "Quantum Bias Urethane",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2019"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "brunswick-quantum-bias-urethane-blue",
   "k": "brunswick|quantumbiasurethaneblue",
   "m": "Brunswick",
   "n": "Quantum Bias Urethane Blue",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2020"
@@ -14600,10 +14885,13 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "brunswick-quantum-classic-black",
   "k": "brunswick|quantumclassicblack",
   "m": "Brunswick",
   "n": "Quantum Classic Black",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2017"
@@ -14637,40 +14925,48 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "brunswick-quantum-evo-hybrid",
   "k": "brunswick|quantumevohybrid",
   "m": "Brunswick",
   "n": "Quantum Evo Hybrid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2022"
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-quantum-evo-pearl",
   "k": "brunswick|quantumevopearl",
   "m": "Brunswick",
   "n": "Quantum Evo Pearl",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2021"
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-quantum-evo-response",
   "k": "brunswick|quantumevoresponse",
   "m": "Brunswick",
   "n": "Quantum Evo Response",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2023"
  },
  {
   "c": null,
+  "cv": "S",
   "i": "brunswick-quantum-evo-solid",
   "k": "brunswick|quantumevosolid",
   "m": "Brunswick",
   "n": "Quantum Evo Solid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2021"
@@ -14686,10 +14982,12 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-quantum-fire-pearl",
   "k": "brunswick|quantumfirepearl",
   "m": "Brunswick",
   "n": "Quantum Fire Pearl",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2016"
@@ -14714,10 +15012,12 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "brunswick-quantum-forest-green-solid",
   "k": "brunswick|quantumforestgreensolid",
   "m": "Brunswick",
   "n": "Quantum Forest Green Solid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2016"
@@ -14949,10 +15249,12 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-rattler",
   "k": "brunswick|rattler",
   "m": "Brunswick",
   "n": "Rattler",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2008"
@@ -15179,66 +15481,79 @@
   "k": "brunswick|revolver",
   "m": "Brunswick",
   "n": "Revolver",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2010"
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-rhino",
   "k": "brunswick|rhino",
   "m": "Brunswick",
   "n": "Rhino",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2002"
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-rhino-black-blue-silver-pearl",
   "k": "brunswick|rhinoblackbluesilverpearl",
   "m": "Brunswick",
   "n": "Rhino Black/Blue/Silver Pearl",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2016"
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-rhino-black-green-orange-pearl",
   "k": "brunswick|rhinoblackgreenorangepearl",
   "m": "Brunswick",
   "n": "Rhino Black/Green/Orange Pearl",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2017"
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-rhino-black-pearl",
   "k": "brunswick|rhinoblackpearl",
   "m": "Brunswick",
   "n": "Rhino Black Pearl",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2016"
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-rhino-blue-cadet-grey-silver",
   "k": "brunswick|rhinobluecadetgreysilver",
   "m": "Brunswick",
   "n": "Rhino Blue/Cadet/Grey/Silver",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2026"
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-rhino-carbon-lime-silver",
   "k": "brunswick|rhinocarbonlimesilver",
   "m": "Brunswick",
   "n": "Rhino Carbon-Lime-Silver",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2024"
@@ -15254,10 +15569,12 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-rhino-charcoal-silver-violet",
   "k": "brunswick|rhinocharcoalsilverviolet",
   "m": "Brunswick",
   "n": "Rhino Charcoal/Silver/Violet",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2019"
@@ -15291,20 +15608,24 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-rhino-green-silver-pearl",
   "k": "brunswick|rhinogreensilverpearl",
   "m": "Brunswick",
   "n": "Rhino Green/Silver Pearl",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2016"
  },
  {
   "c": null,
+  "cv": "S",
   "i": "brunswick-rhino-magenta-purple-navy",
   "k": "brunswick|rhinomagentapurplenavy",
   "m": "Brunswick",
   "n": "Rhino Magenta/Purple/Navy",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2021"
@@ -15446,30 +15767,36 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "brunswick-rhino-purple-black",
   "k": "brunswick|rhinopurpleblack",
   "m": "Brunswick",
   "n": "Rhino Purple/Black",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2025"
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-rhino-purple-pink-berry",
   "k": "brunswick|rhinopurplepinkberry",
   "m": "Brunswick",
   "n": "Rhino Purple/Pink/Berry",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2026"
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-rhino-purple-pink-white-pearl",
   "k": "brunswick|rhinopurplepinkwhitepearl",
   "m": "Brunswick",
   "n": "Rhino Purple/Pink/White Pearl",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2016"
@@ -15494,10 +15821,12 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-rhino-red-black-gold-pearl",
   "k": "brunswick|rhinoredblackgoldpearl",
   "m": "Brunswick",
   "n": "Rhino Red/Black/Gold Pearl",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2016"
@@ -15657,10 +15986,13 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "brunswick-siege",
   "k": "brunswick|siege",
   "m": "Brunswick",
   "n": "Siege",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2009"
@@ -15797,6 +16129,7 @@
   "k": "brunswick|slingshotredpearlsilverpearl",
   "m": "Brunswick",
   "n": "Slingshot Red Pearl/Silver Pearl",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2010"
@@ -15875,20 +16208,24 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "brunswick-soul",
   "k": "brunswick|soul",
   "m": "Brunswick",
   "n": "Soul",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2015"
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-soul-mate",
   "k": "brunswick|soulmate",
   "m": "Brunswick",
   "n": "Soul Mate",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2015"
@@ -15958,10 +16295,12 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "brunswick-stellar",
   "k": "brunswick|stellar",
   "m": "Brunswick",
   "n": "Stellar",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2021"
@@ -16004,30 +16343,38 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-strategy",
   "k": "brunswick|strategy",
   "m": "Brunswick",
   "n": "Strategy",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2026"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "brunswick-strike-king-black-pearl",
   "k": "brunswick|strikekingblackpearl",
   "m": "Brunswick",
   "n": "Strike King Black Pearl",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2013"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "brunswick-strike-king-blue-red-pearl",
   "k": "brunswick|strikekingblueredpearl",
   "m": "Brunswick",
   "n": "Strike King Blue/Red Pearl",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2013"
@@ -16043,20 +16390,26 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "brunswick-strike-king-purple-pink-pearl",
   "k": "brunswick|strikekingpurplepinkpearl",
   "m": "Brunswick",
   "n": "Strike King Purple/Pink Pearl",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2013"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "brunswick-strike-king-red-gold-pearl",
   "k": "brunswick|strikekingredgoldpearl",
   "m": "Brunswick",
   "n": "Strike King Red/Gold Pearl",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2013"
@@ -16130,16 +16483,19 @@
   "k": "brunswick|tenacity",
   "m": "Brunswick",
   "n": "Tenacity",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2017"
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-tenacity-grit",
   "k": "brunswick|tenacitygrit",
   "m": "Brunswick",
   "n": "Tenacity Grit",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2018"
@@ -16245,20 +16601,24 @@
  },
  {
   "c": null,
+  "cv": "U",
   "i": "brunswick-true-motion",
   "k": "brunswick|truemotion",
   "m": "Brunswick",
   "n": "True Motion",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2017"
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-true-nirvana",
   "k": "brunswick|truenirvana",
   "m": "Brunswick",
   "n": "True Nirvana",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2017"
@@ -16301,80 +16661,96 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-twist-black-gold-silver",
   "k": "brunswick|twistblackgoldsilver",
   "m": "Brunswick",
   "n": "Twist Black/Gold/Silver",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2018"
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-twist-blue-silver",
   "k": "brunswick|twistbluesilver",
   "m": "Brunswick",
   "n": "Twist Blue/Silver",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2018"
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-twist-lavender-lime",
   "k": "brunswick|twistlavenderlime",
   "m": "Brunswick",
   "n": "Twist Lavender/Lime",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2021"
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-twist-neon-green-black",
   "k": "brunswick|twistneongreenblack",
   "m": "Brunswick",
   "n": "Twist Neon Green/Black",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2019"
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-twist-pink-black",
   "k": "brunswick|twistpinkblack",
   "m": "Brunswick",
   "n": "Twist Pink-Black",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2025"
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-twist-red-purple",
   "k": "brunswick|twistredpurple",
   "m": "Brunswick",
   "n": "Twist Red/Purple",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2018"
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-twist-red-white-blue",
   "k": "brunswick|twistredwhiteblue",
   "m": "Brunswick",
   "n": "Twist Red/White/Blue",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2019"
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-twist-sky-blue-pink-snow",
   "k": "brunswick|twistskybluepinksnow",
   "m": "Brunswick",
   "n": "Twist Sky Blue/Pink/Snow",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2018"
@@ -16408,10 +16784,12 @@
  },
  {
   "c": null,
+  "cv": "U",
   "i": "brunswick-u-motion",
   "k": "brunswick|umotion",
   "m": "Brunswick",
   "n": "U-Motion",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2020"
@@ -16427,10 +16805,12 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "brunswick-ultimate-defender",
   "k": "brunswick|ultimatedefender",
   "m": "Brunswick",
   "n": "Ultimate Defender",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2024"
@@ -16455,10 +16835,12 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "brunswick-ultimate-nirvana",
   "k": "brunswick|ultimatenirvana",
   "m": "Brunswick",
   "n": "Ultimate Nirvana",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2016"
@@ -16474,10 +16856,12 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-uppercut-pearl",
   "k": "brunswick|uppercutpearl",
   "m": "Brunswick",
   "n": "Uppercut Pearl",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2019"
@@ -16529,10 +16913,13 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "H",
   "i": "brunswick-vapor-zone-hybrid",
   "k": "brunswick|vaporzonehybrid",
   "m": "Brunswick",
   "n": "Vapor Zone Hybrid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2019"
@@ -16548,20 +16935,26 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "brunswick-vapor-zone-solid",
   "k": "brunswick|vaporzonesolid",
   "m": "Brunswick",
   "n": "Vapor Zone Solid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2019"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "brunswick-vaporize",
   "k": "brunswick|vaporize",
   "m": "Brunswick",
   "n": "Vaporize",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2024"
@@ -16595,10 +16988,12 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "brunswick-vintage-danger-zone",
   "k": "brunswick|vintagedangerzone",
   "m": "Brunswick",
   "n": "Vintage Danger Zone",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2016"
@@ -16614,40 +17009,51 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "brunswick-vintage-gold-rhino-pro",
   "k": "brunswick|vintagegoldrhinopro",
   "m": "Brunswick",
   "n": "Vintage Gold Rhino Pro",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2015"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "brunswick-vintage-inferno",
   "k": "brunswick|vintageinferno",
   "m": "Brunswick",
   "n": "Vintage Inferno",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2017"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "brunswick-vintage-lt-48",
   "k": "brunswick|vintagelt48",
   "m": "Brunswick",
   "n": "Vintage LT-48",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2014"
  },
  {
   "c": null,
+  "cv": "S",
   "i": "brunswick-vintage-phantom",
   "k": "brunswick|vintagephantom",
   "m": "Brunswick",
   "n": "Vintage Phantom",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2019"
@@ -16663,10 +17069,13 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "brunswick-vintage-vapor-zone",
   "k": "brunswick|vintagevaporzone",
   "m": "Brunswick",
   "n": "Vintage Vapor Zone",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2018"
@@ -16736,10 +17145,12 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "brunswick-warning-alert",
   "k": "brunswick|warningalert",
   "m": "Brunswick",
   "n": "Warning Alert",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2026"
@@ -16764,10 +17175,12 @@
  },
  {
   "c": null,
+  "co": "a",
   "i": "brunswick-wicked-siege",
   "k": "brunswick|wickedsiege",
   "m": "Brunswick",
   "n": "Wicked Siege",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2010"
@@ -16792,10 +17205,12 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "brunswick-wild-card",
   "k": "brunswick|wildcard",
   "m": "Brunswick",
   "n": "Wild Card",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2009"
@@ -16829,10 +17244,12 @@
  },
  {
   "c": null,
+  "co": "a",
   "i": "brunswick-wild-ride",
   "k": "brunswick|wildride",
   "m": "Brunswick",
   "n": "Wild Ride",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2008"
@@ -16857,10 +17274,12 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-wild-thing",
   "k": "brunswick|wildthing",
   "m": "Brunswick",
   "n": "Wild Thing",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2009"
@@ -16948,30 +17367,36 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "brunswick-zenith",
   "k": "brunswick|zenith",
   "m": "Brunswick",
   "n": "Zenith",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2020"
  },
  {
   "c": null,
+  "cv": "H",
   "i": "brunswick-zenith-hybrid",
   "k": "brunswick|zenithhybrid",
   "m": "Brunswick",
   "n": "Zenith Hybrid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2021"
  },
  {
   "c": null,
+  "cv": "P",
   "i": "brunswick-zenith-pearl",
   "k": "brunswick|zenithpearl",
   "m": "Brunswick",
   "n": "Zenith Pearl",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2021"
@@ -17973,6 +18398,7 @@
  },
  {
   "c": null,
+  "co": "a",
   "i": "columbia-300-apogee",
   "k": "columbia300|apogee",
   "m": "Columbia 300",
@@ -17993,6 +18419,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "columbia-300-atlas",
   "k": "columbia300|atlas",
   "m": "Columbia 300",
@@ -18003,6 +18430,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "columbia-300-atlas-hybrid",
   "k": "columbia300|atlashybrid",
   "m": "Columbia 300",
@@ -18013,6 +18441,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "columbia-300-authority",
   "k": "columbia300|authority",
   "m": "Columbia 300",
@@ -18023,6 +18452,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "columbia-300-authority-solid",
   "k": "columbia300|authoritysolid",
   "m": "Columbia 300",
@@ -18060,6 +18490,7 @@
  },
  {
   "c": null,
+  "co": "a",
   "i": "columbia-300-bedlam",
   "k": "columbia300|bedlam",
   "m": "Columbia 300",
@@ -18089,6 +18520,7 @@
  },
  {
   "c": null,
+  "co": "a",
   "i": "columbia-300-big-bully",
   "k": "columbia300|bigbully",
   "m": "Columbia 300",
@@ -18135,6 +18567,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "columbia-300-blur-hybrid",
   "k": "columbia300|blurhybrid",
   "m": "Columbia 300",
@@ -18145,6 +18578,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "columbia-300-blur-pearl",
   "k": "columbia300|blurpearl",
   "m": "Columbia 300",
@@ -18155,6 +18589,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "columbia-300-blur-solid",
   "k": "columbia300|blursolid",
   "m": "Columbia 300",
@@ -18219,6 +18654,7 @@
  },
  {
   "c": null,
+  "co": "a",
   "i": "columbia-300-bully",
   "k": "columbia300|bully",
   "m": "Columbia 300",
@@ -18325,12 +18761,12 @@
   "k": "columbia300|command",
   "m": "Columbia 300",
   "n": "Command",
-  "s": 1,
   "t": false,
   "y": "2020"
  },
  {
   "c": null,
+  "cv": "S",
   "i": "columbia-300-command-solid",
   "k": "columbia300|commandsolid",
   "m": "Columbia 300",
@@ -18369,6 +18805,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "columbia-300-cool-noize",
   "k": "columbia300|coolnoize",
   "m": "Columbia 300",
@@ -18462,6 +18899,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "columbia-300-cuda-powercor",
   "k": "columbia300|cudapowercor",
   "m": "Columbia 300",
@@ -18472,6 +18910,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "columbia-300-cuda-powercor-pearl",
   "k": "columbia300|cudapowercorpearl",
   "m": "Columbia 300",
@@ -18500,6 +18939,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "columbia-300-dark-encounter",
   "k": "columbia300|darkencounter",
   "m": "Columbia 300",
@@ -18549,6 +18989,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "columbia-300-delirium",
   "k": "columbia300|delirium",
   "m": "Columbia 300",
@@ -18559,6 +19000,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "columbia-300-delirium-shock",
   "k": "columbia300|deliriumshock",
   "m": "Columbia 300",
@@ -18578,6 +19020,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "columbia-300-detour",
   "k": "columbia300|detour",
   "m": "Columbia 300",
@@ -18588,6 +19031,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "columbia-300-disorder",
   "k": "columbia300|disorder",
   "m": "Columbia 300",
@@ -18598,6 +19042,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "columbia-300-disruption",
   "k": "columbia300|disruption",
   "m": "Columbia 300",
@@ -18636,6 +19081,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "columbia-300-drive",
   "k": "columbia300|drive",
   "m": "Columbia 300",
@@ -18655,6 +19102,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "columbia-300-dynamic-swing",
   "k": "columbia300|dynamicswing",
   "m": "Columbia 300",
@@ -18665,6 +19113,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "columbia-300-dynamic-swing-pearl",
   "k": "columbia300|dynamicswingpearl",
   "m": "Columbia 300",
@@ -18684,6 +19133,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "columbia-300-encounter",
   "k": "columbia300|encounter",
   "m": "Columbia 300",
@@ -18778,6 +19228,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "columbia-300-eruption-pearl",
   "k": "columbia300|eruptionpearl",
   "m": "Columbia 300",
@@ -18816,6 +19267,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "columbia-300-eruption-pro-blue",
   "k": "columbia300|eruptionproblue",
   "m": "Columbia 300",
@@ -18826,6 +19278,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "columbia-300-eruption-pro-hybrid",
   "k": "columbia300|eruptionprohybrid",
   "m": "Columbia 300",
@@ -18836,6 +19289,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "columbia-300-explosion",
   "k": "columbia300|explosion",
   "m": "Columbia 300",
@@ -19120,6 +19574,7 @@
  },
  {
   "c": null,
+  "co": "s",
   "i": "columbia-300-freeze-blue-orange-green",
   "k": "columbia300|freezeblueorangegreen",
   "m": "Columbia 300",
@@ -19130,6 +19585,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "H",
   "i": "columbia-300-freeze-hybrid",
   "k": "columbia300|freezehybrid",
   "m": "Columbia 300",
@@ -19187,6 +19644,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "columbia-300-freeze-solid",
   "k": "columbia300|freezesolid",
   "m": "Columbia 300",
@@ -19197,6 +19655,7 @@
  },
  {
   "c": null,
+  "co": "a",
   "i": "columbia-300-full-swing",
   "k": "columbia300|fullswing",
   "m": "Columbia 300",
@@ -19236,10 +19695,12 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "columbia-300-game-pearl",
   "k": "columbia300|gamepearl",
   "m": "Columbia 300",
   "n": "Game Pearl",
+  "s": 1,
   "t": false,
   "y": "2001"
  },
@@ -19263,6 +19724,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "columbia-300-high-speed",
   "k": "columbia300|highspeed",
   "m": "Columbia 300",
@@ -19283,6 +19745,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "columbia-300-hyjinx",
   "k": "columbia300|hyjinx",
   "m": "Columbia 300",
@@ -19377,6 +19840,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "columbia-300-impulse",
   "k": "columbia300|impulse",
   "m": "Columbia 300",
@@ -19387,6 +19851,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "columbia-300-impulse-solid",
   "k": "columbia300|impulsesolid",
   "m": "Columbia 300",
@@ -19452,6 +19917,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "columbia-300-jekyll",
   "k": "columbia300|jekyll",
   "m": "Columbia 300",
@@ -19472,6 +19938,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "columbia-300-juke",
   "k": "columbia300|juke",
   "m": "Columbia 300",
@@ -19491,6 +19958,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "columbia-300-kaboom",
   "k": "columbia300|kaboom",
   "m": "Columbia 300",
@@ -19546,6 +20014,7 @@
  },
  {
   "c": null,
+  "co": "a",
   "i": "columbia-300-lit",
   "k": "columbia300|lit",
   "m": "Columbia 300",
@@ -19565,6 +20034,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "columbia-300-lit-pearl",
   "k": "columbia300|litpearl",
   "m": "Columbia 300",
@@ -19602,6 +20073,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "columbia-300-loud-noize",
   "k": "columbia300|loudnoize",
   "m": "Columbia 300",
@@ -19612,6 +20084,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "columbia-300-mad-antics",
   "k": "columbia300|madantics",
   "m": "Columbia 300",
@@ -19622,6 +20095,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "columbia-300-madness",
   "k": "columbia300|madness",
   "m": "Columbia 300",
@@ -19641,6 +20115,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "H",
   "i": "columbia-300-mass-eruption",
   "k": "columbia300|masseruption",
   "m": "Columbia 300",
@@ -19753,6 +20229,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "columbia-300-messenger-powercor-pearl",
   "k": "columbia300|messengerpowercorpearl",
   "m": "Columbia 300",
@@ -19772,6 +20249,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "columbia-300-messenger-powercor-solid",
   "k": "columbia300|messengerpowercorsolid",
   "m": "Columbia 300",
@@ -19857,6 +20335,7 @@
  },
  {
   "c": null,
+  "co": "a",
   "i": "columbia-300-momentum",
   "k": "columbia300|momentum",
   "m": "Columbia 300",
@@ -19984,6 +20463,7 @@
  },
  {
   "c": null,
+  "co": "a",
   "i": "columbia-300-momentum-swing",
   "k": "columbia300|momentumswing",
   "m": "Columbia 300",
@@ -20048,6 +20528,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "columbia-300-n-s-ne-antics",
   "k": "columbia300|nsneantics",
   "m": "Columbia 300",
@@ -20156,6 +20637,7 @@
   "k": "columbia300|nitrousredgold",
   "m": "Columbia 300",
   "n": "Nitrous Red/Gold",
+  "s": 1,
   "t": false,
   "y": "2018"
  },
@@ -20210,6 +20692,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "columbia-300-oath",
   "k": "columbia300|oath",
   "m": "Columbia 300",
@@ -20220,6 +20703,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "columbia-300-omen",
   "k": "columbia300|omen",
   "m": "Columbia 300",
@@ -20230,6 +20714,7 @@
  },
  {
   "c": null,
+  "co": "s",
   "i": "columbia-300-outburst",
   "k": "columbia300|outburst",
   "m": "Columbia 300",
@@ -20240,6 +20725,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "columbia-300-outlook",
   "k": "columbia300|outlook",
   "m": "Columbia 300",
@@ -20250,6 +20736,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "columbia-300-outlook-solid",
   "k": "columbia300|outlooksolid",
   "m": "Columbia 300",
@@ -20269,6 +20756,7 @@
  },
  {
   "c": null,
+  "co": "a",
   "i": "columbia-300-overdrive",
   "k": "columbia300|overdrive",
   "m": "Columbia 300",
@@ -20379,6 +20867,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "columbia-300-piranha-powercor",
   "k": "columbia300|piranhapowercor",
   "m": "Columbia 300",
@@ -20389,6 +20878,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "columbia-300-piranha-powercor-pearl",
   "k": "columbia300|piranhapowercorpearl",
   "m": "Columbia 300",
@@ -20418,6 +20908,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "columbia-300-piranha-solid",
   "k": "columbia300|piranhasolid",
   "m": "Columbia 300",
@@ -20484,6 +20975,7 @@
  },
  {
   "c": null,
+  "co": "a",
   "i": "columbia-300-power-drive-sanded",
   "k": "columbia300|powerdrivesanded",
   "m": "Columbia 300",
@@ -20514,6 +21006,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "columbia-300-power-torq",
   "k": "columbia300|powertorq",
   "m": "Columbia 300",
@@ -20533,6 +21026,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "columbia-300-power-torq-pearl",
   "k": "columbia300|powertorqpearl",
   "m": "Columbia 300",
@@ -20606,6 +21100,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "columbia-300-pulse-2025",
   "k": "columbia300|pulse2025",
   "m": "Columbia 300",
@@ -20616,6 +21112,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "columbia-300-pulse-blue-black-gold",
   "k": "columbia300|pulseblueblackgold",
   "m": "Columbia 300",
@@ -20626,6 +21123,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "columbia-300-pulse-clear-pin",
   "k": "columbia300|pulseclearpin",
   "m": "Columbia 300",
@@ -20636,6 +21135,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "columbia-300-pulse-hybrid",
   "k": "columbia300|pulsehybrid",
   "m": "Columbia 300",
@@ -20646,6 +21147,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "columbia-300-pulse-pearl",
   "k": "columbia300|pulsepearl",
   "m": "Columbia 300",
@@ -20656,6 +21159,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "columbia-300-pulse-scarlet-red-black",
   "k": "columbia300|pulsescarletredblack",
   "m": "Columbia 300",
@@ -20666,6 +21170,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "columbia-300-pulse-white-pin",
   "k": "columbia300|pulsewhitepin",
   "m": "Columbia 300",
@@ -20676,6 +21182,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "columbia-300-pure-madness",
   "k": "columbia300|puremadness",
   "m": "Columbia 300",
@@ -20696,6 +21203,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "columbia-300-pure-swing",
   "k": "columbia300|pureswing",
   "m": "Columbia 300",
@@ -20751,6 +21259,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "columbia-300-rally",
   "k": "columbia300|rally",
   "m": "Columbia 300",
@@ -20761,6 +21270,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "columbia-300-ransom",
   "k": "columbia300|ransom",
   "m": "Columbia 300",
@@ -20799,6 +21309,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "columbia-300-raw-urge",
   "k": "columbia300|rawurge",
   "m": "Columbia 300",
@@ -21130,6 +21641,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "columbia-300-ricochet-pearl",
   "k": "columbia300|ricochetpearl",
   "m": "Columbia 300",
@@ -21149,6 +21661,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "columbia-300-ricochet-return",
   "k": "columbia300|ricochetreturn",
   "m": "Columbia 300",
@@ -21186,6 +21699,7 @@
  },
  {
   "c": null,
+  "co": "s",
   "i": "columbia-300-rival",
   "k": "columbia300|rival",
   "m": "Columbia 300",
@@ -21314,6 +21828,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "columbia-300-rock-pearl",
   "k": "columbia300|rockpearl",
   "m": "Columbia 300",
@@ -21342,6 +21857,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "columbia-300-saber-pearl",
   "k": "columbia300|saberpearl",
   "m": "Columbia 300",
@@ -21469,6 +21985,7 @@
  },
  {
   "c": null,
+  "co": "a",
   "i": "columbia-300-scout-r-hi-flare",
   "k": "columbia300|scoutrhiflare",
   "m": "Columbia 300",
@@ -21506,6 +22023,7 @@
  },
  {
   "c": null,
+  "co": "a",
   "i": "columbia-300-scout-r-particle-hi-flare",
   "k": "columbia300|scoutrparticlehiflare",
   "m": "Columbia 300",
@@ -21543,6 +22061,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "columbia-300-scout-reactive-black-red-pearl",
   "k": "columbia300|scoutreactiveblackredpearl",
   "m": "Columbia 300",
@@ -21690,6 +22210,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "U",
   "i": "columbia-300-scout-urethane-hi-flare",
   "k": "columbia300|scouturethanehiflare",
   "m": "Columbia 300",
@@ -21700,6 +22222,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "columbia-300-severe-delirium",
   "k": "columbia300|severedelirium",
   "m": "Columbia 300",
@@ -21765,6 +22288,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "columbia-300-sideswipe",
   "k": "columbia300|sideswipe",
   "m": "Columbia 300",
@@ -21784,6 +22308,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "columbia-300-sideswipe-solid",
   "k": "columbia300|sideswipesolid",
   "m": "Columbia 300",
@@ -21794,6 +22319,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "columbia-300-smack-down",
   "k": "columbia300|smackdown",
   "m": "Columbia 300",
@@ -21813,6 +22339,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "columbia-300-speed",
   "k": "columbia300|speed",
   "m": "Columbia 300",
@@ -21923,6 +22450,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "columbia-300-street-rally",
   "k": "columbia300|streetrally",
   "m": "Columbia 300",
@@ -21960,6 +22488,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "columbia-300-super-cuda-powercor",
   "k": "columbia300|supercudapowercor",
   "m": "Columbia 300",
@@ -21970,6 +22499,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "columbia-300-super-cuda-powercor-pearl",
   "k": "columbia300|supercudapowercorpearl",
   "m": "Columbia 300",
@@ -22026,6 +22556,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "columbia-300-swerve",
   "k": "columbia300|swerve",
   "m": "Columbia 300",
@@ -22045,6 +22576,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "columbia-300-swerve-fx",
   "k": "columbia300|swervefx",
   "m": "Columbia 300",
@@ -22064,6 +22596,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "columbia-300-swerve-gt",
   "k": "columbia300|swervegt",
   "m": "Columbia 300",
@@ -22110,6 +22643,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "columbia-300-take-down",
   "k": "columbia300|takedown",
   "m": "Columbia 300",
@@ -22300,6 +22834,7 @@
  },
  {
   "c": null,
+  "cv": "U",
   "i": "columbia-300-the-classic-u2",
   "k": "columbia300|theclassicu2",
   "m": "Columbia 300",
@@ -22502,6 +23037,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "columbia-300-throw-down",
   "k": "columbia300|throwdown",
   "m": "Columbia 300",
@@ -22593,6 +23129,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "columbia-300-top-speed",
   "k": "columbia300|topspeed",
   "m": "Columbia 300",
@@ -22676,6 +23213,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "columbia-300-tyrant",
   "k": "columbia300|tyrant",
   "m": "Columbia 300",
@@ -22713,6 +23251,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "columbia-300-tyrant-pearl",
   "k": "columbia300|tyrantpearl",
   "m": "Columbia 300",
@@ -22777,6 +23316,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "columbia-300-urge",
   "k": "columbia300|urge",
   "m": "Columbia 300",
@@ -22823,6 +23363,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "columbia-300-vow",
   "k": "columbia300|vow",
   "m": "Columbia 300",
@@ -22842,6 +23383,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "H",
   "i": "columbia-300-wicked-encounter",
   "k": "columbia300|wickedencounter",
   "m": "Columbia 300",
@@ -22880,6 +23423,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "columbia-300-world-beater",
   "k": "columbia300|worldbeater",
   "m": "Columbia 300",
@@ -23241,30 +23785,39 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "dv8-alley-cat-pink-black",
   "k": "dv8|alleycatpinkblack",
   "m": "DV8",
   "n": "Alley Cat Pink/Black",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2017"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "dv8-alley-cat-purple-green",
   "k": "dv8|alleycatpurplegreen",
   "m": "DV8",
   "n": "Alley Cat Purple/Green",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2017"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "dv8-alley-cat-red-electric-blue",
   "k": "dv8|alleycatredelectricblue",
   "m": "DV8",
   "n": "Alley Cat Red/Electric Blue",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2017"
@@ -23280,10 +23833,12 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "dv8-brutal-nightmare",
   "k": "dv8|brutalnightmare",
   "m": "DV8",
   "n": "Brutal Nightmare",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2012"
@@ -23308,10 +23863,12 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "dv8-chill-pearl",
   "k": "dv8|chillpearl",
   "m": "DV8",
   "n": "Chill Pearl",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2024"
@@ -23336,30 +23893,39 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "dv8-creed",
   "k": "dv8|creed",
   "m": "DV8",
   "n": "Creed",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2017"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "dv8-creed-rebellion",
   "k": "dv8|creedrebellion",
   "m": "DV8",
   "n": "Creed Rebellion",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2018"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "dv8-creed-revelation",
   "k": "dv8|creedrevelation",
   "m": "DV8",
   "n": "Creed Revelation",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2018"
@@ -23393,20 +23959,24 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "dv8-dark-side",
   "k": "dv8|darkside",
   "m": "DV8",
   "n": "Dark Side",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2025"
  },
  {
   "c": null,
+  "cv": "S",
   "i": "dv8-dark-side-curse",
   "k": "dv8|darksidecurse",
   "m": "DV8",
   "n": "Dark Side Curse",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2026"
@@ -23431,20 +24001,26 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "dv8-deviant",
   "k": "dv8|deviant",
   "m": "DV8",
   "n": "Deviant",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2015"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "dv8-deviant-pearl",
   "k": "dv8|deviantpearl",
   "m": "DV8",
   "n": "Deviant Pearl",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2016"
@@ -23464,6 +24040,7 @@
   "k": "dv8|diva",
   "m": "DV8",
   "n": "Diva",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2012"
@@ -23479,10 +24056,12 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "dv8-diva-divine",
   "k": "dv8|divadivine",
   "m": "DV8",
   "n": "Diva Divine",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2014"
@@ -23493,36 +24072,43 @@
   "k": "dv8|divapearl",
   "m": "DV8",
   "n": "Diva Pearl",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2013"
  },
  {
   "c": null,
+  "cv": "P",
   "i": "dv8-diva-style",
   "k": "dv8|divastyle",
   "m": "DV8",
   "n": "Diva Style",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2016"
  },
  {
   "c": null,
+  "cv": "P",
   "i": "dv8-diva-xoxo",
   "k": "dv8|divaxoxo",
   "m": "DV8",
   "n": "Diva XOXO",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2015"
  },
  {
   "c": null,
+  "cv": "P",
   "i": "dv8-double-trouble",
   "k": "dv8|doubletrouble",
   "m": "DV8",
   "n": "Double Trouble",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2026"
@@ -23533,6 +24119,7 @@
   "k": "dv8|dude",
   "m": "DV8",
   "n": "Dude",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2013"
@@ -23584,40 +24171,51 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "dv8-endless-nightmare",
   "k": "dv8|endlessnightmare",
   "m": "DV8",
   "n": "Endless Nightmare",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2013"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "dv8-freak-show",
   "k": "dv8|freakshow",
   "m": "DV8",
   "n": "Freak Show",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2016"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "dv8-freak-show-flip",
   "k": "dv8|freakshowflip",
   "m": "DV8",
   "n": "Freak Show Flip",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2017"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "dv8-freak-show-solid",
   "k": "dv8|freakshowsolid",
   "m": "DV8",
   "n": "Freak Show Solid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2016"
@@ -23642,80 +24240,99 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "dv8-grudge",
   "k": "dv8|grudge",
   "m": "DV8",
   "n": "Grudge",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2015"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "H",
   "i": "dv8-grudge-hybrid",
   "k": "dv8|grudgehybrid",
   "m": "DV8",
   "n": "Grudge Hybrid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2016"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "dv8-grudge-pearl",
   "k": "dv8|grudgepearl",
   "m": "DV8",
   "n": "Grudge Pearl",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2016"
  },
  {
   "c": null,
+  "cv": "H",
   "i": "dv8-hater",
   "k": "dv8|hater",
   "m": "DV8",
   "n": "Hater",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2024"
  },
  {
   "c": null,
+  "cv": "P",
   "i": "dv8-hater-pearl",
   "k": "dv8|haterpearl",
   "m": "DV8",
   "n": "Hater Pearl",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2025"
  },
  {
   "c": null,
+  "cv": "S",
   "i": "dv8-heckler",
   "k": "dv8|heckler",
   "m": "DV8",
   "n": "Heckler",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2024"
  },
  {
   "c": null,
+  "cv": "H",
   "i": "dv8-heckler-hybrid",
   "k": "dv8|hecklerhybrid",
   "m": "DV8",
   "n": "Heckler Hybrid",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2025"
  },
  {
   "c": null,
+  "cv": "H",
   "i": "dv8-heckler-taunt",
   "k": "dv8|hecklertaunt",
   "m": "DV8",
   "n": "Heckler Taunt",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2026"
@@ -23744,6 +24361,7 @@
   "k": "dv8|hellraiser",
   "m": "DV8",
   "n": "Hell Raiser",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2011"
@@ -23781,6 +24399,7 @@
   "k": "dv8|hellraiserrevenge",
   "m": "DV8",
   "n": "Hell Raiser Revenge",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2011"
@@ -23800,26 +24419,33 @@
   "k": "dv8|hellraiserterror",
   "m": "DV8",
   "n": "Hell Raiser Terror",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2012"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "dv8-hitman",
   "k": "dv8|hitman",
   "m": "DV8",
   "n": "Hitman",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2017"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "H",
   "i": "dv8-hitman-enforcer",
   "k": "dv8|hitmanenforcer",
   "m": "DV8",
   "n": "Hitman Enforcer",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2018"
@@ -23830,36 +24456,44 @@
   "k": "dv8|hooligan",
   "m": "DV8",
   "n": "Hooligan",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2014"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "dv8-hooligan-taunt",
   "k": "dv8|hooligantaunt",
   "m": "DV8",
   "n": "Hooligan Taunt",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2015"
  },
  {
   "c": null,
+  "cv": "S",
   "i": "dv8-instigator",
   "k": "dv8|instigator",
   "m": "DV8",
   "n": "Instigator",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2019"
  },
  {
   "c": null,
+  "cv": "P",
   "i": "dv8-intense-collision",
   "k": "dv8|intensecollision",
   "m": "DV8",
   "n": "Intense Collision",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2026"
@@ -23893,20 +24527,24 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "dv8-mantra",
   "k": "dv8|mantra",
   "m": "DV8",
   "n": "Mantra",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2024"
  },
  {
   "c": null,
+  "cv": "S",
   "i": "dv8-mantra-solid",
   "k": "dv8|mantrasolid",
   "m": "DV8",
   "n": "Mantra Solid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2025"
@@ -23917,6 +24555,7 @@
   "k": "dv8|marauder",
   "m": "DV8",
   "n": "Marauder",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2012"
@@ -23927,6 +24566,7 @@
   "k": "dv8|maraudermadness",
   "m": "DV8",
   "n": "Marauder Madness",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2012"
@@ -23937,6 +24577,7 @@
   "k": "dv8|maraudermutiny",
   "m": "DV8",
   "n": "Marauder Mutiny",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2013"
@@ -23956,6 +24597,7 @@
   "k": "dv8|misfitgreenwhite",
   "m": "DV8",
   "n": "Misfit Green/White",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2011"
@@ -23993,6 +24635,7 @@
   "k": "dv8|misfitorangeblue",
   "m": "DV8",
   "n": "Misfit Orange/Blue",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2011"
@@ -24017,10 +24660,13 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "dv8-nasty-rumor",
   "k": "dv8|nastyrumor",
   "m": "DV8",
   "n": "Nasty Rumor",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2018"
@@ -24040,6 +24686,7 @@
   "k": "dv8|nightmare",
   "m": "DV8",
   "n": "Nightmare",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2012"
@@ -24055,10 +24702,12 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "dv8-notorious",
   "k": "dv8|notorious",
   "m": "DV8",
   "n": "Notorious",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2019"
@@ -24078,16 +24727,19 @@
   "k": "dv8|outcastblackcitron",
   "m": "DV8",
   "n": "Outcast Black Citron",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2014"
  },
  {
   "c": null,
+  "co": "s",
   "i": "dv8-outcast-blue-bruiser",
   "k": "dv8|outcastbluebruiser",
   "m": "DV8",
   "n": "Outcast Blue Bruiser",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2016"
@@ -24130,50 +24782,63 @@
  },
  {
   "c": null,
+  "co": "a",
   "i": "dv8-pitbull",
   "k": "dv8|pitbull",
   "m": "DV8",
   "n": "Pitbull",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2016"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "dv8-pitbull-bark",
   "k": "dv8|pitbullbark",
   "m": "DV8",
   "n": "Pitbull Bark",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2018"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "dv8-pitbull-bite",
   "k": "dv8|pitbullbite",
   "m": "DV8",
   "n": "Pitbull Bite",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2018"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "dv8-pitbull-growl",
   "k": "dv8|pitbullgrowl",
   "m": "DV8",
   "n": "Pitbull Growl",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2017"
  },
  {
   "c": null,
+  "cv": "S",
   "i": "dv8-poison",
   "k": "dv8|poison",
   "m": "DV8",
   "n": "Poison",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2018"
@@ -24198,10 +24863,12 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "dv8-prowler",
   "k": "dv8|prowler",
   "m": "DV8",
   "n": "Prowler",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2019"
@@ -24212,16 +24879,19 @@
   "k": "dv8|reckless",
   "m": "DV8",
   "n": "Reckless",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2011"
  },
  {
   "c": null,
+  "cv": "H",
   "i": "dv8-ruckus",
   "k": "dv8|ruckus",
   "m": "DV8",
   "n": "Ruckus",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2013"
@@ -24237,10 +24907,12 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "dv8-ruckus-feud",
   "k": "dv8|ruckusfeud",
   "m": "DV8",
   "n": "Ruckus Feud",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2013"
@@ -24251,46 +24923,57 @@
   "k": "dv8|ruckusschizo",
   "m": "DV8",
   "n": "Ruckus Schizo",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2014"
  },
  {
   "c": null,
+  "co": "s",
   "i": "dv8-rude-dude",
   "k": "dv8|rudedude",
   "m": "DV8",
   "n": "Rude Dude",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2014"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "dv8-rumor",
   "k": "dv8|rumor",
   "m": "DV8",
   "n": "Rumor",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2017"
  },
  {
   "c": null,
+  "cv": "H",
   "i": "dv8-severe-collision",
   "k": "dv8|severecollision",
   "m": "DV8",
   "n": "Severe Collision",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2025"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "U",
   "i": "dv8-tactic-control",
   "k": "dv8|tacticcontrol",
   "m": "DV8",
   "n": "Tactic Control",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2018"
@@ -24301,36 +24984,45 @@
   "k": "dv8|thug",
   "m": "DV8",
   "n": "Thug",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2014"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "H",
   "i": "dv8-thug-corrupt",
   "k": "dv8|thugcorrupt",
   "m": "DV8",
   "n": "Thug Corrupt",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2015"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "dv8-thug-life",
   "k": "dv8|thuglife",
   "m": "DV8",
   "n": "Thug Life",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2015"
  },
  {
   "c": null,
+  "cv": "S",
   "i": "dv8-thug-unruly",
   "k": "dv8|thugunruly",
   "m": "DV8",
   "n": "Thug Unruly",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2014"
@@ -24341,6 +25033,7 @@
   "k": "dv8|tooreckless",
   "m": "DV8",
   "n": "Too Reckless",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2011"
@@ -24356,90 +25049,115 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "dv8-trouble-maker-pearl",
   "k": "dv8|troublemakerpearl",
   "m": "DV8",
   "n": "Trouble Maker Pearl",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2024"
  },
  {
   "c": null,
+  "cv": "S",
   "i": "dv8-trouble-maker-solid",
   "k": "dv8|troublemakersolid",
   "m": "DV8",
   "n": "Trouble Maker Solid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2025"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "dv8-turmoil-2-pearl",
   "k": "dv8|turmoil2pearl",
   "m": "DV8",
   "n": "Turmoil 2 Pearl",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2019"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "dv8-turmoil-2-solid",
   "k": "dv8|turmoil2solid",
   "m": "DV8",
   "n": "Turmoil 2 Solid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2019"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "H",
   "i": "dv8-turmoil-hybrid",
   "k": "dv8|turmoilhybrid",
   "m": "DV8",
   "n": "Turmoil Hybrid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2019"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "dv8-turmoil-pearl",
   "k": "dv8|turmoilpearl",
   "m": "DV8",
   "n": "Turmoil Pearl",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2018"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "dv8-turmoil-solid",
   "k": "dv8|turmoilsolid",
   "m": "DV8",
   "n": "Turmoil Solid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2018"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "dv8-vandal",
   "k": "dv8|vandal",
   "m": "DV8",
   "n": "Vandal",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2015"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "H",
   "i": "dv8-vandal-destroy",
   "k": "dv8|vandaldestroy",
   "m": "DV8",
   "n": "Vandal Destroy",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2016"
@@ -24455,10 +25173,13 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "dv8-vandal-smash",
   "k": "dv8|vandalsmash",
   "m": "DV8",
   "n": "Vandal Smash",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2016"
@@ -24474,10 +25195,13 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "dv8-vandal-strike",
   "k": "dv8|vandalstrike",
   "m": "DV8",
   "n": "Vandal Strike",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2017"
@@ -24520,10 +25244,12 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "dv8-violent-collision",
   "k": "dv8|violentcollision",
   "m": "DV8",
   "n": "Violent Collision",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2023"
@@ -24557,10 +25283,12 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "dv8-wicked-collision",
   "k": "dv8|wickedcollision",
   "m": "DV8",
   "n": "Wicked Collision",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2024"
@@ -25620,6 +26348,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "ebonite-adrenaline-overload",
   "k": "ebonite|adrenalineoverload",
   "m": "Ebonite",
@@ -25659,6 +26388,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "ebonite-affinity",
   "k": "ebonite|affinity",
   "m": "Ebonite",
@@ -25697,6 +26427,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "ebonite-allure-solid",
   "k": "ebonite|alluresolid",
   "m": "Ebonite",
@@ -25725,6 +26456,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "ebonite-angular-one",
   "k": "ebonite|angularone",
   "m": "Ebonite",
@@ -25960,6 +26693,7 @@
  },
  {
   "c": null,
+  "co": "a",
   "i": "ebonite-bash-black-red",
   "k": "ebonite|bashblackred",
   "m": "Ebonite",
@@ -25970,6 +26704,7 @@
  },
  {
   "c": null,
+  "co": "s",
   "i": "ebonite-big-one-2017",
   "k": "ebonite|bigone2017",
   "m": "Ebonite",
@@ -25980,6 +26715,7 @@
  },
  {
   "c": null,
+  "co": "s",
   "i": "ebonite-big-one-j-limited",
   "k": "ebonite|bigonejlimited",
   "m": "Ebonite",
@@ -26080,6 +26816,7 @@
  },
  {
   "c": null,
+  "co": "s",
   "i": "ebonite-boom",
   "k": "ebonite|boom",
   "m": "Ebonite",
@@ -26217,6 +26954,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "ebonite-champion",
   "k": "ebonite|champion",
   "m": "Ebonite",
@@ -26227,6 +26965,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "ebonite-choice",
   "k": "ebonite|choice",
   "m": "Ebonite",
@@ -26237,6 +26976,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "ebonite-choice-pearl",
   "k": "ebonite|choicepearl",
   "m": "Ebonite",
@@ -26265,6 +27005,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "ebonite-choice-solid",
   "k": "ebonite|choicesolid",
   "m": "Ebonite",
@@ -26285,6 +27026,7 @@
  },
  {
   "c": null,
+  "co": "a",
   "i": "ebonite-clash-turquoise-purple",
   "k": "ebonite|clashturquoisepurple",
   "m": "Ebonite",
@@ -26304,6 +27046,7 @@
  },
  {
   "c": null,
+  "co": "a",
   "i": "ebonite-code-of-honor",
   "k": "ebonite|codeofhonor",
   "m": "Ebonite",
@@ -26539,6 +27282,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "ebonite-crusher",
   "k": "ebonite|crusher",
   "m": "Ebonite",
@@ -26549,6 +27293,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "ebonite-crusher-hybrid",
   "k": "ebonite|crusherhybrid",
   "m": "Ebonite",
@@ -26826,6 +27571,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "ebonite-destiny-hybrid",
   "k": "ebonite|destinyhybrid",
   "m": "Ebonite",
@@ -26836,6 +27582,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "ebonite-destiny-pearl",
   "k": "ebonite|destinypearl",
   "m": "Ebonite",
@@ -26846,6 +27593,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "ebonite-destiny-pearl-black-red-blue-red-pin",
   "k": "ebonite|destinypearlblackredblueredpin",
   "m": "Ebonite",
@@ -26856,6 +27604,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "ebonite-destiny-solid",
   "k": "ebonite|destinysolid",
   "m": "Ebonite",
@@ -26866,6 +27615,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "ebonite-destiny-solid-magenta",
   "k": "ebonite|destinysolidmagenta",
   "m": "Ebonite",
@@ -26975,6 +27725,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "ebonite-emerge",
   "k": "ebonite|emerge",
   "m": "Ebonite",
@@ -26985,6 +27736,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "ebonite-emerge-hybrid",
   "k": "ebonite|emergehybrid",
   "m": "Ebonite",
@@ -26995,6 +27747,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "ebonite-endure",
   "k": "ebonite|endure",
   "m": "Ebonite",
@@ -27014,6 +27767,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "ebonite-energy-source",
   "k": "ebonite|energysource",
   "m": "Ebonite",
@@ -27024,6 +27778,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "ebonite-entity",
   "k": "ebonite|entity",
   "m": "Ebonite",
@@ -27034,6 +27789,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "ebonite-entity-pearl",
   "k": "ebonite|entitypearl",
   "m": "Ebonite",
@@ -27044,6 +27800,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "ebonite-envision",
   "k": "ebonite|envision",
   "m": "Ebonite",
@@ -27109,6 +27866,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "ebonite-exceed",
   "k": "ebonite|exceed",
   "m": "Ebonite",
@@ -27173,6 +27931,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "ebonite-fireball",
   "k": "ebonite|fireball",
   "m": "Ebonite",
@@ -27183,6 +27942,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "ebonite-fireball-purple-gold",
   "k": "ebonite|fireballpurplegold",
   "m": "Ebonite",
@@ -27211,6 +27971,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "ebonite-futura",
   "k": "ebonite|futura",
   "m": "Ebonite",
@@ -27258,6 +28019,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "ebonite-game-breaker-2-gold",
   "k": "ebonite|gamebreaker2gold",
   "m": "Ebonite",
@@ -27277,6 +28039,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "ebonite-game-breaker-2-mvp",
   "k": "ebonite|gamebreaker2mvp",
   "m": "Ebonite",
@@ -27306,6 +28069,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "ebonite-game-breaker-2-phenom-pearl",
   "k": "ebonite|gamebreaker2phenompearl",
   "m": "Ebonite",
@@ -27325,6 +28089,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "ebonite-game-breaker-asym",
   "k": "ebonite|gamebreakerasym",
   "m": "Ebonite",
@@ -27636,6 +28402,7 @@
  },
  {
   "c": null,
+  "co": "a",
   "i": "ebonite-honor",
   "k": "ebonite|honor",
   "m": "Ebonite",
@@ -27718,6 +28485,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "H",
   "i": "ebonite-impact",
   "k": "ebonite|impact",
   "m": "Ebonite",
@@ -27737,6 +28506,7 @@
  },
  {
   "c": null,
+  "co": "s",
   "i": "ebonite-infinite-one",
   "k": "ebonite|infiniteone",
   "m": "Ebonite",
@@ -27756,6 +28526,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "ebonite-innovate",
   "k": "ebonite|innovate",
   "m": "Ebonite",
@@ -27860,7 +28631,6 @@
   "k": "ebonite|lanebreaker",
   "m": "Ebonite",
   "n": "Lane Breaker",
-  "s": 1,
   "t": false,
   "y": "2009"
  },
@@ -27875,6 +28645,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "H",
   "i": "ebonite-legacy",
   "k": "ebonite|legacy",
   "m": "Ebonite",
@@ -28002,6 +28774,7 @@
  },
  {
   "c": null,
+  "co": "s",
   "i": "ebonite-magic",
   "k": "ebonite|magic",
   "m": "Ebonite",
@@ -28012,6 +28785,7 @@
  },
  {
   "c": null,
+  "co": "s",
   "i": "ebonite-magic-action",
   "k": "ebonite|magicaction",
   "m": "Ebonite",
@@ -28031,6 +28805,7 @@
  },
  {
   "c": null,
+  "co": "s",
   "i": "ebonite-magic-touch-black-red-green",
   "k": "ebonite|magictouchblackredgreen",
   "m": "Ebonite",
@@ -28041,6 +28816,7 @@
  },
  {
   "c": null,
+  "co": "s",
   "i": "ebonite-magic-touch-black-red-silver",
   "k": "ebonite|magictouchblackredsilver",
   "m": "Ebonite",
@@ -28069,6 +28845,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "ebonite-matrix",
   "k": "ebonite|matrix",
   "m": "Ebonite",
@@ -28187,6 +28964,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "ebonite-matrix-solid",
   "k": "ebonite|matrixsolid",
   "m": "Ebonite",
@@ -28278,6 +29056,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "ebonite-maverick",
   "k": "ebonite|maverick",
   "m": "Ebonite",
@@ -28306,6 +29085,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "ebonite-maverick-pearl",
   "k": "ebonite|maverickpearl",
   "m": "Ebonite",
@@ -29087,6 +29867,7 @@
  },
  {
   "c": null,
+  "co": "s",
   "i": "ebonite-nvs",
   "k": "ebonite|nvs",
   "m": "Ebonite",
@@ -29161,6 +29942,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "ebonite-omni-hybrid",
   "k": "ebonite|omnihybrid",
   "m": "Ebonite",
@@ -29171,6 +29953,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "ebonite-omni-pearl",
   "k": "ebonite|omnipearl",
   "m": "Ebonite",
@@ -29181,6 +29964,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "ebonite-omni-solid",
   "k": "ebonite|omnisolid",
   "m": "Ebonite",
@@ -29398,6 +30182,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "ebonite-persevere",
   "k": "ebonite|persevere",
   "m": "Ebonite",
@@ -29634,6 +30419,7 @@
  },
  {
   "c": null,
+  "co": "a",
   "i": "ebonite-pivot-point",
   "k": "ebonite|pivotpoint",
   "m": "Ebonite",
@@ -29897,6 +30683,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "ebonite-puma",
   "k": "ebonite|puma",
   "m": "Ebonite",
@@ -29907,6 +30694,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "ebonite-puma-2",
   "k": "ebonite|puma",
   "m": "Ebonite",
@@ -30044,6 +30832,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "H",
   "i": "ebonite-real-one",
   "k": "ebonite|realone",
   "m": "Ebonite",
@@ -30063,6 +30853,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "ebonite-real-time",
   "k": "ebonite|realtime",
   "m": "Ebonite",
@@ -30190,6 +30981,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "H",
   "i": "ebonite-salute",
   "k": "ebonite|salute",
   "m": "Ebonite",
@@ -30318,6 +31111,7 @@
  },
  {
   "c": null,
+  "co": "s",
   "i": "ebonite-smash-blue-black-purple",
   "k": "ebonite|smashblueblackpurple",
   "m": "Ebonite",
@@ -30328,6 +31122,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "ebonite-smash-blue-pearl",
   "k": "ebonite|smashbluepearl",
   "m": "Ebonite",
@@ -30338,6 +31134,7 @@
  },
  {
   "c": null,
+  "co": "s",
   "i": "ebonite-smash-time",
   "k": "ebonite|smashtime",
   "m": "Ebonite",
@@ -30348,6 +31145,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "ebonite-smash-time-pearl",
   "k": "ebonite|smashtimepearl",
   "m": "Ebonite",
@@ -30358,6 +31157,7 @@
  },
  {
   "c": null,
+  "co": "s",
   "i": "ebonite-smash-time-tj-limited",
   "k": "ebonite|smashtimetjlimited",
   "m": "Ebonite",
@@ -30368,6 +31168,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "ebonite-source",
   "k": "ebonite|source",
   "m": "Ebonite",
@@ -30423,6 +31224,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "ebonite-spartan",
   "k": "ebonite|spartan",
   "m": "Ebonite",
@@ -30442,6 +31244,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "ebonite-spartan-pearl",
   "k": "ebonite|spartanpearl",
   "m": "Ebonite",
@@ -30623,6 +31426,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "ebonite-the-great-one",
   "k": "ebonite|thegreatone",
   "m": "Ebonite",
@@ -30642,6 +31447,7 @@
  },
  {
   "c": null,
+  "co": "s",
   "i": "ebonite-the-one",
   "k": "ebonite|theone",
   "m": "Ebonite",
@@ -30850,6 +31656,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "H",
   "i": "ebonite-the-one-ovation",
   "k": "ebonite|theoneovation",
   "m": "Ebonite",
@@ -31775,6 +32583,7 @@
  },
  {
   "c": null,
+  "co": "s",
   "i": "ebonite-total-nv",
   "k": "ebonite|totalnv",
   "m": "Ebonite",
@@ -32089,6 +32898,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "ebonite-turbo-x",
   "k": "ebonite|turbox",
   "m": "Ebonite",
@@ -32099,6 +32909,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "ebonite-turbo-x-2",
   "k": "ebonite|turbox",
   "m": "Ebonite",
@@ -32109,6 +32920,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "ebonite-turbo-x-3",
   "k": "ebonite|turbox",
   "m": "Ebonite",
@@ -32128,6 +32940,7 @@
  },
  {
   "c": null,
+  "cv": "U",
   "i": "ebonite-turbo-x-nu",
   "k": "ebonite|turboxnu",
   "m": "Ebonite",
@@ -32138,6 +32951,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "ebonite-turbo-x-pearl",
   "k": "ebonite|turboxpearl",
   "m": "Ebonite",
@@ -32356,6 +33170,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "ebonite-verdict-pearl",
   "k": "ebonite|verdictpearl",
   "m": "Ebonite",
@@ -32384,6 +33199,7 @@
  },
  {
   "c": null,
+  "co": "a",
   "i": "ebonite-vital-energy",
   "k": "ebonite|vitalenergy",
   "m": "Ebonite",
@@ -32394,6 +33210,7 @@
  },
  {
   "c": null,
+  "co": "a",
   "i": "ebonite-vital-sign",
   "k": "ebonite|vitalsign",
   "m": "Ebonite",
@@ -32530,6 +33347,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "ebonite-warrior",
   "k": "ebonite|warrior",
   "m": "Ebonite",
@@ -32603,6 +33421,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "ebonite-warrior-supreme",
   "k": "ebonite|warriorsupreme",
   "m": "Ebonite",
@@ -34647,6 +35466,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "hammer-3d-offset-assault",
   "k": "hammer|3doffsetassault",
   "m": "Hammer",
@@ -34657,6 +35478,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "hammer-3d-offset-attack",
   "k": "hammer|3doffsetattack",
   "m": "Hammer",
@@ -34667,6 +35490,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "H",
   "i": "hammer-3d-offset-hybrid",
   "k": "hammer|3doffsethybrid",
   "m": "Hammer",
@@ -34803,6 +35628,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "hammer-anger-black-red-caramel",
   "k": "hammer|angerblackredcaramel",
   "m": "Hammer",
@@ -34813,6 +35639,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "hammer-anger-solid",
   "k": "hammer|angersolid",
   "m": "Hammer",
@@ -34823,6 +35650,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "hammer-arctic-vibe",
   "k": "hammer|arcticvibe",
   "m": "Hammer",
@@ -35130,6 +35958,7 @@
  },
  {
   "c": null,
+  "cv": "U",
   "i": "hammer-black-pearl-urethane-hammer-78d",
   "k": "hammer|blackpearlurethanehammer78d",
   "m": "Hammer",
@@ -35176,6 +36005,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "hammer-black-widow-2-0",
   "k": "hammer|blackwidow20",
   "m": "Hammer",
@@ -35195,6 +36026,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "hammer-black-widow-2-0-hybrid",
   "k": "hammer|blackwidow20hybrid",
   "m": "Hammer",
@@ -35245,7 +36077,6 @@
   "k": "hammer|blackwidow30",
   "m": "Hammer",
   "n": "Black Widow (3.0)",
-  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -35260,6 +36091,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "hammer-black-widow-3-0-dynasty",
   "k": "hammer|blackwidow30dynasty",
   "m": "Hammer",
@@ -35576,6 +36408,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "hammer-black-widow-ghost-pearl",
   "k": "hammer|blackwidowghostpearl",
   "m": "Hammer",
@@ -35766,6 +36600,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "hammer-black-widow-mania",
   "k": "hammer|blackwidowmania",
   "m": "Hammer",
@@ -36227,6 +37062,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "hammer-black-widow-tour-v1",
   "k": "hammer|blackwidowtourv1",
   "m": "Hammer",
@@ -36282,6 +37118,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "U",
   "i": "hammer-black-widow-urethane",
   "k": "hammer|blackwidowurethane",
   "m": "Hammer",
@@ -36463,6 +37301,7 @@
  },
  {
   "c": null,
+  "co": "a",
   "i": "hammer-black-widow-viz-a-ball",
   "k": "hammer|blackwidowvizaball",
   "m": "Hammer",
@@ -36581,6 +37420,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "hammer-bubblegum-vibe",
   "k": "hammer|bubblegumvibe",
   "m": "Hammer",
@@ -36672,6 +37512,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "hammer-dark-web",
   "k": "hammer|darkweb",
   "m": "Hammer",
@@ -36682,6 +37523,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "hammer-dark-web-hybrid",
   "k": "hammer|darkwebhybrid",
   "m": "Hammer",
@@ -36719,6 +37561,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "hammer-deep-ocean-vibe",
   "k": "hammer|deepoceanvibe",
   "m": "Hammer",
@@ -36900,6 +37743,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "hammer-envy",
   "k": "hammer|envy",
   "m": "Hammer",
@@ -36928,6 +37772,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "hammer-envy-tour",
   "k": "hammer|envytour",
   "m": "Hammer",
@@ -36938,6 +37783,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "hammer-envy-tour-pearl",
   "k": "hammer|envytourpearl",
   "m": "Hammer",
@@ -36984,6 +37830,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "hammer-extreme-envy",
   "k": "hammer|extremeenvy",
   "m": "Hammer",
@@ -37030,6 +37877,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "hammer-fallout",
   "k": "hammer|fallout",
   "m": "Hammer",
@@ -37049,6 +37897,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "H",
   "i": "hammer-fierce-phobia",
   "k": "hammer|fiercephobia",
   "m": "Hammer",
@@ -37095,6 +37945,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "hammer-fugitive",
   "k": "hammer|fugitive",
   "m": "Hammer",
@@ -37105,6 +37957,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "hammer-fugitive-solid",
   "k": "hammer|fugitivesolid",
   "m": "Hammer",
@@ -37115,6 +37969,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "hammer-full-effect",
   "k": "hammer|fulleffect",
   "m": "Hammer",
@@ -37206,6 +38061,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "hammer-gauntlet-fury",
   "k": "hammer|gauntletfury",
   "m": "Hammer",
@@ -37342,6 +38199,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "hammer-hammerhead",
   "k": "hammer|hammerhead",
   "m": "Hammer",
@@ -37352,6 +38210,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "hammer-hammerhead-pearl",
   "k": "hammer|hammerheadpearl",
   "m": "Hammer",
@@ -37416,6 +38275,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "hammer-hazmat",
   "k": "hammer|hazmat",
   "m": "Hammer",
@@ -37426,6 +38286,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "hammer-hazmat-pearl",
   "k": "hammer|hazmatpearl",
   "m": "Hammer",
@@ -37436,6 +38297,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "hammer-hazmat-solid",
   "k": "hammer|hazmatsolid",
   "m": "Hammer",
@@ -37572,6 +38434,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "hammer-infamous",
   "k": "hammer|infamous",
   "m": "Hammer",
@@ -37771,6 +38634,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "hammer-maximum-effect",
   "k": "hammer|maximumeffect",
   "m": "Hammer",
@@ -38105,6 +38969,7 @@
  },
  {
   "c": null,
+  "cv": "U",
   "i": "hammer-nu-2-0",
   "k": "hammer|nu20",
   "m": "Hammer",
@@ -38115,6 +38980,7 @@
  },
  {
   "c": null,
+  "cv": "U",
   "i": "hammer-nu-blue-hammer",
   "k": "hammer|nubluehammer",
   "m": "Hammer",
@@ -38134,6 +39000,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "hammer-obsession",
   "k": "hammer|obsession",
   "m": "Hammer",
@@ -38144,6 +39012,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "hammer-obsession-tour",
   "k": "hammer|obsessiontour",
   "m": "Hammer",
@@ -38154,6 +39024,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "hammer-ocean-vibe",
   "k": "hammer|oceanvibe",
   "m": "Hammer",
@@ -38236,6 +39107,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "hammer-pure-envy",
   "k": "hammer|pureenvy",
   "m": "Hammer",
@@ -38246,6 +39118,7 @@
  },
  {
   "c": null,
+  "cv": "U",
   "i": "hammer-pure-hammer",
   "k": "hammer|purehammer",
   "m": "Hammer",
@@ -38283,6 +39156,7 @@
  },
  {
   "c": null,
+  "cv": "U",
   "i": "hammer-purple-pearl-urethane-78d",
   "k": "hammer|purplepearlurethane78d",
   "m": "Hammer",
@@ -38293,6 +39167,7 @@
  },
  {
   "c": null,
+  "cv": "U",
   "i": "hammer-purple-pearl-urethane-hammer",
   "k": "hammer|purplepearlurethanehammer",
   "m": "Hammer",
@@ -38303,6 +39178,7 @@
  },
  {
   "c": null,
+  "cv": "U",
   "i": "hammer-purple-pearl-urethane-hammer-except-serial-s-starting-with-a-6-or-7",
   "k": "hammer|purplepearlurethanehammerexceptserialsstartingwitha6or7",
   "m": "Hammer",
@@ -38313,6 +39189,7 @@
  },
  {
   "c": null,
+  "cv": "U",
   "i": "hammer-purple-pearl-urethane-hammer-korea",
   "k": "hammer|purplepearlurethanehammerkorea",
   "m": "Hammer",
@@ -38323,6 +39200,7 @@
  },
  {
   "c": null,
+  "cv": "U",
   "i": "hammer-purple-pearl-urethane-hammer-purple-pin",
   "k": "hammer|purplepearlurethanehammerpurplepin",
   "m": "Hammer",
@@ -38351,10 +39229,12 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "hammer-radioactive-vibe",
   "k": "hammer|radioactivevibe",
   "m": "Hammer",
   "n": "Radioactive Vibe",
+  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -38405,6 +39285,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "hammer-raw-hammer-black",
   "k": "hammer|rawhammerblack",
   "m": "Hammer",
@@ -38424,6 +39305,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "hammer-raw-hammer-black-grey",
   "k": "hammer|rawhammerblackgrey",
   "m": "Hammer",
@@ -38434,6 +39316,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "hammer-raw-hammer-black-purple-teal",
   "k": "hammer|rawhammerblackpurpleteal",
   "m": "Hammer",
@@ -38453,6 +39336,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "hammer-raw-hammer-blue-silver-white",
   "k": "hammer|rawhammerbluesilverwhite",
   "m": "Hammer",
@@ -38517,6 +39401,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "hammer-raw-hammer-orange-black",
   "k": "hammer|rawhammerorangeblack",
   "m": "Hammer",
@@ -38545,6 +39430,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "hammer-raw-hammer-purple-pink-silver",
   "k": "hammer|rawhammerpurplepinksilver",
   "m": "Hammer",
@@ -38564,6 +39450,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "hammer-raw-hammer-red-white-purple",
   "k": "hammer|rawhammerredwhitepurple",
   "m": "Hammer",
@@ -38583,6 +39470,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "hammer-raw-hammer-smoke-blue-gold",
   "k": "hammer|rawhammersmokebluegold",
   "m": "Hammer",
@@ -38737,6 +39625,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "H",
   "i": "hammer-redemption-hybrid",
   "k": "hammer|redemptionhybrid",
   "m": "Hammer",
@@ -38756,6 +39646,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "hammer-redemption-pearl",
   "k": "hammer|redemptionpearl",
   "m": "Hammer",
@@ -38766,6 +39658,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "hammer-redemption-solid",
   "k": "hammer|redemptionsolid",
   "m": "Hammer",
@@ -38794,6 +39688,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "hammer-rhodman-pearl",
   "k": "hammer|rhodmanpearl",
   "m": "Hammer",
@@ -38813,6 +39709,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "H",
   "i": "hammer-rip-d",
   "k": "hammer|ripd",
   "m": "Hammer",
@@ -38850,6 +39748,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "hammer-rip-d-solid",
   "k": "hammer|ripdsolid",
   "m": "Hammer",
@@ -38995,6 +39895,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "hammer-scorpion",
   "k": "hammer|scorpion",
   "m": "Hammer",
@@ -39005,6 +39906,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "hammer-scorpion-low-flare",
   "k": "hammer|scorpionlowflare",
   "m": "Hammer",
@@ -39015,6 +39917,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "hammer-scorpion-sting",
   "k": "hammer|scorpionsting",
   "m": "Hammer",
@@ -39025,6 +39928,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "hammer-scorpion-strike",
   "k": "hammer|scorpionstrike",
   "m": "Hammer",
@@ -39062,6 +39966,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "hammer-sling-blade",
   "k": "hammer|slingblade",
   "m": "Hammer",
@@ -39072,6 +39977,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "hammer-spawn",
   "k": "hammer|spawn",
   "m": "Hammer",
@@ -39136,6 +40042,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "H",
   "i": "hammer-statement-hybrid",
   "k": "hammer|statementhybrid",
   "m": "Hammer",
@@ -39155,6 +40063,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "hammer-statement-pearl",
   "k": "hammer|statementpearl",
   "m": "Hammer",
@@ -39174,6 +40084,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "hammer-statement-solid",
   "k": "hammer|statementsolid",
   "m": "Hammer",
@@ -40219,6 +41131,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "H",
   "i": "hammer-web",
   "k": "hammer|web",
   "m": "Hammer",
@@ -40238,6 +41152,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "hammer-web-m-b",
   "k": "hammer|webmb",
   "m": "Hammer",
@@ -40248,6 +41164,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "hammer-web-pearl",
   "k": "hammer|webpearl",
   "m": "Hammer",
@@ -40267,6 +41184,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "hammer-web-tour-edition",
   "k": "hammer|webtouredition",
   "m": "Hammer",
@@ -40277,6 +41196,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "hammer-web-tour-edition-hybrid",
   "k": "hammer|webtoureditionhybrid",
   "m": "Hammer",
@@ -40557,6 +41477,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "hammer-zero-mercy-hybrid",
   "k": "hammer|zeromercyhybrid",
   "m": "Hammer",
@@ -40567,6 +41488,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "hammer-zero-mercy-pearl",
   "k": "hammer|zeromercypearl",
   "m": "Hammer",
@@ -40577,6 +41499,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "hammer-zero-mercy-solid",
   "k": "hammer|zeromercysolid",
   "m": "Hammer",
@@ -40596,6 +41519,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "hammer-zero-mercy-tour",
   "k": "hammer|zeromercytour",
   "m": "Hammer",
@@ -46098,6 +47022,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "motiv-allegiant-sniper-orange-pearl",
   "k": "motiv|allegiantsniperorangepearl",
   "m": "Motiv",
@@ -46108,6 +47033,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "motiv-alpha-jackal",
   "k": "motiv|alphajackal",
   "m": "Motiv",
@@ -46118,6 +47045,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "motiv-apex-jackal",
   "k": "motiv|apexjackal",
   "m": "Motiv",
@@ -46128,6 +47056,7 @@
  },
  {
   "c": null,
+  "cv": "U",
   "i": "motiv-arctic-sniper",
   "k": "motiv|arcticsniper",
   "m": "Motiv",
@@ -46147,6 +47076,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "motiv-ascend-dark-purple-purple-blue",
   "k": "motiv|ascenddarkpurplepurpleblue",
   "m": "Motiv",
@@ -46157,6 +47088,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "motiv-ascend-navy-teal-yellow",
   "k": "motiv|ascendnavytealyellow",
   "m": "Motiv",
@@ -46167,6 +47100,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "motiv-ascend-red-black-tangerine",
   "k": "motiv|ascendredblacktangerine",
   "m": "Motiv",
@@ -46254,6 +47189,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "motiv-black-venom",
   "k": "motiv|blackvenom",
   "m": "Motiv",
@@ -46264,6 +47201,7 @@
  },
  {
   "c": null,
+  "co": "a",
   "i": "motiv-blue-coral-venom",
   "k": "motiv|bluecoralvenom",
   "m": "Motiv",
@@ -46274,6 +47212,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "motiv-blue-tank",
   "k": "motiv|bluetank",
   "m": "Motiv",
@@ -46284,6 +47224,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "motiv-carbide-tank",
   "k": "motiv|carbidetank",
   "m": "Motiv",
@@ -46294,6 +47236,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "motiv-chronic-paranoia",
   "k": "motiv|chronicparanoia",
   "m": "Motiv",
@@ -46304,6 +47247,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "motiv-combat-tank-black-burgundy",
   "k": "motiv|combattankblackburgundy",
   "m": "Motiv",
@@ -46334,6 +47278,7 @@
  },
  {
   "c": null,
+  "co": "s",
   "i": "motiv-covert-vip-exj",
   "k": "motiv|covertvipexj",
   "m": "Motiv",
@@ -46353,6 +47298,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "motiv-crimson-jackal",
   "k": "motiv|crimsonjackal",
   "m": "Motiv",
@@ -46363,6 +47310,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "motiv-cruel-c51",
   "k": "motiv|cruelc51",
   "m": "Motiv",
@@ -46382,6 +47330,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "motiv-cruel-intent",
   "k": "motiv|cruelintent",
   "m": "Motiv",
@@ -46392,6 +47341,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "motiv-desert-tank",
   "k": "motiv|deserttank",
   "m": "Motiv",
@@ -46402,6 +47353,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "motiv-evoke",
   "k": "motiv|evoke",
   "m": "Motiv",
@@ -46412,6 +47365,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "motiv-evoke-hysteria",
   "k": "motiv|evokehysteria",
   "m": "Motiv",
@@ -46422,6 +47377,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "motiv-evoke-mayhem",
   "k": "motiv|evokemayhem",
   "m": "Motiv",
@@ -46432,6 +47389,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "motiv-fatal-venom",
   "k": "motiv|fatalvenom",
   "m": "Motiv",
@@ -46442,6 +47401,7 @@
  },
  {
   "c": null,
+  "co": "s",
   "i": "motiv-forge",
   "k": "motiv|forge",
   "m": "Motiv",
@@ -46452,6 +47412,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "H",
   "i": "motiv-forge-ember",
   "k": "motiv|forgeember",
   "m": "Motiv",
@@ -46462,6 +47424,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "H",
   "i": "motiv-forge-fire",
   "k": "motiv|forgefire",
   "m": "Motiv",
@@ -46472,6 +47436,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "motiv-forge-flare",
   "k": "motiv|forgeflare",
   "m": "Motiv",
@@ -46482,6 +47448,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "motiv-forge-fuel",
   "k": "motiv|forgefuel",
   "m": "Motiv",
@@ -46492,6 +47460,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "motiv-forza",
   "k": "motiv|forza",
   "m": "Motiv",
@@ -46531,6 +47500,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "motiv-freestyle-black-blue-pearl",
   "k": "motiv|freestyleblackbluepearl",
   "m": "Motiv",
@@ -46541,6 +47511,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "motiv-freestyle-black-pink-pearl",
   "k": "motiv|freestyleblackpinkpearl",
   "m": "Motiv",
@@ -46599,6 +47570,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "motiv-golden-jackal",
   "k": "motiv|goldenjackal",
   "m": "Motiv",
@@ -46638,6 +47610,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "motiv-hyper-venom",
   "k": "motiv|hypervenom",
   "m": "Motiv",
@@ -46648,6 +47622,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "motiv-iron-forge",
   "k": "motiv|ironforge",
   "m": "Motiv",
@@ -46668,6 +47644,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "motiv-jackal-assault",
   "k": "motiv|jackalassault",
   "m": "Motiv",
@@ -46678,6 +47656,7 @@
  },
  {
   "c": null,
+  "co": "a",
   "i": "motiv-jackal-attack",
   "k": "motiv|jackalattack",
   "m": "Motiv",
@@ -46717,6 +47696,7 @@
  },
  {
   "c": null,
+  "co": "a",
   "i": "motiv-jackal-exj",
   "k": "motiv|jackalexj",
   "m": "Motiv",
@@ -46737,6 +47717,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "motiv-jackal-fury",
   "k": "motiv|jackalfury",
   "m": "Motiv",
@@ -46757,6 +47738,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "motiv-jackal-ghost-v2",
   "k": "motiv|jackalghostv2",
   "m": "Motiv",
@@ -46767,6 +47750,7 @@
  },
  {
   "c": null,
+  "co": "a",
   "i": "motiv-jackal-howl",
   "k": "motiv|jackalhowl",
   "m": "Motiv",
@@ -46797,6 +47781,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "motiv-jackal-legacy",
   "k": "motiv|jackallegacy",
   "m": "Motiv",
@@ -46817,6 +47803,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "motiv-jackal-onyx",
   "k": "motiv|jackalonyx",
   "m": "Motiv",
@@ -46856,6 +47844,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "motiv-jackal-shadow",
   "k": "motiv|jackalshadow",
   "m": "Motiv",
@@ -46866,6 +47856,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "motiv-jackal-shred",
   "k": "motiv|jackalshred",
   "m": "Motiv",
@@ -46895,6 +47886,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "motiv-jackal-wild",
   "k": "motiv|jackalwild",
   "m": "Motiv",
@@ -46905,6 +47897,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "motiv-king-venom",
   "k": "motiv|kingvenom",
   "m": "Motiv",
@@ -46925,6 +47918,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "motiv-lethal-paranoia",
   "k": "motiv|lethalparanoia",
   "m": "Motiv",
@@ -46935,6 +47929,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "motiv-lethal-venom",
   "k": "motiv|lethalvenom",
   "m": "Motiv",
@@ -46954,6 +47950,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "motiv-max-thrill-hybrid",
   "k": "motiv|maxthrillhybrid",
   "m": "Motiv",
@@ -46964,6 +47961,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "motiv-max-thrill-pearl",
   "k": "motiv|maxthrillpearl",
   "m": "Motiv",
@@ -46983,6 +47981,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "motiv-max-thrill-solid",
   "k": "motiv|maxthrillsolid",
   "m": "Motiv",
@@ -46993,6 +47992,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "H",
   "i": "motiv-mythic-jackal",
   "k": "motiv|mythicjackal",
   "m": "Motiv",
@@ -47003,6 +48004,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "motiv-nebula",
   "k": "motiv|nebula",
   "m": "Motiv",
@@ -47013,6 +48016,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "motiv-nuclear-forge",
   "k": "motiv|nuclearforge",
   "m": "Motiv",
@@ -47043,6 +48048,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "motiv-octane-carbon",
   "k": "motiv|octanecarbon",
   "m": "Motiv",
@@ -47053,6 +48059,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "motiv-paranoia",
   "k": "motiv|paranoia",
   "m": "Motiv",
@@ -47063,6 +48070,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "motiv-pride",
   "k": "motiv|pride",
   "m": "Motiv",
@@ -47073,6 +48082,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "motiv-pride-dynasty",
   "k": "motiv|pridedynasty",
   "m": "Motiv",
@@ -47083,6 +48094,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "motiv-pride-empire",
   "k": "motiv|prideempire",
   "m": "Motiv",
@@ -47093,6 +48106,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "H",
   "i": "motiv-pride-liberty",
   "k": "motiv|prideliberty",
   "m": "Motiv",
@@ -47112,6 +48127,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "motiv-primal-fear",
   "k": "motiv|primalfear",
   "m": "Motiv",
@@ -47122,6 +48138,7 @@
  },
  {
   "c": null,
+  "co": "s",
   "i": "motiv-primal-ghost",
   "k": "motiv|primalghost",
   "m": "Motiv",
@@ -47142,6 +48159,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "motiv-primal-rage",
   "k": "motiv|primalrage",
   "m": "Motiv",
@@ -47161,6 +48179,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "motiv-primal-rage-evolution",
   "k": "motiv|primalrageevolution",
   "m": "Motiv",
@@ -47171,6 +48190,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "motiv-primal-rage-remix",
   "k": "motiv|primalrageremix",
   "m": "Motiv",
@@ -47181,6 +48201,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "motiv-primal-scream",
   "k": "motiv|primalscream",
   "m": "Motiv",
@@ -47191,6 +48212,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "motiv-primal-shock",
   "k": "motiv|primalshock",
   "m": "Motiv",
@@ -47201,6 +48224,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "motiv-primal-tv4",
   "k": "motiv|primaltv4",
   "m": "Motiv",
@@ -47220,6 +48244,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "motiv-purple-tank",
   "k": "motiv|purpletank",
   "m": "Motiv",
@@ -47266,6 +48292,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "motiv-raptor-altitude",
   "k": "motiv|raptoraltitude",
   "m": "Motiv",
@@ -47286,6 +48313,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "motiv-raptor-fury",
   "k": "motiv|raptorfury",
   "m": "Motiv",
@@ -47306,6 +48335,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "motiv-raptor-pursuit",
   "k": "motiv|raptorpursuit",
   "m": "Motiv",
@@ -47316,6 +48347,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "motiv-raptor-reign",
   "k": "motiv|raptorreign",
   "m": "Motiv",
@@ -47326,6 +48359,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "motiv-raptor-rush",
   "k": "motiv|raptorrush",
   "m": "Motiv",
@@ -47336,6 +48371,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "motiv-raptor-supreme",
   "k": "motiv|raptorsupreme",
   "m": "Motiv",
@@ -47346,6 +48383,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "motiv-raptor-talon",
   "k": "motiv|raptortalon",
   "m": "Motiv",
@@ -47356,6 +48394,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "motiv-rebel-tank-pearl",
   "k": "motiv|rebeltankpearl",
   "m": "Motiv",
@@ -47412,6 +48451,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "motiv-revolt-uprising",
   "k": "motiv|revoltuprising",
   "m": "Motiv",
@@ -47422,6 +48463,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "motiv-revolt-vengeance",
   "k": "motiv|revoltvengeance",
   "m": "Motiv",
@@ -47442,6 +48484,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "motiv-ripcord-flight",
   "k": "motiv|ripcordflight",
   "m": "Motiv",
@@ -47452,6 +48496,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "motiv-ripcord-launch",
   "k": "motiv|ripcordlaunch",
   "m": "Motiv",
@@ -47462,6 +48508,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "motiv-ripcord-velocity",
   "k": "motiv|ripcordvelocity",
   "m": "Motiv",
@@ -47472,6 +48520,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "motiv-rising-venom",
   "k": "motiv|risingvenom",
   "m": "Motiv",
@@ -47521,6 +48571,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "motiv-sapphire-jackal",
   "k": "motiv|sapphirejackal",
   "m": "Motiv",
@@ -47531,6 +48583,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "motiv-shadow-tank",
   "k": "motiv|shadowtank",
   "m": "Motiv",
@@ -47541,6 +48595,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "motiv-sigma-hybrid",
   "k": "motiv|sigmahybrid",
   "m": "Motiv",
@@ -47551,6 +48606,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "motiv-sigma-sting",
   "k": "motiv|sigmasting",
   "m": "Motiv",
@@ -47571,6 +48627,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "motiv-sigma-tour-pearl",
   "k": "motiv|sigmatourpearl",
   "m": "Motiv",
@@ -47591,6 +48649,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "motiv-sky-raptor",
   "k": "motiv|skyraptor",
   "m": "Motiv",
@@ -47648,6 +48708,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "motiv-steel-forge",
   "k": "motiv|steelforge",
   "m": "Motiv",
@@ -47658,6 +48720,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "motiv-subzero-forge",
   "k": "motiv|subzeroforge",
   "m": "Motiv",
@@ -47668,6 +48732,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "motiv-supra",
   "k": "motiv|supra",
   "m": "Motiv",
@@ -47678,6 +48744,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "motiv-supra-clutch",
   "k": "motiv|supraclutch",
   "m": "Motiv",
@@ -47688,6 +48755,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "H",
   "i": "motiv-supra-enzo",
   "k": "motiv|supraenzo",
   "m": "Motiv",
@@ -47698,6 +48767,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "motiv-supra-gt",
   "k": "motiv|supragt",
   "m": "Motiv",
@@ -47708,6 +48778,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "motiv-supra-rally",
   "k": "motiv|suprarally",
   "m": "Motiv",
@@ -47718,6 +48790,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "motiv-supra-sport",
   "k": "motiv|suprasport",
   "m": "Motiv",
@@ -47757,6 +48831,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "motiv-tag-cannon-green-blue-pearl",
   "k": "motiv|tagcannongreenbluepearl",
   "m": "Motiv",
@@ -47776,6 +48851,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "motiv-tank",
   "k": "motiv|tank",
   "m": "Motiv",
@@ -47786,6 +48862,7 @@
  },
  {
   "c": null,
+  "co": "s",
   "i": "motiv-tank-blitz-red",
   "k": "motiv|tankblitzred",
   "m": "Motiv",
@@ -47805,6 +48882,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "motiv-tank-rampage-pearl",
   "k": "motiv|tankrampagepearl",
   "m": "Motiv",
@@ -47815,6 +48894,7 @@
  },
  {
   "c": null,
+  "co": "s",
   "i": "motiv-tank-yellow-jacket",
   "k": "motiv|tankyellowjacket",
   "m": "Motiv",
@@ -47825,6 +48905,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "motiv-thrash",
   "k": "motiv|thrash",
   "m": "Motiv",
@@ -47835,6 +48916,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "motiv-thrash-frenzy",
   "k": "motiv|thrashfrenzy",
   "m": "Motiv",
@@ -47872,6 +48954,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "motiv-top-thrill-blue-green",
   "k": "motiv|topthrillbluegreen",
   "m": "Motiv",
@@ -47882,6 +48966,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "motiv-top-thrill-hybrid",
   "k": "motiv|topthrillhybrid",
   "m": "Motiv",
@@ -47892,6 +48977,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "motiv-top-thrill-purple-red",
   "k": "motiv|topthrillpurplered",
   "m": "Motiv",
@@ -47902,6 +48989,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "motiv-top-thrill-solid",
   "k": "motiv|topthrillsolid",
   "m": "Motiv",
@@ -47921,6 +49009,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "motiv-tribal",
   "k": "motiv|tribal",
   "m": "Motiv",
@@ -47931,6 +49020,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "motiv-tribal-fire",
   "k": "motiv|tribalfire",
   "m": "Motiv",
@@ -47961,6 +49051,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "H",
   "i": "motiv-trident-horizon",
   "k": "motiv|tridenthorizon",
   "m": "Motiv",
@@ -47971,6 +49063,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "motiv-trident-nemesis",
   "k": "motiv|tridentnemesis",
   "m": "Motiv",
@@ -47981,6 +49075,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "motiv-trident-odyssey",
   "k": "motiv|tridentodyssey",
   "m": "Motiv",
@@ -48011,6 +49107,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "motiv-trident-tempest",
   "k": "motiv|tridenttempest",
   "m": "Motiv",
@@ -48060,6 +49157,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "motiv-venom-cobra",
   "k": "motiv|venomcobra",
   "m": "Motiv",
@@ -48070,6 +49168,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "motiv-venom-exj",
   "k": "motiv|venomexj",
   "m": "Motiv",
@@ -48080,6 +49180,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "motiv-venom-hysteria",
   "k": "motiv|venomhysteria",
   "m": "Motiv",
@@ -48100,6 +49202,7 @@
  },
  {
   "c": null,
+  "co": "a",
   "i": "motiv-venom-recoil",
   "k": "motiv|venomrecoil",
   "m": "Motiv",
@@ -48110,6 +49213,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "motiv-venom-shock",
   "k": "motiv|venomshock",
   "m": "Motiv",
@@ -48120,6 +49225,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "motiv-venom-shock-pearl",
   "k": "motiv|venomshockpearl",
   "m": "Motiv",
@@ -48148,6 +49254,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "motiv-venom-strike",
   "k": "motiv|venomstrike",
   "m": "Motiv",
@@ -48158,6 +49265,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "motiv-venom-toxin",
   "k": "motiv|venomtoxin",
   "m": "Motiv",
@@ -48188,6 +49296,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "H",
   "i": "motiv-vip-affliction",
   "k": "motiv|vipaffliction",
   "m": "Motiv",
@@ -48207,6 +49317,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "motiv-vip-exj-sigma",
   "k": "motiv|vipexjsigma",
   "m": "Motiv",
@@ -50539,40 +51651,52 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "radical-beyond-ridiculous",
   "k": "radical|beyondridiculous",
   "m": "Radical",
   "n": "Beyond Ridiculous",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2017"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "radical-beyond-ridiculous-pearl",
   "k": "radical|beyondridiculouspearl",
   "m": "Radical",
   "n": "Beyond Ridiculous Pearl",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2018"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "radical-bigfoot",
   "k": "radical|bigfoot",
   "m": "Radical",
   "n": "Bigfoot",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2022"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "H",
   "i": "radical-bigfoot-hybrid",
   "k": "radical|bigfoothybrid",
   "m": "Radical",
   "n": "Bigfoot Hybrid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2022"
@@ -50597,10 +51721,13 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "radical-break-away",
   "k": "radical|breakaway",
   "m": "Radical",
   "n": "Break Away",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2024"
@@ -50616,10 +51743,13 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "radical-conspiracy",
   "k": "radical|conspiracy",
   "m": "Radical",
   "n": "Conspiracy",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2018"
@@ -50635,20 +51765,26 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "H",
   "i": "radical-conspiracy-hybrid",
   "k": "radical|conspiracyhybrid",
   "m": "Radical",
   "n": "Conspiracy Hybrid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2019"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "radical-conspiracy-pearl",
   "k": "radical|conspiracypearl",
   "m": "Radical",
   "n": "Conspiracy Pearl",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2019"
@@ -50664,80 +51800,102 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "radical-conspiracy-scheme",
   "k": "radical|conspiracyscheme",
   "m": "Radical",
   "n": "Conspiracy Scheme",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2022"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "radical-conspiracy-theory",
   "k": "radical|conspiracytheory",
   "m": "Radical",
   "n": "Conspiracy Theory",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2019"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "radical-counter-attack-pearl",
   "k": "radical|counterattackpearl",
   "m": "Radical",
   "n": "Counter Attack Pearl",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2019"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "radical-counter-attack-solid",
   "k": "radical|counterattacksolid",
   "m": "Radical",
   "n": "Counter Attack Solid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2019"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "radical-crypto",
   "k": "radical|crypto",
   "m": "Radical",
   "n": "Crypto",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2022"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "radical-crypto-boom",
   "k": "radical|cryptoboom",
   "m": "Radical",
   "n": "Crypto Boom",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2023"
  },
  {
   "c": null,
+  "co": "s",
   "i": "radical-cyclops",
   "k": "radical|cyclops",
   "m": "Radical",
   "n": "Cyclops",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2017"
  },
  {
   "c": null,
+  "co": "s",
   "i": "radical-cyclops-pearl",
   "k": "radical|cyclopspearl",
   "m": "Radical",
   "n": "Cyclops Pearl",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2017"
@@ -50753,90 +51911,113 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "radical-deadly-rattler",
   "k": "radical|deadlyrattler",
   "m": "Radical",
   "n": "Deadly Rattler",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2023"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "H",
   "i": "radical-deep-impact",
   "k": "radical|deepimpact",
   "m": "Radical",
   "n": "Deep Impact",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2026"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "U",
   "i": "radical-double-cross",
   "k": "radical|doublecross",
   "m": "Radical",
   "n": "Double Cross",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2021"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "radical-evil-eye",
   "k": "radical|evileye",
   "m": "Radical",
   "n": "Evil Eye",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2025"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "radical-evil-eye-pearl",
   "k": "radical|evileyepearl",
   "m": "Radical",
   "n": "Evil Eye Pearl",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2026"
  },
  {
   "c": null,
+  "co": "s",
   "i": "radical-grease-monkey",
   "k": "radical|greasemonkey",
   "m": "Radical",
   "n": "Grease Monkey",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2013"
  },
  {
   "c": null,
+  "co": "s",
   "i": "radical-grease-monkey-pow",
   "k": "radical|greasemonkeypow",
   "m": "Radical",
   "n": "Grease Monkey POW!",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2014"
  },
  {
   "c": null,
+  "co": "s",
   "i": "radical-grease-monkey-whack",
   "k": "radical|greasemonkeywhack",
   "m": "Radical",
   "n": "Grease Monkey Whack!",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2015"
  },
  {
   "c": null,
+  "co": "a",
   "i": "radical-guru",
   "k": "radical|guru",
   "m": "Radical",
   "n": "Guru",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2014"
@@ -50879,80 +52060,100 @@
  },
  {
   "c": null,
+  "co": "a",
   "i": "radical-guru-master",
   "k": "radical|gurumaster",
   "m": "Radical",
   "n": "Guru Master",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2015"
  },
  {
   "c": null,
+  "co": "a",
   "i": "radical-guru-mighty",
   "k": "radical|gurumighty",
   "m": "Radical",
   "n": "Guru Mighty",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2015"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "radical-guru-oracle",
   "k": "radical|guruoracle",
   "m": "Radical",
   "n": "Guru Oracle",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2025"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "radical-guru-oracle-pearl",
   "k": "radical|guruoraclepearl",
   "m": "Radical",
   "n": "Guru Oracle Pearl",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2026"
  },
  {
   "c": null,
+  "co": "a",
   "i": "radical-guru-pearl-limited",
   "k": "radical|gurupearllimited",
   "m": "Radical",
   "n": "Guru Pearl Limited",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2016"
  },
  {
   "c": null,
+  "co": "a",
   "i": "radical-guru-supreme",
   "k": "radical|gurusupreme",
   "m": "Radical",
   "n": "Guru Supreme",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2015"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "radical-incognito",
   "k": "radical|incognito",
   "m": "Radical",
   "n": "Incognito",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2020"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "radical-incognito-pearl",
   "k": "radical|incognitopearl",
   "m": "Radical",
   "n": "Incognito Pearl",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2021"
@@ -50968,10 +52169,13 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "radical-informer",
   "k": "radical|informer",
   "m": "Radical",
   "n": "Informer",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2021"
@@ -50987,110 +52191,141 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "radical-innovator-solid",
   "k": "radical|innovatorsolid",
   "m": "Radical",
   "n": "Innovator Solid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2023"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "radical-intel",
   "k": "radical|intel",
   "m": "Radical",
   "n": "Intel",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2017"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "radical-intel-pearl",
   "k": "radical|intelpearl",
   "m": "Radical",
   "n": "Intel Pearl",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2018"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "radical-intel-pearl-special-edition",
   "k": "radical|intelpearlspecialedition",
   "m": "Radical",
   "n": "Intel Pearl Special Edition",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2021"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "radical-intel-recon",
   "k": "radical|intelrecon",
   "m": "Radical",
   "n": "Intel Recon",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2025"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "radical-intel-tour",
   "k": "radical|inteltour",
   "m": "Radical",
   "n": "Intel Tour",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2026"
  },
  {
   "c": null,
+  "co": "s",
   "i": "radical-jackpot",
   "k": "radical|jackpot",
   "m": "Radical",
   "n": "Jackpot",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2016"
  },
  {
   "c": null,
+  "co": "s",
   "i": "radical-jackpot-solid",
   "k": "radical|jackpotsolid",
   "m": "Radical",
   "n": "Jackpot Solid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2016"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "radical-katana",
   "k": "radical|katana",
   "m": "Radical",
   "n": "Katana",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2017"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "radical-katana-assault",
   "k": "radical|katanaassault",
   "m": "Radical",
   "n": "Katana Assault",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2022"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "radical-katana-dragon",
   "k": "radical|katanadragon",
   "m": "Radical",
   "n": "Katana Dragon",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2018"
@@ -51133,10 +52368,13 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "radical-katana-legend",
   "k": "radical|katanalegend",
   "m": "Radical",
   "n": "Katana Legend",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2018"
@@ -51161,20 +52399,26 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "H",
   "i": "radical-katana-slash",
   "k": "radical|katanaslash",
   "m": "Radical",
   "n": "Katana Slash",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2018"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "H",
   "i": "radical-katana-strike",
   "k": "radical|katanastrike",
   "m": "Radical",
   "n": "Katana Strike",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2023"
@@ -51190,40 +52434,52 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "radical-ludicrous",
   "k": "radical|ludicrous",
   "m": "Radical",
   "n": "Ludicrous",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2018"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "radical-ludicrous-solid",
   "k": "radical|ludicroussolid",
   "m": "Radical",
   "n": "Ludicrous Solid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2019"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "H",
   "i": "radical-max-bias",
   "k": "radical|maxbias",
   "m": "Radical",
   "n": "Max Bias",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2024"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "radical-maximum-results",
   "k": "radical|maximumresults",
   "m": "Radical",
   "n": "Maximum Results",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2021"
@@ -51239,110 +52495,143 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "radical-no-doubt",
   "k": "radical|nodoubt",
   "m": "Radical",
   "n": "No Doubt",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2024"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "H",
   "i": "radical-no-doubt-hybrid",
   "k": "radical|nodoubthybrid",
   "m": "Radical",
   "n": "No Doubt Hybrid",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2026"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "radical-no-doubt-solid",
   "k": "radical|nodoubtsolid",
   "m": "Radical",
   "n": "No Doubt Solid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2025"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "H",
   "i": "radical-outer-limits",
   "k": "radical|outerlimits",
   "m": "Radical",
   "n": "Outer Limits",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2023"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "radical-outer-limits-black-hole",
   "k": "radical|outerlimitsblackhole",
   "m": "Radical",
   "n": "Outer Limits Black Hole",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2025"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "radical-outer-limits-pearl",
   "k": "radical|outerlimitspearl",
   "m": "Radical",
   "n": "Outer Limits Pearl",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2024"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "radical-outer-limits-solid",
   "k": "radical|outerlimitssolid",
   "m": "Radical",
   "n": "Outer Limits Solid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2025"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "radical-pandemonium",
   "k": "radical|pandemonium",
   "m": "Radical",
   "n": "Pandemonium",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2020"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "radical-pandemonium-solid",
   "k": "radical|pandemoniumsolid",
   "m": "Radical",
   "n": "Pandemonium Solid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2021"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "radical-payback",
   "k": "radical|payback",
   "m": "Radical",
   "n": "Payback",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2021"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "H",
   "i": "radical-power-hitter",
   "k": "radical|powerhitter",
   "m": "Radical",
   "n": "Power Hitter",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2025"
@@ -51358,60 +52647,73 @@
  },
  {
   "c": null,
+  "co": "s",
   "i": "radical-primo",
   "k": "radical|primo",
   "m": "Radical",
   "n": "Primo",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2015"
  },
  {
   "c": null,
+  "co": "s",
   "i": "radical-primo-solid",
   "k": "radical|primosolid",
   "m": "Radical",
   "n": "Primo Solid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2015"
  },
  {
   "c": null,
+  "co": "a",
   "i": "radical-quick-fix",
   "k": "radical|quickfix",
   "m": "Radical",
   "n": "Quick Fix",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2017"
  },
  {
   "c": null,
+  "co": "s",
   "i": "radical-rack-attack-pearl",
   "k": "radical|rackattackpearl",
   "m": "Radical",
   "n": "Rack Attack Pearl",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2015"
  },
  {
   "c": null,
+  "co": "s",
   "i": "radical-rack-attack-solid",
   "k": "radical|rackattacksolid",
   "m": "Radical",
   "n": "Rack Attack Solid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2015"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "radical-radical-conspiracy",
   "k": "radical|radicalconspiracy",
   "m": "Radical",
   "n": "Radical Conspiracy",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2024"
@@ -51427,180 +52729,224 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "radical-rattler",
   "k": "radical|rattler",
   "m": "Radical",
   "n": "Rattler",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2022"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "H",
   "i": "radical-rattler-big-bite",
   "k": "radical|rattlerbigbite",
   "m": "Radical",
   "n": "Rattler Big Bite",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2024"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "U",
   "i": "radical-rattler-nu",
   "k": "radical|rattlernu",
   "m": "Radical",
   "n": "Rattler NU",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2024"
  },
  {
   "c": null,
+  "co": "s",
   "i": "radical-rave",
   "k": "radical|rave",
   "m": "Radical",
   "n": "Rave",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2015"
  },
  {
   "c": null,
+  "co": "s",
   "i": "radical-rave-on",
   "k": "radical|raveon",
   "m": "Radical",
   "n": "Rave On",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2016"
  },
  {
   "c": null,
+  "co": "a",
   "i": "radical-reax",
   "k": "radical|reax",
   "m": "Radical",
   "n": "REAX",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2013"
  },
  {
   "c": null,
+  "co": "a",
   "i": "radical-reax-gusto",
   "k": "radical|reaxgusto",
   "m": "Radical",
   "n": "REAX Gusto",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2014"
  },
  {
   "c": null,
+  "co": "a",
   "i": "radical-reax-pearl",
   "k": "radical|reaxpearl",
   "m": "Radical",
   "n": "REAX Pearl",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2013"
  },
  {
   "c": null,
+  "co": "a",
   "i": "radical-reax-version-2",
   "k": "radical|reaxversion2",
   "m": "Radical",
   "n": "REAX Version 2",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2013"
  },
  {
   "c": null,
+  "co": "a",
   "i": "radical-reax-version-2-pearl",
   "k": "radical|reaxversion2pearl",
   "m": "Radical",
   "n": "REAX Version 2 Pearl",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2013"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "radical-results",
   "k": "radical|results",
   "m": "Radical",
   "n": "Results",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2020"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "radical-results-solid",
   "k": "radical|resultssolid",
   "m": "Radical",
   "n": "Results Solid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2020"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "radical-resultsplus",
   "k": "radical|resultsplus",
   "m": "Radical",
   "n": "Results+",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2020"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "radical-revenge-pearl",
   "k": "radical|revengepearl",
   "m": "Radical",
   "n": "Revenge Pearl",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2026"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "radical-revenge-solid",
   "k": "radical|revengesolid",
   "m": "Radical",
   "n": "Revenge Solid",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2026"
  },
  {
   "c": null,
+  "co": "s",
   "i": "radical-ridiculous",
   "k": "radical|ridiculous",
   "m": "Radical",
   "n": "Ridiculous",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2015"
  },
  {
   "c": null,
+  "co": "a",
   "i": "radical-ridiculous-asym",
   "k": "radical|ridiculousasym",
   "m": "Radical",
   "n": "Ridiculous Asym",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2016"
  },
  {
   "c": null,
+  "co": "s",
   "i": "radical-ridiculous-pearl",
   "k": "radical|ridiculouspearl",
   "m": "Radical",
   "n": "Ridiculous Pearl",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2016"
@@ -51634,10 +52980,12 @@
  },
  {
   "c": null,
+  "co": "a",
   "i": "radical-score",
   "k": "radical|score",
   "m": "Radical",
   "n": "Score",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2014"
@@ -51662,10 +53010,13 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "radical-sizzle",
   "k": "radical|sizzle",
   "m": "Radical",
   "n": "Sizzle",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2018"
@@ -51708,30 +53059,39 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "H",
   "i": "radical-snap-shot-hybrid",
   "k": "radical|snapshothybrid",
   "m": "Radical",
   "n": "Snap Shot Hybrid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2025"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "radical-snapshot",
   "k": "radical|snapshot",
   "m": "Radical",
   "n": "Snapshot",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2025"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "H",
   "i": "radical-sneak-attack",
   "k": "radical|sneakattack",
   "m": "Radical",
   "n": "Sneak Attack",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2022"
@@ -51765,10 +53125,13 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "radical-sneak-attack-solid",
   "k": "radical|sneakattacksolid",
   "m": "Radical",
   "n": "Sneak Attack Solid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2023"
@@ -51784,30 +53147,39 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "radical-squatch",
   "k": "radical|squatch",
   "m": "Radical",
   "n": "Squatch",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2018"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "H",
   "i": "radical-squatch-hybrid",
   "k": "radical|squatchhybrid",
   "m": "Radical",
   "n": "Squatch Hybrid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2019"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "radical-squatch-solid",
   "k": "radical|squatchsolid",
   "m": "Radical",
   "n": "Squatch Solid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2019"
@@ -51823,60 +53195,76 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "radical-the-closer",
   "k": "radical|thecloser",
   "m": "Radical",
   "n": "The Closer",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2019"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "radical-the-closer-pearl",
   "k": "radical|thecloserpearl",
   "m": "Radical",
   "n": "The Closer Pearl",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2020"
  },
  {
   "c": null,
+  "co": "a",
   "i": "radical-the-fix",
   "k": "radical|thefix",
   "m": "Radical",
   "n": "The Fix",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2016"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "radical-the-hitter",
   "k": "radical|thehitter",
   "m": "Radical",
   "n": "The Hitter",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2023"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "radical-the-hitter-pearl",
   "k": "radical|thehitterpearl",
   "m": "Radical",
   "n": "The Hitter Pearl",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2024"
  },
  {
   "c": null,
+  "co": "a",
   "i": "radical-the-spy",
   "k": "radical|thespy",
   "m": "Radical",
   "n": "The Spy",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2021"
@@ -51901,20 +53289,26 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "radical-torpedo",
   "k": "radical|torpedo",
   "m": "Radical",
   "n": "Torpedo",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2025"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "radical-torpedo-direct-hit",
   "k": "radical|torpedodirecthit",
   "m": "Radical",
   "n": "Torpedo Direct Hit",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2025"
@@ -51930,160 +53324,198 @@
  },
  {
   "c": null,
+  "co": "s",
   "i": "radical-torrid-affair",
   "k": "radical|torridaffair",
   "m": "Radical",
   "n": "Torrid Affair",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2013"
  },
  {
   "c": null,
+  "co": "s",
   "i": "radical-torrid-elite",
   "k": "radical|torridelite",
   "m": "Radical",
   "n": "Torrid Elite",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2013"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "H",
   "i": "radical-trail-blazer",
   "k": "radical|trailblazer",
   "m": "Radical",
   "n": "Trail Blazer",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2021"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "radical-trail-blazer-solid",
   "k": "radical|trailblazersolid",
   "m": "Radical",
   "n": "Trail Blazer Solid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2022"
  },
  {
   "c": null,
+  "co": "a",
   "i": "radical-tremendous",
   "k": "radical|tremendous",
   "m": "Radical",
   "n": "Tremendous",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2017"
  },
  {
   "c": null,
+  "co": "a",
   "i": "radical-tremendous-pearl",
   "k": "radical|tremendouspearl",
   "m": "Radical",
   "n": "Tremendous Pearl",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2017"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "radical-vexed",
   "k": "radical|vexed",
   "m": "Radical",
   "n": "Vexed",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2026"
  },
  {
   "c": null,
+  "co": "a",
   "i": "radical-xeno",
   "k": "radical|xeno",
   "m": "Radical",
   "n": "Xeno",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2016"
  },
  {
   "c": null,
+  "co": "a",
   "i": "radical-xeno-pearl",
   "k": "radical|xenopearl",
   "m": "Radical",
   "n": "Xeno Pearl",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2016"
  },
  {
   "c": null,
+  "co": "s",
   "i": "radical-yeti",
   "k": "radical|yeti",
   "m": "Radical",
   "n": "Yeti",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2013"
  },
  {
   "c": null,
+  "co": "s",
   "i": "radical-yeti-uncaged",
   "k": "radical|yetiuncaged",
   "m": "Radical",
   "n": "Yeti Uncaged",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2014"
  },
  {
   "c": null,
+  "co": "s",
   "i": "radical-yeti-unleashed",
   "k": "radical|yetiunleashed",
   "m": "Radical",
   "n": "Yeti Unleashed",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2014"
  },
  {
   "c": null,
+  "co": "s",
   "i": "radical-yeti-untamed",
   "k": "radical|yetiuntamed",
   "m": "Radical",
   "n": "Yeti Untamed",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2013"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "H",
   "i": "radical-zig-zag",
   "k": "radical|zigzag",
   "m": "Radical",
   "n": "Zig Zag",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2023"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "radical-zig-zag-solid",
   "k": "radical|zigzagsolid",
   "m": "Radical",
   "n": "Zig Zag Solid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2024"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "radical-zing",
   "k": "radical|zing",
   "m": "Radical",
   "n": "Zing!",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2019"
@@ -52099,20 +53531,26 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "H",
   "i": "radical-zing-hybrid",
   "k": "radical|zinghybrid",
   "m": "Radical",
   "n": "Zing! Hybrid",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2019"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "radical-zing-pearl",
   "k": "radical|zingpearl",
   "m": "Radical",
   "n": "Zing! Pearl",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2020"
@@ -53568,10 +55006,12 @@
  },
  {
   "c": null,
+  "co": "a",
   "i": "roto-grip-clone",
   "k": "rotogrip|clone",
   "m": "Roto Grip",
   "n": "Clone",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2023"
@@ -53587,20 +55027,24 @@
  },
  {
   "c": null,
+  "co": "s",
   "i": "roto-grip-cosmos",
   "k": "rotogrip|cosmos",
   "m": "Roto Grip",
   "n": "Cosmos",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2002"
  },
  {
   "c": null,
+  "co": "s",
   "i": "roto-grip-cosmos-all-colors",
   "k": "rotogrip|cosmos",
   "m": "Roto Grip",
   "n": "Cosmos (All Colors)",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2025"
@@ -54034,6 +55478,7 @@
   "k": "rotogrip|exoticgem",
   "m": "Roto Grip",
   "n": "Exotic Gem",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2022"
@@ -54256,20 +55701,26 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "roto-grip-gremlin",
   "k": "rotogrip|gremlin",
   "m": "Roto Grip",
   "n": "Gremlin",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2025"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "H",
   "i": "roto-grip-gremlin-tour-x",
   "k": "rotogrip|gremlintourx",
   "m": "Roto Grip",
   "n": "Gremlin Tour-X",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2026"
@@ -54537,10 +55988,13 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "roto-grip-hustle-earth-blue-gold-green",
   "k": "rotogrip|hustleearthbluegoldgreen",
   "m": "Roto Grip",
   "n": "Hustle (Earth) Blue-Gold-Green",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2025"
@@ -54871,10 +56325,13 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "roto-grip-hustle-x-ray",
   "k": "rotogrip|hustlexray",
   "m": "Roto Grip",
   "n": "Hustle X-Ray",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2024"
@@ -54957,6 +56414,7 @@
   "k": "rotogrip|hypedpearl",
   "m": "Roto Grip",
   "n": "Hyped Pearl",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2021"
@@ -54990,10 +56448,13 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "H",
   "i": "roto-grip-hyped-up",
   "k": "rotogrip|hypedup",
   "m": "Roto Grip",
   "n": "Hyped Up!",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2026"
@@ -55063,10 +56524,12 @@
  },
  {
   "c": null,
+  "co": "s",
   "i": "roto-grip-idol-cosmos",
   "k": "rotogrip|idolcosmos",
   "m": "Roto Grip",
   "n": "Idol Cosmos",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2022"
@@ -55082,10 +56545,12 @@
  },
  {
   "c": null,
+  "co": "s",
   "i": "roto-grip-idol-helios",
   "k": "rotogrip|idolhelios",
   "m": "Roto Grip",
   "n": "Idol Helios",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2021"
@@ -55902,10 +57367,13 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "roto-grip-perfect-gem",
   "k": "rotogrip|perfectgem",
   "m": "Roto Grip",
   "n": "Perfect Gem",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2026"
@@ -56263,10 +57731,13 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "roto-grip-rst-hyperdrive-pearl",
   "k": "rotogrip|rsthyperdrivepearl",
   "m": "Roto Grip",
   "n": "RST Hyperdrive Pearl",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2025"
@@ -57002,10 +58473,12 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "roto-grip-tnt",
   "k": "rotogrip|tnt",
   "m": "Roto Grip",
   "n": "TNT",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2023"
@@ -57111,20 +58584,26 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "roto-grip-transform-pearl",
   "k": "rotogrip|transformpearl",
   "m": "Roto Grip",
   "n": "Transform Pearl",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2026"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "roto-grip-transformer",
   "k": "rotogrip|transformer",
   "m": "Roto Grip",
   "n": "Transformer",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2025"
@@ -57239,10 +58718,13 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "roto-grip-wicked-gremlin",
   "k": "rotogrip|wickedgremlin",
   "m": "Roto Grip",
   "n": "Wicked Gremlin",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2026"
@@ -58072,6 +59554,7 @@
   "k": "storm|absolute",
   "m": "Storm",
   "n": "Absolute",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2022"
@@ -58159,10 +59642,13 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "storm-alpha-crux",
   "k": "storm|alphacrux",
   "m": "Storm",
   "n": "Alpha Crux",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2016"
@@ -58439,10 +59925,13 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "H",
   "i": "storm-bionic",
   "k": "storm|bionic",
   "m": "Storm",
   "n": "Bionic",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2026"
@@ -58710,10 +60199,12 @@
  },
  {
   "c": null,
+  "co": "s",
   "i": "storm-clear-storm-teal",
   "k": "storm|clearstormteal",
   "m": "Storm",
   "n": "Clear Storm Teal",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2025"
@@ -59017,10 +60508,13 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "storm-concept",
   "k": "storm|concept",
   "m": "Storm",
   "n": "Concept",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2026"
@@ -59738,20 +61232,26 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "H",
   "i": "storm-equinox-hybrid",
   "k": "storm|equinoxhybrid",
   "m": "Storm",
   "n": "Equinox Hybrid",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2026"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "storm-equinox-solid",
   "k": "storm|equinoxsolid",
   "m": "Storm",
   "n": "Equinox Solid",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2025"
@@ -59960,6 +61460,7 @@
   "k": "storm|fate",
   "m": "Storm",
   "n": "Fate",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2022"
@@ -60641,10 +62142,13 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "H",
   "i": "storm-hy-road",
   "k": "storm|hyroad",
   "m": "Storm",
   "n": "Hy-Road",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2008"
@@ -61002,10 +62506,13 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "H",
   "i": "storm-ice-storm-ocean-blue-white",
   "k": "storm|icestormoceanbluewhite",
   "m": "Storm",
   "n": "Ice Storm - Ocean Blue/White",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2023"
@@ -61030,20 +62537,26 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "storm-identity",
   "k": "storm|identity",
   "m": "Storm",
   "n": "IDentity",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2025"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "storm-identity-b-c-p",
   "k": "storm|identitybcp",
   "m": "Storm",
   "n": "IDentity (B-C-P)",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2025"
@@ -61081,6 +62594,7 @@
   "k": "storm|infinitephysix",
   "m": "Storm",
   "n": "Infinite PhysiX",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2022"
@@ -61159,20 +62673,26 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "storm-ion-max",
   "k": "storm|ionmax",
   "m": "Storm",
   "n": "Ion Max",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2024"
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "storm-ion-max-pearl",
   "k": "storm|ionmaxpearl",
   "m": "Storm",
   "n": "Ion Max Pearl",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2025"
@@ -61215,10 +62735,13 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "storm-ion-pro-solid",
   "k": "storm|ionprosolid",
   "m": "Storm",
   "n": "Ion Pro Solid",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2025"
@@ -62224,10 +63747,13 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "storm-monsoon",
   "k": "storm|monsoon",
   "m": "Storm",
   "n": "Monsoon",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2026"
@@ -62405,10 +63931,13 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "storm-next-factor",
   "k": "storm|nextfactor",
   "m": "Storm",
   "n": "Next Factor",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2025"
@@ -62437,6 +63966,7 @@
   "k": "storm|nova",
   "m": "Storm",
   "n": "Nova",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2021"
@@ -62789,6 +64319,7 @@
   "k": "storm|phaze4",
   "m": "Storm",
   "n": "Phaze 4",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2021"
@@ -62849,20 +64380,26 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "storm-phaze-ii",
   "k": "storm|phazeii",
   "m": "Storm",
   "n": "Phaze II",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2016"
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "storm-phaze-ii-pearl",
   "k": "storm|phazeiipearl",
   "m": "Storm",
   "n": "Phaze II Pearl",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2025"
@@ -62954,6 +64491,7 @@
   "k": "storm|phazev",
   "m": "Storm",
   "n": "Phaze V",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2022"
@@ -63140,10 +64678,13 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "U",
   "i": "storm-pitch-black",
   "k": "storm|pitchblack",
   "m": "Storm",
   "n": "Pitch Black",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2014"
@@ -63555,10 +65096,13 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "U",
   "i": "storm-q-tour-78-u",
   "k": "storm|qtour78u",
   "m": "Storm",
   "n": "!Q Tour 78/U",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2023"
@@ -63754,10 +65298,13 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "storm-q-tour-sapphire",
   "k": "storm|qtoursapphire",
   "m": "Storm",
   "n": "!Q Tour Sapphire",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2019"
@@ -64034,10 +65581,13 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "storm-rocket-a-i",
   "k": "storm|rocketai",
   "m": "Storm",
   "n": "Rocket A.I.",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2026"
@@ -64696,6 +66246,7 @@
   "k": "storm|sunstormlimitededition",
   "m": "Storm",
   "n": "Sun Storm Limited Edition",
+  "r": 1,
   "s": 1,
   "t": false,
   "y": "2022"
@@ -66115,10 +67666,13 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "H",
   "i": "storm-tropical-surge-black-cherry",
   "k": "storm|tropicalsurgeblackcherry",
   "m": "Storm",
   "n": "Tropical Surge Black/Cherry",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2019"
@@ -66152,10 +67706,13 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "storm-tropical-surge-emerald-charcoal",
   "k": "storm|tropicalsurgeemeraldcharcoal",
   "m": "Storm",
   "n": "Tropical Surge Emerald/Charcoal",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2022"
@@ -66171,10 +67728,13 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "storm-tropical-surge-gold-bronze-medallion",
   "k": "storm|tropicalsurgegoldbronzemedallion",
   "m": "Storm",
   "n": "Tropical Surge Gold/Bronze/Medallion",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2026"
@@ -66190,10 +67750,13 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "storm-tropical-surge-kiwi-apple-avocado",
   "k": "storm|tropicalsurgekiwiappleavocado",
   "m": "Storm",
   "n": "Tropical Surge Kiwi/Apple/Avocado",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2026"
@@ -66227,10 +67790,13 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "storm-tropical-surge-pink-purple",
   "k": "storm|tropicalsurgepinkpurple",
   "m": "Storm",
   "n": "Tropical Surge Pink/Purple",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2019"
@@ -66282,10 +67848,13 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "storm-tropical-surge-teal-blue",
   "k": "storm|tropicalsurgetealblue",
   "m": "Storm",
   "n": "Tropical Surge Teal/Blue",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2019"
@@ -66337,10 +67906,13 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "storm-typhoon",
   "k": "storm|typhoon",
   "m": "Storm",
   "n": "Typhoon",
+  "r": 0,
   "s": 1,
   "t": false,
   "y": "2025"
@@ -68516,6 +70088,7 @@
  },
  {
   "c": null,
+  "co": "s",
   "i": "track-inc-300a",
   "k": "trackinc|300a",
   "m": "Track Inc.",
@@ -68526,6 +70099,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "track-inc-300c",
   "k": "trackinc|300c",
   "m": "Track Inc.",
@@ -68546,6 +70121,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "track-inc-300t",
   "k": "trackinc|300t",
   "m": "Track Inc.",
@@ -68556,6 +70133,7 @@
  },
  {
   "c": null,
+  "co": "s",
   "i": "track-inc-400a-special-edition",
   "k": "trackinc|400aspecialedition",
   "m": "Track Inc.",
@@ -68657,6 +70235,7 @@
  },
  {
   "c": null,
+  "co": "a",
   "i": "track-inc-503c",
   "k": "trackinc|503c",
   "m": "Track Inc.",
@@ -68677,6 +70256,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "track-inc-505a",
   "k": "trackinc|505a",
   "m": "Track Inc.",
@@ -68687,6 +70267,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "track-inc-505c",
   "k": "trackinc|505c",
   "m": "Track Inc.",
@@ -68706,6 +70288,7 @@
  },
  {
   "c": null,
+  "co": "a",
   "i": "track-inc-505c2",
   "k": "trackinc|505c2",
   "m": "Track Inc.",
@@ -68716,6 +70299,7 @@
  },
  {
   "c": null,
+  "co": "a",
   "i": "track-inc-505t",
   "k": "trackinc|505t",
   "m": "Track Inc.",
@@ -68726,6 +70310,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "track-inc-508a",
   "k": "trackinc|508a",
   "m": "Track Inc.",
@@ -68736,6 +70322,7 @@
  },
  {
   "c": null,
+  "co": "a",
   "i": "track-inc-607a-special-edition",
   "k": "trackinc|607aspecialedition",
   "m": "Track Inc.",
@@ -68756,6 +70343,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "H",
   "i": "track-inc-706c-a",
   "k": "trackinc|706ca",
   "m": "Track Inc.",
@@ -68776,6 +70365,7 @@
  },
  {
   "c": null,
+  "co": "a",
   "i": "track-inc-714c",
   "k": "trackinc|714c",
   "m": "Track Inc.",
@@ -68786,6 +70376,7 @@
  },
  {
   "c": null,
+  "co": "a",
   "i": "track-inc-715a",
   "k": "trackinc|715a",
   "m": "Track Inc.",
@@ -68796,6 +70387,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "track-inc-715c",
   "k": "trackinc|715c",
   "m": "Track Inc.",
@@ -68806,6 +70399,7 @@
  },
  {
   "c": null,
+  "co": "a",
   "i": "track-inc-715t",
   "k": "trackinc|715t",
   "m": "Track Inc.",
@@ -68816,6 +70410,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "track-inc-716c",
   "k": "trackinc|716c",
   "m": "Track Inc.",
@@ -68836,6 +70431,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "track-inc-718a",
   "k": "trackinc|718a",
   "m": "Track Inc.",
@@ -68855,6 +70452,7 @@
  },
  {
   "c": null,
+  "co": "a",
   "i": "track-inc-811a-special-edition",
   "k": "trackinc|811aspecialedition",
   "m": "Track Inc.",
@@ -68865,6 +70463,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "H",
   "i": "track-inc-811c-t",
   "k": "trackinc|811ct",
   "m": "Track Inc.",
@@ -68893,6 +70493,7 @@
  },
  {
   "c": null,
+  "co": "a",
   "i": "track-inc-910a",
   "k": "trackinc|910a",
   "m": "Track Inc.",
@@ -68912,6 +70513,7 @@
  },
  {
   "c": null,
+  "co": "a",
   "i": "track-inc-912t",
   "k": "trackinc|912t",
   "m": "Track Inc.",
@@ -68940,6 +70542,7 @@
  },
  {
   "c": null,
+  "co": "a",
   "i": "track-inc-919c",
   "k": "trackinc|919c",
   "m": "Track Inc.",
@@ -68950,6 +70553,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "track-inc-920a",
   "k": "trackinc|920a",
   "m": "Track Inc.",
@@ -68964,7 +70568,6 @@
   "k": "trackinc|920t",
   "m": "Track Inc.",
   "n": "920T",
-  "s": 1,
   "t": false,
   "y": "2010"
  },
@@ -68989,6 +70592,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "H",
   "i": "track-inc-alias",
   "k": "trackinc|alias",
   "m": "Track Inc.",
@@ -69026,6 +70631,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "track-inc-archetype",
   "k": "trackinc|archetype",
   "m": "Track Inc.",
@@ -69036,6 +70642,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "track-inc-archetype-hybrid",
   "k": "trackinc|archetypehybrid",
   "m": "Track Inc.",
@@ -69154,6 +70761,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "track-inc-criterion",
   "k": "trackinc|criterion",
   "m": "Track Inc.",
@@ -69164,6 +70772,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "track-inc-criterion-hybrid",
   "k": "trackinc|criterionhybrid",
   "m": "Track Inc.",
@@ -69174,6 +70783,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "track-inc-criterion-inverse",
   "k": "trackinc|criterioninverse",
   "m": "Track Inc.",
@@ -69229,6 +70839,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "H",
   "i": "track-inc-cyborg",
   "k": "trackinc|cyborg",
   "m": "Track Inc.",
@@ -69239,6 +70851,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "track-inc-cyborg-pearl",
   "k": "trackinc|cyborgpearl",
   "m": "Track Inc.",
@@ -69258,6 +70872,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "track-inc-cypher",
   "k": "trackinc|cypher",
   "m": "Track Inc.",
@@ -69268,6 +70883,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "track-inc-cypher-pearl",
   "k": "trackinc|cypherpearl",
   "m": "Track Inc.",
@@ -69467,6 +71083,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "track-inc-heat-2-pearl",
   "k": "trackinc|heat2pearl",
   "m": "Track Inc.",
@@ -69477,6 +71094,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "track-inc-heat-black-purple-silver",
   "k": "trackinc|heatblackpurplesilver",
   "m": "Track Inc.",
@@ -69487,6 +71105,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "track-inc-heat-black-purple-silver-orange-pin",
   "k": "trackinc|heatblackpurplesilverorangepin",
   "m": "Track Inc.",
@@ -69497,6 +71116,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "track-inc-heat-blast",
   "k": "trackinc|heatblast",
   "m": "Track Inc.",
@@ -69507,6 +71127,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "track-inc-heat-burgundy",
   "k": "trackinc|heatburgundy",
   "m": "Track Inc.",
@@ -69517,6 +71138,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "track-inc-heat-lava",
   "k": "trackinc|heatlava",
   "m": "Track Inc.",
@@ -69527,6 +71149,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "track-inc-heat-maroon-pearl",
   "k": "trackinc|heatmaroonpearl",
   "m": "Track Inc.",
@@ -69537,6 +71160,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "track-inc-heat-ultraviolet",
   "k": "trackinc|heatultraviolet",
   "m": "Track Inc.",
@@ -69547,6 +71171,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "track-inc-heat-wave",
   "k": "trackinc|heatwave",
   "m": "Track Inc.",
@@ -69557,6 +71182,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "track-inc-heat-x-treme",
   "k": "trackinc|heatxtreme",
   "m": "Track Inc.",
@@ -69567,6 +71193,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "track-inc-heat-x-treme-polished",
   "k": "trackinc|heatxtremepolished",
   "m": "Track Inc.",
@@ -69604,6 +71231,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "track-inc-hx05",
   "k": "trackinc|hx05",
   "m": "Track Inc.",
@@ -69614,6 +71243,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "H",
   "i": "track-inc-hx10",
   "k": "trackinc|hx10",
   "m": "Track Inc.",
@@ -69624,6 +71255,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "H",
   "i": "track-inc-hx16",
   "k": "trackinc|hx16",
   "m": "Track Inc.",
@@ -69634,6 +71267,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "track-inc-in2ition",
   "k": "trackinc|in2ition",
   "m": "Track Inc.",
@@ -69707,6 +71342,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "track-inc-kinetic-amethyst",
   "k": "trackinc|kineticamethyst",
   "m": "Track Inc.",
@@ -69735,6 +71372,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "track-inc-kinetic-black-ice",
   "k": "trackinc|kineticblackice",
   "m": "Track Inc.",
@@ -69745,6 +71383,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "track-inc-kinetic-cobalt",
   "k": "trackinc|kineticcobalt",
   "m": "Track Inc.",
@@ -69755,6 +71394,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "H",
   "i": "track-inc-kinetic-emerald",
   "k": "trackinc|kineticemerald",
   "m": "Track Inc.",
@@ -69792,6 +71433,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "track-inc-kinetic-obsidian",
   "k": "trackinc|kineticobsidian",
   "m": "Track Inc.",
@@ -69802,6 +71445,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "track-inc-kinetic-pearl",
   "k": "trackinc|kineticpearl",
   "m": "Track Inc.",
@@ -69812,6 +71457,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "track-inc-kinetic-platinum",
   "k": "trackinc|kineticplatinum",
   "m": "Track Inc.",
@@ -69831,6 +71477,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "track-inc-kinetic-ruby",
   "k": "trackinc|kineticruby",
   "m": "Track Inc.",
@@ -69859,6 +71507,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "track-inc-kinetic-sapphire-ice",
   "k": "trackinc|kineticsapphireice",
   "m": "Track Inc.",
@@ -69869,6 +71518,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "track-inc-latitude",
   "k": "trackinc|latitude",
   "m": "Track Inc.",
@@ -69879,6 +71529,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "track-inc-latitude-pearl",
   "k": "trackinc|latitudepearl",
   "m": "Track Inc.",
@@ -69889,6 +71540,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "track-inc-legion",
   "k": "trackinc|legion",
   "m": "Track Inc.",
@@ -69917,6 +71569,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "track-inc-legion-pearl",
   "k": "trackinc|legionpearl",
   "m": "Track Inc.",
@@ -69945,6 +71598,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "track-inc-legion-solid",
   "k": "trackinc|legionsolid",
   "m": "Track Inc.",
@@ -69964,6 +71618,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "track-inc-logix",
   "k": "trackinc|logix",
   "m": "Track Inc.",
@@ -69974,6 +71630,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "H",
   "i": "track-inc-lx05",
   "k": "trackinc|lx05",
   "m": "Track Inc.",
@@ -69984,6 +71642,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "track-inc-lx10",
   "k": "trackinc|lx10",
   "m": "Track Inc.",
@@ -69994,6 +71654,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "track-inc-lx16",
   "k": "trackinc|lx16",
   "m": "Track Inc.",
@@ -70013,6 +71675,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "track-inc-mako",
   "k": "trackinc|mako",
   "m": "Track Inc.",
@@ -70023,6 +71687,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "track-inc-mako-attack",
   "k": "trackinc|makoattack",
   "m": "Track Inc.",
@@ -70123,6 +71788,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "track-inc-mx05",
   "k": "trackinc|mx05",
   "m": "Track Inc.",
@@ -70133,6 +71800,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "H",
   "i": "track-inc-mx10",
   "k": "trackinc|mx10",
   "m": "Track Inc.",
@@ -70143,6 +71812,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "H",
   "i": "track-inc-mx16",
   "k": "trackinc|mx16",
   "m": "Track Inc.",
@@ -70180,6 +71851,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "track-inc-paradox",
   "k": "trackinc|paradox",
   "m": "Track Inc.",
@@ -70190,6 +71862,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "H",
   "i": "track-inc-paradox-black",
   "k": "trackinc|paradoxblack",
   "m": "Track Inc.",
@@ -70218,6 +71892,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "track-inc-paradox-pearl",
   "k": "trackinc|paradoxpearl",
   "m": "Track Inc.",
@@ -70237,6 +71913,7 @@
  },
  {
   "c": null,
+  "co": "a",
   "i": "track-inc-paradox-red",
   "k": "trackinc|paradoxred",
   "m": "Track Inc.",
@@ -70301,6 +71978,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "H",
   "i": "track-inc-paradox-trilogy",
   "k": "trackinc|paradoxtrilogy",
   "m": "Track Inc.",
@@ -70338,6 +72017,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "track-inc-paradox-v",
   "k": "trackinc|paradoxv",
   "m": "Track Inc.",
@@ -70348,6 +72029,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "track-inc-paragon",
   "k": "trackinc|paragon",
   "m": "Track Inc.",
@@ -70385,6 +72067,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "track-inc-paragon-fire",
   "k": "trackinc|paragonfire",
   "m": "Track Inc.",
@@ -70395,6 +72078,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "track-inc-paragon-hybrid",
   "k": "trackinc|paragonhybrid",
   "m": "Track Inc.",
@@ -70414,6 +72098,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "track-inc-paragon-pearl",
   "k": "trackinc|paragonpearl",
   "m": "Track Inc.",
@@ -70442,6 +72127,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "track-inc-paragon-shadow",
   "k": "trackinc|paragonshadow",
   "m": "Track Inc.",
@@ -70623,6 +72309,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "track-inc-precision",
   "k": "trackinc|precision",
   "m": "Track Inc.",
@@ -70651,6 +72339,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "track-inc-precision-solid",
   "k": "trackinc|precisionsolid",
   "m": "Track Inc.",
@@ -70679,6 +72369,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "track-inc-proof",
   "k": "trackinc|proof",
   "m": "Track Inc.",
@@ -70689,6 +72380,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "track-inc-proof-hybrid",
   "k": "trackinc|proofhybrid",
   "m": "Track Inc.",
@@ -70699,6 +72391,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "track-inc-proof-pearl",
   "k": "trackinc|proofpearl",
   "m": "Track Inc.",
@@ -70866,7 +72559,6 @@
   "k": "trackinc|sensor",
   "m": "Track Inc.",
   "n": "Sensor",
-  "s": 1,
   "t": false,
   "y": "1994"
  },
@@ -70908,6 +72600,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "track-inc-sensor-solid",
   "k": "trackinc|sensorsolid",
   "m": "Track Inc.",
@@ -70999,6 +72692,7 @@
  },
  {
   "c": null,
+  "co": "a",
   "i": "track-inc-spare-plus",
   "k": "trackinc|spareplus",
   "m": "Track Inc.",
@@ -71027,6 +72721,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "track-inc-stealth",
   "k": "trackinc|stealth",
   "m": "Track Inc.",
@@ -71055,6 +72750,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "track-inc-stealth-hybrid",
   "k": "trackinc|stealthhybrid",
   "m": "Track Inc.",
@@ -71065,6 +72761,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "track-inc-stealth-mode",
   "k": "trackinc|stealthmode",
   "m": "Track Inc.",
@@ -71075,6 +72772,7 @@
  },
  {
   "c": null,
+  "cv": "H",
   "i": "track-inc-stealth-mode-hybrid",
   "k": "trackinc|stealthmodehybrid",
   "m": "Track Inc.",
@@ -71085,6 +72783,7 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "track-inc-stealth-pearl",
   "k": "trackinc|stealthpearl",
   "m": "Track Inc.",
@@ -71140,6 +72839,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "track-inc-strata",
   "k": "trackinc|strata",
   "m": "Track Inc.",
@@ -71276,6 +72976,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "track-inc-synthesis",
   "k": "trackinc|synthesis",
   "m": "Track Inc.",
@@ -71367,6 +73068,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "track-inc-tactix",
   "k": "trackinc|tactix",
   "m": "Track Inc.",
@@ -71395,6 +73098,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "H",
   "i": "track-inc-tactix-hybrid",
   "k": "trackinc|tactixhybrid",
   "m": "Track Inc.",
@@ -71414,6 +73119,7 @@
  },
  {
   "c": null,
+  "co": "a",
   "i": "track-inc-tantrum",
   "k": "trackinc|tantrum",
   "m": "Track Inc.",
@@ -71424,6 +73130,7 @@
  },
  {
   "c": null,
+  "co": "a",
   "i": "track-inc-temper",
   "k": "trackinc|temper",
   "m": "Track Inc.",
@@ -71434,6 +73141,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "track-inc-tempo",
   "k": "trackinc|tempo",
   "m": "Track Inc.",
@@ -71471,6 +73180,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "H",
   "i": "track-inc-theorem",
   "k": "trackinc|theorem",
   "m": "Track Inc.",
@@ -71526,6 +73237,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "H",
   "i": "track-inc-theorem-delta",
   "k": "trackinc|theoremdelta",
   "m": "Track Inc.",
@@ -71536,6 +73249,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "i": "track-inc-theorem-pearl",
   "k": "trackinc|theorempearl",
   "m": "Track Inc.",
@@ -71564,6 +73279,8 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "i": "track-inc-theorem-solid",
   "k": "trackinc|theoremsolid",
   "m": "Track Inc.",
@@ -71610,6 +73327,7 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "track-inc-tour-sic",
   "k": "trackinc|toursic",
   "m": "Track Inc.",
@@ -71620,6 +73338,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "track-inc-tour-x",
   "k": "trackinc|tourx",
   "m": "Track Inc.",
@@ -71630,6 +73350,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "track-inc-tour-x-solid",
   "k": "trackinc|tourxsolid",
   "m": "Track Inc.",
@@ -71685,6 +73407,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "track-inc-triton-elite",
   "k": "trackinc|tritonelite",
   "m": "Track Inc.",
@@ -71749,6 +73473,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "track-inc-tundra",
   "k": "trackinc|tundra",
   "m": "Track Inc.",
@@ -71759,6 +73485,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "track-inc-tundra-blue-fire",
   "k": "trackinc|tundrabluefire",
   "m": "Track Inc.",
@@ -71769,6 +73497,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "track-inc-tundra-fire",
   "k": "trackinc|tundrafire",
   "m": "Track Inc.",
@@ -71779,6 +73509,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "i": "track-inc-tundra-solid",
   "k": "trackinc|tundrasolid",
   "m": "Track Inc.",
@@ -71789,6 +73521,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "H",
   "i": "track-inc-ultra-heat",
   "k": "trackinc|ultraheat",
   "m": "Track Inc.",
@@ -71799,6 +73533,7 @@
  },
  {
   "c": null,
+  "co": "a",
   "i": "track-inc-uprising",
   "k": "trackinc|uprising",
   "m": "Track Inc.",

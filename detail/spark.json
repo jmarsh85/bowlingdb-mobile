@@ -33,6 +33,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "1995-05",
@@ -41,7 +42,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null

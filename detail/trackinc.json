@@ -33,6 +33,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2011-05",
@@ -41,7 +42,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -50,7 +51,7 @@
   "Aliases": [],
   "BallName": "300A",
   "CatalogID": "track-inc-300a",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Track Symmetric",
@@ -109,6 +110,7 @@
     "RG": 2.58
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2012-05",
@@ -117,7 +119,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -126,7 +128,7 @@
   "Aliases": [],
   "BallName": "300C",
   "CatalogID": "track-inc-300c",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Track Symmetric",
@@ -175,6 +177,7 @@
     "RG": 2.55
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2010-06",
@@ -183,7 +186,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -192,7 +195,7 @@
   "Aliases": [],
   "BallName": "300C Solid",
   "CatalogID": "track-inc-300c-solid",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "DNA",
@@ -251,6 +254,7 @@
     "RG": 2.58
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2013-05",
@@ -259,7 +263,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -268,7 +272,7 @@
   "Aliases": [],
   "BallName": "300T",
   "CatalogID": "track-inc-300t",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Track Symmetric",
@@ -317,6 +321,7 @@
     "RG": 2.58
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2011-05",
@@ -325,7 +330,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -334,7 +339,7 @@
   "Aliases": [],
   "BallName": "400A Special Edition",
   "CatalogID": "track-inc-400a-special-edition",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "DNA",
@@ -393,6 +398,7 @@
     "RG": 2.58
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2013-09",
@@ -401,7 +407,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -440,6 +446,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2012-08",
@@ -448,7 +455,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -487,6 +494,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2010-11",
@@ -495,7 +503,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -534,6 +542,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2011-03",
@@ -542,7 +551,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -581,6 +590,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2011-11",
@@ -589,7 +599,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -628,6 +638,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2013-04",
@@ -636,7 +647,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -675,6 +686,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2010-04",
@@ -683,7 +695,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -722,6 +734,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2011-01",
@@ -730,7 +743,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -769,6 +782,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2012-12",
@@ -777,7 +791,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -816,6 +830,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2011-02",
@@ -824,7 +839,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -833,7 +848,7 @@
   "Aliases": [],
   "BallName": "503A",
   "CatalogID": "track-inc-503a",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Packman",
@@ -892,6 +907,7 @@
     "RG": 2.51
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2013-02",
@@ -900,7 +916,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -909,7 +925,7 @@
   "Aliases": [],
   "BallName": "503C",
   "CatalogID": "track-inc-503c",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Packman",
@@ -958,6 +974,7 @@
     "RG": 2.51
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2011-05",
@@ -966,7 +983,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -975,7 +992,7 @@
   "Aliases": [],
   "BallName": "503T",
   "CatalogID": "track-inc-503t",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Packman",
@@ -1034,6 +1051,7 @@
     "RG": 2.51
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2012-05",
@@ -1042,7 +1060,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1051,7 +1069,7 @@
   "Aliases": [],
   "BallName": "505A",
   "CatalogID": "track-inc-505a",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Shuffle",
@@ -1100,6 +1118,7 @@
     "RG": 2.49
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2009-09",
@@ -1108,7 +1127,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1117,7 +1136,7 @@
   "Aliases": [],
   "BallName": "505C",
   "CatalogID": "track-inc-505c",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Shuttle",
@@ -1166,6 +1185,7 @@
     "RG": 2.49
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2009-05",
@@ -1174,7 +1194,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1213,6 +1233,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2012-03",
@@ -1221,7 +1242,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1230,7 +1251,7 @@
   "Aliases": [],
   "BallName": "505C²",
   "CatalogID": "track-inc-505c2",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Modified Kinetic",
@@ -1289,6 +1310,7 @@
     "RG": 2.51
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2013-06",
@@ -1297,7 +1319,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1306,7 +1328,7 @@
   "Aliases": [],
   "BallName": "505T",
   "CatalogID": "track-inc-505t",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Shuttle",
@@ -1355,6 +1377,7 @@
     "RG": 2.49
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2010-05",
@@ -1363,7 +1386,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1372,7 +1395,7 @@
   "Aliases": [],
   "BallName": "508A",
   "CatalogID": "track-inc-508a",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Legion",
@@ -1421,6 +1444,7 @@
     "RG": 2.53
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2011-12",
@@ -1429,7 +1453,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1438,7 +1462,7 @@
   "Aliases": [],
   "BallName": "607A Special Edition",
   "CatalogID": "track-inc-607a-special-edition",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Modified Legion",
@@ -1487,6 +1511,7 @@
     "RG": 2.46
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2010-06",
@@ -1495,7 +1520,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1504,7 +1529,7 @@
   "Aliases": [],
   "BallName": "706A",
   "CatalogID": "track-inc-706a",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Helmet",
@@ -1563,6 +1588,7 @@
     "RG": 2.53
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2012-05",
@@ -1571,7 +1597,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1580,7 +1606,7 @@
   "Aliases": [],
   "BallName": "706C/A",
   "CatalogID": "track-inc-706c-a",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Helmet",
@@ -1639,6 +1665,7 @@
     "RG": 2.53
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2013-09",
@@ -1647,7 +1674,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1656,7 +1683,7 @@
   "Aliases": [],
   "BallName": "706T",
   "CatalogID": "track-inc-706t",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Helmet",
@@ -1715,6 +1742,7 @@
     "RG": 2.53
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2013-05",
@@ -1723,7 +1751,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1732,7 +1760,7 @@
   "Aliases": [],
   "BallName": "714C",
   "CatalogID": "track-inc-714c",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "The 714C features a core shape that we successfully used in the past in both our 718A and 716T. The original Robot core gave us the big backending 718A while the Modified Robot core gave us our strong rolling 716T, so we knew it was a great core. For this new release, we modified the densities once again to create a strong continuous motion at the backend of the lane. This new version is the Modified Robot 2.0.",
@@ -1791,6 +1819,7 @@
     "RG": 2.53
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2012-12",
@@ -1799,7 +1828,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1808,7 +1837,7 @@
   "Aliases": [],
   "BallName": "715A",
   "CatalogID": "track-inc-715a",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Catback",
@@ -1857,6 +1886,7 @@
     "RG": 2.56
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2009-05",
@@ -1865,7 +1895,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1874,7 +1904,7 @@
   "Aliases": [],
   "BallName": "715C",
   "CatalogID": "track-inc-715c",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Catback",
@@ -1923,6 +1953,7 @@
     "RG": 2.56
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2010-01",
@@ -1931,7 +1962,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1940,7 +1971,7 @@
   "Aliases": [],
   "BallName": "715T",
   "CatalogID": "track-inc-715t",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Catback",
@@ -1989,6 +2020,7 @@
     "RG": 2.56
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2010-09",
@@ -1997,7 +2029,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2006,7 +2038,7 @@
   "Aliases": [],
   "BallName": "716C",
   "CatalogID": "track-inc-716c",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Modified Robot",
@@ -2055,6 +2087,7 @@
     "RG": 2.52
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2011-09",
@@ -2063,7 +2096,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2072,7 +2105,7 @@
   "Aliases": [],
   "BallName": "716T",
   "CatalogID": "track-inc-716t",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Modified Robot",
@@ -2121,6 +2154,7 @@
     "RG": 2.52
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2012-01",
@@ -2129,7 +2163,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2138,7 +2172,7 @@
   "Aliases": [],
   "BallName": "718A",
   "CatalogID": "track-inc-718a",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Robot",
@@ -2187,6 +2221,7 @@
     "RG": 2.51
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2010-09",
@@ -2195,7 +2230,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2234,6 +2269,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2011-01",
@@ -2242,7 +2278,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2251,7 +2287,7 @@
   "Aliases": [],
   "BallName": "811A Special Edition",
   "CatalogID": "track-inc-811a-special-edition",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Legion 2 Turbo",
@@ -2300,6 +2336,7 @@
     "RG": 2.51
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2011-11",
@@ -2308,7 +2345,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2317,7 +2354,7 @@
   "Aliases": [],
   "BallName": "811C/T",
   "CatalogID": "track-inc-811c-t",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Legion 2 Turbo",
@@ -2376,6 +2413,7 @@
     "RG": 2.51
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2012-10",
@@ -2384,7 +2422,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2423,6 +2461,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2013-09",
@@ -2431,7 +2470,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2470,6 +2509,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2012-11",
@@ -2478,7 +2518,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2487,7 +2527,7 @@
   "Aliases": [],
   "BallName": "910A",
   "CatalogID": "track-inc-910a",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Face",
@@ -2546,6 +2586,7 @@
     "RG": 2.51
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2013-06",
@@ -2554,7 +2595,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2593,6 +2634,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2012-05",
@@ -2601,7 +2643,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2610,7 +2652,7 @@
   "Aliases": [],
   "BallName": "912T",
   "CatalogID": "track-inc-912t",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Legion 2 Turbo",
@@ -2669,6 +2711,7 @@
     "RG": 2.51
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2012-05",
@@ -2677,7 +2720,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2716,6 +2759,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2010-10",
@@ -2724,7 +2768,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2763,6 +2807,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2011-04",
@@ -2771,7 +2816,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2780,7 +2825,7 @@
   "Aliases": [],
   "BallName": "919C",
   "CatalogID": "track-inc-919c",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Edge",
@@ -2829,6 +2874,7 @@
     "RG": 2.54
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2011-05",
@@ -2837,7 +2883,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2846,7 +2892,7 @@
   "Aliases": [],
   "BallName": "920A",
   "CatalogID": "track-inc-920a",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Modified Leggo",
@@ -2895,6 +2941,7 @@
     "RG": 2.56
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2009-11",
@@ -2903,7 +2950,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2912,23 +2959,20 @@
   "Aliases": [],
   "BallName": "920T",
   "CatalogID": "track-inc-920t",
-  "Checked": "2026-10-10",
+  "Checked": null,
   "Colorway": null,
   "Core": {
-   "Name": "Modified Leggo",
-   "Type": "Asymmetrical"
+   "Name": null,
+   "Type": null
   },
   "Cover": {
-   "Finish": "500, 1000, 2000, 4000 Abralon®",
-   "Name": "Intermix Hybrid Technology",
+   "Finish": null,
+   "Name": null,
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
-   "Core": "mfg",
-   "Cover": "mfg",
-   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -2943,24 +2987,9 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": "https://trackbowling.com/products/920t",
-  "SpecsByWeight": {
-   "14": {
-    "Diff": 0.05,
-    "IntDiff": null,
-    "RG": 2.58
-   },
-   "15": {
-    "Diff": 0.057,
-    "IntDiff": null,
-    "RG": 2.57
-   },
-   "16": {
-    "Diff": 0.053,
-    "IntDiff": null,
-    "RG": 2.56
-   }
-  },
+  "Source": null,
+  "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2010-05",
@@ -2969,7 +2998,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2978,7 +3007,7 @@
   "Aliases": [],
   "BallName": "930T",
   "CatalogID": "track-inc-930t",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Reactive",
@@ -3027,6 +3056,7 @@
     "RG": 2.54
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2009-05",
@@ -3035,7 +3065,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3074,6 +3104,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "1999-11",
@@ -3082,7 +3113,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3091,7 +3122,7 @@
   "Aliases": [],
   "BallName": "Alias",
   "CatalogID": "track-inc-alias",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Alias",
@@ -3150,6 +3181,7 @@
     "RG": 2.5
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2018-01-02",
@@ -3158,7 +3190,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3197,6 +3229,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2018-06-05",
@@ -3205,7 +3238,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3244,6 +3277,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2003-12",
@@ -3252,7 +3286,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3291,6 +3325,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2004-04",
@@ -3299,7 +3334,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3308,7 +3343,7 @@
   "Aliases": [],
   "BallName": "Archetype",
   "CatalogID": "track-inc-archetype",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "I-Core 3.0 Slim",
@@ -3367,6 +3402,7 @@
     "RG": 2.526
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2023-01-24",
@@ -3375,7 +3411,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3384,7 +3420,7 @@
   "Aliases": [],
   "BallName": "Archetype Hybrid",
   "CatalogID": "track-inc-archetype-hybrid",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "I-Core 3.0 Slim",
@@ -3443,6 +3479,7 @@
     "RG": 2.526
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2024-02-05",
@@ -3451,7 +3488,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3490,6 +3527,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2023-08-01",
@@ -3498,7 +3536,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3537,6 +3575,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2024-10-08",
@@ -3545,7 +3584,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3584,6 +3623,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2005-02",
@@ -3592,7 +3632,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3631,6 +3671,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2005-01",
@@ -3639,7 +3680,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3678,6 +3719,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2006-02",
@@ -3686,7 +3728,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3725,6 +3767,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2005-07",
@@ -3733,7 +3776,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3772,6 +3815,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2000-03",
@@ -3780,7 +3824,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3819,6 +3863,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2000-10",
@@ -3827,7 +3872,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3866,6 +3911,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2005-05",
@@ -3874,7 +3920,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3913,6 +3959,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2000-08",
@@ -3921,7 +3968,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3960,6 +4007,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "1998-12",
@@ -3968,7 +4016,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4007,6 +4055,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2004-02",
@@ -4015,7 +4064,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4024,7 +4073,7 @@
   "Aliases": [],
   "BallName": "Criterion",
   "CatalogID": "track-inc-criterion",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Criterion M.D.",
@@ -4083,6 +4132,7 @@
     "RG": 2.509
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2024-10-08",
@@ -4091,7 +4141,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4100,7 +4150,7 @@
   "Aliases": [],
   "BallName": "Criterion Hybrid",
   "CatalogID": "track-inc-criterion-hybrid",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Criterion M.D.",
@@ -4159,6 +4209,7 @@
     "RG": 2.509
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2025-02-04",
@@ -4167,7 +4218,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4176,7 +4227,7 @@
   "Aliases": [],
   "BallName": "Criterion Inverse",
   "CatalogID": "track-inc-criterion-inverse",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Criterion I.D.",
@@ -4235,6 +4286,7 @@
     "RG": 2.506
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2025-10-14",
@@ -4243,7 +4295,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4282,6 +4334,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2018-05-22",
@@ -4290,7 +4343,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4329,6 +4382,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "1994-07",
@@ -4337,7 +4391,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4376,6 +4430,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "1993-11",
@@ -4384,7 +4439,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4423,6 +4478,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2003-02",
@@ -4431,7 +4487,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4470,6 +4526,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2003-10",
@@ -4478,7 +4535,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4487,7 +4544,7 @@
   "Aliases": [],
   "BallName": "Cyborg",
   "CatalogID": "track-inc-cyborg",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Cyborg",
@@ -4541,6 +4598,7 @@
     "RG": 2.49
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2016-06-16",
@@ -4549,7 +4607,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4558,7 +4616,7 @@
   "Aliases": [],
   "BallName": "Cyborg Pearl",
   "CatalogID": "track-inc-cyborg-pearl",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Cyborg",
@@ -4617,6 +4675,7 @@
     "RG": 2.49
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2016-09-22",
@@ -4625,7 +4684,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4664,6 +4723,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2016-06-16",
@@ -4672,7 +4732,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4681,7 +4741,7 @@
   "Aliases": [],
   "BallName": "Cypher",
   "CatalogID": "track-inc-cypher",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Synergy",
@@ -4740,6 +4800,7 @@
     "RG": 2.551
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2024-04-02",
@@ -4748,7 +4809,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4757,7 +4818,7 @@
   "Aliases": [],
   "BallName": "Cypher Pearl",
   "CatalogID": "track-inc-cypher-pearl",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Synergy",
@@ -4816,6 +4877,7 @@
     "RG": 2.551
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2025-04-01",
@@ -4824,7 +4886,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4863,6 +4925,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2003-09",
@@ -4871,7 +4934,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4910,6 +4973,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2005-06",
@@ -4918,7 +4982,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4957,6 +5021,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2007-06",
@@ -4965,7 +5030,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5004,6 +5069,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2003-10",
@@ -5012,7 +5078,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5051,6 +5117,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2005-04",
@@ -5059,7 +5126,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5098,6 +5165,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2005-01",
@@ -5106,7 +5174,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5145,6 +5213,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2001-02",
@@ -5153,7 +5222,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5192,6 +5261,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2001-06",
@@ -5200,7 +5270,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5239,6 +5309,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2001-09",
@@ -5247,7 +5318,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5286,6 +5357,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "1999-12",
@@ -5294,7 +5366,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5333,6 +5405,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2006-07",
@@ -5341,7 +5414,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5380,6 +5453,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2006-12",
@@ -5388,7 +5462,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5427,6 +5501,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2014-08",
@@ -5435,7 +5510,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5474,6 +5549,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2002-03",
@@ -5482,7 +5558,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5521,6 +5597,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2006-03",
@@ -5529,7 +5606,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5568,6 +5645,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "1995-08",
@@ -5576,7 +5654,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5615,6 +5693,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2002-07",
@@ -5623,7 +5702,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5662,6 +5741,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2004-07",
@@ -5670,7 +5750,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5709,6 +5789,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2002-10",
@@ -5717,7 +5798,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5756,6 +5837,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2015-04",
@@ -5764,7 +5846,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5803,6 +5885,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2004-01",
@@ -5811,7 +5894,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5820,7 +5903,7 @@
   "Aliases": [],
   "BallName": "Heat 2 Pearl",
   "CatalogID": "track-inc-heat-2-pearl",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Modified Tri-Core",
@@ -5879,6 +5962,7 @@
     "RG": 2.51
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2001-05",
@@ -5887,7 +5971,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5896,7 +5980,7 @@
   "Aliases": [],
   "BallName": "Heat Black/Purple/Silver",
   "CatalogID": "track-inc-heat-black-purple-silver",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Modified Tri-Core",
@@ -5955,6 +6039,7 @@
     "RG": 2.51
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2012-01",
@@ -5963,7 +6048,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -5972,7 +6057,7 @@
   "Aliases": [],
   "BallName": "Heat Black/Purple/Silver (Orange Pin)",
   "CatalogID": "track-inc-heat-black-purple-silver-orange-pin",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Modified Tri-Core",
@@ -6031,6 +6116,7 @@
     "RG": 2.51
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2012-04",
@@ -6039,7 +6125,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6048,7 +6134,7 @@
   "Aliases": [],
   "BallName": "Heat Blast",
   "CatalogID": "track-inc-heat-blast",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Modified Tri-Core",
@@ -6107,6 +6193,7 @@
     "RG": 2.51
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2006-01",
@@ -6115,7 +6202,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6124,7 +6211,7 @@
   "Aliases": [],
   "BallName": "Heat Burgundy",
   "CatalogID": "track-inc-heat-burgundy",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Modified Tri-Core",
@@ -6183,6 +6270,7 @@
     "RG": 2.51
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2005-02",
@@ -6191,7 +6279,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6200,7 +6288,7 @@
   "Aliases": [],
   "BallName": "Heat Lava",
   "CatalogID": "track-inc-heat-lava",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Modified Tri-Core",
@@ -6259,6 +6347,7 @@
     "RG": 2.51
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2019-06-11",
@@ -6267,7 +6356,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6276,7 +6365,7 @@
   "Aliases": [],
   "BallName": "Heat Maroon Pearl",
   "CatalogID": "track-inc-heat-maroon-pearl",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Modified Tri-Core",
@@ -6335,6 +6424,7 @@
     "RG": 2.51
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2015-11-19",
@@ -6343,7 +6433,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6352,7 +6442,7 @@
   "Aliases": [],
   "BallName": "Heat Ultraviolet",
   "CatalogID": "track-inc-heat-ultraviolet",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Modified Tri-Core",
@@ -6411,6 +6501,7 @@
     "RG": 2.51
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2021-10-12",
@@ -6419,7 +6510,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6428,7 +6519,7 @@
   "Aliases": [],
   "BallName": "Heat Wave",
   "CatalogID": "track-inc-heat-wave",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Modified Tri-Core",
@@ -6487,6 +6578,7 @@
     "RG": 2.51
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2006-11",
@@ -6495,7 +6587,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6504,7 +6596,7 @@
   "Aliases": [],
   "BallName": "Heat X-Treme",
   "CatalogID": "track-inc-heat-x-treme",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Modified Tri-Core",
@@ -6563,6 +6655,7 @@
     "RG": 2.51
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2016-06-16",
@@ -6571,7 +6664,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6580,7 +6673,7 @@
   "Aliases": [],
   "BallName": "Heat X-Treme (Polished)",
   "CatalogID": "track-inc-heat-x-treme-polished",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Modified Tri-Core",
@@ -6639,6 +6732,7 @@
     "RG": 2.51
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2016-07-12",
@@ -6647,7 +6741,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6686,6 +6780,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2003-06",
@@ -6694,7 +6789,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6733,6 +6828,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2004-06",
@@ -6741,7 +6837,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6780,6 +6876,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2002-02",
@@ -6788,7 +6885,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6797,7 +6894,7 @@
   "Aliases": [],
   "BallName": "Hx05",
   "CatalogID": "track-inc-hx05",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Modified Kinetic",
@@ -6856,6 +6953,7 @@
     "RG": 2.51
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2014-01",
@@ -6864,7 +6962,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6873,7 +6971,7 @@
   "Aliases": [],
   "BallName": "Hx10",
   "CatalogID": "track-inc-hx10",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Face",
@@ -6932,6 +7030,7 @@
     "RG": 2.51
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2014-06",
@@ -6940,7 +7039,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -6949,7 +7048,7 @@
   "Aliases": [],
   "BallName": "Hx16",
   "CatalogID": "track-inc-hx16",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "I-Core (Dual Density)",
@@ -7008,6 +7107,7 @@
     "RG": 2.5
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2015-01",
@@ -7016,7 +7116,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7025,7 +7125,7 @@
   "Aliases": [],
   "BallName": "In2ition",
   "CatalogID": "track-inc-in2ition",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "X-Type",
@@ -7084,6 +7184,7 @@
     "RG": 2.5
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2019-09-17",
@@ -7092,7 +7193,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7131,6 +7232,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2019-12-17",
@@ -7139,7 +7241,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7178,6 +7280,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2006-07",
@@ -7186,7 +7289,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7225,6 +7328,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "1999-10",
@@ -7233,7 +7337,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7272,6 +7376,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "1999-01",
@@ -7280,7 +7385,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7319,6 +7424,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "1999-05",
@@ -7327,7 +7433,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7366,6 +7472,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2012-04",
@@ -7374,7 +7481,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7413,6 +7520,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2007-06",
@@ -7421,7 +7529,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7430,7 +7538,7 @@
   "Aliases": [],
   "BallName": "Kinetic Amethyst",
   "CatalogID": "track-inc-kinetic-amethyst",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Modified Kinetic",
@@ -7489,6 +7597,7 @@
     "RG": 2.51
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2018-06-19",
@@ -7497,7 +7606,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7536,6 +7645,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2008-01",
@@ -7544,7 +7654,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7583,6 +7693,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2009-03",
@@ -7591,7 +7702,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7600,7 +7711,7 @@
   "Aliases": [],
   "BallName": "Kinetic Black Ice",
   "CatalogID": "track-inc-kinetic-black-ice",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Shuttle",
@@ -7659,6 +7770,7 @@
     "RG": 2.493
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2022-03-29",
@@ -7667,7 +7779,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7676,7 +7788,7 @@
   "Aliases": [],
   "BallName": "Kinetic Cobalt",
   "CatalogID": "track-inc-kinetic-cobalt",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Shuttle",
@@ -7735,6 +7847,7 @@
     "RG": 2.493
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2023-03-21",
@@ -7743,7 +7856,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7752,7 +7865,7 @@
   "Aliases": [],
   "BallName": "Kinetic Emerald",
   "CatalogID": "track-inc-kinetic-emerald",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Modified Kinetic",
@@ -7811,6 +7924,7 @@
     "RG": 2.51
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2016-12-15",
@@ -7819,7 +7933,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7858,6 +7972,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2008-01",
@@ -7866,7 +7981,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7905,6 +8020,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2021-11-02",
@@ -7913,7 +8029,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7952,6 +8068,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2014-11",
@@ -7960,7 +8077,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -7969,7 +8086,7 @@
   "Aliases": [],
   "BallName": "Kinetic Obsidian",
   "CatalogID": "track-inc-kinetic-obsidian",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Modified Kinetic",
@@ -8028,6 +8145,7 @@
     "RG": 2.51
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2019-10-15",
@@ -8036,7 +8154,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -8045,7 +8163,7 @@
   "Aliases": [],
   "BallName": "Kinetic Pearl",
   "CatalogID": "track-inc-kinetic-pearl",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Shuttle",
@@ -8094,6 +8212,7 @@
     "RG": 2.49
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2008-06",
@@ -8102,7 +8221,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -8111,7 +8230,7 @@
   "Aliases": [],
   "BallName": "Kinetic Platinum",
   "CatalogID": "track-inc-kinetic-platinum",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Shuttle",
@@ -8170,6 +8289,7 @@
     "RG": 2.493
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2021-02-02",
@@ -8178,7 +8298,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -8217,6 +8337,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2009-10",
@@ -8225,7 +8346,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -8234,7 +8355,7 @@
   "Aliases": [],
   "BallName": "Kinetic Ruby",
   "CatalogID": "track-inc-kinetic-ruby",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Modified Kinetic",
@@ -8293,6 +8414,7 @@
     "RG": 2.51
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2017-06-13",
@@ -8301,7 +8423,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -8340,6 +8462,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2017-06-06",
@@ -8348,7 +8471,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -8387,6 +8510,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2017-12-19",
@@ -8395,7 +8519,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -8404,7 +8528,7 @@
   "Aliases": [],
   "BallName": "Kinetic Sapphire Ice",
   "CatalogID": "track-inc-kinetic-sapphire-ice",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Shuttle",
@@ -8463,6 +8587,7 @@
     "RG": 2.493
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2026-04-07",
@@ -8471,7 +8596,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -8480,7 +8605,7 @@
   "Aliases": [],
   "BallName": "Latitude",
   "CatalogID": "track-inc-latitude",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "MC2 Technology",
@@ -8539,6 +8664,7 @@
     "RG": 2.546
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2020-02-18",
@@ -8547,7 +8673,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -8556,7 +8682,7 @@
   "Aliases": [],
   "BallName": "Latitude Pearl",
   "CatalogID": "track-inc-latitude-pearl",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "MC2 Technology",
@@ -8615,6 +8741,7 @@
     "RG": 2.546
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2020-10-06",
@@ -8623,7 +8750,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -8632,7 +8759,7 @@
   "Aliases": [],
   "BallName": "Legion",
   "CatalogID": "track-inc-legion",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "LT-2",
@@ -8691,6 +8818,7 @@
     "RG": 2.51
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2006-11",
@@ -8699,7 +8827,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -8738,6 +8866,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2007-09",
@@ -8746,7 +8875,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -8785,6 +8914,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2006-11",
@@ -8793,7 +8923,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -8802,7 +8932,7 @@
   "Aliases": [],
   "BallName": "Legion Pearl",
   "CatalogID": "track-inc-legion-pearl",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "LT-2",
@@ -8861,6 +8991,7 @@
     "RG": 2.51
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2021-06-15",
@@ -8869,7 +9000,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -8908,6 +9039,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2007-09",
@@ -8916,7 +9048,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -8955,6 +9087,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2015-06",
@@ -8963,7 +9096,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -8972,7 +9105,7 @@
   "Aliases": [],
   "BallName": "Legion Solid",
   "CatalogID": "track-inc-legion-solid",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "LT-2",
@@ -9031,6 +9164,7 @@
     "RG": 2.51
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2015-10-22",
@@ -9039,7 +9173,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -9078,6 +9212,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2022-09-20",
@@ -9086,7 +9221,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -9095,7 +9230,7 @@
   "Aliases": [],
   "BallName": "Logix",
   "CatalogID": "track-inc-logix",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "LT-2",
@@ -9154,6 +9289,7 @@
     "RG": 2.51
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2017-08-08",
@@ -9162,7 +9298,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -9171,7 +9307,7 @@
   "Aliases": [],
   "BallName": "Lx05",
   "CatalogID": "track-inc-lx05",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Modified Kinetic",
@@ -9230,6 +9366,7 @@
     "RG": 2.51
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2014-06",
@@ -9238,7 +9375,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -9247,7 +9384,7 @@
   "Aliases": [],
   "BallName": "Lx10",
   "CatalogID": "track-inc-lx10",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Face",
@@ -9306,6 +9443,7 @@
     "RG": 2.51
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2015-01",
@@ -9314,7 +9452,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -9323,7 +9461,7 @@
   "Aliases": [],
   "BallName": "Lx16",
   "CatalogID": "track-inc-lx16",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "I-Core (Dual Density)",
@@ -9382,6 +9520,7 @@
     "RG": 2.5
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2014-01",
@@ -9390,7 +9529,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -9429,6 +9568,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2006-02",
@@ -9437,7 +9577,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -9446,7 +9586,7 @@
   "Aliases": [],
   "BallName": "Mako",
   "CatalogID": "track-inc-mako",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Mako (Dual Density)",
@@ -9505,6 +9645,7 @@
     "RG": 2.49
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2016-12-15",
@@ -9513,7 +9654,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -9522,7 +9663,7 @@
   "Aliases": [],
   "BallName": "Mako Attack",
   "CatalogID": "track-inc-mako-attack",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Mako (Dual Density)",
@@ -9581,6 +9722,7 @@
     "RG": 2.49
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2017-07-25",
@@ -9589,7 +9731,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -9628,6 +9770,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2019-09-17",
@@ -9636,7 +9779,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": "under 13 lb"
@@ -9675,6 +9818,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2018-01-30",
@@ -9683,7 +9827,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -9722,6 +9866,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2017-03-28",
@@ -9730,7 +9875,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -9769,6 +9914,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2017-11-14",
@@ -9777,7 +9923,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -9816,6 +9962,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2006-07",
@@ -9824,7 +9971,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -9863,6 +10010,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2002-07",
@@ -9871,7 +10019,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -9910,6 +10058,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2002-01",
@@ -9918,7 +10067,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -9957,6 +10106,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2003-01",
@@ -9965,7 +10115,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -10004,6 +10154,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2004-12",
@@ -10012,7 +10163,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -10051,6 +10202,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2004-08",
@@ -10059,7 +10211,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -10068,7 +10220,7 @@
   "Aliases": [],
   "BallName": "Mx05",
   "CatalogID": "track-inc-mx05",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Modified Kinetic",
@@ -10127,6 +10279,7 @@
     "RG": 2.51
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2015-01",
@@ -10135,7 +10288,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -10144,7 +10297,7 @@
   "Aliases": [],
   "BallName": "Mx10",
   "CatalogID": "track-inc-mx10",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Face",
@@ -10203,6 +10356,7 @@
     "RG": 2.51
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2014-01",
@@ -10211,7 +10365,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -10220,7 +10374,7 @@
   "Aliases": [],
   "BallName": "Mx16",
   "CatalogID": "track-inc-mx16",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "I-Core (Dual Density)",
@@ -10279,6 +10433,7 @@
     "RG": 2.5
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2014-06",
@@ -10287,7 +10442,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -10326,6 +10481,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2014-10",
@@ -10334,7 +10490,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -10373,6 +10529,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "1995-02",
@@ -10381,7 +10538,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -10420,6 +10577,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "1993-03",
@@ -10428,7 +10586,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -10437,7 +10595,7 @@
   "Aliases": [],
   "BallName": "Paradox",
   "CatalogID": "track-inc-paradox",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "I-Core 2.0 (Dual Density)",
@@ -10496,6 +10654,7 @@
     "RG": 2.49
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2015-06",
@@ -10504,7 +10663,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -10513,7 +10672,7 @@
   "Aliases": [],
   "BallName": "Paradox Black",
   "CatalogID": "track-inc-paradox-black",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "I-Core 2.0 (Dual Density)",
@@ -10572,6 +10731,7 @@
     "RG": 2.49
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2017-10-17",
@@ -10580,7 +10740,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -10619,6 +10779,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2016-03-01",
@@ -10627,7 +10788,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -10666,6 +10827,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2017-04-11",
@@ -10674,7 +10836,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -10683,7 +10845,7 @@
   "Aliases": [],
   "BallName": "Paradox Pearl",
   "CatalogID": "track-inc-paradox-pearl",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "I-Core 2.0 (Dual Density)",
@@ -10742,6 +10904,7 @@
     "RG": 2.49
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2015-12-17",
@@ -10750,7 +10913,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -10789,6 +10952,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2015-12-17",
@@ -10797,7 +10961,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -10806,7 +10970,7 @@
   "Aliases": [],
   "BallName": "Paradox Red",
   "CatalogID": "track-inc-paradox-red",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "I-Core 2.0 (Dual Density)",
@@ -10865,6 +11029,7 @@
     "RG": 2.49
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2019-08-13",
@@ -10873,7 +11038,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -10912,6 +11077,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2016-02-09",
@@ -10920,7 +11086,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -10959,6 +11125,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2018-04-24",
@@ -10967,7 +11134,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -11006,6 +11173,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2016-05-03",
@@ -11014,7 +11182,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -11053,6 +11221,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2016-12-20",
@@ -11061,7 +11230,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -11100,6 +11269,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2017-03-07",
@@ -11108,7 +11278,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -11147,6 +11317,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2017-07-25",
@@ -11155,7 +11326,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -11164,7 +11335,7 @@
   "Aliases": [],
   "BallName": "Paradox Trilogy",
   "CatalogID": "track-inc-paradox-trilogy",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "I-Core 2.0 (Dual Density)",
@@ -11223,6 +11394,7 @@
     "RG": 2.49
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2016-08-25",
@@ -11231,7 +11403,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -11270,6 +11442,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2016-06-14",
@@ -11278,7 +11451,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -11317,6 +11490,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2016-09-20",
@@ -11325,7 +11499,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -11364,6 +11538,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2017-02-14",
@@ -11372,7 +11547,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -11381,7 +11556,7 @@
   "Aliases": [],
   "BallName": "Paradox V",
   "CatalogID": "track-inc-paradox-v",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "I-Core 2.0 (Dual Density)",
@@ -11440,6 +11615,7 @@
     "RG": 2.49
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2018-09-18",
@@ -11448,7 +11624,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -11457,7 +11633,7 @@
   "Aliases": [],
   "BallName": "Paragon",
   "CatalogID": "track-inc-paragon",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "I-Core 3.0",
@@ -11516,6 +11692,7 @@
     "RG": 2.501
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2021-12-14",
@@ -11524,7 +11701,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -11563,6 +11740,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2024-08-27",
@@ -11571,7 +11749,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -11610,6 +11788,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2025-02-11",
@@ -11618,7 +11797,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -11657,6 +11836,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2026-01-27",
@@ -11665,7 +11845,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -11674,7 +11854,7 @@
   "Aliases": [],
   "BallName": "Paragon (Fire)",
   "CatalogID": "track-inc-paragon-fire",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "I-Core 3.0",
@@ -11733,6 +11913,7 @@
     "RG": 2.501
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2026-06-02",
@@ -11741,7 +11922,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -11750,7 +11931,7 @@
   "Aliases": [],
   "BallName": "Paragon Hybrid",
   "CatalogID": "track-inc-paragon-hybrid",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "I-Core 3.0",
@@ -11809,6 +11990,7 @@
     "RG": 2.501
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2022-06-21",
@@ -11817,7 +11999,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -11856,6 +12038,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2025-07-01",
@@ -11864,7 +12047,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -11873,7 +12056,7 @@
   "Aliases": [],
   "BallName": "Paragon Pearl",
   "CatalogID": "track-inc-paragon-pearl",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "I-Core 3.0",
@@ -11932,6 +12115,7 @@
     "RG": 2.501
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2023-06-27",
@@ -11940,7 +12124,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -11979,6 +12163,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2022-06-28",
@@ -11987,7 +12172,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -12026,6 +12211,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2023-05-16",
@@ -12034,7 +12220,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -12043,7 +12229,7 @@
   "Aliases": [],
   "BallName": "Paragon (Shadow)",
   "CatalogID": "track-inc-paragon-shadow",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "I-Core 3.0",
@@ -12102,6 +12288,7 @@
     "RG": 2.501
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2025-05-27",
@@ -12110,7 +12297,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -12149,6 +12336,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2022-09-13",
@@ -12157,7 +12345,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -12196,6 +12384,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2023-10-10",
@@ -12204,7 +12393,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -12243,6 +12432,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "1998-10",
@@ -12251,7 +12441,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -12290,6 +12480,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2003-06",
@@ -12298,7 +12489,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -12337,6 +12528,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2003-09",
@@ -12345,7 +12537,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -12384,6 +12576,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2005-05",
@@ -12392,7 +12585,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -12431,6 +12624,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2004-06",
@@ -12439,7 +12633,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -12478,6 +12672,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2007-01",
@@ -12486,7 +12681,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -12525,6 +12720,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2015-07",
@@ -12533,7 +12729,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -12572,6 +12768,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2012-10",
@@ -12580,7 +12777,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -12619,6 +12816,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2008-02",
@@ -12627,7 +12825,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -12666,6 +12864,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2009-04",
@@ -12674,7 +12873,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -12713,6 +12912,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2007-05",
@@ -12721,7 +12921,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -12760,6 +12960,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2007-09",
@@ -12768,7 +12969,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -12807,6 +13008,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2008-06",
@@ -12815,7 +13017,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -12854,6 +13056,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2013-09",
@@ -12862,7 +13065,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -12901,6 +13104,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2015-07",
@@ -12909,7 +13113,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -12948,6 +13152,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2006-09",
@@ -12956,7 +13161,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -12995,6 +13200,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2015-04",
@@ -13003,7 +13209,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -13012,7 +13218,7 @@
   "Aliases": [],
   "BallName": "Precision",
   "CatalogID": "track-inc-precision",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Precision SD",
@@ -13071,6 +13277,7 @@
     "RG": 2.5
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2018-07-17",
@@ -13079,7 +13286,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -13118,6 +13325,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2019-10-22",
@@ -13126,7 +13334,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -13165,6 +13373,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2019-04-23",
@@ -13173,7 +13382,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -13182,7 +13391,7 @@
   "Aliases": [],
   "BallName": "Precision Solid",
   "CatalogID": "track-inc-precision-solid",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Precision SD (Single Density)",
@@ -13241,6 +13450,7 @@
     "RG": 2.5
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2018-12-18",
@@ -13249,7 +13459,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -13288,6 +13498,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2009-05",
@@ -13296,7 +13507,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -13335,6 +13546,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2011-01",
@@ -13343,7 +13555,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -13352,7 +13564,7 @@
   "Aliases": [],
   "BallName": "Proof",
   "CatalogID": "track-inc-proof",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Proof",
@@ -13411,6 +13623,7 @@
     "RG": 2.506
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2020-02-18",
@@ -13419,7 +13632,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -13428,7 +13641,7 @@
   "Aliases": [],
   "BallName": "Proof Hybrid",
   "CatalogID": "track-inc-proof-hybrid",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Proof",
@@ -13487,6 +13700,7 @@
     "RG": 2.506
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2020-12-15",
@@ -13495,7 +13709,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -13504,7 +13718,7 @@
   "Aliases": [],
   "BallName": "Proof Pearl",
   "CatalogID": "track-inc-proof-pearl",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Proof",
@@ -13563,6 +13777,7 @@
     "RG": 2.506
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2020-08-04",
@@ -13571,7 +13786,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -13610,6 +13825,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2018-11-06",
@@ -13618,7 +13834,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -13657,6 +13873,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2002-10",
@@ -13665,7 +13882,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -13704,6 +13921,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2003-04",
@@ -13712,7 +13930,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -13751,6 +13969,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2007-08",
@@ -13759,7 +13978,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -13798,6 +14017,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2008-02",
@@ -13806,7 +14026,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -13845,6 +14065,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2012-05",
@@ -13853,7 +14074,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -13892,6 +14113,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2010-09",
@@ -13900,7 +14122,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -13939,6 +14161,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2008-12",
@@ -13947,7 +14170,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -13986,6 +14209,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2018-05-08",
@@ -13994,7 +14218,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -14033,6 +14257,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2008-10",
@@ -14041,7 +14266,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -14080,6 +14305,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2009-02",
@@ -14088,7 +14314,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -14127,6 +14353,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2008-03",
@@ -14135,7 +14362,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -14174,6 +14401,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2005-12",
@@ -14182,7 +14410,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -14221,6 +14449,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2004-07",
@@ -14229,7 +14458,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -14268,6 +14497,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2010-01",
@@ -14276,7 +14506,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -14315,6 +14545,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2005-08",
@@ -14323,7 +14554,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -14362,6 +14593,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2004-12",
@@ -14370,7 +14602,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -14379,23 +14611,20 @@
   "Aliases": [],
   "BallName": "Sensor",
   "CatalogID": "track-inc-sensor",
-  "Checked": "2026-10-10",
+  "Checked": null,
   "Colorway": null,
   "Core": {
-   "Name": "Regulator",
+   "Name": null,
    "Type": null
   },
   "Cover": {
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound",
-   "Name": "DR-6 Pearl",
-   "Type": "Pearl Reactive"
+   "Finish": null,
+   "Name": null,
+   "Type": null
   },
-  "DateReleased": "2022-12-02",
+  "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
-   "Core": "mfg",
-   "Cover": "mfg",
-   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -14410,34 +14639,9 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": "https://trackbowling.com/products/sensor",
-  "SpecsByWeight": {
-   "12": {
-    "Diff": 0.04,
-    "IntDiff": null,
-    "RG": 2.597
-   },
-   "13": {
-    "Diff": 0.04,
-    "IntDiff": null,
-    "RG": 2.574
-   },
-   "14": {
-    "Diff": 0.034,
-    "IntDiff": null,
-    "RG": 2.506
-   },
-   "15": {
-    "Diff": 0.034,
-    "IntDiff": null,
-    "RG": 2.49
-   },
-   "16": {
-    "Diff": 0.029,
-    "IntDiff": null,
-    "RG": 2.503
-   }
-  },
+  "Source": null,
+  "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "1994-12",
@@ -14446,7 +14650,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -14485,6 +14689,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "1995-07",
@@ -14493,7 +14698,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -14532,6 +14737,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "1995-12",
@@ -14540,7 +14746,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -14579,6 +14785,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "1996-04",
@@ -14587,7 +14794,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -14626,6 +14833,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2022-10-18",
@@ -14634,7 +14842,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -14643,7 +14851,7 @@
   "Aliases": [],
   "BallName": "Sensor Solid",
   "CatalogID": "track-inc-sensor-solid",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Regulator",
@@ -14702,6 +14910,7 @@
     "RG": 2.503
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2023-09-19",
@@ -14710,7 +14919,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -14749,6 +14958,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "1996-12",
@@ -14757,7 +14967,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -14796,6 +15006,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "1991-03",
@@ -14804,7 +15015,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -14843,6 +15054,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2017-02-28",
@@ -14851,7 +15063,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -14890,6 +15102,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2004-04",
@@ -14898,7 +15111,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -14937,6 +15150,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2000-06",
@@ -14945,7 +15159,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -14984,6 +15198,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2004-10",
@@ -14992,7 +15207,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -15031,6 +15246,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2004-10",
@@ -15039,7 +15255,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -15078,6 +15294,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2005-08",
@@ -15086,7 +15303,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -15125,6 +15342,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2005-08",
@@ -15133,7 +15351,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -15142,7 +15360,7 @@
   "Aliases": [],
   "BallName": "Spare +",
   "CatalogID": "track-inc-spare-plus",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "I-Core (Single Density)",
@@ -15201,6 +15419,7 @@
     "RG": 2.54
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2014-05",
@@ -15209,7 +15428,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -15248,6 +15467,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2017-05-09",
@@ -15256,7 +15476,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -15295,6 +15515,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2002-04",
@@ -15303,7 +15524,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -15312,7 +15533,7 @@
   "Aliases": [],
   "BallName": "Stealth",
   "CatalogID": "track-inc-stealth",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Stealth",
@@ -15371,6 +15592,7 @@
     "RG": 2.498
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2022-05-24",
@@ -15379,7 +15601,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -15418,6 +15640,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2025-09-02",
@@ -15426,7 +15649,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -15465,6 +15688,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2022-09-13",
@@ -15473,7 +15697,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -15482,7 +15706,7 @@
   "Aliases": [],
   "BallName": "Stealth Hybrid",
   "CatalogID": "track-inc-stealth-hybrid",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Stealth",
@@ -15541,6 +15765,7 @@
     "RG": 2.498
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2024-06-25",
@@ -15549,7 +15774,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -15558,7 +15783,7 @@
   "Aliases": [],
   "BallName": "Stealth Mode",
   "CatalogID": "track-inc-stealth-mode",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Stealth",
@@ -15617,6 +15842,7 @@
     "RG": 2.498
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2025-02-04",
@@ -15625,7 +15851,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -15634,7 +15860,7 @@
   "Aliases": [],
   "BallName": "Stealth Mode Hybrid",
   "CatalogID": "track-inc-stealth-mode-hybrid",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Stealth",
@@ -15693,6 +15919,7 @@
     "RG": 2.498
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2026-02-10",
@@ -15701,7 +15928,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -15710,7 +15937,7 @@
   "Aliases": [],
   "BallName": "Stealth Pearl",
   "CatalogID": "track-inc-stealth-pearl",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Stealth",
@@ -15769,6 +15996,7 @@
     "RG": 2.498
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2023-05-23",
@@ -15777,7 +16005,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -15816,6 +16044,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2023-08-01",
@@ -15824,7 +16053,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -15863,6 +16092,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2024-06-18",
@@ -15871,7 +16101,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -15910,6 +16140,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "1999-04",
@@ -15918,7 +16149,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -15957,6 +16188,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2000-06",
@@ -15965,7 +16197,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -16004,6 +16236,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "1999-12",
@@ -16012,7 +16245,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -16021,7 +16254,7 @@
   "Aliases": [],
   "BallName": "Strata",
   "CatalogID": "track-inc-strata",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Strata",
@@ -16080,6 +16313,7 @@
     "RG": 2.488
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2020-10-06",
@@ -16088,7 +16322,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -16127,6 +16361,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2021-11-02",
@@ -16135,7 +16370,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -16174,6 +16409,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2021-05-04",
@@ -16182,7 +16418,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -16221,6 +16457,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2006-05",
@@ -16229,7 +16466,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -16268,6 +16505,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2003-01",
@@ -16276,7 +16514,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -16315,6 +16553,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2011-03",
@@ -16323,7 +16562,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -16362,6 +16601,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2003-05",
@@ -16370,7 +16610,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -16409,6 +16649,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2003-03",
@@ -16417,7 +16658,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -16456,6 +16697,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2010-02",
@@ -16464,7 +16706,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -16503,6 +16745,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "1996-05",
@@ -16511,7 +16754,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -16550,6 +16793,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "1996-08",
@@ -16558,7 +16802,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -16597,6 +16841,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2004-12",
@@ -16605,7 +16850,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -16644,6 +16889,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2005-01",
@@ -16652,7 +16898,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -16691,6 +16937,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "1996-01",
@@ -16699,7 +16946,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -16738,6 +16985,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2003-04",
@@ -16746,7 +16994,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -16755,7 +17003,7 @@
   "Aliases": [],
   "BallName": "Synthesis",
   "CatalogID": "track-inc-synthesis",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "I-Core Gen4",
@@ -16814,6 +17062,7 @@
     "RG": 2.493
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2026-02-10",
@@ -16822,7 +17071,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -16861,6 +17110,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2026-08-25",
@@ -16869,7 +17119,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -16908,6 +17158,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "1992-10",
@@ -16916,7 +17167,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -16955,6 +17206,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2022-12-13",
@@ -16963,7 +17215,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -17002,6 +17254,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2023-05-16",
@@ -17010,7 +17263,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -17049,6 +17302,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2021-04-13",
@@ -17057,7 +17311,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -17096,6 +17350,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2019-08-27",
@@ -17104,7 +17359,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -17143,6 +17398,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2026-08-25",
@@ -17151,7 +17407,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -17190,6 +17446,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2019-02-12",
@@ -17198,7 +17455,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -17237,6 +17494,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2022-04-12",
@@ -17245,7 +17503,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -17254,7 +17512,7 @@
   "Aliases": [],
   "BallName": "Tactix",
   "CatalogID": "track-inc-tactix",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Starship",
@@ -17313,6 +17571,7 @@
     "RG": 2.5
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2018-08-14",
@@ -17321,7 +17580,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -17360,6 +17619,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2019-04-23",
@@ -17368,7 +17628,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -17407,6 +17667,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2019-10-08",
@@ -17415,7 +17676,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -17424,7 +17685,7 @@
   "Aliases": [],
   "BallName": "Tactix Hybrid",
   "CatalogID": "track-inc-tactix-hybrid",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Starship",
@@ -17483,6 +17744,7 @@
     "RG": 2.5
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2019-07-19",
@@ -17491,7 +17753,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -17530,6 +17792,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2019-03-19",
@@ -17538,7 +17801,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -17547,7 +17810,7 @@
   "Aliases": [],
   "BallName": "Tantrum",
   "CatalogID": "track-inc-tantrum",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Legion",
@@ -17596,6 +17859,7 @@
     "RG": 2.46
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2008-05",
@@ -17604,7 +17868,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -17613,7 +17877,7 @@
   "Aliases": [],
   "BallName": "Temper",
   "CatalogID": "track-inc-temper",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Legion",
@@ -17662,6 +17926,7 @@
     "RG": 2.46
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2007-07",
@@ -17670,7 +17935,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -17679,7 +17944,7 @@
   "Aliases": [],
   "BallName": "Tempo",
   "CatalogID": "track-inc-tempo",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Tempo",
@@ -17738,6 +18003,7 @@
     "RG": 2.547
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2020-07-07",
@@ -17746,7 +18012,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -17785,6 +18051,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2012-10",
@@ -17793,7 +18060,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -17832,6 +18099,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2013-09",
@@ -17840,7 +18108,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -17879,6 +18147,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2013-02",
@@ -17887,7 +18156,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -17896,7 +18165,7 @@
   "Aliases": [],
   "BallName": "Theorem",
   "CatalogID": "track-inc-theorem",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "MC 2 Asym",
@@ -17955,6 +18224,7 @@
     "RG": 2.485
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2023-11-07",
@@ -17963,7 +18233,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -18002,6 +18272,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2026-05-19",
@@ -18010,7 +18281,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -18049,6 +18320,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2025-10-07",
@@ -18057,7 +18329,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -18096,6 +18368,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2025-06-17",
@@ -18104,7 +18377,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -18143,6 +18416,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2024-04-23",
@@ -18151,7 +18425,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -18190,6 +18464,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2024-12-18",
@@ -18198,7 +18473,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -18207,7 +18482,7 @@
   "Aliases": [],
   "BallName": "Theorem Delta",
   "CatalogID": "track-inc-theorem-delta",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "MC 2 Asym",
@@ -18266,6 +18541,7 @@
     "RG": 2.485
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2026-06-30",
@@ -18274,7 +18550,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -18283,7 +18559,7 @@
   "Aliases": [],
   "BallName": "Theorem Pearl",
   "CatalogID": "track-inc-theorem-pearl",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "MC 2 Asym",
@@ -18342,6 +18618,7 @@
     "RG": 2.485
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2024-11-05",
@@ -18350,7 +18627,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -18389,6 +18666,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2024-08-06",
@@ -18397,7 +18675,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -18436,6 +18714,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2025-01-28",
@@ -18444,7 +18723,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -18453,7 +18732,7 @@
   "Aliases": [],
   "BallName": "Theorem Solid",
   "CatalogID": "track-inc-theorem-solid",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "MC 2 Asym",
@@ -18512,6 +18791,7 @@
     "RG": 2.485
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2025-06-24",
@@ -18520,7 +18800,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -18559,6 +18839,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2026-05-19",
@@ -18567,7 +18848,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -18606,6 +18887,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2003-03",
@@ -18614,7 +18896,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -18653,6 +18935,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2003-01",
@@ -18661,7 +18944,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -18700,6 +18983,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "1999-02",
@@ -18708,7 +18992,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -18717,7 +19001,7 @@
   "Aliases": [],
   "BallName": "Tour SiC",
   "CatalogID": "track-inc-tour-sic",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "I-Core",
@@ -18776,6 +19060,7 @@
     "RG": 2.59
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2014-10",
@@ -18784,7 +19069,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -18793,7 +19078,7 @@
   "Aliases": [],
   "BallName": "Tour X",
   "CatalogID": "track-inc-tour-x",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "DNA",
@@ -18852,6 +19137,7 @@
     "RG": 2.58
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2014-05",
@@ -18860,7 +19146,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -18869,7 +19155,7 @@
   "Aliases": [],
   "BallName": "Tour X Solid",
   "CatalogID": "track-inc-tour-x-solid",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "DNA",
@@ -18928,6 +19214,7 @@
     "RG": 2.58
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2015-05",
@@ -18936,7 +19223,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -18975,6 +19262,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2001-07",
@@ -18983,7 +19271,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -19022,6 +19310,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2001-09",
@@ -19030,7 +19319,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -19069,6 +19358,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2008-12",
@@ -19077,7 +19367,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -19116,6 +19406,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2003-06",
@@ -19124,7 +19415,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -19163,6 +19454,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "1997-01",
@@ -19171,7 +19463,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -19180,7 +19472,7 @@
   "Aliases": [],
   "BallName": "Triton Elite",
   "CatalogID": "track-inc-triton-elite",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "MC2 Technology",
@@ -19239,6 +19531,7 @@
     "RG": 2.51
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "1998-01",
@@ -19247,7 +19540,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -19286,6 +19579,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "1998-03",
@@ -19294,7 +19588,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -19333,6 +19627,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2019-02-12",
@@ -19341,7 +19636,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -19380,6 +19675,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "1997-08",
@@ -19388,7 +19684,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -19427,6 +19723,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2000-12",
@@ -19435,7 +19732,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -19474,6 +19771,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "1997-05",
@@ -19482,7 +19780,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -19521,6 +19819,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "1998-07",
@@ -19529,7 +19828,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -19538,7 +19837,7 @@
   "Aliases": [],
   "BallName": "Tundra",
   "CatalogID": "track-inc-tundra",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Track Symmetric",
@@ -19597,6 +19896,7 @@
     "RG": 2.58
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2016-09-22",
@@ -19605,7 +19905,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -19614,7 +19914,7 @@
   "Aliases": [],
   "BallName": "Tundra Blue Fire",
   "CatalogID": "track-inc-tundra-blue-fire",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Track Symmetric",
@@ -19673,6 +19973,7 @@
     "RG": 2.57
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2024-05-28",
@@ -19681,7 +19982,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -19690,7 +19991,7 @@
   "Aliases": [],
   "BallName": "Tundra Fire",
   "CatalogID": "track-inc-tundra-fire",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Track Symmetric",
@@ -19749,6 +20050,7 @@
     "RG": 2.57
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2023-03-21",
@@ -19757,7 +20059,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -19766,7 +20068,7 @@
   "Aliases": [],
   "BallName": "Tundra Solid",
   "CatalogID": "track-inc-tundra-solid",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Track Symmetric",
@@ -19825,6 +20127,7 @@
     "RG": 2.58
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2018-09-18",
@@ -19833,7 +20136,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -19842,7 +20145,7 @@
   "Aliases": [],
   "BallName": "Ultra Heat",
   "CatalogID": "track-inc-ultra-heat",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Modified Tri-Core",
@@ -19901,6 +20204,7 @@
     "RG": 2.51
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2018-01-02",
@@ -19909,7 +20213,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -19918,7 +20222,7 @@
   "Aliases": [],
   "BallName": "Uprising",
   "CatalogID": "track-inc-uprising",
-  "Checked": "2026-10-10",
+  "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
    "Name": "Mega Tron",
@@ -19967,6 +20271,7 @@
     "RG": 2.48
    }
   },
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2008-06",
@@ -19975,7 +20280,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -20014,6 +20319,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2011-01",
@@ -20022,7 +20328,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -20061,6 +20367,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "1992-10",
@@ -20069,7 +20376,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -20108,6 +20415,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "1994-02",
@@ -20116,7 +20424,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -20155,6 +20463,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2002-01",
@@ -20163,7 +20472,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -20202,6 +20511,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2001-12",
@@ -20210,7 +20520,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -20249,6 +20559,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2004-11",
@@ -20257,7 +20568,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -20296,6 +20607,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2005-05",
@@ -20304,7 +20616,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -20343,6 +20655,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2015-04",
@@ -20351,7 +20664,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null

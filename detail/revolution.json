@@ -33,6 +33,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2011-03",
@@ -41,7 +42,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -80,6 +81,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2007-01",
@@ -88,7 +90,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -127,6 +129,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2007-05",
@@ -135,7 +138,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -174,6 +177,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2007-02",
@@ -182,7 +186,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -221,6 +225,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2007-02",
@@ -229,7 +234,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -268,6 +273,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2008-03",
@@ -276,7 +282,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -315,6 +321,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2009-11",
@@ -323,7 +330,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -362,6 +369,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2009-09",
@@ -370,7 +378,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -409,6 +417,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2007-05",
@@ -417,7 +426,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -456,6 +465,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2000-01",
@@ -464,7 +474,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -503,6 +513,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2000-12",
@@ -511,7 +522,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -550,6 +561,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2001-08",
@@ -558,7 +570,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -597,6 +609,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2005-08",
@@ -605,7 +618,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -644,6 +657,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2001-08",
@@ -652,7 +666,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -691,6 +705,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2001-12",
@@ -699,7 +714,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -738,6 +753,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2002-04",
@@ -746,7 +762,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -785,6 +801,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2000-01",
@@ -793,7 +810,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -832,6 +849,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2000-12",
@@ -840,7 +858,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -879,6 +897,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2004-06",
@@ -887,7 +906,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -926,6 +945,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2000-04",
@@ -934,7 +954,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -973,6 +993,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2000-01",
@@ -981,7 +1002,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1020,6 +1041,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2000-01",
@@ -1028,7 +1050,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1067,6 +1089,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2000-01",
@@ -1075,7 +1098,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1114,6 +1137,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2000-01",
@@ -1122,7 +1146,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1161,6 +1185,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2004-09",
@@ -1169,7 +1194,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1208,6 +1233,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2008-02",
@@ -1216,7 +1242,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1255,6 +1281,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2000-01",
@@ -1263,7 +1290,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1302,6 +1329,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2000-01",
@@ -1310,7 +1338,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1349,6 +1377,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2000-01",
@@ -1357,7 +1386,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1396,6 +1425,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2000-01",
@@ -1404,7 +1434,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1443,6 +1473,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2002-08",
@@ -1451,7 +1482,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1490,6 +1521,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2000-01",
@@ -1498,7 +1530,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1537,6 +1569,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2004-02",
@@ -1545,7 +1578,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1584,6 +1617,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2000-01",
@@ -1592,7 +1626,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1631,6 +1665,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2003-02",
@@ -1639,7 +1674,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1678,6 +1713,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2010-02",
@@ -1686,7 +1722,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1725,6 +1761,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2007-11",
@@ -1733,7 +1770,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1772,6 +1809,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2010-08",
@@ -1780,7 +1818,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1819,6 +1857,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2002-12",
@@ -1827,7 +1866,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1866,6 +1905,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2007-08",
@@ -1874,7 +1914,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1913,6 +1953,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2005-01",
@@ -1921,7 +1962,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -1960,6 +2001,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2003-10",
@@ -1968,7 +2010,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2007,6 +2049,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2003-10",
@@ -2015,7 +2058,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2054,6 +2097,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2000-03",
@@ -2062,7 +2106,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2101,6 +2145,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2000-11",
@@ -2109,7 +2154,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2148,6 +2193,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2006-04",
@@ -2156,7 +2202,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2195,6 +2241,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2010-04",
@@ -2203,7 +2250,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2242,6 +2289,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2000-06",
@@ -2250,7 +2298,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2289,6 +2337,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2000-07",
@@ -2297,7 +2346,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2336,6 +2385,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2000-11",
@@ -2344,7 +2394,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2383,6 +2433,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2001-02",
@@ -2391,7 +2442,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2430,6 +2481,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2007-06",
@@ -2438,7 +2490,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2477,6 +2529,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2004-11",
@@ -2485,7 +2538,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2524,6 +2577,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2000-11",
@@ -2532,7 +2586,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2571,6 +2625,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2007-11",
@@ -2579,7 +2634,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2618,6 +2673,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2002-01",
@@ -2626,7 +2682,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2665,6 +2721,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2000-04",
@@ -2673,7 +2730,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2712,6 +2769,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2005-12",
@@ -2720,7 +2778,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2759,6 +2817,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2004-09",
@@ -2767,7 +2826,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2806,6 +2865,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2005-07",
@@ -2814,7 +2874,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2853,6 +2913,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2005-09",
@@ -2861,7 +2922,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2900,6 +2961,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2004-03",
@@ -2908,7 +2970,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2947,6 +3009,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2007-06",
@@ -2955,7 +3018,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -2994,6 +3057,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2004-05",
@@ -3002,7 +3066,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3041,6 +3105,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2003-10",
@@ -3049,7 +3114,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3088,6 +3153,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2005-01",
@@ -3096,7 +3162,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3135,6 +3201,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2003-07",
@@ -3143,7 +3210,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3182,6 +3249,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2005-04",
@@ -3190,7 +3258,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3229,6 +3297,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2003-07",
@@ -3237,7 +3306,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3276,6 +3345,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2005-01",
@@ -3284,7 +3354,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3323,6 +3393,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2006-06",
@@ -3331,7 +3402,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3370,6 +3441,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2004-02",
@@ -3378,7 +3450,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3417,6 +3489,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2003-06",
@@ -3425,7 +3498,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3464,6 +3537,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2003-05",
@@ -3472,7 +3546,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3511,6 +3585,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2003-01",
@@ -3519,7 +3594,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3558,6 +3633,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2006-10",
@@ -3566,7 +3642,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3605,6 +3681,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2005-04",
@@ -3613,7 +3690,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3652,6 +3729,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2009-05",
@@ -3660,7 +3738,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3699,6 +3777,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2008-11",
@@ -3707,7 +3786,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3746,6 +3825,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2008-05",
@@ -3754,7 +3834,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3793,6 +3873,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2005-02",
@@ -3801,7 +3882,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3840,6 +3921,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2009-01",
@@ -3848,7 +3930,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3887,6 +3969,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2008-08",
@@ -3895,7 +3978,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3934,6 +4017,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2005-04",
@@ -3942,7 +4026,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -3981,6 +4065,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2004-07",
@@ -3989,7 +4074,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4028,6 +4113,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2005-06",
@@ -4036,7 +4122,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4075,6 +4161,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2005-04",
@@ -4083,7 +4170,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4122,6 +4209,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2006-08",
@@ -4130,7 +4218,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4169,6 +4257,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2006-03",
@@ -4177,7 +4266,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4216,6 +4305,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2006-11",
@@ -4224,7 +4314,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4263,6 +4353,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2005-05",
@@ -4271,7 +4362,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4310,6 +4401,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2004-11",
@@ -4318,7 +4410,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4357,6 +4449,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2003-12",
@@ -4365,7 +4458,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4404,6 +4497,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2003-07",
@@ -4412,7 +4506,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4451,6 +4545,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2003-12",
@@ -4459,7 +4554,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4498,6 +4593,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2003-09",
@@ -4506,7 +4602,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4545,6 +4641,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2011-05",
@@ -4553,7 +4650,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4592,6 +4689,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2001-07",
@@ -4600,7 +4698,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4639,6 +4737,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2005-05",
@@ -4647,7 +4746,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4686,6 +4785,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2000-04",
@@ -4694,7 +4794,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4733,6 +4833,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2000-01",
@@ -4741,7 +4842,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
@@ -4780,6 +4881,7 @@
   },
   "Source": null,
   "SpecsByWeight": {},
+  "Status": null,
   "USBC": {
    "Approved": true,
    "ApprovedDate": "2007-03",
@@ -4788,7 +4890,7 @@
     "NoSlowOil": false,
     "SlowOil78D": false
    },
-   "ListVersion": "2026-10-10",
+   "ListVersion": "2026-10-11",
    "NonConforming": false
   },
   "WeightLimit": null
