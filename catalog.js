@@ -36,7 +36,7 @@
 'use strict';
 
 /* v30.169: shown in the app header when it differs from the build's EXPECTED_CATALOG_JS */
-var CAT_VERSION  = 'v30.176';
+var CAT_VERSION  = 'v30.177';
 var CAT_BASE     = 'https://raw.githubusercontent.com/jmarsh85/bowlingdb-mobile/dist/';
 var CAT_DB       = 'BowlingDB_Catalog';
 var CAT_DB_VER   = 1;
@@ -2797,8 +2797,36 @@ function spButtonsHTML(bw, pasteCall, makerUrl) {
     '<button style="' + BTN_P + 'flex:1;padding:10px;font-size:13px" onclick="' + pasteCall + '">2. Paste page &amp; fill</button></div>' +
     '<div style="font-size:11px;color:var(--t3);margin-top:4px;line-height:1.45">In Safari: long-press the page text, <b>Select All</b>, <b>Copy</b>, come back and tap 2. ' +
     (makerUrl ? '<a href="' + esc(makerUrl) + '" target="_blank" rel="noopener noreferrer" style="color:var(--teal)">Maker page \u2197</a> \u00b7 ' : '') +
-    '<a href="' + esc(bw.search) + '" target="_blank" rel="noopener noreferrer" style="color:var(--teal)">Search \u2197</a></div>';
+    '<a href="' + esc(bw.search) + '" target="_blank" rel="noopener noreferrer" style="color:var(--teal)">Search \u2197</a> \u00b7 ' +
+    '<span onclick="catShortcutHelp()" style="color:var(--teal);cursor:pointer">Faster: the Shortcut</span></div>';
 }
+/* v30.177: "Copy page text" Shortcut. Run from Safari's Share sheet, it reads the
+   whole page (including collapsed tabs and accordions that Select All misses),
+   marks the title, adds the page's structured data and image, and copies it all.
+   The app shows the steps and copies this script for pasting into the Shortcut. */
+var SHORTCUT_JS = "var c=document.body.cloneNode(true);\nc.querySelectorAll('script,style,noscript,svg,iframe,nav,header,footer').forEach(function(e){e.remove()});\nc.querySelectorAll('br').forEach(function(e){e.replaceWith('\\n')});\nc.querySelectorAll('td,th').forEach(function(e){e.prepend('\\t')});\nc.querySelectorAll('h1').forEach(function(e){e.prepend('\\n#H1 ')});\nc.querySelectorAll('p,div,li,tr,dt,dd,h1,h2,h3,h4,h5,h6,section,article').forEach(function(e){e.append('\\n')});\nvar ld=[];document.querySelectorAll('script[type=\"application/ld+json\"]').forEach(function(s){ld.push(s.textContent.replace(/\\s+/g,' '))});\nvar m=document.querySelector('meta[property=\"og:image\"]');\ncompletion('BDB-PAGE '+location.href+'\\n'+c.textContent.replace(/[ \\u00a0]*\\n\\s*/g,'\\n')+'\\n#LD '+ld.join('\\n#LD ')+(m?'\\n#IMG '+m.content:''));";
+function catShortcutHelp() {
+  var ov = overlay('sch-ov', 950);
+  var step = function (n, t) { return '<div style="display:flex;gap:10px;padding:7px 0"><div style="flex:0 0 22px;height:22px;border-radius:11px;background:var(--teal);color:#000;font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center">' + n + '</div><div style="flex:1;font-size:13px;color:var(--t1);line-height:1.5">' + t + '</div></div>'; };
+  ov.innerHTML = '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 8px"><button style="' + BACK + '" onclick="catShortcutClose()">\u2039</button>' +
+    '<div style="flex:1"><div style="font-size:17px;font-weight:800;color:var(--t1)">Copy page text Shortcut</div><div style="font-size:11px;color:var(--t3)">One-time setup, about a minute</div></div></div>' +
+    '<div style="flex:1;overflow-y:auto;padding:0 16px 16px">' +
+    step(1, 'In the Shortcuts app, open your <b>Copy Page Text</b> shortcut (or make a new one). Delete <b>Get text from Current App</b>: it only reads what is on screen.') +
+    step(2, 'Tap <b>\u24d8</b> at the bottom, turn on <b>Show in Share Sheet</b>, and set what it receives to <b>Safari web pages</b> only.') +
+    step(3, 'Add the action <b>Run JavaScript on Web Page</b> (input: Shortcut Input). Select all the sample code in it, delete it, and paste the script (button below).') +
+    step(4, 'Keep <b>Copy to Clipboard</b> after it, copying the <b>JavaScript Result</b>.') +
+    step(5, 'In the Settings app: <b>Apps \u203a Shortcuts \u203a Advanced</b>, turn on <b>Allow Running Scripts</b>.') +
+    step(6, 'Use it: on the ball\u2019s page in Safari tap <b>Share \u203a Copy Page Text</b>, come back here, tap <b>Paste page &amp; fill</b>.') +
+    '<button style="' + BTN_P + 'width:100%;padding:11px;margin-top:10px" onclick="catShortcutCopy()">Copy the script</button>' +
+    '<pre style="margin-top:10px;padding:10px;border-radius:10px;background:var(--bg2);font-size:10px;line-height:1.4;white-space:pre-wrap;word-break:break-all;color:var(--t2);-webkit-user-select:text;user-select:text">' + esc(SHORTCUT_JS) + '</pre></div>';
+  document.body.appendChild(ov);
+}
+function catShortcutCopy() {
+  var ok = function () { if (root.toast) root.toast('Script copied. Paste it into Run JavaScript on Web Page.'); };
+  if (typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(SHORTCUT_JS).then(ok, function () { if (root.toast) root.toast('Long-press the script below and Copy'); });
+  else if (root.toast) root.toast('Long-press the script below and Copy');
+}
+function catShortcutClose() { var el = document.getElementById('sch-ov'); if (el) el.parentNode.removeChild(el); }
 function catLookClose() { lkUnmount(); var el = document.getElementById('lk-ov'); if (el) el.parentNode.removeChild(el); }
 
 /* ---------- v30.176: Paste page & fill ----------
@@ -2821,9 +2849,37 @@ var SP_LABELS = [
 var SP_NUM = /(?:^|[^\d.])([0-2]?\.\d{2,3})(?!\d)/;
 var SP_WT = /\b(1[0-6])\s*(?:#|lbs?\.?|pounds?)(?![a-z])/i;
 /* Pure: whole copied page -> {fields, weights, found[], nameSeen}. weight = the ball's weight for unlabelled numbers. */
+/* v30.177: the "Copy page text" Shortcut adds a header (BDB-PAGE url), marks the
+   page title (#H1), and appends the page's structured data (#LD json) and image
+   (#IMG url). Structured data name/value pairs become "name: value" lines. */
+function spLdLines(json) {
+  var out = [];
+  var walk = function (o, d) {
+    if (!o || typeof o !== 'object' || d > 8) return;
+    if (Array.isArray(o)) { o.forEach(function (x) { walk(x, d + 1); }); return; }
+    if (typeof o.name === 'string' && (typeof o.value === 'string' || typeof o.value === 'number')) out.push(o.name + ': ' + o.value);
+    Object.keys(o).forEach(function (k) { if (o[k] && typeof o[k] === 'object') walk(o[k], d + 1); });
+  };
+  try { walk(JSON.parse(json), 0); } catch (e) {}
+  return out;
+}
 function parseSpecText(text, weight, name) {
-  var out = { fields: {}, weights: {}, found: [], nameSeen: null };
-  var lines = String(text || '').replace(/\r/g, '').replace(/\u00a0/g, ' ').split('\n')
+  var out = { fields: {}, weights: {}, found: [], nameSeen: null, url: null, image: null };
+  var raw = String(text || '').replace(/\r/g, '').replace(/\u00a0/g, ' ');
+  var hm = /^BDB-PAGE (\S+)/.exec(raw); if (hm) { out.url = hm[1]; raw = raw.slice(hm[0].length); }
+  var extra = [];
+  raw = raw.replace(/^#LD (.*)$/gm, function (m, j) { extra = extra.concat(spLdLines(j)); return ''; })
+           .replace(/^#IMG (\S+).*$/gm, function (m, u) { if (/^https:\/\//.test(u)) out.image = u; return ''; });
+  /* start at the page title: menus and "related balls" before it are not this ball */
+  var h1 = raw.search(/^#H1 /m);
+  if (h1 >= 0) raw = raw.slice(h1).replace(/^#H1 /m, '');
+  else if (name) {
+    var fl = foldName(name), ls = raw.split('\n'), at = 0;
+    for (var q = 0; q < ls.length; q++) { var t = ls[q].trim(); if (t.length < 90 && fl && foldName(t).indexOf(fl) >= 0) { at = q; break; } }
+    raw = ls.slice(at).join('\n');
+  }
+  raw = raw + '\n' + extra.join('\n');
+  var lines = raw.split('\n')
     .map(function (l) { return l.replace(/\t+/g, ' | ').replace(/^[\s\u2022\u00b7*\-\u2013|]+/, '').replace(/\s+/g, ' ').trim(); })
     .filter(Boolean);
   var w0 = parseInt(weight, 10) || 15;
@@ -2870,6 +2926,8 @@ function parseSpecText(text, weight, name) {
   });
   if (!out.fields.coreType && out.fields.core && /asym|sym/i.test(out.fields.core)) out.fields.coreType = /asym/i.test(out.fields.core) ? 'Asymmetrical' : 'Symmetrical';
   if (name) { var f = foldName(name), all = foldName(text); out.nameSeen = !!f && all.indexOf(f) >= 0; }
+  if (out.url) { var hst = ''; try { hst = new URL(out.url).host.replace(/^www\./, ''); } catch (e) {} out.host = hst;
+    out.source = /bowwwl\.com$/.test(hst) ? 'bowwwl' : /storm|rotogrip|900global|brunswick|dv8|radical|hammer|ebonite|track|columbia300|motiv/.test(hst) ? 'maker' : 'other'; }
   return out;
 }
 /* Clipboard read with a manual fallback box. done(text) */
@@ -2901,13 +2959,20 @@ function spOpen(target, parsed) {
     var same = r.cur != null && String(r.cur).trim() !== '' && (r.wk ? Math.abs(Number(r.cur) - Number(v)) < 1e-9 : foldName(r.cur) === foldName(vs));
     rows.push({ r: r, v: vs, on: !same, same: same });
   });
+  /* page image: shown for this ball on this device only (never published) */
+  if (parsed.image && target.catalogId) rows.push({ r: { k: 'image', label: 'Image (this device only)', inputId: null, img: true }, v: parsed.image, on: !imgPicks()[target.catalogId], same: imgPicks()[target.catalogId] === parsed.image });
   _sp = { target: target, rows: rows, parsed: parsed };
   spRender();
 }
 function spRender() {
   var t = _sp.target, p = _sp.parsed;
+  var from = p.host ? '<div style="font-size:11px;color:var(--t3);margin:2px 0 6px">From ' + esc(p.host) + '</div>' : '';
   var warn = p.nameSeen === false ? '<div style="font-size:12px;color:var(--gold);line-height:1.5;margin:4px 0 8px">\u201c' + esc(t.name) + '\u201d does not appear in what you copied. Check it is the right ball\u2019s page.</div>' : '';
   var list = _sp.rows.map(function (x, i) {
+    if (x.r.img) return '<div style="display:flex;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--border1)">' +
+      '<input type="checkbox" ' + (x.on ? 'checked' : '') + ' onchange="catSpToggle(' + i + ',this.checked)" style="width:18px;height:18px">' +
+      '<img src="' + esc(x.v) + '" referrerpolicy="no-referrer" style="width:56px;height:56px;object-fit:contain;border-radius:8px;background:var(--bg3)" onerror="this.style.display=\'none\'">' +
+      '<div style="flex:1;font-size:12px;font-weight:700;color:var(--t2)">' + esc(x.r.label) + (x.same ? '<div style="color:var(--teal);font-weight:600">\u2713 in use</div>' : '') + '</div></div>';
     return '<div style="display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--border1)">' +
       '<input type="checkbox" ' + (x.on ? 'checked' : '') + ' onchange="catSpToggle(' + i + ',this.checked)" style="margin-top:22px;width:18px;height:18px">' +
       '<div style="flex:1;min-width:0"><div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:var(--t2)"><span>' + esc(x.r.label) + '</span>' +
@@ -2918,7 +2983,7 @@ function spRender() {
   var ov = document.getElementById('sp-ov') || overlay('sp-ov', 945);
   ov.innerHTML = '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 8px"><button style="' + BACK + '" onclick="catSpClose()">\u2039</button>' +
     '<div style="flex:1;min-width:0"><div style="font-size:17px;font-weight:800;color:var(--t1)">Found on the page</div><div style="font-size:11px;color:var(--t3)">' + esc(t.title || '') + '</div></div></div>' +
-    '<div style="flex:1;overflow-y:auto;padding:0 16px 12px">' + warn +
+    '<div style="flex:1;overflow-y:auto;padding:0 16px 12px">' + from + warn +
     (list || '<div style="padding:24px 0;color:var(--t2);font-size:13px;line-height:1.6">No specs found in what you copied. In Safari, long-press the page text, tap <b>Select All</b>, then <b>Copy</b>, and try again.</div>') +
     (list ? '<div style="font-size:11px;color:var(--t3);margin-top:8px;line-height:1.45">Edit any value before applying. Unticked rows are left alone.</div>' : '') + '</div>' +
     '<div style="padding:10px 16px;border-top:1px solid var(--border1);display:flex;gap:8px"><button style="' + BTN_G + 'padding:11px" onclick="catSpClose()">Cancel</button>' +
@@ -2933,12 +2998,13 @@ function catSpApply() {
   var n = 0, t = _sp.target;
   _sp.rows.forEach(function (x) {
     if (!x.on) return;
+    if (x.r.img) { if (t.catalogId) { imgPickSet(t.catalogId, x.v); n++; } return; }
     var el = document.getElementById(x.r.inputId); if (!el) return;
     var v = String(x.v).trim();
     if (el.tagName === 'SELECT') { if (/asym/i.test(v)) v = 'Asymmetrical'; else if (/sym/i.test(v)) v = 'Symmetrical'; }
     el.value = v; el.style.boxShadow = '0 0 0 2px var(--teal)'; (function (e) { setTimeout(function () { e.style.boxShadow = ''; }, 900); })(el); n++;
   });
-  if (t.after) t.after(n);
+  if (t.after) t.after(n, _sp.parsed);
   catSpClose();
   if (root.toast) root.toast(n + ' field' + (n === 1 ? '' : 's') + ' filled. Check, then save.');
 }
@@ -2951,8 +3017,9 @@ function catSpAp() {
   [16, 15, 14, 13, 12].forEach(function (w) { [['RG', 'RG'], ['Diff', 'Diff'], ['IntDiff', 'Int Diff']].forEach(function (a) {
     rows.push({ w: w, wk: a[0], label: w + ' lb ' + a[1], inputId: 'ape-' + w + '-' + a[0], cur: g('ape-' + w + '-' + a[0]) }); }); });
   spReadClipboard(function (text) {
-    spOpen({ name: _apEdit.ballName, title: _apEdit.ballName, rows: rows, after: function (n) {
-      if (n) { var so = document.getElementById('ape-source'); if (so && so.value === 'maker' && _spFrom === 'bowwwl') so.value = 'bowwwl'; }
+    spOpen({ name: _apEdit.ballName, title: _apEdit.ballName, catalogId: _apEdit.catalogId, rows: rows, after: function (n, pp) {
+      /* source follows the copied page's site (Shortcut adds it); a plain paste is assumed bowwwl, as button 1 opens bowwwl */
+      if (n) { var so = document.getElementById('ape-source'); if (so) so.value = (pp && pp.source) || 'bowwwl'; }
     } }, parseSpecText(text, 15, _apEdit.ballName));
   });
 }
@@ -2969,7 +3036,7 @@ function catSpBall() {
     var p = parseSpecText(text, w, _lk.name || b.BallName);
     /* your own ball's Cover type is a class (Solid / Pearl / Hybrid / Urethane) */
     if (p.fields.coverType || p.fields.coverName) { var cc = coverClass(p.fields.coverType, p.fields.coverName); if (cc) p.fields.coverType = cc.charAt(0).toUpperCase() + cc.slice(1); }
-    spOpen({ name: _lk.name || b.BallName, title: b.BallName, rows: rows }, p);
+    spOpen({ name: _lk.name || b.BallName, title: b.BallName, catalogId: b.CatalogID, rows: rows }, p);
   });
 }
 
@@ -3502,7 +3569,7 @@ function catCompareAdd(x) {
 
 root.CATALOG_JS_VERSION = CAT_VERSION;
 root.catPickerMount = catPickerMount;
-root.catApprovalsOpen = catApprovalsOpen; root.catSpAp = catSpAp; root.catSpBall = catSpBall; root.catSpToggle = catSpToggle; root.catSpEdit = catSpEdit; root.catSpClose = catSpClose; root.catSpApply = catSpApply; root.catSpManualGo = catSpManualGo; root.catSpManualClose = catSpManualClose; root.catLookAp = catLookAp; root.catLookBall = catLookBall; root.catLookTab = catLookTab; root.catLookPaste = catLookPaste; root.catLookOk = catLookOk; root.catLookSave = catLookSave; root.catLookClose = catLookClose; root.catPasteOpen = catPasteOpen; root.catPasteClose = catPasteClose; root.catPasteClip = catPasteClip; root.catPasteShow = catPasteShow; root.catFillToggle = catFillToggle; root.catFillClose = catFillClose; root.catFillConfirm = catFillConfirm; root.catPageOpen = catPageOpen; root.catPageClose = catPageClose; root.catPageUseSel = catPageUseSel; root.catPageUseVal = catPageUseVal; root.catPageImg = catPageImg; root.catPickOpen = catPickOpen; root.catPickFilter = catPickFilter; root.catPickChoose = catPickChoose; root.catPickClose = catPickClose; root.catSpecReviewOpen = catSpecReviewOpen; root.catSpecReviewClose = catSpecReviewClose; root.catSpecReviewAct = catSpecReviewAct; root.catSpecReviewBulk = catSpecReviewBulk; root.catSpecReviewPage = catSpecReviewPage; root.catTagPick = catTagPick; root.catTagCancel = catTagCancel; root.catVerifyRefresh = catVerifyRefresh; root.catVerifyDismiss = catVerifyDismiss; root.catVerifyRetry = catVerifyRetry; root.catVerifyOpenApprovals = catVerifyOpenApprovals; root.catVerifyPublish = catVerifyPublish; root.catVerifyApply = catVerifyApply; root.catVerifyTick = vfyTick; root.catVerifyState = vfyActive; root.catApprovalsRetryStaged = catApprovalsRetryStaged; root.apStagedErrText = apStagedErrText; root.catApprovalsClose = catApprovalsClose; root.catApprovalsSaveToken = catApprovalsSaveToken;
+root.catApprovalsOpen = catApprovalsOpen; root.catShortcutHelp = catShortcutHelp; root.catShortcutCopy = catShortcutCopy; root.catShortcutClose = catShortcutClose; root.catSpAp = catSpAp; root.catSpBall = catSpBall; root.catSpToggle = catSpToggle; root.catSpEdit = catSpEdit; root.catSpClose = catSpClose; root.catSpApply = catSpApply; root.catSpManualGo = catSpManualGo; root.catSpManualClose = catSpManualClose; root.catLookAp = catLookAp; root.catLookBall = catLookBall; root.catLookTab = catLookTab; root.catLookPaste = catLookPaste; root.catLookOk = catLookOk; root.catLookSave = catLookSave; root.catLookClose = catLookClose; root.catPasteOpen = catPasteOpen; root.catPasteClose = catPasteClose; root.catPasteClip = catPasteClip; root.catPasteShow = catPasteShow; root.catFillToggle = catFillToggle; root.catFillClose = catFillClose; root.catFillConfirm = catFillConfirm; root.catPageOpen = catPageOpen; root.catPageClose = catPageClose; root.catPageUseSel = catPageUseSel; root.catPageUseVal = catPageUseVal; root.catPageImg = catPageImg; root.catPickOpen = catPickOpen; root.catPickFilter = catPickFilter; root.catPickChoose = catPickChoose; root.catPickClose = catPickClose; root.catSpecReviewOpen = catSpecReviewOpen; root.catSpecReviewClose = catSpecReviewClose; root.catSpecReviewAct = catSpecReviewAct; root.catSpecReviewBulk = catSpecReviewBulk; root.catSpecReviewPage = catSpecReviewPage; root.catTagPick = catTagPick; root.catTagCancel = catTagCancel; root.catVerifyRefresh = catVerifyRefresh; root.catVerifyDismiss = catVerifyDismiss; root.catVerifyRetry = catVerifyRetry; root.catVerifyOpenApprovals = catVerifyOpenApprovals; root.catVerifyPublish = catVerifyPublish; root.catVerifyApply = catVerifyApply; root.catVerifyTick = vfyTick; root.catVerifyState = vfyActive; root.catApprovalsRetryStaged = catApprovalsRetryStaged; root.apStagedErrText = apStagedErrText; root.catApprovalsClose = catApprovalsClose; root.catApprovalsSaveToken = catApprovalsSaveToken;
 root.catApprovalsForgetToken = catApprovalsForgetToken; root.catApprovalsChangeToken = catApprovalsChangeToken; root.catApprovalsPage = catApprovalsPage; root.catApprovalsFilter = catApprovalsFilter;
 root.catApprovalsTick = catApprovalsTick; root.catApprovalsEdit = catApprovalsEdit; root.catApprovalsEditClose = catApprovalsEditClose; root.catApprovalsEditSave = catApprovalsEditSave; root.catAddSpecsOnly = catAddSpecsOnly; root.catVerifyNow = catVerifyNow; root.catImagesSet = catImagesSet;
 root.catImagesRefresh = catImagesRefresh; root.catImagesStatus = catImagesStatus; root.catImageFor = catImageFor; root.catApprovalsSend = catApprovalsSend; root.catApprovalsPublish = catApprovalsPublish; root.catPickerSearch = catPickerSearch;
@@ -3533,7 +3600,7 @@ root._catStep5 = { norm: norm, modelKey: modelKey, lookupIn: lookupIn, searchIn:
                    buildOwnedBall: buildOwnedBall, ballFromSpecs: ballFromSpecs, fillPlan: fillPlan,
                    catSpecSource: catSpecSource, setFilled: function (f) { _filled = f; },
                    imgLinksFrom: imgLinksFrom, sheetState: function () { return _sheet; }, mergeOverrides: mergeOverrides, withLocalCorrection: withLocalCorrection, apApplyOverride: apApplyOverride, apOverrideFrom: apOverrideFrom, bowwwlLinks: bowwwlLinks, apStagedFor: apStagedFor, apAsDetail: apAsDetail, apRangeNotes: apRangeNotes, derivedCoverType: derivedCoverType, specGaps: specGaps, nearestWeight: nearestWeight, addListHTML: addListHTML, sourceForBrand: sourceForBrand, apParseIssue: apParseIssue, apPages: apPages, apApplyTicks: apApplyTicks, apConflict: apConflict, apNums: apNums,
-                   verifyPlan: verifyPlan, srvEditValue: srvEditValue, parseSpecText: parseSpecText, lkTabs: lkTabs, lkPasteValue: lkPasteValue, lkBallChanges: lkBallChanges, pageMismatch: pageMismatch, pasteLines: pasteLines, plausibleText: plausibleText, proseFields: proseFields, pgvClean: pgvClean, vocabMerge: vocabMerge, vocabSplit: vocabSplit, familyOf: familyOf, srvRows: srvRows, srvApply: srvApply, srvStagedRow: srvStagedRow, vfyPagesFor: vfyPagesFor, vfyEstimateFrom: vfyEstimateFrom, tagLine: tagLine, tagLines: tagLines, tagValueFor: tagValueFor, vfyPickRun: vfyPickRun, vfyClassify: vfyClassify, vfyCardHTML: vfyCardHTML, specMatch: specMatch, coreNameMatch: coreNameMatch, DIFF_MAX: DIFF_MAX, metricUnverified: metricUnverified, catSpecUnverified: catSpecUnverified,
+                   verifyPlan: verifyPlan, spLdLines: spLdLines, SHORTCUT_JS: SHORTCUT_JS, srvEditValue: srvEditValue, parseSpecText: parseSpecText, lkTabs: lkTabs, lkPasteValue: lkPasteValue, lkBallChanges: lkBallChanges, pageMismatch: pageMismatch, pasteLines: pasteLines, plausibleText: plausibleText, proseFields: proseFields, pgvClean: pgvClean, vocabMerge: vocabMerge, vocabSplit: vocabSplit, familyOf: familyOf, srvRows: srvRows, srvApply: srvApply, srvStagedRow: srvStagedRow, vfyPagesFor: vfyPagesFor, vfyEstimateFrom: vfyEstimateFrom, tagLine: tagLine, tagLines: tagLines, tagValueFor: tagValueFor, vfyPickRun: vfyPickRun, vfyClassify: vfyClassify, vfyCardHTML: vfyCardHTML, specMatch: specMatch, coreNameMatch: coreNameMatch, DIFF_MAX: DIFF_MAX, metricUnverified: metricUnverified, catSpecUnverified: catSpecUnverified,
                    metricScore: metricScore, parseFinish: parseFinish, rgBand: rgBand, diffBand: diffBand, coverClass: coverClass,
                    catMetric: catMetric, sheetHTML: sheetHTML, cmpColOwned: cmpColOwned, cmpColCatalog: cmpColCatalog, cmpRows: cmpRows,
                    cmpHTML: cmpHTML, cmpState: function () { return _cmp; }, setSheet: function (x) { _sheet = x; } };
