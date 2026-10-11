@@ -3446,10 +3446,10 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
 /* v30.169: ONE place for the version. The header, the home screen label, the
    page title and backups all read these, so nothing can go stale on an update.
    Bump both lines (and CATALOG_JS_VERSION in catalog.js when it changes). */
-const APP_VERSION = 'v30.172';
+const APP_VERSION = 'v30.173';
 const APP_BUILD_DATE = '2026-10-10';
 /* catalog.js this build expects; an older file on the server shows a warning */
-const EXPECTED_CATALOG_JS = 'v30.172';
+const EXPECTED_CATALOG_JS = 'v30.173';
 function applyAppVersion() {
 const ref = document.getElementById('hdr-build-ref');
 const cat = (typeof window.CATALOG_JS_VERSION === 'string') ? window.CATALOG_JS_VERSION : null;
@@ -28403,7 +28403,7 @@ return `
           ${line('Last check', when(s.lastAttemptAt))}
           ${s.lastError ? `<div style="font-size:11px;color:var(--red);margin:4px 0 6px;line-height:1.4">Last check failed: ${String(s.lastError).replace(/[<>&]/g,'')}</div>` : ''}
           ${s.count ? `<button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="catReviewOpen()">Review suggested matches</button><button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="catAuditOpen()">Check linked balls</button>` : ''}
-          <button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="if(typeof catApprovalsOpen==='function')catApprovalsOpen()">Spec approvals</button>
+          <button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="if(typeof catApprovalsOpen==='function')catApprovalsOpen()">Spec approvals</button><button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="if(typeof catSpecReviewOpen==='function')catSpecReviewOpen()">Review my specs</button>
           ${typeof catImagesStatus === 'function' ? (() => { const im = catImagesStatus(); return `
           <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border1)">
             <label style="display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:13px;color:var(--t1)">
