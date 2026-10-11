@@ -2225,6 +2225,17 @@ font-size:11px; font-weight:800; color:var(--t3);
 text-transform:uppercase; letter-spacing:0.8px;
 margin-bottom:10px; display:flex; flex-direction:column; gap:2px;
 }
+.set-grp { background:var(--bg3); border:1px solid var(--border1); border-radius:12px; margin-bottom:8px; padding:0 14px; }
+.set-grp > summary { list-style:none; display:flex; align-items:center; gap:12px; padding:12px 0; cursor:pointer; }
+.set-grp > summary::-webkit-details-marker { display:none; }
+.set-grp-ic { font-size:18px; width:24px; text-align:center; }
+.set-grp-tx { flex:1; min-width:0; display:flex; flex-direction:column; gap:2px; }
+.set-grp-t { font-size:14px; font-weight:700; color:var(--t1); }
+.set-grp-s { font-size:11px; color:var(--t3); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.set-grp-ch { color:var(--t3); font-size:20px; transition:transform .2s; }
+.set-grp[open] > summary .set-grp-ch { transform:rotate(90deg); }
+.set-grp-body { padding-bottom:6px; }
+.set-grp .settings-section { background:none; border:none; border-top:1px solid var(--border1); border-radius:0; padding:12px 0; margin:0; }
 .settings-section-hint {
 font-size:10px; font-weight:500; color:var(--t3);
 text-transform:none; letter-spacing:0; opacity:0.7;
@@ -3446,10 +3457,10 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
 /* v30.169: ONE place for the version. The header, the home screen label, the
    page title and backups all read these, so nothing can go stale on an update.
    Bump both lines (and CATALOG_JS_VERSION in catalog.js when it changes). */
-const APP_VERSION = 'v30.176';
+const APP_VERSION = 'v30.177';
 const APP_BUILD_DATE = '2026-10-11';
 /* catalog.js this build expects; an older file on the server shows a warning */
-const EXPECTED_CATALOG_JS = 'v30.176';
+const EXPECTED_CATALOG_JS = 'v30.177';
 function applyAppVersion() {
 const ref = document.getElementById('hdr-build-ref');
 const cat = (typeof window.CATALOG_JS_VERSION === 'string') ? window.CATALOG_JS_VERSION : null;
@@ -28051,6 +28062,9 @@ db.frames = db.frames.filter(f => gameIDs.has(f.GameID));
 db.attempts = db.attempts.filter(a => gameIDs.has(a.GameID));
 saveAll().then(() => { closeModal(); toast('Orphaned frames cleared'); runDataIntegrityScan(); });
 }
+/* v30.177: Settings groups (collapsed by default; open ones remembered for this session) */
+function _setOpen(k){ try { return JSON.parse(sessionStorage.getItem('bdb_set_open')||'[]').includes(k) ? 'open' : ''; } catch(e) { return ''; } }
+function _setGrpToggle(el){ try { const o = new Set(JSON.parse(sessionStorage.getItem('bdb_set_open')||'[]')); el.open ? o.add(el.dataset.g) : o.delete(el.dataset.g); sessionStorage.setItem('bdb_set_open', JSON.stringify([...o])); } catch(e) {} }
 function openSettingsModal() {
 aiModelsRefreshIfStale(); 
 openModal(`
@@ -28058,14 +28072,9 @@ openModal(`
     <button class="btn btn-secondary" style="width:100%;margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:8px"
       onclick="openThemeModal()">🎨 Theme &amp; Appearance</button>
 
-    <!-- ── App Update ────────────────────────────────────── -->
-    <div class="settings-section">
-      <div class="settings-section-hdr">App Update
-        <span class="settings-section-hint">Force-reload to pick up the latest version pushed to GitHub</span>
-      </div>
-      <button class="btn btn-secondary" style="width:100%" onclick="forceReloadApp()">↻ Reload Latest Version</button>
-    </div>
-
+    <details class="set-grp" data-g="bowlers" ${_setOpen('bowlers')} ontoggle="_setGrpToggle(this)">
+      <summary><span class="set-grp-ic">👤</span><span class="set-grp-tx"><span class="set-grp-t">Bowlers</span><span class="set-grp-s">${(db.bowlers||[]).filter(b=>b.Active!==false).length} on roster · ${(getPrefs().handedness||'right')==='left'?'Left':'Right'}-handed</span></span><span class="set-grp-ch">›</span></summary>
+      <div class="set-grp-body">
     <!-- ── Bowler Roster ────────────────────────────────── -->
     <div class="settings-section">
       <div class="settings-section-hdr">Bowler Roster
@@ -28095,81 +28104,6 @@ return `<div class="list-row row-neutral" style="margin-bottom:6px;cursor:defaul
         onclick="openAddBowlerModal()">+ Add Bowler</button>
     </div>
 
-    <!-- ── Default Ball ──────────────────────────────────── -->
-    <div class="settings-section">
-      <div class="settings-section-hdr">Default Ball
-        <span class="settings-section-hint">First chip when no league default or recent history</span>
-      </div>
-      <select class="finput" style="width:100%;margin-top:4px"
-        onchange="savePrefs({defaultBallID:this.value?parseInt(this.value):null})">
-        <option value="">— None (use most recently used) —</option>
-        ${db.balls.filter(b=>b.Active!==false).map(b=>`<option value="${b.BallID}"${getPrefs().defaultBallID===b.BallID?' selected':''}>${b.BallName}</option>`).join('')}
-      </select>
-    </div>
-
-    <!-- ── Default Spare Ball ───────────────────────────────── -->
-    <div class="settings-section">
-      <div class="settings-section-hdr">Default Spare Ball
-        <span class="settings-section-hint">Auto-selects on att2 when no previous spare ball in session</span>
-      </div>
-      <select class="finput" style="width:100%;margin-top:4px"
-        onchange="savePrefs({defaultSpareBallID:this.value?parseInt(this.value):null})">
-        <option value="">— None (keep current ball) —</option>
-        ${db.balls.filter(b=>b.Active!==false).map(b=>`<option value="${b.BallID}"${getPrefs().defaultSpareBallID===b.BallID?' selected':''}>${b.BallName}</option>`).join('')}
-      </select>
-    </div>
-
-    <!-- ── Spare Alignments (by Leave) ──────────────────────── -->
-    <div class="settings-section">
-      <div class="settings-section-hdr">Spare Alignments
-        <span class="settings-section-hint">Per-leave Straight/Hook board setups — previously only reachable via Stats → All Leaves</span>
-      </div>
-      <button class="btn btn-secondary" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px"
-        onclick="closeModal();navTo('s-leaves')">🎯 Manage Leave Alignments</button>
-    </div>
-
-    <!-- ── Lane Library (v30.112, Phase A) ───────────────────── -->
-    <div class="settings-section">
-      <div class="settings-section-hdr">Lane Library
-        <span class="settings-section-hint">Per-lane notes and behavior, grouped by center &amp; pair — backfilled from history</span>
-      </div>
-      <button class="btn btn-secondary" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px"
-        onclick="closeModal();navTo('s-lane-library')">🛣 Open Lane Library</button>
-    </div>
-
-    <!-- ── Balls / Centers / Patterns → Dev Mode ──────────── -->
-    <div class="settings-section">
-      <div class="settings-section-hdr">Reference Tables
-        <span class="settings-section-hint">Balls, centers, and oil patterns</span>
-      </div>
-      <button class="btn btn-secondary" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px"
-        onclick="openDevModal('balls')">🛠 Open Data Tables</button>
-    </div>
-
-    <!-- ── Data Summary ─────────────────────────────────────── -->
-    <div class="settings-section">
-      <div class="settings-section-hdr">Database Summary</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;font-size:12px">
-        ${[
-['Centers',db.centers.length], ['Leagues',db.leagues.length],
-['Balls',db.balls.length], ['Patterns',db.patterns.length],
-['Leaves',db.leaves.length], ['Surfaces',db.surfaces.length],
-['Series',  db._scoringCounts?.series   ?? db.series.length],
-['Games',   db._scoringCounts?.games    ?? db.games.length],
-['Frames',  db._scoringCounts?.frames   ?? db.frames.length],
-['Attempts',db._scoringCounts?.attempts ?? db.attempts.length],
-].map(([k,v])=>`
-          <div class="stat-row" style="padding:3px 0;border:none">
-            <span style="color:var(--t3)">${k}</span>
-            <span class="sval" style="color:${v>0?'var(--teal)':'var(--t3)'}">${v.toLocaleString()}</span>
-          </div>`).join('')}
-      </div>
-      <button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="openExportModal()">↕ Import / Export</button>
-      <button class="btn btn-ghost btn-sm" style="margin-top:6px;color:var(--gold);border-color:rgba(255,215,0,0.3)"
-        onclick="runDataIntegrityScan()">🔍 Scan &amp; Report</button>
-    </div>
-
-
     <!-- ── Bowler Profile ──────────────────────────────────── -->
     <div class="settings-section">
       <div class="settings-section-hdr">Bowler Profile
@@ -28194,6 +28128,97 @@ return `
 })()}
     </div>
 
+      </div>
+    </details>
+
+    <details class="set-grp" data-g="balls" ${_setOpen('balls')} ontoggle="_setGrpToggle(this)">
+      <summary><span class="set-grp-ic">🎳</span><span class="set-grp-tx"><span class="set-grp-t">Balls &amp; catalog</span><span class="set-grp-s">${(()=>{const d=db.balls.find(b=>b.BallID===getPrefs().defaultBallID);return d?'Default: '+_escHtml(d.BallName):'Defaults, catalog, spec approvals';})()}</span></span><span class="set-grp-ch">›</span></summary>
+      <div class="set-grp-body">
+    <!-- ── Default Ball ──────────────────────────────────── -->
+    <div class="settings-section">
+      <div class="settings-section-hdr">Default Ball
+        <span class="settings-section-hint">First chip when no league default or recent history</span>
+      </div>
+      <select class="finput" style="width:100%;margin-top:4px"
+        onchange="savePrefs({defaultBallID:this.value?parseInt(this.value):null})">
+        <option value="">— None (use most recently used) —</option>
+        ${db.balls.filter(b=>b.Active!==false).map(b=>`<option value="${b.BallID}"${getPrefs().defaultBallID===b.BallID?' selected':''}>${b.BallName}</option>`).join('')}
+      </select>
+    </div>
+
+    <!-- ── Default Spare Ball ───────────────────────────────── -->
+    <div class="settings-section">
+      <div class="settings-section-hdr">Default Spare Ball
+        <span class="settings-section-hint">Auto-selects on att2 when no previous spare ball in session</span>
+      </div>
+      <select class="finput" style="width:100%;margin-top:4px"
+        onchange="savePrefs({defaultSpareBallID:this.value?parseInt(this.value):null})">
+        <option value="">— None (keep current ball) —</option>
+        ${db.balls.filter(b=>b.Active!==false).map(b=>`<option value="${b.BallID}"${getPrefs().defaultSpareBallID===b.BallID?' selected':''}>${b.BallName}</option>`).join('')}
+      </select>
+    </div>
+
+    <!-- ── Ball Catalog (v30.157 NEW-11) ─────────────────────── -->
+    <div class="settings-section">
+      <div class="settings-section-hdr">Ball Catalog
+        <span class="settings-section-hint">USBC approved-ball list, used to prefill new balls</span>
+      </div>
+      ${(() => {
+if (typeof catStatus !== 'function') return `<div style="font-size:11px;color:var(--t3)">catalog.js not loaded. Upload it next to index.html.</div>`;
+const s = catStatus();
+const when = t => t ? new Date(t).toLocaleString([], {month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}) : '—';
+const line = (k,v) => `<div style="display:flex;justify-content:space-between;font-size:12px;color:var(--t2);margin-bottom:3px"><span>${k}</span><span style="color:var(--t1)">${v}</span></div>`;
+return `
+          ${s.count ? line('Balls', s.count.toLocaleString()) + line('USBC list', s.listVersion || '—') + line('Downloaded', when(s.installedAt))
+                    : `<div style="font-size:12px;color:var(--t2);margin-bottom:6px">Not downloaded yet. Adding balls works the same without it.</div>`}
+          ${line('Last check', when(s.lastAttemptAt))}
+          ${s.lastError ? `<div style="font-size:11px;color:var(--red);margin:4px 0 6px;line-height:1.4">Last check failed: ${String(s.lastError).replace(/[<>&]/g,'')}</div>` : ''}
+          ${s.count ? `<button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="catReviewOpen()">Review suggested matches</button><button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="catAuditOpen()">Check linked balls</button>` : ''}
+          <button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="if(typeof catApprovalsOpen==='function')catApprovalsOpen()">Spec approvals</button><button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="if(typeof catSpecReviewOpen==='function')catSpecReviewOpen()">Review my specs</button><button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="if(typeof catShortcutHelp==='function')catShortcutHelp()">Copy page text Shortcut</button>
+          ${typeof catImagesStatus === 'function' ? (() => { const im = catImagesStatus(); return `
+          <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border1)">
+            <label style="display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:13px;color:var(--t1)">
+              <span>Manufacturer images on this device</span>
+              <input type="checkbox" ${im.on ? 'checked' : ''} onchange="const on=this.checked;catImagesSet(on).then(n=>{toast(on?(n+' image links on this device'):'Manufacturer images off');}).catch(e=>{this.checked=false;catImagesSet(false);toast(e.message);})">
+            </label>
+            <div style="font-size:11px;color:var(--t3);margin-top:4px;line-height:1.45">Shown only here, loaded from the manufacturer's site and kept offline. ${im.count ? im.count + ' links' : 'Needs the Spec approvals token'}${im.at ? ' · updated ' + new Date(im.at).toLocaleDateString() : ''}${im.on ? ' · <a href="#" onclick="event.preventDefault();catImagesRefresh().then(n=>toast(n+\' image links updated\')).catch(e=>toast(e.message))" style="color:var(--teal)">refresh</a>' : ''}</div>
+          </div>`; })() : ''}
+          <button class="btn btn-ghost btn-sm" style="margin-top:6px" id="cat-check-btn"
+            onclick="this.disabled=true;this.textContent='Checking…';catCheck({force:true}).then(r=>{toast(r.status==='updated'?('Catalog updated: '+r.count.toLocaleString()+' balls'):r.status==='current'?'Catalog is up to date':('Catalog check failed: '+r.error),3500);openSettingsModal();})">Check for updates</button>
+        `;
+})()}
+    </div>
+
+      </div>
+    </details>
+
+    <details class="set-grp" data-g="lanes" ${_setOpen('lanes')} ontoggle="_setGrpToggle(this)">
+      <summary><span class="set-grp-ic">🛣</span><span class="set-grp-tx"><span class="set-grp-t">Lanes &amp; spares</span><span class="set-grp-s">Spare alignments, lane library</span></span><span class="set-grp-ch">›</span></summary>
+      <div class="set-grp-body">
+    <!-- ── Spare Alignments (by Leave) ──────────────────────── -->
+    <div class="settings-section">
+      <div class="settings-section-hdr">Spare Alignments
+        <span class="settings-section-hint">Per-leave Straight/Hook board setups — previously only reachable via Stats → All Leaves</span>
+      </div>
+      <button class="btn btn-secondary" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px"
+        onclick="closeModal();navTo('s-leaves')">🎯 Manage Leave Alignments</button>
+    </div>
+
+    <!-- ── Lane Library (v30.112, Phase A) ───────────────────── -->
+    <div class="settings-section">
+      <div class="settings-section-hdr">Lane Library
+        <span class="settings-section-hint">Per-lane notes and behavior, grouped by center &amp; pair — backfilled from history</span>
+      </div>
+      <button class="btn btn-secondary" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px"
+        onclick="closeModal();navTo('s-lane-library')">🛣 Open Lane Library</button>
+    </div>
+
+      </div>
+    </details>
+
+    <details class="set-grp" data-g="ai" ${_setOpen('ai')} ontoggle="_setGrpToggle(this)">
+      <summary><span class="set-grp-ic">🤖</span><span class="set-grp-tx"><span class="set-grp-t">AI &amp; practice</span><span class="set-grp-s">${localStorage.getItem('bowlingdb_ai_key')?'API key saved':'No API key'} · practice mode</span></span><span class="set-grp-ch">›</span></summary>
+      <div class="set-grp-body">
     <!-- ── AI Integration ────────────────────────────────── -->
     <div class="settings-section">
       <div class="settings-section-hdr">AI Integration
@@ -28387,35 +28412,51 @@ return `<div style="display:flex;align-items:center;justify-content:space-betwee
 })()}
     </div>
 
-    <!-- ── Ball Catalog (v30.157 NEW-11) ─────────────────────── -->
-    <div class="settings-section">
-      <div class="settings-section-hdr">Ball Catalog
-        <span class="settings-section-hint">USBC approved-ball list, used to prefill new balls</span>
       </div>
-      ${(() => {
-if (typeof catStatus !== 'function') return `<div style="font-size:11px;color:var(--t3)">catalog.js not loaded. Upload it next to index.html.</div>`;
-const s = catStatus();
-const when = t => t ? new Date(t).toLocaleString([], {month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}) : '—';
-const line = (k,v) => `<div style="display:flex;justify-content:space-between;font-size:12px;color:var(--t2);margin-bottom:3px"><span>${k}</span><span style="color:var(--t1)">${v}</span></div>`;
-return `
-          ${s.count ? line('Balls', s.count.toLocaleString()) + line('USBC list', s.listVersion || '—') + line('Downloaded', when(s.installedAt))
-                    : `<div style="font-size:12px;color:var(--t2);margin-bottom:6px">Not downloaded yet. Adding balls works the same without it.</div>`}
-          ${line('Last check', when(s.lastAttemptAt))}
-          ${s.lastError ? `<div style="font-size:11px;color:var(--red);margin:4px 0 6px;line-height:1.4">Last check failed: ${String(s.lastError).replace(/[<>&]/g,'')}</div>` : ''}
-          ${s.count ? `<button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="catReviewOpen()">Review suggested matches</button><button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="catAuditOpen()">Check linked balls</button>` : ''}
-          <button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="if(typeof catApprovalsOpen==='function')catApprovalsOpen()">Spec approvals</button><button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="if(typeof catSpecReviewOpen==='function')catSpecReviewOpen()">Review my specs</button>
-          ${typeof catImagesStatus === 'function' ? (() => { const im = catImagesStatus(); return `
-          <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border1)">
-            <label style="display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:13px;color:var(--t1)">
-              <span>Manufacturer images on this device</span>
-              <input type="checkbox" ${im.on ? 'checked' : ''} onchange="const on=this.checked;catImagesSet(on).then(n=>{toast(on?(n+' image links on this device'):'Manufacturer images off');}).catch(e=>{this.checked=false;catImagesSet(false);toast(e.message);})">
-            </label>
-            <div style="font-size:11px;color:var(--t3);margin-top:4px;line-height:1.45">Shown only here, loaded from the manufacturer's site and kept offline. ${im.count ? im.count + ' links' : 'Needs the Spec approvals token'}${im.at ? ' · updated ' + new Date(im.at).toLocaleDateString() : ''}${im.on ? ' · <a href="#" onclick="event.preventDefault();catImagesRefresh().then(n=>toast(n+\' image links updated\')).catch(e=>toast(e.message))" style="color:var(--teal)">refresh</a>' : ''}</div>
-          </div>`; })() : ''}
-          <button class="btn btn-ghost btn-sm" style="margin-top:6px" id="cat-check-btn"
-            onclick="this.disabled=true;this.textContent='Checking…';catCheck({force:true}).then(r=>{toast(r.status==='updated'?('Catalog updated: '+r.count.toLocaleString()+' balls'):r.status==='current'?'Catalog is up to date':('Catalog check failed: '+r.error),3500);openSettingsModal();})">Check for updates</button>
-        `;
-})()}
+    </details>
+
+    <details class="set-grp" data-g="data" ${_setOpen('data')} ontoggle="_setGrpToggle(this)">
+      <summary><span class="set-grp-ic">🗄</span><span class="set-grp-tx"><span class="set-grp-t">Data &amp; app</span><span class="set-grp-s">${(typeof APP_VERSION!=='undefined'?APP_VERSION+' · ':'')}${(db._scoringCounts?.games ?? db.games.length).toLocaleString()} games · import/export, tools</span></span><span class="set-grp-ch">›</span></summary>
+      <div class="set-grp-body">
+    <!-- ── App Update ────────────────────────────────────── -->
+    <div class="settings-section">
+      <div class="settings-section-hdr">App Update
+        <span class="settings-section-hint">Force-reload to pick up the latest version pushed to GitHub</span>
+      </div>
+      <button class="btn btn-secondary" style="width:100%" onclick="forceReloadApp()">↻ Reload Latest Version</button>
+    </div>
+
+    <!-- ── Data Summary ─────────────────────────────────────── -->
+    <div class="settings-section">
+      <div class="settings-section-hdr">Database Summary</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;font-size:12px">
+        ${[
+['Centers',db.centers.length], ['Leagues',db.leagues.length],
+['Balls',db.balls.length], ['Patterns',db.patterns.length],
+['Leaves',db.leaves.length], ['Surfaces',db.surfaces.length],
+['Series',  db._scoringCounts?.series   ?? db.series.length],
+['Games',   db._scoringCounts?.games    ?? db.games.length],
+['Frames',  db._scoringCounts?.frames   ?? db.frames.length],
+['Attempts',db._scoringCounts?.attempts ?? db.attempts.length],
+].map(([k,v])=>`
+          <div class="stat-row" style="padding:3px 0;border:none">
+            <span style="color:var(--t3)">${k}</span>
+            <span class="sval" style="color:${v>0?'var(--teal)':'var(--t3)'}">${v.toLocaleString()}</span>
+          </div>`).join('')}
+      </div>
+      <button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="openExportModal()">↕ Import / Export</button>
+      <button class="btn btn-ghost btn-sm" style="margin-top:6px;color:var(--gold);border-color:rgba(255,215,0,0.3)"
+        onclick="runDataIntegrityScan()">🔍 Scan &amp; Report</button>
+    </div>
+
+
+    <!-- ── Balls / Centers / Patterns → Dev Mode ──────────── -->
+    <div class="settings-section">
+      <div class="settings-section-hdr">Reference Tables
+        <span class="settings-section-hint">Balls, centers, and oil patterns</span>
+      </div>
+      <button class="btn btn-secondary" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px"
+        onclick="openDevModal('balls')">🛠 Open Data Tables</button>
     </div>
 
     <!-- ── Developer Tools ───────────────────────────────────── -->
@@ -28450,6 +28491,9 @@ return `
         `;
 })()}
     </div>
+
+      </div>
+    </details>
 
     <div class="divider"></div>
     <button class="btn btn-danger" onclick="confirmReset()">Reset All Data</button>
