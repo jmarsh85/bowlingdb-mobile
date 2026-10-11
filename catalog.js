@@ -36,7 +36,7 @@
 'use strict';
 
 /* v30.169: shown in the app header when it differs from the build's EXPECTED_CATALOG_JS */
-var CAT_VERSION  = 'v30.177';
+var CAT_VERSION  = 'v30.178';
 var CAT_BASE     = 'https://raw.githubusercontent.com/jmarsh85/bowlingdb-mobile/dist/';
 var CAT_DB       = 'BowlingDB_Catalog';
 var CAT_DB_VER   = 1;
@@ -2806,7 +2806,7 @@ function spButtonsHTML(bw, pasteCall, makerUrl) {
    The app shows the steps and copies this script for pasting into the Shortcut. */
 var SHORTCUT_JS = "var c=document.body.cloneNode(true);\nc.querySelectorAll('script,style,noscript,svg,iframe,nav,header,footer').forEach(function(e){e.remove()});\nc.querySelectorAll('br').forEach(function(e){e.replaceWith('\\n')});\nc.querySelectorAll('td,th').forEach(function(e){e.prepend('\\t')});\nc.querySelectorAll('h1').forEach(function(e){e.prepend('\\n#H1 ')});\nc.querySelectorAll('p,div,li,tr,dt,dd,h1,h2,h3,h4,h5,h6,section,article').forEach(function(e){e.append('\\n')});\nvar ld=[];document.querySelectorAll('script[type=\"application/ld+json\"]').forEach(function(s){ld.push(s.textContent.replace(/\\s+/g,' '))});\nvar m=document.querySelector('meta[property=\"og:image\"]');\ncompletion('BDB-PAGE '+location.href+'\\n'+c.textContent.replace(/[ \\u00a0]*\\n\\s*/g,'\\n')+'\\n#LD '+ld.join('\\n#LD ')+(m?'\\n#IMG '+m.content:''));";
 function catShortcutHelp() {
-  var ov = overlay('sch-ov', 950);
+  var ov = overlay('sch-ov', 1050);   // above Settings (modal 1010)
   var step = function (n, t) { return '<div style="display:flex;gap:10px;padding:7px 0"><div style="flex:0 0 22px;height:22px;border-radius:11px;background:var(--teal);color:#000;font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center">' + n + '</div><div style="flex:1;font-size:13px;color:var(--t1);line-height:1.5">' + t + '</div></div>'; };
   ov.innerHTML = '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 8px"><button style="' + BACK + '" onclick="catShortcutClose()">\u2039</button>' +
     '<div style="flex:1"><div style="font-size:17px;font-weight:800;color:var(--t1)">Copy page text Shortcut</div><div style="font-size:11px;color:var(--t3)">One-time setup, about a minute</div></div></div>' +
@@ -2840,7 +2840,7 @@ var SP_LABELS = [
   ['intDiff', /^(?:int(?:ermediate)?\.?\s*diff(?:erential)?\.?|mass\s*bias(?:\s*diff(?:erential)?)?|mb\s*diff\.?|psa)/i],
   ['diff', /^(?:total\s*diff(?:erential)?\.?|differential|diff\.?)/i],
   ['rg', /^(?:rg|radius\s*of\s*gyration)/i],
-  ['coverType', /^(?:cover\s*type|coverstock\s*type|cover\s*stock\s*type)/i],
+  ['coverType', /^(?:cover\s*type|coverstock\s*type|cover\s*stock\s*type|type(?=\s*(?:[:|]|$)))/i],   // bowwwl: "Type" under the coverstock
   ['coverName', /^(?:cover\s*name|coverstock(?:\s*name)?|cover\s*stock|cover)/i],
   ['finish', /^(?:box\s*finish|factory\s*finish|out[\s-]*of[\s-]*(?:the[\s-]*)?box\s*finish|finish)/i],
   ['coreType', /^(?:core\s*type|core\s*symmetry|symmetry)/i],
@@ -2896,13 +2896,16 @@ function parseSpecText(text, weight, name) {
     var n = Number(m[1].charAt(0) === '.' ? '0' + m[1] : m[1]);
     var lim = { rg: [2.30, 2.90], diff: [0, 0.080], intDiff: [0, 0.040] }[k];
     if (!(n >= lim[0] && n <= lim[1])) return;
-    var wm = SP_WT.exec(line), w = wm ? +wm[1] : w0;
+    var wm = SP_WT.exec(line), w = wm ? +wm[1] : (curW || w0);
     var slot = out.weights[w] = out.weights[w] || {};
     var key = { rg: 'RG', diff: 'Diff', intDiff: 'IntDiff' }[k];
     if (slot[key] == null) { slot[key] = n; if (out.found.indexOf(k) < 0) out.found.push(k); }
   };
+  var curW = null;   // v30.178: a "16 pounds" heading applies to the numbers under it (bowwwl)
   lines.forEach(function (l, i) {
+    var wh = /^(1[0-6])\s*(?:#|lbs?\.?|pounds?)\s*(?:ball)?$/i.exec(l); if (wh) { curW = +wh[1]; return; }
     var lab = l.replace(/^(1[0-6])\s*(?:#|lbs?\.?|pounds?)\s*[|:]?\s*(?=[a-z])/i, '');   // "16 lbs RG 2.48 ...": the label follows the weight
+    var matched = false;
     for (var j = 0; j < SP_LABELS.length; j++) {
       var m = SP_LABELS[j][1].exec(lab); if (!m) continue;
       if (/[a-z]/.test(lab.charAt(m[0].length))) continue;            // "Coreless", "Finished": not a label (a capital may follow: "Cover NameR2S")
@@ -2914,7 +2917,14 @@ function parseSpecText(text, weight, name) {
         var dm = /\b(?:total\s*)?diff(?:erential)?\.?\s*[:|]?\s*([0-2]?\.\d{2,3})/i.exec(rest); if (k === 'rg' && dm) setN('diff', dm[1], l);
         var im = /\b(?:int(?:ermediate)?\.?\s*diff\.?|psa|mass\s*bias|mb)\s*[:|]?\s*([0-2]?\.\d{2,3})/i.exec(rest); if (k !== 'intDiff' && im) setN('intDiff', im[1], l);
       } else setF(k, rest);
-      break;
+      matched = true; break;
+    }
+    /* v30.178 bowwwl headings: "HK22C2 - Alpha Premier Solid Coverstock", "Rampart Core" */
+    if (!matched) {
+      var ch = /^(.{2,60}?)\s+cover\s*stock$/i.exec(l);
+      if (ch) setF('coverName', ch[1].replace(/\s+[-\u2013\u2014]\s+/g, ' '));
+      var co = /^(.{1,40}?)\s+core$/i.exec(l);
+      if (co && !/^(?:a)?symmetr/i.test(co[1])) setF('core', co[1]);
     }
     /* weight table rows without a label first: "15 lb | 2.48 | 0.051 | 0.012" */
     var wr = /^(1[0-6])\s*(?:#|lbs?\.?|pounds?)\s*[|:]?\s*([0-2]?\.\d{2,3})\s*\|?\s*([0-2]?\.\d{2,3})(?:\s*\|?\s*([0-2]?\.\d{2,3}))?/i.exec(l);
@@ -3207,7 +3217,9 @@ function tagValueFor(fieldId, v) {
   if (fieldId === 'ape-released') {
     var m = /^(\d{4})-(\d{2})(?:-(\d{2}))?/.exec(s); if (m) return { v: m[0] };
     m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(s); if (m) return { v: m[3] + '-' + ('0' + m[1]).slice(-2) + '-' + ('0' + m[2]).slice(-2) };
-    m = /^([A-Za-z]+)\.?\s+(\d{4})$/.exec(s); if (m && MONTH_N[m[1].toLowerCase()]) return { v: m[2] + '-' + ('0' + MONTH_N[m[1].toLowerCase()]).slice(-2) };
+    m = /^([A-Za-z]+)\.?\s+(?:\d{1,2},?\s+)?(\d{4})$/.exec(s);
+    var mn = m && (MONTH_N[m[1].toLowerCase()] || MONTH_N[Object.keys(MONTH_N).filter(function (k) { return m[1].length >= 3 && k.indexOf(m[1].toLowerCase()) === 0; })[0]]);
+    if (mn) return { v: m[2] + '-' + ('0' + mn).slice(-2) };
     m = /^(\d{4})$/.exec(s); if (m) return { v: m[1] };
     return { err: 'Release date needs a date, e.g. October 2022' };
   }
