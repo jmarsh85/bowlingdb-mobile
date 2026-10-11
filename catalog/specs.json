@@ -136,7 +136,7 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - Savvy Hook Solid",
+   "Name": null,
    "Type": "Solid Reactive",
    "Finish": "500, 1000, 2000 Siaair Micro Pad"
   },
@@ -180,7 +180,7 @@
   "Cover": {
    "Name": "Activator™ Plus",
    "Type": null,
-   "Finish": "500 Siaair, Rough Buff"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -202,7 +202,7 @@
   "Cover": {
    "Name": "Activator Plus 3.0 Pearl",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -334,7 +334,7 @@
   "Cover": {
    "Name": "Urethane",
    "Type": null,
-   "Finish": "Rough Buff, High Gloss"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -354,9 +354,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - A.X.H. Pearl",
+   "Name": null,
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -392,13 +392,13 @@
  "brunswick-brute": {
   "DateReleased": null,
   "Core": {
-   "Name": "Brute Low RG / Low Differential Symmetrical",
+   "Name": null,
    "Type": "Symmetrical"
   },
   "Cover": {
    "Name": "Fortify Hybrid Reactive",
    "Type": "Hybrid Reactive",
-   "Finish": "500 Siaair / Royal Compound / Royal Shine"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -414,7 +414,7 @@
  "brunswick-brute-strength": {
   "DateReleased": null,
   "Core": {
-   "Name": "Brute Low RG / Low Differential Symmetrical",
+   "Name": null,
    "Type": "Symmetrical"
   },
   "Cover": {
@@ -486,7 +486,7 @@
   "Cover": {
    "Name": "CFT v4.5",
    "Type": null,
-   "Finish": "500 Siaair, Rough Buff"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -508,7 +508,7 @@
   "Cover": {
    "Name": "CFT Alpha-Max",
    "Type": null,
-   "Finish": "500, 800, and 4000 Siaair Micro Pad"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -530,7 +530,7 @@
   "Cover": {
    "Name": "CFT Maxxed-Out Solid",
    "Type": null,
-   "Finish": "500, 2000 and 4000 Siaair Micro Pad"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -594,9 +594,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22C - Alpha Premier Pearl",
+   "Name": null,
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -678,7 +678,7 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22C² - Alpha Premier Solid",
+   "Name": null,
    "Type": "Solid Reactive",
    "Finish": "500, 1500 Siaair Micro Pad"
   },
@@ -784,9 +784,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - Savvy Hook Hybrid",
+   "Name": null,
    "Type": "Hybrid Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -826,9 +826,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - Savvy Hook Pearl",
+   "Name": null,
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -892,7 +892,7 @@
   "Cover": {
    "Name": "3C Pearl Reactive",
    "Type": "Pearl Reactive",
-   "Finish": "500 and 1,000 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -936,7 +936,7 @@
   "Cover": {
    "Name": "PowrKoil™ 18",
    "Type": "Pearl Reactive",
-   "Finish": "500 Siaair, Rough Buff, High Gloss"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -956,9 +956,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - PowerKoil 26",
+   "Name": null,
    "Type": "Solid Reactive",
-   "Finish": "500, 1000, 2000 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "10": {
@@ -1008,9 +1008,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - PowerKoil 26",
+   "Name": null,
    "Type": "Solid Reactive",
-   "Finish": "500, 1000, 2000 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "10": {
@@ -1060,9 +1060,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - PowerKoil 26",
+   "Name": null,
    "Type": "Pearl Reactive",
-   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "10": {
@@ -1112,7 +1112,7 @@
    "Type": null
   },
   "Cover": {
-   "Name": "A.C.T. 3.0 Solid",
+   "Name": null,
    "Type": "Solid Reactive",
    "Finish": "500, 2000 Siaair Micro Pad"
   },
@@ -1134,9 +1134,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - A.C.T. 3.0 Hybrid",
+   "Name": null,
    "Type": "Hybrid Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -1180,7 +1180,7 @@
   "Cover": {
    "Name": "Activator Plus 3.0 Pearl",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -1220,9 +1220,9 @@
    "Type": "Asymmetrical"
   },
   "Cover": {
-   "Name": "HK22C - EVO Hybrid",
+   "Name": null,
    "Type": "Hybrid Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -1262,9 +1262,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - SH 4.0 Pearl",
+   "Name": null,
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -1304,7 +1304,7 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22C - SH 4.0 Hybrid",
+   "Name": null,
    "Type": "Hybrid Reactive",
    "Finish": "500, 2000 Siaair Micro Pad"
   },
@@ -1384,7 +1384,7 @@
  "brunswick-evil-siege": {
   "DateReleased": null,
   "Core": {
-   "Name": "M.A.C.E. (Mechanical Asymmetric Core Engineering)",
+   "Name": null,
    "Type": "Asymmetrical"
   },
   "Cover": {
@@ -1412,7 +1412,7 @@
   "Cover": {
    "Name": "Relativity V Max",
    "Type": null,
-   "Finish": "500 Siaair / Royal Compound / Royal Shine"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -1500,7 +1500,7 @@
   "Cover": {
    "Name": "Fortify Reactive",
    "Type": "Pearl Reactive",
-   "Finish": "500 Siaair / Royal Compound / Royal Shine"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -1596,7 +1596,7 @@
   "Cover": {
    "Name": "PK-26 Pearl Reactive",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 2000 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "10": {
@@ -1643,7 +1643,7 @@
   "Cover": {
    "Name": "PK-26 Pearl Reactive",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 2000 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "10": {
@@ -1690,7 +1690,7 @@
   "Cover": {
    "Name": "PK-26 Hybrid Reactive",
    "Type": "Hybrid Reactive",
-   "Finish": "500, 1000, 2000 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "10": {
@@ -1737,7 +1737,7 @@
   "Cover": {
    "Name": "PK-26 Hybrid Reactive",
    "Type": "Hybrid Reactive",
-   "Finish": "500, 1000, 2000 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "10": {
@@ -1811,7 +1811,7 @@
   "Cover": {
    "Name": "Activator Plus 2.0 Pearl",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -1853,7 +1853,7 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22C - EVO Hybrid",
+   "Name": null,
    "Type": "Hybrid Reactive",
    "Finish": "500, 2000 Siaair Micro Pad"
   },
@@ -1897,7 +1897,7 @@
   "Cover": {
    "Name": "Relativity Pearl 3.0",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -1917,7 +1917,7 @@
    "Type": null
   },
   "Cover": {
-   "Name": "A.X.H. Hybrid (Activator Xtreme Hook)",
+   "Name": null,
    "Type": "Hybrid Reactive",
    "Finish": "500, 2000 Siaair Micro Pad"
   },
@@ -1939,9 +1939,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22C - EVO Solid",
+   "Name": null,
    "Type": "Solid Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -1981,9 +1981,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22C - EVO Pearl",
+   "Name": null,
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -2023,9 +2023,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - Evolution Pearl",
+   "Name": null,
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -2067,7 +2067,7 @@
   "Cover": {
    "Name": "Relativity 2.0 Hybrid",
    "Type": "Hybrid Reactive",
-   "Finish": "500 and 1000 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -2111,7 +2111,7 @@
   "Cover": {
    "Name": "PowrKoil™ 18 Solid",
    "Type": "Solid Reactive",
-   "Finish": "500 Siaair, Rough Buff, High Gloss"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -2155,7 +2155,7 @@
   "Cover": {
    "Name": "Activator Plus",
    "Type": "Pearl Reactive",
-   "Finish": "500 Siaair, Rough Buff, High Gloss"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -2357,7 +2357,7 @@
   "Cover": {
    "Name": "Propel X Solid",
    "Type": null,
-   "Finish": "500, 1000, and 2000 Siaair Micro Pad"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -2379,7 +2379,7 @@
   "Cover": {
    "Name": "Propel X",
    "Type": null,
-   "Finish": "500, 1500 Siaair, Rough Buff"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -2467,7 +2467,7 @@
   "Cover": {
    "Name": "Activator Plus",
    "Type": "Pearl Reactive",
-   "Finish": "500 Siair, Rough Buff"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -2599,7 +2599,7 @@
   "Cover": {
    "Name": "Honor Roll A+ Pearl Reactive",
    "Type": "Pearl Reactive",
-   "Finish": "500 Siaair / Royal Compound / Royal Shine"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -2643,7 +2643,7 @@
   "Cover": {
    "Name": "PlaZma Reactive Solid",
    "Type": "Solid",
-   "Finish": "600 - Wet Sand"
+   "Finish": null
   },
   "SpecsByWeight": {
    "16": {
@@ -2665,7 +2665,7 @@
   "Cover": {
    "Name": "Addaptive f(P2) Pearl",
    "Type": "Pearl Reactive",
-   "Finish": "500 Siaair / Rough Buff / High Gloss"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -2731,7 +2731,7 @@
   "Cover": {
    "Name": "Savvy Solid Reactive",
    "Type": "Solid Reactive",
-   "Finish": "500 Siaair / Royal Compound / Royal Shine"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -2819,7 +2819,7 @@
   "Cover": {
    "Name": "Savvy Hook 2.0 Pearl",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -2839,9 +2839,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "A.X.H. Pearl",
+   "Name": null,
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -2863,7 +2863,7 @@
   "Cover": {
    "Name": "Savvy Hook 3.0 Pearl",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -2883,7 +2883,7 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22C - EVO Solid",
+   "Name": null,
    "Type": "Solid Reactive",
    "Finish": "500, 1500 Siaair Micro Pad"
   },
@@ -3145,7 +3145,7 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - Evolution Hybrid",
+   "Name": null,
    "Type": "Hybrid Reactive",
    "Finish": "500, 1500, 3000 Siaair Micro Pad"
   },
@@ -3183,7 +3183,7 @@
  "brunswick-power-groove-reactive-purple-silver": {
   "DateReleased": null,
   "Core": {
-   "Name": "DISC (Differential Increasing Slide Cylinders)",
+   "Name": null,
    "Type": null
   },
   "Cover": {
@@ -3253,7 +3253,7 @@
    "Type": null
   },
   "Cover": {
-   "Name": "A.C.T. 2.0 (Activator Composite Technology)",
+   "Name": null,
    "Type": "Solid Reactive",
    "Finish": "500, 2000 Siaair Micro Pad"
   },
@@ -3275,9 +3275,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "A.C.T. 2.0 Hybrid",
+   "Name": null,
    "Type": "Hybrid Reactive",
-   "Finish": "500, 1000 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -3475,7 +3475,7 @@
   "Cover": {
    "Name": "Evolution Reactive",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -3495,9 +3495,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - Evolution Reactive",
+   "Name": null,
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -3629,7 +3629,7 @@
   "Cover": {
    "Name": "R-16",
    "Type": "Pearl Reactive",
-   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "10": {
@@ -3681,7 +3681,7 @@
   "Cover": {
    "Name": "R-16",
    "Type": "Pearl Reactive",
-   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "10": {
@@ -3733,7 +3733,7 @@
   "Cover": {
    "Name": "R-16",
    "Type": "Pearl Reactive",
-   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "10": {
@@ -3785,7 +3785,7 @@
   "Cover": {
    "Name": "R-16",
    "Type": "Pearl Reactive",
-   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "10": {
@@ -3837,7 +3837,7 @@
   "Cover": {
    "Name": "R-16",
    "Type": "Pearl Reactive",
-   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "10": {
@@ -3889,7 +3889,7 @@
   "Cover": {
    "Name": "R-16",
    "Type": "Pearl Reactive",
-   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "10": {
@@ -3941,7 +3941,7 @@
   "Cover": {
    "Name": "R-16",
    "Type": "Pearl Reactive",
-   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "10": {
@@ -3993,7 +3993,7 @@
   "Cover": {
    "Name": "R-16",
    "Type": "Pearl Reactive",
-   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "10": {
@@ -4045,7 +4045,7 @@
   "Cover": {
    "Name": "R-16",
    "Type": "Solid Reactive",
-   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "10": {
@@ -4149,7 +4149,7 @@
   "Cover": {
    "Name": "R-16",
    "Type": "Pearl Reactive",
-   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "10": {
@@ -4201,7 +4201,7 @@
   "Cover": {
    "Name": "R-16",
    "Type": "Pearl Reactive",
-   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "10": {
@@ -4253,7 +4253,7 @@
   "Cover": {
    "Name": "R-16",
    "Type": "Pearl Reactive",
-   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "10": {
@@ -4299,7 +4299,7 @@
  "brunswick-siege": {
   "DateReleased": null,
   "Core": {
-   "Name": "M.A.C.E. (Mechanical Asymmetric Core Engineering)",
+   "Name": null,
    "Type": "Asymmetrical"
   },
   "Cover": {
@@ -4347,7 +4347,7 @@
    "Type": null
   },
   "Cover": {
-   "Name": "CPTv2 - Control Reactive",
+   "Name": null,
    "Type": "Solid Reactive",
    "Finish": "500 Siaair / Royal Compound"
   },
@@ -4369,9 +4369,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "CPTv2 - Flip Reactive",
+   "Name": null,
    "Type": "Pearl Reactive",
-   "Finish": "500 Siaair / Royal Compound / Royal Shine"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -4393,7 +4393,7 @@
   "Cover": {
    "Name": "Activator Plus 2.0 Hybrid",
    "Type": "Hybrid Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -4413,9 +4413,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22C² - EVO Pearl",
+   "Name": null,
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -4457,7 +4457,7 @@
   "Cover": {
    "Name": "SK13 Reactive",
    "Type": "Pearl Reactive",
-   "Finish": "500 Siaair / Rough Buff / High Gloss"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -4479,7 +4479,7 @@
   "Cover": {
    "Name": "SK13 Reactive",
    "Type": "Pearl Reactive",
-   "Finish": "500 Siaair / Rough Buff / High Gloss"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -4501,7 +4501,7 @@
   "Cover": {
    "Name": "SK13 Reactive",
    "Type": "Pearl Reactive",
-   "Finish": "500 Siaair / Rough Buff / High Gloss"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -4523,7 +4523,7 @@
   "Cover": {
    "Name": "SK13 Reactive",
    "Type": "Pearl Reactive",
-   "Finish": "500 Siaair / Rough Buff / High Gloss"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -4567,7 +4567,7 @@
   "Cover": {
    "Name": "URG (Ultra Responsive Grit)",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1,000 and 3,000 Siaair Micro Pad"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -4633,7 +4633,7 @@
   "Cover": {
    "Name": "R-16",
    "Type": "Pearl Reactive",
-   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "10": {
@@ -4685,7 +4685,7 @@
   "Cover": {
    "Name": "R-16",
    "Type": "Pearl Reactive",
-   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "10": {
@@ -4737,7 +4737,7 @@
   "Cover": {
    "Name": "R-16",
    "Type": "Pearl Reactive",
-   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "10": {
@@ -4789,7 +4789,7 @@
   "Cover": {
    "Name": "R-16",
    "Type": "Pearl Reactive",
-   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "10": {
@@ -4841,7 +4841,7 @@
   "Cover": {
    "Name": "R-16",
    "Type": "Pearl Reactive",
-   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "10": {
@@ -4893,7 +4893,7 @@
   "Cover": {
    "Name": "R-16",
    "Type": "Pearl Reactive",
-   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "10": {
@@ -4945,7 +4945,7 @@
   "Cover": {
    "Name": "R-16",
    "Type": "Pearl Reactive",
-   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "10": {
@@ -4997,7 +4997,7 @@
   "Cover": {
    "Name": "R-16",
    "Type": "Pearl Reactive",
-   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "10": {
@@ -5069,7 +5069,7 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - A.C.T. 3.0 Hybrid",
+   "Name": null,
    "Type": "Hybrid Reactive",
    "Finish": "500, 2000 Siaair Micro Pad"
   },
@@ -5135,7 +5135,7 @@
   "Cover": {
    "Name": "Savvy Hook 3.0",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -5199,9 +5199,9 @@
    "Type": "Asymmetrical"
   },
   "Cover": {
-   "Name": "HK22C - EVO Pearl",
+   "Name": null,
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaar / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -5309,7 +5309,7 @@
   "Cover": {
    "Name": "3C Solid Reactive",
    "Type": "Solid Reactive",
-   "Finish": "500 Siaair / Royal Compound / Royal Shine"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -5373,9 +5373,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - Savvy Hook Hybrid",
+   "Name": null,
    "Type": "Hybrid Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -5411,13 +5411,13 @@
  "brunswick-wicked-siege": {
   "DateReleased": null,
   "Core": {
-   "Name": "M.A.C.E. (Mechanical Asymmetric Core Engineering)",
+   "Name": null,
    "Type": "Asymmetrical"
   },
   "Cover": {
    "Name": "Propel™ X",
    "Type": null,
-   "Finish": "500 Siaair, Rough Buff"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -5503,7 +5503,7 @@
    "Type": null
   },
   "Cover": {
-   "Name": "A. X. H. (Activator Xtreme Hook)",
+   "Name": null,
    "Type": "Solid Reactive",
    "Finish": "500, 1000 Siaair Micro Pad"
   },
@@ -5525,7 +5525,7 @@
    "Type": null
   },
   "Cover": {
-   "Name": "A. X. H. Hybrid (Activator Xtreme Hook)",
+   "Name": null,
    "Type": "Hybrid Reactive",
    "Finish": "500, 1000, 1500 Siaair Micro Pad"
   },
@@ -5547,9 +5547,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "A. X. H. (Activator Xtreme Hook)",
+   "Name": null,
    "Type": "Pearl Reactive",
-   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -5787,9 +5787,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - Formula 1 Hybrid",
+   "Name": null,
    "Type": "Hybrid Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -5830,7 +5830,7 @@
   "Cover": {
    "Name": "ERT 2.0 Pearl",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -6229,7 +6229,7 @@
    "Type": null
   },
   "Cover": {
-   "Name": "A. R. S. (Angular Reaction System)",
+   "Name": null,
    "Type": "Solid Reactive",
    "Finish": "500, 1500 Siaair Micro Pad"
   },
@@ -6435,9 +6435,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - ERT Pearl",
+   "Name": null,
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -6940,7 +6940,7 @@
   "Cover": {
    "Name": "ERT Pearl",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -7105,7 +7105,7 @@
   "Cover": {
    "Name": "Reflex",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -7711,9 +7711,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - Formula 1 Hybrid",
+   "Name": null,
    "Type": "Hybrid Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -8053,9 +8053,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - Reflex Pearl",
+   "Name": null,
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -8248,9 +8248,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - ERT Pearl",
+   "Name": null,
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -8413,9 +8413,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - Reflex Pearl",
+   "Name": null,
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 2000 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "10": {
@@ -9230,7 +9230,7 @@
   "Cover": {
    "Name": "Exciter Max",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 3000 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -9362,7 +9362,7 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - ERT+ Solid",
+   "Name": null,
    "Type": "Solid Reactive",
    "Finish": "500, 2000 Siaair Micro Pad"
   },
@@ -9403,9 +9403,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - ERT+ Pearl",
+   "Name": null,
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -9664,7 +9664,7 @@
   "Cover": {
    "Name": "ERT Pearl",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -9703,7 +9703,7 @@
    "Type": "Symmetrical"
   },
   "Cover": {
-   "Name": "HK22 - Hyperflex",
+   "Name": null,
    "Type": "Solid Reactive",
    "Finish": "500, 1500 Siaair Micro Pad"
   },
@@ -9748,7 +9748,7 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - Hyperflex",
+   "Name": null,
    "Type": "Solid Reactive",
    "Finish": "500, 1500 Siaair Micro Pad"
   },
@@ -9789,7 +9789,7 @@
    "Type": "Symmetrical"
   },
   "Cover": {
-   "Name": "HK22 - Hyperflex",
+   "Name": null,
    "Type": "Solid Reactive",
    "Finish": "500, 1500 Siaair Micro Pad"
   },
@@ -9834,7 +9834,7 @@
    "Type": "Symmetrical"
   },
   "Cover": {
-   "Name": "HK22 - Hyperflex",
+   "Name": null,
    "Type": "Solid Reactive",
    "Finish": "500, 1500 Siaair Micro Pad"
   },
@@ -9879,7 +9879,7 @@
    "Type": "Symmetrical"
   },
   "Cover": {
-   "Name": "HK22 - Hyperflex",
+   "Name": null,
    "Type": "Solid Reactive",
    "Finish": "500, 1500 Siaair Micro Pad"
   },
@@ -9924,7 +9924,7 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - Hyperflex",
+   "Name": null,
    "Type": "Solid Reactive",
    "Finish": "500, 1500 Siaair Micro Pad"
   },
@@ -9965,7 +9965,7 @@
    "Type": "Symmetrical"
   },
   "Cover": {
-   "Name": "HK22 - Hyperflex",
+   "Name": null,
    "Type": "Solid Reactive",
    "Finish": "500, 1500 Siaair Micro Pad"
   },
@@ -10010,7 +10010,7 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - ERT Solid",
+   "Name": null,
    "Type": "Solid Reactive",
    "Finish": "500, 2000 Siaair Micro Pad"
   },
@@ -10113,7 +10113,7 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22C - Formula 1 Hybrid",
+   "Name": null,
    "Type": "Hybrid Reactive",
    "Finish": "500, 2000 Siaair Micro Pad"
   },
@@ -10383,9 +10383,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22C - Micro Flex",
+   "Name": null,
    "Type": "Pearl Reactive",
-   "Finish": "500 Siaair / Factory Compound / Factory Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -10424,9 +10424,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22C - Micro Flex Hybrid",
+   "Name": null,
    "Type": "Hybrid Reactive",
-   "Finish": "500 Siaair / Factory Compound / Factory Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -10991,9 +10991,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22C ² - Formula 1 Pearl",
+   "Name": null,
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -11073,9 +11073,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22C - Formula 1 Pearl",
+   "Name": null,
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -11434,9 +11434,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - Formula 1 Pearl",
+   "Name": null,
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -11752,9 +11752,9 @@
    "Type": "Symmetrical"
   },
   "Cover": {
-   "Name": "ACR - Alley Cat Reactive",
+   "Name": null,
    "Type": "Pearl Reactive",
-   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Shine"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -11774,9 +11774,9 @@
    "Type": "Symmetrical"
   },
   "Cover": {
-   "Name": "ACR - Alley Cat Reactive",
+   "Name": null,
    "Type": "Pearl Reactive",
-   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Shine"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -11796,9 +11796,9 @@
    "Type": "Symmetrical"
   },
   "Cover": {
-   "Name": "ACR - Alley Cat Reactive",
+   "Name": null,
    "Type": "Pearl Reactive",
-   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Shine"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -11840,9 +11840,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - Inciter Max Flip",
+   "Name": null,
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -11950,7 +11950,7 @@
   "Cover": {
    "Name": "Inciter Hybrid",
    "Type": "Hybrid Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -11992,7 +11992,7 @@
   "Cover": {
    "Name": "Inciter Solid",
    "Type": "Solid Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -12078,7 +12078,7 @@
   "Cover": {
    "Name": "Class 6G Reactive",
    "Type": null,
-   "Finish": "500 Siaair / Rough Buff / High Gloss"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -12122,7 +12122,7 @@
   "Cover": {
    "Name": "Class 5F Reactive",
    "Type": null,
-   "Finish": "500 Siaair / Royal Compound / Royal Shine"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -12186,9 +12186,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - Havoc Pearl",
+   "Name": null,
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -12230,7 +12230,7 @@
   "Cover": {
    "Name": "Class 4F Reactive",
    "Type": null,
-   "Finish": "500 Siaair / Royal Compound / Royal Shine"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -12274,7 +12274,7 @@
   "Cover": {
    "Name": "Class 6V Pearl Reactive",
    "Type": null,
-   "Finish": "500 Siaair / Royal Compound / Royal Shine"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -12404,7 +12404,7 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - Havoc Hybrid",
+   "Name": null,
    "Type": "Hybrid Reactive",
    "Finish": "500, 1500 Siaair Micro Pad"
   },
@@ -12446,9 +12446,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22C - Havoc Pearl",
+   "Name": null,
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -12488,7 +12488,7 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22C - Maximum Havoc",
+   "Name": null,
    "Type": "Solid Reactive",
    "Finish": "500, 2000 Siaair Micro Pad"
   },
@@ -12530,9 +12530,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22C - Maximum Havoc",
+   "Name": null,
    "Type": "Hybrid Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -12616,7 +12616,7 @@
   "Cover": {
    "Name": "Class 5 Reactive",
    "Type": null,
-   "Finish": "500 and 1,500 Siaair / Rough Buff"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -12660,7 +12660,7 @@
   "Cover": {
    "Name": "Class 6 Reactive",
    "Type": null,
-   "Finish": "500 Siaair / Rough Buff / High Gloss"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -12726,7 +12726,7 @@
   "Cover": {
    "Name": "Class 3F Reactive",
    "Type": null,
-   "Finish": "500 Siaair / Royal Compound / Royal Shine"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -12790,9 +12790,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22C² - Havoc Pearl",
+   "Name": null,
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -12832,9 +12832,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - Inciter Xtreme",
+   "Name": null,
    "Type": "Hybrid Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -12918,7 +12918,7 @@
   "Cover": {
    "Name": "Class 4 Reactive",
    "Type": null,
-   "Finish": "500 Siaair / Rough Buff / High Gloss"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -12962,7 +12962,7 @@
   "Cover": {
    "Name": "Class 2L Reactive",
    "Type": null,
-   "Finish": "500 Siaair / Rough Buff / High Gloss"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -12984,7 +12984,7 @@
   "Cover": {
    "Name": "Class 1 Reactive",
    "Type": null,
-   "Finish": "500 Siaair / Rough Buff / High Gloss"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -13006,7 +13006,7 @@
   "Cover": {
    "Name": "Class 1 Reactive",
    "Type": null,
-   "Finish": "500 Siaair / Rough Buff / High Gloss"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -13050,7 +13050,7 @@
   "Cover": {
    "Name": "Class 8 Reactive",
    "Type": null,
-   "Finish": "500, 1,000, and 4,000 Siaair Micro Pad"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -13094,7 +13094,7 @@
   "Cover": {
    "Name": "Class 1 Reactive",
    "Type": null,
-   "Finish": "500 Siaair / Royal Compound / Royal Shine"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -13116,7 +13116,7 @@
   "Cover": {
    "Name": "Class 1 Reactive",
    "Type": null,
-   "Finish": "500 Siaair / Royal Compound / Royal Shine"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -13154,7 +13154,7 @@
  "dv8-pitbull-bark": {
   "DateReleased": null,
   "Core": {
-   "Name": "Pitbull Low RG Asymmetric - DynamiCore",
+   "Name": null,
    "Type": "Asymmetrical"
   },
   "Cover": {
@@ -13400,9 +13400,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22C - Havoc Hybrid",
+   "Name": null,
    "Type": "Hybrid Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -13554,7 +13554,7 @@
   "Cover": {
    "Name": "Class 3L Reactive",
    "Type": null,
-   "Finish": "500 Siaair / Rough Buff / High Gloss"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -13574,9 +13574,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - Inciter Xtreme",
+   "Name": null,
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -13660,7 +13660,7 @@
   "Cover": {
    "Name": "Intense Composite Pearl",
    "Type": "Pearl Reactive",
-   "Finish": "500 and 1,000 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -13704,7 +13704,7 @@
   "Cover": {
    "Name": "Composite Hook Hybrid",
    "Type": "Hybrid Reactive",
-   "Finish": "500 and 1,000 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -13856,9 +13856,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - Havoc Pearl",
+   "Name": null,
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -13898,9 +13898,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22C - Havoc Solid",
+   "Name": null,
    "Type": "Solid Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -14764,9 +14764,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22C - Optimize Hybrid",
+   "Name": null,
    "Type": "Hybrid Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -15815,9 +15815,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - Optimize Pearl",
+   "Name": null,
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -15856,9 +15856,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - Optimize Hybrid",
+   "Name": null,
    "Type": "Hybrid Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -15989,7 +15989,7 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22C - Optimize Solid",
+   "Name": null,
    "Type": "Solid Reactive",
    "Finish": "500, 2000 Siaair Micro Pad"
   },
@@ -16030,9 +16030,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22C - Optimize Pearl",
+   "Name": null,
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -16184,9 +16184,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - GB10.7 Pearl",
+   "Name": null,
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "10": {
@@ -16235,9 +16235,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - GB 11.2 Pearl",
+   "Name": null,
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "10": {
@@ -16584,7 +16584,7 @@
   "Cover": {
    "Name": "GB 12.0 Pearl",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 2000 Siaair / Crown Factory Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -17552,7 +17552,7 @@
  "ebonite-nvs": {
   "DateReleased": null,
   "Core": {
-   "Name": "Spike Symmetrical Mass Bias, Version 1A",
+   "Name": null,
    "Type": "Symmetrical"
   },
   "Cover": {
@@ -17939,7 +17939,7 @@
   "Cover": {
    "Name": "GB 10.7 Pearl",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "10": {
@@ -17990,7 +17990,7 @@
   "Cover": {
    "Name": "GB 10.7 Pearl",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "10": {
@@ -18121,9 +18121,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - GB 13.7 Solid",
+   "Name": null,
    "Type": "Solid Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -18548,7 +18548,7 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22C² - Optimize Solid",
+   "Name": null,
    "Type": "Solid Reactive",
    "Finish": "500, 1500 Siaair Micro Pad"
   },
@@ -18589,9 +18589,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22C² - Optimize Pearl",
+   "Name": null,
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -18630,7 +18630,7 @@
    "Type": "Symmetrical"
   },
   "Cover": {
-   "Name": "HK22C² - GB 15.1 Solid",
+   "Name": null,
    "Type": "Solid Reactive",
    "Finish": "500, 1000, 3000 Siaair Micro Pad"
   },
@@ -18702,9 +18702,9 @@
    "Type": "Symmetrical"
   },
   "Cover": {
-   "Name": "HK22C - GB 15.1 Hybrid",
+   "Name": null,
    "Type": "Hybrid Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -18831,7 +18831,7 @@
  "ebonite-tornado-black-sparkle": {
   "DateReleased": null,
   "Core": {
-   "Name": "Full size pancake with offset, high tech flip block",
+   "Name": null,
    "Type": null
   },
   "Cover": {
@@ -19427,9 +19427,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - GB 10.7 Solid",
+   "Name": null,
    "Type": "Solid Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -19468,9 +19468,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - GB 10.7 Solid",
+   "Name": null,
    "Type": "Solid Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -19509,9 +19509,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - GB 10.7 Solid",
+   "Name": null,
    "Type": "Solid Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -19591,9 +19591,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - GB 10.7 Pearl",
+   "Name": null,
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -19798,7 +19798,7 @@
   "Cover": {
    "Name": "GB 13.3 Pearl",
    "Type": null,
-   "Finish": "500, 2000 Abralon™ Polished w/Powerhouse Factory Finish Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -20005,9 +20005,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - CT Reactive Flip",
+   "Name": null,
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -20046,9 +20046,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - CT Reactive Flip",
+   "Name": null,
    "Type": "Solid Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -20091,9 +20091,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - CT Max Hybrid",
+   "Name": null,
    "Type": "Hybrid Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "10": {
@@ -20224,9 +20224,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - Aggression Hybrid",
+   "Name": null,
    "Type": "Hybrid Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -20265,7 +20265,7 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - Cohesion Solid",
+   "Name": null,
    "Type": "Solid Reactive",
    "Finish": "500, 1000, 2000 Siaair Micro Pad"
   },
@@ -20308,7 +20308,7 @@
   "Cover": {
    "Name": "Aggression Pearl",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -20347,9 +20347,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - Cohesion Pearl",
+   "Name": null,
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -20390,7 +20390,7 @@
   "Cover": {
    "Name": "Polyester",
    "Type": "Polyester",
-   "Finish": "500, 1000, 2000 Siaair / Factory Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "10": {
@@ -20439,7 +20439,7 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - Aggression Hybrid",
+   "Name": null,
    "Type": "Hybrid Reactive",
    "Finish": "500, 1000, 3000 Siaair Micro Pad"
   },
@@ -20562,9 +20562,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - CT Max Pearl",
+   "Name": null,
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 2000 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "10": {
@@ -20654,7 +20654,7 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - Aggression Hybrid",
+   "Name": null,
    "Type": "Hybrid Reactive",
    "Finish": "500, 1000, 2000 Siaair Micro Pad"
   },
@@ -20695,9 +20695,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - CT Reactive Plus",
+   "Name": null,
    "Type": "Solid Reactive",
-   "Finish": "500, 1000, 2000 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "10": {
@@ -20828,9 +20828,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - Envy Pearl",
+   "Name": null,
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -20994,7 +20994,7 @@
   "Cover": {
    "Name": "Juiced Pearl",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -21076,7 +21076,7 @@
   "Cover": {
    "Name": "HK22C² Hybrid",
    "Type": "Hybrid Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -21197,9 +21197,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - Aggression Pearl",
+   "Name": null,
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -21238,9 +21238,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - Semtex Hybrid",
+   "Name": null,
    "Type": "Hybrid Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -21279,9 +21279,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - Semtex Pearl",
+   "Name": null,
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -21402,7 +21402,7 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - Cohesion Hybrid CFI",
+   "Name": null,
    "Type": "Hybrid Reactive",
    "Finish": "500, 1500 Siaair Micro Pad"
   },
@@ -21609,7 +21609,7 @@
   "Cover": {
    "Name": "CT Reactive Plus",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 2000 Siaair / Factory Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "10": {
@@ -21658,7 +21658,7 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - Cohesion Hybrid",
+   "Name": null,
    "Type": "Hybrid Reactive",
    "Finish": "500, 2000 Siaair Micro Pad"
   },
@@ -21955,9 +21955,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - CT Reactive Max",
+   "Name": null,
    "Type": "Solid Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "10": {
@@ -22110,7 +22110,7 @@
   "Cover": {
    "Name": "Juiced Pearl",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 2000 Siaair / Factory Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "10": {
@@ -22161,7 +22161,7 @@
   "Cover": {
    "Name": "Juiced Pearl",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 2000 Siaair / Factory Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "10": {
@@ -22212,7 +22212,7 @@
   "Cover": {
    "Name": "Juiced Hybrid",
    "Type": "Hybrid Reactive",
-   "Finish": "500, 1000, 2000 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "10": {
@@ -22263,7 +22263,7 @@
   "Cover": {
    "Name": "Juiced Pearl",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 2000 Siaair / Factory Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "10": {
@@ -22314,7 +22314,7 @@
   "Cover": {
    "Name": "Juiced Pearl",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 2000 Siaair / Factory Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "10": {
@@ -22365,7 +22365,7 @@
   "Cover": {
    "Name": "Juiced Pearl",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 2000 Siaair / Factory Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "10": {
@@ -22416,7 +22416,7 @@
   "Cover": {
    "Name": "Aggression NE Hybrid",
    "Type": "Hybrid Reactive",
-   "Finish": "500, 1000 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -22744,7 +22744,7 @@
   "Cover": {
    "Name": "Semtex Pearl",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -22783,9 +22783,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "HK22 - Semtex Pearl",
+   "Name": null,
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -23082,7 +23082,7 @@
   "Cover": {
    "Name": "Semtex NE Pearl",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -23123,7 +23123,7 @@
   "Cover": {
    "Name": "Aggression Pearl",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -23246,7 +23246,7 @@
   "Cover": {
    "Name": "HK22C² Hybrid",
    "Type": "Hybrid Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -23287,7 +23287,7 @@
   "Cover": {
    "Name": "HK22C² Pearl",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -25580,6 +25580,37 @@
   "Source": "https://www.motivbowling.com/products/balls/retired-balls/jackal.html",
   "Checked": "2026-10-11"
  },
+ "motiv-jackal-clear-poly": {
+  "DateReleased": null,
+  "Core": {
+   "Name": "Predator",
+   "Type": null
+  },
+  "Cover": {
+   "Name": "Turmoil HFP Reactive",
+   "Type": null,
+   "Finish": "3000 Grit LSS"
+  },
+  "SpecsByWeight": {
+   "14": {
+    "RG": 2.48,
+    "Diff": 0.06,
+    "IntDiff": 0.015
+   },
+   "15": {
+    "RG": 2.46,
+    "Diff": 0.06,
+    "IntDiff": 0.015
+   },
+   "16": {
+    "RG": 2.46,
+    "Diff": 0.06,
+    "IntDiff": 0.015
+   }
+  },
+  "Source": "https://www.motivbowling.com/products/balls/retired-balls/jackal.html",
+  "Checked": "2026-10-11"
+ },
  "motiv-jackal-exj": {
   "DateReleased": null,
   "Core": {
@@ -25649,32 +25680,32 @@
  "motiv-jackal-fury": {
   "DateReleased": null,
   "Core": {
-   "Name": "Predator™ V2",
+   "Name": "Predator",
    "Type": null
   },
   "Cover": {
-   "Name": "Coercion™ Pearl",
+   "Name": "Turmoil HFP Reactive",
    "Type": null,
    "Finish": "3000 Grit LSS"
   },
   "SpecsByWeight": {
    "14": {
-    "RG": 2.51,
-    "Diff": 0.049,
-    "IntDiff": 0.014
+    "RG": 2.48,
+    "Diff": 0.06,
+    "IntDiff": 0.015
    },
    "15": {
-    "RG": 2.47,
-    "Diff": 0.054,
+    "RG": 2.46,
+    "Diff": 0.06,
     "IntDiff": 0.015
    },
    "16": {
-    "RG": 2.48,
-    "Diff": 0.047,
-    "IntDiff": 0.013
+    "RG": 2.46,
+    "Diff": 0.06,
+    "IntDiff": 0.015
    }
   },
-  "Source": "https://www.motivbowling.com/products/balls/exclusives/jackal-fury.html",
+  "Source": "https://www.motivbowling.com/products/balls/retired-balls/jackal.html",
   "Checked": "2026-10-11"
  },
  "motiv-jackal-ghost": {
@@ -25746,42 +25777,32 @@
  "motiv-jackal-howl": {
   "DateReleased": null,
   "Core": {
-   "Name": "Predator™ V2 Asymmetric",
-   "Type": "Asymmetrical"
+   "Name": "Predator",
+   "Type": null
   },
   "Cover": {
-   "Name": "Coercion™ HFS Reactive",
+   "Name": "Turmoil HFP Reactive",
    "Type": null,
    "Finish": "3000 Grit LSS"
   },
   "SpecsByWeight": {
-   "12": {
-    "RG": 2.64,
-    "Diff": 0.03,
-    "IntDiff": 0.01
-   },
-   "13": {
-    "RG": 2.57,
-    "Diff": 0.04,
-    "IntDiff": 0.011
-   },
    "14": {
-    "RG": 2.51,
-    "Diff": 0.049,
-    "IntDiff": 0.014
+    "RG": 2.48,
+    "Diff": 0.06,
+    "IntDiff": 0.015
    },
    "15": {
-    "RG": 2.47,
-    "Diff": 0.054,
+    "RG": 2.46,
+    "Diff": 0.06,
     "IntDiff": 0.015
    },
    "16": {
-    "RG": 2.48,
-    "Diff": 0.047,
-    "IntDiff": 0.013
+    "RG": 2.46,
+    "Diff": 0.06,
+    "IntDiff": 0.015
    }
   },
-  "Source": "https://www.motivbowling.com/products/balls/exclusives/jackal-howl.html",
+  "Source": "https://www.motivbowling.com/products/balls/retired-balls/jackal.html",
   "Checked": "2026-10-11"
  },
  "motiv-jackal-hunt": {
@@ -25890,7 +25911,7 @@
  "motiv-jackal-magic": {
   "DateReleased": null,
   "Core": {
-   "Name": "Predator™ V2 (16#-14#) / Sinister™ (13#-12#)",
+   "Name": null,
    "Type": null
   },
   "Cover": {
@@ -29049,13 +29070,13 @@
  "motiv-tank-rampage-pearl": {
   "DateReleased": null,
   "Core": {
-   "Name": "Gear™ V2 Symmetrical",
-   "Type": "Symmetrical"
+   "Name": "Gear V2",
+   "Type": null
   },
   "Cover": {
-   "Name": "Frixion™ M6 Pearl MCP",
+   "Name": "Alchemy Urethane",
    "Type": null,
-   "Finish": "1000 Grit LSS"
+   "Finish": "3000 Grit LSS"
   },
   "SpecsByWeight": {
    "14": {
@@ -29074,7 +29095,7 @@
     "IntDiff": null
    }
   },
-  "Source": "https://www.motivbowling.com/products/balls/retired-balls/tank-rampage-pearl.html",
+  "Source": "https://www.motivbowling.com/products/balls/retired-balls/tank-rampage.html",
   "Checked": "2026-10-11"
  },
  "motiv-tank-yellow-jacket": {
@@ -30458,7 +30479,7 @@
   "Cover": {
    "Name": "TP-1+",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -30478,9 +30499,9 @@
    "Type": "Symmetrical"
   },
   "Cover": {
-   "Name": "HK22 - HyperKinetic",
+   "Name": null,
    "Type": "Hybrid Reactive",
-   "Finish": "500, 1000, 1500 Siaar / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -30500,9 +30521,9 @@
    "Type": "Symmetrical"
   },
   "Cover": {
-   "Name": "HK22 - HyperKinetic+",
+   "Name": null,
    "Type": "Solid Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -30566,7 +30587,7 @@
   "Cover": {
    "Name": "Forged 2 Hybrid",
    "Type": "Hybrid Reactive",
-   "Finish": "500, 1000 & 3000 Siaair Micro Pad"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -30588,7 +30609,7 @@
   "Cover": {
    "Name": "Forged 2 Pearl",
    "Type": "Pearl Reactive",
-   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -30632,7 +30653,7 @@
   "Cover": {
    "Name": "TP-1 (Textured Pearl 1)",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -30654,7 +30675,7 @@
   "Cover": {
    "Name": "Ai-20 Pearl",
    "Type": "Pearl Reactive",
-   "Finish": "500 & 1000 Siaair / Crown Factory Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -30676,7 +30697,7 @@
   "Cover": {
    "Name": "Ai-20 Solid",
    "Type": "Solid Reactive",
-   "Finish": "500, 1000 & 3000 Siaair Micro Pad"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -30718,9 +30739,9 @@
    "Type": "Symmetrical"
   },
   "Cover": {
-   "Name": "HK22 - HyperKinetic",
+   "Name": null,
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500, Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -30784,9 +30805,9 @@
    "Type": "Symmetrical"
   },
   "Cover": {
-   "Name": "HK22 - HyperKinetic",
+   "Name": null,
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -30934,7 +30955,7 @@
   "Cover": {
    "Name": "HK22C Pearl",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500, Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -30976,7 +30997,7 @@
   "Cover": {
    "Name": null,
    "Type": null,
-   "Finish": "500 Siaair / Royal Compound / Royal Shine"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -31020,7 +31041,7 @@
   "Cover": {
    "Name": null,
    "Type": null,
-   "Finish": "500 Siaair / Royal Compound / Royal Shine"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -31058,7 +31079,7 @@
  "radical-guru-master": {
   "DateReleased": null,
   "Core": {
-   "Name": "Asymmetric with Offset and Scoop Technology",
+   "Name": null,
    "Type": "Asymmetrical"
   },
   "Cover": {
@@ -31150,7 +31171,7 @@
   "Cover": {
    "Name": "HK22C+ Pearl",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -31186,7 +31207,7 @@
  "radical-guru-pearl-limited": {
   "DateReleased": null,
   "Core": {
-   "Name": "Asymmetric with Offset and Scoop Technology",
+   "Name": null,
    "Type": "Asymmetrical"
   },
   "Cover": {
@@ -31208,7 +31229,7 @@
  "radical-guru-supreme": {
   "DateReleased": null,
   "Core": {
-   "Name": "Asymmetric with Offset and Scoop Technology",
+   "Name": null,
    "Type": "Asymmetrical"
   },
   "Cover": {
@@ -31234,7 +31255,7 @@
    "Type": "Asymmetrical"
   },
   "Cover": {
-   "Name": "S. H. A. R. P.",
+   "Name": null,
    "Type": "Solid Reactive",
    "Finish": "500, 1000, 2000 Siaair Micro Pad"
   },
@@ -31256,9 +31277,9 @@
    "Type": "Asymmetrical"
   },
   "Cover": {
-   "Name": "S. H. A. R. P. Pearl",
+   "Name": null,
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -31278,7 +31299,7 @@
    "Type": "Asymmetrical"
   },
   "Cover": {
-   "Name": "S. H. A. R. P. / TS-1",
+   "Name": null,
    "Type": "Solid Reactive",
    "Finish": "500, 1000, 1500 Siaair Micro Pad"
   },
@@ -31324,7 +31345,7 @@
   "Cover": {
    "Name": "Ai-25",
    "Type": "Solid Reactive",
-   "Finish": "500, 1,000 & 2,000 Siaair Micro Pad"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -31346,7 +31367,7 @@
   "Cover": {
    "Name": "Ai-27",
    "Type": "Pearl Reactive",
-   "Finish": "500 & 1,000 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -31368,7 +31389,7 @@
   "Cover": {
    "Name": "TP-1",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -31390,7 +31411,7 @@
   "Cover": {
    "Name": "HK22 Pearl",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -31518,7 +31539,7 @@
   "Cover": {
    "Name": "Forged",
    "Type": "Pearl Reactive",
-   "Finish": "500 & 1,000 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -31538,9 +31559,9 @@
    "Type": "Asymmetrical"
   },
   "Cover": {
-   "Name": "HK22 - HyperKinetic",
+   "Name": null,
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -31562,7 +31583,7 @@
   "Cover": {
    "Name": "Forged-X",
    "Type": "Solid Reactive",
-   "Finish": "500, 1,000 & 2,000 Siaair Micro Pad"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -31584,7 +31605,7 @@
   "Cover": {
    "Name": "Forged + Pearl",
    "Type": "Pearl Reactive",
-   "Finish": "500 & 1,000 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -31606,7 +31627,7 @@
   "Cover": {
    "Name": "Forged-2",
    "Type": "Hybrid Reactive",
-   "Finish": "500 & 1,000 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -31626,7 +31647,7 @@
    "Type": "Asymmetrical"
   },
   "Cover": {
-   "Name": "HK22 - HyperKinetic",
+   "Name": null,
    "Type": "Hybrid Reactive",
    "Finish": "500, 1500, 3000 Siaair Micro Pad"
   },
@@ -31650,7 +31671,7 @@
   "Cover": {
    "Name": "Ai-40",
    "Type": "Pearl Reactive",
-   "Finish": "500 & 1,000 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -31758,7 +31779,7 @@
   "Cover": {
    "Name": "HK22+ Pearl",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -31842,7 +31863,7 @@
   "Cover": {
    "Name": "HK22C+ Solid",
    "Type": "Solid Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -31882,7 +31903,7 @@
    "Type": "Asymmetrical"
   },
   "Cover": {
-   "Name": "HK22 - HyperKinetic",
+   "Name": null,
    "Type": "Hybrid Reactive",
    "Finish": "500, 1000, 2000 Siaair Micro Pad"
   },
@@ -31906,7 +31927,7 @@
   "Cover": {
    "Name": "HK22C Solid",
    "Type": "Solid Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -31948,7 +31969,7 @@
   "Cover": {
    "Name": "HK22 Pearl",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -32032,7 +32053,7 @@
   "Cover": {
    "Name": "Forged + Pearl",
    "Type": "Pearl Reactive",
-   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -32098,7 +32119,7 @@
   "Cover": {
    "Name": "HK22C Textured Hybrid",
    "Type": "Hybrid Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -32206,7 +32227,7 @@
   "Cover": {
    "Name": null,
    "Type": null,
-   "Finish": "500 Siaair / Royal Compound / Royal Shine"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -32280,7 +32301,7 @@
    "Type": "Symmetrical"
   },
   "Cover": {
-   "Name": "S.H.A.R.P. Solid",
+   "Name": null,
    "Type": "Solid Reactive",
    "Finish": "500, 1500, 4000 Siaair"
   },
@@ -32302,9 +32323,9 @@
    "Type": "Symmetrical"
   },
   "Cover": {
-   "Name": "S.H.A.R.P. Hybrid",
+   "Name": null,
    "Type": "Hybrid Reactive",
-   "Finish": "500, 1500, 3000, Siaair Micro Pad"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -32454,7 +32475,7 @@
   "Cover": {
    "Name": null,
    "Type": null,
-   "Finish": "500 Siaair / Royal Compound / Royal Shine"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -32520,7 +32541,7 @@
   "Cover": {
    "Name": null,
    "Type": null,
-   "Finish": "500 Siaair / Royal Compound / Royal Shine"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -32542,7 +32563,7 @@
   "Cover": {
    "Name": "TP-1 (Textured Pearl 1)",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -32586,7 +32607,7 @@
   "Cover": {
    "Name": "TP-1+",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -32608,7 +32629,7 @@
   "Cover": {
    "Name": "HK22 Pearl",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -32650,7 +32671,7 @@
   "Cover": {
    "Name": "HK22 Solid",
    "Type": "Solid Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -32844,7 +32865,7 @@
   "Cover": {
    "Name": "HK22C+ Pearl",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -32886,7 +32907,7 @@
   "Cover": {
    "Name": "MTH-1",
    "Type": "Hybrid Reactive",
-   "Finish": "500, 1000, 2000 Siaair / Crown Factory Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -32950,7 +32971,7 @@
   "Cover": {
    "Name": "Ai-39",
    "Type": "Pearl Reactive",
-   "Finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -32972,7 +32993,7 @@
   "Cover": {
    "Name": "Ai-39 Hybrid",
    "Type": "Hybrid Reactive",
-   "Finish": "500 Siaair / Crown Factory Compound & Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -32994,7 +33015,7 @@
   "Cover": {
    "Name": "Ai-39",
    "Type": "Solid Reactive",
-   "Finish": "500, 1000 & 2000 Siaair Micro Pad"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -33038,7 +33059,7 @@
   "Cover": {
    "Name": "Ai-39",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -33122,9 +33143,9 @@
    "Type": "Asymmetrical"
   },
   "Cover": {
-   "Name": "HK22 - Utility Pearl",
+   "Name": null,
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -33166,7 +33187,7 @@
   "Cover": {
    "Name": "Textured Polyester",
    "Type": "Polyester",
-   "Finish": "500, 1000 Siaair / Factory Compound / Factory Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "14": {
@@ -33198,7 +33219,7 @@
   "Cover": {
    "Name": "HK22C+ Pearl",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -33240,7 +33261,7 @@
   "Cover": {
    "Name": "Low Friction Reactive",
    "Type": "Pearl",
-   "Finish": "500, 1000, 2000 Siaair / Factory Compound / Factory Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -33282,7 +33303,7 @@
   "Cover": {
    "Name": null,
    "Type": null,
-   "Finish": "500, 1,000, & 2,000 Siaair / Rough Buff"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -33326,7 +33347,7 @@
   "Cover": {
    "Name": "MOtion Magic",
    "Type": "Hybrid Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -33500,7 +33521,7 @@
   "Cover": {
    "Name": null,
    "Type": null,
-   "Finish": "500 & 1,000 Siaair / Rough Buff"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -33522,7 +33543,7 @@
   "Cover": {
    "Name": null,
    "Type": null,
-   "Finish": "500 Siaair / Royal Compound / Royal Shine"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -33566,7 +33587,7 @@
   "Cover": {
    "Name": null,
    "Type": null,
-   "Finish": "500 Siaair / Royal Compound / Royal Shine"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -33586,9 +33607,9 @@
    "Type": "Asymmetrical"
   },
   "Cover": {
-   "Name": "HK22 - HyperKinetic",
+   "Name": null,
    "Type": "Hybrid Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "14": {
@@ -33618,7 +33639,7 @@
    "Type": "Asymmetrical"
   },
   "Cover": {
-   "Name": "HK22 - HyperKinetic Solid",
+   "Name": null,
    "Type": "Solid Reactive",
    "Finish": "500, 1500 Siaair Micro Pad"
   },
@@ -33662,7 +33683,7 @@
   "Cover": {
    "Name": "Forged 2 Solid",
    "Type": "Solid Reactive",
-   "Finish": "500, 1000 & 3000 Siaair Micro Pad"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -33684,7 +33705,7 @@
   "Cover": {
    "Name": "Forged 2 Hybrid",
    "Type": "Hybrid Reactive",
-   "Finish": "500, 1000 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -33706,7 +33727,7 @@
   "Cover": {
    "Name": "Forged 2 Pearl",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "15": {
@@ -33726,7 +33747,7 @@
    "Type": "Asymmetrical"
   },
   "Cover": {
-   "Name": "Based on years of testing and research, we found this direct",
+   "Name": null,
    "Type": null,
    "Finish": "Reacta Gloss"
   },
@@ -33798,11 +33819,11 @@
  "roto-grip-exotic-gem": {
   "DateReleased": "2015-12",
   "Core": {
-   "Name": "Sometimes evolution can spark new life into technology from ",
+   "Name": null,
    "Type": null
   },
   "Cover": {
-   "Name": "Bottom line, this coverstock technology just flat out crushe",
+   "Name": null,
    "Type": null,
    "Finish": "Reacta Gloss"
   },
@@ -33893,6 +33914,90 @@
   "Checked": "2026-10-11",
   "Status": "current"
  },
+ "roto-grip-hustle-glow-mint-fuchsia-lemon": {
+  "DateReleased": "2025-05",
+  "Core": {
+   "Name": "Hustle",
+   "Type": "Symmetrical"
+  },
+  "Cover": {
+   "Name": "VTC Pearl Reactive",
+   "Type": "Pearl Reactive",
+   "Finish": "Power Edge"
+  },
+  "SpecsByWeight": {
+   "15": {
+    "RG": 2.53,
+    "Diff": 0.03,
+    "IntDiff": null
+   },
+   "16": {
+    "RG": 2.53,
+    "Diff": 0.03,
+    "IntDiff": null
+   }
+  },
+  "Source": "https://www.stormbowling.com/roto-grip-hustle-bowling-ball-glow",
+  "Checked": "2026-10-11",
+  "Status": "current",
+  "Corrected": {
+   "source": "other",
+   "at": "2026-10-11"
+  }
+ },
+ "roto-grip-hustle-sos-soot-onyx-sky": {
+  "DateReleased": "2026-06-26",
+  "Core": {
+   "Name": "Hustle",
+   "Type": "Symmetrical"
+  },
+  "Cover": {
+   "Name": "VTC Hybrid",
+   "Type": null,
+   "Finish": "4000 Grit"
+  },
+  "SpecsByWeight": {
+   "16": {
+    "RG": 2.53,
+    "Diff": 0.03,
+    "IntDiff": null
+   }
+  },
+  "Source": "https://www.stormbowling.com/roto-grip-hustle-sos-bowling-ball",
+  "Checked": "2026-10-11",
+  "Status": "current"
+ },
+ "roto-grip-hustle-vp-vanilla-popsicle": {
+  "DateReleased": "2026-06-26",
+  "Core": {
+   "Name": "Hustle",
+   "Type": "Symmetrical"
+  },
+  "Cover": {
+   "Name": "VTC Pearl",
+   "Type": "Pearl Reactive",
+   "Finish": "Power Edge"
+  },
+  "SpecsByWeight": {
+   "15": {
+    "RG": 2.532,
+    "Diff": 0.03,
+    "IntDiff": null
+   },
+   "16": {
+    "RG": 2.53,
+    "Diff": 0.03,
+    "IntDiff": null
+   }
+  },
+  "Source": "https://www.stormbowling.com/roto-grip-hustle-vp-bowling-ball",
+  "Checked": "2026-10-11",
+  "Status": "current",
+  "Corrected": {
+   "source": "other",
+   "at": "2026-10-11"
+  }
+ },
  "roto-grip-hustle-x-ray": {
   "DateReleased": "2024-04-19",
   "Core": {
@@ -33918,11 +34023,11 @@
  "roto-grip-hyped-pearl": {
   "DateReleased": "2021-08",
   "Core": {
-   "Name": "From the beginning, the end goal for the Hyped Core was to c",
+   "Name": null,
    "Type": null
   },
   "Cover": {
-   "Name": "Versatile Traction Control (VTC) was formulated with durabil",
+   "Name": null,
    "Type": null,
    "Finish": "Reacta Gloss"
   },
@@ -33976,7 +34081,7 @@
    "Type": "Symmetrical"
   },
   "Cover": {
-   "Name": "Derived from countless hours of mixing, formulating, and tes",
+   "Name": null,
    "Type": null,
    "Finish": "4000-Grit Abralon"
   },
@@ -34008,7 +34113,7 @@
    "Type": "Symmetrical"
   },
   "Cover": {
-   "Name": "Derived from countless hours of mixing, formulating, and tes",
+   "Name": null,
    "Type": null,
    "Finish": "2000-Grit Abralon"
   },
@@ -34080,11 +34185,11 @@
  "roto-grip-tnt": {
   "DateReleased": "2023-01-16",
   "Core": {
-   "Name": "By placing the TORQUE SPHERE just above the inner equator of",
+   "Name": null,
    "Type": null
   },
   "Cover": {
-   "Name": "First used in a pearlized form on the RST X-2, we felt there",
+   "Name": null,
    "Type": null,
    "Finish": "2000-Grit Abralon"
   },
@@ -34178,11 +34283,11 @@
  "storm-absolute": {
   "DateReleased": "2023-01",
   "Core": {
-   "Name": "In most cases, an extra slug, or weighted disk, is needed to",
+   "Name": null,
    "Type": null
   },
   "Cover": {
-   "Name": "R2S Deep is cleaner through the front compared to the flagsh",
+   "Name": null,
    "Type": null,
    "Finish": "Reacta Gloss"
   },
@@ -34342,11 +34447,11 @@
  "storm-fate": {
   "DateReleased": "2022-11",
   "Core": {
-   "Name": "Compared to the Dual-Drive, Piston, and Piston LD, the F-8 C",
+   "Name": null,
    "Type": null
   },
   "Cover": {
-   "Name": "Traditionally, the term “hybrid” suggests that both solid an",
+   "Name": null,
    "Type": null,
    "Finish": "Reacta Gloss"
   },
@@ -34462,11 +34567,11 @@
  "storm-infinite-physix": {
   "DateReleased": "2022-07",
   "Core": {
-   "Name": "Firmly ensconced at the top of the Storm performance heap is",
+   "Name": null,
    "Type": null
   },
   "Cover": {
-   "Name": "Traditionally, the term “hybrid” suggests that both solid an",
+   "Name": null,
    "Type": null,
    "Finish": "4000-grit Abralon"
   },
@@ -34604,11 +34709,11 @@
  "storm-nova": {
   "DateReleased": "2022-01",
   "Core": {
-   "Name": "Weight blocks like the Ignition Core rev up fast and finish ",
+   "Name": null,
    "Type": null
   },
   "Cover": {
-   "Name": "Slightly more aggressive than the famed R2S coverstock mater",
+   "Name": null,
    "Type": null,
    "Finish": "3000-grit Abralon"
   },
@@ -34636,11 +34741,11 @@
  "storm-phaze-4": {
   "DateReleased": "2022-02",
   "Core": {
-   "Name": "This low RG gem has a strong heart. Being one of the most ag",
+   "Name": null,
    "Type": null
   },
   "Cover": {
-   "Name": "The Phaze series’ aggressive nature has carried over to the ",
+   "Name": null,
    "Type": null,
    "Finish": "1500-grit Polished"
   },
@@ -34712,11 +34817,11 @@
  "storm-phaze-v": {
   "DateReleased": "2022-10",
   "Core": {
-   "Name": "This low RG gem has a strong heart. Being one of the most ag",
+   "Name": null,
    "Type": null
   },
   "Cover": {
-   "Name": "The Phaze series’ aggressive nature has carried over to the ",
+   "Name": null,
    "Type": null,
    "Finish": null
   },
@@ -34832,11 +34937,11 @@
  "storm-sun-storm-limited-edition": {
   "DateReleased": "2022-12",
   "Core": {
-   "Name": "Workable and forgiving, the C3 Centripetal Control Core is a",
+   "Name": null,
    "Type": null
   },
   "Cover": {
-   "Name": "SPEC stands for “Storm Performance Enhanced Coverstock”. The",
+   "Name": null,
    "Type": null,
    "Finish": "4K-Fast"
   },
@@ -35024,7 +35129,7 @@
   "Cover": {
    "Name": "Gen MA (Moderate Angle)",
    "Type": null,
-   "Finish": "800 Abranet®, 1000, 2000, 4000 Abralon®, Power House Factory Finish Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -35063,9 +35168,9 @@
    "Type": "Symmetrical"
   },
   "Cover": {
-   "Name": "LMP Gen 1 Reactive™ With Performance Pearl Additive",
+   "Name": null,
    "Type": null,
-   "Finish": "500, 1000, 2000, 4000 Abralon® Sanded, Polished With Power House Factory Finish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "14": {
@@ -35096,7 +35201,7 @@
   "Cover": {
    "Name": "Gen MC (Moderate Continuation)",
    "Type": null,
-   "Finish": "800 Abranet®, 1000, 2000, 4000 Abralon®, Power House Factory Finish Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -35172,7 +35277,7 @@
   "Cover": {
    "Name": "Luxury MA",
    "Type": null,
-   "Finish": "500, 800, 1000, 2000 Abralon® Polished with Power House Factory Finish Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -35213,7 +35318,7 @@
   "Cover": {
    "Name": "Gen MA (Moderate Angle)",
    "Type": null,
-   "Finish": "800, 1000, 2000 Abralon®, Power House™ Factory Finish Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -35254,7 +35359,7 @@
   "Cover": {
    "Name": "MP Gen 4C",
    "Type": null,
-   "Finish": "800, 1000, 2000, 4000 Abralon® Polished With Power House Factory Finish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "14": {
@@ -35324,9 +35429,9 @@
    "Type": null
   },
   "Cover": {
-   "Name": "MP Gen 3 Reactive Pearl With Performance Additive",
+   "Name": null,
    "Type": null,
-   "Finish": "2000 Abralon® Polished With Power House Factory Finish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "14": {
@@ -35388,7 +35493,7 @@
   "Cover": {
    "Name": "Gen MC (Moderate Continuation)",
    "Type": null,
-   "Finish": "800, 1000, 2000 Abralon® Polished With Power House Factory Finish Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -35460,7 +35565,7 @@
   "Cover": {
    "Name": "MP Gen 4 Reactive Pearl",
    "Type": null,
-   "Finish": "800 Abranet®, 1000, 2000 Abralon®, With Power House™ Factory Finish Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "14": {
@@ -35491,7 +35596,7 @@
   "Cover": {
    "Name": "“Se 6” GEN1 Reactive™",
    "Type": null,
-   "Finish": "500, 1000, 2000, 2000 Abralon® Sanded, Polished With Power House Factory Finish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "14": {
@@ -35522,7 +35627,7 @@
   "Cover": {
    "Name": "Gen XA (Xtra Angle)",
    "Type": null,
-   "Finish": "Abranet®, 1000, 2000 Abralon®, Power House Factory Finish Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -35563,7 +35668,7 @@
   "Cover": {
    "Name": "Gen X C/A Hybrid",
    "Type": null,
-   "Finish": "500 Abralon® /1500 Abranet Soft Polished With Power House Factory Finish Polish™"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -35639,7 +35744,7 @@
  "track-inc-714c": {
   "DateReleased": null,
   "Core": {
-   "Name": "The 714C features a core shape that we successfully used in the past in both our 718A and 716T. The original Robot core gave us the big backending 718A while the Modified Robot core gave us our strong rolling 716T, so we knew it was a great core. For this new release, we modified the densities once again to create a strong continuous motion at the backend of the lane. This new version is the Modified Robot 2.0.",
+   "Name": null,
    "Type": "Asymmetrical"
   },
   "Cover": {
@@ -35686,7 +35791,7 @@
   "Cover": {
    "Name": "Reactive",
    "Type": null,
-   "Finish": "4000 Grit Abralon®, Polished With Power House Factory Finish Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "14": {
@@ -35717,7 +35822,7 @@
   "Cover": {
    "Name": "UMP Gen 4C With Pearl Essence",
    "Type": null,
-   "Finish": "2000 Abralon® with Power House Factory Finish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "14": {
@@ -35779,7 +35884,7 @@
   "Cover": {
    "Name": "UMP Gen 5C Solid",
    "Type": null,
-   "Finish": "500, 1000, 2000 Abralon® Polished With Power House Factory Finish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "14": {
@@ -35841,7 +35946,7 @@
   "Cover": {
    "Name": "UMP Gen 4A Reactive™ Pearl",
    "Type": null,
-   "Finish": "800, 1000, 2000, 2000 Abralon® Sanded, Polished With Power House Factory Finish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "14": {
@@ -35872,7 +35977,7 @@
   "Cover": {
    "Name": "SE8 Gen1",
    "Type": null,
-   "Finish": "500, 1000, 2000 Abralon®, Power House Factory Finish Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "14": {
@@ -35944,7 +36049,7 @@
   "Cover": {
    "Name": "Gen EA (Extreme Angle)",
    "Type": null,
-   "Finish": "500 Abralon® /1500 Abranet™ Soft Polished With Power House Factory Finish Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -36201,7 +36306,7 @@
   "Cover": {
    "Name": "QR-11 Hybrid (HK22)",
    "Type": "Hybrid Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -36283,7 +36388,7 @@
   "Cover": {
    "Name": "Super Response Hybrid (HK22C)",
    "Type": "Hybrid Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -36324,7 +36429,7 @@
   "Cover": {
    "Name": "Super Response Pearl (HK22C)",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -36401,7 +36506,7 @@
   "Cover": {
    "Name": "QR-7 Pearl",
    "Type": null,
-   "Finish": "500, 1000 Abralon® Polished With Power House Factory Finish Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -36483,7 +36588,7 @@
   "Cover": {
    "Name": "Prime Response Pearl (HK22)",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -36975,7 +37080,7 @@
   "Cover": {
    "Name": "DR-4 Pearl",
    "Type": null,
-   "Finish": "500, 1000 Grit Abralon® Polished with Power House Factor Finish Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -37016,7 +37121,7 @@
   "Cover": {
    "Name": "DR-6 Hybrid",
    "Type": null,
-   "Finish": "500, 1000 Abralon® Polished with Power House Factory Finish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -37057,7 +37162,7 @@
   "Cover": {
    "Name": "DR-8 Hybrid",
    "Type": null,
-   "Finish": "500, 1000 Abralon® Polished with Factory Finish Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -37098,7 +37203,7 @@
   "Cover": {
    "Name": "Prime DT Pearl",
    "Type": null,
-   "Finish": "500, 1000 Abralon® Polished with Power House Factory Finish Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -37139,7 +37244,7 @@
   "Cover": {
    "Name": "QR-6 Pearl",
    "Type": null,
-   "Finish": "500, 1000 Abralon® Polished with Power House Factory Finish Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -37180,7 +37285,7 @@
   "Cover": {
    "Name": "QR-7 Pearl",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -37262,7 +37367,7 @@
   "Cover": {
    "Name": "DR-6 Hybrid",
    "Type": null,
-   "Finish": "500, 1000 Abralon® Polished with Power House Factory Finish Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -37375,7 +37480,7 @@
   "Cover": {
    "Name": "DR-7 Pearl",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -37457,7 +37562,7 @@
   "Cover": {
    "Name": "Prime Response Pearl (HK22)",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -37539,7 +37644,7 @@
   "Cover": {
    "Name": "QR-8 Pearl",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -37580,7 +37685,7 @@
   "Cover": {
    "Name": "MR-6 Hybrid",
    "Type": null,
-   "Finish": "500 / 1000 Abralon® Polished with Power House Factory Finish Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -37621,7 +37726,7 @@
   "Cover": {
    "Name": "Prime Response Pearl",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -37703,7 +37808,7 @@
   "Cover": {
    "Name": "QR-7 Pearl",
    "Type": null,
-   "Finish": "500, 1000 Abralon® Polished With Power House Factory Finish Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -37908,7 +38013,7 @@
   "Cover": {
    "Name": "QR-10 Hybrid",
    "Type": null,
-   "Finish": "500, 1000 Abralon® Polished with Power House Factory Finish Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -37949,7 +38054,7 @@
   "Cover": {
    "Name": "MR-4 Pearl",
    "Type": null,
-   "Finish": "500, 1000 Abralon® Polished with Power House Factory Finish Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -37990,7 +38095,7 @@
   "Cover": {
    "Name": "MR-6 Hybrid",
    "Type": null,
-   "Finish": "500, 1000 Grit Abralon® Polished with Power House Factor Finish Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -38154,7 +38259,7 @@
   "Cover": {
    "Name": "QR-9 Pearl",
    "Type": null,
-   "Finish": "500, 1000 Abralon® Polished with Power House Clean N’ Sheen"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -38236,7 +38341,7 @@
   "Cover": {
    "Name": "QR-10 Hybrid",
    "Type": null,
-   "Finish": "500, 1000 Abralon® Polished with Power House Factory Finish Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -38277,7 +38382,7 @@
   "Cover": {
    "Name": "Prime Pearl",
    "Type": null,
-   "Finish": "500, 1000 Abralon® Polished with Power House Factory Finish Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -38400,7 +38505,7 @@
   "Cover": {
    "Name": "QR-11 Hybrid",
    "Type": "Hybrid Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -38441,7 +38546,7 @@
   "Cover": {
    "Name": "QR-11 Pearl (HK22)",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -38523,7 +38628,7 @@
   "Cover": {
    "Name": "Prime Pearl",
    "Type": null,
-   "Finish": "500, 1000 Abralon® Polished with Power House Factory Finish Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -38687,7 +38792,7 @@
   "Cover": {
    "Name": "Prime Response Pearl",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -38769,7 +38874,7 @@
   "Cover": {
    "Name": "Polyester",
    "Type": null,
-   "Finish": "800, 800, 1000,2000 Abralon® Polished with Power House Factory Finish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -38851,7 +38956,7 @@
   "Cover": {
    "Name": "Prime Response Hybrid ( HK22)",
    "Type": "Hybrid Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -38933,7 +39038,7 @@
   "Cover": {
    "Name": "Super Response Hybrid (HK22C)",
    "Type": "Hybrid Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -38974,7 +39079,7 @@
   "Cover": {
    "Name": "QR-9 Pearl ( HK22)",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -39138,7 +39243,7 @@
   "Cover": {
    "Name": "QR-9 Hybrid",
    "Type": null,
-   "Finish": "500, 1000 Abralon® Polished with Power House Factory Finish Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -39241,7 +39346,7 @@
   "Cover": {
    "Name": "DR-5 Pearl",
    "Type": null,
-   "Finish": "500, 1000 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -39282,7 +39387,7 @@
   "Cover": {
    "Name": "Prime Response Hybrid (HK22)",
    "Type": "Hybrid Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -39323,7 +39428,7 @@
   "Cover": {
    "Name": "Super Response Hybrid (HK22)",
    "Type": "Hybrid Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -39364,7 +39469,7 @@
   "Cover": {
    "Name": "Prime Response Pearl ( HK22)",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -39487,7 +39592,7 @@
   "Cover": {
    "Name": "Luxury DR-4 Pearl",
    "Type": null,
-   "Finish": "500, 800, 1000, 2000 Abralon® Polished With Power House Factory Finish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -39528,7 +39633,7 @@
   "Cover": {
    "Name": "DR-4 Solid",
    "Type": null,
-   "Finish": "500 / 3000 Abralon® with Power House Factory Finish Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -39610,7 +39715,7 @@
   "Cover": {
    "Name": "DR-4 Pearl",
    "Type": null,
-   "Finish": "500, 1000 Abralon® Polished With Power House Factory Finish Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -39651,7 +39756,7 @@
   "Cover": {
    "Name": "DR-6 Pearl ( HK22)",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -39692,7 +39797,7 @@
   "Cover": {
    "Name": "DR-5 Pearl ( HK22)",
    "Type": "Pearl Reactive",
-   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
@@ -39774,7 +39879,7 @@
   "Cover": {
    "Name": "DR-6 Hybrid",
    "Type": null,
-   "Finish": "500, 1000 Abralon® Polished With Power House Factory Finish Polish"
+   "Finish": null
   },
   "SpecsByWeight": {
    "12": {
