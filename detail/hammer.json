@@ -20648,15 +20648,15 @@
   "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
-   "Name": "(2)",
-   "Type": null
+   "Name": "LED",
+   "Type": "Symmetrical"
   },
   "Cover": {
-   "Finish": "(9)",
+   "Finish": "500, 1000, 2000 Siaair Micro Pad",
    "Name": "Urethane Pearl",
    "Type": "Pearl Urethane"
   },
-  "DateReleased": "2021-07-01",
+  "DateReleased": "2021-07",
   "FieldSources": {
    "BallName": "usbc",
    "Core": "mfg",
@@ -20802,11 +20802,11 @@
   "Checked": "2026-10-11",
   "Colorway": null,
   "Core": {
-   "Name": "(2)",
-   "Type": null
+   "Name": "LED",
+   "Type": "Symmetrical"
   },
   "Cover": {
-   "Finish": "(9)",
+   "Finish": "500, 1000, 2000 Siaair Micro Pad",
    "Name": "Urethane Pearl",
    "Type": "Pearl Urethane"
   },
@@ -31814,7 +31814,7 @@
   "Colorway": null,
   "Core": {
    "Name": "Spheroid",
-   "Type": null
+   "Type": "Symmetrical"
   },
   "Cover": {
    "Finish": null,

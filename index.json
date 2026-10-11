@@ -21123,13 +21123,10 @@
  },
  {
   "c": null,
-  "co": "s",
-  "cv": "S",
   "i": "columbia-300-pulse-clear-pin",
   "k": "columbia300|pulseclearpin",
   "m": "Columbia 300",
   "n": "Pulse - Clear Pin",
-  "s": 1,
   "t": false,
   "y": "1996"
  },
@@ -21147,13 +21144,10 @@
  },
  {
   "c": null,
-  "co": "s",
-  "cv": "S",
   "i": "columbia-300-pulse-pearl",
   "k": "columbia300|pulsepearl",
   "m": "Columbia 300",
   "n": "Pulse Pearl",
-  "s": 1,
   "t": false,
   "y": "1996"
  },
@@ -21170,13 +21164,10 @@
  },
  {
   "c": null,
-  "co": "s",
-  "cv": "S",
   "i": "columbia-300-pulse-white-pin",
   "k": "columbia300|pulsewhitepin",
   "m": "Columbia 300",
   "n": "Pulse - White Pin",
-  "s": 1,
   "t": false,
   "y": "2001"
  },
@@ -22061,13 +22052,10 @@
  },
  {
   "c": null,
-  "co": "s",
-  "cv": "P",
   "i": "columbia-300-scout-reactive-black-red-pearl",
   "k": "columbia300|scoutreactiveblackredpearl",
   "m": "Columbia 300",
   "n": "Scout Reactive Black/Red Pearl",
-  "s": 1,
   "t": false,
   "y": "2007"
  },
@@ -23399,7 +23387,6 @@
   "k": "columbia300|wickedultra",
   "m": "Columbia 300",
   "n": "Wicked Ultra",
-  "s": 1,
   "t": false,
   "y": "2004"
  },
@@ -39178,6 +39165,7 @@
  },
  {
   "c": null,
+  "co": "s",
   "cv": "U",
   "i": "hammer-purple-pearl-urethane-hammer-except-serial-s-starting-with-a-6-or-7",
   "k": "hammer|purplepearlurethanehammerexceptserialsstartingwitha6or7",
@@ -39200,6 +39188,7 @@
  },
  {
   "c": null,
+  "co": "s",
   "cv": "U",
   "i": "hammer-purple-pearl-urethane-hammer-purple-pin",
   "k": "hammer|purplepearlurethanehammerpurplepin",
@@ -41164,6 +41153,7 @@
  },
  {
   "c": null,
+  "co": "s",
   "cv": "P",
   "i": "hammer-web-pearl",
   "k": "hammer|webpearl",
@@ -47691,7 +47681,6 @@
   "k": "motiv|jackalclearpoly",
   "m": "Motiv",
   "n": "Jackal Clear Poly",
-  "s": 1,
   "t": false,
   "y": "2022"
  },

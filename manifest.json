@@ -1,5 +1,5 @@
 {
- "build": "4b5fb0e109b0cad5",
+ "build": "254846260c8cc4e1",
  "files": {
   "detail/3g.json": {
    "bytes": 3601,
@@ -207,8 +207,8 @@
    "path": "detail/coactorent.json"
   },
   "detail/columbia300.json": {
-   "bytes": 577491,
-   "hash": "31b0a586d483096b",
+   "bytes": 575345,
+   "hash": "eed103d307f98fa5",
    "path": "detail/columbia300.json"
   },
   "detail/cometandco.json": {
@@ -292,8 +292,8 @@
    "path": "detail/genesisbowlingcoltd.json"
   },
   "detail/hammer.json": {
-   "bytes": 634971,
-   "hash": "2001abcdd730b70f",
+   "bytes": 635053,
+   "hash": "629bce239eeb03d9",
    "path": "detail/hammer.json"
   },
   "detail/hardball.json": {
@@ -482,8 +482,8 @@
    "path": "detail/morich.json"
   },
   "detail/motiv.json": {
-   "bytes": 286196,
-   "hash": "919c688943f9945d",
+   "bytes": 285815,
+   "hash": "7a02c5a0847fe79c",
    "path": "detail/motiv.json"
   },
   "detail/naturalenemies.json": {
@@ -782,8 +782,8 @@
    "path": "detail/yuean.json"
   },
   "index.json": {
-   "bytes": 1320603,
-   "hash": "9c1d7afe07b88b1f",
+   "bytes": 1320478,
+   "hash": "78518d702d6a6831",
    "path": "index.json"
   },
   "usbc.json": {
@@ -792,8 +792,8 @@
    "path": "usbc.json"
   },
   "vocab.json": {
-   "bytes": 91419,
-   "hash": "a37f428c2e61778e",
+   "bytes": 91378,
+   "hash": "b4d5114f894780c9",
    "path": "vocab.json"
   }
  },

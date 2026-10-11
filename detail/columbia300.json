@@ -17023,23 +17023,20 @@
   "Aliases": [],
   "BallName": "Pulse - Clear Pin",
   "CatalogID": "columbia-300-pulse-clear-pin",
-  "Checked": "2026-10-11",
+  "Checked": null,
   "Colorway": null,
   "Core": {
-   "Name": "Pulse PowerCOR",
-   "Type": "Symmetrical"
+   "Name": null,
+   "Type": null
   },
   "Cover": {
-   "Finish": "500, 1500 Siaair Micro Pad",
+   "Finish": null,
    "Name": null,
-   "Type": "Solid Reactive"
+   "Type": null
   },
-  "DateReleased": "2025-08-14",
+  "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
-   "Core": "mfg",
-   "Cover": "mfg",
-   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -17054,34 +17051,8 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": "https://columbia300.com/products/pulse",
-  "SpecsByWeight": {
-   "12": {
-    "Diff": 0.042,
-    "IntDiff": null,
-    "RG": 2.605
-   },
-   "13": {
-    "Diff": 0.042,
-    "IntDiff": null,
-    "RG": 2.582
-   },
-   "14": {
-    "Diff": 0.045,
-    "IntDiff": null,
-    "RG": 2.481
-   },
-   "15": {
-    "Diff": 0.045,
-    "IntDiff": null,
-    "RG": 2.468
-   },
-   "16": {
-    "Diff": 0.039,
-    "IntDiff": null,
-    "RG": 2.481
-   }
-  },
+  "Source": null,
+  "SpecsByWeight": {},
   "Status": null,
   "USBC": {
    "Approved": true,
@@ -17177,23 +17148,20 @@
   "Aliases": [],
   "BallName": "Pulse Pearl",
   "CatalogID": "columbia-300-pulse-pearl",
-  "Checked": "2026-10-11",
+  "Checked": null,
   "Colorway": null,
   "Core": {
-   "Name": "Pulse PowerCOR",
-   "Type": "Symmetrical"
+   "Name": null,
+   "Type": null
   },
   "Cover": {
-   "Finish": "500, 1500 Siaair Micro Pad",
+   "Finish": null,
    "Name": null,
-   "Type": "Solid Reactive"
+   "Type": null
   },
-  "DateReleased": "2025-08-14",
+  "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
-   "Core": "mfg",
-   "Cover": "mfg",
-   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -17208,34 +17176,8 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": "https://columbia300.com/products/pulse",
-  "SpecsByWeight": {
-   "12": {
-    "Diff": 0.042,
-    "IntDiff": null,
-    "RG": 2.605
-   },
-   "13": {
-    "Diff": 0.042,
-    "IntDiff": null,
-    "RG": 2.582
-   },
-   "14": {
-    "Diff": 0.045,
-    "IntDiff": null,
-    "RG": 2.481
-   },
-   "15": {
-    "Diff": 0.045,
-    "IntDiff": null,
-    "RG": 2.468
-   },
-   "16": {
-    "Diff": 0.039,
-    "IntDiff": null,
-    "RG": 2.481
-   }
-  },
+  "Source": null,
+  "SpecsByWeight": {},
   "Status": null,
   "USBC": {
    "Approved": true,
@@ -17331,23 +17273,20 @@
   "Aliases": [],
   "BallName": "Pulse - White Pin",
   "CatalogID": "columbia-300-pulse-white-pin",
-  "Checked": "2026-10-11",
+  "Checked": null,
   "Colorway": null,
   "Core": {
-   "Name": "Pulse PowerCOR",
-   "Type": "Symmetrical"
+   "Name": null,
+   "Type": null
   },
   "Cover": {
-   "Finish": "500, 1500 Siaair Micro Pad",
+   "Finish": null,
    "Name": null,
-   "Type": "Solid Reactive"
+   "Type": null
   },
-  "DateReleased": "2025-08-14",
+  "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
-   "Core": "mfg",
-   "Cover": "mfg",
-   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -17362,34 +17301,8 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": "https://columbia300.com/products/pulse",
-  "SpecsByWeight": {
-   "12": {
-    "Diff": 0.042,
-    "IntDiff": null,
-    "RG": 2.605
-   },
-   "13": {
-    "Diff": 0.042,
-    "IntDiff": null,
-    "RG": 2.582
-   },
-   "14": {
-    "Diff": 0.045,
-    "IntDiff": null,
-    "RG": 2.481
-   },
-   "15": {
-    "Diff": 0.045,
-    "IntDiff": null,
-    "RG": 2.468
-   },
-   "16": {
-    "Diff": 0.039,
-    "IntDiff": null,
-    "RG": 2.481
-   }
-  },
+  "Source": null,
+  "SpecsByWeight": {},
   "Status": null,
   "USBC": {
    "Approved": true,
@@ -22279,23 +22192,20 @@
   "Aliases": [],
   "BallName": "Scout Reactive Black/Red Pearl",
   "CatalogID": "columbia-300-scout-reactive-black-red-pearl",
-  "Checked": "2026-10-11",
+  "Checked": null,
   "Colorway": null,
   "Core": {
-   "Name": "Pancake",
-   "Type": "Symmetrical"
+   "Name": null,
+   "Type": null
   },
   "Cover": {
-   "Finish": "4000 Polished",
-   "Name": "Super-Flex",
-   "Type": "Pearl"
+   "Finish": null,
+   "Name": null,
+   "Type": null
   },
-  "DateReleased": "2000-02-01",
+  "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
-   "Core": "mfg",
-   "Cover": "mfg",
-   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -22310,24 +22220,8 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": "https://columbia300.com/products/scout-reactive-black-red",
-  "SpecsByWeight": {
-   "14": {
-    "Diff": 0.02,
-    "IntDiff": null,
-    "RG": 2.69
-   },
-   "15": {
-    "Diff": 0.02,
-    "IntDiff": null,
-    "RG": 2.65
-   },
-   "16": {
-    "Diff": 0.02,
-    "IntDiff": null,
-    "RG": 2.64
-   }
-  },
+  "Source": null,
+  "SpecsByWeight": {},
   "Status": null,
   "USBC": {
    "Approved": true,
@@ -29794,23 +29688,20 @@
   "Aliases": [],
   "BallName": "Wicked Ultra",
   "CatalogID": "columbia-300-wicked-ultra",
-  "Checked": "2026-10-11",
+  "Checked": null,
   "Colorway": null,
   "Core": {
-   "Name": "2-Piece",
+   "Name": null,
    "Type": null
   },
   "Cover": {
    "Finish": null,
-   "Name": "Reactive",
+   "Name": null,
    "Type": null
   },
   "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
-   "Core": "mfg",
-   "Cover": "mfg",
-   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -29825,14 +29716,8 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": "https://columbia300.com/products/wicked",
-  "SpecsByWeight": {
-   "16": {
-    "Diff": 0.049,
-    "IntDiff": null,
-    "RG": 2.497
-   }
-  },
+  "Source": null,
+  "SpecsByWeight": {},
   "Status": null,
   "USBC": {
    "Approved": true,
