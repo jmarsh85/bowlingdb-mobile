@@ -3457,10 +3457,10 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
 /* v30.169: ONE place for the version. The header, the home screen label, the
    page title and backups all read these, so nothing can go stale on an update.
    Bump both lines (and CATALOG_JS_VERSION in catalog.js when it changes). */
-const APP_VERSION = 'v30.182';
+const APP_VERSION = 'v30.183';
 const APP_BUILD_DATE = '2026-10-11';
 /* catalog.js this build expects; an older file on the server shows a warning */
-const EXPECTED_CATALOG_JS = 'v30.182';
+const EXPECTED_CATALOG_JS = 'v30.183';
 function applyAppVersion() {
 const ref = document.getElementById('hdr-build-ref');
 const cat = (typeof window.CATALOG_JS_VERSION === 'string') ? window.CATALOG_JS_VERSION : null;
@@ -26657,7 +26657,11 @@ const SNAPSHOT_IDB_STORES = ['ballImages', 'laneLibrary', 'recalledContext'];
 const SNAPSHOT_LS_SKIP = new Set(['bowlingdb_ai_key', 'bowlingdb_ai_models']);
  
 const SNAPSHOT_LS_EXTRA_PREFIXES = ['debrief_', 'fm_chip_dock', 'fm_spare_chip_dock',
-'grp_my_name', 'grp_sessions', 'rf_progress_'];
+'grp_my_name', 'grp_sessions', 'rf_progress_',
+/* v30.183: catalog cover and core picture links (addresses only; picture files stay in "Save pictures to a file") */
+'bdbimg_pick', 'bdbimg_core'];
+/* Picture links are merged on restore, never wiped: an older snapshot without them keeps what this phone has. */
+const SNAPSHOT_LS_MERGE = ['bdbimg_pick', 'bdbimg_core'];
 function _snapshotOwnsKey(k) {
 if (SNAPSHOT_LS_SKIP.has(k)) return false;
 if (k.indexOf('bowlingdb_') === 0) return true;
@@ -26699,6 +26703,7 @@ async function restoreFullSnapshot(snap) {
 if (!isFullSnapshot(snap)) throw new Error('Not a snapshot file');
 
 const keepKey = localStorage.getItem('bowlingdb_ai_key');
+const keepPics = {}; SNAPSHOT_LS_MERGE.forEach(k => { try { keepPics[k] = JSON.parse(localStorage.getItem(k) || '{}') || {}; } catch(e) { keepPics[k] = {}; } });
 Object.keys(localStorage)
 .filter(_snapshotOwnsKey)
 .forEach(k => { try { localStorage.removeItem(k); } catch(e) {} });
@@ -26706,6 +26711,9 @@ Object.entries(snap.localStorage || {}).forEach(([k, v]) => {
 if (_snapshotOwnsKey(k)) { try { localStorage.setItem(k, v); } catch(e) {} }
 });
 if (keepKey) localStorage.setItem('bowlingdb_ai_key', keepKey);
+SNAPSHOT_LS_MERGE.forEach(k => { let got = {}; try { got = JSON.parse((snap.localStorage || {})[k] || '{}') || {}; } catch(e) {}
+  const merged = Object.assign({}, keepPics[k], got);
+  if (Object.keys(merged).length) { try { localStorage.setItem(k, JSON.stringify(merged)); } catch(e) {} } });
 for (const store of SNAPSHOT_IDB_STORES) {
 const rows = snap.idb ? snap.idb[store] : null;
 if (rows === null || rows === undefined) continue; 
