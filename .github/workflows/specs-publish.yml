@@ -11,7 +11,7 @@ permissions:
 concurrency: { group: specs-branch, cancel-in-progress: false }
 jobs:
   publish:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04   # pinned v30.189: ubuntu-latest moves to a new image; revisit after checking
     steps:
       - uses: actions/checkout@v5
       - uses: actions/checkout@v5
@@ -22,6 +22,7 @@ jobs:
         run: |
           node bridge/publish_test.js
           node bridge/publish_overrides_test.js
+          node bridge/rej_test.js
           node bridge/approvals_test.js
       - name: Read ticked approvals
         env:
@@ -34,7 +35,7 @@ jobs:
         run: |
           OVR=""; if [ -f specs/corrections/overrides.json ]; then OVR="--overrides specs/corrections/overrides.json"; fi
           node bridge/publish.js --staging specs/staging/specs_staging.json \
-            --decisions decisions.json $OVR --out catalog/specs.json | tee report.json
+            --decisions decisions.json $OVR --status specs/corrections/status.json --out catalog/specs.json | tee report.json
           echo "## Spec publish" >> "$GITHUB_STEP_SUMMARY"
           echo '```' >> "$GITHUB_STEP_SUMMARY"; cat report.json >> "$GITHUB_STEP_SUMMARY"; echo '```' >> "$GITHUB_STEP_SUMMARY"
       - name: Commit to main
