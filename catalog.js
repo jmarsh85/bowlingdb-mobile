@@ -36,7 +36,7 @@
 'use strict';
 
 /* v30.169: shown in the app header when it differs from the build's EXPECTED_CATALOG_JS */
-var CAT_VERSION  = 'v30.185';
+var CAT_VERSION  = 'v30.186';
 var CAT_BASE     = 'https://raw.githubusercontent.com/jmarsh85/bowlingdb-mobile/dist/';
 var CAT_DB       = 'BowlingDB_Catalog';
 var CAT_DB_VER   = 1;
@@ -1273,7 +1273,8 @@ function sheetHTML(e, rows) {
   }
   var w = _sheet.weight;
   return '<div style="padding:12px 16px 4px;display:flex;justify-content:space-between;align-items:center"><button onclick="catSheetClose()" style="' + BACK + '" aria-label="Back">‹</button>' +
-    '<button onclick="catCompareFromSheet()" style="' + BTN_G + 'padding:8px 14px;font-size:13px">Compare</button></div>' +   /* v30.171 MET-2 */
+    '<div style="display:flex;gap:8px">' + (catFixAllowed() ? '<button onclick="catFixOpen()" style="' + BTN_G + 'padding:8px 14px;font-size:13px;color:var(--gold)">Fix</button>' : '') +   /* v30.185 FIX-1, dev mode */
+    '<button onclick="catCompareFromSheet()" style="' + BTN_G + 'padding:8px 14px;font-size:13px">Compare</button></div></div>' +   /* v30.171 MET-2 */
     '<div style="flex:1;overflow-y:auto;padding:0 16px 16px;-webkit-overflow-scrolling:touch">' +
       '<div style="display:flex;justify-content:center;align-items:center;gap:14px;margin:6px 0 12px">' + thumbHTML(e, 150) + sheetCoreHTML(e) + '</div>' +
       '<div style="text-align:center;font-size:26px;font-weight:800;color:var(--t1)">' + esc(cleanName(e.n)) + '</div>' +
@@ -2812,6 +2813,101 @@ function catDiscPublish() {
 }
 if (typeof root.addEventListener === 'function') root.addEventListener('online', function () { if (Object.keys(stLocal().pending).length) stSync().catch(function () {}); });
 
+/* ---------- v30.185 FIX-1: Fix a catalog ball from its card (dev mode only, LOCKED 2026-10-12) ----------
+   A "Fix" button beside Compare on the Add a Ball sheet, shown only while dev mode is on
+   (bowlingdb_devkit.enabled), so it never reaches end users. Correct specs (the same sheet as
+   approvals, compared against the staged row, else the published entry), Verify now, Mark
+   discontinued / Unmark, Reject / Restore. A ball the bridge never read publishes from a
+   correction alone once it has RG + Diff for a weight (publish.js). */
+var _fix = null;
+function catFixAllowed() {
+  try { if (typeof root.dkIsEnabled === 'function') return !!root.dkIsEnabled(); } catch (e) {}
+  try { var l = apLS(); return !!(JSON.parse((l && l.getItem('bowlingdb_devkit')) || '{}').enabled); } catch (e) { return false; }
+}
+/* Pure: published catalog entry -> the staged-row shape the correction sheet compares against. */
+function detAsStaged(d) {
+  if (!d) return null;
+  var w = {}, sbw = d.SpecsByWeight || {};
+  Object.keys(sbw).forEach(function (k) { var x = sbw[k] || {}; w[k] = { RG: x.RG == null ? null : x.RG, Diff: x.Diff == null ? null : x.Diff, IntDiff: x.IntDiff == null ? null : x.IntDiff }; });
+  var co = d.Core || {}, cv = d.Cover || {};
+  return { specs: { coverName: cv.Name || null, coverType: cv.Type || null, finish: cv.Finish || null, core: co.Name || null, coreType: co.Type || null,
+    released: d.DateReleased || null, weights: w }, url: d.Source || null, title: null };
+}
+function catFixOpen() {
+  if (!_sheet || !_sheet.id || typeof document === 'undefined') return;
+  catLoad().then(function (rows) {
+    var e = byIdIn(rows, _sheet.id); if (!e) return;
+    _fix = { id: e.i, e: e, ask: false, bridge: apToken() ? 'loading' : 'notoken', row: null };
+    catFixClose();
+    document.body.appendChild(overlay('fix-ov', 915)); fixRender();
+    if (!apToken()) return;
+    apReadOverrides().catch(function () {});
+    apReadStaged().then(function (st) {
+      if (!_fix || _fix.id !== e.i) return;
+      var r = srvStagedRow(st, e.i); _fix.row = r;
+      _fix.bridge = !r ? 'none' : r.decision === 'auto' ? 'auto' : 'pending'; fixRender();
+    }, function () { if (_fix) { _fix.bridge = 'error'; fixRender(); } });
+  });
+}
+function catFixClose() { var el = document.getElementById('fix-ov'); if (el) el.parentNode.removeChild(el); }
+function fixRender() {
+  var ov = document.getElementById('fix-ov'); if (!ov || !_fix) return;
+  var e = _fix.e, st = stEntry(e.i), dc = discontinuedOf(e), rej = catIsRejected(e);
+  var line = function (k, v) { return '<div style="display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--border1);font-size:13px"><span style="color:var(--t2)">' + k + '</span><span style="color:var(--t1);text-align:right">' + v + '</span></div>'; };
+  var bridge = { loading: 'checking\u2026', notoken: '<span style="color:var(--gold)">add your GitHub token in Spec approvals</span>', error: 'couldn\u2019t read staging',
+    auto: 'read and auto-published', pending: 'read, waiting for approval',
+    none: 'not read \u00b7 a correction with RG + Diff publishes on its own' }[_fix.bridge] || '';
+  var status = rej ? '<span style="color:var(--red)">rejected</span>' : st && st.status === 'retired' ? '<span style="color:var(--gold)">discontinued (marked by you)</span>'
+    : dc === 'retired' ? 'retired (maker)' : dc === 'likely' ? 'likely retired (age)' : e.r === 0 ? 'current (maker)' : 'unknown';
+  var src = sourceForBrand(e.m);
+  var btn = function (label, js, primary, extra) { return '<button style="' + (primary ? BTN_P : BTN_G) + 'width:100%;padding:12px;margin-top:8px;' + (extra || '') + '" onclick="' + js + '">' + label + '</button>'; };
+  var statusBtns = rej ? btn('Restore (un-reject)', 'catFixMark(\'restore\')')
+    : st && st.status === 'retired' ? btn('Unmark discontinued', 'catFixMark(\'off\')') : btn('Mark discontinued', 'catFixMark(\'on\')');
+  var reject = rej ? '' : !_fix.ask ? btn('Reject this ball\u2026', 'catFixRejectAsk(true)', false, 'color:var(--red)') :
+    '<div style="margin-top:8px;padding:12px;border-radius:12px;border:1px solid var(--red)"><div style="font-size:12px;color:var(--t2);line-height:1.5;margin-bottom:8px">Marked discontinued, hidden from Add a Ball, never back in a new extract.</div>' +
+    '<div style="display:flex;gap:8px"><button style="' + BTN_G + 'flex:1;padding:10px;color:var(--red)" onclick="catFixReject(\'cant-verify\')">Can\u2019t verify</button>' +
+    '<button style="' + BTN_G + 'flex:1;padding:10px;color:var(--red)" onclick="catFixReject(\'not-made\')">No longer made</button></div>' +
+    '<button style="' + BTN_G + 'width:100%;margin-top:8px;padding:9px" onclick="catFixRejectAsk(false)">Cancel</button></div>';
+  ov.innerHTML = '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 8px"><button style="' + BACK + '" onclick="catFixClose()">\u2039</button>' +
+    '<div style="flex:1;min-width:0"><div style="font-size:17px;font-weight:800;color:var(--t1)">Fix \u00b7 ' + esc(cleanName(e.n)) + '</div>' +
+    '<div style="font-size:11px;color:var(--t3)">' + esc(e.m) + ' \u00b7 USBC ' + esc(e.i) + ' \u00b7 dev mode</div></div></div>' +
+    '<div style="flex:1;overflow-y:auto;padding:0 16px 16px">' +
+      line('Catalog specs', e.s ? 'published' : 'none') + line('Status', status) + line('Bridge', bridge) +
+      btn('Correct specs', 'catFixCorrect()', true) +
+      (src ? vfySlotHTML(e.i, btn('Verify now: re-read the ' + esc(src) + ' site', 'catVerifyNow(\'' + esc(e.m) + '\',\'' + esc(e.i) + '\')')) : '') +
+      statusBtns + reject +
+      '<div style="font-size:11px;color:var(--t3);line-height:1.5;margin-top:14px">Changes save to GitHub; this phone shows status changes at once. Publish rebuilds the catalog for everyone.</div>' +
+      btn('Publish', 'catDiscPublish()') +
+    '</div>';
+}
+function catFixCorrect() {
+  if (!_fix) return;
+  var e = _fix.e, raw = _sheet && _sheet.id === e.i ? _sheet.raw : null;
+  var go = function () {
+    var base0 = _fix.row ? apApplyOverride(_fix.row, null) : detAsStaged(raw);
+    apEditOpen({ catalogId: e.i, title: cleanName(e.n), entry: e, base0: base0, origin: 'sheet' });
+  };
+  (apToken() ? apReadOverrides().catch(function () {}) : Promise.resolve()).then(go);
+}
+function fixAfterEdit() {
+  if (_sheet && _sheet.id && document.getElementById('cat-sheet-ov')) { _sheet.detail = withLocalCorrection(_sheet.id, _sheet.raw); renderSheet(); }
+  fixRender();
+}
+function catFixMark(how) {
+  if (!_fix) return; var e = _fix.e;
+  if (how === 'on') stSet(e.i, { status: 'retired', reason: 'manual', at: stToday(), n: cleanName(e.n), m: e.m });
+  else stSet(e.i, null);
+  fixRender(); stQueueSync();
+  if (root.toast) root.toast(how === 'on' ? 'Marked discontinued' : how === 'off' ? 'Unmarked' : 'Restored');
+}
+function catFixRejectAsk(on) { if (_fix) { _fix.ask = !!on; fixRender(); } }
+function catFixReject(reason) {
+  if (!_fix) return; var e = _fix.e;
+  stSet(e.i, { status: 'retired', rejected: true, reason: reason, at: stToday(), n: cleanName(e.n), m: e.m });
+  stQueueSync(); catFixClose(); catSheetClose();
+  if (root.toast) root.toast('Rejected. It won\u2019t come back in new extracts.');
+}
+
 /* bowwwl.com page for a ball (personal-use lookup only; never fetched by the app). */
 function bowwwlSlug(t) { return String(t || '').toLowerCase().replace(/\+/g, ' plus').replace(/\binc\b\.?/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''); }
 function bowwwlLinks(brand, name) {
@@ -4076,11 +4172,17 @@ function tagFieldTap(ev) {
 function catApprovalsEdit(i) {
   var p = _ap.pages[_ap.idx]; if (!p) return;
   var b = p.boxes[i];
-  var r = apApplyOverride(_staged ? apStagedFor(_staged, b, p.catalogId) : null, overrideFor(p.catalogId));
+  apEditOpen({ catalogId: p.catalogId, i: i, title: b.title, entry: _ap._rows ? byIdIn(_ap._rows, p.catalogId) : null,
+    base0: _staged ? apStagedFor(_staged, b, p.catalogId) : null, origin: 'ap' });
+}
+/* v30.185 FIX-1: the correction sheet for any catalog ball. ctx: {catalogId, title, entry (index row),
+   base0 (what the values are compared against: the staged row, or the published entry), origin 'ap' | 'sheet'}. */
+function apEditOpen(ctx) {
+  var r = apApplyOverride(ctx.base0, overrideFor(ctx.catalogId));
   var sp = (r && r.specs) || {};
-  var _ee = _ap._rows ? byIdIn(_ap._rows, p.catalogId) : null, _bn = _ee ? cleanName(_ee.n) : b.title;
-  _apEdit = { catalogId: p.catalogId, i: i, page: (r && r.page) || null, ballName: _bn, url: (r && r.url) || null };
-  var _bw = bowwwlLinks(_ee ? _ee.m : (r && r.brand) || '', _bn), _mm = r ? pageMismatch(r.title, _bn) : null;
+  var _ee = ctx.entry, _bn = _ee ? cleanName(_ee.n) : ctx.title;
+  _apEdit = { catalogId: ctx.catalogId, i: ctx.i, page: (r && r.page) || null, ballName: _bn, url: (r && r.url) || null, base0: ctx.base0 || null, origin: ctx.origin || 'ap' };
+  var _bw = bowwwlLinks(_ee ? _ee.m : (r && r.brand) || '', _bn), _mm = (r && r.title) ? pageMismatch(r.title, _bn) : null;
   var inp = function (id, v, ph) { return '<div class="ape-f"><input id="' + id + '" class="bdet-field-input" value="' + esc(v == null ? '' : v) + '" placeholder="' + esc(ph || '') + '" style="width:100%;box-sizing:border-box;font-size:15px"></div>'; };
   /* v30.173 CAT-NEW-7: type, or pick a value already in use */
   var inpP = function (id, v, ph) { return '<div style="display:flex;gap:6px;align-items:stretch"><div class="ape-f" style="flex:1">' + inp(id, v, ph).replace(/^<div class="ape-f">|<\/div>$/g, '') + '</div>' +
@@ -4092,7 +4194,7 @@ function catApprovalsEdit(i) {
     return '<tr data-w="' + w + '"><td style="color:var(--t2);font-size:13px;padding:3px 4px 3px 0">' + w + ' lb</td><td class="ape-f" style="padding:3px">' + c('RG') + '</td><td class="ape-f" style="padding:3px">' + c('Diff') + '</td><td class="ape-f" style="padding:3px">' + c('IntDiff') + '</td></tr>'; };
   var ov = overlay('ap-edit-ov', 920);
   ov.innerHTML = '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 8px"><button style="' + BACK + '" onclick="catApprovalsEditClose()">‹</button>' +
-    '<div style="flex:1"><div style="font-size:17px;font-weight:800;color:var(--t1)">Correct specs</div><div style="font-size:11px;color:var(--t3)">' + esc(b.title) + ' · USBC ' + esc(p.catalogId) + '</div></div></div>' +
+    '<div style="flex:1"><div style="font-size:17px;font-weight:800;color:var(--t1)">Correct specs</div><div style="font-size:11px;color:var(--t3)">' + esc(ctx.title) + ' · USBC ' + esc(ctx.catalogId) + '</div></div></div>' +
     '<div data-lk-body style="flex:1;overflow-y:auto;padding:0 16px 16px;min-height:0">' +
     '<div style="font-size:12px;color:var(--t2);line-height:1.5">Change or fill any field. Values shown are what the bridge read; edit them in place.</div>' +
     '<div style="font-size:11px;font-weight:700;color:var(--t3);margin:10px 0 4px;text-transform:uppercase;letter-spacing:.5px">Look it up on bowwwl</div>' +
@@ -4120,6 +4222,12 @@ function catApprovalsEdit(i) {
     document.head.appendChild(st); }
   ov.addEventListener('click', tagFieldTap, true);
 }
+function apEditDone(msg) {
+  var origin = _apEdit && _apEdit.origin;
+  catApprovalsEditClose();
+  if (origin === 'sheet') { fixAfterEdit(); } else apRender();
+  if (msg && root.toast) root.toast(msg);
+}
 function catApprovalsEditClose() { var el = document.getElementById('ap-edit-ov'); if (el) el.parentNode.removeChild(el); _apEdit = null; }
 function catApprovalsEditSave() {
   if (!_apEdit) return;
@@ -4131,8 +4239,8 @@ function catApprovalsEditSave() {
      OTHER store's corrections, so a bowwwl value shown in the form is never
      saved to the repo as a maker correction, and repo values are not copied
      into the device store (v30.170). */
-  var p = _ap.pages[_ap.idx], staged0 = (_staged && p) ? apStagedFor(_staged, p.boxes[_apEdit.i] || p.boxes[0], p.catalogId) : null;
-  var other = form.source === 'bowwwl' ? (_ovr && _ovr[p.catalogId]) : localOverrides()[p.catalogId];
+  var cid = _apEdit.catalogId, staged0 = _apEdit.base0 || null;   // v30.185: set when the sheet opened
+  var other = form.source === 'bowwwl' ? (_ovr && _ovr[cid]) : localOverrides()[cid];
   var base = apApplyOverride(staged0, other), bs = (base && base.specs) || {};
   ['coverName', 'coverType', 'finish', 'core', 'coreType', 'released'].forEach(function (k) { if (String(form[k]).trim() === String(bs[k] == null ? '' : bs[k]).slice(0, k === 'released' ? 10 : 999)) form[k] = ''; });
   Object.keys(form.weights).forEach(function (w) { var x = form.weights[w], y = (bs.weights || {})[w] || {};
@@ -4145,12 +4253,16 @@ function catApprovalsEditSave() {
     /* personal-use data: this device only, never committed */
     o.at = new Date().toISOString().slice(0, 10);
     saveLocalOverride(_apEdit.catalogId, mergeOverrides(localOverrides()[_apEdit.catalogId], o));
-    catApprovalsEditClose(); apRender(); if (root.toast) root.toast('Saved on this device only (bowwwl values are not published)');
+    apEditDone('Saved on this device only (bowwwl values are not published)');
     return;
   }
   if (err) err.textContent = 'Saving…';
-  apSaveOverride(_apEdit.catalogId, o).then(function () {
-    catApprovalsEditClose(); apRender(); if (root.toast) root.toast('Correction saved');
+  var _fromSheet = _apEdit.origin === 'sheet';
+  apSaveOverride(_apEdit.catalogId, o).then(function (all) {
+    /* v30.185: a ball the bridge never read publishes from the correction alone, which needs RG + Diff for a weight */
+    var full = apApplyOverride(staged0, all && all[cid]), fw = ((full && full.specs) || {}).weights || {};
+    var nums = Object.keys(fw).some(function (w) { return fw[w] && fw[w].RG != null && fw[w].Diff != null; });
+    apEditDone(_fromSheet ? (nums ? 'Correction saved. Publish to update the catalog.' : 'Saved. It publishes once it has RG and Diff for at least one weight.') : 'Correction saved');
   }).catch(function (e) {
     if (err) err.textContent = e.status === 403 || e.status === 404 ? 'The token needs Contents: Read and write for this repo (GitHub → token → Permissions).' : ('Not saved: ' + (e.status ? 'GitHub ' + e.status : 'offline'));
   });
@@ -4385,6 +4497,7 @@ root.catImagesRefresh = catImagesRefresh; root.catImagesStatus = catImagesStatus
 root.catPick = catPick; root.catUnlink = catUnlink; root.catPickValue = catPickValue;
 root.catApprovalsRejectAsk = catApprovalsRejectAsk; root.catApprovalsReject = catApprovalsReject; root.catDiscOpen = catDiscOpen; root.catDiscClose = catDiscClose; root.catDiscTab = catDiscTab;
 root.catDiscBrand = catDiscBrand; root.catDiscSearch = catDiscSearch; root.catDiscHide = catDiscHide; root.catDiscToggle = catDiscToggle; root.catDiscYear = catDiscYear; root.catDiscPick = catDiscPick;
+root.catFixOpen = catFixOpen; root.catFixClose = catFixClose; root.catFixCorrect = catFixCorrect; root.catFixMark = catFixMark; root.catFixRejectAsk = catFixRejectAsk; root.catFixReject = catFixReject;
 root.catDiscClear = catDiscClear; root.catDiscMark = catDiscMark; root.catDiscRestore = catDiscRestore; root.catDiscSend = catDiscSend; root.catDiscPublish = catDiscPublish; root.catIsRejected = catIsRejected;
 root.catLinkLabel = catLinkLabel; root.catReviewOpen = catReviewOpen;
 root.catReviewLink = catReviewLink; root.catReviewSkip = catReviewSkip;
@@ -4407,7 +4520,7 @@ root.catSearch = function (q, n) { return catLoad().then(function (rows) { retur
 root._catStep5 = { norm: norm, modelKey: modelKey, lookupIn: lookupIn, searchIn: searchIn, reviewModel: reviewModel,
                    pickerBodyHTML: pickerBodyHTML, reviewHTML: reviewHTML, resultsHTML: resultsHTML,
                    setPick: function (p) { _pick = p; }, auditModel: auditModel, auditHTML: auditHTML,
-                   addListHTML: addListHTML, addSearchIn: addSearchIn, newest: newest, bubbleFilter: bubbleFilter, discontinuedOf: discontinuedOf, dcGroups: dcGroups, stMerge: stMerge, catIsRejected: catIsRejected, stSet: stSet, stLocal: stLocal, stReset: function () { _stc = null; }, addFilters: function () { return _af; },
+                   addListHTML: addListHTML, addSearchIn: addSearchIn, newest: newest, bubbleFilter: bubbleFilter, discontinuedOf: discontinuedOf, dcGroups: dcGroups, detAsStaged: detAsStaged, catFixAllowed: catFixAllowed, stMerge: stMerge, catIsRejected: catIsRejected, stSet: stSet, stLocal: stLocal, stReset: function () { _stc = null; }, addFilters: function () { return _af; },
                    specsOf: specsOf, shardMap: shardMap, shardKeyFor: shardKeyFor, detailFiles: detailFiles,
                    buildOwnedBall: buildOwnedBall, ballFromSpecs: ballFromSpecs, fillPlan: fillPlan,
                    catSpecSource: catSpecSource, setFilled: function (f) { _filled = f; },
