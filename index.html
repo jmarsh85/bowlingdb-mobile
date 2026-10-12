@@ -3457,10 +3457,10 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
 /* v30.169: ONE place for the version. The header, the home screen label, the
    page title and backups all read these, so nothing can go stale on an update.
    Bump both lines (and CATALOG_JS_VERSION in catalog.js when it changes). */
-const APP_VERSION = 'v30.184';
-const APP_BUILD_DATE = '2026-10-11';
+const APP_VERSION = 'v30.185';
+const APP_BUILD_DATE = '2026-10-12';
 /* catalog.js this build expects; an older file on the server shows a warning */
-const EXPECTED_CATALOG_JS = 'v30.184';
+const EXPECTED_CATALOG_JS = 'v30.185';
 function applyAppVersion() {
 const ref = document.getElementById('hdr-build-ref');
 const cat = (typeof window.CATALOG_JS_VERSION === 'string') ? window.CATALOG_JS_VERSION : null;
@@ -28182,7 +28182,7 @@ return `
           ${line('Last check', when(s.lastAttemptAt))}
           ${s.lastError ? `<div style="font-size:11px;color:var(--red);margin:4px 0 6px;line-height:1.4">Last check failed: ${String(s.lastError).replace(/[<>&]/g,'')}</div>` : ''}
           ${s.count ? `<button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="catReviewOpen()">Review suggested matches</button><button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="catAuditOpen()">Check linked balls</button>` : ''}
-          <button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="if(typeof catApprovalsOpen==='function')catApprovalsOpen()">Spec approvals</button><button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="if(typeof catSpecReviewOpen==='function')catSpecReviewOpen()">Review my specs</button><button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="if(typeof catImagesOpen==='function')catImagesOpen()">Ball images</button><button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="if(typeof catShortcutHelp==='function')catShortcutHelp()">Copy page text Shortcut</button>
+          <button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="if(typeof catApprovalsOpen==='function')catApprovalsOpen()">Spec approvals</button><button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="if(typeof catSpecReviewOpen==='function')catSpecReviewOpen()">Review my specs</button><button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="if(typeof catImagesOpen==='function')catImagesOpen()">Ball images</button><button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="if(typeof catDiscOpen==='function')catDiscOpen()">Discontinued &amp; rejected</button><button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="if(typeof catShortcutHelp==='function')catShortcutHelp()">Copy page text Shortcut</button>
           ${typeof catImagesStatus === 'function' ? (() => { const im = catImagesStatus(); return `
           <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border1)">
             <label style="display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:13px;color:var(--t1)">
@@ -29944,6 +29944,46 @@ applyTheme();
 openThemeModal();
 toast('Theme reset to default');
 }
+/* v30.185 one-time fix: the Track Precision was saved twice (BallID 6 with your
+   throws, BallID 21 with the fuller catalog specs and none). Copy 21's specs onto
+   6, point anything that names 21 at 6, then remove 21. Runs once, and only when
+   both records are exactly that pair and 21 is used by no game, series or throw. */
+async function fixPrecisionDup185() {
+const FLAG = 'bowlingdb_fix185_precision';
+try {
+if (localStorage.getItem(FLAG)) return;
+const keep = db.balls.find(b => b.BallID === 6), dup = db.balls.find(b => b.BallID === 21);
+const isPair = keep && dup && keep.CatalogID === 'track-inc-precision' && dup.CatalogID === 'track-inc-precision'
+&& /precision/i.test(keep.BallName || '') && /precision/i.test(dup.BallName || '');
+if (!isPair) { localStorage.setItem(FLAG, 'skipped: pair not found'); return; }
+await loadScoringData();
+const used = (db.attempts || []).some(a => a.BallID == 21) || (db.games || []).some(g => g.BallID == 21) || (db.series || []).some(x => x.BallID == 21);
+if (used) { localStorage.setItem(FLAG, 'skipped: BallID 21 has history'); return; }
+['Coverstock', 'CoreShort', 'BoxFinish'].forEach(k => { if (dup[k] != null && dup[k] !== '') keep[k] = dup[k]; });
+if (!keep.CoreImagePath && dup.CoreImagePath) keep.CoreImagePath = dup.CoreImagePath;
+keep.SpecSource = Object.assign({}, dup.SpecSource || {}, keep.SpecSource || {});   // adds CoreShort: catalog
+(db.surfaceDetails || []).forEach(sd => { if (sd.BallID == 21) sd.BallID = 6; });
+(db.leagues || []).forEach(l => { if (l.DefaultSpareBallID == 21) l.DefaultSpareBallID = 6; });
+const p = getPrefs(), pp = {};
+['defaultBallID', 'defaultSpareBallID'].forEach(k => { if (p[k] == 21) pp[k] = 6; });
+if (Object.keys(pp).length) savePrefs(pp);
+try {
+const al = JSON.parse(localStorage.getItem('bowlingdb_spare_alignments') || 'null');
+if (Array.isArray(al) && al.some(a => a && a.ballID == 21)) {
+al.forEach(a => { if (a && a.ballID == 21) a.ballID = 6; });
+localStorage.setItem('bowlingdb_spare_alignments', JSON.stringify(al));
+}
+} catch (e) {}
+if (G.ballID == 21) G.ballID = 6;
+db.balls = db.balls.filter(b => b.BallID !== 21);
+try { idbDeleteBallImages(21); } catch (e) {}
+saveDB();
+localStorage.setItem(FLAG, 'merged ' + new Date().toISOString().slice(0, 10));
+if (getCurrentScreen() === 's-balls') renderBallsScreen();
+toast('Merged the duplicate Precision into one ball');
+} catch (e) { console.warn('fixPrecisionDup185:', e); }
+}
+
 document.addEventListener('DOMContentLoaded', async ()=>{
 
 
@@ -29966,7 +30006,7 @@ renderHome();
 renderNavGrid();
 
 
-loadScoringData().then(() => renderHome()).catch(() => {});
+loadScoringData().then(() => { renderHome(); fixPrecisionDup185(); }).catch(() => {});
 
 
 warmBallImgCache().then(() => {
