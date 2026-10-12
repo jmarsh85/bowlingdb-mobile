@@ -36,7 +36,7 @@
 'use strict';
 
 /* v30.169: shown in the app header when it differs from the build's EXPECTED_CATALOG_JS */
-var CAT_VERSION  = 'v30.186';
+var CAT_VERSION  = 'v30.187';
 var CAT_BASE     = 'https://raw.githubusercontent.com/jmarsh85/bowlingdb-mobile/dist/';
 var CAT_DB       = 'BowlingDB_Catalog';
 var CAT_DB_VER   = 1;
@@ -664,16 +664,27 @@ function filesKnown() {
 /* Resolves the detail entry for a CatalogID, or null. Never rejects. */
 /* v30.170: this device's own corrections (bowwwl-sourced) layered over a catalog
    record, display only. Marked _local so the sheet can say so. */
-function withLocalCorrection(id, d) {
-  var o = localOverrides()[id];
+function withLocalCorrection(id, d, oIn) {
+  var o = oIn !== undefined ? oIn : localOverrides()[id];   // v30.187: the sheet passes repo + device corrections in dev mode
   if (!o) return d;
   var x = JSON.parse(JSON.stringify(d || {}));
   x.Cover = x.Cover || {}; x.Core = x.Core || {}; x.SpecsByWeight = x.SpecsByWeight || {};
+  if (o.coverName) x.Cover.Name = o.coverName;   // v30.187: was never applied, so the sheet kept the old coverstock name
   if (o.coverType) x.Cover.Type = o.coverType; if (o.finish) x.Cover.Finish = o.finish;
   if (o.core) x.Core.Name = o.core; if (o.coreType) x.Core.Type = o.coreType;
   if (o.released) x.DateReleased = o.released;
   Object.keys(o.weights || {}).forEach(function (w) { x.SpecsByWeight[w] = Object.assign({}, x.SpecsByWeight[w] || {}, o.weights[w]); });
   x._local = { source: o.source, at: o.at };
+  return x;
+}
+/* v30.187: what the Add a Ball sheet shows. Everyone: catalog + this device's corrections.
+   Dev mode: also your saved repo corrections not yet published, so the card matches Correct specs. */
+function sheetDetail(id, raw) {
+  var loc = localOverrides()[id], rep = catFixAllowed() && _ovr ? _ovr[id] : null;
+  var o = rep ? mergeOverrides(rep, loc) : loc;
+  if (!raw && !o) return raw;
+  var x = withLocalCorrection(id, raw, o || null);
+  if (x && x._local && rep) x._local.repo = true;
   return x;
 }
 function catDetail(entry) {
@@ -1266,7 +1277,7 @@ function sheetHTML(e, rows) {
     body += '<div style="font-size:11px;color:var(--t3);margin-top:8px;line-height:1.5">RG and Diff shown for ' + _shownW + ' lb' +
       (_shownW !== wt ? ' \u2014 <b style="color:var(--gold)">' + wt + ' lb is not published</b>' : (s.weights.length && s.weights.indexOf(wt) < 0 ? ' (not published for this weight)' : '')) + '.' +
       (s.src ? ' Specs: ' + (/^https?:|^manufacturer$/.test(s.src) ? 'manufacturer' : esc(s.src)) + (s.checked ? ', checked ' + esc(s.checked) : '') + '.' : '') +
-      (_sheet.detail && _sheet.detail._local ? ' <span style="color:var(--teal)">Includes your corrections (this device' + (_sheet.detail._local.source === 'bowwwl' ? ', from bowwwl' : '') + ').</span>' : '') + '</div>';
+      (_sheet.detail && _sheet.detail._local ? ' <span style="color:var(--teal)">Includes your corrections' + (_sheet.detail._local.repo ? ' (saved; Publish puts them in the catalog)' : ' (this device' + (_sheet.detail._local.source === 'bowwwl' ? ', from bowwwl' : '') + ')') + '.</span>' : '') + '</div>';
     var met = metricScore(ballFromSpecs(s), parseFinish(s.finish));
     if (met) body += '<div style="margin-top:12px;padding:10px 12px;border-radius:10px;background:var(--bg3);font-size:13px;color:var(--t1)">' +
       'Strength <b>' + met.strength + '</b> · Shape <b>' + signed(met.shape) + '</b><span style="color:var(--t3);font-size:11px"> · factory finish' + (_shownW !== wt ? ', ' + _shownW + ' lb specs' : '') + '</span></div>';
@@ -1320,7 +1331,9 @@ function catAddDetail(id) {
     catDetailRaw(e).then(function (raw) {
       if (_sheet.id !== e.i) return;
       /* shown with this device's corrections; Add to Arsenal stores only catalog values */
-      _sheet.raw = raw; _sheet.detail = (raw || localOverrides()[e.i]) ? withLocalCorrection(e.i, raw) : raw; _sheet.loaded = true; renderSheet();
+      _sheet.raw = raw; _sheet.detail = sheetDetail(e.i, raw); _sheet.loaded = true; renderSheet();
+      /* dev mode: load repo corrections, then show them too */
+      if (catFixAllowed() && apToken() && !_ovr) apReadOverrides().then(function () { if (_sheet.id === e.i) { _sheet.detail = sheetDetail(e.i, raw); renderSheet(); } }, function () {});
     });
   });
 }
@@ -2875,10 +2888,88 @@ function fixRender() {
       line('Catalog specs', e.s ? 'published' : 'none') + line('Status', status) + line('Bridge', bridge) +
       btn('Correct specs', 'catFixCorrect()', true) +
       (src ? vfySlotHTML(e.i, btn('Verify now: re-read the ' + esc(src) + ' site', 'catVerifyNow(\'' + esc(e.m) + '\',\'' + esc(e.i) + '\')')) : '') +
-      statusBtns + reject +
+      statusBtns + reject + fixPicHTML(e) +
       '<div style="font-size:11px;color:var(--t3);line-height:1.5;margin-top:14px">Changes save to GitHub; this phone shows status changes at once. Publish rebuilds the catalog for everyone.</div>' +
-      btn('Publish', 'catDiscPublish()') +
+      btn('Publish', 'catDiscPublish()') + btn('Check for catalog update', 'catFixRefresh()') +
+      '<div style="font-size:11px;color:var(--t3);line-height:1.5;margin-top:6px">After Publish finishes (a few minutes), Check pulls the rebuilt catalog onto this phone; otherwise it updates on the next daily check.</div>' +
     '</div>';
+}
+/* --- v30.187 FIX-2: pictures on the Fix screen (this device only, like every catalog picture) ---
+   Ball picture: per catalog ball (bdb_catimg[id], or a link in bdbimg_pick). Core picture: per core
+   (brand + core name, shared by every ball with that core), or per ball when the core name is unknown. */
+function fixCoreKey(e) {
+  var d = _sheet && _sheet.id === e.i ? (_sheet.detail || _sheet.raw) : null, nm = d && d.Core && d.Core.Name;
+  var k = nm ? coreKeyOf(e.m, nm) : null;
+  return { key: k || ('id-' + e.i), name: k ? nm : null };
+}
+function fixPicHTML(e) {
+  var ck = fixCoreKey(e), cover = catImageFor(e.i), core = _catImgObj['core:' + ck.key] || coreLinks()[ck.key] || null;
+  var row = function (part, label, url, note) {
+    var b = function (t, js) { return '<button style="' + BTN_G + 'flex:1;padding:9px 0;font-size:12px" onclick="' + js + '">' + t + '</button>'; };
+    return '<div style="display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--border1)">' +
+      '<div style="flex:0 0 64px;height:64px;border-radius:12px;background:#fff;overflow:hidden;display:flex;align-items:center;justify-content:center">' +
+        (url ? '<img src="' + esc(url) + '" referrerpolicy="no-referrer" alt="" style="width:100%;height:100%;object-fit:contain">' : '<span style="font-size:11px;color:#888">none</span>') + '</div>' +
+      '<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:700;color:var(--t1)">' + label + '</div>' +
+        (note ? '<div style="font-size:11px;color:var(--t3);margin:2px 0 6px">' + note + '</div>' : '<div style="height:6px"></div>') +
+        '<div style="display:flex;gap:6px">' + b('Paste', 'catFixPic(\'' + part + '\',\'paste\')') + b('Camera', 'catFixPic(\'' + part + '\',\'camera\')') + b('File', 'catFixPic(\'' + part + '\',\'file\')') +
+        (url ? b('Remove', 'catFixPic(\'' + part + '\',\'remove\')') : '') + '</div></div></div>';
+  };
+  return '<div style="font-size:11px;font-weight:700;color:var(--t3);margin:16px 0 2px;text-transform:uppercase;letter-spacing:.5px">Pictures (this phone)</div>' +
+    row('ball', 'Ball', cover, null) +
+    row('core', 'Core', core, ck.name ? 'Shared by every ' + esc(e.m) + ' ball with the ' + esc(ck.name) + ' core' : 'Core name unknown: kept for this ball only');
+}
+/* Clipboard -> {blob} | {url} | null */
+function fixClipImage() {
+  var cb = typeof navigator !== 'undefined' && navigator.clipboard;
+  if (cb && cb.read) return cb.read().then(function (items) {
+    for (var i = 0; i < items.length; i++) { var t = items[i].types.filter(function (x) { return /^image\//.test(x); })[0]; if (t) return items[i].getType(t).then(function (b) { return { blob: b }; }); }
+    for (var j = 0; j < items.length; j++) if (items[j].types.indexOf('text/plain') >= 0)
+      return items[j].getType('text/plain').then(function (b) { return b.text(); }).then(function (s) { var m = /https?:\/\/\S+/.exec(s || ''); return m ? { url: m[0] } : null; });
+    return null;
+  });
+  if (cb && cb.readText) return cb.readText().then(function (s) { var m = /https?:\/\/\S+/.exec(s || ''); return m ? { url: m[0] } : null; });
+  return Promise.reject(new Error('no clipboard'));
+}
+function fixPickFile(camera) {
+  return new Promise(function (res) {
+    var inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'image/*'; inp.style.display = 'none';
+    if (camera) inp.setAttribute('capture', 'environment');
+    inp.addEventListener('change', function () { var f = inp.files && inp.files[0]; if (inp.parentNode) inp.parentNode.removeChild(inp); res(f ? { blob: f } : null); });
+    document.body.appendChild(inp); inp.click();
+  });
+}
+function catImgDel(id) {
+  if (_catImgObj[id]) { try { URL.revokeObjectURL(_catImgObj[id]); } catch (e) {} delete _catImgObj[id]; }
+  return catImgDB().then(function (db) { return new Promise(function (res) {
+    var t = db.transaction('img', 'readwrite'); t.objectStore('img').delete(id); t.oncomplete = function () { res(true); }; t.onerror = function () { res(false); }; }); }).catch(function () { return false; });
+}
+function catFixPic(part, how) {
+  if (!_fix) return; var e = _fix.e, ck = fixCoreKey(e);
+  var idKey = part === 'ball' ? e.i : 'core:' + ck.key;
+  var clearLink = function () { if (part === 'ball') imgPickSet(e.i, null); else coreLinkSet(ck.key, null); };
+  var done = function (msg) { fixRender(); if (document.getElementById('cat-sheet-ov')) renderSheet(); if (msg && root.toast) root.toast(msg); };
+  if (how === 'remove') { clearLink(); catImgDel(idKey).then(function () { done('Picture removed'); }); return; }
+  var get = how === 'paste' ? fixClipImage() : fixPickFile(how === 'camera');
+  get.then(function (got) {
+    if (!got) { if (how === 'paste' && root.toast) root.toast('Copy the picture first (long-press it in Safari, Copy)'); return; }
+    if (got.blob) return imgShrink(got.blob).then(function (b) { return catImgPut(idKey, b); }).then(function () { clearLink(); done((part === 'ball' ? 'Ball' : 'Core') + ' picture saved'); });
+    return imgProbe(got.url).then(function (u) {
+      if (!u) { if (root.toast) root.toast('That address did not load as a picture'); return; }
+      return catImgDel(idKey).then(function () { if (part === 'ball') imgPickSet(e.i, u); else coreLinkSet(ck.key, u); done((part === 'ball' ? 'Ball' : 'Core') + ' picture link saved'); });
+    });
+  }, function () { if (root.toast) root.toast('Paste is not available here; use Camera or File'); });
+}
+function catFixRefresh() {
+  if (root.toast) root.toast('Checking the catalog\u2026');
+  catCheck({ force: true }).then(function (r) {
+    if (root.toast) root.toast(r && r.status === 'updated' ? 'Catalog updated' : r && r.status === 'current' ? 'Catalog is up to date (Publish may still be running)' : 'Catalog check failed');
+    if (!_fix) return;
+    return catLoad().then(function (rows) {
+      var e = byIdIn(rows, _fix.id); if (e) _fix.e = e;
+      if (_sheet && _sheet.id === _fix.id) return catDetailRaw(_fix.e).then(function (raw) { _sheet.raw = raw; _sheet.detail = sheetDetail(_fix.id, raw); renderSheet(); fixRender(); });
+      fixRender();
+    });
+  });
 }
 function catFixCorrect() {
   if (!_fix) return;
@@ -2890,7 +2981,7 @@ function catFixCorrect() {
   (apToken() ? apReadOverrides().catch(function () {}) : Promise.resolve()).then(go);
 }
 function fixAfterEdit() {
-  if (_sheet && _sheet.id && document.getElementById('cat-sheet-ov')) { _sheet.detail = withLocalCorrection(_sheet.id, _sheet.raw); renderSheet(); }
+  if (_sheet && _sheet.id && document.getElementById('cat-sheet-ov')) { _sheet.detail = sheetDetail(_sheet.id, _sheet.raw); renderSheet(); }
   fixRender();
 }
 function catFixMark(how) {
@@ -4243,8 +4334,14 @@ function catApprovalsEditSave() {
   var other = form.source === 'bowwwl' ? (_ovr && _ovr[cid]) : localOverrides()[cid];
   var base = apApplyOverride(staged0, other), bs = (base && base.specs) || {};
   ['coverName', 'coverType', 'finish', 'core', 'coreType', 'released'].forEach(function (k) { if (String(form[k]).trim() === String(bs[k] == null ? '' : bs[k]).slice(0, k === 'released' ? 10 : 999)) form[k] = ''; });
-  Object.keys(form.weights).forEach(function (w) { var x = form.weights[w], y = (bs.weights || {})[w] || {};
-    ['RG', 'Diff', 'IntDiff'].forEach(function (k) { if (x[k] !== '' && y[k] != null && Number(x[k]) === Number(y[k])) x[k] = ''; }); });
+  /* v30.187: a weight is kept or dropped as a whole row. Storing only the changed cell (e.g. Diff)
+     left RG out, and over a catalog entry without that weight the card showed Diff with no RG.
+     A row is kept when any cell differs, or when the saved correction already has a half row. */
+  var prevO = form.source === 'bowwwl' ? localOverrides()[cid] : (_ovr && _ovr[cid]), prevW = (prevO && prevO.weights) || {};
+  Object.keys(form.weights).forEach(function (w) { var x = form.weights[w], y = (bs.weights || {})[w] || {}, pw = prevW[w];
+    var same = function (k) { return String(x[k]).trim() === '' || (y[k] != null && Number(x[k]) === Number(y[k])); };
+    var half = pw && (pw.RG == null || pw.Diff == null);
+    if (!half && ['RG', 'Diff', 'IntDiff'].every(same)) ['RG', 'Diff', 'IntDiff'].forEach(function (k) { x[k] = ''; }); });
   var res = apOverrideFrom(form), err = document.getElementById('ape-err');
   if (res.errors.length) { if (err) err.textContent = res.errors.join('. '); return; }
   var o = res.override;
@@ -4497,7 +4594,7 @@ root.catImagesRefresh = catImagesRefresh; root.catImagesStatus = catImagesStatus
 root.catPick = catPick; root.catUnlink = catUnlink; root.catPickValue = catPickValue;
 root.catApprovalsRejectAsk = catApprovalsRejectAsk; root.catApprovalsReject = catApprovalsReject; root.catDiscOpen = catDiscOpen; root.catDiscClose = catDiscClose; root.catDiscTab = catDiscTab;
 root.catDiscBrand = catDiscBrand; root.catDiscSearch = catDiscSearch; root.catDiscHide = catDiscHide; root.catDiscToggle = catDiscToggle; root.catDiscYear = catDiscYear; root.catDiscPick = catDiscPick;
-root.catFixOpen = catFixOpen; root.catFixClose = catFixClose; root.catFixCorrect = catFixCorrect; root.catFixMark = catFixMark; root.catFixRejectAsk = catFixRejectAsk; root.catFixReject = catFixReject;
+root.catFixOpen = catFixOpen; root.catFixPic = catFixPic; root.catFixRefresh = catFixRefresh; root.catFixClose = catFixClose; root.catFixCorrect = catFixCorrect; root.catFixMark = catFixMark; root.catFixRejectAsk = catFixRejectAsk; root.catFixReject = catFixReject;
 root.catDiscClear = catDiscClear; root.catDiscMark = catDiscMark; root.catDiscRestore = catDiscRestore; root.catDiscSend = catDiscSend; root.catDiscPublish = catDiscPublish; root.catIsRejected = catIsRejected;
 root.catLinkLabel = catLinkLabel; root.catReviewOpen = catReviewOpen;
 root.catReviewLink = catReviewLink; root.catReviewSkip = catReviewSkip;
@@ -4520,7 +4617,7 @@ root.catSearch = function (q, n) { return catLoad().then(function (rows) { retur
 root._catStep5 = { norm: norm, modelKey: modelKey, lookupIn: lookupIn, searchIn: searchIn, reviewModel: reviewModel,
                    pickerBodyHTML: pickerBodyHTML, reviewHTML: reviewHTML, resultsHTML: resultsHTML,
                    setPick: function (p) { _pick = p; }, auditModel: auditModel, auditHTML: auditHTML,
-                   addListHTML: addListHTML, addSearchIn: addSearchIn, newest: newest, bubbleFilter: bubbleFilter, discontinuedOf: discontinuedOf, dcGroups: dcGroups, detAsStaged: detAsStaged, catFixAllowed: catFixAllowed, stMerge: stMerge, catIsRejected: catIsRejected, stSet: stSet, stLocal: stLocal, stReset: function () { _stc = null; }, addFilters: function () { return _af; },
+                   addListHTML: addListHTML, addSearchIn: addSearchIn, newest: newest, bubbleFilter: bubbleFilter, discontinuedOf: discontinuedOf, dcGroups: dcGroups, detAsStaged: detAsStaged, sheetDetail: sheetDetail, withLocalCorrection: withLocalCorrection, catFixAllowed: catFixAllowed, stMerge: stMerge, catIsRejected: catIsRejected, stSet: stSet, stLocal: stLocal, stReset: function () { _stc = null; }, addFilters: function () { return _af; },
                    specsOf: specsOf, shardMap: shardMap, shardKeyFor: shardKeyFor, detailFiles: detailFiles,
                    buildOwnedBall: buildOwnedBall, ballFromSpecs: ballFromSpecs, fillPlan: fillPlan,
                    catSpecSource: catSpecSource, setFilled: function (f) { _filled = f; },
