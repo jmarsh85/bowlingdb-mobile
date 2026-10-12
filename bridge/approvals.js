@@ -8,7 +8,7 @@
    node bridge/approvals.js parse  --body body.md --out decisions.json
 */
 'use strict';
-const fs = require('fs');
+const fs = require('fs'), path = require('path');
 const MAX = 60000;   // GitHub issue body limit is 65,536 characters
 
 function fmtSpecs(s) {
@@ -38,9 +38,11 @@ function readTicks(body) {
   for (const m of String(body || '').matchAll(/^\s*-\s*\[[xX]\][^\n]*<!--a:([^>]*?)-->/gm)) t.add(m[1]);
   return t;
 }
-function render(staged, currentBody) {
-  const ticked = readTicks(currentBody);
-  const pend = staged.filter(r => r.decision === 'pending');
+/* v30.185 REJ-1: rejected = Set of CatalogIDs you rejected in the app; their boxes never return. */
+function render(staged, currentBody, rejected) {
+  const ticked = readTicks(currentBody), rej = rejected || new Set();
+  const pend = staged.filter(r => r.decision === 'pending' && !(r.catalogId && rej.has(r.catalogId)))
+    .map(r => (r.candidates || []).some(id => rej.has(id)) ? Object.assign({}, r, { candidates: r.candidates.filter(id => !rej.has(id)) }) : r);
   const groups = {}, counts = {};
   let boxes = 0;
   for (const r of pend) {
@@ -87,7 +89,9 @@ function main(argv) {
   if (cmd === 'render') {
     const staged = JSON.parse(fs.readFileSync(arg('staging'), 'utf8'));
     const cur = arg('current') && fs.existsSync(arg('current')) ? fs.readFileSync(arg('current'), 'utf8') : '';
-    fs.writeFileSync(arg('out'), render(staged, cur));
+    const { readStatusFile, statusPathNear, rejectedSet } = require('./extract.js');
+    const stPath = arg('status') || statusPathNear(path.dirname(arg('staging')));
+    fs.writeFileSync(arg('out'), render(staged, cur, rejectedSet(readStatusFile(stPath))));
   } else if (cmd === 'parse') {
     const b = arg('body') && fs.existsSync(arg('body')) ? fs.readFileSync(arg('body'), 'utf8') : '';
     const d = parse(b); fs.writeFileSync(arg('out'), JSON.stringify(d, null, 1)); console.log(d.length + ' approvals');
