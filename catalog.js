@@ -36,7 +36,7 @@
 'use strict';
 
 /* v30.169: shown in the app header when it differs from the build's EXPECTED_CATALOG_JS */
-var CAT_VERSION  = 'v30.188';
+var CAT_VERSION  = 'v30.189';
 var CAT_BASE     = 'https://raw.githubusercontent.com/jmarsh85/bowlingdb-mobile/dist/';
 var CAT_DB       = 'BowlingDB_Catalog';
 var CAT_DB_VER   = 1;
@@ -3004,7 +3004,10 @@ function catFixCorrect() {
   if (!_fix) return;
   var e = _fix.e, raw = _sheet && _sheet.id === e.i ? _sheet.raw : null;
   var go = function () {
-    var base0 = _fix.row ? apApplyOverride(_fix.row, null) : detAsStaged(raw);
+    /* v30.189: from the card, compare with what the card shows (the published catalog). The staged row
+       (what the bridge read) was used before, so its values showed "same as now" and were never saved,
+       though the card did not have them. A ball not yet published falls back to the staged row. */
+    var base0 = raw ? detAsStaged(raw) : (_fix.row || null);
     apEditOpen({ catalogId: e.i, title: cleanName(e.n), entry: e, base0: base0, origin: 'sheet' });
   };
   (apToken() ? apReadOverrides().catch(function () {}) : Promise.resolve()).then(go);
@@ -3027,6 +3030,84 @@ function catFixReject(reason) {
   stQueueSync(); catFixClose(); catSheetClose();
   if (root.toast) root.toast('Rejected. It won\u2019t come back in new extracts.');
 }
+
+/* ---------- v30.189 COV-1: Coverage (Settings > Balls & catalog) ----------
+   From the catalog on this phone: per maker, USBC balls, balls with published specs, and the gaps
+   that matter (approved since the chosen year, not discontinued or rejected, no specs). With the
+   GitHub token, "waiting" counts gaps the bridge has read but you haven't approved. Tap a gap to
+   open its card (Fix in dev mode). Bridge makers first, then everything else as "Other makers". */
+var COV_BRANDS = ['Storm', 'Roto Grip', '900 Global', 'Brunswick', 'Hammer', 'DV8', 'Radical', 'Track', 'Ebonite', 'Columbia 300', 'Motiv'];
+var _cov = { since: null, open: {}, waiting: null };
+function covBrandOf(m) { var n = norm(canonicalMfg(m)); for (var i = 0; i < COV_BRANDS.length; i++) if (norm(COV_BRANDS[i]) === n || n.indexOf(norm(COV_BRANDS[i])) === 0) return COV_BRANDS[i]; return 'Other makers'; }
+/* Pure: rows -> [{brand, all, specs, recent, recentSpecs, gaps:[row]}]; skip(e) leaves a row out (rejected),
+   gone(e) marks it discontinued (not a gap); waiting = {catalogId: 1} read by the bridge, not approved. */
+function covRows(rows, since, skip, gone, waiting) {
+  var by = {};
+  (rows || []).forEach(function (e) {
+    if (skip && skip(e)) return;
+    var b = covBrandOf(e.m), o = by[b] = by[b] || { brand: b, all: 0, specs: 0, recent: 0, recentSpecs: 0, gaps: [], waiting: 0 };
+    o.all++; if (e.s) o.specs++;
+    if (+(e.y || 0) >= since) {
+      o.recent++; if (e.s) o.recentSpecs++;
+      else if (!(gone && gone(e))) { o.gaps.push(e); if (waiting && waiting[e.i]) o.waiting++; }
+    }
+  });
+  var order = COV_BRANDS.concat(['Other makers']);
+  return order.filter(function (b) { return by[b]; }).map(function (b) {
+    by[b].gaps.sort(function (x, y) { return String(y.y || '').localeCompare(String(x.y || '')) || cleanName(x.n).localeCompare(cleanName(y.n)); });
+    return by[b];
+  });
+}
+function catCovOpen() {
+  if (typeof document === 'undefined') return;
+  var mb = document.getElementById('modal-bg');
+  if (mb && mb.classList.contains('open') && typeof root.closeModal === 'function') root.closeModal();
+  catCovClose();
+  if (_cov.since == null) _cov.since = new Date(env.now()).getFullYear() - 3;
+  _cov.open = {};
+  document.body.appendChild(overlay('cov-ov', 905));
+  covRender();
+  if (apToken()) apReadStaged().then(function (st) {
+    var w = {}; (st || []).forEach(function (r) { if (r.decision === 'pending') { if (r.catalogId) w[r.catalogId] = 1; (r.candidates || []).forEach(function (id) { w[id] = 1; }); } });
+    _cov.waiting = w; covRender();
+  }, function () {});
+}
+function catCovClose() { var el = document.getElementById('cov-ov'); if (el) el.parentNode.removeChild(el); }
+function covRender() {
+  var ov = document.getElementById('cov-ov'); if (!ov) return;
+  catLoad().then(function (rows) {
+    var list = covRows(rows, _cov.since, catIsRejected, function (e) { return !!discontinuedOf(e); }, _cov.waiting);
+    var tot = list.reduce(function (a, o) { a.all += o.all; a.specs += o.specs; a.gaps += o.gaps.length; return a; }, { all: 0, specs: 0, gaps: 0 });
+    var pct = function (a, b) { return b ? Math.floor(a * 100 / b) + '%' : '\u2014'; };
+    var yr = new Date(env.now()).getFullYear(), years = [yr - 1, yr - 2, yr - 3, yr - 5];
+    var chip = function (y) { var on = _cov.since === y; return '<button onclick="catCovSince(' + y + ')" style="' + (on ? BTN_P : BTN_G) + 'padding:6px 10px;font-size:12px">' + y + '+</button>'; };
+    var body = list.map(function (o, i) {
+      var open = !!_cov.open[o.brand];
+      var head = '<div onclick="catCovToggle(\'' + jsq(o.brand) + '\')" style="display:flex;align-items:center;gap:8px;padding:11px 2px;border-bottom:1px solid var(--border1);cursor:pointer">' +
+        '<div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:700;color:var(--t1)">' + esc(o.brand) + '</div>' +
+        '<div style="font-size:12px;color:var(--t2)">' + o.specs + ' of ' + o.all + ' with specs (' + pct(o.specs, o.all) + ') \u00b7 ' + _cov.since + '+: ' + o.recentSpecs + ' of ' + o.recent + ' (' + pct(o.recentSpecs, o.recent) + ')</div></div>' +
+        '<div style="text-align:right"><div style="font-size:15px;font-weight:800;color:' + (o.gaps.length ? 'var(--gold)' : 'var(--teal)') + '">' + (o.gaps.length || '\u2713') + '</div>' +
+        '<div style="font-size:10px;color:var(--t3)">' + (o.gaps.length ? 'gap' + (o.gaps.length === 1 ? '' : 's') + (o.waiting ? ' \u00b7 ' + o.waiting + ' waiting' : '') : 'no gaps') + '</div></div>' +
+        (o.gaps.length ? '<span style="color:var(--t3)">' + (open ? '\u25be' : '\u25b8') + '</span>' : '') + '</div>';
+      if (!open || !o.gaps.length) return head;
+      return head + o.gaps.map(function (e) {
+        var w = _cov.waiting && _cov.waiting[e.i];
+        return '<div onclick="catAddDetail(\'' + esc(e.i) + '\')" style="display:flex;gap:10px;align-items:center;padding:9px 2px 9px 12px;border-bottom:1px solid var(--border1);cursor:pointer">' +
+          '<div style="flex:1;min-width:0;font-size:14px;color:var(--t1)">' + esc(cleanName(e.n)) + (o.brand === 'Other makers' ? '<span style="font-size:12px;color:var(--t3)"> \u00b7 ' + esc(e.m) + '</span>' : '') + '</div>' +
+          '<span style="font-size:12px;color:var(--t3)">' + esc(e.y || '') + '</span>' + (w ? '<span style="' + CHIP_G + '">WAITING</span>' : '') + '</div>';
+      }).join('');
+    }).join('');
+    ov.innerHTML = '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 8px"><button style="' + BACK + '" onclick="catCovClose()">\u2039</button>' +
+      '<div style="flex:1;min-width:0"><div style="font-size:17px;font-weight:800;color:var(--t1)">Coverage</div>' +
+      '<div style="font-size:11px;color:var(--t3)">' + tot.specs + ' of ' + tot.all + ' balls have specs (' + pct(tot.specs, tot.all) + ') \u00b7 ' + tot.gaps + ' gap' + (tot.gaps === 1 ? '' : 's') + ' since ' + _cov.since + '</div></div></div>' +
+      '<div style="display:flex;gap:6px;align-items:center;padding:0 16px 8px"><span style="font-size:12px;color:var(--t2);margin-right:4px">Gaps approved</span>' + years.map(chip).join('') + '</div>' +
+      '<div style="flex:1;overflow-y:auto;padding:0 16px 12px">' + body +
+      '<div style="font-size:11px;color:var(--t3);line-height:1.5;margin-top:10px">A gap is a ball approved since the year chosen, not discontinued or rejected, with no published specs. ' +
+      (_cov.waiting ? '\u201cWaiting\u201d: the bridge read it; approve it in Spec approvals.' : 'Add the GitHub token to see which gaps are waiting for your approval.') + ' Tap a gap to open its card.</div></div>';
+  });
+}
+function catCovSince(y) { _cov.since = y; covRender(); }
+function catCovToggle(b) { _cov.open[b] = !_cov.open[b]; covRender(); }
 
 /* bowwwl.com page for a ball (personal-use lookup only; never fetched by the app). */
 function bowwwlSlug(t) { return String(t || '').toLowerCase().replace(/\+/g, ' plus').replace(/\binc\b\.?/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''); }
@@ -3415,11 +3496,11 @@ function spRender() {
   var warn = p.nameSeen === false ? '<div style="font-size:12px;color:var(--gold);line-height:1.5;margin:4px 0 8px">\u201c' + esc(t.name) + '\u201d does not appear in what you copied. Check it is the right ball\u2019s page.</div>' : '';
   var list = _sp.rows.map(function (x, i) {
     if (x.r.img) return '<div style="display:flex;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--border1)">' +
-      '<input type="checkbox" ' + (x.on ? 'checked' : '') + ' onchange="catSpToggle(' + i + ',this.checked)" style="width:18px;height:18px">' +
+      '<input type="checkbox" data-sp-cb="' + i + '" ' + (x.on ? 'checked' : '') + ' onchange="catSpToggle(' + i + ',this.checked)" style="width:18px;height:18px">' +
       '<img src="' + esc(x.v) + '" referrerpolicy="no-referrer" style="width:56px;height:56px;object-fit:contain;border-radius:8px;background:var(--bg3)" onerror="this.style.display=\'none\'">' +
       '<div style="flex:1;font-size:12px;font-weight:700;color:var(--t2)">' + esc(x.r.label) + (x.same ? '<div style="color:var(--teal);font-weight:600">\u2713 in use</div>' : '') + '</div></div>';
     return '<div style="display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--border1)">' +
-      '<input type="checkbox" ' + (x.on ? 'checked' : '') + ' onchange="catSpToggle(' + i + ',this.checked)" style="margin-top:22px;width:18px;height:18px">' +
+      '<input type="checkbox" data-sp-cb="' + i + '" ' + (x.on ? 'checked' : '') + ' onchange="catSpToggle(' + i + ',this.checked)" style="margin-top:22px;width:18px;height:18px">' +
       '<div style="flex:1;min-width:0"><div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:var(--t2)"><span>' + esc(x.r.label) + '</span>' +
       (x.same ? '<span style="color:var(--teal);font-weight:600">\u2713 same as now</span>' : x.r.cur != null && String(x.r.cur) !== '' ? '<span style="color:var(--t3);font-weight:600">now: ' + esc(String(x.r.cur)) + '</span>' : '<span style="color:var(--t3);font-weight:600">empty now</span>') + '</div>' +
       '<input id="sp-v-' + i + '" class="bdet-field-input" value="' + esc(x.v) + '" oninput="catSpEdit(' + i + ',this.value)"' + (x.r.wk ? ' inputmode="decimal"' : '') + ' style="width:100%;box-sizing:border-box;font-size:15px;margin-top:4px"></div></div>';
@@ -3428,15 +3509,36 @@ function spRender() {
   var ov = document.getElementById('sp-ov') || overlay('sp-ov', 945);
   ov.innerHTML = '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 8px"><button style="' + BACK + '" onclick="catSpClose()">\u2039</button>' +
     '<div style="flex:1;min-width:0"><div style="font-size:17px;font-weight:800;color:var(--t1)">Found on the page</div><div style="font-size:11px;color:var(--t3)">' + esc(t.title || '') + '</div></div></div>' +
+    (list ? (function () {
+      var nSame = _sp.rows.filter(function (x) { return x.same; }).length, ch = function (t, h) { return '<button onclick="catSpAll(\'' + h + '\')" style="' + BTN_G + 'padding:6px 10px;font-size:12px">' + t + '</button>'; };
+      return '<div style="display:flex;align-items:center;gap:8px;padding:0 16px 8px;border-bottom:1px solid var(--border1)">' +
+        '<label style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--t1);flex:1"><input id="sp-all" type="checkbox" ' + (_sp.rows.every(function (x) { return x.on; }) ? 'checked ' : '') +
+        'onchange="catSpAll(this.checked ? \'all\' : \'none\')" style="width:20px;height:20px"> Select all ' + _sp.rows.length + '</label>' +
+        (nSame ? ch('Changed only', 'changed') : '') + '</div>';
+    })() : '') +
     '<div style="flex:1;overflow-y:auto;padding:0 16px 12px">' + from + warn +
     (list || '<div style="padding:24px 0;color:var(--t2);font-size:13px;line-height:1.6">No specs found in what you copied. In Safari, long-press the page text, tap <b>Select All</b>, then <b>Copy</b>, and try again.</div>') +
-    (list ? '<div style="font-size:11px;color:var(--t3);margin-top:8px;line-height:1.45">Edit any value before applying. Unticked rows are left alone.</div>' : '') + '</div>' +
+    (list ? '<div style="font-size:11px;color:var(--t3);margin-top:8px;line-height:1.45">Edit any value before applying. Unticked rows are left alone. \u201cSame as now\u201d compares with the form you came from.</div>' : '') + '</div>' +
     '<div style="padding:10px 16px;border-top:1px solid var(--border1);display:flex;gap:8px"><button style="' + BTN_G + 'padding:11px" onclick="catSpClose()">Cancel</button>' +
-    '<button style="' + BTN_P + 'flex:1;padding:11px" ' + (n ? '' : 'disabled ') + 'onclick="catSpApply()">Apply ' + n + '</button></div>';
+    '<button id="sp-apply" style="' + BTN_P + 'flex:1;padding:11px" ' + (n ? '' : 'disabled ') + 'onclick="catSpApply()">Apply ' + n + '</button></div>';
   if (!ov.parentNode) document.body.appendChild(ov);
 }
-function catSpToggle(i, on) { if (_sp && _sp.rows[i]) { _sp.rows[i].on = !!on; spRender(); } }
-function catSpEdit(i, v) { if (_sp && _sp.rows[i]) { _sp.rows[i].v = v; if (!_sp.rows[i].on) { _sp.rows[i].on = true; var cb = document.querySelectorAll('#sp-ov input[type=checkbox]')[i]; if (cb) cb.checked = true; } } }
+/* v30.189: ticking updates in place (re-rendering scrolled the list back to the top) */
+function spCount() {
+  var n = _sp.rows.filter(function (x) { return x.on; }).length, b = document.getElementById('sp-apply');
+  if (b) { b.textContent = 'Apply ' + n; b.disabled = !n; }
+  var sa = document.getElementById('sp-all'); if (sa) sa.checked = n === _sp.rows.length;
+}
+function catSpToggle(i, on) { if (_sp && _sp.rows[i]) { _sp.rows[i].on = !!on; spCount(); } }
+/* v30.189: All (including "same as now", to re-assert them), None, or Changed only */
+function catSpAll(how) {
+  if (!_sp) return;
+  _sp.rows.forEach(function (x) { x.on = how === 'all' ? true : how === 'none' ? false : !x.same; });
+  var cbs = document.querySelectorAll('#sp-ov [data-sp-cb]');
+  for (var i = 0; i < cbs.length; i++) { var x = _sp.rows[+cbs[i].getAttribute('data-sp-cb')]; if (x) cbs[i].checked = x.on; }
+  spCount();
+}
+function catSpEdit(i, v) { if (_sp && _sp.rows[i]) { _sp.rows[i].v = v; if (!_sp.rows[i].on) { _sp.rows[i].on = true; var cb = document.querySelector('#sp-ov [data-sp-cb="' + i + '"]'); if (cb) cb.checked = true; spCount(); } } }
 function catSpClose() { var el = document.getElementById('sp-ov'); if (el) el.parentNode.removeChild(el); _sp = null; }
 function catSpApply() {
   if (!_sp) return;
@@ -4616,7 +4718,7 @@ function catCompareAdd(x) {
 
 root.CATALOG_JS_VERSION = CAT_VERSION;
 root.catPickerMount = catPickerMount;
-root.catApprovalsOpen = catApprovalsOpen; root.catImagesScanAll = catImagesScanAll; root.catImagesScanStop = catImagesScanStop; root.catImagesSlot = catImagesSlot; root.catImagesExport = catImagesExport; root.catImagesImport = catImagesImport; root.catCoreImageFor = catCoreImageFor; root.catImagesOpen = catImagesOpen; root.catImagesClose = catImagesClose; root.catImagesTab = catImagesTab; root.catImagesFilter = catImagesFilter; root.catImagesPage = catImagesPage; root.catImagesTry = catImagesTry; root.catImagesTryPage = catImagesTryPage; root.catImagesPaste = catImagesPaste; root.catImagesPhoto = catImagesPhoto; root.catImagesDrop = catImagesDrop; root.catImagesUse = catImagesUse; root.catImagesUseAll = catImagesUseAll; root.catSpApPdf = catSpApPdf; root.catSpBallPdf = catSpBallPdf; root.catPdfHelp = catPdfHelp; root.catShortcutHelp = catShortcutHelp; root.catShortcutCopy = catShortcutCopy; root.catShortcutClose = catShortcutClose; root.catSpAp = catSpAp; root.catSpBall = catSpBall; root.catSpToggle = catSpToggle; root.catSpEdit = catSpEdit; root.catSpClose = catSpClose; root.catSpApply = catSpApply; root.catSpManualGo = catSpManualGo; root.catSpManualClose = catSpManualClose; root.catLookBall = catLookBall; root.catLookOk = catLookOk; root.catLookSave = catLookSave; root.catLookClose = catLookClose; root.catPasteOpen = catPasteOpen; root.catPasteClose = catPasteClose; root.catPasteClip = catPasteClip; root.catPasteShow = catPasteShow; root.catFillToggle = catFillToggle; root.catFillClose = catFillClose; root.catFillConfirm = catFillConfirm; root.catPageOpen = catPageOpen; root.catPageClose = catPageClose; root.catPageUseSel = catPageUseSel; root.catPageUseVal = catPageUseVal; root.catPageImg = catPageImg; root.catPickOpen = catPickOpen; root.catPickFilter = catPickFilter; root.catPickChoose = catPickChoose; root.catPickClose = catPickClose; root.catSpecReviewOpen = catSpecReviewOpen; root.catSpecReviewClose = catSpecReviewClose; root.catSpecReviewAct = catSpecReviewAct; root.catSpecReviewBulk = catSpecReviewBulk; root.catSpecReviewPage = catSpecReviewPage; root.catTagPick = catTagPick; root.catTagCancel = catTagCancel; root.catVerifyRefresh = catVerifyRefresh; root.catVerifyDismiss = catVerifyDismiss; root.catVerifyRetry = catVerifyRetry; root.catVerifyOpenApprovals = catVerifyOpenApprovals; root.catVerifyPublish = catVerifyPublish; root.catVerifyApply = catVerifyApply; root.catVerifyTick = vfyTick; root.catVerifyState = vfyActive; root.catApprovalsRetryStaged = catApprovalsRetryStaged; root.apStagedErrText = apStagedErrText; root.catApprovalsClose = catApprovalsClose; root.catApprovalsSaveToken = catApprovalsSaveToken;
+root.catApprovalsOpen = catApprovalsOpen; root.catImagesScanAll = catImagesScanAll; root.catImagesScanStop = catImagesScanStop; root.catImagesSlot = catImagesSlot; root.catImagesExport = catImagesExport; root.catImagesImport = catImagesImport; root.catCoreImageFor = catCoreImageFor; root.catImagesOpen = catImagesOpen; root.catImagesClose = catImagesClose; root.catImagesTab = catImagesTab; root.catImagesFilter = catImagesFilter; root.catImagesPage = catImagesPage; root.catImagesTry = catImagesTry; root.catImagesTryPage = catImagesTryPage; root.catImagesPaste = catImagesPaste; root.catImagesPhoto = catImagesPhoto; root.catImagesDrop = catImagesDrop; root.catImagesUse = catImagesUse; root.catImagesUseAll = catImagesUseAll; root.catSpApPdf = catSpApPdf; root.catSpBallPdf = catSpBallPdf; root.catPdfHelp = catPdfHelp; root.catShortcutHelp = catShortcutHelp; root.catShortcutCopy = catShortcutCopy; root.catShortcutClose = catShortcutClose; root.catSpAp = catSpAp; root.catSpBall = catSpBall; root.catSpToggle = catSpToggle; root.catSpAll = catSpAll; root.catSpEdit = catSpEdit; root.catSpClose = catSpClose; root.catSpApply = catSpApply; root.catSpManualGo = catSpManualGo; root.catSpManualClose = catSpManualClose; root.catLookBall = catLookBall; root.catLookOk = catLookOk; root.catLookSave = catLookSave; root.catLookClose = catLookClose; root.catPasteOpen = catPasteOpen; root.catPasteClose = catPasteClose; root.catPasteClip = catPasteClip; root.catPasteShow = catPasteShow; root.catFillToggle = catFillToggle; root.catFillClose = catFillClose; root.catFillConfirm = catFillConfirm; root.catPageOpen = catPageOpen; root.catPageClose = catPageClose; root.catPageUseSel = catPageUseSel; root.catPageUseVal = catPageUseVal; root.catPageImg = catPageImg; root.catPickOpen = catPickOpen; root.catPickFilter = catPickFilter; root.catPickChoose = catPickChoose; root.catPickClose = catPickClose; root.catSpecReviewOpen = catSpecReviewOpen; root.catSpecReviewClose = catSpecReviewClose; root.catSpecReviewAct = catSpecReviewAct; root.catSpecReviewBulk = catSpecReviewBulk; root.catSpecReviewPage = catSpecReviewPage; root.catTagPick = catTagPick; root.catTagCancel = catTagCancel; root.catVerifyRefresh = catVerifyRefresh; root.catVerifyDismiss = catVerifyDismiss; root.catVerifyRetry = catVerifyRetry; root.catVerifyOpenApprovals = catVerifyOpenApprovals; root.catVerifyPublish = catVerifyPublish; root.catVerifyApply = catVerifyApply; root.catVerifyTick = vfyTick; root.catVerifyState = vfyActive; root.catApprovalsRetryStaged = catApprovalsRetryStaged; root.apStagedErrText = apStagedErrText; root.catApprovalsClose = catApprovalsClose; root.catApprovalsSaveToken = catApprovalsSaveToken;
 root.catApprovalsForgetToken = catApprovalsForgetToken; root.catApprovalsChangeToken = catApprovalsChangeToken; root.catApprovalsPage = catApprovalsPage; root.catApprovalsFilter = catApprovalsFilter;
 root.catApprovalsTick = catApprovalsTick; root.catApprovalsEdit = catApprovalsEdit; root.catApprovalsEditClose = catApprovalsEditClose; root.catApprovalsEditSave = catApprovalsEditSave; root.catAddSpecsOnly = catAddSpecsOnly; root.catVerifyNow = catVerifyNow; root.catImagesSet = catImagesSet;
 root.catImagesRefresh = catImagesRefresh; root.catImagesStatus = catImagesStatus; root.catImageFor = catImageFor; root.catApprovalsSend = catApprovalsSend; root.catApprovalsPublish = catApprovalsPublish; root.catPickerSearch = catPickerSearch;
@@ -4624,6 +4726,7 @@ root.catPick = catPick; root.catUnlink = catUnlink; root.catPickValue = catPickV
 root.catApprovalsRejectAsk = catApprovalsRejectAsk; root.catApprovalsReject = catApprovalsReject; root.catDiscOpen = catDiscOpen; root.catDiscClose = catDiscClose; root.catDiscTab = catDiscTab;
 root.catDiscBrand = catDiscBrand; root.catDiscSearch = catDiscSearch; root.catDiscHide = catDiscHide; root.catDiscToggle = catDiscToggle; root.catDiscYear = catDiscYear; root.catDiscPick = catDiscPick;
 root.catFixOpen = catFixOpen; root.catFixPic = catFixPic; root.catFixRefresh = catFixRefresh; root.catFixClose = catFixClose; root.catFixCorrect = catFixCorrect; root.catFixMark = catFixMark; root.catFixRejectAsk = catFixRejectAsk; root.catFixReject = catFixReject;
+root.catCovOpen = catCovOpen; root.catCovClose = catCovClose; root.catCovSince = catCovSince; root.catCovToggle = catCovToggle;
 root.catDiscClear = catDiscClear; root.catDiscMark = catDiscMark; root.catDiscRestore = catDiscRestore; root.catDiscSend = catDiscSend; root.catDiscPublish = catDiscPublish; root.catIsRejected = catIsRejected;
 root.catLinkLabel = catLinkLabel; root.catReviewOpen = catReviewOpen;
 root.catReviewLink = catReviewLink; root.catReviewSkip = catReviewSkip;
@@ -4646,7 +4749,7 @@ root.catSearch = function (q, n) { return catLoad().then(function (rows) { retur
 root._catStep5 = { norm: norm, modelKey: modelKey, lookupIn: lookupIn, searchIn: searchIn, reviewModel: reviewModel,
                    pickerBodyHTML: pickerBodyHTML, reviewHTML: reviewHTML, resultsHTML: resultsHTML,
                    setPick: function (p) { _pick = p; }, auditModel: auditModel, auditHTML: auditHTML,
-                   addListHTML: addListHTML, addSearchIn: addSearchIn, newest: newest, bubbleFilter: bubbleFilter, discontinuedOf: discontinuedOf, dcGroups: dcGroups, detAsStaged: detAsStaged, sheetDetail: sheetDetail, withLocalCorrection: withLocalCorrection, catFixAllowed: catFixAllowed, stMerge: stMerge, catIsRejected: catIsRejected, stSet: stSet, stLocal: stLocal, stReset: function () { _stc = null; }, addFilters: function () { return _af; },
+                   addListHTML: addListHTML, addSearchIn: addSearchIn, newest: newest, bubbleFilter: bubbleFilter, discontinuedOf: discontinuedOf, dcGroups: dcGroups, covRows: covRows, covBrandOf: covBrandOf, detAsStaged: detAsStaged, sheetDetail: sheetDetail, withLocalCorrection: withLocalCorrection, catFixAllowed: catFixAllowed, stMerge: stMerge, catIsRejected: catIsRejected, stSet: stSet, stLocal: stLocal, stReset: function () { _stc = null; }, addFilters: function () { return _af; },
                    specsOf: specsOf, shardMap: shardMap, shardKeyFor: shardKeyFor, detailFiles: detailFiles,
                    buildOwnedBall: buildOwnedBall, ballFromSpecs: ballFromSpecs, fillPlan: fillPlan,
                    catSpecSource: catSpecSource, setFilled: function (f) { _filled = f; },
