@@ -27,7 +27,7 @@ concurrency:
 
 jobs:
   refresh:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04   # pinned v30.189: ubuntu-latest moves to a new image; revisit after checking
     steps:
       # Code comes from the branch this ran on.
       - uses: actions/checkout@v5
@@ -130,7 +130,7 @@ jobs:
         run: |
           git config user.name  'catalog-bot'
           git config user.email 'catalog-bot@users.noreply.github.com'
-          git add -A index.json usbc.json manifest.json review.json detail
+          git add -A index.json usbc.json manifest.json review.json vocab.json detail   # v30.189: vocab.json (pick lists) was never staged
           git diff --cached --quiet && { echo 'nothing staged'; exit 0; }
           git commit -m "catalog: USBC ${{ steps.version.outputs.iso }}"
           git push origin HEAD:dist
@@ -141,7 +141,7 @@ jobs:
 
   # Runs even when refresh fails, so a silent source outage is visible.
   heartbeat:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04   # pinned v30.189: ubuntu-latest moves to a new image; revisit after checking
     needs: refresh
     if: always()
     steps:
