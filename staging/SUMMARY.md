@@ -1,33 +1,43 @@
 # Spec bridge extract
 
-Staged 1741 ball pages: **1091 auto**, 642 pending, 6 duplicate, 2 outvoted.
+Staged 1739 ball pages: **1088 auto**, 643 pending, 6 duplicate, 2 outvoted.
 
-Auto-applied by rule: same-name-reapproval 9, colourway 28, majority 1.
+Rejected by you: 0 balls on the list (no status file found at /home/runner/work/bowlingdb-mobile/bowlingdb-mobile/corrections/status.json), 0 staged rows set aside.
+
+Auto-applied by rule: same-name-reapproval 9, colourway 24, majority 1.
 
 | source | pages | ball pages | auto | pending | errors |
 |---|---|---|---|---|---|
 | storm | 1788 | 73 | 56 | 18 | 0 |
+| brunswick | 258 | 258 | 178 | 82 | 0 |
+| hammer | 366 | 196 | 73 | 123 | 3 |
+| dv8 | 126 | 126 | 84 | 42 | 0 |
+| radical | 129 | 129 | 122 | 7 | 0 |
+| track | 181 | 163 | 115 | 50 | 1 |
+| ebonite | 215 | 190 | 123 | 68 | 2 |
+| columbia | 404 | 386 | 170 | 218 | 3 |
+| motiv | 206 | 205 | 167 | 35 | 0 |
 
 | brand | USBC rows | specs (auto) | pending | 2023+ rows | 2023+ auto |
 |---|---|---|---|---|---|
 | 900 Global | 376 | 4 | 0 | 69 | 4 |
 | Brunswick | 745 | 178 | 16 | 74 | 38 |
-| Columbia 300 | 553 | 172 | 73 | 20 | 15 |
+| Columbia 300 | 553 | 170 | 73 | 20 | 15 |
 | DV8 | 139 | 84 | 32 | 24 | 17 |
-| Ebonite | 814 | 125 | 21 | 61 | 16 |
-| Hammer | 653 | 73 | 101 | 114 | 38 |
+| Ebonite | 814 | 123 | 21 | 61 | 16 |
+| Hammer | 653 | 73 | 100 | 114 | 39 |
 | Motiv | 218 | 167 | 12 | 57 | 49 |
 | Radical | 162 | 122 | 1 | 43 | 36 |
 | Roto Grip | 469 | 18 | 3 | 89 | 13 |
 | Storm | 998 | 34 | 1 | 178 | 18 |
-| Track Inc. | 361 | 114 | 47 | 46 | 24 |
+| Track Inc. | 361 | 115 | 47 | 46 | 24 |
 
-Pending reasons: no-usbc 278, no-weight-specs 302, variant 45, out-of-range:16:RG=2.257 1, ambiguous 2, conflicting-sources 8, out-of-range:15:Diff=56 1, out-of-range:12:Diff=0.31 2, out-of-range:16:IntDiff=0.2 1, out-of-range:15:Diff=0.09 1, out-of-range:13:Diff=2.53 1
+Pending reasons: no-usbc 278, no-weight-specs 303, variant 45, out-of-range:16:RG=2.257 1, ambiguous 2, conflicting-sources 8, out-of-range:15:Diff=56 1, out-of-range:12:Diff=0.31 2, out-of-range:16:IntDiff=0.2 1, out-of-range:15:Diff=0.09 1, out-of-range:13:Diff=2.53 1
 
 | source | pending reason | count | e.g. |
 |---|---|---|---|
-| columbia | no-usbc | 117 | ABC Masters Yellow Dot; ABC White Dot Limited Edition; Beast |
-| columbia | no-weight-specs | 86 | Aftershock; Backyard Bully; BALLER |
+| columbia | no-usbc | 118 | ABC Masters Yellow Dot; ABC White Dot Limited Edition; Beast |
+| columbia | no-weight-specs | 87 | Aftershock; Backyard Bully; BALLER |
 | hammer | no-weight-specs | 84 | Absolut Curve; Absolut Flip; Absolut Hook |
 | brunswick | no-usbc | 52 | Aura Mystic; Aura Paranormal; Butterflies |
 | ebonite | no-weight-specs | 43 | Big Time Special Edition; Complete NV; Envision Pearl |
@@ -36,7 +46,7 @@ Pending reasons: no-usbc 278, no-weight-specs 302, variant 45, out-of-range:16:R
 | hammer | no-usbc | 27 | Blue Vibe; Cherry Vibe; Cobalt Vibe |
 | brunswick | no-weight-specs | 24 | Crown Jewel; Hearts; Igniter Solid |
 | motiv | no-usbc | 23 | Ascend - Green/Teal/Black; Ascent Pearl - Grn/Prp; Ascent Solid |
-| ebonite | no-usbc | 22 | Angry Birds; Bash - Purple / Yellow / Silver Pearl; Cyclone - Orange / Purple / Red |
+| ebonite | no-usbc | 21 | Angry Birds; Bash - Purple / Yellow / Silver Pearl; Cyclone - Orange / Purple / Red |
 | storm | no-usbc | 14 | ONYX POLYESTER; HUSTLE M-M; RG JESTER CLEAR POLYESTER |
 | columbia | variant | 12 | Aftershock Pearl; Messenger - Black; Messenger - Cherry |
 | dv8 | no-usbc | 10 | Diva Spare; Lime Luster Spare; Misfit - Magenta / Yellow |
