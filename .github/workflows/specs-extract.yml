@@ -24,7 +24,7 @@ permissions:
 concurrency: { group: specs-branch, cancel-in-progress: false }
 jobs:
   extract:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04   # pinned v30.189: ubuntu-latest moves to a new image; revisit after checking
     timeout-minutes: 90
     steps:
       - uses: actions/checkout@v5
@@ -38,11 +38,12 @@ jobs:
         run: |
           node bridge/extract_test.js
           node bridge/approvals_test.js
+          node bridge/rej_test.js
       - name: Extract
         env:
           PAGES: ${{ inputs.pages }}
         run: |
-          ARGS="--index published/index.json --out out --since ${{ inputs.since }} --limit ${{ inputs.limit }}"
+          ARGS="--index published/index.json --out out --since ${{ inputs.since }} --limit ${{ inputs.limit }} --status specs/corrections/status.json"
           if [ -f specs/staging/specs_staging.json ]; then ARGS="$ARGS --previous specs/staging/specs_staging.json"; fi
           if [ -n "${{ inputs.only }}" ]; then ARGS="$ARGS --only ${{ inputs.only }}"; fi
           if [ -n "$PAGES" ]; then node bridge/extract.js $ARGS --pages "$PAGES"; else node bridge/extract.js $ARGS; fi
@@ -64,7 +65,7 @@ jobs:
           gh label create spec-approvals --color 5319e7 --description "Spec bridge approvals" --force
           NUM=$(gh issue list --label spec-approvals --state open --json number --jq '.[0].number')
           if [ -n "$NUM" ]; then gh issue view "$NUM" --json body --jq .body > current.md; fi
-          node bridge/approvals.js render --staging out/specs_staging.json --current current.md --out body.md
+          node bridge/approvals.js render --staging out/specs_staging.json --current current.md --status specs/corrections/status.json --out body.md
           if [ -n "$NUM" ]; then gh issue edit "$NUM" --body-file body.md
           else gh issue create --title "Spec approvals" --label spec-approvals --body-file body.md; fi
           echo "Approvals issue updated: tick boxes there, then run specs-publish." >> "$GITHUB_STEP_SUMMARY"
