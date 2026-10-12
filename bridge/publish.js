@@ -20,7 +20,10 @@
    A rejected ball never publishes specs (approvals and auto rows for it are skipped).
    Every listed ball is published as Status "retired"; one with no specs gets a
    status-only entry (no SpecsByWeight), and a rejected one carries Rejected: true,
-   which build_catalog.js turns into the index flag the app hides. Path: --status,
+   which build_catalog.js turns into the index flag the app hides.
+   v30.185 FIX-1: a correction for a ball no staged row names (the bridge never read it)
+   publishes on its own when it has RG + Diff for a weight; otherwise it is listed in
+   report.correctionNeedsNumbers. Path: --status,
    else status.json beside --overrides, else <specs checkout>/corrections/status.json.
 */
 'use strict';
@@ -64,7 +67,7 @@ function applyOverride(r, o) {
 function publish(staged, decisions, overrides, status) {
   decisions = decisions || []; overrides = overrides || {}; status = status || {};
   const report = { auto: 0, approved: 0, rejected: 0, skippedNoWeights: 0, conflicts: [], corrected: 0, correctionsNotPublished: [],
-    rejectedByYou: 0, statusRetired: 0, statusOnly: 0 };
+    rejectedByYou: 0, statusRetired: 0, statusOnly: 0, correctionOnly: 0, correctionNeedsNumbers: [] };
   const yours = rejectedSet(status);
   const ovFor = id => {
     const o = overrides[id];
@@ -105,6 +108,18 @@ function publish(staged, decisions, overrides, status) {
     if (new Set(list.map(sig)).size > 1) { report.conflicts.push(id); continue; }
     specs[id] = list[0];
     if (list[0].Corrected) report.corrected++;
+  }
+  /* v30.185 FIX-1: a ball the bridge never read (no staged row names it) publishes from your
+     correction alone, once that correction has RG and Diff for at least one weight. */
+  const read = new Set();
+  staged.forEach(r => { if (r.catalogId) read.add(r.catalogId); (r.candidates || []).forEach(id => read.add(id)); });
+  for (const id of Object.keys(overrides).sort()) {
+    if (specs[id] || read.has(id) || yours.has(id)) continue;
+    const o = ovFor(id); if (!o) continue;
+    const e = toSpecsEntry(applyOverride({ specs: {} }, o));
+    if (!Object.keys(e.SpecsByWeight).length) { report.correctionNeedsNumbers.push(id); continue; }
+    e.Corrected = { source: o.source || 'maker', at: o.at || null, only: true };
+    specs[id] = e; report.correctionOnly++; report.corrected++;
   }
   report.published = Object.keys(specs).length;
   /* v30.185 REJ-1: your discontinued / rejected list */
