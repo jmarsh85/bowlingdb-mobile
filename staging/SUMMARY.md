@@ -8,15 +8,7 @@ Auto-applied by rule: same-name-reapproval 9, colourway 24, majority 1.
 
 | source | pages | ball pages | auto | pending | errors |
 |---|---|---|---|---|---|
-| storm | 1788 | 73 | 56 | 18 | 0 |
-| brunswick | 258 | 258 | 178 | 82 | 0 |
-| hammer | 366 | 196 | 73 | 123 | 3 |
-| dv8 | 126 | 126 | 84 | 42 | 0 |
-| radical | 129 | 129 | 122 | 7 | 0 |
-| track | 181 | 163 | 115 | 50 | 1 |
-| ebonite | 215 | 190 | 123 | 68 | 2 |
-| columbia | 404 | 386 | 170 | 218 | 3 |
-| motiv | 206 | 205 | 167 | 35 | 0 |
+| motiv (kept 204 from last run) | 1 | 1 | 167 | 35 | 0 |
 
 | brand | USBC rows | specs (auto) | pending | 2023+ rows | 2023+ auto |
 |---|---|---|---|---|---|
