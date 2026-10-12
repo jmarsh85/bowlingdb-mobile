@@ -616,6 +616,32 @@ async function extractSource(src, cfg, fetchImpl, limit, log, ctx) {
   return { recs, errors, pages, firstPage };
 }
 
+/* v30.185 REJ-1: balls you rejected or marked discontinued in the app.
+   corrections/status.json on the specs branch (the app writes it, beside overrides.json):
+   { "<catalogId>": { status: "retired", rejected: true?, reason, at } }
+   Rejected balls never return: their staged rows become decision "rejected" (or lose that
+   candidate), so they never reach the approvals issue or publish. Path: --status, else
+   <parent of --out>/corrections/status.json (the specs branch checkout). */
+function readStatusFile(p) {
+  try { return p && fs.existsSync(p) ? (JSON.parse(fs.readFileSync(p, 'utf8')) || {}) : {}; } catch (e) { return {}; }
+}
+function statusPathNear(dir) { return dir ? path.join(path.dirname(path.resolve(dir)), 'corrections', 'status.json') : null; }
+function rejectedSet(st) { return new Set(Object.keys(st || {}).filter(id => st[id] && st[id].rejected)); }
+/* Pure (mutates the rows): returns how many rows were touched. */
+function applyRejections(staged, rej) {
+  let n = 0;
+  if (!rej || !rej.size) return 0;
+  for (const s of staged) {
+    if (s.decision === 'rejected') { n++; continue; }
+    const cands = s.candidates || [], kept = cands.filter(id => !rej.has(id));
+    const own = s.catalogId && rej.has(s.catalogId);
+    if (!own && kept.length === cands.length) continue;
+    n++; s.candidates = kept;
+    if (own || (!s.catalogId && !kept.length)) { s.decision = 'rejected'; s.reason = 'rejected-by-you'; }
+  }
+  return n;
+}
+
 async function main(argv, fetchImpl, log = s => process.stdout.write(s + '\n')) {
   const arg = k => { const i = argv.indexOf('--' + k); return i >= 0 ? argv[i + 1] : null; };
   const cfg = JSON.parse(fs.readFileSync(arg('sources') || path.join(__dirname, 'sources.json'), 'utf8'));
@@ -693,6 +719,9 @@ async function main(argv, fetchImpl, log = s => process.stdout.write(s + '\n')) 
     const f = prevPages && path.join(prevPages, r.page + '.json');
     if (f && fs.existsSync(f)) fs.copyFileSync(f, path.join(out, 'pages', r.page + '.json')); else r.page = null;
   }
+  /* v30.185 REJ-1: rows for balls you rejected step aside before conflicts are settled */
+  const stPath = arg('status') || statusPathNear(out), rejected = rejectedSet(readStatusFile(stPath));
+  const rejRows = applyRejections(staged, rejected);
   resolveConflicts(staged);
   staged.sort((a, b) => (a.brand + a.title).localeCompare(b.brand + b.title));
   const cov = coverage(rows, staged, since);
@@ -701,6 +730,7 @@ async function main(argv, fetchImpl, log = s => process.stdout.write(s + '\n')) 
   const count = k => staged.filter(s => s.decision === k).length;
   const ruled = {}; staged.filter(s => s.decision === 'auto' && s.rule).forEach(s => { ruled[s.rule] = (ruled[s.rule] || 0) + 1; });
   const L = ['# Spec bridge extract', '', 'Staged ' + staged.length + ' ball pages: **' + count('auto') + ' auto**, ' + count('pending') + ' pending, ' + count('duplicate') + ' duplicate, ' + count('minority') + ' outvoted.', '',
+    'Rejected by you: ' + rejected.size + ' balls on the list' + (stPath && fs.existsSync(stPath) ? '' : ' (no status file found at ' + stPath + ')') + ', ' + rejRows + ' staged rows set aside.', '',
     'Auto-applied by rule: ' + (Object.entries(ruled).map(([k, v]) => k + ' ' + v).join(', ') || 'none') + '.', '',
     '| source | pages | ball pages | auto | pending | errors |', '|---|---|---|---|---|---|'];
   for (const s of sources) { const p = perSource[s.id]; const st = staged.filter(x => x.source === s.id);
@@ -724,5 +754,5 @@ async function main(argv, fetchImpl, log = s => process.stdout.write(s + '\n')) 
 }
 
 module.exports = { plausibleText, cleanTextFields, specBlock, RAW_CAP, pageSnap, pageImages, pageKey, statusFromUrl, statedCoreType, mergeProduct, colourOnly, extraWords, autoTargets, close, parseStormProduct, stormSlug, learnStormPrefixes, stormCandidates, htmlToText, weightTable, kvLines, parseDate, parseCraft, parseShopifyBody, parseMotiv, parseStormListing,
-  verify, matchRec, decide, resolveConflicts, coverage, indexByBrand, titleKey, norm, main };
+  verify, matchRec, decide, resolveConflicts, readStatusFile, statusPathNear, rejectedSet, applyRejections, coverage, indexByBrand, titleKey, norm, main };
 if (require.main === module) main(process.argv.slice(2), globalThis.fetch).catch(e => { console.error(e); process.exit(1); });
