@@ -36,7 +36,7 @@
 'use strict';
 
 /* v30.169: shown in the app header when it differs from the build's EXPECTED_CATALOG_JS */
-var CAT_VERSION  = 'v30.187';
+var CAT_VERSION  = 'v30.188';
 var CAT_BASE     = 'https://raw.githubusercontent.com/jmarsh85/bowlingdb-mobile/dist/';
 var CAT_DB       = 'BowlingDB_Catalog';
 var CAT_DB_VER   = 1;
@@ -2911,14 +2911,34 @@ function fixPicHTML(e) {
         (url ? '<img src="' + esc(url) + '" referrerpolicy="no-referrer" alt="" style="width:100%;height:100%;object-fit:contain">' : '<span style="font-size:11px;color:#888">none</span>') + '</div>' +
       '<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:700;color:var(--t1)">' + label + '</div>' +
         (note ? '<div style="font-size:11px;color:var(--t3);margin:2px 0 6px">' + note + '</div>' : '<div style="height:6px"></div>') +
-        '<div style="display:flex;gap:6px">' + b('Paste', 'catFixPic(\'' + part + '\',\'paste\')') + b('Camera', 'catFixPic(\'' + part + '\',\'camera\')') + b('File', 'catFixPic(\'' + part + '\',\'file\')') +
-        (url ? b('Remove', 'catFixPic(\'' + part + '\',\'remove\')') : '') + '</div></div></div>';
+        '<div style="display:flex;gap:6px">' + b('bowwwl', 'catFixPic(\'' + part + '\',\'bowwwl\')') + b('Paste', 'catFixPic(\'' + part + '\',\'paste\')') + b('Camera', 'catFixPic(\'' + part + '\',\'camera\')') + b('File', 'catFixPic(\'' + part + '\',\'file\')') +
+        (url ? b('Remove', 'catFixPic(\'' + part + '\',\'remove\')') : '') + '</div>' + fixFindHTML(e, part, ck) + '</div></div>';
   };
   return '<div style="font-size:11px;font-weight:700;color:var(--t3);margin:16px 0 2px;text-transform:uppercase;letter-spacing:.5px">Pictures (this phone)</div>' +
     row('ball', 'Ball', cover, null) +
     row('core', 'Core', core, ck.name ? 'Shared by every ' + esc(e.m) + ' ball with the ' + esc(ck.name) + ' core' : 'Core name unknown: kept for this ball only');
 }
 /* Clipboard -> {blob} | {url} | null */
+/* v30.187: Find links, same as the Ball images screen: bowwwl page, maker (catalog source page, else a site
+   search), web image search; the ball row adds a core image search when the core is known. Open in Safari,
+   long-press the picture, Copy, come back, Paste. */
+function fixFindHTML(e, part, ck) {
+  var name = cleanName(e.n), raw = _sheet && _sheet.id === e.i ? _sheet.raw : null, site = MAKER_SITE[brandSlug(e.m)];
+  var a = function (u, t) { return '<a href="' + esc(u) + '" target="_blank" rel="noopener noreferrer" style="color:var(--teal);text-decoration:none">' + t + '</a>'; };
+  var g = function (q) { return 'https://www.google.com/search?tbm=isch&q=' + encodeURIComponent(q); };
+  var core = part === 'core', coreQ = ck.name ? coreBase(ck.name) + ' core' : name + ' core';
+  var maker = !core && raw && /^https:/.test(raw.Source || '') ? raw.Source
+    : site ? 'https://www.google.com/search?q=' + encodeURIComponent('site:' + site + ' ' + (core ? coreQ : name)) : null;
+  return '<div style="font-size:11px;margin-top:6px;color:var(--t3)">Find: ' + a(bowwwlLinks(e.m, name).page, 'bowwwl \u2197') + ' \u00b7 ' +
+    (maker ? a(maker, 'maker \u2197') + ' \u00b7 ' : '') + a(g(e.m + ' ' + (core ? coreQ : name + ' bowling ball')), 'web \u2197') +
+    (!core && ck.name ? ' \u00b7 ' + a(g(e.m + ' ' + coreQ), 'core web \u2197') : '') + '</div>';
+}
+/* bowwwl picture addresses for this ball or core, tried in order (only when you tap). */
+function fixTryBowwwl(e, part, ck) {
+  var list = part === 'ball' ? bowwwlImgCandidates(e.m, cleanName(e.n)) : (ck.name ? bowwwlCoreCandidates(e.m, ck.name) : []);
+  var i = 0, next = function () { if (i >= list.length) return Promise.resolve(null); return imgProbe(list[i++]).then(function (u) { return u || next(); }); };
+  return next();
+}
 function fixClipImage() {
   var cb = typeof navigator !== 'undefined' && navigator.clipboard;
   if (cb && cb.read) return cb.read().then(function (items) {
@@ -2949,6 +2969,15 @@ function catFixPic(part, how) {
   var clearLink = function () { if (part === 'ball') imgPickSet(e.i, null); else coreLinkSet(ck.key, null); };
   var done = function (msg) { fixRender(); if (document.getElementById('cat-sheet-ov')) renderSheet(); if (msg && root.toast) root.toast(msg); };
   if (how === 'remove') { clearLink(); catImgDel(idKey).then(function () { done('Picture removed'); }); return; }
+  if (how === 'bowwwl') {
+    if (part === 'core' && !ck.name) { if (root.toast) root.toast('Core name unknown: use Find, then Paste'); return; }
+    if (root.toast) root.toast('Checking bowwwl\u2026');
+    fixTryBowwwl(e, part, ck).then(function (u) {
+      if (!u) { if (root.toast) root.toast('Not found on bowwwl: try Find, then Paste'); return; }
+      return catImgDel(idKey).then(function () { if (part === 'ball') imgPickSet(e.i, u); else coreLinkSet(ck.key, u); done((part === 'ball' ? 'Ball' : 'Core') + ' picture found on bowwwl'); });
+    });
+    return;
+  }
   var get = how === 'paste' ? fixClipImage() : fixPickFile(how === 'camera');
   get.then(function (got) {
     if (!got) { if (how === 'paste' && root.toast) root.toast('Copy the picture first (long-press it in Safari, Copy)'); return; }
