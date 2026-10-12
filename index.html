@@ -3457,10 +3457,10 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
 /* v30.169: ONE place for the version. The header, the home screen label, the
    page title and backups all read these, so nothing can go stale on an update.
    Bump both lines (and CATALOG_JS_VERSION in catalog.js when it changes). */
-const APP_VERSION = 'v30.188';
+const APP_VERSION = 'v30.189';
 const APP_BUILD_DATE = '2026-10-12';
 /* catalog.js this build expects; an older file on the server shows a warning */
-const EXPECTED_CATALOG_JS = 'v30.188';
+const EXPECTED_CATALOG_JS = 'v30.189';
 function applyAppVersion() {
 const ref = document.getElementById('hdr-build-ref');
 const cat = (typeof window.CATALOG_JS_VERSION === 'string') ? window.CATALOG_JS_VERSION : null;
@@ -28182,7 +28182,7 @@ return `
           ${line('Last check', when(s.lastAttemptAt))}
           ${s.lastError ? `<div style="font-size:11px;color:var(--red);margin:4px 0 6px;line-height:1.4">Last check failed: ${String(s.lastError).replace(/[<>&]/g,'')}</div>` : ''}
           ${s.count ? `<button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="catReviewOpen()">Review suggested matches</button><button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="catAuditOpen()">Check linked balls</button>` : ''}
-          <button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="if(typeof catApprovalsOpen==='function')catApprovalsOpen()">Spec approvals</button><button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="if(typeof catSpecReviewOpen==='function')catSpecReviewOpen()">Review my specs</button><button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="if(typeof catImagesOpen==='function')catImagesOpen()">Ball images</button><button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="if(typeof catDiscOpen==='function')catDiscOpen()">Discontinued &amp; rejected</button><button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="if(typeof catShortcutHelp==='function')catShortcutHelp()">Copy page text Shortcut</button>
+          <button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="if(typeof catApprovalsOpen==='function')catApprovalsOpen()">Spec approvals</button><button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="if(typeof catSpecReviewOpen==='function')catSpecReviewOpen()">Review my specs</button><button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="if(typeof catImagesOpen==='function')catImagesOpen()">Ball images</button><button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="if(typeof catDiscOpen==='function')catDiscOpen()">Discontinued &amp; rejected</button><button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="if(typeof catCovOpen==='function')catCovOpen()">Coverage</button><button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="if(typeof catShortcutHelp==='function')catShortcutHelp()">Copy page text Shortcut</button>
           ${typeof catImagesStatus === 'function' ? (() => { const im = catImagesStatus(); return `
           <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border1)">
             <label style="display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:13px;color:var(--t1)">
@@ -29984,6 +29984,31 @@ toast('Merged the duplicate Precision into one ball');
 } catch (e) { console.warn('fixPrecisionDup185:', e); }
 }
 
+/* v30.189 one-time fix: tidy the text spec fields on your balls. Collapses repeated spaces
+   (Revenant "Pearl  Reactive") and clears a Box Finish that is only a 5-digit number, a
+   spreadsheet date left by an old import (Hustle INK "44792"). Runs once; logs what changed. */
+function fixBallText189() {
+const FLAG = 'bowlingdb_fix189_balltext';
+try {
+if (localStorage.getItem(FLAG)) return;
+const fields = ['BallName', 'Coverstock', 'CoverName', 'CoreShort', 'CoreType', 'BoxFinish', 'MFG', 'RGDiff'];
+const log = [];
+(db.balls || []).forEach(b => {
+fields.forEach(k => {
+if (typeof b[k] !== 'string') return;
+const t = b[k].replace(/\s+/g, ' ').trim();
+if (t !== b[k]) { log.push(b.BallName + ' ' + k + ': "' + b[k] + '" -> "' + t + '"'); b[k] = t; }
+});
+if (typeof b.BoxFinish === 'string' && /^\d{5}$/.test(b.BoxFinish)) {
+log.push(b.BallName + ' BoxFinish: "' + b.BoxFinish + '" cleared (spreadsheet date, not a finish)');
+b.BoxFinish = null; if (b.SpecSource) delete b.SpecSource.BoxFinish;
+}
+});
+if (log.length) { saveDB(); toast('Tidied ' + log.length + ' ball field' + (log.length === 1 ? '' : 's')); }
+localStorage.setItem(FLAG, log.length ? log.join(' | ') : 'nothing to tidy');
+} catch (e) { console.warn('fixBallText189:', e); }
+}
+
 document.addEventListener('DOMContentLoaded', async ()=>{
 
 
@@ -30006,7 +30031,7 @@ renderHome();
 renderNavGrid();
 
 
-loadScoringData().then(() => { renderHome(); fixPrecisionDup185(); }).catch(() => {});
+loadScoringData().then(() => { renderHome(); fixPrecisionDup185(); fixBallText189(); }).catch(() => {});
 
 
 warmBallImgCache().then(() => {
