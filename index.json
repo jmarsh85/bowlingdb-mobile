@@ -18757,10 +18757,12 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "columbia-300-command",
   "k": "columbia300|command",
   "m": "Columbia 300",
   "n": "Command",
+  "s": 1,
   "t": false,
   "y": "2020"
  },
@@ -20273,7 +20275,6 @@
   "k": "columbia300|messengertec",
   "m": "Columbia 300",
   "n": "Messenger TEC",
-  "s": 1,
   "t": false,
   "y": "2000"
  },
@@ -20667,7 +20668,6 @@
   "k": "columbia300|nitroussilverblack",
   "m": "Columbia 300",
   "n": "Nitrous Silver/Black",
-  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -23033,12 +23033,10 @@
  },
  {
   "c": null,
-  "cv": "S",
   "i": "columbia-300-throw-down",
   "k": "columbia300|throwdown",
   "m": "Columbia 300",
   "n": "Throw Down",
-  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -28628,6 +28626,7 @@
   "k": "ebonite|lanebreaker",
   "m": "Ebonite",
   "n": "Lane Breaker",
+  "s": 1,
   "t": false,
   "y": "2009"
  },
@@ -29496,7 +29495,6 @@
   "k": "ebonite|missionunknownblack",
   "m": "Ebonite",
   "n": "Mission Unknown Black",
-  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -29506,7 +29504,6 @@
   "k": "ebonite|missionunknowngold",
   "m": "Ebonite",
   "n": "Mission Unknown Gold",
-  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -29516,7 +29513,6 @@
   "k": "ebonite|missionunknownred",
   "m": "Ebonite",
   "n": "Mission Unknown Red",
-  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -36070,10 +36066,12 @@
  },
  {
   "c": null,
+  "cv": "S",
   "i": "hammer-black-widow-3-0",
   "k": "hammer|blackwidow30",
   "m": "Hammer",
   "n": "Black Widow (3.0)",
+  "s": 1,
   "t": false,
   "y": "2024"
  },
@@ -36405,13 +36403,10 @@
  },
  {
   "c": null,
-  "co": "a",
-  "cv": "P",
   "i": "hammer-black-widow-ghost-pearl",
   "k": "hammer|blackwidowghostpearl",
   "m": "Hammer",
   "n": "Black Widow Ghost Pearl",
-  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -70572,10 +70567,13 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "H",
   "i": "track-inc-920t",
   "k": "trackinc|920t",
   "m": "Track Inc.",
   "n": "920T",
+  "s": 1,
   "t": false,
   "y": "2010"
  },
@@ -71548,12 +71546,10 @@
  },
  {
   "c": null,
-  "cv": "H",
   "i": "track-inc-legion",
   "k": "trackinc|legion",
   "m": "Track Inc.",
   "n": "Legion",
-  "s": 1,
   "t": false,
   "y": "2006"
  },
@@ -72563,10 +72559,12 @@
  },
  {
   "c": null,
+  "cv": "P",
   "i": "track-inc-sensor",
   "k": "trackinc|sensor",
   "m": "Track Inc.",
   "n": "Sensor",
+  "s": 1,
   "t": false,
   "y": "1994"
  },

@@ -3,7 +3,7 @@
   "Aliases": [],
   "BallName": "3D Offset Assault",
   "CatalogID": "hammer-3d-offset-assault",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "High Rev Offset",
@@ -80,7 +80,7 @@
   "Aliases": [],
   "BallName": "3D Offset Attack",
   "CatalogID": "hammer-3d-offset-attack",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "High Rev Offset",
@@ -157,7 +157,7 @@
   "Aliases": [],
   "BallName": "3D Offset Hybrid",
   "CatalogID": "hammer-3d-offset-hybrid",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "High Rev Offset",
@@ -906,7 +906,7 @@
   "Aliases": [],
   "BallName": "Anger Black-Red-Caramel",
   "CatalogID": "hammer-anger-black-red-caramel",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Modified Infamous",
@@ -983,7 +983,7 @@
   "Aliases": [],
   "BallName": "Anger Solid",
   "CatalogID": "hammer-anger-solid",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Modified Infamous",
@@ -1060,7 +1060,7 @@
   "Aliases": [],
   "BallName": "Arctic Vibe",
   "CatalogID": "hammer-arctic-vibe",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Vibe",
@@ -2731,7 +2731,7 @@
   "Aliases": [],
   "BallName": "Black Pearl Urethane Hammer (78D)",
   "CatalogID": "hammer-black-pearl-urethane-hammer-78d",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "LED",
@@ -3000,7 +3000,7 @@
   "Aliases": [],
   "BallName": "Black Widow (2.0)",
   "CatalogID": "hammer-black-widow-2-0",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Gas Mask",
@@ -3125,7 +3125,7 @@
   "Aliases": [],
   "BallName": "Black Widow (2.0 Hybrid)",
   "CatalogID": "hammer-black-widow-2-0-hybrid",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Gas Mask",
@@ -3394,20 +3394,23 @@
   "Aliases": [],
   "BallName": "Black Widow (3.0)",
   "CatalogID": "hammer-black-widow-3-0",
-  "Checked": null,
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
-   "Name": null,
+   "Name": "Gas Mask",
    "Type": null
   },
   "Cover": {
-   "Finish": null,
+   "Finish": "500, 1000, 2000 Siaair Micro Pad",
    "Name": null,
-   "Type": null
+   "Type": "Solid Reactive"
   },
-  "DateReleased": null,
+  "DateReleased": "2024-01-25",
   "FieldSources": {
    "BallName": "usbc",
+   "Core": "mfg",
+   "Cover": "mfg",
+   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -3422,8 +3425,34 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": null,
-  "SpecsByWeight": {},
+  "Source": "https://hammerbowling.com/products/black-widow-3-0",
+  "SpecsByWeight": {
+   "12": {
+    "Diff": 0.043,
+    "IntDiff": 0.011,
+    "RG": 2.612
+   },
+   "13": {
+    "Diff": 0.043,
+    "IntDiff": 0.011,
+    "RG": 2.589
+   },
+   "14": {
+    "Diff": 0.056,
+    "IntDiff": 0.016,
+    "RG": 2.5
+   },
+   "15": {
+    "Diff": 0.058,
+    "IntDiff": 0.016,
+    "RG": 2.5
+   },
+   "16": {
+    "Diff": 0.048,
+    "IntDiff": 0.015,
+    "RG": 2.51
+   }
+  },
   "Status": null,
   "USBC": {
    "Approved": true,
@@ -3490,7 +3519,7 @@
   "Aliases": [],
   "BallName": "Black Widow (3.0 Dynasty)",
   "CatalogID": "hammer-black-widow-3-0-dynasty",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Gas Mask",
@@ -5199,23 +5228,20 @@
   "Aliases": [],
   "BallName": "Black Widow Ghost Pearl",
   "CatalogID": "hammer-black-widow-ghost-pearl",
-  "Checked": "2026-10-11",
+  "Checked": null,
   "Colorway": null,
   "Core": {
-   "Name": "Gas Mask",
-   "Type": "Asymmetrical"
+   "Name": null,
+   "Type": null
   },
   "Cover": {
    "Finish": null,
-   "Name": "Aggression Pearl",
-   "Type": "Pearl Reactive"
+   "Name": null,
+   "Type": null
   },
-  "DateReleased": "2021-11-19",
+  "DateReleased": null,
   "FieldSources": {
    "BallName": "usbc",
-   "Core": "mfg",
-   "Cover": "mfg",
-   "RG": "mfg",
    "USBC": "usbc"
   },
   "Images": {
@@ -5230,34 +5256,8 @@
    "HookRating": null,
    "PerfectScaleVal": null
   },
-  "Source": "https://hammerbowling.com/products/black-widow-ghost-pearl",
-  "SpecsByWeight": {
-   "12": {
-    "Diff": 0.043,
-    "IntDiff": 0.011,
-    "RG": 2.612
-   },
-   "13": {
-    "Diff": 0.043,
-    "IntDiff": 0.011,
-    "RG": 2.589
-   },
-   "14": {
-    "Diff": 0.056,
-    "IntDiff": 0.016,
-    "RG": 2.5
-   },
-   "15": {
-    "Diff": 0.058,
-    "IntDiff": 0.016,
-    "RG": 2.5
-   },
-   "16": {
-    "Diff": 0.048,
-    "IntDiff": 0.015,
-    "RG": 2.51
-   }
-  },
+  "Source": null,
+  "SpecsByWeight": {},
   "Status": null,
   "USBC": {
    "Approved": true,
@@ -6236,7 +6236,7 @@
   "Aliases": [],
   "BallName": "Black Widow (Mania)",
   "CatalogID": "hammer-black-widow-mania",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Gas Mask",
@@ -8473,7 +8473,7 @@
   "Aliases": [],
   "BallName": "Black Widow Spare +",
   "CatalogID": "hammer-black-widow-spare-plus",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Gas Mask",
@@ -8752,7 +8752,7 @@
   "Aliases": [],
   "BallName": "(Black Widow) Tour V1",
   "CatalogID": "hammer-black-widow-tour-v1",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Gas Mask Low Diff",
@@ -9069,7 +9069,7 @@
   "Aliases": [],
   "BallName": "Black Widow Urethane",
   "CatalogID": "hammer-black-widow-urethane",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Gas Mask",
@@ -10058,7 +10058,7 @@
   "Aliases": [],
   "BallName": "Black Widow Viz-A-Ball",
   "CatalogID": "hammer-black-widow-viz-a-ball",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Gas Mask",
@@ -10711,7 +10711,7 @@
   "Aliases": [],
   "BallName": "Bubblegum Vibe",
   "CatalogID": "hammer-bubblegum-vibe",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Vibe",
@@ -11230,7 +11230,7 @@
   "Aliases": [],
   "BallName": "Dark Web",
   "CatalogID": "hammer-dark-web",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Modified Spheroid",
@@ -11307,7 +11307,7 @@
   "Aliases": [],
   "BallName": "Dark Web Hybrid",
   "CatalogID": "hammer-dark-web-hybrid",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Modified Spheroid",
@@ -11528,7 +11528,7 @@
   "Aliases": [],
   "BallName": "Deep Ocean Vibe",
   "CatalogID": "hammer-deep-ocean-vibe",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Vibe",
@@ -12527,7 +12527,7 @@
   "Aliases": [],
   "BallName": "Envy",
   "CatalogID": "hammer-envy",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Launcher",
@@ -12700,7 +12700,7 @@
   "Aliases": [],
   "BallName": "Envy Tour",
   "CatalogID": "hammer-envy-tour",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Obsession Tour",
@@ -12777,7 +12777,7 @@
   "Aliases": [],
   "BallName": "Envy Tour Pearl",
   "CatalogID": "hammer-envy-tour-pearl",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Obsession Tour",
@@ -13046,7 +13046,7 @@
   "Aliases": [],
   "BallName": "Extreme Envy",
   "CatalogID": "hammer-extreme-envy",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Launcher LRG",
@@ -13315,7 +13315,7 @@
   "Aliases": [],
   "BallName": "Fallout",
   "CatalogID": "hammer-fallout",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Aftermath",
@@ -13440,7 +13440,7 @@
   "Aliases": [],
   "BallName": "Fierce Phobia",
   "CatalogID": "hammer-fierce-phobia",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Phobia",
@@ -13709,7 +13709,7 @@
   "Aliases": [],
   "BallName": "Fugitive",
   "CatalogID": "hammer-fugitive",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Fugitive",
@@ -13786,7 +13786,7 @@
   "Aliases": [],
   "BallName": "Fugitive Solid",
   "CatalogID": "hammer-fugitive-solid",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Fugitive",
@@ -13863,7 +13863,7 @@
   "Aliases": [],
   "BallName": "Full Effect",
   "CatalogID": "hammer-full-effect",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Huntsman",
@@ -14372,7 +14372,7 @@
   "Aliases": [],
   "BallName": "Gauntlet Fury",
   "CatalogID": "hammer-gauntlet-fury",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Gauntlet",
@@ -15121,7 +15121,7 @@
   "Aliases": [],
   "BallName": "Hammerhead",
   "CatalogID": "hammer-hammerhead",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Spheroid",
@@ -15198,7 +15198,7 @@
   "Aliases": [],
   "BallName": "Hammerhead Pearl",
   "CatalogID": "hammer-hammerhead-pearl",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Spheroid",
@@ -15563,7 +15563,7 @@
   "Aliases": [],
   "BallName": "Hazmat",
   "CatalogID": "hammer-hazmat",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Hazmat",
@@ -15640,7 +15640,7 @@
   "Aliases": [],
   "BallName": "Hazmat Pearl",
   "CatalogID": "hammer-hazmat-pearl",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Hazmat",
@@ -15717,7 +15717,7 @@
   "Aliases": [],
   "BallName": "Hazmat Solid",
   "CatalogID": "hammer-hazmat-solid",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Hazmat",
@@ -16466,7 +16466,7 @@
   "Aliases": [],
   "BallName": "Infamous",
   "CatalogID": "hammer-infamous",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Infamous",
@@ -17551,7 +17551,7 @@
   "Aliases": [],
   "BallName": "Maximum Effect",
   "CatalogID": "hammer-maximum-effect",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Huntsman",
@@ -19356,7 +19356,7 @@
   "Aliases": [],
   "BallName": "NU 2.0",
   "CatalogID": "hammer-nu-2-0",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "LED",
@@ -19433,7 +19433,7 @@
   "Aliases": [],
   "BallName": "NU Blue Hammer",
   "CatalogID": "hammer-nu-blue-hammer",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "LED",
@@ -19558,7 +19558,7 @@
   "Aliases": [],
   "BallName": "Obsession",
   "CatalogID": "hammer-obsession",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Obsession",
@@ -19635,7 +19635,7 @@
   "Aliases": [],
   "BallName": "Obsession Tour",
   "CatalogID": "hammer-obsession-tour",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Obsession Tour",
@@ -19712,7 +19712,7 @@
   "Aliases": [],
   "BallName": "Ocean Vibe",
   "CatalogID": "hammer-ocean-vibe",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Vibe",
@@ -20183,7 +20183,7 @@
   "Aliases": [],
   "BallName": "Pure Envy",
   "CatalogID": "hammer-pure-envy",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Launcher",
@@ -20260,7 +20260,7 @@
   "Aliases": [],
   "BallName": "Pure Hammer",
   "CatalogID": "hammer-pure-hammer",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "2-piece",
@@ -20491,7 +20491,7 @@
   "Aliases": [],
   "BallName": "Purple Pearl Urethane 78D",
   "CatalogID": "hammer-purple-pearl-urethane-78d",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "(2)",
@@ -20568,7 +20568,7 @@
   "Aliases": [],
   "BallName": "Purple Pearl Urethane Hammer",
   "CatalogID": "hammer-purple-pearl-urethane-hammer",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "(2)",
@@ -20645,7 +20645,7 @@
   "Aliases": [],
   "BallName": "Purple Pearl Urethane Hammer (Except Serial #'s Starting with a 6 or 7)",
   "CatalogID": "hammer-purple-pearl-urethane-hammer-except-serial-s-starting-with-a-6-or-7",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "LED",
@@ -20722,7 +20722,7 @@
   "Aliases": [],
   "BallName": "Purple Pearl Urethane Hammer (Korea)",
   "CatalogID": "hammer-purple-pearl-urethane-hammer-korea",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "(2)",
@@ -20799,7 +20799,7 @@
   "Aliases": [],
   "BallName": "Purple Pearl Urethane Hammer (Purple Pin)",
   "CatalogID": "hammer-purple-pearl-urethane-hammer-purple-pin",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "LED",
@@ -20972,7 +20972,7 @@
   "Aliases": [],
   "BallName": "Radioactive Vibe",
   "CatalogID": "hammer-radioactive-vibe",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Vibe",
@@ -21299,7 +21299,7 @@
   "Aliases": [],
   "BallName": "Raw Hammer Black",
   "CatalogID": "hammer-raw-hammer-black",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Raw Hammer",
@@ -21434,7 +21434,7 @@
   "Aliases": [],
   "BallName": "Raw Hammer Black/Grey",
   "CatalogID": "hammer-raw-hammer-black-grey",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Raw Hammer",
@@ -21521,7 +21521,7 @@
   "Aliases": [],
   "BallName": "Raw Hammer Black/Purple/Teal",
   "CatalogID": "hammer-raw-hammer-black-purple-teal",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Raw Hammer",
@@ -21656,7 +21656,7 @@
   "Aliases": [],
   "BallName": "Raw Hammer Blue/Silver/White",
   "CatalogID": "hammer-raw-hammer-blue-silver-white",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Raw Hammer",
@@ -22031,7 +22031,7 @@
   "Aliases": [],
   "BallName": "Raw Hammer Orange/Black",
   "CatalogID": "hammer-raw-hammer-orange-black",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Raw Hammer",
@@ -22214,7 +22214,7 @@
   "Aliases": [],
   "BallName": "Raw Hammer Purple/Pink/Silver",
   "CatalogID": "hammer-raw-hammer-purple-pink-silver",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Raw Hammer",
@@ -22349,7 +22349,7 @@
   "Aliases": [],
   "BallName": "Raw Hammer Red/White/Purple",
   "CatalogID": "hammer-raw-hammer-red-white-purple",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Raw Hammer",
@@ -22484,7 +22484,7 @@
   "Aliases": [],
   "BallName": "Raw Hammer Smoke-Blue-Gold",
   "CatalogID": "hammer-raw-hammer-smoke-blue-gold",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Raw Hammer",
@@ -23339,7 +23339,7 @@
   "Aliases": [],
   "BallName": "Redemption Hybrid",
   "CatalogID": "hammer-redemption-hybrid",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Redemption",
@@ -23464,7 +23464,7 @@
   "Aliases": [],
   "BallName": "Redemption Pearl",
   "CatalogID": "hammer-redemption-pearl",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Redemption",
@@ -23541,7 +23541,7 @@
   "Aliases": [],
   "BallName": "Redemption Solid",
   "CatalogID": "hammer-redemption-solid",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Redemption",
@@ -23714,7 +23714,7 @@
   "Aliases": [],
   "BallName": "Rhodman Pearl",
   "CatalogID": "hammer-rhodman-pearl",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Spheroid",
@@ -23839,7 +23839,7 @@
   "Aliases": [],
   "BallName": "Rip'D",
   "CatalogID": "hammer-rip-d",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Rip'D",
@@ -24060,7 +24060,7 @@
   "Aliases": [],
   "BallName": "Rip'D Solid",
   "CatalogID": "hammer-rip-d-solid",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Rip'D",
@@ -24857,7 +24857,7 @@
   "Aliases": [],
   "BallName": "Scorpion",
   "CatalogID": "hammer-scorpion",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "LED 2.0",
@@ -24934,7 +24934,7 @@
   "Aliases": [],
   "BallName": "Scorpion Low Flare",
   "CatalogID": "hammer-scorpion-low-flare",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "LED 3.0 Low Flare",
@@ -25011,7 +25011,7 @@
   "Aliases": [],
   "BallName": "Scorpion Sting",
   "CatalogID": "hammer-scorpion-sting",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "LED 3.0",
@@ -25088,7 +25088,7 @@
   "Aliases": [],
   "BallName": "Scorpion Strike",
   "CatalogID": "hammer-scorpion-strike",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "LED 3.0",
@@ -25309,7 +25309,7 @@
   "Aliases": [],
   "BallName": "Sling Blade",
   "CatalogID": "hammer-sling-blade",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "2-piece",
@@ -25396,7 +25396,7 @@
   "Aliases": [],
   "BallName": "Spawn",
   "CatalogID": "hammer-spawn",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Gauntlet",
@@ -25761,7 +25761,7 @@
   "Aliases": [],
   "BallName": "Statement Hybrid",
   "CatalogID": "hammer-statement-hybrid",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Statement",
@@ -25886,7 +25886,7 @@
   "Aliases": [],
   "BallName": "Statement Pearl",
   "CatalogID": "hammer-statement-pearl",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Statement",
@@ -26011,7 +26011,7 @@
   "Aliases": [],
   "BallName": "Statement Solid",
   "CatalogID": "hammer-statement-solid",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Statement",
@@ -31608,7 +31608,7 @@
   "Aliases": [],
   "BallName": "Web",
   "CatalogID": "hammer-web",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Spheroid",
@@ -31733,7 +31733,7 @@
   "Aliases": [],
   "BallName": "Web M.B.",
   "CatalogID": "hammer-web-m-b",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Spheroid Asymmetrical",
@@ -31810,7 +31810,7 @@
   "Aliases": [],
   "BallName": "Web Pearl",
   "CatalogID": "hammer-web-pearl",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Spheroid",
@@ -31935,7 +31935,7 @@
   "Aliases": [],
   "BallName": "Web Tour Edition",
   "CatalogID": "hammer-web-tour-edition",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Spheroid TE",
@@ -32012,7 +32012,7 @@
   "Aliases": [],
   "BallName": "Web Tour Edition Hybrid",
   "CatalogID": "hammer-web-tour-edition-hybrid",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Spheroid TE",
@@ -33529,7 +33529,7 @@
   "Aliases": [],
   "BallName": "Zero Mercy Hybrid",
   "CatalogID": "hammer-zero-mercy-hybrid",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Super Offset",
@@ -33606,7 +33606,7 @@
   "Aliases": [],
   "BallName": "Zero Mercy Pearl",
   "CatalogID": "hammer-zero-mercy-pearl",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Super Offset",
@@ -33683,7 +33683,7 @@
   "Aliases": [],
   "BallName": "Zero Mercy Solid",
   "CatalogID": "hammer-zero-mercy-solid",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Super Offset",
@@ -33808,7 +33808,7 @@
   "Aliases": [],
   "BallName": "Zero Mercy Tour",
   "CatalogID": "hammer-zero-mercy-tour",
-  "Checked": "2026-10-11",
+  "Checked": "2026-10-12",
   "Colorway": null,
   "Core": {
    "Name": "Obsession Tour",
