@@ -569,6 +569,9 @@ host.insertAdjacentHTML('beforeend',`<!-- ── DEVKIT OVERLAY ─────�
           <button class="dk-tool-btn" onclick="dkBallChangeStep2DryRun()">Ball-Change Step 2 Join</button>
           <button class="dk-tool-btn" onclick="dkBallMotionProfileInspector()">Ball Motion Profile Inspector</button>
 
+          <div class="dk-tool-group">Data integrity</div>
+          <button class="dk-tool-btn" onclick="dkFrame10Scan()" title="Read-only: games whose frame-10 running total does not match the saved score">🔎 Frame-10 total check — read only</button>
+
           <div class="dk-tool-group">Diagnostics</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
             <button class="dk-tool-btn" style="margin-top:0" onclick="dkIDBDump()">Dump IDB</button>
@@ -1093,6 +1096,44 @@ if (result) result.textContent = 'Step 2 join dry run failed:\n'+ (e && e.messag
 
 
 
+/* v30.189 DATA-3: games whose frame-10 running total does not match the saved score (read only).
+   NoTap games compare NoTapRunningTotal. Score-only games (no frames) are skipped. Also lists games
+   with frames but not exactly 10 of them. Fixing them waits on the PinPal export. */
+function dkFrame10Rows(games, frames, series, leagues) {
+var byGame = {}; (frames || []).forEach(function (f) { (byGame[f.GameID] = byGame[f.GameID] || []).push(f); });
+var se = {}; (series || []).forEach(function (s) { se[s.SeriesID] = s; });
+var lg = {}; (leagues || []).forEach(function (l) { lg[l.LeagueID] = l.LeagueName; });
+var out = [];
+(games || []).forEach(function (g) {
+var fs = byGame[g.GameID]; if (!fs || !fs.length) return;
+var s = se[g.SeriesID] || {}, nt = !!(g.NoTap || s.NoTap);
+var f10 = fs.filter(function (f) { return f.FrameNumber === 10; })[0];
+var rt = f10 ? f10.RunningTotal : null, nrt = f10 ? f10.NoTapRunningTotal : null;
+var score = g.FinalScore != null ? g.FinalScore : g.GameTotal;
+var ok = fs.length === 10 && (rt === score || (nt && nrt === score));
+if (ok) return;
+out.push({ gameID: g.GameID, seriesID: g.SeriesID, date: g.DateBowled || s.DateBowled || '', league: lg[g.LeagueID || s.LeagueID] || '', game: g.GameNumber,
+frames: fs.length, f10: rt, f10NoTap: nt ? nrt : null, score: score, noTap: nt });
+});
+return out.sort(function (a, b) { return String(a.date).localeCompare(String(b.date)) || a.game - b.game; });
+}
+async function dkFrame10Scan() {
+var result = dkResultBox();
+if (result) result.textContent = 'Scanning games...';
+try {
+await loadScoringData();
+var rows = dkFrame10Rows(db.games, db.frames, db.series, db.leagues);
+var pad = function (v, n) { v = v == null ? '—' : String(v); return v.length > n ? v.slice(0, n) : v + ' '.repeat(n - v.length); };
+var out = ['FRAME-10 TOTAL CHECK — read only', 'Games with frames whose frame-10 running total is not the saved score' + ' (NoTap games use the NoTap total).', ''];
+out.push(pad('Date', 11) + pad('League', 28) + pad('G', 3) + pad('Frames', 7) + pad('F10', 6) + pad('Saved', 6) + 'GameID');
+rows.forEach(function (r) { out.push(pad(r.date, 11) + pad(r.league, 28) + pad(r.game, 3) + pad(r.frames, 7) + pad(r.f10, 6) + pad(r.score, 6) + r.gameID + (r.noTap ? ' (NoTap total ' + (r.f10NoTap == null ? '—' : r.f10NoTap) + ')' : '')); });
+out.push('', rows.length + ' game' + (rows.length === 1 ? '' : 's') + ' to rebuild from the PinPal export. Nothing was changed.');
+if (result) result.textContent = out.join('\n');
+toast(rows.length ? rows.length + ' games flagged' : 'No mismatches');
+} catch (e) {
+if (result) result.textContent = 'Frame-10 check failed:\n' + (e && e.message ? e.message : e);
+}
+}
 async function dkBallMotionProfileInspector() {
 var result = dkResultBox();
 if (result) result.textContent = 'Computing ball motion profiles...';
