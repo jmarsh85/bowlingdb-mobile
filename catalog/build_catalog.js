@@ -111,7 +111,9 @@ function build(rows, specsByKey, listVersion) {
     if (r.weightLimit) review.weightLimited.push(id);
 
     const specs = specsByKey[id] || specsByKey[mk] || null;
-    if (!specs) review.missingSpecs.push(id);
+    /* v30.185: a status-only entry (your discontinued / rejected list) has no numbers */
+    const hasNums = !!(specs && Object.keys(specs.SpecsByWeight || {}).length);
+    if (!hasNums) review.missingSpecs.push(id);
 
     const entry = {
       CatalogID: id,
@@ -129,6 +131,8 @@ function build(rows, specsByKey, listVersion) {
       Source: (specs && specs.Source) || null,     // v30.159: manufacturer page the specs came from
       Checked: (specs && specs.Checked) || null,   // date the bridge fetched it
       Status: (specs && specs.Status) || null,     // v30.171: 'current' | 'retired' from the maker's site
+      /* v30.185 REJ-1: you rejected this ball in the app (unverifiable / no longer made) */
+      ...(specs && specs.Rejected ? { Rejected: true } : {}),
       USBC: {
         Approved: true,
         ApprovedDate: r.approvalISO,
@@ -141,7 +145,7 @@ function build(rows, specsByKey, listVersion) {
       Ratings: { PerfectScaleVal: null, HookRating: null },
       FieldSources: Object.assign(
         { BallName: 'usbc', USBC: 'usbc' },
-        specs ? { RG: 'mfg', Core: 'mfg', Cover: 'mfg' } : {}
+        hasNums ? { RG: 'mfg', Core: 'mfg', Cover: 'mfg' } : {}
       ),
     };
 
@@ -169,6 +173,8 @@ function build(rows, specsByKey, listVersion) {
     ...(Object.keys(e.SpecsByWeight || {}).length ? { s: 1 } : {}),
     /* v30.171 Add a Ball bubbles: r 1 retired / 0 current (absent = unknown), cv cover class, co core */
     ...(e.Status === 'retired' ? { r: 1 } : e.Status === 'current' ? { r: 0 } : {}),
+    /* v30.185 REJ-1: x 1 = rejected by you; the app never offers it in Add a Ball */
+    ...(e.Rejected ? { x: 1 } : {}),
     ...(coverCode(e.Cover) ? { cv: coverCode(e.Cover) } : {}),
     ...(coreCode(e.Core) ? { co: coreCode(e.Core) } : {}),
   }));
