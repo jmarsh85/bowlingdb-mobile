@@ -14,11 +14,19 @@
    only when that ball publishes (auto or approved); it fills or replaces just the
    fields it names. source "bowwwl" is NEVER published (personal-use data; the app
    keeps those on the device), even if one reaches this file.
+
+   v30.185 REJ-1: corrections/status.json (also written by the app) lists balls you
+   rejected or marked discontinued: { catalogId: { status: "retired", rejected?, reason, at } }.
+   A rejected ball never publishes specs (approvals and auto rows for it are skipped).
+   Every listed ball is published as Status "retired"; one with no specs gets a
+   status-only entry (no SpecsByWeight), and a rejected one carries Rejected: true,
+   which build_catalog.js turns into the index flag the app hides. Path: --status,
+   else status.json beside --overrides, else <specs checkout>/corrections/status.json.
 */
 'use strict';
-const fs = require('fs');
+const fs = require('fs'), path = require('path');
 
-const { cleanTextFields } = require('./extract.js');
+const { cleanTextFields, readStatusFile, statusPathNear, rejectedSet } = require('./extract.js');
 function toSpecsEntry(r) {
   const s = r.specs || {}, sbw = {};
   for (const w of Object.keys(s.weights || {}).sort()) {
@@ -37,6 +45,11 @@ function toSpecsEntry(r) {
     ...(r.status === 'current' || r.status === 'retired' ? { Status: r.status } : {}),
   };
 }
+/* v30.185: catalog entry for a ball that has a status from you but no published specs */
+function statusOnlyEntry() {
+  return { DateReleased: null, Core: { Name: null, Type: null }, Cover: { Name: null, Type: null, Finish: null },
+    SpecsByWeight: {}, Source: null, Checked: null };
+}
 /* Pure: a staged row with a correction merged in (new object; the row is untouched). */
 function applyOverride(r, o) {
   if (!o) return r;
@@ -48,9 +61,11 @@ function applyOverride(r, o) {
 }
 /* decisions (from the approvals issue): [{url, catalogId, action:'approve'|'reject'}]
    Precedence per CatalogID: your approvals > auto. Within a tier, sources must agree or nothing publishes. */
-function publish(staged, decisions, overrides) {
-  decisions = decisions || []; overrides = overrides || {};
-  const report = { auto: 0, approved: 0, rejected: 0, skippedNoWeights: 0, conflicts: [], corrected: 0, correctionsNotPublished: [] };
+function publish(staged, decisions, overrides, status) {
+  decisions = decisions || []; overrides = overrides || {}; status = status || {};
+  const report = { auto: 0, approved: 0, rejected: 0, skippedNoWeights: 0, conflicts: [], corrected: 0, correctionsNotPublished: [],
+    rejectedByYou: 0, statusRetired: 0, statusOnly: 0 };
+  const yours = rejectedSet(status);
   const ovFor = id => {
     const o = overrides[id];
     if (!o) return null;
@@ -71,12 +86,14 @@ function publish(staged, decisions, overrides) {
   };
   for (const d of decisions) {
     if (d.action !== 'approve' || !d.catalogId) continue;
+    if (yours.has(d.catalogId)) { report.rejectedByYou++; continue; }
     const rows = byUrl[d.url] || [];
     if (!rows.length) continue;            // page no longer staged: approval waits
     report.approved++; add(d.catalogId, 'approved', rows[0]);
   }
   for (const r of staged) {
     if (r.decision !== 'auto' || !r.catalogId) continue;
+    if (yours.has(r.catalogId)) { report.rejectedByYou++; continue; }
     if (rejectUrl.has(r.url)) { report.rejected++; continue; }
     report.auto++; add(r.catalogId, 'auto', r);
   }
@@ -90,6 +107,15 @@ function publish(staged, decisions, overrides) {
     if (list[0].Corrected) report.corrected++;
   }
   report.published = Object.keys(specs).length;
+  /* v30.185 REJ-1: your discontinued / rejected list */
+  for (const id of Object.keys(status).sort()) {
+    const st = status[id];
+    if (!st || st.status !== 'retired') continue;
+    if (!specs[id]) { specs[id] = statusOnlyEntry(); report.statusOnly++; }
+    specs[id].Status = 'retired';
+    if (st.rejected) specs[id].Rejected = true;
+    report.statusRetired++;
+  }
   return { specs, report };
 }
 function main(argv) {
@@ -99,12 +125,15 @@ function main(argv) {
   const decisions = decPath && fs.existsSync(decPath) ? JSON.parse(fs.readFileSync(decPath, 'utf8')) : [];
   const ovPath = arg('overrides');
   const overrides = ovPath && fs.existsSync(ovPath) ? JSON.parse(fs.readFileSync(ovPath, 'utf8')) : {};
-  const { specs, report } = publish(staged, decisions, overrides);
+  const stPath = arg('status') || (ovPath ? path.join(path.dirname(ovPath), 'status.json') : statusPathNear(path.dirname(arg('staging'))));
+  const status = readStatusFile(stPath);
+  const { specs, report } = publish(staged, decisions, overrides, status);
+  report.statusFile = fs.existsSync(stPath) ? stPath : 'none (' + stPath + ')';
   if (report.published < 100) { console.error('Refusing to publish: only ' + report.published + ' entries (expected 1000+). Check staging.'); process.exit(1); }
   const sorted = {}; Object.keys(specs).sort().forEach(k => { sorted[k] = specs[k]; });
   fs.writeFileSync(arg('out'), JSON.stringify(sorted, null, 1) + '\n');
   console.log(JSON.stringify(report));
   return report;
 }
-module.exports = { publish, toSpecsEntry, applyOverride, main };
+module.exports = { publish, toSpecsEntry, applyOverride, statusOnlyEntry, main };
 if (require.main === module) main(process.argv.slice(2));
