@@ -36,7 +36,7 @@
 'use strict';
 
 /* v30.169: shown in the app header when it differs from the build's EXPECTED_CATALOG_JS */
-var CAT_VERSION  = 'v30.184';
+var CAT_VERSION  = 'v30.185';
 var CAT_BASE     = 'https://raw.githubusercontent.com/jmarsh85/bowlingdb-mobile/dist/';
 var CAT_DB       = 'BowlingDB_Catalog';
 var CAT_DB_VER   = 1;
@@ -1018,6 +1018,7 @@ var COVER_BUBBLES = [['S', 'Solid'], ['P', 'Pearl'], ['H', 'Hybrid'], ['U', 'Ure
 var CORE_BUBBLES = [['a', 'Asym'], ['s', 'Sym']];
 function discontinuedOf(e, year) {
   if (!e) return null;
+  var _st = stEntry(e.i); if (_st && _st.status === 'retired') return 'retired';   // v30.185: yours (manual or rejected)
   if (e.r === 1) return 'retired';
   if (e.r === 0) return null;
   var y = parseInt(e.y, 10), now = year || new Date().getFullYear();
@@ -1028,6 +1029,7 @@ function bubbleFilter(rows, f, year) {
   var bs = {}; (f.brands || []).forEach(function (b) { bs[norm(b)] = 1; });
   var hasB = (f.brands || []).length, hasC = (f.cover || []).length, hasK = (f.core || []).length;
   return rows.filter(function (e) {
+    if (catIsRejected(e)) return false;   // v30.185: rejected balls are never offered
     if (f.specs && !e.s) return false;
     if (!f.disc && discontinuedOf(e, year)) return false;
     if (hasB && !bs[norm(e.m)]) return false;
@@ -1619,7 +1621,7 @@ function apLoad() {
 function apBuildPages(reset) {
   var q = apQueue();
   var boxes = apParseIssue(_ap.body).map(function (b) { if (b.tok in q) b.ticked = !!q[b.tok]; return b; });
-  var all = apPages(boxes);
+  var all = apPages(boxes).filter(function (p) { return !stIdRejected(p.catalogId); });   // v30.185: rejected balls step out at once
   _ap.allCount = all.length;
   _ap.doneCount = all.filter(function (p) { return p.boxes.some(function (b) { return b.ticked; }); }).length;
   var keep = _ap.pages[_ap.idx] && _ap.pages[_ap.idx].catalogId;
@@ -1725,7 +1727,7 @@ function apRender() {
   var verifyBtn = sourceForBrand(_vb) ? vfySlotHTML(p.catalogId, '<button style="' + BTN_G + 'margin-top:12px;width:100%;padding:10px" onclick="catVerifyNow(\'' + esc(_vb) + '\',\'' + esc(p.catalogId) + '\')">Verify now: re-read the ' + esc(sourceForBrand(_vb)) + ' site</button>') : '';
   var warn = apConflict(p.boxes) ? '<div style="font-size:12px;color:var(--gold);margin-top:10px;line-height:1.45">These approvals disagree, so neither will publish. Keep one.</div>' : '';
   ov.innerHTML = apHeader(sub) + status + filt +
-    '<div style="flex:1;overflow-y:auto;padding:4px 16px 12px">' + head + mineH + cards + warn + crossCheck + verifyBtn + '</div>' + apFooter(true);
+    '<div style="flex:1;overflow-y:auto;padding:4px 16px 12px">' + head + mineH + cards + warn + crossCheck + verifyBtn + apRejectHTML(p.catalogId) + '</div>' + apFooter(true);
   catLoad().then(function (rows) {
     var first = !_ap._rows; _ap._rows = rows;
     var e = byIdIn(rows, p.catalogId), el = document.getElementById('ap-entry');
@@ -2531,6 +2533,285 @@ function apSaveOverride(catalogId, o) {
     });
   });
 }
+/* ---------- v30.185 REJ-1 / DISC-1: reject balls, mark discontinued (LOCKED 2026-10-12) ----------
+   Your list lives in corrections/status.json on the specs branch, beside overrides.json:
+     { "<catalogId>": { status: "retired", rejected: true?, reason: "cant-verify" | "not-made" | "manual", at, n, m } }
+   Rejected (can't verify / no longer made): always discontinued, hidden from Add a Ball entirely,
+   and skipped by every later extract and publish (the bridge reads the same file).
+   Discontinued (manual): shown only with the Discontinued bubble, like a maker's retired ball.
+   Both apply on this device at once (bowlingdb_catalog_status_local, kept in backups); the
+   catalog follows after Publish (specs-publish -> catalog-refresh; index r 1 / x 1).
+   A ball you own stays linked and keeps its catalog specs. */
+var ST_PATH = '/contents/corrections/status.json';
+var ST_LOCAL_KEY = 'bowlingdb_catalog_status_local';
+var ST_REASONS = { 'cant-verify': 'Can\u2019t verify', 'not-made': 'No longer made', manual: 'Marked by you' };
+var _stc = null, _stBusy = null, _stTimer = null, _stErr = null;
+function stToday() { return new Date(env.now()).toISOString().slice(0, 10); }
+/* { all: {id: entry}, pending: {id: stamp}, cleared: {id: {at, rejected}} } */
+function stLocal() {
+  if (_stc) return _stc;
+  var l = apLS(), o = null;
+  try { o = JSON.parse((l && l.getItem(ST_LOCAL_KEY)) || 'null'); } catch (e) {}
+  o = o && typeof o === 'object' ? o : {};
+  o.all = o.all || {}; o.pending = o.pending || {}; o.cleared = o.cleared || {};
+  _stc = o; return o;
+}
+function stSaveLocal(o) { _stc = o; var l = apLS(); if (l) try { l.setItem(ST_LOCAL_KEY, JSON.stringify(o)); } catch (e) {} }
+function stEntry(id) { return id ? (stLocal().all[id] || null) : null; }
+/* Rejected: your entry decides; with none, the catalog's x flag (unless you restored it here). */
+function catIsRejected(e) {
+  if (!e) return false;
+  var o = stLocal(), st = o.all[e.i];
+  if (st) return !!st.rejected;
+  if (o.cleared[e.i]) return false;
+  return e.x === 1;
+}
+function stIdRejected(id) { var st = stEntry(id); return !!(st && st.rejected); }
+/* entry null clears it. Several at once: pass save=false and call stSaveLocal(stLocal()). */
+function stSet(id, entry, save) {
+  var o = stLocal();
+  if (entry) { o.all[id] = entry; delete o.cleared[id]; }
+  else { var was = o.all[id]; delete o.all[id]; o.cleared[id] = { at: stToday(), rejected: was ? !!was.rejected : true }; }
+  o.pending[id] = env.now() + Math.random();
+  if (save !== false) stSaveLocal(o);
+}
+/* Pure: repo map + this device's pending changes -> the map to write (keys sorted). */
+function stMerge(repo, local) {
+  var next = Object.assign({}, repo || {});
+  Object.keys((local && local.pending) || {}).forEach(function (id) {
+    var e = local.all[id];
+    if (e) next[id] = e; else delete next[id];
+  });
+  var out = {}; Object.keys(next).sort().forEach(function (k) { out[k] = next[k]; });
+  return out;
+}
+function stReadRepo() {
+  return apGH(ST_PATH + '?ref=specs').then(function (f) {
+    var j = {}; try { j = JSON.parse(b64d(f.content) || '{}') || {}; } catch (e) {}
+    return { sha: f.sha, map: j };
+  }).catch(function (e) { if (e.status === 404) return { sha: null, map: {} }; throw e; });
+}
+/* Reads the repo copy, writes your pending changes, then mirrors the result here. */
+function stSync() {
+  if (_stBusy) return _stBusy;
+  if (!apToken()) return Promise.resolve({ sent: 0, noToken: true });
+  if (root.navigator && root.navigator.onLine === false) return Promise.resolve({ sent: 0, offline: true });
+  var o = stLocal(), stamps = Object.assign({}, o.pending), ids = Object.keys(stamps);
+  _stBusy = stReadRepo().then(function (repo) {
+    var next = stMerge(repo.map, o);
+    var put = !ids.length ? Promise.resolve() : apGH(ST_PATH, { method: 'PUT', body: Object.assign({
+      message: 'catalog status: ' + ids.length + ' ball' + (ids.length === 1 ? '' : 's') + ' (rejected / discontinued)',
+      content: b64e(JSON.stringify(next, null, 1) + '\n'), branch: 'specs' }, repo.sha ? { sha: repo.sha } : {}) });
+    return put.then(function () {
+      var cur = stLocal(), all = {};
+      ids.forEach(function (id) { if (cur.pending[id] === stamps[id]) delete cur.pending[id]; });   // taps made while sending stay pending
+      Object.keys(next).forEach(function (id) { all[id] = next[id]; });
+      Object.keys(cur.pending).forEach(function (id) { if (cur.all[id]) all[id] = cur.all[id]; else delete all[id]; });
+      cur.all = all; stSaveLocal(cur); _stErr = null;
+      return { sent: ids.length };
+    });
+  }).then(function (r) { _stBusy = null; return r; }, function (e) {
+    _stBusy = null;
+    _stErr = e.status === 401 ? 'GitHub rejected the token (401).' : e.status === 403 || e.status === 404 ? 'The token needs Contents read and write on this repo (' + e.status + ').'
+      : e.status === 409 || e.status === 422 ? 'GitHub copy changed while sending; it will retry.' : 'Not sent yet (' + (e.status ? 'GitHub ' + e.status : 'offline') + ').';
+    throw e;
+  });
+  return _stBusy;
+}
+function stQueueSync() {
+  clearTimeout(_stTimer);
+  _stTimer = setTimeout(function () { stSync().then(dcPaintIfOpen, dcPaintIfOpen); }, 1200);
+}
+/* Restored balls: forget the local override once the catalog no longer flags them. */
+function stPrune(rows) {
+  var o = stLocal(), ch = false;
+  Object.keys(o.cleared).forEach(function (id) { var e = byIdIn(rows, id); if (!e || e.x !== 1) { delete o.cleared[id]; ch = true; } });
+  if (ch) stSaveLocal(o);
+}
+
+/* --- approvals: Reject this ball --- */
+function apRejectHTML(id) {
+  if (_ap.rejAsk !== id) return '<button style="' + BTN_G + 'margin-top:12px;width:100%;padding:10px;color:var(--red)" onclick="catApprovalsRejectAsk(true)">Reject this ball\u2026</button>';
+  return '<div style="margin-top:12px;padding:12px;border-radius:12px;border:1px solid var(--red)">' +
+    '<div style="font-size:14px;font-weight:700;color:var(--t1)">Reject this ball?</div>' +
+    '<div style="font-size:12px;color:var(--t2);line-height:1.5;margin:4px 0 10px">It is marked discontinued, hidden from Add a Ball, and never comes back in a new extract. Restore it any time in Settings \u203a Discontinued &amp; rejected.</div>' +
+    '<div style="display:flex;gap:8px"><button style="' + BTN_G + 'flex:1;padding:10px;color:var(--red)" onclick="catApprovalsReject(\'cant-verify\')">Can\u2019t verify</button>' +
+    '<button style="' + BTN_G + 'flex:1;padding:10px;color:var(--red)" onclick="catApprovalsReject(\'not-made\')">No longer made</button></div>' +
+    '<button style="' + BTN_G + 'width:100%;margin-top:8px;padding:9px" onclick="catApprovalsRejectAsk(false)">Cancel</button></div>';
+}
+function catApprovalsRejectAsk(on) {
+  var p = _ap.pages[_ap.idx]; _ap.rejAsk = on && p ? p.catalogId : null; apRender();
+  if (on) { var sc = document.querySelector('#ap-ov [style*="overflow-y:auto"]'); if (sc) sc.scrollTop = sc.scrollHeight; }
+}
+function catApprovalsReject(reason) {
+  var p = _ap.pages[_ap.idx]; if (!p) return;
+  var e = _ap._rows ? byIdIn(_ap._rows, p.catalogId) : null;
+  stSet(p.catalogId, { status: 'retired', rejected: true, reason: reason, at: stToday(), n: e ? cleanName(e.n) : p.boxes[0].title, m: e ? e.m : null });
+  var q = apQueue(), unt = false;
+  p.boxes.forEach(function (b) { if (b.ticked) { q[b.tok] = false; unt = true; } });
+  if (unt) { apSetQueue(q); clearTimeout(_apSendTimer); _apSendTimer = setTimeout(function () { catApprovalsSend(true); }, 1500); }
+  _ap.rejAsk = null;
+  _ap.pages.splice(_ap.idx, 1);
+  _ap.idx = Math.max(0, Math.min(_ap.idx, _ap.pages.length - 1));
+  apBuildPages(false); apRender();
+  if (root.haptic) try { root.haptic('light'); } catch (x) {}
+  if (root.toast) root.toast('Rejected. It won\u2019t come back in new extracts.');
+  stQueueSync();
+}
+
+/* --- Settings > Balls & catalog > Discontinued & rejected --- */
+var _dc = { tab: 'mark', brand: '', q: '', hide: true, open: {}, sel: {}, rows: null, groups: [] };
+/* Pure: rows -> [{y, rows}] newest USBC year first ('\u2014' = no year, last).
+   f: {brand ('*' = all), q, hide (skip balls already discontinued)}; rej(e) -> rejected?; st: your entries. */
+function dcGroups(rows, f, rej, st) {
+  st = st || {}; f = f || {};
+  var q = foldName(f.q || ''), by = {}, keys = [];
+  (rows || []).forEach(function (e) {
+    if (rej && rej(e)) return;
+    if (f.brand && f.brand !== '*' && norm(e.m) !== norm(f.brand)) return;
+    if (q && foldName(e.m + ' ' + e.n).indexOf(q) < 0) return;
+    var s = st[e.i];
+    if (f.hide && ((s && s.status === 'retired') || e.r === 1)) return;
+    var y = e.y || '\u2014';
+    if (!by[y]) { by[y] = []; keys.push(y); }
+    by[y].push(e);
+  });
+  keys.sort(function (a, b) { return a === '\u2014' ? 1 : b === '\u2014' ? -1 : String(b).localeCompare(String(a)); });
+  return keys.map(function (y) {
+    return { y: y, rows: by[y].sort(function (a, b) { return String(a.m).localeCompare(String(b.m)) || cleanName(a.n).localeCompare(cleanName(b.n)); }) };
+  });
+}
+function catDiscOpen() {
+  if (typeof document === 'undefined') return;
+  var mb = document.getElementById('modal-bg');
+  if (mb && mb.classList.contains('open') && typeof root.closeModal === 'function') root.closeModal();
+  catDiscClose();
+  var ov = overlay('dc-ov', 906); document.body.appendChild(ov);
+  _dc.sel = {}; _dc.open = {}; _dc.q = ''; _dc.tab = 'mark';
+  if (!_dc.brand) { var yb = yourBrands(); _dc.brand = yb[0] || '*'; }
+  ov.innerHTML = '<div style="padding:30px;text-align:center;color:var(--t3)">Loading\u2026</div>';
+  catLoad().then(function (rows) { _dc.rows = rows; stPrune(rows); dcRender(); });
+  stSync().then(dcPaintIfOpen, dcPaintIfOpen);
+}
+function catDiscClose() { var el = document.getElementById('dc-ov'); if (el) el.parentNode.removeChild(el); }
+function dcRejectedList() {
+  var all = stLocal().all;
+  return Object.keys(all).filter(function (id) { return all[id] && all[id].rejected; })
+    .sort(function (a, b) { return String(all[b].at || '').localeCompare(String(all[a].at || '')) || a.localeCompare(b); });
+}
+function dcRender() {
+  var ov = document.getElementById('dc-ov'); if (!ov || !_dc.rows) return;
+  var nRej = dcRejectedList().length;
+  var tab = function (k, label) {
+    var on = _dc.tab === k;
+    return '<button onclick="catDiscTab(\'' + k + '\')" style="flex:1;padding:8px;font-size:13px;font-weight:700;border-radius:9px;border:1px solid ' + (on ? 'var(--teal)' : 'var(--border1)') +
+      ';background:' + (on ? 'rgba(0,217,217,0.12)' : 'transparent') + ';color:' + (on ? 'var(--teal)' : 'var(--t2)') + '">' + label + '</button>';
+  };
+  var brands = {}; _dc.rows.forEach(function (e) { if (e.m) brands[e.m] = 1; });
+  var yb = yourBrands(), others = Object.keys(brands).filter(function (b) { return yb.indexOf(b) < 0; }).sort();
+  var opt = function (v, l) { return '<option value="' + esc(v) + '"' + (_dc.brand === v ? ' selected' : '') + '>' + esc(l) + '</option>'; };
+  var filters = _dc.tab !== 'mark' ? '' :
+    '<div style="padding:0 16px 6px;display:flex;gap:8px"><select class="bdet-field-input" style="flex:0 0 42%;font-size:15px" onchange="catDiscBrand(this.value)">' +
+      opt('*', 'All brands') + (yb.length ? '<optgroup label="Your brands">' + yb.map(function (b) { return opt(b, b); }).join('') + '</optgroup>' : '') +
+      '<optgroup label="Others">' + others.map(function (b) { return opt(b, b); }).join('') + '</optgroup></select>' +
+      '<input class="bdet-field-input" type="search" placeholder="Narrow by name" value="' + esc(_dc.q) + '" autocomplete="off" autocorrect="off" autocapitalize="off" oninput="catDiscSearch(this.value)" style="flex:1;min-width:0;font-size:15px"></div>' +
+    '<label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--t2);padding:0 16px 6px"><input type="checkbox" ' + (_dc.hide ? 'checked ' : '') +
+      'onchange="catDiscHide(this.checked)"> Hide balls already discontinued</label>';
+  ov.innerHTML = '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 8px"><button style="' + BACK + '" onclick="catDiscClose()">\u2039</button>' +
+    '<div style="flex:1;min-width:0"><div style="font-size:17px;font-weight:800;color:var(--t1)">Discontinued &amp; rejected</div>' +
+    '<div style="font-size:11px;color:var(--t3)">By USBC approval year, newest first</div></div></div>' +
+    '<div style="display:flex;gap:8px;padding:0 16px 8px">' + tab('mark', 'Discontinue') + tab('rej', 'Rejected' + (nRej ? ' (' + nRej + ')' : '')) + '</div>' + filters +
+    '<div id="dc-list" style="flex:1;overflow-y:auto;padding:0 16px 12px;-webkit-overflow-scrolling:touch;min-height:0"></div>' +
+    '<div id="dc-foot" style="padding:10px 16px;border-top:1px solid var(--border1)"></div>';
+  dcPaint();
+}
+function dcPaintIfOpen() { if (typeof document !== 'undefined' && document.getElementById('dc-ov')) dcPaint(); }
+function dcSyncLine() {
+  var np = Object.keys(stLocal().pending).length;
+  if (!apToken()) return np ? '<div style="font-size:11px;color:var(--gold);line-height:1.45">On this phone now. Add your GitHub token in Spec approvals to save ' + np + ' change' + (np === 1 ? '' : 's') + ' to the catalog.</div>' : '';
+  if (np) return '<div style="display:flex;gap:8px;align-items:center"><div style="flex:1;font-size:11px;color:var(--gold);line-height:1.45">' + np + ' change' + (np === 1 ? '' : 's') + ' waiting to send' +
+    (_stErr ? ': ' + esc(_stErr) : '') + '</div><button style="' + BTN_G + 'padding:8px 12px;font-size:12px" onclick="catDiscSend()">Send now</button></div>';
+  return '<div style="display:flex;gap:8px;align-items:center"><div style="flex:1;font-size:11px;color:var(--t3);line-height:1.45">Saved. This phone shows it now; Publish updates the catalog itself (a few minutes).</div>' +
+    '<button style="' + BTN_G + 'padding:8px 12px;font-size:12px" onclick="catDiscPublish()">Publish</button></div>';
+}
+function dcPaint() {
+  var box = document.getElementById('dc-list'), foot = document.getElementById('dc-foot'); if (!box || !_dc.rows) return;
+  var all = stLocal().all, owned = ownedIndex(_dc.rows);
+  if (_dc.tab === 'rej') {
+    var ids = dcRejectedList();
+    box.innerHTML = ids.length ? ids.map(function (id) {
+      var s = all[id], e = byIdIn(_dc.rows, id);
+      return '<div style="display:flex;align-items:center;gap:10px;padding:10px 2px;border-bottom:1px solid var(--border1)"><div style="flex:1;min-width:0">' +
+        '<div style="font-size:14px;font-weight:600;color:var(--t1)">' + esc(e ? cleanName(e.n) : (s.n || id)) + '</div>' +
+        '<div style="font-size:12px;color:var(--t2)">' + esc(e ? e.m : (s.m || '')) + (e && e.y ? ' \u00b7 ' + esc(e.y) : '') + ' \u00b7 ' + esc(ST_REASONS[s.reason] || s.reason || '') + ' \u00b7 ' + esc(s.at || '') + '</div></div>' +
+        '<button style="' + BTN_G + 'padding:8px 12px;font-size:12px" onclick="catDiscRestore(\'' + esc(id) + '\')">Restore</button></div>';
+    }).join('') : '<div style="font-size:13px;color:var(--t2);padding:24px 2px;line-height:1.6">Nothing rejected. Use <b>Reject this ball</b> on a Spec approvals card for a ball you can\u2019t verify or that is no longer made.</div>';
+    foot.innerHTML = dcSyncLine(); return;
+  }
+  _dc.groups = dcGroups(_dc.rows, { brand: _dc.brand, q: _dc.q, hide: _dc.hide }, catIsRejected, all);
+  var multi = _dc.brand === '*';
+  box.innerHTML = _dc.groups.length ? _dc.groups.map(function (g, gi) {
+    var nSel = g.rows.filter(function (e) { return _dc.sel[e.i]; }).length, open = _dc.open[g.y] || !!_dc.q;
+    var head = '<div style="display:flex;align-items:center;gap:10px;padding:11px 2px;border-bottom:1px solid var(--border1);position:sticky;top:0;background:var(--bg0);z-index:1">' +
+      '<input type="checkbox" ' + (nSel && nSel === g.rows.length ? 'checked ' : '') + 'onchange="catDiscYear(' + gi + ',this.checked)" aria-label="Select all ' + esc(g.y) + '" style="width:20px;height:20px">' +
+      '<div onclick="catDiscToggle(' + gi + ')" style="flex:1;display:flex;align-items:center;gap:8px;cursor:pointer">' +
+      '<span style="font-size:16px;font-weight:800;color:var(--t1)">' + esc(g.y) + '</span><span style="font-size:12px;color:var(--t3)">' + g.rows.length + ' ball' + (g.rows.length === 1 ? '' : 's') +
+      (nSel ? ' \u00b7 <span style="color:var(--teal)">' + nSel + ' selected</span>' : '') + '</span><span style="margin-left:auto;color:var(--t3)">' + (open ? '\u25be' : '\u25b8') + '</span></div></div>';
+    if (!open) return head;
+    return head + g.rows.map(function (e) {
+      var s = all[e.i], dc = discontinuedOf(e), mine = owned && (owned.linked[e.i] || owned.keyed[e.k]);
+      var tag = s && s.status === 'retired' ? '<span style="color:var(--gold)">marked by you</span>' : dc === 'retired' ? '<span style="color:var(--t3)">retired</span>' : dc === 'likely' ? '<span style="color:var(--t3)">likely retired</span>' : '';
+      return '<label style="display:flex;align-items:center;gap:10px;padding:9px 2px 9px 4px;border-bottom:1px solid var(--border1);cursor:pointer">' +
+        '<input type="checkbox" ' + (_dc.sel[e.i] ? 'checked ' : '') + 'onchange="catDiscPick(\'' + esc(e.i) + '\',this.checked)" style="width:18px;height:18px">' +
+        '<div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:600;color:var(--t1)">' + esc(cleanName(e.n)) + (mine ? '<span style="' + CHIP_T + '">IN YOUR ARSENAL</span>' : '') + '</div>' +
+        '<div style="font-size:12px;color:var(--t2)">' + [multi ? esc(e.m) : '', e.s ? 'specs' : '', tag].filter(Boolean).join(' \u00b7 ') + '</div></div></label>';
+    }).join('');
+  }).join('') : '<div style="font-size:13px;color:var(--t2);padding:24px 2px">No balls match.</div>';
+  var sel = Object.keys(_dc.sel), mark = sel.filter(function (id) { var s = all[id]; return !(s && s.status === 'retired'); }).length;
+  var unmark = sel.filter(function (id) { var s = all[id]; return s && !s.rejected && s.reason === 'manual'; }).length;
+  foot.innerHTML = (sel.length ? '<div style="display:flex;gap:8px;margin-bottom:8px">' +
+      (mark ? '<button style="' + BTN_P + 'flex:1;padding:11px" onclick="catDiscMark(true)">Mark ' + mark + ' discontinued</button>' : '') +
+      (unmark ? '<button style="' + BTN_G + 'flex:1;padding:11px" onclick="catDiscMark(false)">Unmark ' + unmark + '</button>' : '') +
+      '<button style="' + BTN_G + 'padding:11px" onclick="catDiscClear()">Clear</button></div>' : '') + dcSyncLine();
+}
+function catDiscTab(k) { _dc.tab = k; dcRender(); }
+function catDiscBrand(v) { _dc.brand = v; _dc.open = {}; dcPaint(); }
+function catDiscSearch(v) { _dc.q = String(v || ''); dcPaint(); }
+function catDiscHide(on) { _dc.hide = !!on; dcPaint(); }
+function catDiscToggle(gi) { var g = _dc.groups[gi]; if (!g) return; _dc.open[g.y] = !_dc.open[g.y]; dcPaint(); }
+function catDiscYear(gi, on) { var g = _dc.groups[gi]; if (!g) return; g.rows.forEach(function (e) { if (on) _dc.sel[e.i] = 1; else delete _dc.sel[e.i]; }); dcPaint(); }
+function catDiscPick(id, on) { if (on) _dc.sel[id] = 1; else delete _dc.sel[id]; dcPaint(); }
+function catDiscClear() { _dc.sel = {}; dcPaint(); }
+function catDiscMark(on) {
+  var all = stLocal().all, d = stToday(), n = 0;
+  Object.keys(_dc.sel).forEach(function (id) {
+    var s = all[id];
+    if (on) {
+      if (s && s.status === 'retired') return;
+      var e = byIdIn(_dc.rows, id);
+      stSet(id, { status: 'retired', reason: 'manual', at: d, n: e ? cleanName(e.n) : null, m: e ? e.m : null }, false); n++;
+    } else if (s && !s.rejected && s.reason === 'manual') { stSet(id, null, false); n++; }
+  });
+  stSaveLocal(stLocal());
+  _dc.sel = {}; dcPaint();
+  if (root.toast) root.toast(n + ' ball' + (n === 1 ? '' : 's') + (on ? ' marked discontinued' : ' unmarked'));
+  stQueueSync();
+}
+function catDiscRestore(id) {
+  stSet(id, null); dcRender();
+  if (root.toast) root.toast('Restored. It can come back in the next extract.');
+  stQueueSync();
+}
+function catDiscSend() { stSync().then(function (r) { if (r && r.sent && root.toast) root.toast(r.sent + ' change' + (r.sent === 1 ? '' : 's') + ' saved to GitHub'); dcPaintIfOpen(); }, dcPaintIfOpen); }
+function catDiscPublish() {
+  stSync().catch(function () {}).then(function () { return vfyDispatchPublish(); }).then(function () {
+    if (root.toast) root.toast('specs-publish started. The catalog updates when it finishes (a few minutes).');
+  }).catch(function (e) {
+    if (root.toast) root.toast(e && (e.status === 403 || e.status === 404) ? 'Token needs Actions read and write to publish' : ('Publish failed: ' + (e && e.status ? 'GitHub ' + e.status : 'offline')));
+  });
+}
+if (typeof root.addEventListener === 'function') root.addEventListener('online', function () { if (Object.keys(stLocal().pending).length) stSync().catch(function () {}); });
+
 /* bowwwl.com page for a ball (personal-use lookup only; never fetched by the app). */
 function bowwwlSlug(t) { return String(t || '').toLowerCase().replace(/\+/g, ' plus').replace(/\binc\b\.?/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''); }
 function bowwwlLinks(brand, name) {
@@ -2640,66 +2921,17 @@ function apReadPage(key) {
     return r.json();
   }).then(function (j) { _pages[key] = j; return j; });
 }
-/* ---------- v30.175: Look-up split view (approvals + Ball Detail) ----------
-   The web page (bowwwl first, then the maker's page) is shown live inside the
-   app, above the fields being filled, with a draggable divider. Copy in the
-   page (long-press), paste below (long-press, or the field's paste button),
-   without leaving the screen. The app does not fetch or keep the page: the
-   phone loads it in a frame, like a browser. Some sites refuse to be shown
-   in a frame; the bar under the page offers Safari for those. Values you
-   save onto your own ball are marked verified by you ('user'). */
-var LK_SPLIT_KEY = 'bdblk_split';
+/* ---------- Look up (Ball Detail) ----------
+   v30.175's in-app split view (frame + draggable divider) was retired in v30.176
+   (sites refuse to be framed) and its code removed in v30.185. lkTabs still gives
+   the maker page for the Look up buttons; lkPasteValue stays for its tests. */
 var _lk = { tabs: [], active: 0, mode: null, ballId: null, brand: null, timer: null };
-function lkRatio() { var l = apLS(), v = l ? parseFloat(l.getItem(LK_SPLIT_KEY)) : NaN; return isFinite(v) && v >= 0.2 && v <= 0.8 ? v : 0.5; }
 /* Pure: tab list for a ball (bowwwl page, maker page when known). */
 function lkTabs(brand, name, makerUrl) {
   var bw = bowwwlLinks(brand || '', name || ''), out = [{ k: 'bowwwl', label: 'bowwwl', url: bw.page }];
   if (makerUrl && /^https:\/\//.test(makerUrl)) out.push({ k: 'maker', label: 'Maker page', url: makerUrl });
   out.push({ k: 'search', label: 'Search', url: bw.search, safariOnly: true });
   return out;
-}
-function lkPaneHTML(h) {
-  var t = _lk.tabs[_lk.active] || {};
-  var tabs = _lk.tabs.map(function (x, i) {
-    if (x.safariOnly) return '<a href="' + esc(x.url) + '" target="_blank" rel="noopener noreferrer" style="font-size:12px;color:var(--t2);padding:6px 8px;text-decoration:none">' + esc(x.label) + ' \u2197</a>';
-    return '<button onclick="catLookTab(' + i + ')" style="font-size:12px;font-weight:700;padding:6px 10px;border-radius:8px;border:1px solid ' + (i === _lk.active ? 'var(--teal)' : 'var(--border1)') +
-      ';background:' + (i === _lk.active ? 'rgba(0,217,217,0.12)' : 'transparent') + ';color:' + (i === _lk.active ? 'var(--teal)' : 'var(--t2)') + '">' + esc(x.label) + '</button>';
-  }).join('');
-  return '<div id="lk-pane" style="height:' + h + 'px;flex:0 0 auto;display:flex;flex-direction:column;border-top:1px solid var(--border1)">' +
-    '<div style="display:flex;gap:6px;align-items:center;padding:6px 12px;overflow-x:auto">' + tabs +
-      '<a id="lk-safari" href="' + esc(t.url || '#') + '" target="_blank" rel="noopener noreferrer" style="margin-left:auto;font-size:12px;color:var(--teal);white-space:nowrap">Safari \u2197</a></div>' +
-    '<iframe id="lk-frame" src="' + esc(t.url || 'about:blank') + '" referrerpolicy="no-referrer" style="flex:1;width:100%;border:0;background:#fff"></iframe>' +
-    '<div id="lk-hint" style="font-size:10px;color:var(--t3);padding:3px 12px">Page blank? That site blocks in-app view: use Safari \u2197.</div></div>' +
-    '<div id="lk-handle" style="flex:0 0 auto;height:22px;display:flex;align-items:center;justify-content:center;touch-action:none;cursor:row-resize;background:var(--bg2)">' +
-      '<div style="width:46px;height:5px;border-radius:3px;background:var(--t3);opacity:.6"></div></div>';
-}
-/* Inserts the pane above `body` inside overlay `ov`, wires the divider. */
-function lkMount(ov, body) {
-  lkUnmount();
-  var h = Math.round((ov.clientHeight || 700) * lkRatio());
-  var wrap = document.createElement('div'); wrap.id = 'lk-wrap'; wrap.style.display = 'contents';
-  wrap.innerHTML = lkPaneHTML(h);
-  ov.insertBefore(wrap, body);
-  var handle = document.getElementById('lk-handle'), pane = document.getElementById('lk-pane'), frame = document.getElementById('lk-frame');
-  var start = null;
-  handle.addEventListener('pointerdown', function (e) { start = { y: e.clientY, h: pane.offsetHeight }; frame.style.pointerEvents = 'none'; try { handle.setPointerCapture(e.pointerId); } catch (x) {} e.preventDefault(); });
-  handle.addEventListener('pointermove', function (e) {
-    if (!start) return;
-    var H = ov.clientHeight || 700, nh = Math.max(H * 0.2, Math.min(H * 0.8, start.h + e.clientY - start.y));
-    pane.style.height = Math.round(nh) + 'px';
-  });
-  var end = function () { if (!start) return; start = null; frame.style.pointerEvents = ''; var l = apLS(); if (l) l.setItem(LK_SPLIT_KEY, String((pane.offsetHeight / (ov.clientHeight || 700)).toFixed(3))); };
-  handle.addEventListener('pointerup', end); handle.addEventListener('pointercancel', end);
-}
-function lkUnmount() { var w = document.getElementById('lk-wrap'); if (w) w.parentNode.removeChild(w); }
-function catLookTab(i) {
-  if (!_lk.tabs[i] || _lk.tabs[i].safariOnly) return;
-  _lk.active = i;
-  var pane = document.getElementById('lk-pane'); if (!pane) return;
-  var h = pane.offsetHeight, wrap = document.getElementById('lk-wrap');
-  wrap.innerHTML = lkPaneHTML(h);
-  var ov = wrap.parentNode, body = wrap.nextSibling; lkMount(ov, body);
-  document.getElementById('lk-pane').style.height = h + 'px';
 }
 /* Pure: tidy a pasted value for a field kind. */
 function lkPasteValue(kind, t) {
@@ -2708,30 +2940,7 @@ function lkPasteValue(kind, t) {
   if (kind === 'date') { var r = tagValueFor('ape-released', s); return r.v || null; }
   return pgvClean(s) || null;
 }
-function catLookPaste(id, kind) {
-  if (!(typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.readText)) { if (root.toast) root.toast('Long-press the field and tap Paste'); return; }
-  navigator.clipboard.readText().then(function (t) {
-    var v = lkPasteValue(kind, t), el = document.getElementById(id);
-    if (!el) return;
-    if (v == null) { if (root.toast) root.toast(kind === 'num' ? 'No number like 2.48 or 0.051 in what you copied' : 'Nothing to paste'); return; }
-    el.value = v; el.style.boxShadow = '0 0 0 2px var(--teal)'; setTimeout(function () { el.style.boxShadow = ''; }, 700);
-  }, function () { if (root.toast) root.toast('Long-press the field and tap Paste instead'); });
-}
-function lkPasteBtn(id, kind) {
-  return (typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.readText) ?
-    '<button style="' + BTN_G + 'padding:0 10px;font-size:12px" onclick="catLookPaste(\'' + id + '\',\'' + kind + '\')" aria-label="Paste">Paste</button>' : '';
-}
-/* --- approvals: the Correct specs sheet gains the pane --- */
-function catLookAp() {
-  var ov = document.getElementById('ap-edit-ov'); if (!ov || !_apEdit) return;
-  if (document.getElementById('lk-wrap')) { lkUnmount(); lkBtnPaint(); return; }
-  var e = _ap._rows ? byIdIn(_ap._rows, _apEdit.catalogId) : null;
-  _lk = { tabs: lkTabs(e ? e.m : '', _apEdit.ballName, _apEdit.url), active: 0, mode: 'ap', ballId: null, brand: e ? e.m : null };
-  var body = ov.querySelector('[data-lk-body]'); lkMount(ov, body); lkBtnPaint();
-  var tg = document.getElementById('lk-toggle'); if (tg && body) body.scrollTop = Math.max(0, tg.offsetTop - body.offsetTop - 6);   // fields straight under the page
-}
-function lkBtnPaint() { var b = document.getElementById('lk-toggle'); if (b) b.textContent = document.getElementById('lk-wrap') ? 'Hide look-up' : 'Look up here (split view)'; }
-/* --- Ball Detail: Look up opens the pane over your ball's spec fields --- */
+/* --- Ball Detail: Look up over your ball's spec fields --- */
 var LK_FIELDS = [['CoverName', 'Coverstock', 'text', 'coverName'], ['Coverstock', 'Cover type', 'text', 'coverType'], ['BoxFinish', 'Factory finish', 'text', 'finish'],
   ['CoreShort', 'Core', 'text', 'core'], ['CoreType', 'Core type', 'core', null], ['RG', 'RG', 'num', null], ['Differential', 'Diff', 'num', null], ['IntDiff', 'Int Diff', 'num', null],
   ['DateReleased', 'Release date', 'date', null]];
@@ -2837,7 +3046,7 @@ function catShortcutCopy() {
   else if (root.toast) root.toast('Long-press the script below and Copy');
 }
 function catShortcutClose() { var el = document.getElementById('sch-ov'); if (el) el.parentNode.removeChild(el); }
-function catLookClose() { lkUnmount(); var el = document.getElementById('lk-ov'); if (el) el.parentNode.removeChild(el); }
+function catLookClose() { var el = document.getElementById('lk-ov'); if (el) el.parentNode.removeChild(el); }
 
 /* ---------- v30.176: Paste page & fill ----------
    In-app frames are refused by the spec sites, and picking words one at a
@@ -3259,7 +3468,7 @@ function miCoverRows(rows) {
   var mine = appBalls().filter(function (b) { return !b.Archived && b.BallID != null && !ownPic(b, 'cover'); })
     .map(function (b) { var e = b.CatalogID ? byIdIn(rows, b.CatalogID) : null;
       return { key: 'b' + b.BallID, ballId: b.BallID, catId: b.CatalogID || null, brand: e ? e.m : b.MFG, name: e ? cleanName(e.n) : b.BallName, year: e ? e.y : '', coreName: b.CoreShort || null }; });
-  var cat = (rows || []).filter(function (e) { return e.s && !catImageFor(e.i); })
+  var cat = (rows || []).filter(function (e) { return e.s && !catImageFor(e.i) && !catIsRejected(e); })
     .sort(function (a, b) { return String(b.y || '').localeCompare(String(a.y || '')) || String(a.m).localeCompare(String(b.m)); })
     .map(function (e) { return { key: 'c' + e.i, ballId: null, catId: e.i, brand: e.m, name: cleanName(e.n), year: e.y }; });
   return { mine: mine, cat: cat };
@@ -4169,11 +4378,14 @@ function catCompareAdd(x) {
 
 root.CATALOG_JS_VERSION = CAT_VERSION;
 root.catPickerMount = catPickerMount;
-root.catApprovalsOpen = catApprovalsOpen; root.catImagesScanAll = catImagesScanAll; root.catImagesScanStop = catImagesScanStop; root.catImagesSlot = catImagesSlot; root.catImagesExport = catImagesExport; root.catImagesImport = catImagesImport; root.catCoreImageFor = catCoreImageFor; root.catImagesOpen = catImagesOpen; root.catImagesClose = catImagesClose; root.catImagesTab = catImagesTab; root.catImagesFilter = catImagesFilter; root.catImagesPage = catImagesPage; root.catImagesTry = catImagesTry; root.catImagesTryPage = catImagesTryPage; root.catImagesPaste = catImagesPaste; root.catImagesPhoto = catImagesPhoto; root.catImagesDrop = catImagesDrop; root.catImagesUse = catImagesUse; root.catImagesUseAll = catImagesUseAll; root.catSpApPdf = catSpApPdf; root.catSpBallPdf = catSpBallPdf; root.catPdfHelp = catPdfHelp; root.catShortcutHelp = catShortcutHelp; root.catShortcutCopy = catShortcutCopy; root.catShortcutClose = catShortcutClose; root.catSpAp = catSpAp; root.catSpBall = catSpBall; root.catSpToggle = catSpToggle; root.catSpEdit = catSpEdit; root.catSpClose = catSpClose; root.catSpApply = catSpApply; root.catSpManualGo = catSpManualGo; root.catSpManualClose = catSpManualClose; root.catLookAp = catLookAp; root.catLookBall = catLookBall; root.catLookTab = catLookTab; root.catLookPaste = catLookPaste; root.catLookOk = catLookOk; root.catLookSave = catLookSave; root.catLookClose = catLookClose; root.catPasteOpen = catPasteOpen; root.catPasteClose = catPasteClose; root.catPasteClip = catPasteClip; root.catPasteShow = catPasteShow; root.catFillToggle = catFillToggle; root.catFillClose = catFillClose; root.catFillConfirm = catFillConfirm; root.catPageOpen = catPageOpen; root.catPageClose = catPageClose; root.catPageUseSel = catPageUseSel; root.catPageUseVal = catPageUseVal; root.catPageImg = catPageImg; root.catPickOpen = catPickOpen; root.catPickFilter = catPickFilter; root.catPickChoose = catPickChoose; root.catPickClose = catPickClose; root.catSpecReviewOpen = catSpecReviewOpen; root.catSpecReviewClose = catSpecReviewClose; root.catSpecReviewAct = catSpecReviewAct; root.catSpecReviewBulk = catSpecReviewBulk; root.catSpecReviewPage = catSpecReviewPage; root.catTagPick = catTagPick; root.catTagCancel = catTagCancel; root.catVerifyRefresh = catVerifyRefresh; root.catVerifyDismiss = catVerifyDismiss; root.catVerifyRetry = catVerifyRetry; root.catVerifyOpenApprovals = catVerifyOpenApprovals; root.catVerifyPublish = catVerifyPublish; root.catVerifyApply = catVerifyApply; root.catVerifyTick = vfyTick; root.catVerifyState = vfyActive; root.catApprovalsRetryStaged = catApprovalsRetryStaged; root.apStagedErrText = apStagedErrText; root.catApprovalsClose = catApprovalsClose; root.catApprovalsSaveToken = catApprovalsSaveToken;
+root.catApprovalsOpen = catApprovalsOpen; root.catImagesScanAll = catImagesScanAll; root.catImagesScanStop = catImagesScanStop; root.catImagesSlot = catImagesSlot; root.catImagesExport = catImagesExport; root.catImagesImport = catImagesImport; root.catCoreImageFor = catCoreImageFor; root.catImagesOpen = catImagesOpen; root.catImagesClose = catImagesClose; root.catImagesTab = catImagesTab; root.catImagesFilter = catImagesFilter; root.catImagesPage = catImagesPage; root.catImagesTry = catImagesTry; root.catImagesTryPage = catImagesTryPage; root.catImagesPaste = catImagesPaste; root.catImagesPhoto = catImagesPhoto; root.catImagesDrop = catImagesDrop; root.catImagesUse = catImagesUse; root.catImagesUseAll = catImagesUseAll; root.catSpApPdf = catSpApPdf; root.catSpBallPdf = catSpBallPdf; root.catPdfHelp = catPdfHelp; root.catShortcutHelp = catShortcutHelp; root.catShortcutCopy = catShortcutCopy; root.catShortcutClose = catShortcutClose; root.catSpAp = catSpAp; root.catSpBall = catSpBall; root.catSpToggle = catSpToggle; root.catSpEdit = catSpEdit; root.catSpClose = catSpClose; root.catSpApply = catSpApply; root.catSpManualGo = catSpManualGo; root.catSpManualClose = catSpManualClose; root.catLookBall = catLookBall; root.catLookOk = catLookOk; root.catLookSave = catLookSave; root.catLookClose = catLookClose; root.catPasteOpen = catPasteOpen; root.catPasteClose = catPasteClose; root.catPasteClip = catPasteClip; root.catPasteShow = catPasteShow; root.catFillToggle = catFillToggle; root.catFillClose = catFillClose; root.catFillConfirm = catFillConfirm; root.catPageOpen = catPageOpen; root.catPageClose = catPageClose; root.catPageUseSel = catPageUseSel; root.catPageUseVal = catPageUseVal; root.catPageImg = catPageImg; root.catPickOpen = catPickOpen; root.catPickFilter = catPickFilter; root.catPickChoose = catPickChoose; root.catPickClose = catPickClose; root.catSpecReviewOpen = catSpecReviewOpen; root.catSpecReviewClose = catSpecReviewClose; root.catSpecReviewAct = catSpecReviewAct; root.catSpecReviewBulk = catSpecReviewBulk; root.catSpecReviewPage = catSpecReviewPage; root.catTagPick = catTagPick; root.catTagCancel = catTagCancel; root.catVerifyRefresh = catVerifyRefresh; root.catVerifyDismiss = catVerifyDismiss; root.catVerifyRetry = catVerifyRetry; root.catVerifyOpenApprovals = catVerifyOpenApprovals; root.catVerifyPublish = catVerifyPublish; root.catVerifyApply = catVerifyApply; root.catVerifyTick = vfyTick; root.catVerifyState = vfyActive; root.catApprovalsRetryStaged = catApprovalsRetryStaged; root.apStagedErrText = apStagedErrText; root.catApprovalsClose = catApprovalsClose; root.catApprovalsSaveToken = catApprovalsSaveToken;
 root.catApprovalsForgetToken = catApprovalsForgetToken; root.catApprovalsChangeToken = catApprovalsChangeToken; root.catApprovalsPage = catApprovalsPage; root.catApprovalsFilter = catApprovalsFilter;
 root.catApprovalsTick = catApprovalsTick; root.catApprovalsEdit = catApprovalsEdit; root.catApprovalsEditClose = catApprovalsEditClose; root.catApprovalsEditSave = catApprovalsEditSave; root.catAddSpecsOnly = catAddSpecsOnly; root.catVerifyNow = catVerifyNow; root.catImagesSet = catImagesSet;
 root.catImagesRefresh = catImagesRefresh; root.catImagesStatus = catImagesStatus; root.catImageFor = catImageFor; root.catApprovalsSend = catApprovalsSend; root.catApprovalsPublish = catApprovalsPublish; root.catPickerSearch = catPickerSearch;
 root.catPick = catPick; root.catUnlink = catUnlink; root.catPickValue = catPickValue;
+root.catApprovalsRejectAsk = catApprovalsRejectAsk; root.catApprovalsReject = catApprovalsReject; root.catDiscOpen = catDiscOpen; root.catDiscClose = catDiscClose; root.catDiscTab = catDiscTab;
+root.catDiscBrand = catDiscBrand; root.catDiscSearch = catDiscSearch; root.catDiscHide = catDiscHide; root.catDiscToggle = catDiscToggle; root.catDiscYear = catDiscYear; root.catDiscPick = catDiscPick;
+root.catDiscClear = catDiscClear; root.catDiscMark = catDiscMark; root.catDiscRestore = catDiscRestore; root.catDiscSend = catDiscSend; root.catDiscPublish = catDiscPublish; root.catIsRejected = catIsRejected;
 root.catLinkLabel = catLinkLabel; root.catReviewOpen = catReviewOpen;
 root.catReviewLink = catReviewLink; root.catReviewSkip = catReviewSkip;
 root.catReviewResetSkips = catReviewResetSkips;
@@ -4195,7 +4407,7 @@ root.catSearch = function (q, n) { return catLoad().then(function (rows) { retur
 root._catStep5 = { norm: norm, modelKey: modelKey, lookupIn: lookupIn, searchIn: searchIn, reviewModel: reviewModel,
                    pickerBodyHTML: pickerBodyHTML, reviewHTML: reviewHTML, resultsHTML: resultsHTML,
                    setPick: function (p) { _pick = p; }, auditModel: auditModel, auditHTML: auditHTML,
-                   addListHTML: addListHTML, addSearchIn: addSearchIn, newest: newest, bubbleFilter: bubbleFilter, discontinuedOf: discontinuedOf, addFilters: function () { return _af; },
+                   addListHTML: addListHTML, addSearchIn: addSearchIn, newest: newest, bubbleFilter: bubbleFilter, discontinuedOf: discontinuedOf, dcGroups: dcGroups, stMerge: stMerge, catIsRejected: catIsRejected, stSet: stSet, stLocal: stLocal, stReset: function () { _stc = null; }, addFilters: function () { return _af; },
                    specsOf: specsOf, shardMap: shardMap, shardKeyFor: shardKeyFor, detailFiles: detailFiles,
                    buildOwnedBall: buildOwnedBall, ballFromSpecs: ballFromSpecs, fillPlan: fillPlan,
                    catSpecSource: catSpecSource, setFilled: function (f) { _filled = f; },
