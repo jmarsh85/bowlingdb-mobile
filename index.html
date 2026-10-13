@@ -3457,7 +3457,7 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
 /* v30.169: ONE place for the version. The header, the home screen label, the
    page title and backups all read these, so nothing can go stale on an update.
    Bump both lines (and CATALOG_JS_VERSION in catalog.js when it changes). */
-const APP_VERSION = 'v30.189';
+const APP_VERSION = 'v30.191';
 const APP_BUILD_DATE = '2026-10-12';
 /* catalog.js this build expects; an older file on the server shows a warning */
 const EXPECTED_CATALOG_JS = 'v30.189';
@@ -28434,6 +28434,14 @@ return `<div style="display:flex;align-items:center;justify-content:space-betwee
       <button class="btn btn-secondary" style="width:100%" onclick="forceReloadApp()">↻ Reload Latest Version</button>
     </div>
 
+    <!-- ── v30.190 PP-1: PinPal ─────────────────────────────── -->
+    <div class="settings-section">
+      <div class="settings-section-hdr">Coming from PinPal
+        <span class="settings-section-hint">Read a PinPal backup and see where it and the app agree or differ, game by game. Read only.</span>
+      </div>
+      <button class="btn btn-secondary" style="width:100%" onclick="openPinpalCompare()">Compare a PinPal backup</button>
+    </div>
+
     <!-- ── Data Summary ─────────────────────────────────────── -->
     <div class="settings-section">
       <div class="settings-section-hdr">Database Summary</div>
@@ -30009,6 +30017,112 @@ localStorage.setItem(FLAG, log.length ? log.join(' | ') : 'nothing to tidy');
 } catch (e) { console.warn('fixBallText189:', e); }
 }
 
+/* v30.190 PP-1: the PinPal compare lives in pinpal.js (same-origin, loaded on first use). */
+function openPinpalCompare() {
+if (typeof ppOpen === 'function') { ppOpen(); return; }
+const s = document.createElement('script');
+s.src = 'pinpal.js?v=' + encodeURIComponent(APP_VERSION);
+s.onload = () => { if (typeof ppOpen === 'function') ppOpen(); else toast('PinPal tool did not load'); };
+s.onerror = () => toast('PinPal tool unavailable: upload pinpal.js next to index.html');
+document.head.appendChild(s);
+}
+
+/* v30.191 one-time NoTap clean-up (checked against the PinPal backup, 2026-10-12).
+   PinPal has no no-tap mode, so these nights were logged there as open bowling; rescored as
+   no-tap they match the NoTap Games copies. Each step runs only when the records are exactly as
+   found on 2026-10-12, and everything removed or changed is kept first in
+   bowlingdb_fix191_undo. Uses the app's own scorer (calculateScores / calculateNoTapScores).
+   1. 12/18/24: remove the "Virtue Fun Fall 2024" copy (212/181/183: same throws scored as regular
+      games with each no-tap 9 counted open). NoTap Games keeps 298/225/276.
+   2. 12/17/25: remove the "Virtue Fun Fall 2025" copy (totals said 270/260, games had no league).
+   3. Remove NoTap Games sessions that have no games.
+   4. 5/7/25 was no-tap: move it to NoTap Games, mark it no-tap, and set the game scores to the
+      no-tap totals the scorecard already shows (216/277/253; the card showed 147/231/189). Not
+      rescored: G2-G3 10th frames hold X-9-1 where PinPal has X-X-X (left for the PinPal fill).
+   5. 12/18/24 G2 frame 5 was 8-1, not 8-2 (pin 10 left): game total 213 as bowled. */
+async function fixNoTap191() {
+const FLAG = 'bowlingdb_fix191_notap';
+if (localStorage.getItem(FLAG)) return;
+const log = [], undo = { series: [], games: [], frames: [], attempts: [] };
+const S = id => db.series.find(s => s.SeriesID === id);
+const gamesOf = id => db.games.filter(g => g.SeriesID === id).sort((a, b) => a.GameNumber - b.GameNumber);
+const scores = id => gamesOf(id).map(g => g.FinalScore).join(',');
+const copy = o => JSON.parse(JSON.stringify(o));
+const keepSeries = sid => {
+const gs = gamesOf(sid), gids = gs.map(g => g.GameID), fs = db.frames.filter(f => gids.includes(f.GameID)), fids = fs.map(f => f.FrameID);
+if (S(sid)) undo.series.push(copy(S(sid)));
+undo.games.push(...copy(gs)); undo.frames.push(...copy(fs)); undo.attempts.push(...copy(db.attempts.filter(a => fids.includes(a.FrameID))));
+return { gids, fids, aids: db.attempts.filter(a => fids.includes(a.FrameID)).map(a => a.AttemptID) };
+};
+const removeSeries = async sid => {
+const k = keepSeries(sid);
+db.attempts = db.attempts.filter(a => !k.fids.includes(a.FrameID));
+db.frames = db.frames.filter(f => !k.gids.includes(f.GameID));
+db.games = db.games.filter(g => g.SeriesID !== sid);
+db.series = db.series.filter(s => s.SeriesID !== sid);
+await idbDeleteKeys('attempts', k.aids); await idbDeleteKeys('frames', k.fids);
+await idbDeleteKeys('games', k.gids); await idbDeleteKeys('series', [sid]);
+try { localStorage.removeItem('debrief_' + sid); } catch (e) {}
+};
+/* rescore one game with the app's scorer; returns the frame-10 frame */
+const rescore = gid => {
+const keepG = G.gameID; G.gameID = gid;
+try {
+const frames = gameFrames().sort((a, b) => a.FrameNumber - b.FrameNumber);
+calculateScores();
+const game = db.games.find(g => g.GameID === gid);
+if (game && game.NoTap) { frames.forEach(fr => { fr.NoTapFrameScore = null; fr.NoTapRunningTotal = null; }); calculateNoTapScores(frames); }
+frames.forEach(fr => { fr.CumulativeScore = fr.RunningTotal; if ('NoTapCumulativeScore' in fr || fr.NoTapRunningTotal != null) fr.NoTapCumulativeScore = fr.NoTapRunningTotal; });
+return frames.find(f => f.FrameNumber === 10);
+} finally { G.gameID = keepG; }
+};
+try {
+await loadScoringData();
+const nt1218 = db.series.find(s => s.LeagueID === -1 && s.DateBowled === '2024-12-18');
+const nt1217 = db.series.find(s => s.LeagueID === -1 && s.DateBowled === '2025-12-17');
+/* 1 */
+const s248 = S(248);
+if (s248 && s248.DateBowled === '2024-12-18' && s248.LeagueID !== -1 && scores(248) === '212,181,183' && nt1218) { await removeSeries(248); log.push('removed 12/18/24 Virtue Fun Fall 2024 copy (212,181,183)'); }
+/* 2 */
+const s291 = S(291);
+if (s291 && s291.DateBowled === '2025-12-17' && s291.LeagueID !== -1 && scores(291) === '300,274,300' && nt1217 && scores(nt1217.SeriesID) === '300,274,300') { await removeSeries(291); log.push('removed 12/17/25 Virtue Fun Fall 2025 copy'); }
+/* 3 */
+const empties = db.series.filter(s => s.LeagueID === -1 && !db.games.some(g => g.SeriesID === s.SeriesID));
+for (const s of empties) { await removeSeries(s.SeriesID); }
+if (empties.length) log.push('removed ' + empties.length + ' empty NoTap Games sessions (' + empties.map(s => s.DateBowled).join(', ') + ')');
+/* 4 */
+const s247 = S(247), g247 = gamesOf(247);
+if (s247 && s247.DateBowled === '2025-05-07' && g247.length === 3 && g247.every(g => g.NoTap) && scores(247) === '147,231,189') {
+keepSeries(247);
+s247.NoTap = true; s247.LeagueID = -1;
+/* keep the no-tap totals the scorecard already shows (216/277/253, which PinPal's frames give
+   too); not rescored, because G2-G3 10th frames hold X-9-1 where PinPal has X-X-X */
+const tot = g247.map(g => { g.LeagueID = -1; const f10 = db.frames.find(f => f.GameID === g.GameID && f.FrameNumber === 10); if (f10 && f10.NoTapRunningTotal != null) { g.FinalScore = f10.NoTapRunningTotal; g.GameTotal = f10.NoTapRunningTotal; } return g.FinalScore; });
+log.push('5/7/25 moved to NoTap Games, scores ' + tot.join(','));
+}
+/* 5 */
+const g1048 = db.games.find(g => g.GameID === 1048);
+const f5 = g1048 && db.frames.find(f => f.GameID === 1048 && f.FrameNumber === 5);
+const a2 = f5 && db.attempts.find(a => a.FrameID === f5.FrameID && a.Attempt === 2);
+if (g1048 && g1048.FinalScore === 225 && f5 && f5.Spare && a2 && a2.Pinfall === 2 && a2.Pin6 === true && a2.Pin10 === true) {
+const fs = db.frames.filter(f => f.GameID === 1048), fids = fs.map(f => f.FrameID);
+undo.games.push(copy(g1048)); undo.frames.push(...copy(fs)); undo.attempts.push(...copy(db.attempts.filter(a => fids.includes(a.FrameID))));
+/* the app records the pins each ball knocked down: ball 2 took the 6, the 10 stayed */
+a2.Pinfall = 1; a2.Pin10 = false; a2.PinDelta10 = false; a2.Pin6 = true; a2.PinDelta6 = true;
+f5.Spare = false;
+const f10 = rescore(1048);
+if (f10 && f10.NoTapRunningTotal != null) { g1048.FinalScore = f10.NoTapRunningTotal; g1048.GameTotal = f10.NoTapRunningTotal; }
+log.push('12/18/24 G2 frame 5 set to 8-1, game ' + g1048.FinalScore);
+}
+if (log.length) {
+localStorage.setItem('bowlingdb_fix191_undo', JSON.stringify(undo));
+await saveAll();
+toast('NoTap clean-up: ' + log.length + ' fix' + (log.length === 1 ? '' : 'es') + ' applied');
+}
+localStorage.setItem(FLAG, log.length ? log.join(' | ') : 'nothing to change');
+} catch (e) { console.warn('fixNoTap191:', e); }
+}
+
 document.addEventListener('DOMContentLoaded', async ()=>{
 
 
@@ -30031,7 +30145,7 @@ renderHome();
 renderNavGrid();
 
 
-loadScoringData().then(() => { renderHome(); fixPrecisionDup185(); fixBallText189(); }).catch(() => {});
+loadScoringData().then(async () => { renderHome(); fixPrecisionDup185(); fixBallText189(); await fixNoTap191(); renderHome(); }).catch(() => {});
 
 
 warmBallImgCache().then(() => {
