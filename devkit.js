@@ -1110,7 +1110,7 @@ var s = se[g.SeriesID] || {}, nt = !!(g.NoTap || s.NoTap);
 var f10 = fs.filter(function (f) { return f.FrameNumber === 10; })[0];
 var rt = f10 ? f10.RunningTotal : null, nrt = f10 ? f10.NoTapRunningTotal : null;
 var score = g.FinalScore != null ? g.FinalScore : g.GameTotal;
-var ok = fs.length === 10 && (rt === score || (nt && nrt === score));
+var ok = fs.length === 10 && (nt ? nrt === score : rt === score);   // v30.191: a no-tap game must match its no-tap total (5/7/25 showed 147 while its scorecard said 216)
 if (ok) return;
 out.push({ gameID: g.GameID, seriesID: g.SeriesID, date: g.DateBowled || s.DateBowled || '', league: lg[g.LeagueID || s.LeagueID] || '', game: g.GameNumber,
 frames: fs.length, f10: rt, f10NoTap: nt ? nrt : null, score: score, noTap: nt });
