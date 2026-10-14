@@ -15,7 +15,7 @@
    library. Loaded on demand from Settings > Data & app. */
 (function (root) {
 'use strict';
-var PP_VERSION = 'v30.193';
+var PP_VERSION = 'v30.195';
 /* v30.193: options and your name choices, kept on this phone.
    noTap (off by default): read PinPal games as no-tap where the app's game is no-tap, and send
    "No Tap" leagues to NoTap Games. PinPal has no no-tap mode, so this only fits someone who logged
@@ -23,6 +23,12 @@ var PP_VERSION = 'v30.193';
 var PP_OPT_KEY = 'bowlingdb_pp_options', PP_NAMES_KEY = 'bowlingdb_pp_names';
 function ppLoadJSON(k, d) { try { return JSON.parse(localStorage.getItem(k) || 'null') || d; } catch (e) { return d; } }
 var PP_OPT = ppLoadJSON(PP_OPT_KEY, { noTap: false });
+/* v30.195: your per-game decisions, kept on this phone: { 'g<app GameID>': 'app' (keep the app's
+   version), 'p<PinPal game pk>': 'skip' (don't import) }. Import never touches a reviewed game.
+   No-tap is compare-only: PinPal can't record no-tap, and how someone works around that (9-0, or
+   X X X with the real leaves in notes) is personal, so a no-tap game in the app is never rewritten
+   from PinPal and nothing is imported as no-tap. */
+var PP_REV_KEY = 'bowlingdb_pp_reviews';
 
 /* ---------- SQLite (read only) ---------- */
 function ppFindDb(buf) {
@@ -289,6 +295,7 @@ var PP_CATS = [
   ['fillScore', 'App has score only', 'Your game has no frames; PinPal has them.'],
   ['fillBroken', 'App frames don\u2019t add up', 'Your frame 10 total isn\u2019t the saved score; PinPal\u2019s frames are complete.'],
   ['ppOnly', 'Only in PinPal', 'Not in the app at all.'],
+  ['kept', 'Reviewed: left as is', 'You chose to keep the app\u2019s version, or not to import. Import leaves these alone; open one to review it again.'],
   ['appOnly', 'Only in the app', 'Not in this PinPal backup (logged elsewhere or after it was made).']
 ];
 function sameSet(a, b) { return a.length === b.length && a.every(function (x, i) { return x === b[i]; }); }
@@ -364,6 +371,11 @@ function ppCompare(pp, app) {
   });
   /* a same-day leftover on both sides is a discrepancy to check, not two separate games */
   rows.forEach(function (r) { if ((r.cat === 'ppOnly' || r.cat === 'appOnly') && rows.some(function (o) { return o.date === r.date && o !== r && (o.cat === 'ppOnly' || o.cat === 'appOnly') && o.cat !== r.cat; })) r.sameDay = true; });
+  var rev = typeof localStorage !== 'undefined' ? ppLoadJSON(PP_REV_KEY, {}) : {};
+  rows.forEach(function (r) {
+    if (r.app && r.pp && rev['g' + r.app.gameID] === 'app' && r.cat !== 'same') { r.prevCat = r.cat; r.cat = 'kept'; r.review = 'app'; }
+    else if (r.cat === 'ppOnly' && rev['p' + r.pp.g.pk] === 'skip') { r.prevCat = r.cat; r.cat = 'kept'; r.review = 'skip'; }
+  });
   var counts = {}; PP_CATS.forEach(function (c) { counts[c[0]] = 0; }); rows.forEach(function (r) { counts[r.cat]++; });
   return { rows: rows, counts: counts, range: [first, last] };
 }
@@ -479,27 +491,40 @@ function ppRescore(D, gameID, noTap) {
   } finally { if (typeof G !== 'undefined') G.gameID = keep; }
 }
 /* Pure: what an import would do -> [{id, kind:'fill'|'add', label, note, on, rows|row, session}] */
+/* Pure: what an import would do, in sections -> [{id, sec, kind, label, note, on, disabled, row|rows, session}]
+   fill: frames for score-only or broken games (on) · add: PinPal-only sessions (on) ·
+   replace: same score, frames differ (off) · rescore: different score, the game takes PinPal's (off).
+   A no-tap game in the app is never offered (PinPal can't record no-tap). */
+var PP_SECS = [['fill', 'Fill missing or broken frames'], ['add', 'Add sessions not in the app'], ['replace', 'Use PinPal\u2019s frames where they differ (same score)'], ['rescore', 'Use PinPal\u2019s frames and score (different score)']];
 function ppPlan(rep, map) {
-  var out = [];
+  var out = [], nt = 'no-tap game in the app: kept as recorded (PinPal can\u2019t record no-tap)';
+  var gl = function (r) { return r.date + ' \u00b7 ' + (r.app.league || 'no league') + ' G' + r.app.num + ' \u00b7 ' + r.app.score; };
   rep.rows.forEach(function (r, i) {
-    if (r.cat === 'fillScore' || r.cat === 'fillBroken') out.push({ id: 'f' + i, kind: 'fill', on: true, row: r,
-      label: r.date + ' \u00b7 ' + (r.app.league || 'no league') + ' G' + r.app.num + ' \u00b7 ' + r.app.score,
-      note: r.cat === 'fillScore' ? 'add PinPal\u2019s frames to the score-only game' : 'replace the frames that don\u2019t add up' });
+    var sec = r.cat === 'fillScore' || r.cat === 'fillBroken' ? 'fill' : r.cat === 'detail' ? 'replace' : r.cat === 'score' ? 'rescore' : null;
+    if (!sec || !r.pp.g.frames) return;
+    var off = !!r.app.noTap;
+    out.push({ id: sec + i, sec: sec, kind: sec === 'fill' ? 'fill' : 'replace', on: sec === 'fill' && !off, disabled: off, row: r, label: gl(r),
+      note: off ? nt : sec === 'fill' ? (r.cat === 'fillScore' ? 'add PinPal\u2019s frames to the score-only game' : 'replace the frames that don\u2019t add up')
+        : sec === 'replace' ? r.diffs.length + ' frame' + (r.diffs.length === 1 ? '' : 's') + ' differ; the score stays ' + r.app.score
+        : 'the game\u2019s score becomes PinPal\u2019s ' + r.pp.g.score });
   });
-  var bySess = {};
-  rep.rows.forEach(function (r) { if (r.cat === 'ppOnly') { var k = r.pp.s.key; (bySess[k] = bySess[k] || []).push(r); } });
+  var bySess = {}, skipped = {};
+  rep.rows.forEach(function (r) {
+    if (r.cat === 'ppOnly') { var k = r.pp.s.key; (bySess[k] = bySess[k] || []).push(r); }
+    if (r.review === 'skip') skipped[r.pp.s.key] = (skipped[r.pp.s.key] || 0) + 1;
+  });
   Object.keys(bySess).forEach(function (k) {
-    var rows = bySess[k], s = rows[0].pp.s, noTap = ppIsNoTapLeague(s), lg = s.league ? map.leagueOf[s.league] : null, ce = s.house ? map.centerOf[s.house] : null;
-    /* a league or center the app doesn't have yet is created (someone new to the app has none) */
+    var rows = bySess[k], s = rows[0].pp.s, lg = s.league ? map.leagueOf[s.league] : null, ce = s.house ? map.centerOf[s.house] : null;
     var skip = s.league && map.skipLeague && map.skipLeague[s.league];
-    var whole = rows.length === s.games.length, can = whole && !s.open && !skip, why = skip ? 'you chose not to import this league (Names)' : !whole ? 'the app has some of this session\u2019s games' : s.open ? 'open bowling: add it in the app if you want it' : '';
-    out.push({ id: 's' + k, kind: 'add', on: !!can, disabled: !can, rows: rows, session: s, noTap: noTap,
-      label: s.date + ' \u00b7 ' + (s.league || 'Open') + ' \u00b7 ' + rows.length + ' game' + (rows.length === 1 ? '' : 's') + ' (' + rows.map(function (r) { return r.pp.g.score; }).join(', ') + ')',
-      note: can ? ('to ' + (noTap ? 'NoTap Games (no-tap)' : lg ? lg : 'new league \u201c' + s.league + '\u201d') + (ce ? ' at ' + ce : s.house && !(map.noCenter && map.noCenter[s.house]) ? ' \u00b7 new center \u201c' + s.house + '\u201d' : ' \u00b7 no center')) : why });
+    var whole = rows.length + (skipped[k] || 0) === s.games.length, can = whole && !s.open && !skip;
+    var why = skip ? 'you chose not to import this league (Names)' : !whole ? 'the app has some of this session\u2019s games' : s.open ? 'open bowling: add it in the app if you want it' : '';
+    out.push({ id: 's' + k, sec: 'add', kind: 'add', on: !!can, disabled: !can, rows: rows, session: s, noTap: false,
+      label: s.date + ' \u00b7 ' + (s.league || 'Open') + ' \u00b7 ' + rows.length + ' game' + (rows.length === 1 ? '' : 's') + ' (' + rows.map(function (r) { return r.pp.g.score; }).join(', ') + ')' + (skipped[k] ? ' \u00b7 ' + skipped[k] + ' left out by you' : ''),
+      note: can ? ('to ' + (lg ? lg : 'new league \u201c' + s.league + '\u201d') + (ce ? ' at ' + ce : s.house && !(map.noCenter && map.noCenter[s.house]) ? ' \u00b7 new center \u201c' + s.house + '\u201d' : ' \u00b7 no center')) : why });
   });
   return out;
 }
-function ppIsNoTapLeague(s) { return PP_OPT.noTap && /no[\s-]?tap/i.test(s.league || ''); }
+function ppIsNoTapLeague(s) { return false; }   // v30.195: nothing is imported as no-tap
 function ppLookups(D, map) {
   var leagueOf = {}, centerOf = {}, ballMap = {}, lgID = {}, ceID = {}, skipLeague = {}, noCenter = {};
   (map.leagues || []).forEach(function (x) { if (x.how === 'skip') skipLeague[x.pp] = 1; });
@@ -519,6 +544,8 @@ function ppRunImport(actions) {
   var replaceFrames = function (r, label) {
     var a = r.app, g = D.games.filter(function (x) { return x.GameID === a.gameID; })[0];
     if (!g) { results.push({ label: label, ok: false, msg: 'game not found' }); return; }
+    var gs = D.series.filter(function (x) { return x.SeriesID === g.SeriesID; })[0];
+    if (g.NoTap || (gs && gs.NoTap)) { results.push({ label: label, ok: false, msg: 'no-tap game: kept as recorded' }); return; }
     var oldF = D.frames.filter(function (f) { return f.GameID === g.GameID; }), fids = oldF.map(function (f) { return f.FrameID; });
     var oldA = D.attempts.filter(function (x) { return fids.indexOf(x.FrameID) >= 0; }), keepG = copy(g);
     D.frames = D.frames.filter(function (f) { return f.GameID !== g.GameID; });
@@ -580,15 +607,20 @@ function ppRunImport(actions) {
   return { results: results, undo: undo };
 }
 function ppImportOpen() { _pp.plan = ppPlan(_pp.rep, ppLookups(ppAppDb(), _pp.map)); _pp.view = 'import'; _pp.results = null; ppRender(); }
-function ppPlanToggle(i, on) { if (_pp.plan[i] && !_pp.plan[i].disabled) _pp.plan[i].on = !!on; var b = el('pp-go'); var n = ppPlanGames(); if (b) { b.textContent = 'Import ' + n + ' game' + (n === 1 ? '' : 's'); b.disabled = !n; } }
+function ppPlanToggle(i, on) { if (i >= 0 && _pp.plan[i] && !_pp.plan[i].disabled) _pp.plan[i].on = !!on; var b = el('pp-go'); var n = ppPlanGames(); if (b) { b.textContent = 'Import ' + n + ' game' + (n === 1 ? '' : 's'); b.disabled = !n; } }
+function ppPlanSection(sec, on) {
+  (_pp.plan || []).forEach(function (a, i) { if (a.sec === sec && !a.disabled) { a.on = !!on; var cb = document.querySelector('#pp-ov [data-pp-plan="' + i + '"]'); if (cb) cb.checked = !!on; } });
+  ppPlanToggle(-1);
+}
 function ppPlanGames() { return (_pp.plan || []).filter(function (a) { return a.on && !a.disabled; }).reduce(function (t, a) { return t + (a.kind === 'add' ? a.rows.length : 1); }, 0); }
 function ppGo(actions) {
   var n = actions.reduce(function (t, a) { return t + (a.kind === 'add' ? a.rows.length : 1); }, 0);
   if (!n) return;
   if (typeof confirm === 'function' && !confirm('Import ' + n + ' game' + (n === 1 ? '' : 's') + ' from PinPal?\n\nA copy of everything changed is kept for Undo last import. A Full Snapshot first is still a good idea.')) return;
+  ppBusy('Importing ' + n + ' game' + (n === 1 ? '' : 's') + '\u2026');
   var D = ppAppDb(), keepIds = JSON.parse(JSON.stringify(D.ids));
   var run;
-  try { run = ppRunImport(actions); } catch (e) { if (root.toast) root.toast('Import failed: ' + (e && e.message || e)); return; }
+  try { run = ppRunImport(actions); } catch (e) { if (root.toast) root.toast('Import failed: ' + (e && e.message || e)); ppRender(); return; }
   try { localStorage.setItem(PP_UNDO_KEY, JSON.stringify(run.undo)); } catch (e) {}
   var del = function (store, keys) { return typeof idbDeleteKeys === 'function' && keys && keys.length ? idbDeleteKeys(store, keys) : Promise.resolve(); };
   Promise.resolve(del('attempts', run.undo.removedAttempts)).then(function () { return del('frames', run.undo.removedFrames); })
@@ -609,6 +641,7 @@ function ppUndo() {
   var u; try { u = JSON.parse(localStorage.getItem(PP_UNDO_KEY) || 'null'); } catch (e) {}
   if (!u) { if (root.toast) root.toast('Nothing to undo'); return; }
   if (typeof confirm === 'function' && !confirm('Undo the PinPal import from ' + u.at.slice(0, 16).replace('T', ' ') + '?')) return;
+  ppBusy('Undoing the import\u2026 (saving can take a few seconds)');
   var D = ppAppDb(), c = u.created, has = function (arr, v) { return arr.indexOf(v) >= 0; };
   D.attempts = D.attempts.filter(function (a) { return !has(c.attempts, a.AttemptID); }).concat(u.replaced.attempts);
   D.frames = D.frames.filter(function (f) { return !has(c.frames, f.FrameID); }).concat(u.replaced.frames);
@@ -635,13 +668,21 @@ function ppImportHTML() {
   }
   var n = ppPlanGames();
   if (!_pp.plan.length) return '<div style="font-size:13px;color:var(--t2);line-height:1.6">Nothing to import: every PinPal game is already in the app. To swap one game\u2019s frames for PinPal\u2019s, open it from the report.</div>';
-  return '<div style="font-size:12px;color:var(--t3);line-height:1.5;margin-bottom:6px">Ticked items are imported. Games are scored by the app; a filled game that doesn\u2019t come out at PinPal\u2019s score is left alone. Equipment: first ball only. Nothing about speed, boards or notes in the app is touched.</div>' +
-    _pp.plan.map(function (a, i) {
-      return '<label style="display:flex;gap:10px;align-items:flex-start;padding:10px 2px;border-bottom:1px solid var(--border1);' + (a.disabled ? 'opacity:.55' : 'cursor:pointer') + '">' +
-        '<input type="checkbox" ' + (a.on ? 'checked ' : '') + (a.disabled ? 'disabled ' : '') + 'onchange="ppPlanToggle(' + i + ',this.checked)" style="width:18px;height:18px;margin-top:2px">' +
-        '<div style="flex:1;min-width:0"><div style="font-size:13px;color:var(--t1)"><b>' + (a.kind === 'fill' ? 'Fill' : 'Add') + '</b> \u00b7 ' + esc(a.label) + '</div><div style="font-size:12px;color:var(--t3)">' + esc(a.note) + '</div></div></label>';
-    }).join('') +
-    '<button id="pp-go" style="' + BTNP + 'width:100%;padding:12px;margin-top:14px" ' + (n ? '' : 'disabled ') + 'onclick="ppGoPlan()">Import ' + n + ' game' + (n === 1 ? '' : 's') + '</button>';
+  var item = function (a) {
+    var i = _pp.plan.indexOf(a);
+    return '<label style="display:flex;gap:10px;align-items:flex-start;padding:10px 2px 10px 6px;border-bottom:1px solid var(--border1);' + (a.disabled ? 'opacity:.55' : 'cursor:pointer') + '">' +
+      '<input type="checkbox" data-pp-plan="' + i + '" ' + (a.on ? 'checked ' : '') + (a.disabled ? 'disabled ' : '') + 'onchange="ppPlanToggle(' + i + ',this.checked)" style="width:18px;height:18px;margin-top:2px">' +
+      '<div style="flex:1;min-width:0"><div style="font-size:13px;color:var(--t1)">' + esc(a.label) + '</div><div style="font-size:12px;color:var(--t3)">' + esc(a.note) + '</div></div></label>';
+  };
+  var secs = PP_SECS.map(function (sc) {
+    var list = _pp.plan.filter(function (a) { return a.sec === sc[0]; }); if (!list.length) return '';
+    var live = list.filter(function (a) { return !a.disabled; }).length;
+    var b = function (t, on) { return '<button onclick="ppPlanSection(\'' + sc[0] + '\',' + on + ')" style="' + BTN + 'padding:5px 10px;font-size:12px">' + t + '</button>'; };
+    return '<div style="display:flex;align-items:center;gap:6px;margin:16px 0 2px"><div style="flex:1;font-size:12px;font-weight:800;color:var(--t2);text-transform:uppercase;letter-spacing:.4px">' + sc[1] + ' \u00b7 ' + list.length + '</div>' +
+      (live ? b('All', true) + b('None', false) : '') + '</div>' + list.map(item).join('');
+  }).join('');
+  return '<div style="font-size:12px;color:var(--t3);line-height:1.5;margin-bottom:6px">Ticked items are imported; each section has All / None. Games are scored by the app; a filled game that doesn\u2019t come out at PinPal\u2019s score is left alone. Equipment: first ball only. Speed, boards and notes in the app are never touched. Games you reviewed (left as is) are not listed.</div>' +
+    secs + '<button id="pp-go" style="' + BTNP + 'width:100%;padding:12px;margin-top:16px" ' + (n ? '' : 'disabled ') + 'onclick="ppGoPlan()">Import ' + n + ' game' + (n === 1 ? '' : 's') + '</button>';
 }
 
 /* ---------- screen ---------- */
@@ -693,8 +734,7 @@ function ppRender() {
     '<div style="font-size:11px;color:var(--t3)">' + (r ? esc(_pp.file) + ' \u00b7 ' + esc(r.range[0] || '') + ' to ' + esc(r.range[1] || '') : 'Read only: nothing in the app changes') + '</div></div></div>';
   if (_pp.view === 'import' || _pp.view === 'done') { ov.innerHTML = head + '<div style="flex:1;overflow-y:auto;padding:0 16px 16px">' + ppImportHTML() + '</div>'; return; }
   if (_pp.game) { ov.innerHTML = head + '<div style="flex:1;overflow-y:auto;padding:0 16px 16px">' + ppGameHTML(_pp.game) +
-    (_pp.game.pp && _pp.game.app && _pp.game.pp.g.frames ? '<button style="' + BTN + 'width:100%;padding:11px;margin-top:14px" onclick="ppReplaceThis()">Use PinPal\u2019s frames for this game</button>' +
-      '<div style="font-size:11px;color:var(--t3);margin-top:6px;line-height:1.5">Replaces this game\u2019s frames and pins (and first-ball equipment) with PinPal\u2019s, only if they score the same. Undo last import puts it back.</div>' : '') + '</div>'; return; }
+    ppDecideHTML(_pp.game) + '</div>'; return; }
   if (!r) {
     ov.innerHTML = head + '<div style="flex:1;overflow-y:auto;padding:4px 16px 16px;font-size:13px;color:var(--t2);line-height:1.6">' +
       '<p>In PinPal, make a backup and save it to Files. Then choose it here. The app reads it on this phone and lists where PinPal and the app agree or differ, game by game.</p>' +
@@ -705,11 +745,14 @@ function ppRender() {
   var lab = {}; PP_CATS.forEach(function (c) { lab[c[0]] = c; });
   var body = PP_CATS.map(function (c) {
     var list = r.rows.filter(function (x) { return x.cat === c[0]; }), n = list.length, open = !!_pp.open[c[0]];
-    var col = c[0] === 'same' ? 'var(--teal)' : c[0] === 'appOnly' ? 'var(--t3)' : 'var(--gold)';
+    var col = c[0] === 'same' || c[0] === 'kept' ? 'var(--teal)' : c[0] === 'appOnly' ? 'var(--t3)' : 'var(--gold)';
     var h = '<div onclick="ppToggle(\'' + c[0] + '\')" style="display:flex;align-items:center;gap:10px;padding:12px 2px;border-bottom:1px solid var(--border1);cursor:pointer">' +
       '<div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:700;color:var(--t1)">' + c[1] + '</div><div style="font-size:11px;color:var(--t3);line-height:1.4">' + c[2] + '</div></div>' +
       '<div style="font-size:17px;font-weight:800;color:' + (n ? col : 'var(--t3)') + '">' + n + '</div>' + (n ? '<span style="color:var(--t3)">' + (open ? '\u25be' : '\u25b8') + '</span>' : '') + '</div>';
     if (!open || !n) return h;
+    var bulk = { detail: 'Keep the app\u2019s version for all', score: 'Keep the app\u2019s version for all', fillScore: 'Keep the app\u2019s version for all', fillBroken: 'Keep the app\u2019s version for all', ppOnly: 'Don\u2019t import any of these' }[c[0]];
+    if (bulk) h += '<button onclick="ppReviewCat(\'' + c[0] + '\')" style="' + BTN + 'width:100%;padding:9px;margin:8px 0 2px;font-size:12px">' + bulk + ' ' + n + '</button>';
+    if (c[0] === 'kept') h += '<button onclick="ppReviewCatUndo()" style="' + BTN + 'width:100%;padding:9px;margin:8px 0 2px;font-size:12px">Review all ' + n + ' again</button>';
     if (c[0] === 'appOnly') {
       var inside = list.filter(function (x) { return !x.outside; }), outside = list.length - inside.length;
       list = inside;
@@ -747,11 +790,23 @@ function ppRender() {
   ov.innerHTML = head + '<div style="flex:1;overflow-y:auto;padding:0 16px 16px">' + body +
     '<div style="font-size:11px;font-weight:700;color:var(--t3);margin:18px 0 2px;text-transform:uppercase;letter-spacing:.5px">Names</div>' + mapH +
     '<label style="display:flex;gap:10px;align-items:flex-start;margin-top:16px;font-size:12px;color:var(--t2);line-height:1.45"><input type="checkbox" ' + (PP_OPT.noTap ? 'checked ' : '') + 'onchange="ppNoTapSet(this.checked)" style="width:18px;height:18px;margin-top:1px">' +
-      '<span><b>No-tap matching</b> (advanced). Only if you logged no-tap nights in PinPal as regular games: reads them as no-tap where the app\u2019s game is no-tap, and adds \u201cNo Tap\u201d leagues to NoTap Games.</span></label>' +
+      '<span><b>No-tap matching</b> (compare only). Reads PinPal games as no-tap (a 9 on the first ball is a strike) where the app\u2019s game is no-tap. A personal sanity check: Import never rewrites a no-tap game or imports anything as no-tap.</span></label>' +
     '<button style="' + BTNP + 'width:100%;padding:12px;margin-top:16px" onclick="ppImportOpen()">Import from PinPal\u2026</button>' +
     (ppHasUndo() ? '<button style="' + BTN + 'width:100%;padding:10px;margin-top:8px" onclick="ppUndo()">Undo last import</button>' : '') +
     '<div style="display:flex;gap:8px;margin-top:8px"><button style="' + BTN + 'flex:1;padding:11px" onclick="ppDownload()">Download report (CSV)</button><button style="' + BTN + 'flex:1;padding:11px" onclick="ppPick()">Choose another</button></div>' +
     '<div style="font-size:11px;color:var(--t3);line-height:1.5;margin-top:10px">Games pair up by date: same score first (no-tap games against PinPal\u2019s no-tap reading); what is left pairs by order only when there is one session against one series. The report changes nothing; Import asks first.</div></div>';
+}
+/* v30.195: decide for this game: keep the app's version, use PinPal's frames, don't import, or review again */
+function ppDecideHTML(r) {
+  var bp = function (t, js, primary) { return '<button style="' + (primary ? BTNP : BTN) + 'width:100%;padding:11px;margin-top:10px" onclick="' + js + '">' + t + '</button>'; };
+  var note = function (t) { return '<div style="font-size:11px;color:var(--t3);margin-top:6px;line-height:1.5">' + t + '</div>'; };
+  if (r.cat === 'kept') return '<div style="margin-top:14px;font-size:13px;color:var(--teal)">' + (r.review === 'app' ? 'You kept the app\u2019s version of this game.' : 'You chose not to import this game.') + '</div>' + bp('Review again', 'ppReview(\'undo\')');
+  if (r.cat === 'same' || r.cat === 'appOnly') return '';
+  if (r.pp && !r.app) return '<div style="margin-top:14px"></div>' + bp('Don\u2019t import this game', 'ppReview(\'skip\')') + note('Leaves it out of Import; the rest of its session can still be added.');
+  var h = '<div style="margin-top:14px"></div>' + bp('Keep the app\u2019s version', 'ppReview(\'app\')', true) + note('Marks this game reviewed: Import leaves it alone and it moves to \u201cReviewed: left as is\u201d.');
+  if (r.app.noTap) return h + note('No-tap game in the app: PinPal can\u2019t record no-tap, so its frames aren\u2019t offered for it.');
+  if (r.pp.g.frames) h += bp('Use PinPal\u2019s frames for this game', 'ppReplaceThis()') + note('Replaces this game\u2019s frames and pins (and first-ball equipment) with PinPal\u2019s' + (r.cat === 'score' ? '; its score becomes PinPal\u2019s ' + r.pp.g.score : ', only if they score the same') + '. Undo last import puts it back.');
+  return h;
 }
 function ballRow(f, k) { var b = f[k]; if (!b) return '<span style="color:var(--t3)">\u2014</span>'; return b.down === 10 ? 'X' : b.down + (b.standing.length && b.standing.length < 10 ? ' <span style="color:var(--t3)">(' + b.standing.join('-') + ')</span>' : ''); }
 function ppGameHTML(x) {
@@ -784,6 +839,30 @@ function ppNoTapSet(on) {
   PP_OPT.noTap = !!on; try { localStorage.setItem(PP_OPT_KEY, JSON.stringify(PP_OPT)); } catch (e) {}
   if (_pp.pp) ppRecompare(); else ppRender();
 }
+function ppReviewSet(keys, val) {
+  var rv = ppLoadJSON(PP_REV_KEY, {});
+  keys.forEach(function (k) { if (val) rv[k] = val; else delete rv[k]; });
+  try { localStorage.setItem(PP_REV_KEY, JSON.stringify(rv)); } catch (e) {}
+}
+function ppRowKey(r) { return r.app && r.pp ? 'g' + r.app.gameID : r.pp ? 'p' + r.pp.g.pk : null; }
+/* this game: keep the app's version / don't import / review again */
+function ppReview(how) {
+  var r = _pp.game; if (!r) return; var k = ppRowKey(r); if (!k) return;
+  ppReviewSet([k], how === 'undo' ? null : how);
+  var sc = _pp.scroll; ppRecompare(); _pp.scroll = sc;
+  if (root.toast) root.toast(how === 'undo' ? 'Back in the report for review' : how === 'app' ? 'Keeping the app\u2019s version' : 'Won\u2019t import this game');
+}
+/* a whole report section at once */
+function ppReviewCat(cat) {
+  var list = _pp.rep.rows.filter(function (r) { return r.cat === cat; });
+  var val = cat === 'ppOnly' ? 'skip' : 'app', keys = list.map(ppRowKey).filter(Boolean);
+  if (typeof confirm === 'function' && !confirm((val === 'app' ? 'Keep the app\u2019s version of all ' : 'Don\u2019t import any of the ') + keys.length + ' games in this section?\n\nYou can review any of them again later.')) return;
+  ppReviewSet(keys, val); ppRecompare();
+}
+function ppReviewCatUndo() {
+  var keys = _pp.rep.rows.filter(function (r) { return r.cat === 'kept'; }).map(ppRowKey).filter(Boolean);
+  ppReviewSet(keys, null); ppRecompare();
+}
 function ppHasUndo() { try { return !!localStorage.getItem(PP_UNDO_KEY); } catch (e) { return false; } }
 function ppToggle(k) { _pp.open[k] = !_pp.open[k]; ppRender(); }
 function ppShow(i) { _pp.game = _pp.rep.rows[i]; _pp.scroll = (el('pp-ov').querySelector('[style*="overflow-y:auto"]') || {}).scrollTop || 0; ppRender(); }
@@ -797,7 +876,7 @@ function ppDownload() {
 
 root.PINPAL_JS_VERSION = PP_VERSION;
 root.ppOpen = ppOpen; root.ppClose = ppClose; root.ppPick = ppPick; root.ppToggle = ppToggle; root.ppShow = ppShow; root.ppBack = ppBack; root.ppDownload = ppDownload;
-root.ppLoadBuffer = ppLoadBuffer; root.ppNameSet = ppNameSet; root.ppNoTapSet = ppNoTapSet; root.ppImportOpen = ppImportOpen; root.ppPlanToggle = ppPlanToggle; root.ppGoPlan = ppGoPlan; root.ppReplaceThis = ppReplaceThis; root.ppUndo = ppUndo; root.ppRecompare = ppRecompare;
+root.ppLoadBuffer = ppLoadBuffer; root.ppReview = ppReview; root.ppReviewCat = ppReviewCat; root.ppReviewCatUndo = ppReviewCatUndo; root.ppPlanSection = ppPlanSection; root.ppNameSet = ppNameSet; root.ppNoTapSet = ppNoTapSet; root.ppImportOpen = ppImportOpen; root.ppPlanToggle = ppPlanToggle; root.ppGoPlan = ppGoPlan; root.ppReplaceThis = ppReplaceThis; root.ppUndo = ppUndo; root.ppRecompare = ppRecompare;
 root._pinpal = { sqliteTables: sqliteTables, sqlCols: sqlCols, ppRead: ppRead, ppFrames: ppFrames, ppScore: ppScore, appGames: appGames, ppCompare: ppCompare,
   ppFrameDiffs: ppFrameDiffs, ppNoTapScore: ppNoTapScore, ppUnlike: ppUnlike, ppNoTapFrames: ppNoTapFrames, ppMatchName: ppMatchName, ppMapping: ppMapping, ppCsv: ppCsv, PP_CATS: PP_CATS, ppToAppBalls: ppToAppBalls, ppPlan: ppPlan, ppLookups: ppLookups, ppRunImport: ppRunImport, ppApplyChoices: ppApplyChoices, opt: PP_OPT };
 })(typeof window !== 'undefined' ? window : globalThis);
