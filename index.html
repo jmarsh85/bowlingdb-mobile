@@ -3457,7 +3457,7 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
 /* v30.169: ONE place for the version. The header, the home screen label, the
    page title and backups all read these, so nothing can go stale on an update.
    Bump both lines (and CATALOG_JS_VERSION in catalog.js when it changes). */
-const APP_VERSION = 'v30.191';
+const APP_VERSION = 'v30.194';
 const APP_BUILD_DATE = '2026-10-12';
 /* catalog.js this build expects; an older file on the server shows a warning */
 const EXPECTED_CATALOG_JS = 'v30.189';
@@ -12176,14 +12176,12 @@ const att3Fresh = (p1 === 10 && p2 === 10) || (p1 < 10 && p1 + p2 >= 10);
 if (att3Fresh) {
 totalFr++;                                   
 if (p3 === 10) strikes++;
+} else if (p1 === 10 && p2 < 10 && p2 + p3 >= 10) {   /* v30.193 F10-1: X then a leave: credited only when made */
+spareOpps++; spares++;
 }
 }
 }
-if (p1 === 10) {
-f10label = p2 === 10 ? (p3 === 10 ? 'Turkey 🦃': 'Double + fill') : 'Strike + fill';
-} else if (p2 !== null) {
-f10label = (p1 + p2 >= 10) ? 'Spare + fill': 'Open';
-}
+f10label = f10Label(p1, p2, p3) || f10label;
 }
 }
 const strikeRate = totalFr > 0 ? Math.round((strikes / totalFr) * 100) : 0;
@@ -12328,6 +12326,40 @@ navEl.innerHTML = '';
 
 
 
+/* v30.193 F10-1: what each 10th-frame ball counts as (one rule for every stat).
+   ball 1: fresh rack (strike counts; else ball 2 is its spare attempt).
+   ball 2: after a strike, fresh rack (strike counts); otherwise the spare attempt on ball 1's leave.
+   ball 3: after a strike + leave (X 7 _): a BONUS spare attempt. Credited only when made (counts as a
+           spare opportunity converted); missed, it counts as nothing (not a missed spare, not an open).
+           After a spare or two strikes: the FILL ball: a strike counts as a strike and a throw, but
+           pins it leaves are never a spare opportunity or an open. (James, 10/12/26)
+   noTap: a 9 on a fresh rack is a strike. Returns [{att, n, role:'fresh'|'spare'|'fill', strike,
+   spareOpp, converted, leaveAtt}]. */
+function f10BallRoles(a1, a2, a3, noTap) {
+const out = [], pf = a => (a && a.Pinfall != null) ? a.Pinfall : null;
+const X = v => v === 10 || (!!noTap && v === 9);
+const p1 = pf(a1), p2 = pf(a2), p3 = pf(a3);
+if (p1 == null) return out;
+out.push({ att: a1, n: 1, role: 'fresh', strike: X(p1), spareOpp: false });
+if (p2 == null) return out;
+if (X(p1)) out.push({ att: a2, n: 2, role: 'fresh', strike: X(p2), spareOpp: false });
+else out.push({ att: a2, n: 2, role: 'spare', strike: false, spareOpp: true, converted: p1 + p2 >= 10, leaveAtt: a1 });
+if (p3 == null) return out;
+if (X(p1) && !X(p2)) { const made = p2 + p3 >= 10; out.push({ att: a3, n: 3, role: 'spare', bonus: true, strike: false, spareOpp: made, converted: made, leaveAtt: a2 }); }
+else if (X(p1) || p1 + p2 >= 10) out.push({ att: a3, n: 3, role: 'fill', strike: X(p3), spareOpp: false });
+return out;
+}
+/* the 10th-frame label (Game Complete, game stats) */
+function f10Label(p1, p2, p3) {
+if (p1 == null) return '';
+if (p1 === 10) {
+if (p2 == null) return 'Strike';
+if (p2 === 10) return p3 === 10 ? 'Turkey 🦃' : 'Double + fill';
+return p3 == null ? 'Strike' : (p2 + p3 >= 10 ? 'Strike + spare' : 'Strike + open');
+}
+if (p2 == null) return '';
+return p1 + p2 >= 10 ? (p3 === 10 ? 'Spare + strike' : 'Spare + fill') : 'Open';
+}
 function renderGameLeaveSummaryHTML(gameID, frames) {
 
 
@@ -12407,15 +12439,19 @@ leaveMap[id].opps++;
 if (fr.Spare) leaveMap[id].conv++;
 }
 
-if (fr.FrameNumber === 10 && a1.Pinfall !== 10 && a2 && a2.Pinfall !== null) {
-const standing = getStanding(a1);
-if (standing.size > 0) {
-const lv = resolveLeave(standing, a1.LeaveID);
+if (fr.FrameNumber === 10) {   /* v30.193 F10-1: 10th-frame strikes (fill included) count; spare attempts after ball 1 or after a strike */
+const a3 = atts.find(a => a.Attempt === 3);
+f10BallRoles(a1, a2, a3, noTap).forEach(r => {
+if (r.strike) strikeCount++;
+if (!r.spareOpp) return;
+const standing = getStanding(r.leaveAtt);
+if (standing.size === 0) return;
+const lv = resolveLeave(standing, r.leaveAtt.LeaveID);
 const id = lv.LeaveID;
 if (!leaveMap[id]) leaveMap[id] = { lv, opps: 0, conv: 0 };
 leaveMap[id].opps++;
-if (a1.Pinfall + a2.Pinfall >= 10) leaveMap[id].conv++;
-}
+if (r.converted) leaveMap[id].conv++;
+});
 }
 }
 const topLeaves = Object.values(leaveMap).sort((a, b) => b.opps - a.opps);
@@ -15411,10 +15447,9 @@ const a1 = db.attempts.find(a => a.FrameID === fr.FrameID && a.Attempt === 1);
 if (a1?.Pinfall != null) { opps++; if (a1.Pinfall === 10) hits++; }
 
 const a2 = db.attempts.find(a => a.FrameID === fr.FrameID && a.Attempt === 2);
-if (a1?.Pinfall === 10 && a2?.Pinfall != null) { opps++; if (a2.Pinfall === 10) hits++; }
-
 const a3 = db.attempts.find(a => a.FrameID === fr.FrameID && a.Attempt === 3);
-if (a1?.Pinfall === 10 && a2?.Pinfall === 10 && a3?.Pinfall != null) { opps++; if (a3.Pinfall === 10) hits++; }
+/* v30.193 F10-1: every fresh rack after ball 1, the fill ball after a spare included */
+f10BallRoles(a1, a2, a3, false).forEach(r => { if (r.n > 1 && r.role !== 'spare') { opps++; if (r.strike) hits++; } });
 }
 });
 const pct = opps > 0 ? Math.round(hits / opps * 100) : 0;
@@ -15779,29 +15814,15 @@ if (fr?.Spare) entry.spares++;
 else entry.opens++;
 }
 } else {
-
+/* v30.193 F10-1: every 10th-frame ball by its role; ball 3 was never counted, so a fill-ball
+   strike with another ball showed that ball with 0 throws */
 const siblings = attsByFrame[a.FrameID] || [];
-const a1 = siblings.find(x => x.Attempt === 1);
-const a2 = siblings.find(x => x.Attempt === 2);
-const a1Strike = a1?.Pinfall === 10;
-const a1NotStrike = a1 && !a1Strike;
-const a1a2Spare = a1NotStrike && a2 && (a1.Pinfall + a2.Pinfall) >= 10;
-if (a.Attempt === 1) {
-
-entry.att1++;
-if (a.Pinfall === 10) entry.strikes++;
-} else if (a.Attempt === 2) {
-if (a1Strike) {
-
-entry.att1++;
-if (a.Pinfall === 10) entry.strikes++;
-} else {
-
-if (a1a2Spare) entry.spares++;
-else entry.opens++;
+const role = f10BallRoles(siblings.find(x => x.Attempt === 1), siblings.find(x => x.Attempt === 2), siblings.find(x => x.Attempt === 3), false)
+.find(r => r.n === a.Attempt);
+if (role) {
+if (role.role === 'spare') { if (role.converted) entry.spares++; else if (role.spareOpp) entry.opens++; }
+else { entry.att1++; if (role.strike) entry.strikes++; }
 }
-}
-
 }
 });
 const ballIDs = Object.keys(byBall).map(Number);
@@ -23976,9 +23997,7 @@ const f10atts = db.attempts.filter(a => a.FrameID === f10.FrameID).sort((a,b) =>
 const p1 = f10atts.find(a => a.Attempt === 1)?.Pinfall;
 const p2 = f10atts.find(a => a.Attempt === 2)?.Pinfall;
 const p3 = f10atts.find(a => a.Attempt === 3)?.Pinfall;
-if (p1 === 10) f10label = p2 === 10 ? (p3 === 10 ? 'Turkey 🦃': 'Double + fill') : 'Strike + fill';
-else if (p1 != null && p2 != null && p1 + p2 >= 10) f10label = 'Spare + fill';
-else if (p1 != null && p2 != null) f10label = 'Open';
+f10label = f10Label(p1, p2, p3) || f10label;   // v30.193 F10-1
 }
 openModal(`
     <div class="modal-title">Game ${game.GameNumber} Stats${game.NoTap ? ' <span class="pill pill-gold" style="font-size:11px;vertical-align:middle">✦ NoTap</span>': ''}</div>
@@ -24372,6 +24391,8 @@ const att3Fresh = (a1.Pinfall === 10 && a2.Pinfall === 10) ||
 if (att3Fresh) {
 totalFr++;                                     
 if (a3.Pinfall === 10) strikes++;
+} else if (a1.Pinfall === 10 && a2.Pinfall < 10 && a2.Pinfall + a3.Pinfall >= 10) {   /* v30.193 F10-1: X then a leave: credited only when made */
+spareOpps++; spares++;
 }
 }
 }
@@ -24537,8 +24558,13 @@ converted: f.Spare
 f10Frames.forEach(f10 => {
 const a1 = allAttempts.find(a => a.FrameID === f10.FrameID && a.Attempt === 1);
 const a2 = allAttempts.find(a => a.FrameID === f10.FrameID && a.Attempt === 2);
-if (!a1 || a1.Pinfall === null || a1.Pinfall === 10) return; 
+if (!a1 || a1.Pinfall === null) return;
 if (!a2 || a2.Pinfall === null) return;
+if (a1.Pinfall === 10) {   /* v30.193 F10-1: X then a leave: ball 2's leave, attempted with ball 3 */
+const a3 = allAttempts.find(a => a.FrameID === f10.FrameID && a.Attempt === 3);
+if (a2.Pinfall < 10 && a3 && a3.Pinfall !== null && a2.Pinfall + a3.Pinfall >= 10) spareOpsList2.push({ a1: a2, converted: true });   // made only
+return;
+}
 spareOpsList2.push({ a1, converted: (a1.Pinfall + a2.Pinfall) >= 10 });
 });
 spareOpsList2.forEach(({ a1, converted }) => {
