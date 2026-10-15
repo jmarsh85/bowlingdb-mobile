@@ -15,7 +15,7 @@
    library. Loaded on demand from Settings > Data & app. */
 (function (root) {
 'use strict';
-var PP_VERSION = 'v30.195';
+var PP_VERSION = 'v30.196';
 /* v30.193: options and your name choices, kept on this phone.
    noTap (off by default): read PinPal games as no-tap where the app's game is no-tap, and send
    "No Tap" leagues to NoTap Games. PinPal has no no-tap mode, so this only fits someone who logged
@@ -387,7 +387,7 @@ function ppApplyChoices(m, choices) {
     m[k].forEach(function (x) {
       x.auto = x.app; x.autoHow = x.how;
       var c = ch[x.pp];
-      if (c == null) { x.choice = x.app ? x.app : (k === 'balls' ? '__none' : '__new'); return; }
+      if (c == null) { x.choice = x.app ? x.app : '__new'; if (!x.app) x.how = 'new'; return; }   // v30.196: an unmatched ball is created too
       x.choice = c;
       if (c === '__new' || c === '__none' || c === '__skip') { x.app = null; x.how = c.slice(2); }
       else { x.app = c; x.how = c === x.auto ? x.autoHow : 'you'; }
@@ -529,16 +529,36 @@ function ppLookups(D, map) {
   var leagueOf = {}, centerOf = {}, ballMap = {}, lgID = {}, ceID = {}, skipLeague = {}, noCenter = {};
   (map.leagues || []).forEach(function (x) { if (x.how === 'skip') skipLeague[x.pp] = 1; });
   (map.centers || []).forEach(function (x) { if (x.how === 'none') noCenter[x.pp] = 1; });
+  var newBall = {}; (map.balls || []).forEach(function (x) { if (x.how === 'new') newBall[x.pp] = 1; });
   (map.leagues || []).forEach(function (x) { if (x.app) leagueOf[x.pp] = x.app; });
   (map.centers || []).forEach(function (x) { if (x.app) centerOf[x.pp] = x.app; });
   (D.leagues || []).forEach(function (l) { lgID[l.LeagueName] = l.LeagueID; });
   (D.centers || []).forEach(function (c) { ceID[c.CenterName] = c.CenterID; });
   (map.balls || []).forEach(function (x) { if (x.app) { var b = (D.balls || []).filter(function (y) { return y.BallName === x.app; })[0]; if (b) ballMap[x.pp] = b.BallID; } });
-  return { leagueOf: leagueOf, centerOf: centerOf, ballMap: ballMap, lgID: lgID, ceID: ceID, skipLeague: skipLeague, noCenter: noCenter };
+  return { leagueOf: leagueOf, centerOf: centerOf, ballMap: ballMap, lgID: lgID, ceID: ceID, skipLeague: skipLeague, noCenter: noCenter, newBall: newBall };
 }
 /* Runs the chosen actions. Returns [{label, ok, msg}]. */
 function ppRunImport(actions) {
   var D = ppAppDb(), L = ppLookups(D, _pp.map), results = [];
+  /* v30.196: create a PinPal ball the first time an imported game uses it (it was linked by name only,
+     so on a new install every throw lost its ball). Brand split off a leading maker name; active when
+     used within 180 days of the last ball use in the backup; weight and specs left for the bowler or the catalog. */
+  var lastUse = {}; (_pp.pp ? _pp.pp.sessions : []).forEach(function (se) { se.games.forEach(function (g) { (g.frames || []).forEach(function (f) { var e = f[0] && f[0].eqName; if (e && (!lastUse[e] || lastUse[e] < se.date)) lastUse[e] = se.date; }); }); });
+  /* active = used within 180 days of the last time ANY ball was used (the bowler's recent arsenal),
+     so a backup from someone who stopped logging months ago still comes in with an arsenal */
+  var endDate = Object.keys(lastUse).reduce(function (m, k) { return lastUse[k] > m ? lastUse[k] : m; }, ''), cutoff = endDate ? new Date(new Date(endDate).getTime() - 180 * 864e5).toISOString().slice(0, 10) : '';
+  var MAKERS = ['Roto Grip', '900 Global', 'Columbia 300', 'Brunswick', 'Hammer', 'Storm', 'Motiv', 'Track', 'Ebonite', 'Radical', 'DV8', 'Global'];
+  var makeBall = function (name) {
+    var mfg = '', nm = name;
+    MAKERS.some(function (m) { if (name.toLowerCase().indexOf(m.toLowerCase() + ' ') === 0) { mfg = m; nm = name.slice(m.length + 1); return true; } return false; });
+    var id = D.ids.ball++;
+    D.balls.push({ BallID: id, BallName: nm, Weight: null, MFG: mfg, Active: !!(lastUse[name] && lastUse[name] >= cutoff), PerfectScaleVal: null, HookRating: null, BoxFinish: '',
+      CoreType: '', CoreShort: '', Coverstock: '', CoverName: '', RG: null, Differential: null, RGDiff: '', DateReleased: null, ImagePath: null, CoreImagePath: null, SpecsURL: null, Notes: 'Imported from PinPal' });
+    undo.created.balls = (undo.created.balls || []).concat([id]);
+    L.ballMap[name] = id; return id;
+  };
+  var origBallMap = L.ballMap;
+  L.ballMap = new Proxy(origBallMap, { get: function (t, k) { if (typeof k === 'string' && t[k] == null && L.newBall[k]) return makeBall(k); return t[k]; } });
   var copy = function (o) { return JSON.parse(JSON.stringify(o)); };
   var undo = { at: new Date().toISOString(), created: { series: [], games: [], frames: [], attempts: [] }, replaced: { games: [], frames: [], attempts: [] }, series: [] };
   var replaceFrames = function (r, label) {
@@ -574,13 +594,16 @@ function ppRunImport(actions) {
     var centerID = s.house && L.centerOf[s.house] ? L.ceID[L.centerOf[s.house]] : null;
     if (s.house && centerID == null && !L.noCenter[s.house]) {
       centerID = D.ids.center++;
-      D.centers.push({ CenterID: centerID, CenterName: s.house, Address: '', City: '', State: '', Zip: '', Lanes: null, LaneSurface: '', Website: '', ProShop: false, Notes: 'Imported from PinPal' });
+      D.centers.push({ CenterID: centerID, CenterName: s.house, Address: '', City: '', State: '', Zip: '', Lanes: null, LaneSurface: '', HouseFriction: null, Website: '', ProShop: false, Notes: 'Imported from PinPal' });
       L.centerOf[s.house] = s.house; L.ceID[s.house] = centerID; undo.created.centers = (undo.created.centers || []).concat([centerID]);
     }
     if (!noTap && leagueID == null) {
       leagueID = D.ids.league++;
-      D.leagues.push({ LeagueID: leagueID, LeagueName: s.league, CenterID: centerID, GamesPerSeries: s.games.length, DayOfBowling: '', Weeks: 0, WeeklyDues: 0, Active: false,
-        DefaultBallID: null, Handicap: false, Sport: false, Notes: 'Imported from PinPal', Archived: false });
+      /* v30.196: the fields a league made in the app carries; dates span the league's PinPal sessions */
+      var ls = (_pp.pp ? _pp.pp.sessions : []).filter(function (x) { return x.league === s.league; }).map(function (x) { return x.date; }).sort();
+      D.leagues.push({ LeagueID: leagueID, LeagueName: s.league, TeamName: '', CenterID: centerID, GamesPerSeries: s.games.length, DayOfBowling: '', Weeks: ls.length, WeeklyDues: 0, Active: false,
+        DefaultBallID: null, DefaultSpareBallID: null, Handicap: false, Sport: false, Sanctioned: false, StartDate: ls[0] || s.date, EndDate: ls[ls.length - 1] || s.date,
+        SeasonID: null, SeasonSource: null, LineageID: null, LineageSource: null, Notes: 'Imported from PinPal', Archived: false });
       L.leagueOf[s.league] = s.league; L.lgID[s.league] = leagueID; undo.created.leagues = (undo.created.leagues || []).concat([leagueID]);
     }
     var sid = D.ids.series++, first = {};
@@ -650,6 +673,7 @@ function ppUndo() {
   D.series = D.series.filter(function (s) { return !has(c.series, s.SeriesID); });
   if (c.leagues) D.leagues = D.leagues.filter(function (l) { return !has(c.leagues, l.LeagueID); });
   if (c.centers) D.centers = D.centers.filter(function (x) { return !has(c.centers, x.CenterID); });
+  if (c.balls) D.balls = D.balls.filter(function (x) { return !has(c.balls, x.BallID); });
   var del = function (store, keys) { return typeof idbDeleteKeys === 'function' && keys.length ? idbDeleteKeys(store, keys) : Promise.resolve(); };
   del('attempts', c.attempts).then(function () { return del('frames', c.frames); }).then(function () { return del('games', c.games); }).then(function () { return del('series', c.series); })
     .then(function () { return typeof saveAll === 'function' ? saveAll() : null; })
@@ -681,7 +705,7 @@ function ppImportHTML() {
     return '<div style="display:flex;align-items:center;gap:6px;margin:16px 0 2px"><div style="flex:1;font-size:12px;font-weight:800;color:var(--t2);text-transform:uppercase;letter-spacing:.4px">' + sc[1] + ' \u00b7 ' + list.length + '</div>' +
       (live ? b('All', true) + b('None', false) : '') + '</div>' + list.map(item).join('');
   }).join('');
-  return '<div style="font-size:12px;color:var(--t3);line-height:1.5;margin-bottom:6px">Ticked items are imported; each section has All / None. Games are scored by the app; a filled game that doesn\u2019t come out at PinPal\u2019s score is left alone. Equipment: first ball only. Speed, boards and notes in the app are never touched. Games you reviewed (left as is) are not listed.</div>' +
+  return '<div style="font-size:12px;color:var(--t3);line-height:1.5;margin-bottom:6px">Ticked items are imported; each section has All / None. Games are scored by the app; a filled game that doesn\u2019t come out at PinPal\u2019s score is left alone. Equipment: first ball only; a PinPal ball not in the app is created (Names \u203a balls to change). Speed, boards and notes in the app are never touched. Games you reviewed (left as is) are not listed.</div>' +
     secs + '<button id="pp-go" style="' + BTNP + 'width:100%;padding:12px;margin-top:16px" ' + (n ? '' : 'disabled ') + 'onclick="ppGoPlan()">Import ' + n + ' game' + (n === 1 ? '' : 's') + '</button>';
 }
 
@@ -778,7 +802,7 @@ function ppRender() {
     if (!open) return h;
     var D = ppAppDb() || {}, names = (k === 'centers' ? (D.centers || []).map(function (c) { return c.CenterName; }) : k === 'leagues' ? (D.leagues || []).map(function (c) { return c.LeagueName; }) : (D.balls || []).map(function (c) { return c.BallName; }))
       .filter(Boolean).sort(function (a, b) { return a.localeCompare(b); });
-    var specials = k === 'centers' ? [['__new', 'Create new center'], ['__none', 'No center']] : k === 'leagues' ? [['__new', 'Create new league'], ['__skip', 'Don\u2019t import this league']] : [['__none', 'Don\u2019t link a ball']];
+    var specials = k === 'centers' ? [['__new', 'Create new center'], ['__none', 'No center']] : k === 'leagues' ? [['__new', 'Create new league'], ['__skip', 'Don\u2019t import this league']] : [['__new', 'Create new ball'], ['__none', 'Don\u2019t link a ball']];
     return h + '<div style="font-size:11px;color:var(--t3);padding:6px 2px 4px 12px;line-height:1.45">Your choice is used by Import and kept on this phone. \u201c?\u201d marks a close guess to check.</div>' + l.map(function (x, i) {
       var col = x.how === 'same' ? 'var(--teal)' : x.how === 'close' ? 'var(--gold)' : x.how === 'skip' || x.how === 'none' ? 'var(--t3)' : 'var(--t1)';
       var opts = specials.map(function (o) { return '<option value="' + o[0] + '"' + (x.choice === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') +
