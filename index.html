@@ -3457,8 +3457,8 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
 /* v30.169: ONE place for the version. The header, the home screen label, the
    page title and backups all read these, so nothing can go stale on an update.
    Bump both lines (and CATALOG_JS_VERSION in catalog.js when it changes). */
-const APP_VERSION = 'v30.195';
-const APP_BUILD_DATE = '2026-10-12';
+const APP_VERSION = 'v30.196';
+const APP_BUILD_DATE = '2026-10-14';
 /* catalog.js this build expects; an older file on the server shows a warning */
 const EXPECTED_CATALOG_JS = 'v30.189';
 function applyAppVersion() {
@@ -3868,6 +3868,29 @@ attempts: db.attempts?.length || 0,
 saveDB();
 return saveScoringData();
 }
+/* v30.196: every leave a bowler can face (1,023 pin sets) plus the strike row 'X', in the shape of the
+   original table: DisplayName '2,8', PinCount, IsSplit (the isSplitLeave rule and its adjacency: no head
+   pin, two or more groups of pins in line front to back), LeaveType Split / Makeable. Boards start at 0. */
+function buildLeaveTable() {
+const ADJ_L = { 1:[2,3,5], 2:[1,4,5,8], 3:[1,5,6,9], 4:[2,7,8], 5:[1,2,3,8,9], 6:[3,9,10], 7:[4], 8:[2,4,5], 9:[3,5,6], 10:[6] };   // = SPLIT_VERT_ADJ (isSplitLeave)
+const split = pins => {
+if (pins.includes(1) || pins.length < 2) return false;
+const seen = {}; let groups = 0;
+pins.forEach(p => { if (seen[p]) return; groups++; const st = [p];
+while (st.length) { const n = st.pop(); if (seen[n]) continue; seen[n] = true; ADJ_L[n].forEach(a => { if (pins.includes(a) && !seen[a]) st.push(a); }); } });
+return groups > 1;
+};
+const out = [], blank = { ShortName: null, StartBoard: 0, TargetBoard: 0 };
+const row = (id, pins) => { const o = Object.assign({ LeaveID: id, DisplayName: pins.length ? pins.join(',') : 'X', PinCount: pins.length,
+IsSplit: split(pins), LeaveType: !pins.length ? 'Clean' : split(pins) ? 'Split' : 'Makeable' }, blank);
+for (let p = 1; p <= 10; p++) o['Pin' + p] = pins.includes(p); return o; };
+const sets = [];
+for (let m = 1; m < 1024; m++) { const pins = []; for (let p = 1; p <= 10; p++) if (m & (1 << (p - 1))) pins.push(p); sets.push(pins); }
+sets.sort((a, b) => a.length - b.length || a.join(',').localeCompare(b.join(','), undefined, { numeric: true }));
+sets.forEach((pins, i) => out.push(row(i + 1, pins)));
+out.push(row(out.length + 1, []));
+return out;
+}
 function buildFreshDB() {
 return {
 centers: [
@@ -4024,11 +4047,21 @@ const KNOWN_BALL_IMAGES = {
 16:'9_Envy_Tour_Pearl.png', 17:'Tzone.png'
 };
 const BASE_URL = 'https://raw.githubusercontent.com/jmarsh85/bowlingdb-mobile/balls/';
+/* v30.196: these are James's own pictures, filed by his ball IDs. Only a ball whose NAME matches the
+   picture gets it: on any other install (a new user, or balls a PinPal import creates) ball 1 is not
+   Pitch Black. Pictures given earlier by ID alone to a ball of another name are taken back. */
+const _imgName = f => f.replace(/^\d+_/, '').replace(/\.png$/i, '').replace(/[_\s-]+/g, '').toLowerCase();
+const _ballKey = n => String(n || '').replace(/[^a-z0-9]/gi, '').toLowerCase();
+const _sameBall = (b, f) => { const a = _ballKey(b.BallName), k = _imgName(f); return !!a && (a === k || a.endsWith(k) || k.endsWith(a)); };
 (data.balls||[]).forEach(b => {
-if (!b.ImagePath && KNOWN_BALL_IMAGES[b.BallID]) {
-b.ImagePath = BASE_URL + KNOWN_BALL_IMAGES[b.BallID];
-}
+const f = KNOWN_BALL_IMAGES[b.BallID];
+if (!f) return;
+if (!b.ImagePath && _sameBall(b, f)) b.ImagePath = BASE_URL + f;
+else if (b.ImagePath === BASE_URL + f && !_sameBall(b, f)) b.ImagePath = null;
 });
+/* v30.196: a new install had no leave table (leaves came from James's original database), so leaves
+   were never recorded and the Leave Library stayed empty. Seed every pin combination once. */
+if (!data.leaves.length) { data.leaves = buildLeaveTable(); data.ids.leave = data.leaves.length + 1; }
 
 if (!data.leagues.find(l => l.LeagueID === -1)) {
 data.leagues.push({
@@ -30149,6 +30182,28 @@ localStorage.setItem(FLAG, log.length ? log.join(' | ') : 'nothing to change');
 } catch (e) { console.warn('fixNoTap191:', e); }
 }
 
+/* v30.196 one-time: games scored or imported while the leave table was empty have no LeaveID on the
+   first ball. Fill it in where the attempt says what it faced (PinStart) and what it knocked down. */
+async function fixLeaveIDs196() {
+const FLAG = 'bowlingdb_fix196_leaves';
+try {
+if (localStorage.getItem(FLAG) || !db.leaves.length) return;
+await loadScoringData();
+let n = 0;
+db.attempts.forEach(a => {
+if (a.Attempt !== 1 || a.LeaveID || !(a.Pinfall > 0 && a.Pinfall < 10)) return;
+const hasStart = [1,2,3,4,5,6,7,8,9,10].some(p => a['PinStart' + p] === true);
+if (!hasStart) return;
+const sm = {}; let c = 0;
+for (let p = 1; p <= 10; p++) if (a['PinStart' + p] === true && a['Pin' + p] !== true) { sm[p] = true; c++; }
+if (!c || c !== 10 - a.Pinfall) return;   // only when the pins agree with the count
+const id = detectLeaveID(sm); if (id) { a.LeaveID = id; n++; }
+});
+if (n) { await saveScoringData(); toast('Filled in ' + n + ' leave' + (n === 1 ? '' : 's')); }
+localStorage.setItem(FLAG, 'filled ' + n);
+} catch (e) { console.warn('fixLeaveIDs196:', e); }
+}
+
 document.addEventListener('DOMContentLoaded', async ()=>{
 
 
@@ -30171,7 +30226,7 @@ renderHome();
 renderNavGrid();
 
 
-loadScoringData().then(async () => { renderHome(); fixPrecisionDup185(); fixBallText189(); await fixNoTap191(); renderHome(); }).catch(() => {});
+loadScoringData().then(async () => { renderHome(); fixPrecisionDup185(); fixBallText189(); await fixNoTap191(); await fixLeaveIDs196(); renderHome(); }).catch(() => {});
 
 
 warmBallImgCache().then(() => {
