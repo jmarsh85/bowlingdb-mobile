@@ -17,6 +17,14 @@ on:
         description: 'Commit even if nothing changed'
         type: boolean
         default: false
+      hold_dry_run:
+        description: 'HOLD-1: only report how many balls would be held (writes nothing)'
+        type: boolean
+        default: false
+      hold_start:
+        description: 'HOLD-1: start the hold (first pass: every ball without specs). Once hold.json exists every run keeps it.'
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -40,6 +48,15 @@ jobs:
         with:
           ref: dist
           path: published
+
+      # v30.200 HOLD-1: the balls you approved (Review new balls) live beside status.json
+      - name: Check out specs corrections
+        uses: actions/checkout@v5
+        continue-on-error: true
+        with:
+          ref: specs
+          path: specs
+          sparse-checkout: corrections
 
       - uses: actions/setup-node@v5
         with:
@@ -107,7 +124,12 @@ jobs:
           cd catalog
           SPECS=""
           [ -f specs.json ] && SPECS="--specs specs.json"
-          node build_catalog.js ../.work/rows.json $SPECS --out ../published | tee ../.work/result
+          HOLD=""
+          [ -f ../specs/corrections/released.json ] && HOLD="--released ../specs/corrections/released.json"
+          [ "${{ inputs.hold_start }}" = "true" ] && HOLD="$HOLD --hold-start"
+          [ "${{ inputs.hold_dry_run }}" = "true" ] && HOLD="$HOLD --hold-dry-run"
+          node build_catalog.js ../.work/rows.json $SPECS $HOLD --out ../published | tee ../.work/result
+          grep '^hold' ../.work/result >> "$GITHUB_STEP_SUMMARY" || true
           grep -q 'changed: true' ../.work/result && echo "changed=true" >> "$GITHUB_OUTPUT" || echo "changed=false" >> "$GITHUB_OUTPUT"
 
       - name: Review summary
@@ -125,12 +147,13 @@ jobs:
           " >> "$GITHUB_STEP_SUMMARY"
 
       - name: Commit to dist branch
-        if: steps.build.outputs.changed == 'true' || inputs.force_commit
+        if: (steps.build.outputs.changed == 'true' || inputs.force_commit) && inputs.hold_dry_run != true
         working-directory: published
         run: |
           git config user.name  'catalog-bot'
           git config user.email 'catalog-bot@users.noreply.github.com'
           git add -A index.json usbc.json manifest.json review.json vocab.json detail   # v30.189: vocab.json (pick lists) was never staged
+          [ -f hold.json ] && git add hold.json   # v30.200 HOLD-1
           git diff --cached --quiet && { echo 'nothing staged'; exit 0; }
           git commit -m "catalog: USBC ${{ steps.version.outputs.iso }}"
           git push origin HEAD:dist
