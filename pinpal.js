@@ -15,14 +15,14 @@
    library. Loaded on demand from Settings > Data & app. */
 (function (root) {
 'use strict';
-var PP_VERSION = 'v30.196';
+var PP_VERSION = 'v30.197';
 /* v30.193: options and your name choices, kept on this phone.
    noTap (off by default): read PinPal games as no-tap where the app's game is no-tap, and send
    "No Tap" leagues to NoTap Games. PinPal has no no-tap mode, so this only fits someone who logged
    no-tap nights in PinPal the way James did; it is a personal sanity check, not the import path. */
 var PP_OPT_KEY = 'bowlingdb_pp_options', PP_NAMES_KEY = 'bowlingdb_pp_names';
 function ppLoadJSON(k, d) { try { return JSON.parse(localStorage.getItem(k) || 'null') || d; } catch (e) { return d; } }
-var PP_OPT = ppLoadJSON(PP_OPT_KEY, { noTap: false });
+var PP_OPT = { noTap: false };   // v30.197: no-tap matching removed (too personal a recording method to import)
 /* v30.195: your per-game decisions, kept on this phone: { 'g<app GameID>': 'app' (keep the app's
    version), 'p<PinPal game pk>': 'skip' (don't import) }. Import never touches a reviewed game.
    No-tap is compare-only: PinPal can't record no-tap, and how someone works around that (9-0, or
@@ -444,6 +444,17 @@ function ppToAppBalls(frames, noTap) {
   });
 }
 function ppBallID(name, ballMap) { if (!name) return null; var m = ballMap[name]; return m || null; }
+/* Pure: the scorecard's pin string for one ball, as live scoring's buildBSK makes it. start = pins standing
+   before the ball, standing = pins left after. B = not in play (down before, or knocked on a fresh rack;
+   a strike is all B), K = knocked on a spare ball, S = left standing. Matches every live-scored ball. */
+function ppBSK(start, standing) {
+  var fresh = start.length === 10, out = '';   // a strike = all B, as live scoring stores it today
+  for (var p = 1; p <= 10; p++) {
+    var up = start.indexOf(p) >= 0, knocked = up && standing.indexOf(p) < 0;
+    out += !up ? 'B' : (fresh && knocked) ? 'B' : !knocked ? 'S' : 'K';
+  }
+  return out;
+}
 /* writes frames + attempts for one game into db; returns { frames, attempts } created */
 function ppWriteFrames(D, gameID, gameNum, appBalls, noTap, ballMap) {
   var made = { frames: [], attempts: [] };
@@ -461,9 +472,13 @@ function ppWriteFrames(D, gameID, gameNum, appBalls, noTap, ballMap) {
       var b = balls[an - 1];
       if (b && !(fn <= 9 && an === 2 && strike)) {
         a.Pinfall = b.down;
+        /* v30.197: exactly as live scoring writes them: PinStart / PinDelta are 1 / 0 (several readers test
+           === 1), Pin is true / false, and BSK_Progressive is the scorecard's pin string (buildBSK). Without
+           it the app rebuilt one on load with the legacy reading of PinStart, drawing pins swapped. */
+        a.BSK_Progressive = ppBSK(b.start, b.standing);
         for (var p = 1; p <= 10; p++) {
           var st = b.start.indexOf(p) >= 0, left = b.standing.indexOf(p) >= 0, down = st && !left;
-          a['PinStart' + p] = st; a['Pin' + p] = down; a['PinDelta' + p] = down;
+          a['PinStart' + p] = st ? 1 : 0; a['Pin' + p] = down; a['PinDelta' + p] = down ? 1 : 0;
         }
         if (an === 1) {
           a.BallID = ppBallID(b.eqName, ballMap);
@@ -751,16 +766,25 @@ function ppLoadBuffer(buf) {
     ppRender();
   });
 }
+/* v30.197: opening a section, a picker or a tick re-renders the screen; keep the reader where they were
+   (only a change of screen, list -> game -> import, starts at the top) */
+function ppScroller() { return el('pp-sc'); }
 function ppRender() {
+  var view = _pp.view ? 'v:' + _pp.view : _pp.game ? 'game' : 'list', sc0 = ppScroller(), keep = sc0 && _pp._lastView === view ? sc0.scrollTop : 0;
+  ppRenderInner();
+  _pp._lastView = view;
+  var sc1 = ppScroller(); if (sc1 && keep) sc1.scrollTop = keep;
+}
+function ppRenderInner() {
   var ov = ppOverlay(), r = _pp.rep;
   var head = '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 8px"><button style="' + BTN + 'width:40px;height:40px;border-radius:20px" onclick="' + (_pp.game ? 'ppBack()' : _pp.view ? 'ppRecompare()' : 'ppClose()') + '">\u2039</button>' +
     '<div style="flex:1;min-width:0"><div style="font-size:17px;font-weight:800;color:var(--t1)">' + (_pp.view ? 'Import from PinPal' : _pp.game ? 'Game comparison' : 'Compare a PinPal backup') + '</div>' +
     '<div style="font-size:11px;color:var(--t3)">' + (r ? esc(_pp.file) + ' \u00b7 ' + esc(r.range[0] || '') + ' to ' + esc(r.range[1] || '') : 'Read only: nothing in the app changes') + '</div></div></div>';
-  if (_pp.view === 'import' || _pp.view === 'done') { ov.innerHTML = head + '<div style="flex:1;overflow-y:auto;padding:0 16px 16px">' + ppImportHTML() + '</div>'; return; }
-  if (_pp.game) { ov.innerHTML = head + '<div style="flex:1;overflow-y:auto;padding:0 16px 16px">' + ppGameHTML(_pp.game) +
+  if (_pp.view === 'import' || _pp.view === 'done') { ov.innerHTML = head + '<div id="pp-sc" style="scroll-behavior:auto;flex:1;overflow-y:auto;padding:0 16px 16px">' + ppImportHTML() + '</div>'; return; }
+  if (_pp.game) { ov.innerHTML = head + '<div id="pp-sc" style="scroll-behavior:auto;flex:1;overflow-y:auto;padding:0 16px 16px">' + ppGameHTML(_pp.game) +
     ppDecideHTML(_pp.game) + '</div>'; return; }
   if (!r) {
-    ov.innerHTML = head + '<div style="flex:1;overflow-y:auto;padding:4px 16px 16px;font-size:13px;color:var(--t2);line-height:1.6">' +
+    ov.innerHTML = head + '<div id="pp-sc" style="scroll-behavior:auto;flex:1;overflow-y:auto;padding:4px 16px 16px;font-size:13px;color:var(--t2);line-height:1.6">' +
       '<p>In PinPal, make a backup and save it to Files. Then choose it here. The app reads it on this phone and lists where PinPal and the app agree or differ, game by game.</p>' +
       '<p style="color:var(--t3)">PinPal records the pins left after each ball, but the equipment only for the first ball of a frame, so spare balls are never compared. Speed, boards and other details only the app has are never touched.</p>' +
       '<button style="' + BTNP + 'width:100%;padding:13px;margin-top:8px;font-size:15px" onclick="ppPick()">Choose PinPal backup</button></div>';
@@ -769,6 +793,7 @@ function ppRender() {
   var lab = {}; PP_CATS.forEach(function (c) { lab[c[0]] = c; });
   var body = PP_CATS.map(function (c) {
     var list = r.rows.filter(function (x) { return x.cat === c[0]; }), n = list.length, open = !!_pp.open[c[0]];
+    if (!n) return '';   // v30.197: only sections that hold games
     var col = c[0] === 'same' || c[0] === 'kept' ? 'var(--teal)' : c[0] === 'appOnly' ? 'var(--t3)' : 'var(--gold)';
     var h = '<div onclick="ppToggle(\'' + c[0] + '\')" style="display:flex;align-items:center;gap:10px;padding:12px 2px;border-bottom:1px solid var(--border1);cursor:pointer">' +
       '<div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:700;color:var(--t1)">' + c[1] + '</div><div style="font-size:11px;color:var(--t3);line-height:1.4">' + c[2] + '</div></div>' +
@@ -811,14 +836,13 @@ function ppRender() {
         '<select data-pp-name="' + k + ':' + i + '" onchange="ppNameSet(\'' + k + '\',' + i + ',this.value)" style="flex:1;min-width:0;max-width:55%;font-size:12px;padding:6px;border-radius:8px;border:1px solid var(--border1);background:var(--bg2);color:' + col + '">' + opts + '</select></div>';
     }).join('');
   }).join('');
-  ov.innerHTML = head + '<div style="flex:1;overflow-y:auto;padding:0 16px 16px">' + body +
+  ov.innerHTML = head + '<div id="pp-sc" style="scroll-behavior:auto;flex:1;overflow-y:auto;padding:0 16px 16px">' + body +
     '<div style="font-size:11px;font-weight:700;color:var(--t3);margin:18px 0 2px;text-transform:uppercase;letter-spacing:.5px">Names</div>' + mapH +
-    '<label style="display:flex;gap:10px;align-items:flex-start;margin-top:16px;font-size:12px;color:var(--t2);line-height:1.45"><input type="checkbox" ' + (PP_OPT.noTap ? 'checked ' : '') + 'onchange="ppNoTapSet(this.checked)" style="width:18px;height:18px;margin-top:1px">' +
-      '<span><b>No-tap matching</b> (compare only). Reads PinPal games as no-tap (a 9 on the first ball is a strike) where the app\u2019s game is no-tap. A personal sanity check: Import never rewrites a no-tap game or imports anything as no-tap.</span></label>' +
+
     '<button style="' + BTNP + 'width:100%;padding:12px;margin-top:16px" onclick="ppImportOpen()">Import from PinPal\u2026</button>' +
     (ppHasUndo() ? '<button style="' + BTN + 'width:100%;padding:10px;margin-top:8px" onclick="ppUndo()">Undo last import</button>' : '') +
     '<div style="display:flex;gap:8px;margin-top:8px"><button style="' + BTN + 'flex:1;padding:11px" onclick="ppDownload()">Download report (CSV)</button><button style="' + BTN + 'flex:1;padding:11px" onclick="ppPick()">Choose another</button></div>' +
-    '<div style="font-size:11px;color:var(--t3);line-height:1.5;margin-top:10px">Games pair up by date: same score first (no-tap games against PinPal\u2019s no-tap reading); what is left pairs by order only when there is one session against one series. The report changes nothing; Import asks first.</div></div>';
+    '<div style="font-size:11px;color:var(--t3);line-height:1.5;margin-top:10px">Games pair up by date: same score first; what is left pairs by order only when there is one session against one series. The report changes nothing; Import asks first.</div></div>';
 }
 /* v30.195: decide for this game: keep the app's version, use PinPal's frames, don't import, or review again */
 function ppDecideHTML(r) {
@@ -855,9 +879,7 @@ function ppNameSet(kind, i, val) {
   var ch = ppLoadJSON(PP_NAMES_KEY, {}); ch[kind] = ch[kind] || {};
   ch[kind][x.pp] = val;
   try { localStorage.setItem(PP_NAMES_KEY, JSON.stringify(ch)); } catch (e) {}
-  var sc = (el('pp-ov').querySelector('[style*="overflow-y:auto"]') || {}).scrollTop || 0;
   _pp.map = ppMapping(_pp.pp, ppAppDb()); ppRender();
-  var s2 = el('pp-ov').querySelector('[style*="overflow-y:auto"]'); if (s2) s2.scrollTop = sc;
 }
 function ppNoTapSet(on) {
   PP_OPT.noTap = !!on; try { localStorage.setItem(PP_OPT_KEY, JSON.stringify(PP_OPT)); } catch (e) {}
@@ -889,8 +911,8 @@ function ppReviewCatUndo() {
 }
 function ppHasUndo() { try { return !!localStorage.getItem(PP_UNDO_KEY); } catch (e) { return false; } }
 function ppToggle(k) { _pp.open[k] = !_pp.open[k]; ppRender(); }
-function ppShow(i) { _pp.game = _pp.rep.rows[i]; _pp.scroll = (el('pp-ov').querySelector('[style*="overflow-y:auto"]') || {}).scrollTop || 0; ppRender(); }
-function ppBack() { _pp.game = null; ppRender(); var sc = el('pp-ov').querySelector('[style*="overflow-y:auto"]'); if (sc) sc.scrollTop = _pp.scroll || 0; }
+function ppShow(i) { _pp.game = _pp.rep.rows[i]; _pp.scroll = (ppScroller() || {}).scrollTop || 0; ppRender(); }
+function ppBack() { _pp.game = null; ppRender(); var sc = ppScroller(); if (sc) sc.scrollTop = _pp.scroll || 0; }
 function ppDownload() {
   var csv = ppCsv(_pp.rep), name = 'PinPal_compare_' + new Date().toISOString().slice(0, 10) + '.csv';
   var blob = new Blob([csv], { type: 'text/csv' }), file = typeof File === 'function' ? new File([blob], name, { type: 'text/csv' }) : null;
@@ -902,5 +924,5 @@ root.PINPAL_JS_VERSION = PP_VERSION;
 root.ppOpen = ppOpen; root.ppClose = ppClose; root.ppPick = ppPick; root.ppToggle = ppToggle; root.ppShow = ppShow; root.ppBack = ppBack; root.ppDownload = ppDownload;
 root.ppLoadBuffer = ppLoadBuffer; root.ppReview = ppReview; root.ppReviewCat = ppReviewCat; root.ppReviewCatUndo = ppReviewCatUndo; root.ppPlanSection = ppPlanSection; root.ppNameSet = ppNameSet; root.ppNoTapSet = ppNoTapSet; root.ppImportOpen = ppImportOpen; root.ppPlanToggle = ppPlanToggle; root.ppGoPlan = ppGoPlan; root.ppReplaceThis = ppReplaceThis; root.ppUndo = ppUndo; root.ppRecompare = ppRecompare;
 root._pinpal = { sqliteTables: sqliteTables, sqlCols: sqlCols, ppRead: ppRead, ppFrames: ppFrames, ppScore: ppScore, appGames: appGames, ppCompare: ppCompare,
-  ppFrameDiffs: ppFrameDiffs, ppNoTapScore: ppNoTapScore, ppUnlike: ppUnlike, ppNoTapFrames: ppNoTapFrames, ppMatchName: ppMatchName, ppMapping: ppMapping, ppCsv: ppCsv, PP_CATS: PP_CATS, ppToAppBalls: ppToAppBalls, ppPlan: ppPlan, ppLookups: ppLookups, ppRunImport: ppRunImport, ppApplyChoices: ppApplyChoices, opt: PP_OPT };
+  ppFrameDiffs: ppFrameDiffs, ppNoTapScore: ppNoTapScore, ppUnlike: ppUnlike, ppNoTapFrames: ppNoTapFrames, ppMatchName: ppMatchName, ppMapping: ppMapping, ppCsv: ppCsv, PP_CATS: PP_CATS, ppToAppBalls: ppToAppBalls, ppBSK: ppBSK, ppPlan: ppPlan, ppLookups: ppLookups, ppRunImport: ppRunImport, ppApplyChoices: ppApplyChoices, opt: PP_OPT };
 })(typeof window !== 'undefined' ? window : globalThis);
