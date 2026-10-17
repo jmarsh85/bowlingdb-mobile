@@ -3457,7 +3457,7 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
 /* v30.169: ONE place for the version. The header, the home screen label, the
    page title and backups all read these, so nothing can go stale on an update.
    Bump both lines (and CATALOG_JS_VERSION in catalog.js when it changes). */
-const APP_VERSION = 'v30.196';
+const APP_VERSION = 'v30.197';
 const APP_BUILD_DATE = '2026-10-14';
 /* catalog.js this build expects; an older file on the server shows a warning */
 const EXPECTED_CATALOG_JS = 'v30.189';
@@ -30192,16 +30192,52 @@ await loadScoringData();
 let n = 0;
 db.attempts.forEach(a => {
 if (a.Attempt !== 1 || a.LeaveID || !(a.Pinfall > 0 && a.Pinfall < 10)) return;
-const hasStart = [1,2,3,4,5,6,7,8,9,10].some(p => a['PinStart' + p] === true);
+const up = p => a['PinStart' + p] === 1 || a['PinStart' + p] === true;
+const hasStart = [1,2,3,4,5,6,7,8,9,10].some(up);
 if (!hasStart) return;
 const sm = {}; let c = 0;
-for (let p = 1; p <= 10; p++) if (a['PinStart' + p] === true && a['Pin' + p] !== true) { sm[p] = true; c++; }
+for (let p = 1; p <= 10; p++) if (up(p) && a['Pin' + p] !== true) { sm[p] = true; c++; }
 if (!c || c !== 10 - a.Pinfall) return;   // only when the pins agree with the count
 const id = detectLeaveID(sm); if (id) { a.LeaveID = id; n++; }
 });
 if (n) { await saveScoringData(); toast('Filled in ' + n + ' leave' + (n === 1 ? '' : 's')); }
 localStorage.setItem(FLAG, 'filled ' + n);
 } catch (e) { console.warn('fixLeaveIDs196:', e); }
+}
+
+/* v30.197 one-time: games imported from PinPal by v30.192-v30.196 wrote PinStart / PinDelta as true /
+   false and no BSK_Progressive, so on load the app rebuilt the pin string reading PinStart the legacy way
+   and drew knocked and standing pins swapped. Rewrite those attempts as live scoring writes them. Only
+   attempts with boolean PinStart are touched (live scoring writes 1 / 0, old imports null). */
+function bskFor197(start, standing) {
+const fresh = start.length === 10;   // a strike = all B, as live scoring stores it today
+let out = '';
+for (let p = 1; p <= 10; p++) {
+const upp = start.includes(p), knocked = upp && !standing.includes(p);
+out += !upp ? 'B' : (fresh && knocked) ? 'B' : !knocked ? 'S' : 'K';
+}
+return out;
+}
+async function fixPinPalShape197() {
+const FLAG = 'bowlingdb_fix197_ppshape';
+try {
+if (localStorage.getItem(FLAG)) return;
+await loadScoringData();
+let n = 0;
+db.attempts.forEach(a => {
+if (![1,2,3,4,5,6,7,8,9,10].some(p => typeof a['PinStart' + p] === 'boolean')) return;
+const start = [], standing = [];
+for (let p = 1; p <= 10; p++) {
+const upp = a['PinStart' + p] === true || a['PinStart' + p] === 1, down = upp && a['Pin' + p] === true;
+if (upp) start.push(p); if (upp && !down) standing.push(p);
+a['PinStart' + p] = upp ? 1 : 0; a['PinDelta' + p] = down ? 1 : 0; a['Pin' + p] = down;
+}
+a.BSK_Progressive = a.Pinfall == null ? null : bskFor197(start, standing);
+n++;
+});
+if (n) { await saveScoringData(); toast('Repaired pins on ' + n + ' imported ball' + (n === 1 ? '' : 's')); }
+localStorage.setItem(FLAG, 'repaired ' + n);
+} catch (e) { console.warn('fixPinPalShape197:', e); }
 }
 
 document.addEventListener('DOMContentLoaded', async ()=>{
@@ -30226,7 +30262,7 @@ renderHome();
 renderNavGrid();
 
 
-loadScoringData().then(async () => { renderHome(); fixPrecisionDup185(); fixBallText189(); await fixNoTap191(); await fixLeaveIDs196(); renderHome(); }).catch(() => {});
+loadScoringData().then(async () => { renderHome(); fixPrecisionDup185(); fixBallText189(); await fixNoTap191(); await fixPinPalShape197(); await fixLeaveIDs196(); renderHome(); }).catch(() => {});
 
 
 warmBallImgCache().then(() => {
