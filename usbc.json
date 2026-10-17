@@ -1,6 +1,6 @@
 {
  "Counts": {
-  "approved": 8051
+  "approved": 8064
  },
  "Eligibility": {
   "3g-galaxy-black": {
@@ -6387,6 +6387,10 @@
    "NoSlowOil": false,
    "SlowOil78D": false
   },
+  "brunswick-purple-rhino-pro-2026": {
+   "NoSlowOil": false,
+   "SlowOil78D": false
+  },
   "brunswick-purple-rhino-pro-legacy": {
    "NoSlowOil": false,
    "SlowOil78D": false
@@ -7048,6 +7052,10 @@
    "SlowOil78D": false
   },
   "brunswick-strategy": {
+   "NoSlowOil": false,
+   "SlowOil78D": false
+  },
+  "brunswick-strategy-logic": {
    "NoSlowOil": false,
    "SlowOil78D": false
   },
@@ -10539,6 +10547,10 @@
    "NoSlowOil": false,
    "SlowOil78D": false
   },
+  "dv8-outsider": {
+   "NoSlowOil": false,
+   "SlowOil78D": false
+  },
   "dv8-pitbull": {
    "NoSlowOil": false,
    "SlowOil78D": false
@@ -10600,6 +10612,10 @@
    "SlowOil78D": false
   },
   "dv8-severe-collision": {
+   "NoSlowOil": false,
+   "SlowOil78D": false
+  },
+  "dv8-smooth-criminal": {
    "NoSlowOil": false,
    "SlowOil78D": false
   },
@@ -12004,6 +12020,10 @@
    "SlowOil78D": false
   },
   "ebonite-gb5-game-breaker-5-pearl": {
+   "NoSlowOil": false,
+   "SlowOil78D": false
+  },
+  "ebonite-go-time": {
    "NoSlowOil": false,
    "SlowOil78D": false
   },
@@ -15951,6 +15971,10 @@
    "NoSlowOil": false,
    "SlowOil78D": false
   },
+  "hammer-blacklist": {
+   "NoSlowOil": false,
+   "SlowOil78D": false
+  },
   "hammer-blade": {
    "NoSlowOil": false,
    "SlowOil78D": false
@@ -16916,6 +16940,10 @@
    "SlowOil78D": false
   },
   "hammer-rebel-yell": {
+   "NoSlowOil": false,
+   "SlowOil78D": false
+  },
+  "hammer-reckoning": {
    "NoSlowOil": false,
    "SlowOil78D": false
   },
@@ -22291,6 +22319,10 @@
    "NoSlowOil": false,
    "SlowOil78D": false
   },
+  "radical-intel-recon-hybrid": {
+   "NoSlowOil": false,
+   "SlowOil78D": false
+  },
   "radical-intel-tour": {
    "NoSlowOil": false,
    "SlowOil78D": false
@@ -22635,6 +22667,10 @@
    "NoSlowOil": false,
    "SlowOil78D": false
   },
+  "radical-the-hitter-teal": {
+   "NoSlowOil": false,
+   "SlowOil78D": false
+  },
   "radical-the-spy": {
    "NoSlowOil": false,
    "SlowOil78D": false
@@ -22684,6 +22720,10 @@
    "SlowOil78D": false
   },
   "radical-vexed": {
+   "NoSlowOil": false,
+   "SlowOil78D": false
+  },
+  "radical-vexed-variant": {
    "NoSlowOil": false,
    "SlowOil78D": false
   },
@@ -26759,6 +26799,10 @@
    "NoSlowOil": false,
    "SlowOil78D": false
   },
+  "storm-ion-pro-pearl": {
+   "NoSlowOil": false,
+   "SlowOil78D": false
+  },
   "storm-ion-pro-pearl-ptlp": {
    "NoSlowOil": false,
    "SlowOil78D": false
@@ -28508,6 +28552,10 @@
    "SlowOil78D": false
   },
   "storm-the-code": {
+   "NoSlowOil": false,
+   "SlowOil78D": false
+  },
+  "storm-the-code-black": {
    "NoSlowOil": false,
    "SlowOil78D": false
   },
@@ -31183,6 +31231,10 @@
    "NoSlowOil": false,
    "SlowOil78D": false
   },
+  "track-inc-synthesis-prime": {
+   "NoSlowOil": false,
+   "SlowOil78D": false
+  },
   "track-inc-synthesis-xenon": {
    "NoSlowOil": false,
    "SlowOil78D": false
@@ -32208,5 +32260,5 @@
    "SlowOil78D": false
   }
  },
- "ListVersion": "2026-10-12"
+ "ListVersion": "2026-10-17"
 }
