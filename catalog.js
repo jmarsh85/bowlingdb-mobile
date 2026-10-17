@@ -36,7 +36,7 @@
 'use strict';
 
 /* v30.169: shown in the app header when it differs from the build's EXPECTED_CATALOG_JS */
-var CAT_VERSION  = 'v30.189';
+var CAT_VERSION  = 'v30.200';
 var CAT_BASE     = 'https://raw.githubusercontent.com/jmarsh85/bowlingdb-mobile/dist/';
 var CAT_DB       = 'BowlingDB_Catalog';
 var CAT_DB_VER   = 1;
@@ -1041,6 +1041,7 @@ function bubbleFilter(rows, f, year) {
   var hasB = (f.brands || []).length, hasC = (f.cover || []).length, hasK = (f.core || []).length;
   return rows.filter(function (e) {
     if (catIsRejected(e)) return false;   // v30.185: rejected balls are never offered
+    if (catIsHeld(e)) return false;       // v30.200 HOLD-1: held until you approve it (Review new balls)
     if (f.specs && !e.s) return false;
     if (!f.disc && discontinuedOf(e, year)) return false;
     if (hasB && !bs[norm(e.m)]) return false;
@@ -3031,6 +3032,141 @@ function catFixReject(reason) {
   if (root.toast) root.toast('Rejected. It won\u2019t come back in new extracts.');
 }
 
+/* ---------- v30.200 HOLD-1: Review new balls (dev mode; decisions LOCKED 2026-10-17) ----------
+   The weekly build holds balls (index h: 1 first pass, 2 new; kept in dist/hold.json): once, every ball that had no
+   published specs (first pass); after that only balls new in a USBC refresh. A held ball is not
+   offered in Add a Ball until you Approve it here. Approve needs specs (published, or a saved
+   correction with RG and Diff for a weight); approving writes it to corrections/released.json on
+   the specs branch (read-merge-PUT, like status.json) and the next build drops it from the hold for
+   good. On this phone it shows in Add a Ball at once. Spec and picture automation are unchanged.
+   Released list mirrored in bowlingdb_catalog_released_local { all: {id: {at, n, m}}, pending }. */
+var RL_PATH = '/contents/corrections/released.json', RL_LOCAL_KEY = 'bowlingdb_catalog_released_local';
+var _rlc = null, _rlBusy = null, _rlTimer = null, _rlErr = null;
+function rlLocal() {
+  if (_rlc) return _rlc;
+  var l = apLS(), o = null; try { o = JSON.parse((l && l.getItem(RL_LOCAL_KEY)) || 'null'); } catch (e) {}
+  o = o && typeof o === 'object' ? o : {}; o.all = o.all || {}; o.pending = o.pending || {}; _rlc = o; return o;
+}
+function rlSaveLocal(o) { _rlc = o; var l = apLS(); if (l) try { l.setItem(RL_LOCAL_KEY, JSON.stringify(o)); } catch (e) {} }
+function catIsReleased(id) { return !!rlLocal().all[id]; }
+function catIsHeld(e) { return !!e && !!e.h && !catIsReleased(e.i); }   // index h: 1 first pass, 2 new in a refresh
+/* Pure: does this ball have specs to approve? published (s 1) or a correction with RG + Diff for a weight */
+function hlHasSpecs(e, ovr) {
+  if (e && e.s) return true;
+  var w = (ovr && ovr.weights) || {};
+  return Object.keys(w).some(function (k) { return w[k] && w[k].RG != null && w[k].Diff != null; });
+}
+/* Pure: repo map + pending approvals -> map to write (keys sorted) */
+function rlMerge(repo, local) {
+  var next = Object.assign({}, repo || {});
+  Object.keys((local && local.pending) || {}).forEach(function (id) { if (local.all[id]) next[id] = local.all[id]; });
+  var out = {}; Object.keys(next).sort().forEach(function (k) { out[k] = next[k]; }); return out;
+}
+function rlSync() {
+  if (_rlBusy) return _rlBusy;
+  if (!apToken()) return Promise.resolve({ sent: 0, noToken: true });
+  if (root.navigator && root.navigator.onLine === false) return Promise.resolve({ sent: 0, offline: true });
+  var o = rlLocal(), stamps = Object.assign({}, o.pending), ids = Object.keys(stamps);
+  if (!ids.length) return Promise.resolve({ sent: 0 });
+  _rlBusy = apGH(RL_PATH + '?ref=specs').then(function (f) { var j = {}; try { j = JSON.parse(b64d(f.content) || '{}') || {}; } catch (e) {} return { sha: f.sha, map: j }; },
+    function (e) { if (e.status === 404) return { sha: null, map: {} }; throw e; }).then(function (repo) {
+    var next = rlMerge(repo.map, o);
+    return apGH(RL_PATH, { method: 'PUT', body: Object.assign({ message: 'catalog: released ' + ids.length + ' ball' + (ids.length === 1 ? '' : 's') + ' from review',
+      content: b64e(JSON.stringify(next, null, 1) + '\n'), branch: 'specs' }, repo.sha ? { sha: repo.sha } : {}) }).then(function () {
+      var cur = rlLocal(); ids.forEach(function (id) { if (cur.pending[id] === stamps[id]) delete cur.pending[id]; });
+      Object.keys(next).forEach(function (id) { if (!cur.all[id]) cur.all[id] = next[id]; });
+      rlSaveLocal(cur); _rlErr = null; return { sent: ids.length };
+    });
+  }).then(function (r) { _rlBusy = null; return r; }, function (e) {
+    _rlBusy = null; _rlErr = e.status === 401 ? 'GitHub rejected the token (401).' : e.status === 403 || e.status === 404 ? 'The token needs Contents read and write (' + e.status + ').' : 'Not sent yet (' + (e.status ? 'GitHub ' + e.status : 'offline') + ').';
+    throw e;
+  });
+  return _rlBusy;
+}
+function rlQueueSync() { clearTimeout(_rlTimer); _rlTimer = setTimeout(function () { rlSync().then(hlPaint, hlPaint); }, 1200); }
+/* Pure: held rows for the screen, newest first (new before first pass), with their state */
+function hlRows(rows, opt) {
+  opt = opt || {};
+  return (rows || []).filter(function (e) { return !!e.h && !(opt.released && opt.released[e.i]) && !(opt.rejected && opt.rejected(e)); }).map(function (e) {
+    var ov = opt.ovr ? opt.ovr(e.i) : null;
+    return { e: e, why: e.h === 2 ? 'new' : 'first', specs: e.s ? 'published' : hlHasSpecs(e, ov) ? 'corrected' : opt.waiting && opt.waiting[e.i] ? 'waiting' : 'none',
+      ready: hlHasSpecs(e, ov) };
+  }).sort(function (a, b) { return (a.why === b.why ? 0 : a.why === 'new' ? -1 : 1) || String(b.e.y || '').localeCompare(String(a.e.y || '')) || String(a.e.m).localeCompare(String(b.e.m)) || cleanName(a.e.n).localeCompare(cleanName(b.e.n)); });
+}
+var _hl = { show: 'all', q: '', page: 0, sel: {}, waiting: null };
+var HL_PAGE = 30;
+function catHoldOpen() {
+  if (typeof document === 'undefined') return;
+  var mb = document.getElementById('modal-bg'); if (mb && mb.classList.contains('open') && root.closeModal) root.closeModal();
+  catHoldClose(); _hl.page = 0; _hl.sel = {};
+  document.body.appendChild(overlay('hold-ov', 905)); hlPaint();
+  if (apToken()) {
+    apReadOverrides().then(hlPaint, function () {});
+    apReadStaged().then(function (st) { var w = {}; (st || []).forEach(function (r) { if (r.decision === 'pending') { if (r.catalogId) w[r.catalogId] = 1; (r.candidates || []).forEach(function (id) { w[id] = 1; }); } }); _hl.waiting = w; hlPaint(); }, function () {});
+    if (Object.keys(rlLocal().pending).length) rlSync().then(hlPaint, hlPaint);
+  }
+}
+function catHoldClose() { var el = document.getElementById('hold-ov'); if (el) el.parentNode.removeChild(el); }
+function hlList(rows) {
+  var all = hlRows(rows, { released: rlLocal().all, rejected: catIsRejected, ovr: overrideFor, waiting: _hl.waiting });
+  var q = norm(_hl.q || ''), list = all.filter(function (r) {
+    if (_hl.show === 'ready' && !r.ready) return false;
+    if (_hl.show === 'none' && r.ready) return false;
+    if (_hl.show === 'new' && r.why !== 'new') return false;
+    return !q || norm(r.e.m + ' ' + r.e.n).indexOf(q) >= 0;
+  });
+  return { all: all, list: list };
+}
+function hlPaint() {
+  var ov = typeof document !== 'undefined' && document.getElementById('hold-ov'); if (!ov) return;
+  catLoad().then(function (rows) {
+    var L = hlList(rows), list = L.list, pages = Math.max(1, Math.ceil(list.length / HL_PAGE));
+    if (_hl.page >= pages) _hl.page = pages - 1;
+    var shown = list.slice(_hl.page * HL_PAGE, (_hl.page + 1) * HL_PAGE), nSel = Object.keys(_hl.sel).length;
+    var cnt = function (f) { return L.all.filter(f).length; };
+    var chip = function (k, t, n) { return '<button onclick="catHoldShow(\'' + k + '\')" style="' + (_hl.show === k ? BTN_P : BTN_G) + 'padding:6px 10px;font-size:12px;white-space:nowrap">' + t + ' ' + n + '</button>'; };
+    var specTxt = { published: 'specs published', corrected: 'your correction', waiting: 'read, waiting in Spec approvals', none: 'no specs yet' };
+    var row = function (r) {
+      var e = r.e, pic = !!catImageFor(e.i), on = !!_hl.sel[e.i];
+      return '<div style="display:flex;gap:10px;align-items:center;padding:9px 2px;border-bottom:1px solid var(--border1)">' +
+        '<input type="checkbox" ' + (on ? 'checked ' : '') + (r.ready ? '' : 'disabled ') + 'onchange="catHoldSel(\'' + jsq(e.i) + '\',this.checked)" style="width:20px;height:20px;flex-shrink:0">' +
+        '<div onclick="catAddDetail(\'' + jsq(e.i) + '\')" style="display:flex;gap:10px;align-items:center;flex:1;min-width:0;cursor:pointer">' + thumbHTML(e, 40) +
+        '<div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:600;color:var(--t1)">' + esc(cleanName(e.n)) + (r.why === 'new' ? '<span style="' + CHIP_T + '">NEW</span>' : '') + '</div>' +
+        '<div style="font-size:12px;color:' + (r.ready ? 'var(--t2)' : 'var(--gold)') + '">' + esc(e.m) + (e.y ? ' \u00b7 ' + esc(e.y) : '') + ' \u00b7 ' + specTxt[r.specs] + (pic ? '' : ' \u00b7 no picture') + '</div></div></div>' +
+        '<button onclick="catHoldApprove([\'' + jsq(e.i) + '\'])" ' + (r.ready ? '' : 'disabled ') + 'style="' + (r.ready ? BTN_P : BTN_G) + 'padding:7px 10px;font-size:12px;' + (r.ready ? '' : 'opacity:.45;') + '">Approve</button></div>';
+    };
+    var sync = Object.keys(rlLocal().pending).length;
+    ov.innerHTML = '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 8px"><button style="' + BACK + '" onclick="catHoldClose()">\u2039</button>' +
+      '<div style="flex:1;min-width:0"><div style="font-size:17px;font-weight:800;color:var(--t1)">Review new balls</div>' +
+      '<div style="font-size:11px;color:var(--t3)">' + L.all.length + ' held \u00b7 not in Add a Ball until you approve them</div></div></div>' +
+      '<div style="display:flex;gap:6px;overflow-x:auto;padding:0 16px 8px">' + chip('all', 'All', L.all.length) + chip('ready', 'Ready', cnt(function (r) { return r.ready; })) +
+        chip('none', 'Needs specs', cnt(function (r) { return !r.ready; })) + chip('new', 'New', cnt(function (r) { return r.why === 'new'; })) + '</div>' +
+      '<div style="padding:0 16px 6px"><input class="bdet-field-input" type="search" placeholder="Filter by brand or name" value="' + esc(_hl.q) + '" oninput="catHoldFilter(this.value)" style="width:100%;box-sizing:border-box;font-size:15px"></div>' +
+      '<div style="flex:1;overflow-y:auto;padding:0 16px 10px">' + (shown.length ? shown.map(row).join('') : '<div style="padding:30px 0;text-align:center;color:var(--t2);font-size:13px">' + (L.all.length ? 'No match.' : 'Nothing held. New balls appear here after the weekly refresh.') + '</div>') +
+      (pages > 1 ? '<div style="display:flex;gap:8px;align-items:center;justify-content:center;margin-top:10px"><button ' + (_hl.page ? '' : 'disabled ') + 'onclick="catHoldPage(-1)" style="' + BTN_G + 'padding:7px 12px">\u2039</button><span style="font-size:12px;color:var(--t2)">' + (_hl.page + 1) + ' of ' + pages + '</span><button ' + (_hl.page < pages - 1 ? '' : 'disabled ') + 'onclick="catHoldPage(1)" style="' + BTN_G + 'padding:7px 12px">\u203a</button></div>' : '') +
+      '<div style="font-size:11px;color:var(--t3);line-height:1.5;margin-top:10px">Tap a ball for its card: Correct specs, pictures, Verify now, Reject. <b>Approve</b> needs specs: published, or your correction with RG and Diff. Approved balls show in Add a Ball here at once, and for everyone after the next catalog refresh. Specs that are read but waiting go through Spec approvals first.</div></div>' +
+      '<div style="padding:10px 16px;border-top:1px solid var(--border1);display:flex;gap:8px;align-items:center">' +
+        '<div style="flex:1;font-size:11px;color:' + (_rlErr ? 'var(--gold)' : 'var(--t3)') + '">' + (sync ? sync + ' approval' + (sync === 1 ? '' : 's') + ' to send' + (_rlErr ? ': ' + esc(_rlErr) : apToken() ? '' : ' (add the token in Spec approvals)') : 'All approvals sent') + '</div>' +
+        (sync && apToken() ? '<button onclick="catHoldSend()" style="' + BTN_G + 'padding:9px 12px;font-size:12px">Send now</button>' : '') +
+        '<button id="hold-go" onclick="catHoldApprove()" ' + (nSel ? '' : 'disabled ') + 'style="' + BTN_P + 'padding:9px 14px;font-size:13px;' + (nSel ? '' : 'opacity:.45;') + '">Approve ' + nSel + '</button></div>';
+  });
+}
+function catHoldShow(k) { _hl.show = k; _hl.page = 0; hlPaint(); }
+function catHoldFilter(v) { _hl.q = v; _hl.page = 0; clearTimeout(_hl.t); _hl.t = setTimeout(function () { hlPaint(); setTimeout(function () { var i = document.querySelector('#hold-ov input[type=search]'); if (i) { i.focus(); i.setSelectionRange(i.value.length, i.value.length); } }, 0); }, 250); }
+function catHoldPage(d) { _hl.page += d; hlPaint(); var sc = document.querySelector('#hold-ov > div:nth-child(4)'); if (sc) sc.scrollTop = 0; }
+function catHoldSel(id, on) { if (on) _hl.sel[id] = 1; else delete _hl.sel[id]; var n = Object.keys(_hl.sel).length, b = document.getElementById('hold-go'); if (b) { b.textContent = 'Approve ' + n; b.disabled = !n; b.style.opacity = n ? '' : '.45'; } }
+function catHoldApprove(ids) {
+  ids = ids || Object.keys(_hl.sel); if (!ids.length) return Promise.resolve(0);
+  return catLoad().then(function (rows) {
+    var o = rlLocal(), n = 0, today = stToday();
+    ids.forEach(function (id) { var e = byIdIn(rows, id); if (!e || !hlHasSpecs(e, overrideFor(id)) || o.all[id]) return; o.all[id] = { at: today, n: cleanName(e.n), m: e.m }; o.pending[id] = env.now() + Math.random(); delete _hl.sel[id]; n++; });
+    rlSaveLocal(o); if (n) rlQueueSync(); hlPaint();
+    if (root.toast) root.toast(n ? 'Approved ' + n + ' ball' + (n === 1 ? '' : 's') + ': now in Add a Ball' : 'Nothing to approve (needs specs)');
+    return n;
+  });
+}
+function catHoldSend() { rlSync().then(hlPaint, hlPaint); }
+
 /* ---------- v30.189 COV-1: Coverage (Settings > Balls & catalog) ----------
    From the catalog on this phone: per maker, USBC balls, balls with published specs, and the gaps
    that matter (approved since the chosen year, not discontinued or rejected, no specs). With the
@@ -3782,11 +3918,23 @@ function imgShrink(blob) {
 function ownPic(b, slot) { try { return typeof root.getBallImgSrc === 'function' ? root.getBallImgSrc(b.BallID, slot) : (slot === 'cover' ? b.ImagePath : b.CoreImagePath); } catch (e) { return null; } }
 /* Rows. Cover: your balls without a cover picture; catalog balls with specs and no picture.
    Core: your balls without a core picture; catalog cores (brand + core name) with no picture. */
+function catImageStored(id) { return id ? (_catImgObj[id] || imgPicks()[id] || null) : null; }
+/* v30.200 IMG-2: pictures already at hand are offered ready to save (maker picture links; for your
+   own balls, the linked catalog ball's saved picture). Checked on the row; nothing stored until Use. */
+function miPrefill(set) {
+  if (!set) return 0;
+  var mk = imgMap(), n = 0, put = function (r, u, how) { if (!u || /^blob:/.test(u) || _mi.found[r.key]) return; _mi.found[r.key] = { url: u, how: how, link: true }; n++; };
+  set.mine.forEach(function (r) { if (!r.catId) return; var st = imgPicks()[r.catId]; put(r, st || mk[r.catId], st ? 'catalog picture' : 'maker picture'); });
+  set.cat.forEach(function (r) { put(r, mk[r.catId], 'maker picture'); });
+  return n;
+}
 function miCoverRows(rows) {
   var mine = appBalls().filter(function (b) { return !b.Archived && b.BallID != null && !ownPic(b, 'cover'); })
     .map(function (b) { var e = b.CatalogID ? byIdIn(rows, b.CatalogID) : null;
       return { key: 'b' + b.BallID, ballId: b.BallID, catId: b.CatalogID || null, brand: e ? e.m : b.MFG, name: e ? cleanName(e.n) : b.BallName, year: e ? e.y : '', coreName: b.CoreShort || null }; });
-  var cat = (rows || []).filter(function (e) { return e.s && !catImageFor(e.i) && !catIsRejected(e); })
+  /* v30.200 IMG-2: a ball is listed until a picture is saved on this phone; a maker picture that is
+     only shown (Manufacturer images on this device) doesn't count, it is offered ready to save */
+  var cat = (rows || []).filter(function (e) { return e.s && !catImageStored(e.i) && !catIsRejected(e); })
     .sort(function (a, b) { return String(b.y || '').localeCompare(String(a.y || '')) || String(a.m).localeCompare(String(b.m)); })
     .map(function (e) { return { key: 'c' + e.i, ballId: null, catId: e.i, brand: e.m, name: cleanName(e.n), year: e.y }; });
   return { mine: mine, cat: cat };
@@ -3846,7 +3994,7 @@ function catImagesOpen() {
   _mi.page = 0; _mi.found = {}; _mi.busy = {}; _mi.all = null; _mi.coreAll = null; _mi.slot = 'cover';
   var sm = scanMem(); Object.keys(sm.found).forEach(function (fk) { _mi.found[fk] = { url: sm.found[fk], how: 'bowwwl', link: true }; });
   ov.innerHTML = '<div style="padding:30px;text-align:center;color:var(--t3)">Loading\u2026</div>';
-  catLoad().then(function (rows) { _mi.rows = rows; _mi.all = miCoverRows(rows); miRender(); });
+  catLoad().then(function (rows) { _mi.rows = rows; _mi.all = miCoverRows(rows); miPrefill(_mi.all); miRender(); });
 }
 function catImagesClose() { var el = document.getElementById('mi-ov'); if (el) el.parentNode.removeChild(el); }
 function catImagesSlot(s) {
@@ -3896,12 +4044,17 @@ function miRender() {
     '<div style="display:flex;gap:6px;padding:0 16px 8px">' + seg('mine', 'My balls' + (set ? ' (' + set.mine.length + ')' : ''), _mi.tab === 'mine', 'catImagesTab') +
       seg('cat', (_mi.slot === 'core' ? 'Catalog cores' : 'Catalog') + (set ? ' (' + set.cat.length + ')' : ''), _mi.tab === 'cat', 'catImagesTab') + '</div>' +
     '<div style="padding:0 16px 6px"><input class="bdet-field-input" type="search" placeholder="Filter by brand or name" value="' + esc(_mi.q) + '" oninput="catImagesFilter(this.value)" style="width:100%;box-sizing:border-box;font-size:15px"></div>' +
-    '<div style="flex:1;overflow-y:auto;padding:0 16px 10px">' + (loading ? '<div style="padding:30px 0;text-align:center;color:var(--t3);font-size:13px">Reading core names from the catalog\u2026</div>' : shown.length ? shown.map(row).join('') :
+    '<div style="flex:1;overflow-y:auto;padding:0 16px 10px">' +
+      /* v30.200 IMG-2: one obvious action when pictures are already at hand */
+      (!loading && nFound ? '<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;margin:2px 0 8px;border-radius:12px;border:1px solid rgba(0,217,217,0.3);background:rgba(0,217,217,0.08)">' +
+        '<div style="flex:1;min-width:0;font-size:13px;color:var(--t1);line-height:1.4"><b>' + nFound + ' ready to save</b><div style="font-size:11px;color:var(--t2)">Maker pictures and bowwwl finds. Tap \u2715 on any that look wrong, then save.</div></div>' +
+        '<button style="' + BTN_P + 'padding:9px 12px;font-size:13px;white-space:nowrap" onclick="catImagesUseAll()">Save all ' + nFound + '</button></div>' : '') +
+      (loading ? '<div style="padding:30px 0;text-align:center;color:var(--t3);font-size:13px">Reading core names from the catalog\u2026</div>' : shown.length ? shown.map(row).join('') :
       '<div style="padding:30px 0;text-align:center;color:var(--t2);font-size:13px">' + (_mi.q ? 'No match.' : 'Nothing missing here.') + '</div>') +
     (hint ? '<div style="font-size:11px;color:var(--t3);line-height:1.5;margin-top:10px">' + hint + '</div>' : '') +
     '<div style="font-size:11px;color:var(--t3);line-height:1.5;margin-top:8px"><b>Find</b> opens the ball on bowwwl, the maker\u2019s site or a web image search; long-press the picture there, tap Copy, come back and tap <b>Paste</b>. <b>Photo</b>: a picture saved to Photos or Files. <b>bowwwl</b> / <b>Check bowwwl for all</b> look for bowwwl\u2019s picture files; only when you tap.</div>' +
-    '<div style="display:flex;gap:6px;margin-top:12px"><button style="' + BTN_G + 'flex:1;padding:9px;font-size:12px" onclick="catImagesExport()">Save pictures to a file</button>' +
-      '<button style="' + BTN_G + 'flex:1;padding:9px;font-size:12px" onclick="catImagesImport()">Restore from a file</button></div></div>' +
+    '<div style="display:flex;gap:6px;margin-top:12px"><button style="' + BTN_G + 'flex:1;padding:9px;font-size:12px" onclick="catBackupOpen()">Catalog backup</button>' +
+      '<button style="' + BTN_G + 'flex:1;padding:9px;font-size:12px" onclick="catBackupRestore()">Restore from a file</button></div></div>' +
     '<div style="padding:10px 16px;border-top:1px solid var(--border1);display:flex;flex-direction:column;gap:8px">' +
       (_mi.scan ? '<div style="font-size:12px;color:var(--t2)">Checking bowwwl: ' + _mi.scan.done + ' of ' + _mi.scan.total + ' \u00b7 found ' + _mi.scan.found +
         '<div style="height:5px;border-radius:3px;background:var(--bg3);margin-top:5px"><div style="height:5px;border-radius:3px;background:var(--teal);width:' + Math.round(100 * _mi.scan.done / Math.max(1, _mi.scan.total)) + '%"></div></div></div>' : '') +
@@ -4159,6 +4312,126 @@ function catImagesImport() {
     var f = inp.files && inp.files[0]; if (inp.parentNode) inp.parentNode.removeChild(inp); if (!f) return;
     f.text().then(function (t) { return catImagesMerge(JSON.parse(t)); }).then(function (n) {
       if (root.toast) root.toast(n + ' picture' + (n === 1 ? '' : 's') + ' restored');
+      if (_mi.rows) { _mi.all = miCoverRows(_mi.rows); _mi.coreAll = null; if (_mi.slot === 'core') catImagesSlot('core'); else miRender(); }
+    }, function (e) { if (root.toast) root.toast(e.message || 'Could not read that file'); });
+  });
+  document.body.appendChild(inp); inp.click();
+}
+
+/* ---------- v30.200 CB-1: Catalog backup, kept on this device (LOCKED 2026-10-17) ----------
+   One file, BowlingDB_catalog_<date>.json, saved with the share sheet (Save to Files, iCloud
+   Drive). Nothing goes to GitHub (James: picture links stay off the public repo). It holds:
+   picture links (bdbimg_pick, bdbimg_core) and picture files (bdb_catimg), the bowwwl check
+   memory (bdbimg_scan), the manufacturer image links (bdbimg_links), this phone's spec
+   corrections and status list, and, with the token, a copy of the repo's corrections/
+   overrides.json and status.json. Restore merges: nothing already on the phone is replaced or
+   removed; the repo copies are kept in the file for recovery and never written back from here.
+   Making the file is two taps: iOS only opens the share sheet straight from a tap, so the file
+   is built first, then "Save the file" shares it. "Restore from a file" also takes the older
+   BowlingDB_pictures files. */
+var CB_AT_KEY = 'bowlingdb_catalog_backup_at', CB_REMIND_DAYS = 30, _cb = null;
+function cbLSGet(k, d) { var l = apLS(); try { var v = l && l.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } }
+function catBackupStatus() {
+  var l = apLS(), at = l ? l.getItem(CB_AT_KEY) : null, days = at ? Math.floor((env.now() - new Date(at).getTime()) / 864e5) : null;
+  return { at: at, days: days, due: days == null || days >= CB_REMIND_DAYS };
+}
+/* builds the backup object (reads picture files and, with the token, the repo copies) */
+function catBackupBuild() {
+  var repo = Promise.resolve(null);
+  if (apToken() && !(root.navigator && root.navigator.onLine === false)) {
+    repo = Promise.all([apReadOverrides(true), stReadRepo(), apGH(RL_PATH + '?ref=specs').then(function (f) { return JSON.parse(b64d(f.content) || '{}') || {}; }, function (e) { return e.status === 404 ? {} : null; })])
+      .then(function (r) { return { overrides: r[0] || {}, status: (r[1] && r[1].map) || {}, released: r[2] || {}, at: new Date(env.now()).toISOString() }; },
+      function (e) { return { error: (e && e.message) || 'could not read the repo' }; });
+  }
+  var files = catImgAll().catch(function () { return []; }).then(function (all) {
+    return all.reduce(function (p, x) { return p.then(function (acc) { return x.value && x.value.blob ? blobToData(x.value.blob).then(function (d) { if (d) acc[x.key] = d; return acc; }) : acc; }); }, Promise.resolve({}));
+  });
+  return Promise.all([files, repo]).then(function (r) {
+    var st = stLocal(), rp = r[1];
+    return { kind: 'bowlingdb-catalog-backup', v: 1, at: new Date(env.now()).toISOString(), app: root.APP_VERSION || null, catalogJs: CAT_VERSION,
+      covers: imgPicks(), cores: coreLinks(), files: r[0], scan: cbLSGet(SCAN_KEY, {}), makerLinks: cbLSGet(IMG_LINKS_KEY, null),
+      deviceCorrections: localOverrides(), status: { all: st.all, pending: st.pending, cleared: st.cleared }, released: rlLocal().all,
+      repo: rp && !rp.error ? rp : null, repoNote: !apToken() ? 'no token on this phone' : rp && rp.error ? rp.error : null };
+  });
+}
+/* Pure: counts for the summary line */
+function cbCounts(o) {
+  var n = function (x) { return Object.keys(x || {}).length; };
+  return { files: n(o.files), links: n(o.covers) + n(o.cores), corrections: n(o.deviceCorrections) + (o.repo ? n(o.repo.overrides) : 0),
+    status: n(o.status && o.status.all) + (o.repo ? n(o.repo.status) : 0), repo: !!o.repo };
+}
+function cbHTML() {
+  var b = catBackupStatus(), st = _cb && _cb.state, c = _cb && _cb.obj ? cbCounts(_cb.obj) : null;
+  var when = b.at ? new Date(b.at).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' }) + ' (' + (b.days === 0 ? 'today' : b.days + ' day' + (b.days === 1 ? '' : 's') + ' ago') + ')' : 'never';
+  var mb = _cb && _cb.size ? (_cb.size / 1048576).toFixed(1) + ' MB' : '';
+  return '<div class="modal-title">Catalog backup</div>' +
+    '<div style="font-size:13px;color:var(--t2);line-height:1.55;margin-bottom:10px">One file with your ball and core pictures (links and picture files), your spec corrections, your rejected, discontinued and released balls, and a copy of the repo\u2019s corrections. It stays on your device: choose <b>Save to Files</b> and pick iCloud Drive. Nothing is sent to GitHub.</div>' +
+    '<div style="font-size:13px;color:' + (b.due ? 'var(--gold)' : 'var(--t2)') + ';margin-bottom:12px">Last backup: ' + when + (b.due ? ' \u00b7 due' : '') + '</div>' +
+    (st === 'building' ? '<div style="font-size:13px;color:var(--t2);padding:10px 0">Gathering pictures and corrections\u2026</div>' :
+     st === 'ready' ? '<div style="font-size:13px;color:var(--t1);line-height:1.5;margin-bottom:8px">Ready: ' + c.files + ' picture file' + (c.files === 1 ? '' : 's') + ', ' + c.links + ' link' + (c.links === 1 ? '' : 's') + ', ' + c.corrections + ' correction' + (c.corrections === 1 ? '' : 's') + ', ' + c.status + ' status entr' + (c.status === 1 ? 'y' : 'ies') + (mb ? ' \u00b7 ' + mb : '') + '</div>' +
+       (c.repo ? '' : '<div style="font-size:12px;color:var(--gold);margin-bottom:8px">Repo copies not included (' + esc(_cb.obj.repoNote || 'offline') + '). Your phone\u2019s copies are in the file.</div>') +
+       '<button class="btn btn-primary" style="width:100%" onclick="catBackupShare()">Save the file</button>' :
+     '<button class="btn btn-primary" style="width:100%" onclick="catBackupMake()">Make backup</button>') +
+    '<button class="btn btn-ghost" style="width:100%;margin-top:8px" onclick="catBackupRestore()">Restore from a file</button>' +
+    '<div style="font-size:11px;color:var(--t3);line-height:1.5;margin-top:8px">Restore adds what this phone is missing and never replaces or removes anything. It also reads older picture files (BowlingDB_pictures).</div>' +
+    '<button class="btn btn-secondary" style="width:100%;margin-top:10px" onclick="closeModal()">Close</button>';
+}
+function cbShow() { var html = cbHTML(), bg = document.getElementById('modal-bg'); if (bg && bg.classList.contains('open') && root.swapModal) root.swapModal(html); else if (root.openModal) root.openModal(html); }
+function catBackupOpen() { _cb = null; cbShow(); }
+function catBackupMake() {
+  _cb = { state: 'building' }; cbShow();
+  return catBackupBuild().then(function (o) {
+    var text = JSON.stringify(o); _cb = { state: 'ready', obj: o, text: text, size: text.length, name: 'BowlingDB_catalog_' + o.at.slice(0, 10) + '.json' }; cbShow(); return o;
+  }, function (e) { _cb = null; cbShow(); if (root.toast) root.toast('Backup failed: ' + ((e && e.message) || e)); });
+}
+function cbDone() {
+  var l = apLS(); if (l) try { l.setItem(CB_AT_KEY, _cb.obj.at); } catch (e) {}
+  var c = cbCounts(_cb.obj); _cb = null; cbShow();
+  if (root.toast) root.toast('Catalog backup saved: ' + c.files + ' files, ' + c.links + ' links');
+}
+/* runs straight from the tap so iOS opens the share sheet */
+function catBackupShare() {
+  if (!_cb || !_cb.text) return;
+  var blob = new Blob([_cb.text], { type: 'application/json' }), file = typeof File === 'function' ? new File([blob], _cb.name, { type: 'application/json' }) : null;
+  var nav = root.navigator;
+  if (file && nav && nav.canShare && nav.canShare({ files: [file] })) {
+    nav.share({ files: [file], title: _cb.name }).then(cbDone, function (e) { if (e && e.name === 'AbortError') return; cbDownload(blob); });
+    return;
+  }
+  cbDownload(blob);
+}
+function cbDownload(blob) {
+  var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = _cb.name; document.body.appendChild(a); a.click();
+  setTimeout(function () { URL.revokeObjectURL(a.href); if (a.parentNode) a.parentNode.removeChild(a); }, 1500);
+  cbDone();
+}
+/* Merges a catalog backup (or an older pictures file). Never replaces or removes what is here. */
+function catBackupMerge(o) {
+  if (o && o.kind === 'bowlingdb-pictures') return catImagesMerge(o).then(function (n) { return { pictures: n, corrections: 0, status: 0, scan: 0 }; });
+  if (!o || o.kind !== 'bowlingdb-catalog-backup') return Promise.reject(new Error('Not a BowlingDB catalog backup'));
+  var l = apLS(), out = { pictures: 0, corrections: 0, status: 0, scan: 0 };
+  return catImagesMerge({ kind: 'bowlingdb-pictures', covers: o.covers, cores: o.cores, files: o.files }).then(function (n) {
+    out.pictures = n;
+    if (!l) return out;
+    var sc = cbLSGet(SCAN_KEY, {}); Object.keys(o.scan || {}).forEach(function (k) { if (!(k in sc)) { sc[k] = o.scan[k]; out.scan++; } });
+    if (out.scan) l.setItem(SCAN_KEY, JSON.stringify(sc));
+    if (o.makerLinks && !l.getItem(IMG_LINKS_KEY)) l.setItem(IMG_LINKS_KEY, JSON.stringify(o.makerLinks));
+    var dc = localOverrides(); Object.keys(o.deviceCorrections || {}).forEach(function (id) { if (!dc[id]) { dc[id] = o.deviceCorrections[id]; out.corrections++; } });
+    if (out.corrections) l.setItem(LOCAL_OVR_KEY, JSON.stringify(dc));
+    var st = stLocal(), sa = (o.status && o.status.all) || {};
+    Object.keys(sa).forEach(function (id) { if (!st.all[id] && !st.cleared[id]) { st.all[id] = sa[id]; out.status++; } });
+    if (out.status) stSaveLocal(st);
+    var rl = rlLocal(); Object.keys(o.released || {}).forEach(function (id) { if (!rl.all[id]) { rl.all[id] = o.released[id]; out.status++; } });
+    rlSaveLocal(rl);
+    return out;
+  });
+}
+function catBackupRestore() {
+  var inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'application/json,.json'; inp.style.display = 'none';
+  inp.addEventListener('change', function () {
+    var f = inp.files && inp.files[0]; if (inp.parentNode) inp.parentNode.removeChild(inp); if (!f) return;
+    f.text().then(function (t) { return catBackupMerge(JSON.parse(t)); }).then(function (r) {
+      if (root.toast) root.toast('Restored ' + r.pictures + ' picture' + (r.pictures === 1 ? '' : 's') + ', ' + r.corrections + ' correction' + (r.corrections === 1 ? '' : 's') + ', ' + r.status + ' status entr' + (r.status === 1 ? 'y' : 'ies'));
       if (_mi.rows) { _mi.all = miCoverRows(_mi.rows); _mi.coreAll = null; if (_mi.slot === 'core') catImagesSlot('core'); else miRender(); }
     }, function (e) { if (root.toast) root.toast(e.message || 'Could not read that file'); });
   });
@@ -4717,6 +4990,8 @@ function catCompareAdd(x) {
 
 
 root.CATALOG_JS_VERSION = CAT_VERSION;
+root.catHoldOpen = catHoldOpen; root.catHoldClose = catHoldClose; root.catHoldShow = catHoldShow; root.catHoldFilter = catHoldFilter; root.catHoldPage = catHoldPage; root.catHoldSel = catHoldSel; root.catHoldApprove = catHoldApprove; root.catHoldSend = catHoldSend; root.catIsHeld = catIsHeld; root._hold = { hlRows: hlRows, hlHasSpecs: hlHasSpecs, rlMerge: rlMerge };
+root.catBackupOpen = catBackupOpen; root.catBackupMake = catBackupMake; root.catBackupShare = catBackupShare; root.catBackupRestore = catBackupRestore; root.catBackupStatus = catBackupStatus; root.catBackupBuild = catBackupBuild; root.catBackupMerge = catBackupMerge;
 root.catPickerMount = catPickerMount;
 root.catApprovalsOpen = catApprovalsOpen; root.catImagesScanAll = catImagesScanAll; root.catImagesScanStop = catImagesScanStop; root.catImagesSlot = catImagesSlot; root.catImagesExport = catImagesExport; root.catImagesImport = catImagesImport; root.catCoreImageFor = catCoreImageFor; root.catImagesOpen = catImagesOpen; root.catImagesClose = catImagesClose; root.catImagesTab = catImagesTab; root.catImagesFilter = catImagesFilter; root.catImagesPage = catImagesPage; root.catImagesTry = catImagesTry; root.catImagesTryPage = catImagesTryPage; root.catImagesPaste = catImagesPaste; root.catImagesPhoto = catImagesPhoto; root.catImagesDrop = catImagesDrop; root.catImagesUse = catImagesUse; root.catImagesUseAll = catImagesUseAll; root.catSpApPdf = catSpApPdf; root.catSpBallPdf = catSpBallPdf; root.catPdfHelp = catPdfHelp; root.catShortcutHelp = catShortcutHelp; root.catShortcutCopy = catShortcutCopy; root.catShortcutClose = catShortcutClose; root.catSpAp = catSpAp; root.catSpBall = catSpBall; root.catSpToggle = catSpToggle; root.catSpAll = catSpAll; root.catSpEdit = catSpEdit; root.catSpClose = catSpClose; root.catSpApply = catSpApply; root.catSpManualGo = catSpManualGo; root.catSpManualClose = catSpManualClose; root.catLookBall = catLookBall; root.catLookOk = catLookOk; root.catLookSave = catLookSave; root.catLookClose = catLookClose; root.catPasteOpen = catPasteOpen; root.catPasteClose = catPasteClose; root.catPasteClip = catPasteClip; root.catPasteShow = catPasteShow; root.catFillToggle = catFillToggle; root.catFillClose = catFillClose; root.catFillConfirm = catFillConfirm; root.catPageOpen = catPageOpen; root.catPageClose = catPageClose; root.catPageUseSel = catPageUseSel; root.catPageUseVal = catPageUseVal; root.catPageImg = catPageImg; root.catPickOpen = catPickOpen; root.catPickFilter = catPickFilter; root.catPickChoose = catPickChoose; root.catPickClose = catPickClose; root.catSpecReviewOpen = catSpecReviewOpen; root.catSpecReviewClose = catSpecReviewClose; root.catSpecReviewAct = catSpecReviewAct; root.catSpecReviewBulk = catSpecReviewBulk; root.catSpecReviewPage = catSpecReviewPage; root.catTagPick = catTagPick; root.catTagCancel = catTagCancel; root.catVerifyRefresh = catVerifyRefresh; root.catVerifyDismiss = catVerifyDismiss; root.catVerifyRetry = catVerifyRetry; root.catVerifyOpenApprovals = catVerifyOpenApprovals; root.catVerifyPublish = catVerifyPublish; root.catVerifyApply = catVerifyApply; root.catVerifyTick = vfyTick; root.catVerifyState = vfyActive; root.catApprovalsRetryStaged = catApprovalsRetryStaged; root.apStagedErrText = apStagedErrText; root.catApprovalsClose = catApprovalsClose; root.catApprovalsSaveToken = catApprovalsSaveToken;
 root.catApprovalsForgetToken = catApprovalsForgetToken; root.catApprovalsChangeToken = catApprovalsChangeToken; root.catApprovalsPage = catApprovalsPage; root.catApprovalsFilter = catApprovalsFilter;
