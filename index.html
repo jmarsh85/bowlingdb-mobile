@@ -3457,10 +3457,10 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
 /* v30.169: ONE place for the version. The header, the home screen label, the
    page title and backups all read these, so nothing can go stale on an update.
    Bump both lines (and CATALOG_JS_VERSION in catalog.js when it changes). */
-const APP_VERSION = 'v30.198';
+const APP_VERSION = 'v30.200';
 const APP_BUILD_DATE = '2026-10-14';
 /* catalog.js this build expects; an older file on the server shows a warning */
-const EXPECTED_CATALOG_JS = 'v30.189';
+const EXPECTED_CATALOG_JS = 'v30.200';
 function applyAppVersion() {
 const ref = document.getElementById('hdr-build-ref');
 const cat = (typeof window.CATALOG_JS_VERSION === 'string') ? window.CATALOG_JS_VERSION : null;
@@ -28241,7 +28241,8 @@ return `
           ${line('Last check', when(s.lastAttemptAt))}
           ${s.lastError ? `<div style="font-size:11px;color:var(--red);margin:4px 0 6px;line-height:1.4">Last check failed: ${String(s.lastError).replace(/[<>&]/g,'')}</div>` : ''}
           ${s.count ? `<button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="catReviewOpen()">Review suggested matches</button><button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="catAuditOpen()">Check linked balls</button>` : ''}
-          <button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="if(typeof catApprovalsOpen==='function')catApprovalsOpen()">Spec approvals</button><button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="if(typeof catSpecReviewOpen==='function')catSpecReviewOpen()">Review my specs</button><button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="if(typeof catImagesOpen==='function')catImagesOpen()">Ball images</button><button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="if(typeof catDiscOpen==='function')catDiscOpen()">Discontinued &amp; rejected</button><button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="if(typeof catCovOpen==='function')catCovOpen()">Coverage</button><button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="if(typeof catShortcutHelp==='function')catShortcutHelp()">Copy page text Shortcut</button>
+          <button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="if(typeof catApprovalsOpen==='function')catApprovalsOpen()">Spec approvals</button><button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="if(typeof catSpecReviewOpen==='function')catSpecReviewOpen()">Review my specs</button><button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="if(typeof catImagesOpen==='function')catImagesOpen()">Ball images</button><button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="if(typeof catDiscOpen==='function')catDiscOpen()">Discontinued &amp; rejected</button><button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="if(typeof catCovOpen==='function')catCovOpen()">Coverage</button><button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="if(typeof catShortcutHelp==='function')catShortcutHelp()">Copy page text Shortcut</button><button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="if(typeof catBackupOpen==='function')catBackupOpen()">Catalog backup</button>${(() => { let dev = false; try { dev = typeof dkIsEnabled === 'function' ? !!dkIsEnabled() : !!JSON.parse(localStorage.getItem('bowlingdb_devkit')||'{}').enabled; } catch(e) {} return dev && typeof catHoldOpen === 'function' ? `<button class="btn btn-ghost btn-sm" style="margin-top:6px;margin-right:6px" onclick="catHoldOpen()">Review new balls</button>` : ''; })()}
+          ${typeof catBackupStatus === 'function' ? (() => { const b = catBackupStatus(); return b.due ? `<div style="font-size:11px;color:var(--gold);margin-top:6px">Catalog backup ${b.at ? 'last made ' + b.days + ' days ago' : 'not made yet'}: Catalog backup › Make backup.</div>` : ''; })() : ''}
           ${typeof catImagesStatus === 'function' ? (() => { const im = catImagesStatus(); return `
           <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border1)">
             <label style="display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:13px;color:var(--t1)">
@@ -28496,7 +28497,7 @@ return `<div style="display:flex;align-items:center;justify-content:space-betwee
     <!-- ── v30.190 PP-1: PinPal ─────────────────────────────── -->
     <div class="settings-section">
       <div class="settings-section-hdr">Coming from PinPal
-        <span class="settings-section-hint">Read a PinPal backup and see where it and the app agree or differ, game by game. Read only.</span>
+        <span class="settings-section-hint">Read a PinPal backup, see where it and the app agree or differ game by game, then import what you choose.</span>
       </div>
       <button class="btn btn-secondary" style="width:100%" onclick="openPinpalCompare()">Compare a PinPal backup</button>
     </div>
