@@ -15,7 +15,7 @@
    library. Loaded on demand from Settings > Data & app. */
 (function (root) {
 'use strict';
-var PP_VERSION = 'v30.197';
+var PP_VERSION = 'v30.198';
 /* v30.193: options and your name choices, kept on this phone.
    noTap (off by default): read PinPal games as no-tap where the app's game is no-tap, and send
    "No Tap" leagues to NoTap Games. PinPal has no no-tap mode, so this only fits someone who logged
@@ -552,8 +552,9 @@ function ppLookups(D, map) {
   (map.balls || []).forEach(function (x) { if (x.app) { var b = (D.balls || []).filter(function (y) { return y.BallName === x.app; })[0]; if (b) ballMap[x.pp] = b.BallID; } });
   return { leagueOf: leagueOf, centerOf: centerOf, ballMap: ballMap, lgID: lgID, ceID: ceID, skipLeague: skipLeague, noCenter: noCenter, newBall: newBall };
 }
-/* Runs the chosen actions. Returns [{label, ok, msg}]. */
-function ppRunImport(actions) {
+/* Runs the chosen actions in small batches, yielding to the screen between them (v30.198: one long
+   blocking run kept the progress message from ever drawing). Resolves {results:[{label, ok, msg}], undo}. */
+function ppRunImport(actions, onProgress) {
   var D = ppAppDb(), L = ppLookups(D, _pp.map), results = [];
   /* v30.196: create a PinPal ball the first time an imported game uses it (it was linked by name only,
      so on a new install every throw lost its ball). Brand split off a leading maker name; active when
@@ -602,10 +603,24 @@ function ppRunImport(actions) {
     g.FinalScore = got; g.GameTotal = got;
     results.push({ label: label, ok: true, msg: 'frames from PinPal \u00b7 ' + got });
   };
-  actions.forEach(function (act) {
+  /* v30.198: re-checked against the app as it is now, so a plan run twice never adds or fills twice */
+  var sameScores = function (a, b) { return a.slice().sort().join(',') === b.slice().sort().join(','); };
+  var step = function (act) {
+    if (act.kind === 'fill') {
+      var cur = D.games.filter(function (x) { return x.GameID === act.row.app.gameID; })[0];
+      var cf = cur ? D.frames.filter(function (f) { return f.GameID === cur.GameID; }) : [], f10 = cf.filter(function (f) { return f.FrameNumber === 10; })[0];
+      if (cur && cf.length === 10 && f10 && (f10.RunningTotal === cur.FinalScore || f10.NoTapRunningTotal === cur.FinalScore)) { results.push({ label: act.label, ok: true, skipped: true, msg: 'already filled: left as it is' }); return; }
+    }
     if (act.kind === 'fill' || act.kind === 'replace') { replaceFrames(act.row, act.label); return; }
     /* add a session */
     var s = act.session, noTap = act.noTap, lgName = noTap ? null : L.leagueOf[s.league], leagueID = noTap ? -1 : L.lgID[lgName];
+    var nameNow = lgName || s.league, scoresNow = act.rows.map(function (r) { return r.pp.g.score; });
+    var there = D.series.some(function (se) {
+      if (se.DateBowled !== s.date) return false;
+      var ln = (D.leagues.filter(function (l) { return l.LeagueID === se.LeagueID; })[0] || {}).LeagueName;
+      return ln === nameNow && sameScores(D.games.filter(function (g) { return g.SeriesID === se.SeriesID; }).map(function (g) { return g.FinalScore; }), scoresNow);
+    });
+    if (there) { results.push({ label: s.date + ' ' + (s.league || 'Open'), ok: true, skipped: true, msg: 'already in the app: not added again' }); return; }
     var centerID = s.house && L.centerOf[s.house] ? L.ceID[L.centerOf[s.house]] : null;
     if (s.house && centerID == null && !L.noCenter[s.house]) {
       centerID = D.ids.center++;
@@ -641,33 +656,70 @@ function ppRunImport(actions) {
       results.push({ label: s.date + ' ' + (s.league || 'Open') + ' G' + (k + 1), ok: true,
         msg: 'added \u00b7 ' + got + (got !== want ? ' (PinPal\u2019s no-tap reading ' + want + (tenth ? ': check the 10th frame' : '') + ')' : '') });
     });
+  };
+  var total = actions.reduce(function (t, a) { return t + (a.kind === 'add' ? a.rows.length : 1); }, 0), i = 0, done = 0;
+  return new Promise(function (resolve, reject) {
+    var tick = function () {
+      try {
+        var t0 = Date.now();
+        while (i < actions.length && Date.now() - t0 < 50) { var a = actions[i++]; step(a); done += a.kind === 'add' ? a.rows.length : 1; }
+        if (onProgress) onProgress(done, total);
+        if (i < actions.length) setTimeout(tick, 0); else resolve({ results: results, undo: undo });
+      } catch (e) { reject(e); }
+    };
+    setTimeout(tick, 30);   // let the progress screen draw first
   });
-  return { results: results, undo: undo };
 }
 function ppImportOpen() { _pp.plan = ppPlan(_pp.rep, ppLookups(ppAppDb(), _pp.map)); _pp.view = 'import'; _pp.results = null; ppRender(); }
-function ppPlanToggle(i, on) { if (i >= 0 && _pp.plan[i] && !_pp.plan[i].disabled) _pp.plan[i].on = !!on; var b = el('pp-go'); var n = ppPlanGames(); if (b) { b.textContent = 'Import ' + n + ' game' + (n === 1 ? '' : 's'); b.disabled = !n; } }
+function ppPlanToggle(i, on) {
+  if (i >= 0 && _pp.plan[i] && !_pp.plan[i].disabled) _pp.plan[i].on = !!on;
+  var b = el('pp-go'); var n = ppPlanGames(); if (b) { b.textContent = 'Import ' + n + ' game' + (n === 1 ? '' : 's'); b.disabled = !n; }
+  var g = function (list) { return list.filter(function (a) { return a.on && !a.disabled; }).reduce(function (t, a) { return t + (a.kind === 'add' ? a.rows.length : 1); }, 0); };
+  PP_SECS.forEach(function (sc) { var e = document.querySelector('#pp-ov [data-pp-secn="' + sc[0] + '"]'); if (!e) return; var list = _pp.plan.filter(function (a) { return a.sec === sc[0]; });
+    e.textContent = list.length + (sc[0] === 'add' ? ' session' : ' game') + (list.length === 1 ? '' : 's') + ' \u00b7 ' + g(list) + ' ticked'; });
+  (_pp._groups || []).forEach(function (ids, gi) { var list = ids.map(function (x) { return _pp.plan[x]; }), live = list.filter(function (a) { return !a.disabled; });
+    var cb = document.querySelector('#pp-ov [data-pp-grp="' + gi + '"]'); if (cb) cb.checked = live.length > 0 && live.every(function (a) { return a.on; });
+    var t = document.querySelector('#pp-ov [data-pp-grpn="' + gi + '"]'); if (t) t.textContent = list.length + ' session' + (list.length === 1 ? '' : 's') + ' \u00b7 ' + g(list) + ' games ticked'; });
+}
 function ppPlanSection(sec, on) {
   (_pp.plan || []).forEach(function (a, i) { if (a.sec === sec && !a.disabled) { a.on = !!on; var cb = document.querySelector('#pp-ov [data-pp-plan="' + i + '"]'); if (cb) cb.checked = !!on; } });
   ppPlanToggle(-1);
 }
 function ppPlanGames() { return (_pp.plan || []).filter(function (a) { return a.on && !a.disabled; }).reduce(function (t, a) { return t + (a.kind === 'add' ? a.rows.length : 1); }, 0); }
+/* v30.198: a progress screen while importing and saving; a second tap is ignored until it finishes */
+function ppProgress(done, total, phase, note) {
+  var o = ppOverlay(), pct = total ? Math.round(done * 100 / total) : 0;
+  o.innerHTML = '<div style="margin:auto;width:82%;text-align:center">' +
+    '<div style="font-size:16px;font-weight:800;color:var(--t1);margin-bottom:12px">' + esc(phase) + '</div>' +
+    '<div style="height:10px;border-radius:5px;background:var(--bg2);border:1px solid var(--border1);overflow:hidden"><div id="pp-bar" style="height:100%;width:' + pct + '%;background:var(--teal);transition:width .2s"></div></div>' +
+    '<div id="pp-bar-n" style="font-size:13px;color:var(--t2);margin-top:10px">' + done + ' of ' + total + ' game' + (total === 1 ? '' : 's') + '</div>' +
+    '<div style="font-size:12px;color:var(--t3);margin-top:14px;line-height:1.5">' + esc(note || 'Keep this screen open until it finishes.') + '</div></div>';
+}
 function ppGo(actions) {
+  if (_pp.running) return;   // a tap queued while an import runs
   var n = actions.reduce(function (t, a) { return t + (a.kind === 'add' ? a.rows.length : 1); }, 0);
   if (!n) return;
   if (typeof confirm === 'function' && !confirm('Import ' + n + ' game' + (n === 1 ? '' : 's') + ' from PinPal?\n\nA copy of everything changed is kept for Undo last import. A Full Snapshot first is still a good idea.')) return;
-  ppBusy('Importing ' + n + ' game' + (n === 1 ? '' : 's') + '\u2026');
-  var D = ppAppDb(), keepIds = JSON.parse(JSON.stringify(D.ids));
+  _pp.running = true;
+  ppProgress(0, n, 'Importing from PinPal');
+  var fail = function (e) { _pp.running = false; if (root.toast) root.toast('Import failed: ' + (e && e.message || e)); ppRender(); };
   var run;
-  try { run = ppRunImport(actions); } catch (e) { if (root.toast) root.toast('Import failed: ' + (e && e.message || e)); ppRender(); return; }
-  try { localStorage.setItem(PP_UNDO_KEY, JSON.stringify(run.undo)); } catch (e) {}
-  var del = function (store, keys) { return typeof idbDeleteKeys === 'function' && keys && keys.length ? idbDeleteKeys(store, keys) : Promise.resolve(); };
-  Promise.resolve(del('attempts', run.undo.removedAttempts)).then(function () { return del('frames', run.undo.removedFrames); })
-    .then(function () { return typeof saveAll === 'function' ? saveAll() : null; })
+  ppRunImport(actions, function (d, t) { var b = el('pp-bar'), c = el('pp-bar-n'); if (b) b.style.width = Math.round(d * 100 / t) + '%'; if (c) c.textContent = d + ' of ' + t + ' game' + (t === 1 ? '' : 's'); })
+    .then(function (r) {
+      run = r;
+      try { localStorage.setItem(PP_UNDO_KEY, JSON.stringify(run.undo)); } catch (e) {}
+      ppProgress(n, n, 'Saving to this phone\u2026', 'Almost done. Large imports take a few seconds to save.');
+      var del = function (store, keys) { return typeof idbDeleteKeys === 'function' && keys && keys.length ? idbDeleteKeys(store, keys) : Promise.resolve(); };
+      return new Promise(function (res) { setTimeout(res, 30); })
+        .then(function () { return del('attempts', run.undo.removedAttempts); }).then(function () { return del('frames', run.undo.removedFrames); })
+        .then(function () { return typeof saveAll === 'function' ? saveAll() : null; });
+    })
     .then(function () {
+      _pp.running = false;
       _pp.results = run.results; _pp.view = 'done'; ppRender();
-      var okN = run.results.filter(function (r) { return r.ok; }).length;
-      if (root.toast) root.toast('Imported ' + okN + ' of ' + run.results.length);
-    });
+      var okN = run.results.filter(function (r) { return r.ok && !r.skipped; }).length, sk = run.results.filter(function (r) { return r.skipped; }).length;
+      if (root.toast) root.toast('Imported ' + okN + ' of ' + run.results.length + (sk ? ' \u00b7 ' + sk + ' already there' : ''));
+    }, fail);
 }
 function ppGoPlan() { ppGo((_pp.plan || []).filter(function (a) { return a.on && !a.disabled; })); }
 function ppReplaceThis() {
@@ -678,6 +730,7 @@ function ppReplaceThis() {
 function ppUndo() {
   var u; try { u = JSON.parse(localStorage.getItem(PP_UNDO_KEY) || 'null'); } catch (e) {}
   if (!u) { if (root.toast) root.toast('Nothing to undo'); return; }
+  if (_pp.running) return;
   if (typeof confirm === 'function' && !confirm('Undo the PinPal import from ' + u.at.slice(0, 16).replace('T', ' ') + '?')) return;
   ppBusy('Undoing the import\u2026 (saving can take a few seconds)');
   var D = ppAppDb(), c = u.created, has = function (arr, v) { return arr.indexOf(v) >= 0; };
@@ -707,21 +760,59 @@ function ppImportHTML() {
   }
   var n = ppPlanGames();
   if (!_pp.plan.length) return '<div style="font-size:13px;color:var(--t2);line-height:1.6">Nothing to import: every PinPal game is already in the app. To swap one game\u2019s frames for PinPal\u2019s, open it from the report.</div>';
-  var item = function (a) {
+  /* v30.198: sections collapse (open when short); Add groups its sessions by league, one tick per league;
+     the Import button sits in a fixed bar below the list (ppImportFoot). */
+  var po = _pp.planOpen = _pp.planOpen || {};
+  var item = function (a, indent) {
     var i = _pp.plan.indexOf(a);
-    return '<label style="display:flex;gap:10px;align-items:flex-start;padding:10px 2px 10px 6px;border-bottom:1px solid var(--border1);' + (a.disabled ? 'opacity:.55' : 'cursor:pointer') + '">' +
+    return '<label style="display:flex;gap:10px;align-items:flex-start;padding:9px 2px 9px ' + (indent ? 30 : 6) + 'px;border-bottom:1px solid var(--border1);' + (a.disabled ? 'opacity:.55' : 'cursor:pointer') + '">' +
       '<input type="checkbox" data-pp-plan="' + i + '" ' + (a.on ? 'checked ' : '') + (a.disabled ? 'disabled ' : '') + 'onchange="ppPlanToggle(' + i + ',this.checked)" style="width:18px;height:18px;margin-top:2px">' +
       '<div style="flex:1;min-width:0"><div style="font-size:13px;color:var(--t1)">' + esc(a.label) + '</div><div style="font-size:12px;color:var(--t3)">' + esc(a.note) + '</div></div></label>';
   };
+  var games = function (list) { return list.filter(function (a) { return a.on && !a.disabled; }).reduce(function (t, a) { return t + (a.kind === 'add' ? a.rows.length : 1); }, 0); };
+  var chev = function (open) { return '<span style="color:var(--t3);width:14px;display:inline-block">' + (open ? '\u25be' : '\u25b8') + '</span>'; };
   var secs = PP_SECS.map(function (sc) {
     var list = _pp.plan.filter(function (a) { return a.sec === sc[0]; }); if (!list.length) return '';
-    var live = list.filter(function (a) { return !a.disabled; }).length;
-    var b = function (t, on) { return '<button onclick="ppPlanSection(\'' + sc[0] + '\',' + on + ')" style="' + BTN + 'padding:5px 10px;font-size:12px">' + t + '</button>'; };
-    return '<div style="display:flex;align-items:center;gap:6px;margin:16px 0 2px"><div style="flex:1;font-size:12px;font-weight:800;color:var(--t2);text-transform:uppercase;letter-spacing:.4px">' + sc[1] + ' \u00b7 ' + list.length + '</div>' +
-      (live ? b('All', true) + b('None', false) : '') + '</div>' + list.map(item).join('');
+    var live = list.filter(function (a) { return !a.disabled; }).length, key = 'sec:' + sc[0];
+    var open = po[key] != null ? po[key] : list.length <= 8;
+    var b = function (t, on) { return '<button onclick="event.stopPropagation();ppPlanSection(\'' + sc[0] + '\',' + on + ')" style="' + BTN + 'padding:5px 10px;font-size:12px">' + t + '</button>'; };
+    var head = '<div onclick="ppPlanOpen(\'' + key + '\',' + !open + ')" style="display:flex;align-items:center;gap:6px;margin:14px 0 2px;padding:6px 0;cursor:pointer">' + chev(open) +
+      '<div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:800;color:var(--t2);text-transform:uppercase;letter-spacing:.4px">' + sc[1] + '</div>' +
+      '<div data-pp-secn="' + sc[0] + '" style="font-size:11px;color:var(--t3)">' + list.length + (sc[0] === 'add' ? ' session' : ' game') + (list.length === 1 ? '' : 's') + ' \u00b7 ' + games(list) + ' ticked</div></div>' +
+      (live ? b('All', true) + b('None', false) : '') + '</div>';
+    if (!open) return head;
+    if (sc[0] !== 'add') return head + list.map(function (a) { return item(a, false); }).join('');
+    /* group sessions by league */
+    var groups = [], by = {};
+    list.forEach(function (a) { var g = a.session.league || 'Open bowling'; if (!by[g]) { by[g] = []; groups.push(g); } by[g].push(a); });
+    return head + groups.map(function (g) {
+      var gl = by[g], gk = 'lg:' + g, gopen = po[gk] != null ? !!po[gk] : list.length <= 8, liveG = gl.filter(function (a) { return !a.disabled; }), allOn = liveG.length && liveG.every(function (a) { return a.on; });
+      var gi = groups.indexOf(g);
+      var gh = '<div style="display:flex;align-items:center;gap:10px;padding:10px 2px 10px 6px;border-bottom:1px solid var(--border1)">' +
+        '<input type="checkbox" data-pp-grp="' + gi + '" ' + (allOn ? 'checked ' : '') + (liveG.length ? '' : 'disabled ') + 'onchange="ppPlanGroup(' + gi + ',this.checked)" style="width:18px;height:18px">' +
+        '<div onclick="ppPlanOpen(\'' + esc(gk).replace(/'/g, '\\\'') + '\',' + !gopen + ')" style="flex:1;min-width:0;cursor:pointer;display:flex;align-items:center;gap:6px">' +
+          '<div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:700;color:var(--t1)">' + esc(g) + '</div>' +
+          '<div data-pp-grpn="' + gi + '" style="font-size:12px;color:var(--t3)">' + gl.length + ' session' + (gl.length === 1 ? '' : 's') + ' \u00b7 ' + games(gl) + ' games ticked' + (gl[0].disabled ? ' \u00b7 ' + esc(gl[0].note) : '') + '</div></div>' + chev(gopen) + '</div></div>';
+      return gh + (gopen ? gl.map(function (a) { return item(a, true); }).join('') : '');
+    }).join('');
   }).join('');
-  return '<div style="font-size:12px;color:var(--t3);line-height:1.5;margin-bottom:6px">Ticked items are imported; each section has All / None. Games are scored by the app; a filled game that doesn\u2019t come out at PinPal\u2019s score is left alone. Equipment: first ball only; a PinPal ball not in the app is created (Names \u203a balls to change). Speed, boards and notes in the app are never touched. Games you reviewed (left as is) are not listed.</div>' +
-    secs + '<button id="pp-go" style="' + BTNP + 'width:100%;padding:12px;margin-top:16px" ' + (n ? '' : 'disabled ') + 'onclick="ppGoPlan()">Import ' + n + ' game' + (n === 1 ? '' : 's') + '</button>';
+  _pp._groups = (function () { var by = {}, order = []; _pp.plan.forEach(function (a, i) { if (a.sec !== 'add') return; var g = a.session.league || 'Open bowling'; if (!by[g]) { by[g] = []; order.push(g); } by[g].push(i); }); return order.map(function (g) { return by[g]; }); })();
+  return '<div style="font-size:12px;color:var(--t3);line-height:1.5;margin-bottom:6px">Tick a league to take all of its sessions, or open it to pick sessions. Games are scored by the app; a filled game that doesn\u2019t come out at PinPal\u2019s score is left alone. Equipment: first ball only; a PinPal ball not in the app is created (Names \u203a balls to change). Speed, boards and notes in the app are never touched. Games you reviewed (left as is) are not listed.</div>' +
+    secs;
+}
+/* the fixed bar under the import list */
+function ppImportFoot() {
+  if (_pp.view !== 'import' || !_pp.plan || !_pp.plan.length) return '';
+  var n = ppPlanGames();
+  return '<div style="padding:10px 16px;border-top:1px solid var(--border1);display:flex;gap:8px;align-items:center">' +
+    '<button onclick="ppScrollTop()" aria-label="Back to top" style="' + BTN + 'padding:12px 14px">\u2191</button>' +
+    '<button id="pp-go" style="' + BTNP + 'flex:1;padding:12px" ' + (n ? '' : 'disabled ') + 'onclick="ppGoPlan()">Import ' + n + ' game' + (n === 1 ? '' : 's') + '</button></div>';
+}
+function ppScrollTop() { var sc = ppScroller(); if (sc) sc.scrollTop = 0; }
+function ppPlanOpen(key, on) { (_pp.planOpen = _pp.planOpen || {})[key] = !!on; ppRender(); }
+function ppPlanGroup(gi, on) {
+  ((_pp._groups || [])[gi] || []).forEach(function (i) { var a = _pp.plan[i]; if (a && !a.disabled) a.on = !!on; });
+  ppRender();
 }
 
 /* ---------- screen ---------- */
@@ -780,7 +871,7 @@ function ppRenderInner() {
   var head = '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 8px"><button style="' + BTN + 'width:40px;height:40px;border-radius:20px" onclick="' + (_pp.game ? 'ppBack()' : _pp.view ? 'ppRecompare()' : 'ppClose()') + '">\u2039</button>' +
     '<div style="flex:1;min-width:0"><div style="font-size:17px;font-weight:800;color:var(--t1)">' + (_pp.view ? 'Import from PinPal' : _pp.game ? 'Game comparison' : 'Compare a PinPal backup') + '</div>' +
     '<div style="font-size:11px;color:var(--t3)">' + (r ? esc(_pp.file) + ' \u00b7 ' + esc(r.range[0] || '') + ' to ' + esc(r.range[1] || '') : 'Read only: nothing in the app changes') + '</div></div></div>';
-  if (_pp.view === 'import' || _pp.view === 'done') { ov.innerHTML = head + '<div id="pp-sc" style="scroll-behavior:auto;flex:1;overflow-y:auto;padding:0 16px 16px">' + ppImportHTML() + '</div>'; return; }
+  if (_pp.view === 'import' || _pp.view === 'done') { ov.innerHTML = head + '<div id="pp-sc" style="scroll-behavior:auto;flex:1;overflow-y:auto;padding:0 16px 16px">' + ppImportHTML() + '</div>' + ppImportFoot(); return; }
   if (_pp.game) { ov.innerHTML = head + '<div id="pp-sc" style="scroll-behavior:auto;flex:1;overflow-y:auto;padding:0 16px 16px">' + ppGameHTML(_pp.game) +
     ppDecideHTML(_pp.game) + '</div>'; return; }
   if (!r) {
@@ -922,7 +1013,7 @@ function ppDownload() {
 
 root.PINPAL_JS_VERSION = PP_VERSION;
 root.ppOpen = ppOpen; root.ppClose = ppClose; root.ppPick = ppPick; root.ppToggle = ppToggle; root.ppShow = ppShow; root.ppBack = ppBack; root.ppDownload = ppDownload;
-root.ppLoadBuffer = ppLoadBuffer; root.ppReview = ppReview; root.ppReviewCat = ppReviewCat; root.ppReviewCatUndo = ppReviewCatUndo; root.ppPlanSection = ppPlanSection; root.ppNameSet = ppNameSet; root.ppNoTapSet = ppNoTapSet; root.ppImportOpen = ppImportOpen; root.ppPlanToggle = ppPlanToggle; root.ppGoPlan = ppGoPlan; root.ppReplaceThis = ppReplaceThis; root.ppUndo = ppUndo; root.ppRecompare = ppRecompare;
+root.ppLoadBuffer = ppLoadBuffer; root.ppPlanOpen = ppPlanOpen; root.ppPlanGroup = ppPlanGroup; root.ppScrollTop = ppScrollTop; root.ppReview = ppReview; root.ppReviewCat = ppReviewCat; root.ppReviewCatUndo = ppReviewCatUndo; root.ppPlanSection = ppPlanSection; root.ppNameSet = ppNameSet; root.ppNoTapSet = ppNoTapSet; root.ppImportOpen = ppImportOpen; root.ppPlanToggle = ppPlanToggle; root.ppGoPlan = ppGoPlan; root.ppReplaceThis = ppReplaceThis; root.ppUndo = ppUndo; root.ppRecompare = ppRecompare;
 root._pinpal = { sqliteTables: sqliteTables, sqlCols: sqlCols, ppRead: ppRead, ppFrames: ppFrames, ppScore: ppScore, appGames: appGames, ppCompare: ppCompare,
   ppFrameDiffs: ppFrameDiffs, ppNoTapScore: ppNoTapScore, ppUnlike: ppUnlike, ppNoTapFrames: ppNoTapFrames, ppMatchName: ppMatchName, ppMapping: ppMapping, ppCsv: ppCsv, PP_CATS: PP_CATS, ppToAppBalls: ppToAppBalls, ppBSK: ppBSK, ppPlan: ppPlan, ppLookups: ppLookups, ppRunImport: ppRunImport, ppApplyChoices: ppApplyChoices, opt: PP_OPT };
 })(typeof window !== 'undefined' ? window : globalThis);
