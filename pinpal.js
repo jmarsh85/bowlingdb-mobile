@@ -12,10 +12,13 @@
    compared on ball 1 only and spare balls are never judged.
 
    A small SQLite reader is built in (rowid tables, overflow pages) so this works offline with no
-   library. Loaded on demand from Settings > Data & app. */
+   library. Loaded on demand from Settings > Data & app.
+   v30.199: oil patterns (a Names row, set on imported games, and a plan section for games that
+   have none), open-bowling sessions added as the app's open sessions, created balls listed with
+   a way to the catalog, a help card for making the backup. Undo stays one import deep (James). */
 (function (root) {
 'use strict';
-var PP_VERSION = 'v30.198';
+var PP_VERSION = 'v30.199';
 /* v30.193: options and your name choices, kept on this phone.
    noTap (off by default): read PinPal games as no-tap where the app's game is no-tap, and send
    "No Tap" leagues to NoTap Games. PinPal has no no-tap mode, so this only fits someone who logged
@@ -193,6 +196,7 @@ function ppRead(t) {
     if ((!hasFrames && !g.score) || (!g.flags && !g.score)) return;   // empty or unplayed shell (a stray first-ball row is not a game)
     var date = localDate(w.date), lg = L[w.leagueFk], key = date + '|' + w.leagueFk;   // weeks of one league on one day are one session
     var s = sess[key];
+    if (lg && w.leagueFk === -1) lg = null;   // pk -1 is PinPal's open bowling
     if (!s) { s = sess[key] = { key: key, date: date, leaguePk: w.leagueFk, league: lg ? lg.name : null, open: !lg, house: (H[w.houseFk] || H[g.houseFk] || {}).name || null,
       pattern: (PT[w.patternFk] || PT[g.patternFk] || {}).name || null, games: [] }; order.push(s); }
     var frames = hasFrames ? ppFrames(fr) : null;
@@ -216,6 +220,10 @@ function ppMatchName(name, list) {
   var years = function (x) { return (String(x).match(/\b(?:19|20)\d{2}\b/g) || []).concat((String(x).match(/\b\d{2}\s*[\/-]\s*\d{2}\b/g) || []).map(function (y) { return y.replace(/\s/g, ''); })); };
   var ny = years(name);
   list = list.filter(function (x) { var y = years(x); return !ny.length || !y.length || ny.some(function (v) { return y.indexOf(v) >= 0; }); });
+  /* v30.199: oil pattern lengths too (PBA Cheetah 37' is not PBA Cheetah 35') */
+  var feet = function (x) { return (String(x).match(/\b\d{2}\s*['\u2019]/g) || []).map(function (v) { return v.replace(/\D/g, ''); }); };
+  var nf = feet(name);
+  list = list.filter(function (x) { var f = feet(x); return !nf.length || !f.length || nf.some(function (v) { return f.indexOf(v) >= 0; }); });
   var tight = function (x) { return ppNorm(x).replace(/ /g, ''); };   // Hy-Road = Hyroad
   for (var j = 0; j < list.length; j++) if (tight(list[j]) === tight(name)) return { name: list[j], how: 'same' };
   var a = ppTokens(name), best = null, bs = 0;
@@ -283,7 +291,7 @@ function appGames(doc) {
     }
     return { gameID: g.GameID, seriesID: g.SeriesID, num: g.GameNumber, score: g.FinalScore != null ? g.FinalScore : g.GameTotal,
       date: s.DateBowled || g.DateBowled || '', league: lg[g.LeagueID || s.LeagueID] || null, center: ce[g.CenterID || s.CenterID] || null,
-      noTap: !!(g.NoTap || s.NoTap), frames: frames, broken: broken };
+      noTap: !!(g.NoTap || s.NoTap), frames: frames, broken: broken, patternID: g.PatternID != null ? g.PatternID : null, open: (g.LeagueID != null ? g.LeagueID : s.LeagueID) === 0 };
   });
 }
 
@@ -382,9 +390,9 @@ function ppCompare(pp, app) {
 /* v30.193: your choice for a PinPal name overrides the automatic match:
    an app name (link to it), '__new' (create it), '__none' (no center / no ball), '__skip' (league: don't import). */
 function ppApplyChoices(m, choices) {
-  ['centers', 'leagues', 'balls'].forEach(function (k) {
+  ['centers', 'leagues', 'balls', 'patterns'].forEach(function (k) {
     var ch = (choices && choices[k]) || {};
-    m[k].forEach(function (x) {
+    (m[k] || []).forEach(function (x) {
       x.auto = x.app; x.autoHow = x.how;
       var c = ch[x.pp];
       if (c == null) { x.choice = x.app ? x.app : '__new'; if (!x.app) x.how = 'new'; return; }   // v30.196: an unmatched ball is created too
@@ -399,10 +407,12 @@ function ppApplyChoices(m, choices) {
 function ppMapping(pp, doc) {
   var list = function (arr, k) { return (arr || []).map(function (x) { return x[k]; }).filter(Boolean); };
   var m = function (names, appNames) { return names.filter(Boolean).map(function (n) { var r = ppMatchName(n, appNames); return { pp: n, app: r.name, how: r.how }; }); };
-  var lgUsed = {}; pp.sessions.forEach(function (s) { if (s.league) lgUsed[s.league] = 1; });
+  var lgUsed = {}, ptUsed = {}; pp.sessions.forEach(function (s) { if (s.league) lgUsed[s.league] = 1; if (s.pattern) ptUsed[s.pattern] = 1; });
   return ppApplyChoices({ centers: m(pp.names.houses, list(doc.centers, 'CenterName')),
     leagues: m(pp.names.leagues.filter(function (n) { return lgUsed[n]; }), list(doc.leagues, 'LeagueName')),
-    balls: m(pp.names.balls, list(doc.balls, 'BallName')) }, ppLoadJSON(PP_NAMES_KEY, {}));
+    balls: m(pp.names.balls, list(doc.balls, 'BallName')),
+    /* v30.199: only patterns some session uses */
+    patterns: m((pp.names.patterns || []).filter(function (n, i, a) { return ptUsed[n] && a.indexOf(n) === i; }), list(doc.patterns, 'PatternName')) }, ppLoadJSON(PP_NAMES_KEY, {}));
 }
 /* Pure: report -> CSV */
 function ppCsv(rep) {
@@ -426,8 +436,8 @@ function ppCsv(rep) {
    spare balls stay empty. Every game is scored by the app's own scorer (calculateScores /
    calculateNoTapScores). A fill or replace whose score does not come out as PinPal's is rolled
    back; an added no-tap game keeps the app's score and is flagged when PinPal's 10th is ambiguous.
-   A league or center the app doesn't have is created (for someone new to the app); balls are only
-   linked by name, never created. Open-bowling sessions are not added (the app keeps those apart).
+   A league, center, ball (v30.196) or oil pattern (v30.199) the app doesn't have is created.
+   Open-bowling sessions are added as open sessions (v30.199; before that they were listed only).
    Before writing, the records touched are kept in bowlingdb_ppimport_undo (Undo last import). */
 var PP_UNDO_KEY = 'bowlingdb_ppimport_undo';
 function ppAppDb() { return (typeof db !== 'undefined' && db) || root.db; }
@@ -510,10 +520,13 @@ function ppRescore(D, gameID, noTap) {
    fill: frames for score-only or broken games (on) · add: PinPal-only sessions (on) ·
    replace: same score, frames differ (off) · rescore: different score, the game takes PinPal's (off).
    A no-tap game in the app is never offered (PinPal can't record no-tap). */
-var PP_SECS = [['fill', 'Fill missing or broken frames'], ['add', 'Add sessions not in the app'], ['replace', 'Use PinPal\u2019s frames where they differ (same score)'], ['rescore', 'Use PinPal\u2019s frames and score (different score)']];
+var PP_SECS = [['fill', 'Fill missing or broken frames'], ['add', 'Add sessions not in the app'], ['pattern', 'Add oil patterns to games'], ['replace', 'Use PinPal\u2019s frames where they differ (same score)'], ['rescore', 'Use PinPal\u2019s frames and score (different score)']];
+/* v30.199: sections whose items fold into groups (Add by league, Oil patterns by pattern) */
+function ppGroupKey(a) { return a.sec === 'add' ? (a.session.open ? 'Open bowling' : a.session.league || 'Open bowling') : a.sec === 'pattern' ? a.pattern : null; }
+function ppPlanGameN(a) { return a.kind === 'add' ? a.rows.length : 1; }
 function ppPlan(rep, map) {
   var out = [], nt = 'no-tap game in the app: kept as recorded (PinPal can\u2019t record no-tap)';
-  var gl = function (r) { return r.date + ' \u00b7 ' + (r.app.league || 'no league') + ' G' + r.app.num + ' \u00b7 ' + r.app.score; };
+  var gl = function (r) { return r.date + ' \u00b7 ' + (r.app.league || (r.app.open ? 'Open bowling' : 'no league')) + ' G' + r.app.num + ' \u00b7 ' + r.app.score; };
   rep.rows.forEach(function (r, i) {
     var sec = r.cat === 'fillScore' || r.cat === 'fillBroken' ? 'fill' : r.cat === 'detail' ? 'replace' : r.cat === 'score' ? 'rescore' : null;
     if (!sec || !r.pp.g.frames) return;
@@ -531,17 +544,34 @@ function ppPlan(rep, map) {
   Object.keys(bySess).forEach(function (k) {
     var rows = bySess[k], s = rows[0].pp.s, lg = s.league ? map.leagueOf[s.league] : null, ce = s.house ? map.centerOf[s.house] : null;
     var skip = s.league && map.skipLeague && map.skipLeague[s.league];
-    var whole = rows.length + (skipped[k] || 0) === s.games.length, can = whole && !s.open && !skip;
-    var why = skip ? 'you chose not to import this league (Names)' : !whole ? 'the app has some of this session\u2019s games' : s.open ? 'open bowling: add it in the app if you want it' : '';
-    out.push({ id: 's' + k, sec: 'add', kind: 'add', on: !!can, disabled: !can, rows: rows, session: s, noTap: false,
-      label: s.date + ' \u00b7 ' + (s.league || 'Open') + ' \u00b7 ' + rows.length + ' game' + (rows.length === 1 ? '' : 's') + ' (' + rows.map(function (r) { return r.pp.g.score; }).join(', ') + ')' + (skipped[k] ? ' \u00b7 ' + skipped[k] + ' left out by you' : ''),
-      note: can ? ('to ' + (lg ? lg : 'new league \u201c' + s.league + '\u201d') + (ce ? ' at ' + ce : s.house && !(map.noCenter && map.noCenter[s.house]) ? ' \u00b7 new center \u201c' + s.house + '\u201d' : ' \u00b7 no center')) : why });
+    var whole = rows.length + (skipped[k] || 0) === s.games.length, can = whole && !skip;
+    var why = skip ? 'you chose not to import this league (Names)' : !whole ? 'the app has some of this session\u2019s games' : '';
+    /* v30.199: open bowling is added as an open session. When the app has other games that day it starts
+       unticked: a night logged as open bowling in PinPal may already be in the app another way (no-tap). */
+    var sameDay = s.open && rows.some(function (r) { return r.sameDay; });
+    var pt = s.pattern && !(map.noPattern && map.noPattern[s.pattern]) ? (map.patternOf && map.patternOf[s.pattern] || 'new pattern \u201c' + s.pattern + '\u201d') : '';
+    out.push({ id: 's' + k, sec: 'add', kind: 'add', on: !!can && !sameDay, disabled: !can, rows: rows, session: s, noTap: false,
+      label: s.date + ' \u00b7 ' + (s.open ? 'Open bowling' : s.league || 'Open') + ' \u00b7 ' + rows.length + ' game' + (rows.length === 1 ? '' : 's') + ' (' + rows.map(function (r) { return r.pp.g.score; }).join(', ') + ')' + (skipped[k] ? ' \u00b7 ' + skipped[k] + ' left out by you' : ''),
+      note: can ? ((s.open ? 'as an open session' : 'to ' + (lg ? lg : 'new league \u201c' + s.league + '\u201d')) + (ce ? ' at ' + ce : s.house && !(map.noCenter && map.noCenter[s.house]) ? ' \u00b7 new center \u201c' + s.house + '\u201d' : ' \u00b7 no center') +
+        (pt ? ' \u00b7 ' + pt : '') + (sameDay ? ' \u00b7 the app has other games that day: check before adding' : '')) : why });
+  });
+  /* v30.199: oil patterns for games already in the app that have none. Never a reviewed or no-tap game;
+     filled games take the pattern with their frames, so they aren't listed twice. Unticked to start: in
+     James's backup this is 462 games, mostly "House", so it's an opt-in (tick a pattern's group). */
+  rep.rows.forEach(function (r, i) {
+    if (!r.app || !r.pp || r.app.patternID != null || r.app.noTap) return;
+    if (r.cat === 'kept' || r.cat === 'fillScore' || r.cat === 'fillBroken') return;
+    var nm = r.pp.s.pattern; if (!nm || (map.noPattern && map.noPattern[nm])) return;
+    out.push({ id: 'pt' + i, sec: 'pattern', kind: 'pattern', on: false, disabled: false, row: r, pattern: nm, label: gl(r),
+      note: map.patternOf && map.patternOf[nm] ? 'oil pattern ' + map.patternOf[nm] : 'new pattern \u201c' + nm + '\u201d' });
   });
   return out;
 }
 function ppIsNoTapLeague(s) { return false; }   // v30.195: nothing is imported as no-tap
 function ppLookups(D, map) {
-  var leagueOf = {}, centerOf = {}, ballMap = {}, lgID = {}, ceID = {}, skipLeague = {}, noCenter = {};
+  var leagueOf = {}, centerOf = {}, ballMap = {}, lgID = {}, ceID = {}, skipLeague = {}, noCenter = {}, patternOf = {}, ptID = {}, noPattern = {};
+  (map.patterns || []).forEach(function (x) { if (x.how === 'none') noPattern[x.pp] = 1; else if (x.app) patternOf[x.pp] = x.app; });
+  (D.patterns || []).forEach(function (p) { ptID[p.PatternName] = p.PatternID; });
   (map.leagues || []).forEach(function (x) { if (x.how === 'skip') skipLeague[x.pp] = 1; });
   (map.centers || []).forEach(function (x) { if (x.how === 'none') noCenter[x.pp] = 1; });
   var newBall = {}; (map.balls || []).forEach(function (x) { if (x.how === 'new') newBall[x.pp] = 1; });
@@ -550,7 +580,7 @@ function ppLookups(D, map) {
   (D.leagues || []).forEach(function (l) { lgID[l.LeagueName] = l.LeagueID; });
   (D.centers || []).forEach(function (c) { ceID[c.CenterName] = c.CenterID; });
   (map.balls || []).forEach(function (x) { if (x.app) { var b = (D.balls || []).filter(function (y) { return y.BallName === x.app; })[0]; if (b) ballMap[x.pp] = b.BallID; } });
-  return { leagueOf: leagueOf, centerOf: centerOf, ballMap: ballMap, lgID: lgID, ceID: ceID, skipLeague: skipLeague, noCenter: noCenter, newBall: newBall };
+  return { leagueOf: leagueOf, centerOf: centerOf, ballMap: ballMap, lgID: lgID, ceID: ceID, skipLeague: skipLeague, noCenter: noCenter, newBall: newBall, patternOf: patternOf, ptID: ptID, noPattern: noPattern };
 }
 /* Runs the chosen actions in small batches, yielding to the screen between them (v30.198: one long
    blocking run kept the progress message from ever drawing). Resolves {results:[{label, ok, msg}], undo}. */
@@ -573,17 +603,29 @@ function ppRunImport(actions, onProgress) {
     undo.created.balls = (undo.created.balls || []).concat([id]);
     L.ballMap[name] = id; return id;
   };
+  /* v30.199: a PinPal oil pattern -> app PatternID, created the first time an imported game uses it */
+  var patternFor = function (name) {
+    if (!name || L.noPattern[name]) return null;
+    var app = L.patternOf[name] || name;
+    if (L.ptID[app] != null) return L.ptID[app];
+    D.patterns = D.patterns || []; D.ids.pattern = D.ids.pattern || 1;
+    var id = D.ids.pattern++;
+    D.patterns.push({ PatternID: id, PatternName: name, Length: null, Oil: '', Notes: 'Imported from PinPal' });
+    undo.created.patterns = (undo.created.patterns || []).concat([id]);
+    L.patternOf[name] = name; L.ptID[name] = id; return id;
+  };
   var origBallMap = L.ballMap;
   L.ballMap = new Proxy(origBallMap, { get: function (t, k) { if (typeof k === 'string' && t[k] == null && L.newBall[k]) return makeBall(k); return t[k]; } });
   var copy = function (o) { return JSON.parse(JSON.stringify(o)); };
   var undo = { at: new Date().toISOString(), created: { series: [], games: [], frames: [], attempts: [] }, replaced: { games: [], frames: [], attempts: [] }, series: [] };
-  var replaceFrames = function (r, label) {
+  var replaceFrames = function (r, label, setPattern) {
     var a = r.app, g = D.games.filter(function (x) { return x.GameID === a.gameID; })[0];
     if (!g) { results.push({ label: label, ok: false, msg: 'game not found' }); return; }
     var gs = D.series.filter(function (x) { return x.SeriesID === g.SeriesID; })[0];
     if (g.NoTap || (gs && gs.NoTap)) { results.push({ label: label, ok: false, msg: 'no-tap game: kept as recorded' }); return; }
     var oldF = D.frames.filter(function (f) { return f.GameID === g.GameID; }), fids = oldF.map(function (f) { return f.FrameID; });
     var oldA = D.attempts.filter(function (x) { return fids.indexOf(x.FrameID) >= 0; }), keepG = copy(g);
+    if (!('PatternID' in keepG)) keepG.PatternID = null;   // so Undo clears a pattern this import set
     D.frames = D.frames.filter(function (f) { return f.GameID !== g.GameID; });
     D.attempts = D.attempts.filter(function (x) { return fids.indexOf(x.FrameID) < 0; });
     var nt = !!g.NoTap || !!a.noTap;
@@ -601,6 +643,7 @@ function ppRunImport(actions, onProgress) {
     undo.created.attempts.push.apply(undo.created.attempts, made.attempts.map(function (x) { return x.AttemptID; }));
     undo.removedFrames = (undo.removedFrames || []).concat(fids); undo.removedAttempts = (undo.removedAttempts || []).concat(oldA.map(function (x) { return x.AttemptID; }));
     g.FinalScore = got; g.GameTotal = got;
+    if (setPattern && g.PatternID == null) { var pid = patternFor(r.pp.s.pattern); if (pid != null) g.PatternID = pid; }
     results.push({ label: label, ok: true, msg: 'frames from PinPal \u00b7 ' + got });
   };
   /* v30.198: re-checked against the app as it is now, so a plan run twice never adds or fills twice */
@@ -611,23 +654,33 @@ function ppRunImport(actions, onProgress) {
       var cf = cur ? D.frames.filter(function (f) { return f.GameID === cur.GameID; }) : [], f10 = cf.filter(function (f) { return f.FrameNumber === 10; })[0];
       if (cur && cf.length === 10 && f10 && (f10.RunningTotal === cur.FinalScore || f10.NoTapRunningTotal === cur.FinalScore)) { results.push({ label: act.label, ok: true, skipped: true, msg: 'already filled: left as it is' }); return; }
     }
-    if (act.kind === 'fill' || act.kind === 'replace') { replaceFrames(act.row, act.label); return; }
+    if (act.kind === 'fill' || act.kind === 'replace') { replaceFrames(act.row, act.label, act.kind === 'fill'); return; }
+    if (act.kind === 'pattern') {
+      var pg = D.games.filter(function (x) { return x.GameID === act.row.app.gameID; })[0];
+      if (!pg) { results.push({ label: act.label, ok: false, msg: 'game not found' }); return; }
+      if (pg.PatternID != null) { results.push({ label: act.label, ok: true, skipped: true, msg: 'already has an oil pattern: left as it is' }); return; }
+      var pid2 = patternFor(act.pattern); if (pid2 == null) { results.push({ label: act.label, ok: true, skipped: true, msg: 'no pattern' }); return; }
+      pg.PatternID = pid2; undo.patterns = (undo.patterns || []).concat([pg.GameID]);
+      results.push({ label: act.label, ok: true, msg: 'oil pattern ' + ((D.patterns.filter(function (p) { return p.PatternID === pid2; })[0] || {}).PatternName || act.pattern) });
+      return;
+    }
     /* add a session */
-    var s = act.session, noTap = act.noTap, lgName = noTap ? null : L.leagueOf[s.league], leagueID = noTap ? -1 : L.lgID[lgName];
+    var s = act.session, noTap = act.noTap, open = !!s.open, lgName = noTap || open ? null : L.leagueOf[s.league], leagueID = open ? 0 : noTap ? -1 : L.lgID[lgName];
     var nameNow = lgName || s.league, scoresNow = act.rows.map(function (r) { return r.pp.g.score; });
     var there = D.series.some(function (se) {
       if (se.DateBowled !== s.date) return false;
+      if (open) return se.LeagueID === 0 && sameScores(D.games.filter(function (g) { return g.SeriesID === se.SeriesID; }).map(function (g) { return g.FinalScore; }), scoresNow);
       var ln = (D.leagues.filter(function (l) { return l.LeagueID === se.LeagueID; })[0] || {}).LeagueName;
       return ln === nameNow && sameScores(D.games.filter(function (g) { return g.SeriesID === se.SeriesID; }).map(function (g) { return g.FinalScore; }), scoresNow);
     });
-    if (there) { results.push({ label: s.date + ' ' + (s.league || 'Open'), ok: true, skipped: true, msg: 'already in the app: not added again' }); return; }
+    if (there) { results.push({ label: s.date + ' ' + (open ? 'Open bowling' : s.league || 'Open'), ok: true, skipped: true, msg: 'already in the app: not added again' }); return; }
     var centerID = s.house && L.centerOf[s.house] ? L.ceID[L.centerOf[s.house]] : null;
     if (s.house && centerID == null && !L.noCenter[s.house]) {
       centerID = D.ids.center++;
       D.centers.push({ CenterID: centerID, CenterName: s.house, Address: '', City: '', State: '', Zip: '', Lanes: null, LaneSurface: '', HouseFriction: null, Website: '', ProShop: false, Notes: 'Imported from PinPal' });
       L.centerOf[s.house] = s.house; L.ceID[s.house] = centerID; undo.created.centers = (undo.created.centers || []).concat([centerID]);
     }
-    if (!noTap && leagueID == null) {
+    if (!noTap && !open && leagueID == null) {
       leagueID = D.ids.league++;
       /* v30.196: the fields a league made in the app carries; dates span the league's PinPal sessions */
       var ls = (_pp.pp ? _pp.pp.sessions : []).filter(function (x) { return x.league === s.league; }).map(function (x) { return x.date; }).sort();
@@ -641,11 +694,20 @@ function ppRunImport(actions, onProgress) {
     var topBall = Object.keys(first).sort(function (a, b) { return first[b] - first[a]; })[0];
     var series = { SeriesID: sid, LeagueID: leagueID, CenterID: centerID, DateBowled: s.date, LanePair: null, LaneStart: null, BallID: ppBallID(topBall, L.ballMap),
       Notes: 'Imported from PinPal' + (s.notes ? ' \u00b7 ' + s.notes : ''), NoTap: noTap, GamesPerSeries: act.rows.length };
+    if (open) series.GameType = 'Open';
     D.series.push(series); undo.created.series.push(sid);
+    /* v30.199: open bowling is kept as the app keeps it: an open session with the same ID as its series */
+    if (open) {
+      D.openSessions = D.openSessions || [];
+      D.openSessions.push({ SessionID: sid, DateBowled: s.date, CenterID: centerID, Lane: null, LanePair: null, NumGames: act.rows.length, BallID: series.BallID, Notes: series.Notes, NoTap: false });
+      D.ids.openSession = D.ids.series;
+      undo.created.openSessions = (undo.created.openSessions || []).concat([sid]);
+    }
+    var gamePattern = patternFor(s.pattern);
     act.rows.forEach(function (r, k) {
       var g = r.pp.g, gid = D.ids.game++;
       var game = { GameID: gid, SeriesID: sid, GameNumber: k + 1, LeagueID: leagueID, CenterID: centerID, DateBowled: s.date, FinalScore: null, GameTotal: null,
-        LanePair: null, LaneStart: null, NoTap: noTap, BallID: ppBallID(g.ballName, L.ballMap), Notes: g.notes || '' };
+        LanePair: null, LaneStart: null, NoTap: noTap, BallID: ppBallID(g.ballName, L.ballMap), Notes: g.notes || '', PatternID: gamePattern };
       D.games.push(game); undo.created.games.push(gid);
       var made = ppWriteFrames(D, gid, k + 1, ppToAppBalls(g.frames, noTap), noTap, L.ballMap);
       undo.created.frames.push.apply(undo.created.frames, made.frames.map(function (f) { return f.FrameID; }));
@@ -653,16 +715,16 @@ function ppRunImport(actions, onProgress) {
       var got = ppRescore(D, gid, noTap), want = noTap ? g.ntScore : g.score;
       game.FinalScore = got; game.GameTotal = got;
       var tenth = noTap && g.frames[9] && g.frames[9].some(function (b, j) { return j > 0 && b.down < 10 && g.frames[9][j - 1].down === 9; });
-      results.push({ label: s.date + ' ' + (s.league || 'Open') + ' G' + (k + 1), ok: true,
+      results.push({ label: s.date + ' ' + (open ? 'Open bowling' : s.league || 'Open') + ' G' + (k + 1), ok: true,
         msg: 'added \u00b7 ' + got + (got !== want ? ' (PinPal\u2019s no-tap reading ' + want + (tenth ? ': check the 10th frame' : '') + ')' : '') });
     });
   };
-  var total = actions.reduce(function (t, a) { return t + (a.kind === 'add' ? a.rows.length : 1); }, 0), i = 0, done = 0;
+  var total = actions.reduce(function (t, a) { return t + ppPlanGameN(a); }, 0), i = 0, done = 0;
   return new Promise(function (resolve, reject) {
     var tick = function () {
       try {
         var t0 = Date.now();
-        while (i < actions.length && Date.now() - t0 < 50) { var a = actions[i++]; step(a); done += a.kind === 'add' ? a.rows.length : 1; }
+        while (i < actions.length && Date.now() - t0 < 50) { var a = actions[i++]; step(a); done += ppPlanGameN(a); }
         if (onProgress) onProgress(done, total);
         if (i < actions.length) setTimeout(tick, 0); else resolve({ results: results, undo: undo });
       } catch (e) { reject(e); }
@@ -674,18 +736,19 @@ function ppImportOpen() { _pp.plan = ppPlan(_pp.rep, ppLookups(ppAppDb(), _pp.ma
 function ppPlanToggle(i, on) {
   if (i >= 0 && _pp.plan[i] && !_pp.plan[i].disabled) _pp.plan[i].on = !!on;
   var b = el('pp-go'); var n = ppPlanGames(); if (b) { b.textContent = 'Import ' + n + ' game' + (n === 1 ? '' : 's'); b.disabled = !n; }
-  var g = function (list) { return list.filter(function (a) { return a.on && !a.disabled; }).reduce(function (t, a) { return t + (a.kind === 'add' ? a.rows.length : 1); }, 0); };
+  var g = function (list) { return list.filter(function (a) { return a.on && !a.disabled; }).reduce(function (t, a) { return t + ppPlanGameN(a); }, 0); };
   PP_SECS.forEach(function (sc) { var e = document.querySelector('#pp-ov [data-pp-secn="' + sc[0] + '"]'); if (!e) return; var list = _pp.plan.filter(function (a) { return a.sec === sc[0]; });
     e.textContent = list.length + (sc[0] === 'add' ? ' session' : ' game') + (list.length === 1 ? '' : 's') + ' \u00b7 ' + g(list) + ' ticked'; });
   (_pp._groups || []).forEach(function (ids, gi) { var list = ids.map(function (x) { return _pp.plan[x]; }), live = list.filter(function (a) { return !a.disabled; });
     var cb = document.querySelector('#pp-ov [data-pp-grp="' + gi + '"]'); if (cb) cb.checked = live.length > 0 && live.every(function (a) { return a.on; });
-    var t = document.querySelector('#pp-ov [data-pp-grpn="' + gi + '"]'); if (t) t.textContent = list.length + ' session' + (list.length === 1 ? '' : 's') + ' \u00b7 ' + g(list) + ' games ticked'; });
+    var unit = list[0] && list[0].sec === 'add' ? ' session' : ' game';
+    var t = document.querySelector('#pp-ov [data-pp-grpn="' + gi + '"]'); if (t) t.textContent = list.length + unit + (list.length === 1 ? '' : 's') + ' \u00b7 ' + g(list) + ' games ticked'; });
 }
 function ppPlanSection(sec, on) {
   (_pp.plan || []).forEach(function (a, i) { if (a.sec === sec && !a.disabled) { a.on = !!on; var cb = document.querySelector('#pp-ov [data-pp-plan="' + i + '"]'); if (cb) cb.checked = !!on; } });
   ppPlanToggle(-1);
 }
-function ppPlanGames() { return (_pp.plan || []).filter(function (a) { return a.on && !a.disabled; }).reduce(function (t, a) { return t + (a.kind === 'add' ? a.rows.length : 1); }, 0); }
+function ppPlanGames() { return (_pp.plan || []).filter(function (a) { return a.on && !a.disabled; }).reduce(function (t, a) { return t + ppPlanGameN(a); }, 0); }
 /* v30.198: a progress screen while importing and saving; a second tap is ignored until it finishes */
 function ppProgress(done, total, phase, note) {
   var o = ppOverlay(), pct = total ? Math.round(done * 100 / total) : 0;
@@ -697,7 +760,7 @@ function ppProgress(done, total, phase, note) {
 }
 function ppGo(actions) {
   if (_pp.running) return;   // a tap queued while an import runs
-  var n = actions.reduce(function (t, a) { return t + (a.kind === 'add' ? a.rows.length : 1); }, 0);
+  var n = actions.reduce(function (t, a) { return t + ppPlanGameN(a); }, 0);
   if (!n) return;
   if (typeof confirm === 'function' && !confirm('Import ' + n + ' game' + (n === 1 ? '' : 's') + ' from PinPal?\n\nA copy of everything changed is kept for Undo last import. A Full Snapshot first is still a good idea.')) return;
   _pp.running = true;
@@ -707,6 +770,8 @@ function ppGo(actions) {
   ppRunImport(actions, function (d, t) { var b = el('pp-bar'), c = el('pp-bar-n'); if (b) b.style.width = Math.round(d * 100 / t) + '%'; if (c) c.textContent = d + ' of ' + t + ' game' + (t === 1 ? '' : 's'); })
     .then(function (r) {
       run = r;
+      var Dn = ppAppDb(), made = (run.undo.created.balls || []);
+      _pp.createdBalls = made.map(function (id) { return ((Dn.balls || []).filter(function (b) { return b.BallID === id; })[0] || {}).BallName; }).filter(Boolean);
       try { localStorage.setItem(PP_UNDO_KEY, JSON.stringify(run.undo)); } catch (e) {}
       ppProgress(n, n, 'Saving to this phone\u2026', 'Almost done. Large imports take a few seconds to save.');
       var del = function (store, keys) { return typeof idbDeleteKeys === 'function' && keys && keys.length ? idbDeleteKeys(store, keys) : Promise.resolve(); };
@@ -742,6 +807,9 @@ function ppUndo() {
   if (c.leagues) D.leagues = D.leagues.filter(function (l) { return !has(c.leagues, l.LeagueID); });
   if (c.centers) D.centers = D.centers.filter(function (x) { return !has(c.centers, x.CenterID); });
   if (c.balls) D.balls = D.balls.filter(function (x) { return !has(c.balls, x.BallID); });
+  if (c.openSessions) D.openSessions = (D.openSessions || []).filter(function (x) { return !has(c.openSessions, x.SessionID); });
+  (u.patterns || []).forEach(function (id) { var g = D.games.filter(function (x) { return x.GameID === id; })[0]; if (g) g.PatternID = null; });
+  if (c.patterns) { D.patterns = (D.patterns || []).filter(function (x) { return !has(c.patterns, x.PatternID); }); D.games.forEach(function (g) { if (has(c.patterns, g.PatternID)) g.PatternID = null; }); }
   var del = function (store, keys) { return typeof idbDeleteKeys === 'function' && keys.length ? idbDeleteKeys(store, keys) : Promise.resolve(); };
   del('attempts', c.attempts).then(function () { return del('frames', c.frames); }).then(function () { return del('games', c.games); }).then(function () { return del('series', c.series); })
     .then(function () { return typeof saveAll === 'function' ? saveAll() : null; })
@@ -755,7 +823,7 @@ function ppImportHTML() {
   if (_pp.view === 'done') {
     return '<div style="font-size:13px;color:var(--t2);margin-bottom:8px">Import finished.</div>' + _pp.results.map(function (r) {
       return '<div style="padding:9px 2px;border-bottom:1px solid var(--border1);font-size:13px"><div style="color:var(--t1)">' + (r.ok ? '\u2713 ' : '\u2717 ') + esc(r.label) + '</div><div style="font-size:12px;color:' + (r.ok && !/check/.test(r.msg) ? 'var(--t3)' : 'var(--gold)') + '">' + esc(r.msg) + '</div></div>';
-    }).join('') + '<button style="' + BTNP + 'width:100%;padding:12px;margin-top:14px" onclick="ppRecompare()">Compare again</button>' +
+    }).join('') + ppCreatedBallsHTML() + '<button style="' + BTNP + 'width:100%;padding:12px;margin-top:14px" onclick="ppRecompare()">Compare again</button>' +
       '<button style="' + BTN + 'width:100%;padding:11px;margin-top:8px" onclick="ppUndo()">Undo this import</button>';
   }
   var n = ppPlanGames();
@@ -769,8 +837,10 @@ function ppImportHTML() {
       '<input type="checkbox" data-pp-plan="' + i + '" ' + (a.on ? 'checked ' : '') + (a.disabled ? 'disabled ' : '') + 'onchange="ppPlanToggle(' + i + ',this.checked)" style="width:18px;height:18px;margin-top:2px">' +
       '<div style="flex:1;min-width:0"><div style="font-size:13px;color:var(--t1)">' + esc(a.label) + '</div><div style="font-size:12px;color:var(--t3)">' + esc(a.note) + '</div></div></label>';
   };
-  var games = function (list) { return list.filter(function (a) { return a.on && !a.disabled; }).reduce(function (t, a) { return t + (a.kind === 'add' ? a.rows.length : 1); }, 0); };
+  var games = function (list) { return list.filter(function (a) { return a.on && !a.disabled; }).reduce(function (t, a) { return t + ppPlanGameN(a); }, 0); };
   var chev = function (open) { return '<span style="color:var(--t3);width:14px;display:inline-block">' + (open ? '\u25be' : '\u25b8') + '</span>'; };
+  (function () { var by = {}, order = []; _pp.plan.forEach(function (a, i) { if (a.sec !== 'add' && a.sec !== 'pattern') return; var g = a.sec + ':' + ppGroupKey(a); if (!by[g]) { by[g] = []; order.push(g); } by[g].push(i); });
+    _pp._groupKeys = order; _pp._groups = order.map(function (g) { return by[g]; }); })();
   var secs = PP_SECS.map(function (sc) {
     var list = _pp.plan.filter(function (a) { return a.sec === sc[0]; }); if (!list.length) return '';
     var live = list.filter(function (a) { return !a.disabled; }).length, key = 'sec:' + sc[0];
@@ -781,24 +851,38 @@ function ppImportHTML() {
       '<div data-pp-secn="' + sc[0] + '" style="font-size:11px;color:var(--t3)">' + list.length + (sc[0] === 'add' ? ' session' : ' game') + (list.length === 1 ? '' : 's') + ' \u00b7 ' + games(list) + ' ticked</div></div>' +
       (live ? b('All', true) + b('None', false) : '') + '</div>';
     if (!open) return head;
-    if (sc[0] !== 'add') return head + list.map(function (a) { return item(a, false); }).join('');
-    /* group sessions by league */
+    if (sc[0] !== 'add' && sc[0] !== 'pattern') return head + list.map(function (a) { return item(a, false); }).join('');
+    /* group: sessions by league (open bowling last), patterns by pattern name */
     var groups = [], by = {};
-    list.forEach(function (a) { var g = a.session.league || 'Open bowling'; if (!by[g]) { by[g] = []; groups.push(g); } by[g].push(a); });
+    list.forEach(function (a) { var g = ppGroupKey(a); if (!by[g]) { by[g] = []; groups.push(g); } by[g].push(a); });
+    var unit = sc[0] === 'add' ? ' session' : ' game';
     return head + groups.map(function (g) {
-      var gl = by[g], gk = 'lg:' + g, gopen = po[gk] != null ? !!po[gk] : list.length <= 8, liveG = gl.filter(function (a) { return !a.disabled; }), allOn = liveG.length && liveG.every(function (a) { return a.on; });
-      var gi = groups.indexOf(g);
+      var gl = by[g], gk = sc[0] + ':' + g, gopen = po[gk] != null ? !!po[gk] : list.length <= 8, liveG = gl.filter(function (a) { return !a.disabled; }), allOn = liveG.length && liveG.every(function (a) { return a.on; });
+      var gi = (_pp._groupKeys || []).indexOf(gk);
       var gh = '<div style="display:flex;align-items:center;gap:10px;padding:10px 2px 10px 6px;border-bottom:1px solid var(--border1)">' +
         '<input type="checkbox" data-pp-grp="' + gi + '" ' + (allOn ? 'checked ' : '') + (liveG.length ? '' : 'disabled ') + 'onchange="ppPlanGroup(' + gi + ',this.checked)" style="width:18px;height:18px">' +
         '<div onclick="ppPlanOpen(\'' + esc(gk).replace(/'/g, '\\\'') + '\',' + !gopen + ')" style="flex:1;min-width:0;cursor:pointer;display:flex;align-items:center;gap:6px">' +
           '<div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:700;color:var(--t1)">' + esc(g) + '</div>' +
-          '<div data-pp-grpn="' + gi + '" style="font-size:12px;color:var(--t3)">' + gl.length + ' session' + (gl.length === 1 ? '' : 's') + ' \u00b7 ' + games(gl) + ' games ticked' + (gl[0].disabled ? ' \u00b7 ' + esc(gl[0].note) : '') + '</div></div>' + chev(gopen) + '</div></div>';
+          '<div data-pp-grpn="' + gi + '" style="font-size:12px;color:var(--t3)">' + gl.length + unit + (gl.length === 1 ? '' : 's') + ' \u00b7 ' + games(gl) + ' games ticked' + (gl[0].disabled ? ' \u00b7 ' + esc(gl[0].note) : '') + '</div></div>' + chev(gopen) + '</div></div>';
       return gh + (gopen ? gl.map(function (a) { return item(a, true); }).join('') : '');
     }).join('');
   }).join('');
-  _pp._groups = (function () { var by = {}, order = []; _pp.plan.forEach(function (a, i) { if (a.sec !== 'add') return; var g = a.session.league || 'Open bowling'; if (!by[g]) { by[g] = []; order.push(g); } by[g].push(i); }); return order.map(function (g) { return by[g]; }); })();
-  return '<div style="font-size:12px;color:var(--t3);line-height:1.5;margin-bottom:6px">Tick a league to take all of its sessions, or open it to pick sessions. Games are scored by the app; a filled game that doesn\u2019t come out at PinPal\u2019s score is left alone. Equipment: first ball only; a PinPal ball not in the app is created (Names \u203a balls to change). Speed, boards and notes in the app are never touched. Games you reviewed (left as is) are not listed.</div>' +
+  return '<div style="font-size:12px;color:var(--t3);line-height:1.5;margin-bottom:6px">Tick a league to take all of its sessions, or open it to pick sessions. Games are scored by the app; a filled game that doesn\u2019t come out at PinPal\u2019s score is left alone. Equipment: first ball only; a PinPal ball or oil pattern not in the app is created (Names to change). Open bowling is added as an open session. Speed, boards and notes in the app are never touched. Games you reviewed (left as is) are not listed.</div>' +
     secs;
+}
+/* v30.199: balls this import created carry only a name; point the bowler to the catalog to link them */
+function ppCreatedBallsHTML() {
+  var names = _pp.createdBalls || []; if (!names.length) return '';
+  return '<div style="margin-top:14px;padding:12px;border:1px solid var(--border1);border-radius:12px;background:var(--bg2)">' +
+    '<div style="font-size:14px;font-weight:700;color:var(--t1)">' + names.length + ' new ball' + (names.length === 1 ? '' : 's') + ' from PinPal</div>' +
+    '<div style="font-size:12px;color:var(--t2);line-height:1.5;margin-top:4px">' + esc(names.join(', ')) + '</div>' +
+    '<div style="font-size:12px;color:var(--t3);line-height:1.5;margin-top:6px">PinPal keeps only a ball\u2019s name, so these have no weight or specs yet. Link each one to the catalog to fill in its specs and picture.</div>' +
+    '<button style="' + BTNP + 'width:100%;padding:11px;margin-top:10px" onclick="ppToCatalog()">Link them to the catalog</button></div>';
+}
+function ppToCatalog() {
+  ppClose();
+  if (typeof root.catReviewOpen === 'function') root.catReviewOpen();
+  else if (root.toast) root.toast('Settings \u203a Balls & catalog \u203a Review suggested matches');
 }
 /* the fixed bar under the import list */
 function ppImportFoot() {
@@ -870,13 +954,14 @@ function ppRenderInner() {
   var ov = ppOverlay(), r = _pp.rep;
   var head = '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 8px"><button style="' + BTN + 'width:40px;height:40px;border-radius:20px" onclick="' + (_pp.game ? 'ppBack()' : _pp.view ? 'ppRecompare()' : 'ppClose()') + '">\u2039</button>' +
     '<div style="flex:1;min-width:0"><div style="font-size:17px;font-weight:800;color:var(--t1)">' + (_pp.view ? 'Import from PinPal' : _pp.game ? 'Game comparison' : 'Compare a PinPal backup') + '</div>' +
-    '<div style="font-size:11px;color:var(--t3)">' + (r ? esc(_pp.file) + ' \u00b7 ' + esc(r.range[0] || '') + ' to ' + esc(r.range[1] || '') : 'Read only: nothing in the app changes') + '</div></div></div>';
+    '<div style="font-size:11px;color:var(--t3)">' + (r ? esc(_pp.file) + ' \u00b7 ' + esc(r.range[0] || '') + ' to ' + esc(r.range[1] || '') : 'Nothing in the app changes until you import') + '</div></div></div>';
   if (_pp.view === 'import' || _pp.view === 'done') { ov.innerHTML = head + '<div id="pp-sc" style="scroll-behavior:auto;flex:1;overflow-y:auto;padding:0 16px 16px">' + ppImportHTML() + '</div>' + ppImportFoot(); return; }
   if (_pp.game) { ov.innerHTML = head + '<div id="pp-sc" style="scroll-behavior:auto;flex:1;overflow-y:auto;padding:0 16px 16px">' + ppGameHTML(_pp.game) +
     ppDecideHTML(_pp.game) + '</div>'; return; }
   if (!r) {
     ov.innerHTML = head + '<div id="pp-sc" style="scroll-behavior:auto;flex:1;overflow-y:auto;padding:4px 16px 16px;font-size:13px;color:var(--t2);line-height:1.6">' +
-      '<p>In PinPal, make a backup and save it to Files. Then choose it here. The app reads it on this phone and lists where PinPal and the app agree or differ, game by game.</p>' +
+      ppHelpHTML() +
+      '<p>The app reads the backup on this phone and lists where PinPal and the app agree or differ, game by game. Nothing changes until you choose what to import.</p>' +
       '<p style="color:var(--t3)">PinPal records the pins left after each ball, but the equipment only for the first ball of a frame, so spare balls are never compared. Speed, boards and other details only the app has are never touched.</p>' +
       '<button style="' + BTNP + 'width:100%;padding:13px;margin-top:8px;font-size:15px" onclick="ppPick()">Choose PinPal backup</button></div>';
     return;
@@ -910,15 +995,16 @@ function ppRenderInner() {
         '<div>' + left + ' \u2192 ' + right + '</div>' + (note ? '<div style="font-size:11px;color:var(--t3)">' + note + '</div>' : '') + '</div>';
     }).join('');
   }).join('');
-  var mapH = ['centers', 'leagues', 'balls'].map(function (k) {
-    var l = _pp.map[k], miss = l.filter(function (x) { return !x.app; }).length, close = l.filter(function (x) { return x.how === 'close'; }).length, open = !!_pp.open['map-' + k];
+  var mapH = ['centers', 'leagues', 'balls', 'patterns'].map(function (k) {
+    var l = _pp.map[k] || []; if (!l.length) return '';
+    var miss = l.filter(function (x) { return !x.app; }).length, close = l.filter(function (x) { return x.how === 'close'; }).length, open = !!_pp.open['map-' + k];
     var h = '<div onclick="ppToggle(\'map-' + k + '\')" style="display:flex;gap:10px;align-items:center;padding:10px 2px;border-bottom:1px solid var(--border1);cursor:pointer">' +
-      '<div style="flex:1;font-size:14px;color:var(--t1);text-transform:capitalize">' + k + '</div><div style="font-size:12px;color:var(--t2)">' + (l.length - miss) + ' of ' + l.length + ' found' + (close ? ' \u00b7 ' + close + ' close' : '') + '</div>' +
+      '<div style="flex:1;font-size:14px;color:var(--t1)">' + ({ centers: 'Centers', leagues: 'Leagues', balls: 'Balls', patterns: 'Oil patterns' })[k] + '</div><div style="font-size:12px;color:var(--t2)">' + (l.length - miss) + ' of ' + l.length + ' found' + (close ? ' \u00b7 ' + close + ' close' : '') + '</div>' +
       '<span style="color:var(--t3)">' + (open ? '\u25be' : '\u25b8') + '</span></div>';
     if (!open) return h;
-    var D = ppAppDb() || {}, names = (k === 'centers' ? (D.centers || []).map(function (c) { return c.CenterName; }) : k === 'leagues' ? (D.leagues || []).map(function (c) { return c.LeagueName; }) : (D.balls || []).map(function (c) { return c.BallName; }))
+    var D = ppAppDb() || {}, names = (k === 'centers' ? (D.centers || []).map(function (c) { return c.CenterName; }) : k === 'leagues' ? (D.leagues || []).map(function (c) { return c.LeagueName; }) : k === 'patterns' ? (D.patterns || []).map(function (c) { return c.PatternName; }) : (D.balls || []).map(function (c) { return c.BallName; }))
       .filter(Boolean).sort(function (a, b) { return a.localeCompare(b); });
-    var specials = k === 'centers' ? [['__new', 'Create new center'], ['__none', 'No center']] : k === 'leagues' ? [['__new', 'Create new league'], ['__skip', 'Don\u2019t import this league']] : [['__new', 'Create new ball'], ['__none', 'Don\u2019t link a ball']];
+    var specials = k === 'centers' ? [['__new', 'Create new center'], ['__none', 'No center']] : k === 'leagues' ? [['__new', 'Create new league'], ['__skip', 'Don\u2019t import this league']] : k === 'patterns' ? [['__new', 'Create new pattern'], ['__none', 'Don\u2019t set a pattern']] : [['__new', 'Create new ball'], ['__none', 'Don\u2019t link a ball']];
     return h + '<div style="font-size:11px;color:var(--t3);padding:6px 2px 4px 12px;line-height:1.45">Your choice is used by Import and kept on this phone. \u201c?\u201d marks a close guess to check.</div>' + l.map(function (x, i) {
       var col = x.how === 'same' ? 'var(--teal)' : x.how === 'close' ? 'var(--gold)' : x.how === 'skip' || x.how === 'none' ? 'var(--t3)' : 'var(--t1)';
       var opts = specials.map(function (o) { return '<option value="' + o[0] + '"' + (x.choice === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') +
@@ -935,6 +1021,16 @@ function ppRenderInner() {
     '<div style="display:flex;gap:8px;margin-top:8px"><button style="' + BTN + 'flex:1;padding:11px" onclick="ppDownload()">Download report (CSV)</button><button style="' + BTN + 'flex:1;padding:11px" onclick="ppPick()">Choose another</button></div>' +
     '<div style="font-size:11px;color:var(--t3);line-height:1.5;margin-top:10px">Games pair up by date: same score first; what is left pairs by order only when there is one session against one series. The report changes nothing; Import asks first.</div></div>';
 }
+/* v30.199: how to get a PinPal backup onto the phone */
+function ppHelpHTML() {
+  var step = function (n, t) { return '<div style="display:flex;gap:10px;align-items:flex-start;margin:8px 0"><div style="flex:0 0 22px;height:22px;border-radius:11px;background:rgba(0,217,217,0.15);color:var(--teal);font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center">' + n + '</div><div style="flex:1;color:var(--t1)">' + t + '</div></div>'; };
+  return '<div style="border:1px solid var(--border1);border-radius:12px;background:var(--bg2);padding:12px 14px;margin:6px 0 12px">' +
+    '<div style="font-size:14px;font-weight:800;color:var(--t1);margin-bottom:2px">Make a PinPal backup</div>' +
+    step(1, 'In PinPal, tap <b>Backup/Restore</b> on the main menu, then <b>Export Backup File</b>.') +
+    step(2, 'Choose <b>Save to Files</b> (On My iPhone or iCloud Drive). The file ends in <b>.pinpal</b>.') +
+    step(3, 'Come back here and tap <b>Choose PinPal backup</b>.') +
+    '<div style="font-size:12px;color:var(--t3);margin-top:6px;line-height:1.5">Your PinPal data stays as it is. Centers, leagues, balls and oil patterns are matched by name, and you can change any match under Names before importing.</div></div>';
+}
 /* v30.195: decide for this game: keep the app's version, use PinPal's frames, don't import, or review again */
 function ppDecideHTML(r) {
   var bp = function (t, js, primary) { return '<button style="' + (primary ? BTNP : BTN) + 'width:100%;padding:11px;margin-top:10px" onclick="' + js + '">' + t + '</button>'; };
@@ -947,12 +1043,13 @@ function ppDecideHTML(r) {
   if (r.pp.g.frames) h += bp('Use PinPal\u2019s frames for this game', 'ppReplaceThis()') + note('Replaces this game\u2019s frames and pins (and first-ball equipment) with PinPal\u2019s' + (r.cat === 'score' ? '; its score becomes PinPal\u2019s ' + r.pp.g.score : ', only if they score the same') + '. Undo last import puts it back.');
   return h;
 }
+function ppDev() { try { if (typeof root.dkIsEnabled === 'function') return !!root.dkIsEnabled(); return !!(JSON.parse(localStorage.getItem('bowlingdb_devkit') || '{}').enabled); } catch (e) { return false; } }
 function ballRow(f, k) { var b = f[k]; if (!b) return '<span style="color:var(--t3)">\u2014</span>'; return b.down === 10 ? 'X' : b.down + (b.standing.length && b.standing.length < 10 ? ' <span style="color:var(--t3)">(' + b.standing.join('-') + ')</span>' : ''); }
 function ppGameHTML(x) {
   var p = x.pp, a = x.app, pf = p && p.g.frames, af = a && a.frames, dset = {};
   x.diffs.forEach(function (d) { dset[d.frame] = d; }); x.ball1.forEach(function (d) { dset[d.frame] = Object.assign({}, dset[d.frame] || { diffs: [] }, { ball1: d.ball1 }); });
   var top = '<div style="font-size:13px;color:var(--t2);line-height:1.6;margin-bottom:8px">' + esc(x.date) + '<br>PinPal: ' + (p ? esc(p.s.league || 'Open') + ' \u00b7 ' + esc(p.s.house || '') + ' \u00b7 G' + p.g.num + ' \u00b7 <b>' + p.g.score + '</b>' : 'not in backup') +
-    '<br>App: ' + (a ? esc(a.league || 'no league') + ' \u00b7 ' + esc(a.center || '') + ' \u00b7 G' + a.num + ' \u00b7 <b>' + a.score + '</b>' + (a.noTap ? ' \u00b7 NoTap' : '') + ' \u00b7 GameID ' + a.gameID : 'not in app') + '</div>';
+    '<br>App: ' + (a ? esc(a.league || 'no league') + ' \u00b7 ' + esc(a.center || '') + ' \u00b7 G' + a.num + ' \u00b7 <b>' + a.score + '</b>' + (a.noTap ? ' \u00b7 NoTap' : '') + (ppDev() ? ' \u00b7 GameID ' + a.gameID : '') : 'not in app') + '</div>';
   if (!pf && !af) return top + '<div style="color:var(--t3);font-size:13px">No frames on either side.</div>';
   var rows = '';
   for (var n = 0; n < 10; n++) {
@@ -1013,7 +1110,7 @@ function ppDownload() {
 
 root.PINPAL_JS_VERSION = PP_VERSION;
 root.ppOpen = ppOpen; root.ppClose = ppClose; root.ppPick = ppPick; root.ppToggle = ppToggle; root.ppShow = ppShow; root.ppBack = ppBack; root.ppDownload = ppDownload;
-root.ppLoadBuffer = ppLoadBuffer; root.ppPlanOpen = ppPlanOpen; root.ppPlanGroup = ppPlanGroup; root.ppScrollTop = ppScrollTop; root.ppReview = ppReview; root.ppReviewCat = ppReviewCat; root.ppReviewCatUndo = ppReviewCatUndo; root.ppPlanSection = ppPlanSection; root.ppNameSet = ppNameSet; root.ppNoTapSet = ppNoTapSet; root.ppImportOpen = ppImportOpen; root.ppPlanToggle = ppPlanToggle; root.ppGoPlan = ppGoPlan; root.ppReplaceThis = ppReplaceThis; root.ppUndo = ppUndo; root.ppRecompare = ppRecompare;
+root.ppLoadBuffer = ppLoadBuffer; root.ppPlanOpen = ppPlanOpen; root.ppPlanGroup = ppPlanGroup; root.ppScrollTop = ppScrollTop; root.ppReview = ppReview; root.ppReviewCat = ppReviewCat; root.ppReviewCatUndo = ppReviewCatUndo; root.ppPlanSection = ppPlanSection; root.ppNameSet = ppNameSet; root.ppNoTapSet = ppNoTapSet; root.ppImportOpen = ppImportOpen; root.ppPlanToggle = ppPlanToggle; root.ppGoPlan = ppGoPlan; root.ppReplaceThis = ppReplaceThis; root.ppUndo = ppUndo; root.ppRecompare = ppRecompare; root.ppToCatalog = ppToCatalog;
 root._pinpal = { sqliteTables: sqliteTables, sqlCols: sqlCols, ppRead: ppRead, ppFrames: ppFrames, ppScore: ppScore, appGames: appGames, ppCompare: ppCompare,
-  ppFrameDiffs: ppFrameDiffs, ppNoTapScore: ppNoTapScore, ppUnlike: ppUnlike, ppNoTapFrames: ppNoTapFrames, ppMatchName: ppMatchName, ppMapping: ppMapping, ppCsv: ppCsv, PP_CATS: PP_CATS, ppToAppBalls: ppToAppBalls, ppBSK: ppBSK, ppPlan: ppPlan, ppLookups: ppLookups, ppRunImport: ppRunImport, ppApplyChoices: ppApplyChoices, opt: PP_OPT };
+  ppFrameDiffs: ppFrameDiffs, ppNoTapScore: ppNoTapScore, ppUnlike: ppUnlike, ppNoTapFrames: ppNoTapFrames, ppMatchName: ppMatchName, ppMapping: ppMapping, ppCsv: ppCsv, PP_CATS: PP_CATS, ppToAppBalls: ppToAppBalls, ppBSK: ppBSK, ppPlan: ppPlan, ppLookups: ppLookups, ppRunImport: ppRunImport, ppApplyChoices: ppApplyChoices, opt: PP_OPT, ppGroupKey: ppGroupKey };
 })(typeof window !== 'undefined' ? window : globalThis);
