@@ -211,5 +211,42 @@
   "coreType": "Symmetrical",
   "source": "maker",
   "at": "2026-10-12"
+ },
+ "radical-prime-power-hitter": {
+  "coverName": "HK22C Textured Hybrid",
+  "coverType": "Hybrid Reactive",
+  "finish": "500, 1000, 1500 Siaair / Factory",
+  "core": "Hitter",
+  "coreType": "Asymmetrical",
+  "released": "2025-06",
+  "weights": {
+   "12": {
+    "RG": 2.612,
+    "Diff": 0.043,
+    "IntDiff": 0.011
+   },
+   "13": {
+    "RG": 2.589,
+    "Diff": 0.043,
+    "IntDiff": 0.011
+   },
+   "14": {
+    "RG": 2.504,
+    "Diff": 0.053,
+    "IntDiff": 0.015
+   },
+   "15": {
+    "RG": 2.488,
+    "Diff": 0.053,
+    "IntDiff": 0.015
+   },
+   "16": {
+    "RG": 2.498,
+    "Diff": 0.047,
+    "IntDiff": 0.013
+   }
+  },
+  "source": "maker",
+  "at": "2026-10-17"
  }
 }
