@@ -36,7 +36,7 @@
 'use strict';
 
 /* v30.169: shown in the app header when it differs from the build's EXPECTED_CATALOG_JS */
-var CAT_VERSION  = 'v30.200';
+var CAT_VERSION  = 'v30.201';
 var CAT_BASE     = 'https://raw.githubusercontent.com/jmarsh85/bowlingdb-mobile/dist/';
 var CAT_DB       = 'BowlingDB_Catalog';
 var CAT_DB_VER   = 1;
@@ -2363,7 +2363,8 @@ function catSpecReviewOpen(ballId) {
   if (mb && mb.classList.contains('open') && typeof root.closeModal === 'function') root.closeModal();
   catSpecReviewClose();
   document.body.appendChild(overlay('srv-ov', 906));
-  _srv.focus = ballId == null ? null : ballId;
+  _srv.focus = ballId == null ? null : ballId; _srv.tab = 'mine'; _ms.page = 0;
+  catLoad().then(function (rows) { _ms.count = msRows(rows, { rejected: catIsRejected, ovr: overrideFor }).length; if (!_srv.busy) srvRender(); });
   return srvLoad();
 }
 function catSpecReviewClose() {
@@ -2416,7 +2417,8 @@ function catSpecReviewPage(d) { _srv.editing = null; _srv.editErr = null;
 function srvRender() {
   var ov = typeof document !== 'undefined' && document.getElementById('srv-ov'); if (!ov) return;
   var head = function (sub) { return '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 8px"><button style="' + BACK + '" onclick="catSpecReviewClose()">\u2039</button>' +
-    '<div style="flex:1;min-width:0"><div style="font-size:17px;font-weight:800;color:var(--t1)">Review my specs</div><div style="font-size:11px;color:var(--t3)">' + sub + '</div></div></div>'; };
+    '<div style="flex:1;min-width:0"><div style="font-size:17px;font-weight:800;color:var(--t1)">Review my specs</div><div style="font-size:11px;color:var(--t3)">' + sub + '</div></div></div>' + srvTabs(); };
+  if (_srv.tab === 'missing') { msRender(ov, head); return; }
   if (_srv.busy) { ov.innerHTML = head('Loading\u2026') + '<div style="padding:30px;text-align:center;color:var(--t3);font-size:13px">Comparing your balls with the catalog\u2026</div>'; return; }
   var pending = _srv.pages.filter(function (p) { return p.rows.length; });
   var allMatches = 0; _srv.pages.forEach(function (p) { p.rows.forEach(function (r) { if (r.kind === 'match') allMatches++; }); });
@@ -2461,6 +2463,55 @@ function srvRender() {
       '<button style="' + BTN_G + 'flex:1;padding:11px" ' + (_srv.idx < _srv.pages.length - 1 ? '' : 'disabled ') + 'onclick="catSpecReviewPage(1)">Next \u203a</button></div>' +
       (allMatches ? '<button style="' + BTN_P + 'padding:10px" onclick="catSpecReviewBulk(\'all\',\'matches\')">Confirm all ' + allMatches + ' matches on every ball</button>' : '') + '</div>';
 }
+
+/* ---------- v30.201 MS-1: Review my specs > Missing specs ----------
+   Every catalog ball with no specs (none published, and no correction with RG and Diff for a weight),
+   your own balls first, then newest. Tap a ball for Correct specs (Paste page, Read a saved page (PDF)
+   from bowwwl or the maker's site); a ball drops off the list once it has RG and Diff. Rejected balls
+   are left out. The same balls show in Review new balls under Needs specs once the hold has started. */
+var _ms = { q: '', page: 0, count: null };
+var MS_PAGE = 30;
+/* Pure: rows missing specs, yours first, then newest, then brand and name */
+function msRows(rows, opt) {
+  opt = opt || {};
+  var mine = opt.mine || {};
+  return (rows || []).filter(function (e) { return !(opt.rejected && opt.rejected(e)) && !hlHasSpecs(e, opt.ovr ? opt.ovr(e.i) : null); })
+    .sort(function (a, b) { return ((mine[b.i] ? 1 : 0) - (mine[a.i] ? 1 : 0)) || String(b.y || '').localeCompare(String(a.y || '')) || String(a.m).localeCompare(String(b.m)) || cleanName(a.n).localeCompare(cleanName(b.n)); });
+}
+function srvTabs() {
+  var n1 = (_srv.pages || []).filter(function (p) { return p.rows.length; }).length;
+  var chip = function (k, t) { return '<button onclick="catSpecReviewTab(\'' + k + '\')" style="' + ((_srv.tab || 'mine') === k ? BTN_P : BTN_G) + 'flex:1;padding:9px;font-size:13px">' + t + '</button>'; };
+  return '<div style="display:flex;gap:8px;padding:0 16px 8px">' + chip('mine', 'My balls' + (_srv.busy ? '' : ' (' + n1 + ')')) + chip('missing', 'Missing specs' + (_ms.count == null ? '' : ' (' + _ms.count + ')')) + '</div>';
+}
+function catSpecReviewTab(k) { _srv.tab = k; _ms.page = 0; srvRender(); }
+function msRender(ov, head) {
+  catLoad().then(function (rows) {
+    if (!document.getElementById('srv-ov') || _srv.tab !== 'missing') return;
+    var mine = {}; appBalls().forEach(function (b) { if (b.CatalogID && !b.Archived) mine[b.CatalogID] = 1; });
+    var all = msRows(rows, { mine: mine, rejected: catIsRejected, ovr: overrideFor });
+    _ms.count = all.length;
+    var q = norm(_ms.q || ''), list = q ? all.filter(function (e) { return norm(e.m + ' ' + e.n).indexOf(q) >= 0; }) : all;
+    var pages = Math.max(1, Math.ceil(list.length / MS_PAGE)); if (_ms.page >= pages) _ms.page = pages - 1;
+    var shown = list.slice(_ms.page * MS_PAGE, (_ms.page + 1) * MS_PAGE);
+    var row = function (e) {
+      var o = overrideFor(e.i), part = o && ['coverName', 'coverType', 'finish', 'core', 'coreType'].some(function (k) { return o[k]; });
+      return '<div onclick="catMissingCorrect(\'' + jsq(e.i) + '\')" style="display:flex;gap:10px;align-items:center;padding:9px 2px;border-bottom:1px solid var(--border1);cursor:pointer">' + thumbHTML(e, 40) +
+        '<div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:600;color:var(--t1)">' + esc(cleanName(e.n)) + (mine[e.i] ? '<span style="' + CHIP_T + '">YOURS</span>' : '') + (catIsHeld(e) ? '<span style="' + CHIP_G + '">HELD</span>' : '') + '</div>' +
+        '<div style="font-size:12px;color:var(--t2)">' + esc(e.m) + (e.y ? ' \u00b7 ' + esc(e.y) : '') + (part ? ' \u00b7 <span style="color:var(--gold)">some specs, no RG / Diff</span>' : ' \u00b7 no specs') + '</div></div>' +
+        '<span style="color:var(--t3);font-size:18px">\u203a</span></div>';
+    };
+    ov.innerHTML = head(all.length + ' ball' + (all.length === 1 ? '' : 's') + ' with no specs') +
+      '<div style="padding:0 16px 6px"><input class="bdet-field-input" type="search" placeholder="Filter by brand or name" value="' + esc(_ms.q) + '" oninput="catMissingFilter(this.value)" style="width:100%;box-sizing:border-box;font-size:15px"></div>' +
+      '<div id="ms-list" style="flex:1;overflow-y:auto;padding:0 16px 10px">' + (shown.length ? shown.map(row).join('') : '<div style="padding:30px 0;text-align:center;color:var(--t2);font-size:13px">' + (all.length ? 'No match.' : 'Every catalog ball has specs.') + '</div>') +
+      '<div style="font-size:11px;color:var(--t3);line-height:1.5;margin-top:10px">Tap a ball to fill in its specs: <b>Paste page &amp; fill</b>, or <b>Read a saved page (PDF)</b> from bowwwl or the maker\u2019s site (Hammer, Radical, MOTIV and others). A ball leaves this list once it has RG and Diff for a weight.</div></div>' +
+      (pages > 1 ? '<div style="padding:10px 16px;border-top:1px solid var(--border1);display:flex;gap:8px;align-items:center"><button style="' + BTN_G + 'flex:1;padding:11px" ' + (_ms.page ? '' : 'disabled ') + 'onclick="catMissingPage(-1)">\u2039 Prev</button>' +
+        '<span style="font-size:12px;color:var(--t2);min-width:70px;text-align:center">' + (_ms.page + 1) + ' of ' + pages + '</span>' +
+        '<button style="' + BTN_G + 'flex:1;padding:11px" ' + (_ms.page < pages - 1 ? '' : 'disabled ') + 'onclick="catMissingPage(1)">Next \u203a</button></div>' : '');
+  });
+}
+function catMissingCorrect(id) { return catCorrectFor(id, srvRender); }
+function catMissingFilter(v) { _ms.q = v; _ms.page = 0; clearTimeout(_ms.t); _ms.t = setTimeout(function () { srvRender(); setTimeout(function () { var i = document.querySelector('#srv-ov input[type=search]'); if (i) { i.focus(); i.setSelectionRange(i.value.length, i.value.length); } }, 0); }, 250); }
+function catMissingPage(d) { _ms.page += d; srvRender(); var l = document.getElementById('ms-list'); if (l) l.scrollTop = 0; }
 
 /* ---------- v30.169 APP-3: corrections during review ----------
    A correction is saved to staging/overrides.json on the `specs` branch
@@ -3013,6 +3064,20 @@ function catFixCorrect() {
   };
   (apToken() ? apReadOverrides().catch(function () {}) : Promise.resolve()).then(go);
 }
+/* v30.201 MS-1: Correct specs for any catalog ball, from a list (Review new balls, Review my specs >
+   Missing specs). Compared against the published entry, else what the bridge read, like the card. */
+function catCorrectFor(id, after) {
+  return catLoad().then(function (rows) {
+    var e = byIdIn(rows, id); if (!e) return null;
+    var raw = e.s ? catDetailRaw(e).catch(function () { return null; }) : Promise.resolve(null);
+    var st = apToken() ? apReadStaged().then(function (x) { return srvStagedRow(x, id); }, function () { return null; }) : Promise.resolve(null);
+    var ov = apToken() ? apReadOverrides().catch(function () {}) : Promise.resolve();
+    return Promise.all([raw, st, ov]).then(function (r) {
+      apEditOpen({ catalogId: id, title: cleanName(e.n), entry: e, base0: r[0] ? detAsStaged(r[0]) : r[1], origin: 'list', after: after || null });
+      return e;
+    });
+  });
+}
 function fixAfterEdit() {
   if (_sheet && _sheet.id && document.getElementById('cat-sheet-ov')) { _sheet.detail = sheetDetail(_sheet.id, _sheet.raw); renderSheet(); }
   fixRender();
@@ -3130,7 +3195,7 @@ function hlPaint() {
       var e = r.e, pic = !!catImageFor(e.i), on = !!_hl.sel[e.i];
       return '<div style="display:flex;gap:10px;align-items:center;padding:9px 2px;border-bottom:1px solid var(--border1)">' +
         '<input type="checkbox" ' + (on ? 'checked ' : '') + (r.ready ? '' : 'disabled ') + 'onchange="catHoldSel(\'' + jsq(e.i) + '\',this.checked)" style="width:20px;height:20px;flex-shrink:0">' +
-        '<div onclick="catAddDetail(\'' + jsq(e.i) + '\')" style="display:flex;gap:10px;align-items:center;flex:1;min-width:0;cursor:pointer">' + thumbHTML(e, 40) +
+        '<div onclick="' + (r.ready ? 'catAddDetail' : 'catHoldCorrect') + '(\'' + jsq(e.i) + '\')" style="display:flex;gap:10px;align-items:center;flex:1;min-width:0;cursor:pointer">' + thumbHTML(e, 40) +
         '<div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:600;color:var(--t1)">' + esc(cleanName(e.n)) + (r.why === 'new' ? '<span style="' + CHIP_T + '">NEW</span>' : '') + '</div>' +
         '<div style="font-size:12px;color:' + (r.ready ? 'var(--t2)' : 'var(--gold)') + '">' + esc(e.m) + (e.y ? ' \u00b7 ' + esc(e.y) : '') + ' \u00b7 ' + specTxt[r.specs] + (pic ? '' : ' \u00b7 no picture') + '</div></div></div>' +
         '<button onclick="catHoldApprove([\'' + jsq(e.i) + '\'])" ' + (r.ready ? '' : 'disabled ') + 'style="' + (r.ready ? BTN_P : BTN_G) + 'padding:7px 10px;font-size:12px;' + (r.ready ? '' : 'opacity:.45;') + '">Approve</button></div>';
@@ -3144,13 +3209,15 @@ function hlPaint() {
       '<div style="padding:0 16px 6px"><input class="bdet-field-input" type="search" placeholder="Filter by brand or name" value="' + esc(_hl.q) + '" oninput="catHoldFilter(this.value)" style="width:100%;box-sizing:border-box;font-size:15px"></div>' +
       '<div style="flex:1;overflow-y:auto;padding:0 16px 10px">' + (shown.length ? shown.map(row).join('') : '<div style="padding:30px 0;text-align:center;color:var(--t2);font-size:13px">' + (L.all.length ? 'No match.' : 'Nothing held. New balls appear here after the weekly refresh.') + '</div>') +
       (pages > 1 ? '<div style="display:flex;gap:8px;align-items:center;justify-content:center;margin-top:10px"><button ' + (_hl.page ? '' : 'disabled ') + 'onclick="catHoldPage(-1)" style="' + BTN_G + 'padding:7px 12px">\u2039</button><span style="font-size:12px;color:var(--t2)">' + (_hl.page + 1) + ' of ' + pages + '</span><button ' + (_hl.page < pages - 1 ? '' : 'disabled ') + 'onclick="catHoldPage(1)" style="' + BTN_G + 'padding:7px 12px">\u203a</button></div>' : '') +
-      '<div style="font-size:11px;color:var(--t3);line-height:1.5;margin-top:10px">Tap a ball for its card: Correct specs, pictures, Verify now, Reject. <b>Approve</b> needs specs: published, or your correction with RG and Diff. Approved balls show in Add a Ball here at once, and for everyone after the next catalog refresh. Specs that are read but waiting go through Spec approvals first.</div></div>' +
+      '<div style="font-size:11px;color:var(--t3);line-height:1.5;margin-top:10px">Tap a ball with no specs to fill them in (Paste page, or Read a saved page (PDF) from bowwwl or the maker\u2019s site). Tap any other ball for its card: pictures, Verify now, Reject. <b>Approve</b> needs specs: published, or your correction with RG and Diff. Approved balls show in Add a Ball here at once, and for everyone after the next catalog refresh. Specs that are read but waiting go through Spec approvals first.</div></div>' +
       '<div style="padding:10px 16px;border-top:1px solid var(--border1);display:flex;gap:8px;align-items:center">' +
         '<div style="flex:1;font-size:11px;color:' + (_rlErr ? 'var(--gold)' : 'var(--t3)') + '">' + (sync ? sync + ' approval' + (sync === 1 ? '' : 's') + ' to send' + (_rlErr ? ': ' + esc(_rlErr) : apToken() ? '' : ' (add the token in Spec approvals)') : 'All approvals sent') + '</div>' +
         (sync && apToken() ? '<button onclick="catHoldSend()" style="' + BTN_G + 'padding:9px 12px;font-size:12px">Send now</button>' : '') +
         '<button id="hold-go" onclick="catHoldApprove()" ' + (nSel ? '' : 'disabled ') + 'style="' + BTN_P + 'padding:9px 14px;font-size:13px;' + (nSel ? '' : 'opacity:.45;') + '">Approve ' + nSel + '</button></div>';
   });
 }
+/* v30.201: a ball with no specs opens straight into Correct specs (Paste page, Read a saved page (PDF)) */
+function catHoldCorrect(id) { return catCorrectFor(id, hlPaint); }
 function catHoldShow(k) { _hl.show = k; _hl.page = 0; hlPaint(); }
 function catHoldFilter(v) { _hl.q = v; _hl.page = 0; clearTimeout(_hl.t); _hl.t = setTimeout(function () { hlPaint(); setTimeout(function () { var i = document.querySelector('#hold-ov input[type=search]'); if (i) { i.focus(); i.setSelectionRange(i.value.length, i.value.length); } }, 0); }, 250); }
 function catHoldPage(d) { _hl.page += d; hlPaint(); var sc = document.querySelector('#hold-ov > div:nth-child(4)'); if (sc) sc.scrollTop = 0; }
@@ -3490,7 +3557,7 @@ function catLookClose() { var el = document.getElementById('lk-ov'); if (el) el.
    The app still never fetches a site itself. */
 var SP_LABELS = [
   ['intDiff', /^(?:int(?:ermediate)?\.?\s*diff(?:erential)?\.?|mass\s*bias(?:\s*diff(?:erential)?)?|mb\s*diff\.?|psa)/i],
-  ['diff', /^(?:total\s*diff(?:erential)?\.?|differential|diff\.?)/i],
+  ['diff', /^(?:total\s*diff(?:erential)?\.?|max(?:imum)?\s*diff(?:erential)?\.?|differential|diff\.?)/i],   // v30.201: MOTIV "MAX DIFFERENTIAL"
   ['rg', /^(?:rg|radius\s*of\s*gyration)/i],
   ['coverType', /^(?:cover\s*type|coverstock\s*type|cover\s*stock\s*type|type(?=\s*(?:[:|]|$)))/i],   // bowwwl: "Type" under the coverstock
   ['coverName', /^(?:cover\s*name|coverstock(?:\s*name)?|cover\s*stock|cover)/i],
@@ -3499,6 +3566,29 @@ var SP_LABELS = [
   ['core', /^(?:core\s*name|weight\s*block|core)/i],
   ['released', /^(?:release\s*date|released|launch\s*date)/i]];
 var SP_NUM = /(?:^|[^\d.])([0-2]?\.\d{2,3})(?!\d)/;
+/* v30.201 maker pages: a label followed by a rating ("CORE (2)", Hammer) or a heading word ("CORE NUMBERS", Radical) is not a value */
+var SP_NOT_VALUE = /^(?:\(?\s*\d+(?:\.\d+)?\s*\)?|numbers|specs?|specifications|details|technology|info(?:rmation)?|stock|rating)$/i;
+/* v30.201: a weight-column table ("16 lb 15 lb 14 lb ..." then "RG 2.498 2.488 ...", Radical / Brunswick) */
+var SP_WCOL = /\b(1[0-6])\s*(?:#|lbs?\.?|pounds?)(?![a-z])/gi;
+function spWeightColumns(lines, out) {
+  for (var i = 0; i < lines.length; i++) {
+    var hd = lines[i].match(SP_WCOL);
+    if (!hd || hd.length < 2 || lines[i].replace(SP_WCOL, '').replace(/[|\s]/g, '') !== '') continue;
+    var cols = hd.map(function (x) { return parseInt(x, 10); });
+    for (var j = i + 1; j < Math.min(lines.length, i + 7); j++) {
+      var m = /^(int(?:ermediate)?\.?\s*diff(?:erential)?|mass\s*bias(?:\s*diff(?:erential)?)?|psa|total\s*diff(?:erential)?|differential|diff|rg|radius\s*of\s*gyration)\.?\s*[:|]?\s*(.*)$/i.exec(lines[j]);
+      if (!m) continue;
+      var nums = m[2].match(/(?:^|[^\d.])[0-2]?\.\d{2,3}(?!\d)/g); if (!nums || nums.length !== cols.length) continue;
+      var key = /^(int|mass|psa)/i.test(m[1]) ? 'IntDiff' : /diff/i.test(m[1]) ? 'Diff' : 'RG', fk = { RG: 'rg', Diff: 'diff', IntDiff: 'intDiff' }[key];
+      var lim = { RG: [2.30, 2.90], Diff: [0, 0.080], IntDiff: [0, 0.040] }[key];
+      nums.forEach(function (v, ix) {
+        var t = v.replace(/^[^\d.]/, ''), n = Number(t.charAt(0) === '.' ? '0' + t : t); if (!(n >= lim[0] && n <= lim[1])) return;
+        var slot = out.weights[cols[ix]] = out.weights[cols[ix]] || {}; if (slot[key] == null) slot[key] = n;
+        if (out.found.indexOf(fk) < 0) out.found.push(fk);
+      });
+    }
+  }
+}
 var SP_WT = /\b(1[0-6])\s*(?:#|lbs?\.?|pounds?)(?![a-z])/i;
 /* Pure: whole copied page -> {fields, weights, found[], nameSeen}. weight = the ball's weight for unlabelled numbers. */
 /* v30.177: the "Copy page text" Shortcut adds a header (BDB-PAGE url), marks the
@@ -3515,10 +3605,22 @@ function spLdLines(json) {
   try { walk(JSON.parse(json), 0); } catch (e) {}
   return out;
 }
+/* v30.201 Pure: a maker's own page, from its copyright footer or brand mark (never when the text is a bowwwl page) */
+var SP_MAKERS = [[/\bhammer\s*bowling\b/i, 'hammerbowling.com'], [/\bradical\s*bowling\b/i, 'radicalbowling.com'], [/\bmotiv\s*bowling\b/i, 'motivbowling.com'],
+  [/\bstorm\s*(?:bowling|products)\b/i, 'stormbowling.com'], [/\broto\s*grip\b.*\u00a9|\u00a9.*\broto\s*grip\b/i, 'rotogrip.com'], [/\bbrunswick\s*bowling\b/i, 'brunswickbowling.com'],
+  [/\bdv8\s*bowling\b/i, 'dv8bowling.com'], [/\bebonite\b.*\u00a9|\u00a9.*\bebonite\b/i, 'ebonite.com'], [/\b900\s*global\b.*\u00a9|\u00a9.*\b900\s*global\b/i, '900global.com'], [/\bcolumbia\s*300\b.*\u00a9|\u00a9.*\bcolumbia\s*300\b/i, 'columbia300.com'], [/\btrack\s*(?:inc|bowling)\b/i, 'trackbowling.com']];
+function spMakerOf(text) {
+  var t = String(text || ''); if (/bowwwl/i.test(t)) return null;
+  var foot = t.split('\n').filter(function (l) { return /\u00a9|copyright|all rights reserved/i.test(l); }).join('\n');
+  for (var i = 0; i < SP_MAKERS.length; i++) if (SP_MAKERS[i][0].test(foot)) return SP_MAKERS[i][1];
+  for (var j = 0; j < 3; j++) if (SP_MAKERS[j][0].test(t)) return SP_MAKERS[j][1];
+  return null;
+}
 function parseSpecText(text, weight, name) {
   var out = { fields: {}, weights: {}, found: [], nameSeen: null, url: null, image: null };
   var raw = String(text || '').replace(/\r/g, '').replace(/\u00a0/g, ' ');
   var hm = /^BDB-PAGE (\S+)/.exec(raw); if (hm) { out.url = hm[1]; raw = raw.slice(hm[0].length); }
+  if (/^BDB-PDF\n/.test(raw)) { out.pdf = true; raw = raw.slice(8); }   // v30.201: text read from a saved page PDF
   var extra = [];
   raw = raw.replace(/^#LD (.*)$/gm, function (m, j) { extra = extra.concat(spLdLines(j)); return ''; })
            .replace(/^#IMG (\S+).*$/gm, function (m, u) { if (/^https:\/\//.test(u)) out.image = u; return ''; });
@@ -3540,7 +3642,7 @@ function parseSpecText(text, weight, name) {
     v = String(v).replace(/[\u2122\u00ae]/g, '').replace(/^[:|#\-\s]+/, '').replace(/\s*\|\s*$/, '').trim();
     if (k === 'released') { var r = tagValueFor('ape-released', v.split(/\s+\|\s+|\s{2,}/)[0]); if (!r.v) return; v = r.v; }
     else if (k === 'coreType') { if (/asym/i.test(v)) v = 'Asymmetrical'; else if (/sym/i.test(v)) v = 'Symmetrical'; else return; }
-    else { v = v.split(/\s+\|\s+/)[0]; if (!plausibleText(k === 'core' ? 'core' : k, v)) return; }
+    else { v = v.split(/\s+\|\s+/)[0]; if (SP_NOT_VALUE.test(v) || !plausibleText(k === 'core' ? 'core' : k, v)) return; }
     out.fields[k] = v; out.found.push(k);
   };
   var setN = function (k, raw, line) {
@@ -3553,10 +3655,11 @@ function parseSpecText(text, weight, name) {
     var key = { rg: 'RG', diff: 'Diff', intDiff: 'IntDiff' }[k];
     if (slot[key] == null) { slot[key] = n; if (out.found.indexOf(k) < 0) out.found.push(k); }
   };
+  spWeightColumns(lines, out);
   var curW = null;   // v30.178: a "16 pounds" heading applies to the numbers under it (bowwwl)
   lines.forEach(function (l, i) {
     var wh = /^(1[0-6])\s*(?:#|lbs?\.?|pounds?)\s*(?:ball)?$/i.exec(l); if (wh) { curW = +wh[1]; return; }
-    var lab = l.replace(/^(1[0-6])\s*(?:#|lbs?\.?|pounds?)\s*[|:]?\s*(?=[a-z])/i, '');   // "16 lbs RG 2.48 ...": the label follows the weight
+    var lab = l.replace(/^(1[0-6])\s*(?:#|lbs?\.?|pounds?)\s*[|:\-\u2013]?\s*(?=[a-z])/i, '');   // v30.201: "16 lb - RG (2.610)" (Hammer)   // "16 lbs RG 2.48 ...": the label follows the weight
     var matched = false;
     for (var j = 0; j < SP_LABELS.length; j++) {
       var m = SP_LABELS[j][1].exec(lab); if (!m) continue;
@@ -3566,13 +3669,14 @@ function parseSpecText(text, weight, name) {
       if (k === 'rg' || k === 'diff' || k === 'intDiff') {
         /* "16 lb RG 2.48 Diff 0.051 Int 0.012" on one line: read each label's own number */
         setN(k, rest, l);
-        var dm = /\b(?:total\s*)?diff(?:erential)?\.?\s*[:|]?\s*([0-2]?\.\d{2,3})/i.exec(rest); if (k === 'rg' && dm) setN('diff', dm[1], l);
-        var im = /\b(?:int(?:ermediate)?\.?\s*diff\.?|psa|mass\s*bias|mb)\s*[:|]?\s*([0-2]?\.\d{2,3})/i.exec(rest); if (k !== 'intDiff' && im) setN('intDiff', im[1], l);
+        var dm = /\b(?:total\s*)?diff(?:erential)?\.?\s*[:|]?\s*\(?\s*([0-2]?\.\d{2,3})/i.exec(rest); if (k === 'rg' && dm) setN('diff', dm[1], l);
+        var im = /\b(?:int(?:ermediate)?\.?\s*diff\.?|psa|mass\s*bias|mb)\s*[:|]?\s*\(?\s*([0-2]?\.\d{2,3})/i.exec(rest); if (k !== 'intDiff' && im) setN('intDiff', im[1], l);
       } else setF(k, rest);
       matched = true; break;
     }
     /* v30.178 bowwwl headings: "HK22C2 - Alpha Premier Solid Coverstock", "Rampart Core" */
-    if (!matched) {
+    if (!matched && /^(?:a)?symmetric(?:al)?$/i.test(l)) { setF('coreType', l); matched = true; }   // v30.201: MOTIV "HALOGEN / SYMMETRICAL"
+    if (!matched && !/^[a-z]/.test(l)) {   // v30.201: a heading starts with a capital ("both coverstock and core" is prose)
       var ch = /^(.{2,60}?)\s+cover\s*stock$/i.exec(l);
       if (ch) setF('coverName', ch[1].replace(/\s+[-\u2013\u2014]\s+/g, ' '));
       var co = /^(.{1,40}?)\s+core$/i.exec(l);
@@ -3590,6 +3694,7 @@ function parseSpecText(text, weight, name) {
   if (name) { var f = foldName(name), all = foldName(text); out.nameSeen = !!f && all.indexOf(f) >= 0; }
   if (out.url) { var hst = ''; try { hst = new URL(out.url).host.replace(/^www\./, ''); } catch (e) {} out.host = hst;
     out.source = /bowwwl\.com$/.test(hst) ? 'bowwwl' : /storm|rotogrip|900global|brunswick|dv8|radical|hammer|ebonite|track|columbia300|motiv/.test(hst) ? 'maker' : 'other'; }
+  else if (out.pdf) { var mk = spMakerOf(text); if (mk) { out.source = 'maker'; out.host = mk; } }   // only a saved page: a pasted bowwwl excerpt may name a maker   // v30.201: a saved maker page (PDF) has no address; its footer names the maker
   return out;
 }
 /* Clipboard read with a manual fallback box. done(text) */
@@ -3773,7 +3878,7 @@ function spReadPdf(done) {
     if (root.toast) root.toast('Reading the PDF\u2026');
     f.arrayBuffer().then(pdfToText).then(function (t) {
       if (!t.trim()) { if (root.toast) root.toast('No text in that PDF. Use Full Page (not a photo) when saving.'); return; }
-      done(t);
+      done('BDB-PDF\n' + t);   // v30.201: marks a saved page, so a maker's own page is recognised by its footer
     }, function (e) { if (root.toast) root.toast('Could not read the PDF' + (typeof navigator !== 'undefined' && navigator.onLine === false ? ' (offline: the reader loads once online)' : '')); });
   });
   document.body.appendChild(inp);
@@ -3934,7 +4039,8 @@ function miCoverRows(rows) {
       return { key: 'b' + b.BallID, ballId: b.BallID, catId: b.CatalogID || null, brand: e ? e.m : b.MFG, name: e ? cleanName(e.n) : b.BallName, year: e ? e.y : '', coreName: b.CoreShort || null }; });
   /* v30.200 IMG-2: a ball is listed until a picture is saved on this phone; a maker picture that is
      only shown (Manufacturer images on this device) doesn't count, it is offered ready to save */
-  var cat = (rows || []).filter(function (e) { return e.s && !catImageStored(e.i) && !catIsRejected(e); })
+  /* v30.201: balls without specs are listed too (James: every ball with no picture, in one place) */
+  var cat = (rows || []).filter(function (e) { return !catImageStored(e.i) && !catIsRejected(e); })
     .sort(function (a, b) { return String(b.y || '').localeCompare(String(a.y || '')) || String(a.m).localeCompare(String(b.m)); })
     .map(function (e) { return { key: 'c' + e.i, ballId: null, catId: e.i, brand: e.m, name: cleanName(e.n), year: e.y }; });
   return { mine: mine, cat: cat };
@@ -4348,7 +4454,7 @@ function catBackupBuild() {
   });
   return Promise.all([files, repo]).then(function (r) {
     var st = stLocal(), rp = r[1];
-    return { kind: 'bowlingdb-catalog-backup', v: 1, at: new Date(env.now()).toISOString(), app: root.APP_VERSION || null, catalogJs: CAT_VERSION,
+    return { kind: 'bowlingdb-catalog-backup', v: 1, at: new Date(env.now()).toISOString(), app: (typeof APP_VERSION !== 'undefined' ? APP_VERSION : null), catalogJs: CAT_VERSION,
       covers: imgPicks(), cores: coreLinks(), files: r[0], scan: cbLSGet(SCAN_KEY, {}), makerLinks: cbLSGet(IMG_LINKS_KEY, null),
       deviceCorrections: localOverrides(), status: { all: st.all, pending: st.pending, cleared: st.cleared }, released: rlLocal().all,
       repo: rp && !rp.error ? rp : null, repoNote: !apToken() ? 'no token on this phone' : rp && rp.error ? rp.error : null };
@@ -4457,7 +4563,7 @@ function pasteLines(t) {
   var seen = {}, out = [];
   String(t || '').split(/\r?\n/).forEach(function (l) {
     var x = l.replace(/\t+/g, ' | ').replace(/\s+/g, ' ').trim();
-    if (!x || x.length > 200 || seen[x.toLowerCase()]) return;
+    if (!x || x.length > 200 || seen[x.toLowerCase()] || x === 'BDB-PDF') return;
     seen[x.toLowerCase()] = 1; out.push(x);
   });
   return out.slice(0, 400);
@@ -4676,7 +4782,7 @@ function apEditOpen(ctx) {
   var r = apApplyOverride(ctx.base0, overrideFor(ctx.catalogId));
   var sp = (r && r.specs) || {};
   var _ee = ctx.entry, _bn = _ee ? cleanName(_ee.n) : ctx.title;
-  _apEdit = { catalogId: ctx.catalogId, i: ctx.i, page: (r && r.page) || null, ballName: _bn, url: (r && r.url) || null, base0: ctx.base0 || null, origin: ctx.origin || 'ap' };
+  _apEdit = { catalogId: ctx.catalogId, i: ctx.i, page: (r && r.page) || null, ballName: _bn, url: (r && r.url) || null, base0: ctx.base0 || null, origin: ctx.origin || 'ap', after: ctx.after || null };
   var _bw = bowwwlLinks(_ee ? _ee.m : (r && r.brand) || '', _bn), _mm = (r && r.title) ? pageMismatch(r.title, _bn) : null;
   var inp = function (id, v, ph) { return '<div class="ape-f"><input id="' + id + '" class="bdet-field-input" value="' + esc(v == null ? '' : v) + '" placeholder="' + esc(ph || '') + '" style="width:100%;box-sizing:border-box;font-size:15px"></div>'; };
   /* v30.173 CAT-NEW-7: type, or pick a value already in use */
@@ -4718,9 +4824,9 @@ function apEditOpen(ctx) {
   ov.addEventListener('click', tagFieldTap, true);
 }
 function apEditDone(msg) {
-  var origin = _apEdit && _apEdit.origin;
+  var origin = _apEdit && _apEdit.origin, after = _apEdit && _apEdit.after;
   catApprovalsEditClose();
-  if (origin === 'sheet') { fixAfterEdit(); } else apRender();
+  if (origin === 'sheet') { fixAfterEdit(); } else if (origin === 'list') { if (after) try { after(); } catch (e) {} } else apRender();
   if (msg && root.toast) root.toast(msg);
 }
 function catApprovalsEditClose() { var el = document.getElementById('ap-edit-ov'); if (el) el.parentNode.removeChild(el); _apEdit = null; }
@@ -4758,7 +4864,7 @@ function catApprovalsEditSave() {
     return;
   }
   if (err) err.textContent = 'Saving…';
-  var _fromSheet = _apEdit.origin === 'sheet';
+  var _fromSheet = _apEdit.origin === 'sheet' || _apEdit.origin === 'list';   // v30.201: lists open it the way the card does
   apSaveOverride(_apEdit.catalogId, o).then(function (all) {
     /* v30.185: a ball the bridge never read publishes from the correction alone, which needs RG + Diff for a weight */
     var full = apApplyOverride(staged0, all && all[cid]), fw = ((full && full.specs) || {}).weights || {};
@@ -4990,6 +5096,8 @@ function catCompareAdd(x) {
 
 
 root.CATALOG_JS_VERSION = CAT_VERSION;
+root.catSpecReviewTab = catSpecReviewTab; root.catMissingCorrect = catMissingCorrect; root.catMissingFilter = catMissingFilter; root.catMissingPage = catMissingPage; root._ms = { msRows: msRows };
+root.catHoldCorrect = catHoldCorrect; root.catCorrectFor = catCorrectFor;
 root.catHoldOpen = catHoldOpen; root.catHoldClose = catHoldClose; root.catHoldShow = catHoldShow; root.catHoldFilter = catHoldFilter; root.catHoldPage = catHoldPage; root.catHoldSel = catHoldSel; root.catHoldApprove = catHoldApprove; root.catHoldSend = catHoldSend; root.catIsHeld = catIsHeld; root._hold = { hlRows: hlRows, hlHasSpecs: hlHasSpecs, rlMerge: rlMerge };
 root.catBackupOpen = catBackupOpen; root.catBackupMake = catBackupMake; root.catBackupShare = catBackupShare; root.catBackupRestore = catBackupRestore; root.catBackupStatus = catBackupStatus; root.catBackupBuild = catBackupBuild; root.catBackupMerge = catBackupMerge;
 root.catPickerMount = catPickerMount;
@@ -5029,7 +5137,7 @@ root._catStep5 = { norm: norm, modelKey: modelKey, lookupIn: lookupIn, searchIn:
                    buildOwnedBall: buildOwnedBall, ballFromSpecs: ballFromSpecs, fillPlan: fillPlan,
                    catSpecSource: catSpecSource, setFilled: function (f) { _filled = f; },
                    imgLinksFrom: imgLinksFrom, sheetState: function () { return _sheet; }, mergeOverrides: mergeOverrides, withLocalCorrection: withLocalCorrection, apApplyOverride: apApplyOverride, apOverrideFrom: apOverrideFrom, bowwwlLinks: bowwwlLinks, apStagedFor: apStagedFor, apAsDetail: apAsDetail, apRangeNotes: apRangeNotes, derivedCoverType: derivedCoverType, specGaps: specGaps, nearestWeight: nearestWeight, addListHTML: addListHTML, sourceForBrand: sourceForBrand, apParseIssue: apParseIssue, apPages: apPages, apApplyTicks: apApplyTicks, apConflict: apConflict, apNums: apNums,
-                   verifyPlan: verifyPlan, coreKeyOf: coreKeyOf, coreBase: coreBase, bowwwlCoreCandidates: bowwwlCoreCandidates, bowwwlImgCandidates: bowwwlImgCandidates, slugBw: slugBw, pdfItemsToLines: pdfItemsToLines, spLdLines: spLdLines, SHORTCUT_JS: SHORTCUT_JS, srvEditValue: srvEditValue, parseSpecText: parseSpecText, lkTabs: lkTabs, lkPasteValue: lkPasteValue, lkBallChanges: lkBallChanges, pageMismatch: pageMismatch, pasteLines: pasteLines, plausibleText: plausibleText, proseFields: proseFields, pgvClean: pgvClean, vocabMerge: vocabMerge, vocabSplit: vocabSplit, familyOf: familyOf, srvRows: srvRows, srvApply: srvApply, srvStagedRow: srvStagedRow, vfyPagesFor: vfyPagesFor, vfyEstimateFrom: vfyEstimateFrom, tagLine: tagLine, tagLines: tagLines, tagValueFor: tagValueFor, vfyPickRun: vfyPickRun, vfyClassify: vfyClassify, vfyCardHTML: vfyCardHTML, specMatch: specMatch, coreNameMatch: coreNameMatch, DIFF_MAX: DIFF_MAX, metricUnverified: metricUnverified, catSpecUnverified: catSpecUnverified,
+                   verifyPlan: verifyPlan, coreKeyOf: coreKeyOf, coreBase: coreBase, bowwwlCoreCandidates: bowwwlCoreCandidates, bowwwlImgCandidates: bowwwlImgCandidates, slugBw: slugBw, pdfItemsToLines: pdfItemsToLines, spMakerOf: spMakerOf, spWeightColumns: spWeightColumns, spLdLines: spLdLines, SHORTCUT_JS: SHORTCUT_JS, srvEditValue: srvEditValue, parseSpecText: parseSpecText, lkTabs: lkTabs, lkPasteValue: lkPasteValue, lkBallChanges: lkBallChanges, pageMismatch: pageMismatch, pasteLines: pasteLines, plausibleText: plausibleText, proseFields: proseFields, pgvClean: pgvClean, vocabMerge: vocabMerge, vocabSplit: vocabSplit, familyOf: familyOf, srvRows: srvRows, srvApply: srvApply, srvStagedRow: srvStagedRow, vfyPagesFor: vfyPagesFor, vfyEstimateFrom: vfyEstimateFrom, tagLine: tagLine, tagLines: tagLines, tagValueFor: tagValueFor, vfyPickRun: vfyPickRun, vfyClassify: vfyClassify, vfyCardHTML: vfyCardHTML, specMatch: specMatch, coreNameMatch: coreNameMatch, DIFF_MAX: DIFF_MAX, metricUnverified: metricUnverified, catSpecUnverified: catSpecUnverified,
                    metricScore: metricScore, parseFinish: parseFinish, rgBand: rgBand, diffBand: diffBand, coverClass: coverClass,
                    catMetric: catMetric, sheetHTML: sheetHTML, cmpColOwned: cmpColOwned, cmpColCatalog: cmpColCatalog, cmpRows: cmpRows,
                    cmpHTML: cmpHTML, cmpState: function () { return _cmp; }, setSheet: function (x) { _sheet = x; } };
