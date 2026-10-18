@@ -36,7 +36,7 @@
 'use strict';
 
 /* v30.169: shown in the app header when it differs from the build's EXPECTED_CATALOG_JS */
-var CAT_VERSION  = 'v30.201';
+var CAT_VERSION  = 'v30.202';
 var CAT_BASE     = 'https://raw.githubusercontent.com/jmarsh85/bowlingdb-mobile/dist/';
 var CAT_DB       = 'BowlingDB_Catalog';
 var CAT_DB_VER   = 1;
@@ -1042,6 +1042,7 @@ function bubbleFilter(rows, f, year) {
   return rows.filter(function (e) {
     if (catIsRejected(e)) return false;   // v30.185: rejected balls are never offered
     if (catIsHeld(e)) return false;       // v30.200 HOLD-1: held until you approve it (Review new balls)
+    if (e.a) return false;                // v30.202 WB-1: Archived (no specs, approved before 2021): only Enter manually finds it
     if (f.specs && !e.s) return false;
     if (!f.disc && discontinuedOf(e, year)) return false;
     if (hasB && !bs[norm(e.m)]) return false;
@@ -1174,7 +1175,7 @@ function catOpenAddSearch() {
 }
 function catCloseAddSearch() {
   if (typeof document === 'undefined') return;
-  ['cat-brand-ov', 'cat-sheet-ov', 'cat-search-ov'].forEach(function (id) { var el = document.getElementById(id); if (el) el.parentNode.removeChild(el); });
+  ['cat-brand-ov', 'cat-sheet-ov', 'cat-old-ov', 'cat-search-ov'].forEach(function (id) { var el = document.getElementById(id); if (el) el.parentNode.removeChild(el); });
 }
 function catAddSearch(q) {
   catLoad().then(function (rows) {
@@ -1185,7 +1186,35 @@ function catAddSearch(q) {
 }
 function catAddBrand(b) { if (_af.brands.indexOf(b) < 0) _af.brands.push(b); catAddRefresh(); }
 function catAddManual() {
-  catCloseAddSearch();
+  /* v30.202 WB-1: with archived balls in the catalog, Enter manually first offers them as a starting point */
+  catLoad().then(function (rows) {
+    if (!rows.some(function (e) { return e.a; })) { catAddBlank(); return; }
+    var ov = overlay('cat-old-ov', 905);
+    ov.innerHTML = '<div style="padding:12px 16px 6px;display:flex;align-items:center;gap:12px"><button onclick="catOldClose()" style="' + BACK + '" aria-label="Back">\u2039</button>' +
+      '<div style="flex:1;min-width:0"><div style="font-size:18px;font-weight:800;color:var(--t1)">Enter manually</div><div style="font-size:11px;color:var(--t3)">Older balls (before 2021) without specs are kept here</div></div></div>' +
+      '<div style="padding:4px 16px 6px"><input id="cat-old-q" class="bdet-field-input" type="search" placeholder="Find in older catalog: brand or name" autocomplete="off" autocorrect="off" autocapitalize="off" oninput="catOldSearch(this.value)" style="width:100%;box-sizing:border-box;font-size:16px"></div>' +
+      '<div id="cat-old-results" style="flex:1;overflow-y:auto;padding:0 16px 12px;-webkit-overflow-scrolling:touch"><div style="font-size:13px;color:var(--t2);padding:14px 2px;line-height:1.5">Type a brand or name to start from an older catalog ball (its name, brand and year are filled in). Or start a blank ball.</div></div>' +
+      '<div style="padding:10px 16px;border-top:1px solid var(--border1)"><button onclick="catAddBlank()" style="' + BTN_G + 'width:100%;padding:11px;font-size:13px">Blank ball</button></div>';
+    document.body.appendChild(ov);
+  });
+}
+function catOldSearch(q) {
+  catLoad().then(function (rows) {
+    var box = document.getElementById('cat-old-results'); if (!box) return;
+    var t = norm(q || '');
+    if (t.replace(/\s/g, '').length < 2) { box.innerHTML = '<div style="font-size:13px;color:var(--t2);padding:14px 2px">Type at least 2 letters.</div>'; return; }
+    var hit = rows.filter(function (e) { return e.a && !catIsRejected(e) && norm(e.m + ' ' + e.n).indexOf(t) >= 0; })
+      .sort(function (a, b) { return String(b.y || '').localeCompare(String(a.y || '')) || cleanName(a.n).localeCompare(cleanName(b.n)); });
+    box.innerHTML = hit.length ? hit.slice(0, 50).map(function (e) {
+      return '<div onclick="catAddDetail(\'' + jsq(e.i) + '\')" style="display:flex;align-items:center;gap:12px;padding:10px 2px;border-bottom:1px solid var(--border1);cursor:pointer">' + thumbHTML(e, 40) +
+        '<div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:600;color:var(--t1)">' + esc(cleanName(e.n)) + '</div><div style="font-size:12px;color:var(--t2)">' + esc(e.m) + (e.y ? ' \u00b7 ' + esc(e.y) : '') + ' \u00b7 older catalog</div></div></div>';
+    }).join('') + (hit.length > 50 ? '<div style="font-size:12px;color:var(--t3);padding:12px 2px">' + (hit.length - 50) + ' more \u00b7 type to narrow</div>' : '')
+      : '<div style="font-size:13px;color:var(--t2);padding:14px 2px">No older ball matches. Use Blank ball.</div>';
+  });
+}
+function catOldClose() { var el = document.getElementById('cat-old-ov'); if (el) el.parentNode.removeChild(el); }
+function catAddBlank() {
+  catOldClose(); catCloseAddSearch();
   if (root.navToBall) root.navToBall(null);
 }
 
@@ -2364,7 +2393,8 @@ function catSpecReviewOpen(ballId) {
   catSpecReviewClose();
   document.body.appendChild(overlay('srv-ov', 906));
   _srv.focus = ballId == null ? null : ballId; _srv.tab = 'mine'; _ms.page = 0;
-  catLoad().then(function (rows) { _ms.count = msRows(rows, { rejected: catIsRejected, ovr: overrideFor }).length; if (!_srv.busy) srvRender(); });
+  catLoad().then(function (rows) { var mine = {}; appBalls().forEach(function (b) { if (b.CatalogID && !b.Archived) mine[b.CatalogID] = 1; });
+    _ms.count = msRows(rows, { mine: mine, rejected: catIsRejected, ovr: overrideFor }).length; if (!_srv.busy) srvRender(); });
   return srvLoad();
 }
 function catSpecReviewClose() {
@@ -2475,7 +2505,7 @@ var MS_PAGE = 30;
 function msRows(rows, opt) {
   opt = opt || {};
   var mine = opt.mine || {};
-  return (rows || []).filter(function (e) { return !(opt.rejected && opt.rejected(e)) && !hlHasSpecs(e, opt.ovr ? opt.ovr(e.i) : null); })
+  return (rows || []).filter(function (e) { return !(e.a && !mine[e.i]) && !(opt.rejected && opt.rejected(e)) && !hlHasSpecs(e, opt.ovr ? opt.ovr(e.i) : null); })   // v30.202: archived only when yours
     .sort(function (a, b) { return ((mine[b.i] ? 1 : 0) - (mine[a.i] ? 1 : 0)) || String(b.y || '').localeCompare(String(a.y || '')) || String(a.m).localeCompare(String(b.m)) || cleanName(a.n).localeCompare(cleanName(b.n)); });
 }
 function srvTabs() {
@@ -4040,7 +4070,8 @@ function miCoverRows(rows) {
   /* v30.200 IMG-2: a ball is listed until a picture is saved on this phone; a maker picture that is
      only shown (Manufacturer images on this device) doesn't count, it is offered ready to save */
   /* v30.201: balls without specs are listed too (James: every ball with no picture, in one place) */
-  var cat = (rows || []).filter(function (e) { return !catImageStored(e.i) && !catIsRejected(e); })
+  var own = {}; appBalls().forEach(function (b) { if (b.CatalogID && !b.Archived) own[b.CatalogID] = 1; });
+  var cat = (rows || []).filter(function (e) { return !catImageStored(e.i) && !catIsRejected(e) && !(e.a && !own[e.i]); })   // v30.202: archived only when yours
     .sort(function (a, b) { return String(b.y || '').localeCompare(String(a.y || '')) || String(a.m).localeCompare(String(b.m)); })
     .map(function (e) { return { key: 'c' + e.i, ballId: null, catId: e.i, brand: e.m, name: cleanName(e.n), year: e.y }; });
   return { mine: mine, cat: cat };
@@ -5096,6 +5127,7 @@ function catCompareAdd(x) {
 
 
 root.CATALOG_JS_VERSION = CAT_VERSION;
+root.catOldSearch = catOldSearch; root.catOldClose = catOldClose; root.catAddBlank = catAddBlank; root.catAddManual = catAddManual;
 root.catSpecReviewTab = catSpecReviewTab; root.catMissingCorrect = catMissingCorrect; root.catMissingFilter = catMissingFilter; root.catMissingPage = catMissingPage; root._ms = { msRows: msRows };
 root.catHoldCorrect = catHoldCorrect; root.catCorrectFor = catCorrectFor;
 root.catHoldOpen = catHoldOpen; root.catHoldClose = catHoldClose; root.catHoldShow = catHoldShow; root.catHoldFilter = catHoldFilter; root.catHoldPage = catHoldPage; root.catHoldSel = catHoldSel; root.catHoldApprove = catHoldApprove; root.catHoldSend = catHoldSend; root.catIsHeld = catIsHeld; root._hold = { hlRows: hlRows, hlHasSpecs: hlHasSpecs, rlMerge: rlMerge };
