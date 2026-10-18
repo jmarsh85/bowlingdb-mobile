@@ -21,6 +21,10 @@ on:
         description: 'HOLD-1: only report how many balls would be held (writes nothing)'
         type: boolean
         default: false
+      scope_year:
+        description: 'WB-1: balls approved before this year with no specs are Archived (not held, hidden from Add a Ball)'
+        type: string
+        default: '2021'
       hold_start:
         description: 'HOLD-1: start the hold (first pass: every ball without specs). Once hold.json exists every run keeps it.'
         type: boolean
@@ -128,6 +132,7 @@ jobs:
           [ -f ../specs/corrections/released.json ] && HOLD="--released ../specs/corrections/released.json"
           [ "${{ inputs.hold_start }}" = "true" ] && HOLD="$HOLD --hold-start"
           [ "${{ inputs.hold_dry_run }}" = "true" ] && HOLD="$HOLD --hold-dry-run"
+          HOLD="$HOLD --scope-year ${{ inputs.scope_year || '2021' }}"
           node build_catalog.js ../.work/rows.json $SPECS $HOLD --out ../published | tee ../.work/result
           grep '^hold' ../.work/result >> "$GITHUB_STEP_SUMMARY" || true
           grep -q 'changed: true' ../.work/result && echo "changed=true" >> "$GITHUB_OUTPUT" || echo "changed=false" >> "$GITHUB_OUTPUT"
