@@ -20687,7 +20687,7 @@
   "DateReleased": "2026-07-16",
   "Core": {
    "Name": "Aftermath",
-   "Type": null
+   "Type": "Symmetrical"
   },
   "Cover": {
    "Name": "HK22C² Solid",
@@ -20722,7 +20722,11 @@
    }
   },
   "Source": "https://hammerbowling.com/products/fallout",
-  "Checked": "2026-10-12"
+  "Checked": "2026-10-12",
+  "Corrected": {
+   "source": "maker",
+   "at": "2026-10-12"
+  }
  },
  "hammer-fierce-phobia": {
   "DateReleased": null,
@@ -22911,7 +22915,7 @@
   "Cover": {
    "Name": "Aggression Pearl",
    "Type": "Pearl Reactive",
-   "Finish": null
+   "Finish": "Finish 500/1000 Abralon, Powerhouse Factory Finish Polish"
   },
   "SpecsByWeight": {
    "12": {
@@ -22944,7 +22948,7 @@
   "Checked": "2026-10-12",
   "Corrected": {
    "source": "maker",
-   "at": "2026-10-11"
+   "at": "2026-10-18"
   }
  },
  "hammer-web-tour-edition": {
@@ -23562,14 +23566,14 @@
   "Checked": "2026-10-12"
  },
  "motiv-ascent-apex": {
-  "DateReleased": null,
+  "DateReleased": "06-2021",
   "Core": {
    "Name": "Recon",
-   "Type": null
+   "Type": "Symmetrical"
   },
   "Cover": {
    "Name": "Fusion XL",
-   "Type": null,
+   "Type": "Pearl Reactive",
    "Finish": "5000 Grit Laser Scan Polished"
   },
   "SpecsByWeight": {
@@ -23610,7 +23614,11 @@
    }
   },
   "Source": "https://www.motivbowling.com/products/balls/retired-balls/ascent-apex-blue.html",
-  "Checked": "2026-10-12"
+  "Checked": "2026-10-12",
+  "Corrected": {
+   "source": "maker",
+   "at": "2026-10-18"
+  }
  },
  "motiv-ascent-pearl-pink-purple": {
   "DateReleased": null,
@@ -31929,6 +31937,52 @@
   "Source": "https://radicalbowling.com/products/balls/retired/power-hitter",
   "Checked": "2026-10-12",
   "Status": "retired"
+ },
+ "radical-prime-power-hitter": {
+  "DateReleased": "2025-06",
+  "Core": {
+   "Name": "Hitter",
+   "Type": "Asymmetrical"
+  },
+  "Cover": {
+   "Name": "HK22C Textured Hybrid",
+   "Type": "Hybrid Reactive",
+   "Finish": "500, 1000, 1500 Siaair / Factory"
+  },
+  "SpecsByWeight": {
+   "12": {
+    "RG": 2.612,
+    "Diff": 0.043,
+    "IntDiff": 0.011
+   },
+   "13": {
+    "RG": 2.589,
+    "Diff": 0.043,
+    "IntDiff": 0.011
+   },
+   "14": {
+    "RG": 2.504,
+    "Diff": 0.053,
+    "IntDiff": 0.015
+   },
+   "15": {
+    "RG": 2.488,
+    "Diff": 0.053,
+    "IntDiff": 0.015
+   },
+   "16": {
+    "RG": 2.498,
+    "Diff": 0.047,
+    "IntDiff": 0.013
+   }
+  },
+  "Source": null,
+  "Checked": null,
+  "Corrected": {
+   "source": "maker",
+   "at": "2026-10-17",
+   "only": true
+  }
  },
  "radical-primo": {
   "DateReleased": null,
