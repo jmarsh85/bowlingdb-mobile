@@ -14,6 +14,8 @@
  *     --hold-start          create hold.json when there is none: every ball without specs (first pass)
  *     --hold-dry-run        report what the hold would be; write no hold and no h flags
  *     --released <file>     corrections/released.json from the specs branch (balls you approved)
+ *     --scope-year <yyyy>   v30.202 WB-1 scope (default 2021): a ball without specs approved before this
+ *                           year is Archived (index a: 1): never held, hidden from Add a Ball lists
  *
  * Exit 0 with "changed: false" means nothing to commit (§7).
  *
@@ -241,26 +243,33 @@ function vocabOf(entries) {
    First pass (start, no hold yet): every ball with no published specs, why 'first-pass'.
    Every build with a hold: balls new since the previous index are added, why 'new' (a released
    ball was in that index, so it is never held again); released and vanished ids are dropped. */
+const SCOPE_YEAR = 2021;
+/* v30.202 WB-1 Pure: worth working (has specs, or approved in or after the scope year) */
+function inScope(e, year) { const y = parseInt(e.y, 10); return !!e.s || (isFinite(y) && y >= (year || SCOPE_YEAR)); }
 function applyHold(index, prevIds, hold, released, opt) {
   opt = opt || {};
   released = released || {};
+  const sy = opt.scopeYear || SCOPE_YEAR, scoped = e => inScope(e, sy);
+  const byId = new Map(index.map(e => [e.i, e]));
   const ids = new Set(index.map(e => e.i));
-  const out = { report: { active: false, firstPass: 0, added: 0, released: 0, gone: 0, held: 0 }, hold: null };
+  const out = { report: { active: false, firstPass: 0, added: 0, released: 0, gone: 0, outOfScope: 0, held: 0 }, hold: null };
   if (!hold && !opt.start) return out;
   const next = { _meta: Object.assign({}, (hold && hold._meta) || {}), balls: Object.assign({}, (hold && hold.balls) || {}) };
   out.report.active = true;
   if (!hold) {
     next._meta.start = opt.listVersion || null;
-    for (const e of index) if (!e.s && !released[e.i]) { next.balls[e.i] = { since: opt.listVersion || null, why: 'first-pass' }; out.report.firstPass++; }
+    for (const e of index) if (!e.s && !released[e.i] && scoped(e)) { next.balls[e.i] = { since: opt.listVersion || null, why: 'first-pass' }; out.report.firstPass++; }
     next._meta.firstPass = out.report.firstPass;
   }
   if (prevIds && prevIds.size) {
-    for (const e of index) if (!prevIds.has(e.i) && !next.balls[e.i] && !released[e.i]) { next.balls[e.i] = { since: opt.listVersion || null, why: 'new' }; out.report.added++; }
+    for (const e of index) if (!prevIds.has(e.i) && !next.balls[e.i] && !released[e.i] && scoped(e)) { next.balls[e.i] = { since: opt.listVersion || null, why: 'new' }; out.report.added++; }
   }
   for (const id of Object.keys(next.balls)) {
     if (released[id]) { delete next.balls[id]; out.report.released++; }
     else if (!ids.has(id)) { delete next.balls[id]; out.report.gone++; }
+    else if (!scoped(byId.get(id))) { delete next.balls[id]; out.report.outOfScope++; }   // v30.202: the first pass before scope held old balls
   }
+  next._meta.scopeYear = sy;
   out.report.held = Object.keys(next.balls).length;
   out.hold = next;
   return out;
@@ -270,11 +279,15 @@ function flagHeld(index, hold) {
   if (!hold) return index;
   return index.map(e => { const b = hold.balls[e.i]; return b ? Object.assign({}, e, { h: b.why === 'new' ? 2 : 1 }) : e; });
 }
+/* v30.202 WB-1: a: 1 on out-of-scope balls (no specs, approved before the scope year) */
+function flagArchived(index, year) {
+  return index.map(e => inScope(e, year) || e.h ? e : Object.assign({}, e, { a: 1 }));
+}
 
 function main() {
   const args = process.argv.slice(2);
   const rowsPath = args.find(a => !a.startsWith('--') &&
-    args[args.indexOf(a) - 1] !== '--specs' && args[args.indexOf(a) - 1] !== '--out' && args[args.indexOf(a) - 1] !== '--released');
+    args[args.indexOf(a) - 1] !== '--specs' && args[args.indexOf(a) - 1] !== '--out' && args[args.indexOf(a) - 1] !== '--released' && args[args.indexOf(a) - 1] !== '--scope-year');
   const specsPath = args[args.indexOf('--specs') + 1];
   const outDir = args.includes('--out') ? args[args.indexOf('--out') + 1] : 'dist';
   if (!rowsPath) {
@@ -302,10 +315,12 @@ function main() {
   const released = (releasedPath && readJSON(releasedPath)) || {};
   const dry = args.includes('--hold-dry-run');
   const holdPrev = readJSON(holdFile);
-  const H = applyHold(index, prevIds, holdPrev, released, { start: args.includes('--hold-start') || dry, listVersion });
+  const scopeYear = args.includes('--scope-year') ? parseInt(args[args.indexOf('--scope-year') + 1], 10) : SCOPE_YEAR;
+  const H = applyHold(index, prevIds, holdPrev, released, { start: args.includes('--hold-start') || dry, listVersion, scopeYear });
   /* a dry run keeps the hold that is published now, so it never shows held balls by accident */
   if (dry) { if (holdPrev) index = flagHeld(index, holdPrev); }
   else if (H.hold) index = flagHeld(index, H.hold);
+  if (!dry) index = flagArchived(index, scopeYear);
 
   const manifest = { build: null, listVersion, generated: review.generated, files: {} };
   let changed = false;
@@ -340,11 +355,12 @@ function main() {
 
   const hr = H.report;
   const holdLine = !hr.active ? 'hold: off' : `hold${dry ? ' (dry run, nothing written)' : ''}: ${hr.held} held` +
-    (hr.firstPass ? ` · first pass ${hr.firstPass}` : '') + ` · new this run ${hr.added} · released ${hr.released}` + (hr.gone ? ` · gone ${hr.gone}` : '');
+    (hr.firstPass ? ` · first pass ${hr.firstPass}` : '') + ` · new this run ${hr.added} · released ${hr.released}` + (hr.gone ? ` · gone ${hr.gone}` : '') +
+    (hr.outOfScope ? ` · out of scope ${hr.outOfScope}` : '') + ` · archived ${index.filter(e => e.a).length} (before ${scopeYear}, no specs)`;
   console.error(holdLine);
   console.log(holdLine);
   console.log(changed ? 'changed: true' : 'changed: false');
 }
 
 if (require.main === module) main();
-module.exports = { build, catalogID, stable, sha, coverCode, coreCode, vocabOf, applyHold, flagHeld };
+module.exports = { build, catalogID, stable, sha, coverCode, coreCode, vocabOf, applyHold, flagHeld, flagArchived, inScope, SCOPE_YEAR };
