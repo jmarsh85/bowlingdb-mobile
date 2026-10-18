@@ -41370,6 +41370,7 @@
  },
  {
   "c": null,
+  "co": "s",
   "cv": "S",
   "i": "hammer-fallout",
   "k": "hammer|fallout",
@@ -51570,6 +51571,8 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "i": "motiv-ascent-apex",
   "k": "motiv|ascentapex",
   "m": "Motiv",
@@ -57413,11 +57416,14 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "H",
   "h": 1,
   "i": "radical-prime-power-hitter",
   "k": "radical|primepowerhitter",
   "m": "Radical",
   "n": "(Prime) Power Hitter",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
