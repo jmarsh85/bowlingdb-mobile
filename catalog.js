@@ -36,7 +36,7 @@
 'use strict';
 
 /* v30.169: shown in the app header when it differs from the build's EXPECTED_CATALOG_JS */
-var CAT_VERSION  = 'v30.204';
+var CAT_VERSION  = 'v30.205';
 var CAT_BASE     = 'https://raw.githubusercontent.com/jmarsh85/bowlingdb-mobile/dist/';
 var CAT_DB       = 'BowlingDB_Catalog';
 var CAT_DB_VER   = 1;
@@ -1249,12 +1249,12 @@ function catWorkbenchOpen(opt) {
 }
 /* v30.204: one My balls entry in Settings for the three reviews of your own balls */
 function catMyBallsOpen() {
-  var item = function (t, sub, call) { return '<button class="btn btn-ghost" style="width:100%;text-align:left;margin-top:8px;padding:12px" onclick="closeModal();' + call + '"><div style="font-size:14px;font-weight:700;color:var(--t1)">' + t + '</div><div style="font-size:12px;color:var(--t3);margin-top:2px">' + sub + '</div></button>'; };
+  var item = function (t, sub, call) { return '<button class="btn btn-ghost" style="width:100%;text-align:left;margin-top:8px;padding:12px" onclick="' + call + '"><div style="font-size:14px;font-weight:700;color:var(--t1)">' + t + '</div><div style="font-size:12px;color:var(--t3);margin-top:2px">' + sub + '</div></button>'; };
   var bg = document.getElementById('modal-bg'), show = bg && bg.classList.contains('open') && root.swapModal ? root.swapModal : root.openModal;   // from Settings: swap, don't stack
   if (show) show('<div class="modal-title">My balls and the catalog</div>' +
     item('Review suggested matches', 'Link your balls to their catalog entries', 'catReviewOpen()') +
     item('Check linked balls', 'Links that may point at the wrong ball', 'catAuditOpen()') +
-    item('Review my specs', 'Your balls\u2019 specs next to the catalog\u2019s', 'catSpecReviewOpen()') +
+    item('Review my specs', 'Your balls\u2019 specs next to the catalog\u2019s', 'closeModal();setTimeout(catSpecReviewOpen,350)') +
     '<button class="btn btn-secondary" style="width:100%;margin-top:12px" onclick="closeModal()">Close</button>');
 }
 function catOldClose() { var el = document.getElementById('cat-old-ov'); if (el) el.parentNode.removeChild(el); }
@@ -2642,9 +2642,17 @@ function apApplyOverride(r, o) {
    No approved ball can exceed it, so a higher value is a source error
    (e.g. Track 300T 15 lb 0.090). Same value as the bridge GATES. */
 var DIFF_MAX = 0.060;
+/* v30.205 Pure: a release date as YYYY-MM-DD or YYYY-MM ("06-05-2024", "6/5/2024", "06-2021" were saved as typed) */
+function normReleased(v) {
+  var t = String(v || '').trim(), m;
+  if ((m = /^(\d{4})-(\d{1,2})(?:-(\d{1,2}))?$/.exec(t))) return m[1] + '-' + ('0' + m[2]).slice(-2) + (m[3] ? '-' + ('0' + m[3]).slice(-2) : '');
+  if ((m = /^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})$/.exec(t))) return m[3] + '-' + ('0' + m[1]).slice(-2) + '-' + ('0' + m[2]).slice(-2);
+  if ((m = /^(\d{1,2})[\/\-.](\d{4})$/.exec(t))) return m[2] + '-' + ('0' + m[1]).slice(-2);
+  return t;
+}
 function apOverrideFrom(form) {
   var o = {}, err = [];
-  ['coverName', 'coverType', 'finish', 'core', 'coreType', 'released'].forEach(function (k) { var v = String(form[k] || '').trim(); if (v) o[k] = v; });
+  ['coverName', 'coverType', 'finish', 'core', 'coreType', 'released'].forEach(function (k) { var v = String(form[k] || '').trim(); if (k === 'released') v = normReleased(v); if (v) o[k] = v; });
   var w = {};
   Object.keys(form.weights || {}).forEach(function (lb) {
     var x = form.weights[lb] || {}, y = {};
@@ -5344,7 +5352,7 @@ root._catAPI = { catLoad: catLoad, byIdIn: byIdIn, cleanName: cleanName, esc: es
   parseSpecText: parseSpecText, spReadClipboard: spReadClipboard, spPdfFileText: spPdfFileText, bowwwlLinks: bowwwlLinks, appBalls: appBalls,
   apToken: apToken, apReadOverrides: apReadOverrides, apReadStaged: apReadStaged, srvStagedRow: srvStagedRow, catDetailRaw: catDetailRaw, detAsStaged: detAsStaged,
   apApplyOverride: apApplyOverride, catCorrectFor: catCorrectFor, catCorrectWithParsed: catCorrectWithParsed, catSaveCorrection: catSaveCorrection,
-  brandSlug: brandSlug, catAddDetail: catAddDetail, AP_WEIGHTS: AP_WEIGHTS, version: CAT_VERSION }; root.catMyBallsOpen = catMyBallsOpen; root.catSaveCorrection = catSaveCorrection;
+  brandSlug: brandSlug, catAddDetail: catAddDetail, normReleased: normReleased, AP_WEIGHTS: AP_WEIGHTS, version: CAT_VERSION }; root.catMyBallsOpen = catMyBallsOpen; root.catSaveCorrection = catSaveCorrection;
 root.catOldSearch = catOldSearch; root.catOldClose = catOldClose; root.catAddBlank = catAddBlank; root.catAddManual = catAddManual;
 root.catSpecReviewTab = catSpecReviewTab; root.catMissingCorrect = catMissingCorrect; root.catMissingFilter = catMissingFilter; root.catMissingPage = catMissingPage; root._ms = { msRows: msRows, oldMatchScore: oldMatchScore };
 root.catHoldCorrect = catHoldCorrect; root.catCorrectFor = catCorrectFor;
