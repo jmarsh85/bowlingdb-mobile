@@ -276,16 +276,33 @@
  "storm-night-road": {
   "coverName": "ReX Pearl",
   "coverType": "Pearl Reactive",
-  "finish": "4K Fast",
+  "finish": "4k Fast",
+  "core": "Inverted Fe2",
   "coreType": "Symmetrical",
-  "released": "2022-09-23",
+  "released": "2022-09",
   "weights": {
+   "12": {
+    "RG": 2.65,
+    "Diff": 0.035
+   },
+   "13": {
+    "RG": 2.59,
+    "Diff": 0.045
+   },
+   "14": {
+    "RG": 2.58,
+    "Diff": 0.037
+   },
    "15": {
     "RG": 2.57,
     "Diff": 0.046
+   },
+   "16": {
+    "RG": 2.52,
+    "Diff": 0.058
    }
   },
-  "source": "other",
+  "source": "maker",
   "at": "2026-10-19"
  }
 }
