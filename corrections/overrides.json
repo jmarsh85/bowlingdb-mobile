@@ -272,5 +272,20 @@
   },
   "source": "other",
   "at": "2026-10-19"
+ },
+ "storm-night-road": {
+  "coverName": "ReX Pearl",
+  "coverType": "Pearl Reactive",
+  "finish": "4K Fast",
+  "coreType": "Symmetrical",
+  "released": "2022-09-23",
+  "weights": {
+   "15": {
+    "RG": 2.57,
+    "Diff": 0.046
+   }
+  },
+  "source": "other",
+  "at": "2026-10-19"
  }
 }
