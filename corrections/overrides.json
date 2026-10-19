@@ -256,5 +256,21 @@
   "released": "06-2021",
   "source": "maker",
   "at": "2026-10-18"
+ },
+ "storm-hy-road-hybrid": {
+  "coverName": "R2S Solid",
+  "coverType": "Solid",
+  "finish": "2000 Grit",
+  "core": "Inverted Fe2",
+  "coreType": "Symmetrical",
+  "released": "2019-10-15",
+  "weights": {
+   "15": {
+    "RG": 2.57,
+    "Diff": 0.046
+   }
+  },
+  "source": "other",
+  "at": "2026-10-19"
  }
 }
