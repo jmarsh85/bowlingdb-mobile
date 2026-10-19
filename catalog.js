@@ -36,7 +36,7 @@
 'use strict';
 
 /* v30.169: shown in the app header when it differs from the build's EXPECTED_CATALOG_JS */
-var CAT_VERSION  = 'v30.203';
+var CAT_VERSION  = 'v30.204';
 var CAT_BASE     = 'https://raw.githubusercontent.com/jmarsh85/bowlingdb-mobile/dist/';
 var CAT_DB       = 'BowlingDB_Catalog';
 var CAT_DB_VER   = 1;
@@ -1220,9 +1220,42 @@ function oldMatchScore(e, t) {
   var n = norm(cleanName(e.n)), full = norm(e.m + ' ' + cleanName(e.n));
   if (n === t) return 5;
   if (n.indexOf(t) === 0) return 4;
-  if ((' ' + n).indexOf(' ' + t) >= 0) return 3;
-  if (full.indexOf(t) === 0 || (' ' + full).indexOf(' ' + t) >= 0) return 2;
+  /* words keep their spaces here (norm drops them): "zone" starts a word in "Combat Zone" */
+  var words = cleanName(e.n).toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
+  if (words.some(function (w, i) { return norm(words.slice(i).join(' ')).indexOf(t) === 0; })) return 3;
+  if (full.indexOf(t) === 0) return 2;
   return 1;
+}
+/* v30.204 WB-3: the Catalog workbench lives in workbench.js (dev mode), loaded on first use */
+/* v30.204: Correct specs for a ball with a read already in hand (the workbench's Review): the editor opens,
+   then the Found on the page preview over it, as Paste page & fill does */
+function catCorrectWithParsed(id, parsed, after) {
+  return catCorrectFor(id, after).then(function (e) {
+    if (!e || !_apEdit) return e;
+    var g = function (k) { var el = document.getElementById(k); return el ? el.value : null; };
+    var rows = [['coverName', 'Coverstock', 'ape-coverName'], ['coverType', 'Cover type', 'ape-coverType'], ['finish', 'Factory finish', 'ape-finish'], ['core', 'Core', 'ape-core'],
+      ['coreType', 'Core type', 'ape-coreType'], ['released', 'Release date', 'ape-released']].map(function (a) { return { k: a[0], label: a[1], inputId: a[2], cur: g(a[2]) }; });
+    AP_WEIGHTS.forEach(function (w) { [['RG', 'RG'], ['Diff', 'Diff'], ['IntDiff', 'Int Diff']].forEach(function (a) { rows.push({ w: w, wk: a[0], label: w + ' lb ' + a[1], inputId: 'ape-' + w + '-' + a[0], cur: g('ape-' + w + '-' + a[0]) }); }); });
+    spOpen({ name: _apEdit.ballName, title: _apEdit.ballName, catalogId: id, rows: rows, after: function (n, pp) { if (n) { var so = document.getElementById('ape-source'); if (so) so.value = (pp && pp.source) || 'bowwwl'; } } }, parsed);
+    return e;
+  });
+}
+function catWorkbenchOpen(opt) {
+  if (typeof root.wbOpen === 'function') return root.wbOpen(opt);
+  var sc = document.createElement('script'); sc.src = 'workbench.js?v=' + encodeURIComponent(CAT_VERSION);
+  sc.onload = function () { if (typeof root.wbOpen === 'function') root.wbOpen(opt); else if (root.toast) root.toast('Workbench did not start'); };
+  sc.onerror = function () { if (root.toast) root.toast('Workbench unavailable: upload workbench.js next to index.html'); };
+  document.head.appendChild(sc);
+}
+/* v30.204: one My balls entry in Settings for the three reviews of your own balls */
+function catMyBallsOpen() {
+  var item = function (t, sub, call) { return '<button class="btn btn-ghost" style="width:100%;text-align:left;margin-top:8px;padding:12px" onclick="closeModal();' + call + '"><div style="font-size:14px;font-weight:700;color:var(--t1)">' + t + '</div><div style="font-size:12px;color:var(--t3);margin-top:2px">' + sub + '</div></button>'; };
+  var bg = document.getElementById('modal-bg'), show = bg && bg.classList.contains('open') && root.swapModal ? root.swapModal : root.openModal;   // from Settings: swap, don't stack
+  if (show) show('<div class="modal-title">My balls and the catalog</div>' +
+    item('Review suggested matches', 'Link your balls to their catalog entries', 'catReviewOpen()') +
+    item('Check linked balls', 'Links that may point at the wrong ball', 'catAuditOpen()') +
+    item('Review my specs', 'Your balls\u2019 specs next to the catalog\u2019s', 'catSpecReviewOpen()') +
+    '<button class="btn btn-secondary" style="width:100%;margin-top:12px" onclick="closeModal()">Close</button>');
 }
 function catOldClose() { var el = document.getElementById('cat-old-ov'); if (el) el.parentNode.removeChild(el); }
 function catAddBlank() {
@@ -3358,7 +3391,10 @@ function catCovToggle(b) { _cov.open[b] = !_cov.open[b]; covRender(); }
 function bowwwlSlug(t) { return String(t || '').toLowerCase().replace(/\+/g, ' plus').replace(/\binc\b\.?/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''); }
 function bowwwlLinks(brand, name) {
   var q = encodeURIComponent('site:bowwwl.com ' + brand + ' ' + name);
-  return { page: 'https://www.bowwwl.com/bowling-ball-database/' + bowwwlSlug(brand) + '/' + bowwwlSlug(name), search: 'https://www.google.com/search?q=' + q };
+  /* v30.204: the search link goes to the maker's own site (as Ball images' "maker" link), else the web */
+  var site = MAKER_SITE[brandSlug(brand)];
+  return { page: 'https://www.bowwwl.com/bowling-ball-database/' + bowwwlSlug(brand) + '/' + bowwwlSlug(name), search: 'https://www.google.com/search?q=' + q,
+    maker: 'https://www.google.com/search?q=' + encodeURIComponent(site ? 'site:' + site + ' ' + name : brand + ' ' + name + ' bowling ball specs'), makerSite: site || null };
 }
 
 /* ---------- correction sheet UI ---------- */
@@ -3556,7 +3592,7 @@ function spButtonsHTML(bw, pasteCall, makerUrl) {
     '<button style="' + BTN_P + 'flex:1;padding:10px;font-size:13px" onclick="' + pasteCall + '">2. Paste page &amp; fill</button></div>' +
     '<div style="font-size:11px;color:var(--t3);margin-top:4px;line-height:1.45">In Safari: long-press the page text, <b>Select All</b>, <b>Copy</b>, come back and tap 2. ' +
     (makerUrl ? '<a href="' + esc(makerUrl) + '" target="_blank" rel="noopener noreferrer" style="color:var(--teal)">Maker page \u2197</a> \u00b7 ' : '') +
-    '<a href="' + esc(bw.search) + '" target="_blank" rel="noopener noreferrer" style="color:var(--teal)">Search \u2197</a> \u00b7 ' +
+    '<a href="' + esc(bw.maker || bw.search) + '" target="_blank" rel="noopener noreferrer" style="color:var(--teal)">' + (bw.makerSite ? 'Maker site' : 'Search the web') + ' \u2197</a> \u00b7 ' +
     '<span onclick="catShortcutHelp()" style="color:var(--teal);cursor:pointer">Faster: the Shortcut</span></div>' +
     '<div style="display:flex;gap:6px;align-items:center;margin-top:6px"><button style="' + BTN_G + 'flex:1;padding:9px;font-size:12px" onclick="' + pdfCall + '">Read a saved page (PDF)</button>' +
     '<span onclick="catPdfHelp()" style="font-size:12px;color:var(--teal);cursor:pointer;white-space:nowrap">How?</span></div>';
@@ -3609,9 +3645,54 @@ var SP_LABELS = [
   ['released', /^(?:release\s*date|released|launch\s*date)/i]];
 var SP_NUM = /(?:^|[^\d.])([0-2]?\.\d{2,3})(?!\d)/;
 /* v30.201 maker pages: a label followed by a rating ("CORE (2)", Hammer) or a heading word ("CORE NUMBERS", Radical) is not a value */
-var SP_NOT_VALUE = /^(?:\(?\s*\d+(?:\.\d+)?\s*\)?|numbers|specs?|specifications|details|technology|info(?:rmation)?|stock|rating)$/i;
+var SP_NOT_VALUE = /^(?:\(?\s*\d+(?:\.\d+)?\s*\)?|numbers|specs?|specifications|details|technology|info(?:rmation)?|stock|rating|shape|name|type|bowling ball)$/i;   // v30.204: + BowlersMart's split labels
 /* v30.201: a weight-column table ("16 lb 15 lb 14 lb ..." then "RG 2.498 2.488 ...", Radical / Brunswick) */
 var SP_WCOL = /\b(1[0-6])\s*(?:#|lbs?\.?|pounds?)(?![a-z])/gi;
+/* v30.204 Pure: retailer spec tables whose label cell wraps around its value (BowlersMart):
+   "BOWLING BALL / Asymmetrical Core / CORE SHAPE", "RADIUS OF / GYRATION: RG | 2.50 / (15LB)",
+   "DIFFERENTIAL: DIFF / .058 / (15LB)", "MASS BIAS / .020 / STRENGTH". Rebuilt as plain "Label | value"
+   lines in the parser's own words, put first so they win; anything not a spec label is dropped. */
+function spCanon(t) { var L = String(t).toLowerCase(); return /core\s*(?:shape|type|symmetry|name)|weight\s*block|^core$|cover(?:stock)?(?:\s*(?:type|name))?$|mass\s*bias|int(?:ermediate)?\.?\s*diff|radius\s*of\s*gyration|\brg\b|diff|finish|release/.test(L); }
+function spWrappedRows(lines) {
+  /* only on a page laid out this way: labels split around values leave bare label pieces behind
+     ("BOWLING BALL", "RADIUS OF", "(15LB)"); a page with labels above values (Radical) never shows them */
+  var sig = lines.filter(function (l) { return /^(?:BOWLING BALL|BALL|RADIUS OF|\((?:1[0-6])\s*LBS?\))$/.test(l); }).length;
+  if (sig < 2) return [];
+  var caps = function (t) { return /[A-Z]/.test(t) && !/[a-z]/.test(t) && t.length <= 40 && !/^[\d.\s]+$/.test(t); };
+  var rows = [], P = [], V = [], emit = function (lab, vals) { rows.push({ lab: lab.join(' ').replace(/\s+/g, ' ').trim(), val: vals.join(' ').trim() }); P = []; V = []; };
+  lines.forEach(function (l) {
+    l = l.replace(/^BOWLING BALL\s*(?:\|\s*)?/, '').replace(/^BALL$/, '').trim(); if (!l) return;
+    var parts = l.split(/\s+\|\s+/), lab = null, val = null;
+    if (parts.length > 1 && caps(parts[0])) { lab = parts[0]; val = parts.slice(1).join(' '); }
+    else if (caps(l)) lab = l; else val = l;
+    if (lab && val != null) { if (P.length) emit(P.concat([lab]), V.concat([val])); else emit([lab], V.concat([val])); return; }
+    if (lab) {
+      if (/^\(.*\)$/.test(lab) && !P.length && !V.length && rows.length) { rows[rows.length - 1].lab += ' ' + lab; return; }
+      /* label above its value (Radical "COVERSTOCK / HK22C ... / COVER TYPE"): the label already reads whole */
+      if (P.length && V.length) { if (!/^\(.*\)$/.test(lab) && spCanon(P.join(' '))) { emit(P, V); P = [lab]; return; } emit(P.concat([lab]), V); return; }
+      if (!P.length && V.length) { emit([lab], V); return; }
+      P.push(lab); return;
+    }
+    V.push(val); if (V.length > 3) { P = []; V = []; }   // prose, not a table
+  });
+  var brand = (rows.filter(function (r) { return /^brand$/i.test(r.lab); })[0] || {}).val || '';
+  var strip = function (v) { var b = brand ? new RegExp('^' + brand.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\s+', 'i') : null; return b ? v.replace(b, '') : v; };
+  var out = [];
+  rows.forEach(function (r) {
+    var L = r.lab.toLowerCase(), v = r.val, w = /\((1[0-6])\s*lbs?\)/i.exec(r.lab), wp = w ? w[1] + ' lb ' : '';
+    if (!v) return;
+    if (/core\s*(?:shape|type|symmetry)/.test(L)) out.push('Core Type | ' + v);
+    else if (/core\s*name|weight\s*block/.test(L)) out.push('Core | ' + strip(v).replace(/\s+core$/i, ''));
+    else if (/cover(?:stock)?\s*type/.test(L)) out.push('Cover Type | ' + v);
+    else if (/cover(?:stock)?\s*name/.test(L)) out.push('Coverstock | ' + strip(v));
+    else if (/mass\s*bias|int(?:ermediate)?\.?\s*diff|psa/.test(L)) out.push(wp + 'Int Diff | ' + v);
+    else if (/radius\s*of\s*gyration|\brg\b/.test(L)) out.push(wp + 'RG | ' + v);
+    else if (/diff/.test(L)) out.push(wp + 'Diff | ' + v);
+    else if (/(?:surface|factory|box)\s*finish/.test(L)) out.push('Finish | ' + v);
+    else if (/release/.test(L)) out.push('Release Date | ' + v);
+  });
+  return out.length >= 3 ? out : [];   // a real spec table, not stray caps
+}
 function spWeightColumns(lines, out) {
   for (var i = 0; i < lines.length; i++) {
     var hd = lines[i].match(SP_WCOL);
@@ -3698,6 +3779,7 @@ function parseSpecText(text, weight, name) {
     if (slot[key] == null) { slot[key] = n; if (out.found.indexOf(k) < 0) out.found.push(k); }
   };
   spWeightColumns(lines, out);
+  lines = spWrappedRows(lines).concat(lines);   // v30.204
   var curW = null;   // v30.178: a "16 pounds" heading applies to the numbers under it (bowwwl)
   lines.forEach(function (l, i) {
     var wh = /^(1[0-6])\s*(?:#|lbs?\.?|pounds?)\s*(?:ball)?$/i.exec(l); if (wh) { curW = +wh[1]; return; }
@@ -3736,7 +3818,11 @@ function parseSpecText(text, weight, name) {
   if (name) { var f = foldName(name), all = foldName(text); out.nameSeen = !!f && all.indexOf(f) >= 0; }
   if (out.url) { var hst = ''; try { hst = new URL(out.url).host.replace(/^www\./, ''); } catch (e) {} out.host = hst;
     out.source = /bowwwl\.com$/.test(hst) ? 'bowwwl' : /storm|rotogrip|900global|brunswick|dv8|radical|hammer|ebonite|track|columbia300|motiv/.test(hst) ? 'maker' : 'other'; }
-  else if (out.pdf) { var mk = spMakerOf(text); if (mk) { out.source = 'maker'; out.host = mk; } }
+  else if (out.pdf) {   // only a saved page: a pasted bowwwl excerpt may name a maker
+    var rt = /\u00a9\s*bowlersmart|bowlersmart\.com|\bbowlingball\.com\b|\bbowling\.com\b/i.exec(text);   // v30.204: retailers are "other", named
+    if (rt && !/bowwwl/i.test(text)) { out.source = 'other'; out.host = /bowlersmart/i.test(rt[0]) ? 'bowlersmart.com' : /bowlingball/i.test(rt[0]) ? 'bowlingball.com' : 'bowling.com'; }
+    else { var mk = spMakerOf(text); if (mk) { out.source = 'maker'; out.host = mk; } }
+  }
   /* v30.203 WB-2: a value the page wrapped onto the next line ("500, 1000, 1500 Siaair / Factory" + "Compound").
      Only when it ends on a joiner and the next line is one or two plain words that are not a label. */
   ['finish', 'coverName', 'core'].forEach(function (k) {
@@ -3938,6 +4024,8 @@ function spReadPdf(done) {
   document.body.appendChild(inp);
   inp.click();
 }
+/* v30.204 WB-3: one file -> 'BDB-PDF\n' + text (the workbench picks several at once) */
+function spPdfFileText(f) { return f.arrayBuffer().then(pdfToText).then(function (t) { return t && t.trim() ? 'BDB-PDF\n' + t : ''; }); }
 var _spReader = null;   // null = clipboard; 'pdf' = saved page PDF
 function catSpApPdf() { _spReader = 'pdf'; try { catSpAp(); } finally { _spReader = null; } }
 function catSpBallPdf() { _spReader = 'pdf'; try { catSpBall(); } finally { _spReader = null; } }
@@ -4956,6 +5044,29 @@ function catRecordChanged(id) {
   try { if (document.getElementById('srv-ov')) srvRender(); } catch (e) {}
   try { var q = document.getElementById('cat-add-q'); if (document.getElementById('cat-add-results') && typeof catAddSearch === 'function') catAddSearch(q ? q.value : ''); } catch (e) {}
 }
+/* v30.204 WB-3: the save without the form, for the workbench's Save all found. form = the editor's
+   fields (coverName ... released, source, note, weights {lb: {RG, Diff, IntDiff}}); base0 = published
+   (as staged) or the bridge's row. Resolves { ok, msg } or { ok: false, msg }. */
+function catSaveCorrection(cid, form, base0) {
+  form = JSON.parse(JSON.stringify(form)); form.weights = form.weights || {};
+  AP_WEIGHTS.forEach(function (w) { form.weights[w] = form.weights[w] || {}; });
+  var staged0 = base0 || null;
+  var other = form.source === 'bowwwl' ? (_ovr && _ovr[cid]) : localOverrides()[cid];
+  var base = apApplyOverride(staged0, other), bs = (base && base.specs) || {};
+  ['coverName', 'coverType', 'finish', 'core', 'coreType', 'released'].forEach(function (k) { if (String(form[k] == null ? '' : form[k]).trim() === String(bs[k] == null ? '' : bs[k]).slice(0, k === 'released' ? 10 : 999)) form[k] = ''; });
+  var prevO = form.source === 'bowwwl' ? localOverrides()[cid] : (_ovr && _ovr[cid]), prevW = (prevO && prevO.weights) || {};
+  Object.keys(form.weights).forEach(function (w) { var x = form.weights[w], y = (bs.weights || {})[w] || {}, pw = prevW[w];
+    var same = function (k) { return String(x[k] == null ? '' : x[k]).trim() === '' || (y[k] != null && Number(x[k]) === Number(y[k])); };
+    var half = pw && (pw.RG == null || pw.Diff == null);
+    if (!half && ['RG', 'Diff', 'IntDiff'].every(same)) ['RG', 'Diff', 'IntDiff'].forEach(function (k) { x[k] = ''; }); });
+  var res = apOverrideFrom(form);
+  if (res.errors.length) return Promise.resolve({ ok: false, msg: res.errors.join('. ') });
+  var o = res.override;
+  if (!o.weights && !['coverName', 'coverType', 'finish', 'core', 'coreType', 'released'].some(function (k) { return o[k]; })) return Promise.resolve({ ok: false, msg: 'Nothing changed.' });
+  if (o.source === 'bowwwl') { o.at = new Date().toISOString().slice(0, 10); saveLocalOverride(cid, mergeOverrides(localOverrides()[cid], o)); catRecordChanged(cid); return Promise.resolve({ ok: true, msg: 'Saved on this phone (bowwwl)' }); }
+  return apSaveOverride(cid, o).then(function () { catRecordChanged(cid); return { ok: true, msg: 'Saved to the repo' }; },
+    function (e) { return { ok: false, msg: e.status ? 'GitHub ' + e.status : 'offline' }; });
+}
 function catApprovalsEditSave() {
   if (!_apEdit) return;
   var g = function (id) { var el = document.getElementById(id); return el ? el.value : ''; };
@@ -5223,6 +5334,17 @@ function catCompareAdd(x) {
 
 root.CATALOG_JS_VERSION = CAT_VERSION;
 root.catPasteWeights = catPasteWeights; root.catRecordChanged = catRecordChanged; root._wb2 = { parseWeightsText: parseWeightsText, apFieldSource: apFieldSource };
+root.catWorkbenchOpen = catWorkbenchOpen; root.catCorrectWithParsed = catCorrectWithParsed;
+/* v30.204 WB-3: what workbench.js uses (one place, so the internals stay private elsewhere) */
+root._catAPI = { catLoad: catLoad, byIdIn: byIdIn, cleanName: cleanName, esc: esc, jsq: jsq, norm: norm, thumbHTML: thumbHTML, overlay: overlay,
+  BTN_P: BTN_P, BTN_G: BTN_G, BACK: BACK, CHIP: CHIP, CHIP_T: CHIP_T, CHIP_G: CHIP_G,
+  catIsRejected: catIsRejected, catIsHeld: catIsHeld, catIsReleased: catIsReleased, rlLocal: rlLocal, rlSaveLocal: rlSaveLocal, rlQueueSync: rlQueueSync,
+  hlHasSpecs: hlHasSpecs, overrideFor: overrideFor, catImageStored: catImageStored, discontinuedOf: discontinuedOf,
+  stEntry: stEntry, stSet: stSet, stSaveLocal: stSaveLocal, stLocal: stLocal, stQueueSync: stQueueSync, stToday: stToday,
+  parseSpecText: parseSpecText, spReadClipboard: spReadClipboard, spPdfFileText: spPdfFileText, bowwwlLinks: bowwwlLinks, appBalls: appBalls,
+  apToken: apToken, apReadOverrides: apReadOverrides, apReadStaged: apReadStaged, srvStagedRow: srvStagedRow, catDetailRaw: catDetailRaw, detAsStaged: detAsStaged,
+  apApplyOverride: apApplyOverride, catCorrectFor: catCorrectFor, catCorrectWithParsed: catCorrectWithParsed, catSaveCorrection: catSaveCorrection,
+  brandSlug: brandSlug, catAddDetail: catAddDetail, AP_WEIGHTS: AP_WEIGHTS, version: CAT_VERSION }; root.catMyBallsOpen = catMyBallsOpen; root.catSaveCorrection = catSaveCorrection;
 root.catOldSearch = catOldSearch; root.catOldClose = catOldClose; root.catAddBlank = catAddBlank; root.catAddManual = catAddManual;
 root.catSpecReviewTab = catSpecReviewTab; root.catMissingCorrect = catMissingCorrect; root.catMissingFilter = catMissingFilter; root.catMissingPage = catMissingPage; root._ms = { msRows: msRows, oldMatchScore: oldMatchScore };
 root.catHoldCorrect = catHoldCorrect; root.catCorrectFor = catCorrectFor;
@@ -5265,7 +5387,7 @@ root._catStep5 = { norm: norm, modelKey: modelKey, lookupIn: lookupIn, searchIn:
                    buildOwnedBall: buildOwnedBall, ballFromSpecs: ballFromSpecs, fillPlan: fillPlan,
                    catSpecSource: catSpecSource, setFilled: function (f) { _filled = f; },
                    imgLinksFrom: imgLinksFrom, sheetState: function () { return _sheet; }, mergeOverrides: mergeOverrides, withLocalCorrection: withLocalCorrection, apApplyOverride: apApplyOverride, apOverrideFrom: apOverrideFrom, bowwwlLinks: bowwwlLinks, apStagedFor: apStagedFor, apAsDetail: apAsDetail, apRangeNotes: apRangeNotes, derivedCoverType: derivedCoverType, specGaps: specGaps, nearestWeight: nearestWeight, addListHTML: addListHTML, sourceForBrand: sourceForBrand, apParseIssue: apParseIssue, apPages: apPages, apApplyTicks: apApplyTicks, apConflict: apConflict, apNums: apNums,
-                   verifyPlan: verifyPlan, coreKeyOf: coreKeyOf, coreBase: coreBase, bowwwlCoreCandidates: bowwwlCoreCandidates, bowwwlImgCandidates: bowwwlImgCandidates, slugBw: slugBw, pdfItemsToLines: pdfItemsToLines, spMakerOf: spMakerOf, spWeightColumns: spWeightColumns, spLdLines: spLdLines, SHORTCUT_JS: SHORTCUT_JS, srvEditValue: srvEditValue, parseSpecText: parseSpecText, lkTabs: lkTabs, lkPasteValue: lkPasteValue, lkBallChanges: lkBallChanges, pageMismatch: pageMismatch, pasteLines: pasteLines, plausibleText: plausibleText, proseFields: proseFields, pgvClean: pgvClean, vocabMerge: vocabMerge, vocabSplit: vocabSplit, familyOf: familyOf, srvRows: srvRows, srvApply: srvApply, srvStagedRow: srvStagedRow, vfyPagesFor: vfyPagesFor, vfyEstimateFrom: vfyEstimateFrom, tagLine: tagLine, tagLines: tagLines, tagValueFor: tagValueFor, vfyPickRun: vfyPickRun, vfyClassify: vfyClassify, vfyCardHTML: vfyCardHTML, specMatch: specMatch, coreNameMatch: coreNameMatch, DIFF_MAX: DIFF_MAX, metricUnverified: metricUnverified, catSpecUnverified: catSpecUnverified,
+                   verifyPlan: verifyPlan, coreKeyOf: coreKeyOf, coreBase: coreBase, bowwwlCoreCandidates: bowwwlCoreCandidates, bowwwlImgCandidates: bowwwlImgCandidates, slugBw: slugBw, pdfItemsToLines: pdfItemsToLines, spMakerOf: spMakerOf, spWeightColumns: spWeightColumns, spWrappedRows: spWrappedRows, spLdLines: spLdLines, SHORTCUT_JS: SHORTCUT_JS, srvEditValue: srvEditValue, parseSpecText: parseSpecText, lkTabs: lkTabs, lkPasteValue: lkPasteValue, lkBallChanges: lkBallChanges, pageMismatch: pageMismatch, pasteLines: pasteLines, plausibleText: plausibleText, proseFields: proseFields, pgvClean: pgvClean, vocabMerge: vocabMerge, vocabSplit: vocabSplit, familyOf: familyOf, srvRows: srvRows, srvApply: srvApply, srvStagedRow: srvStagedRow, vfyPagesFor: vfyPagesFor, vfyEstimateFrom: vfyEstimateFrom, tagLine: tagLine, tagLines: tagLines, tagValueFor: tagValueFor, vfyPickRun: vfyPickRun, vfyClassify: vfyClassify, vfyCardHTML: vfyCardHTML, specMatch: specMatch, coreNameMatch: coreNameMatch, DIFF_MAX: DIFF_MAX, metricUnverified: metricUnverified, catSpecUnverified: catSpecUnverified,
                    metricScore: metricScore, parseFinish: parseFinish, rgBand: rgBand, diffBand: diffBand, coverClass: coverClass,
                    catMetric: catMetric, sheetHTML: sheetHTML, cmpColOwned: cmpColOwned, cmpColCatalog: cmpColCatalog, cmpRows: cmpRows,
                    cmpHTML: cmpHTML, cmpState: function () { return _cmp; }, setSheet: function (x) { _sheet = x; } };
