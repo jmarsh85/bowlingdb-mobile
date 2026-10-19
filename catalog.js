@@ -36,7 +36,7 @@
 'use strict';
 
 /* v30.169: shown in the app header when it differs from the build's EXPECTED_CATALOG_JS */
-var CAT_VERSION  = 'v30.202';
+var CAT_VERSION  = 'v30.203';
 var CAT_BASE     = 'https://raw.githubusercontent.com/jmarsh85/bowlingdb-mobile/dist/';
 var CAT_DB       = 'BowlingDB_Catalog';
 var CAT_DB_VER   = 1;
@@ -1204,13 +1204,25 @@ function catOldSearch(q) {
     var t = norm(q || '');
     if (t.replace(/\s/g, '').length < 2) { box.innerHTML = '<div style="font-size:13px;color:var(--t2);padding:14px 2px">Type at least 2 letters.</div>'; return; }
     var hit = rows.filter(function (e) { return e.a && !catIsRejected(e) && norm(e.m + ' ' + e.n).indexOf(t) >= 0; })
-      .sort(function (a, b) { return String(b.y || '').localeCompare(String(a.y || '')) || cleanName(a.n).localeCompare(cleanName(b.n)); });
+      .map(function (e) { return { e: e, sc: oldMatchScore(e, t) }; })
+      .sort(function (a, b) { return (b.sc - a.sc) || String(b.e.y || '').localeCompare(String(a.e.y || '')) || cleanName(a.e.n).localeCompare(cleanName(b.e.n)); })
+      .map(function (x) { return x.e; });
     box.innerHTML = hit.length ? hit.slice(0, 50).map(function (e) {
       return '<div onclick="catAddDetail(\'' + jsq(e.i) + '\')" style="display:flex;align-items:center;gap:12px;padding:10px 2px;border-bottom:1px solid var(--border1);cursor:pointer">' + thumbHTML(e, 40) +
         '<div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:600;color:var(--t1)">' + esc(cleanName(e.n)) + '</div><div style="font-size:12px;color:var(--t2)">' + esc(e.m) + (e.y ? ' \u00b7 ' + esc(e.y) : '') + ' \u00b7 older catalog</div></div></div>';
     }).join('') + (hit.length > 50 ? '<div style="font-size:12px;color:var(--t3);padding:12px 2px">' + (hit.length - 50) + ' more \u00b7 type to narrow</div>' : '')
       : '<div style="font-size:13px;color:var(--t2);padding:14px 2px">No older ball matches. Use Blank ball.</div>';
   });
+}
+/* v30.203 Pure: closest match first. Name is the query (5), starts with it (4), it starts at a word
+   in the name (3), brand + name starts with it (2), anywhere else (1, e.g. "t zone" inside "Combat Zone"). */
+function oldMatchScore(e, t) {
+  var n = norm(cleanName(e.n)), full = norm(e.m + ' ' + cleanName(e.n));
+  if (n === t) return 5;
+  if (n.indexOf(t) === 0) return 4;
+  if ((' ' + n).indexOf(' ' + t) >= 0) return 3;
+  if (full.indexOf(t) === 0 || (' ' + full).indexOf(' ' + t) >= 0) return 2;
+  return 1;
 }
 function catOldClose() { var el = document.getElementById('cat-old-ov'); if (el) el.parentNode.removeChild(el); }
 function catAddBlank() {
@@ -3103,7 +3115,7 @@ function catCorrectFor(id, after) {
     var st = apToken() ? apReadStaged().then(function (x) { return srvStagedRow(x, id); }, function () { return null; }) : Promise.resolve(null);
     var ov = apToken() ? apReadOverrides().catch(function () {}) : Promise.resolve();
     return Promise.all([raw, st, ov]).then(function (r) {
-      apEditOpen({ catalogId: id, title: cleanName(e.n), entry: e, base0: r[0] ? detAsStaged(r[0]) : r[1], origin: 'list', after: after || null });
+      apEditOpen({ catalogId: id, title: cleanName(e.n), entry: e, base0: r[0] ? detAsStaged(r[0]) : r[1], baseKind: r[0] ? 'published' : 'bridge', origin: 'list', after: after || null });
       return e;
     });
   });
@@ -3724,7 +3736,19 @@ function parseSpecText(text, weight, name) {
   if (name) { var f = foldName(name), all = foldName(text); out.nameSeen = !!f && all.indexOf(f) >= 0; }
   if (out.url) { var hst = ''; try { hst = new URL(out.url).host.replace(/^www\./, ''); } catch (e) {} out.host = hst;
     out.source = /bowwwl\.com$/.test(hst) ? 'bowwwl' : /storm|rotogrip|900global|brunswick|dv8|radical|hammer|ebonite|track|columbia300|motiv/.test(hst) ? 'maker' : 'other'; }
-  else if (out.pdf) { var mk = spMakerOf(text); if (mk) { out.source = 'maker'; out.host = mk; } }   // only a saved page: a pasted bowwwl excerpt may name a maker   // v30.201: a saved maker page (PDF) has no address; its footer names the maker
+  else if (out.pdf) { var mk = spMakerOf(text); if (mk) { out.source = 'maker'; out.host = mk; } }
+  /* v30.203 WB-2: a value the page wrapped onto the next line ("500, 1000, 1500 Siaair / Factory" + "Compound").
+     Only when it ends on a joiner and the next line is one or two plain words that are not a label. */
+  ['finish', 'coverName', 'core'].forEach(function (k) {
+    var v = out.fields[k]; if (!v || !/(?:[\/,&+]|\band)\s*\S*$/i.test(v)) return;
+    for (var i = 0; i < lines.length - 1; i++) {
+      if (lines[i].replace(/\s+/g, ' ').slice(-v.length).toLowerCase() !== v.toLowerCase()) continue;
+      var nx = lines[i + 1];
+      if (/^[A-Za-z][A-Za-z\-]*(?: [A-Za-z][A-Za-z\-]*)?$/.test(nx) && !SP_LABELS.some(function (x) { return x[1].test(nx); }) &&
+          !/^(weights?|warranty|level|colou?r|reaction|performance|lane|downloads|resources|retired|specifications)$/i.test(nx)) out.fields[k] = v + ' ' + nx;
+      break;
+    }
+  });   // only a saved page: a pasted bowwwl excerpt may name a maker   // v30.201: a saved maker page (PDF) has no address; its footer names the maker
   return out;
 }
 /* Clipboard read with a manual fallback box. done(text) */
@@ -3832,7 +3856,7 @@ function catSpAp() {
   var g = function (id) { var el = document.getElementById(id); return el ? el.value : null; };
   var rows = [['coverName', 'Coverstock', 'ape-coverName'], ['coverType', 'Cover type', 'ape-coverType'], ['finish', 'Factory finish', 'ape-finish'], ['core', 'Core', 'ape-core'],
     ['coreType', 'Core type', 'ape-coreType'], ['released', 'Release date', 'ape-released']].map(function (a) { return { k: a[0], label: a[1], inputId: a[2], cur: g(a[2]) }; });
-  [16, 15, 14, 13, 12].forEach(function (w) { [['RG', 'RG'], ['Diff', 'Diff'], ['IntDiff', 'Int Diff']].forEach(function (a) {
+  AP_WEIGHTS.forEach(function (w) { [['RG', 'RG'], ['Diff', 'Diff'], ['IntDiff', 'Int Diff']].forEach(function (a) {
     rows.push({ w: w, wk: a[0], label: w + ' lb ' + a[1], inputId: 'ape-' + w + '-' + a[0], cur: g('ape-' + w + '-' + a[0]) }); }); });
   (_spReader === 'pdf' ? spReadPdf : spReadClipboard)(function (text) {
     spOpen({ name: _apEdit.ballName, title: _apEdit.ballName, catalogId: _apEdit.catalogId, rows: rows, after: function (n, pp) {
@@ -4819,11 +4843,14 @@ function apEditOpen(ctx) {
   /* v30.173 CAT-NEW-7: type, or pick a value already in use */
   var inpP = function (id, v, ph) { return '<div style="display:flex;gap:6px;align-items:stretch"><div class="ape-f" style="flex:1">' + inp(id, v, ph).replace(/^<div class="ape-f">|<\/div>$/g, '') + '</div>' +
     '<button style="' + BTN_G + 'padding:0 12px;font-size:13px" onclick="catPickOpen(\'' + id + '\')" aria-label="Pick">\u25be</button></div>'; };
-  var lab = function (t) { return '<div style="font-size:11px;font-weight:700;color:var(--t3);margin:10px 0 4px;text-transform:uppercase;letter-spacing:.5px">' + t + '</div>'; };
-  var ws = [16, 15, 14, 13, 12];
+  var lab = function (t, k) { var sc = k ? apFieldSource(ctx.catalogId, ctx.base0, ctx.baseKind || (ctx.origin === 'ap' ? 'bridge' : 'published'), k) : '';
+    return '<div style="display:flex;align-items:baseline;gap:8px;margin:10px 0 4px"><div style="font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.5px">' + t + '</div>' +
+      (sc ? '<div style="font-size:11px;color:var(--t3)">' + esc(sc) + '</div>' : '') + '</div>'; };
+  var ws = AP_WEIGHTS;
   var wrow = function (w) { var x = (sp.weights || {})[w] || {};
     var c = function (k) { return '<input id="ape-' + w + '-' + k + '" inputmode="decimal" class="bdet-field-input" value="' + esc(x[k] == null ? '' : x[k]) + '" style="width:100%;box-sizing:border-box;font-size:14px;padding:6px">'; };
-    return '<tr data-w="' + w + '"><td style="color:var(--t2);font-size:13px;padding:3px 4px 3px 0">' + w + ' lb</td><td class="ape-f" style="padding:3px">' + c('RG') + '</td><td class="ape-f" style="padding:3px">' + c('Diff') + '</td><td class="ape-f" style="padding:3px">' + c('IntDiff') + '</td></tr>'; };
+    var wsrc = apFieldSource(ctx.catalogId, ctx.base0, ctx.baseKind || (ctx.origin === 'ap' ? 'bridge' : 'published'), 'w', w);
+    return '<tr data-w="' + w + '"><td style="color:var(--t2);font-size:13px;padding:3px 4px 3px 0;white-space:nowrap">' + w + ' lb' + (wsrc ? '<div style="font-size:10px;color:var(--t3)">' + esc(wsrc) + '</div>' : '') + '</td><td class="ape-f" style="padding:3px">' + c('RG') + '</td><td class="ape-f" style="padding:3px">' + c('Diff') + '</td><td class="ape-f" style="padding:3px">' + c('IntDiff') + '</td></tr>'; };
   var ov = overlay('ap-edit-ov', 920);
   ov.innerHTML = '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 8px"><button style="' + BACK + '" onclick="catApprovalsEditClose()">‹</button>' +
     '<div style="flex:1"><div style="font-size:17px;font-weight:800;color:var(--t1)">Correct specs</div><div style="font-size:11px;color:var(--t3)">' + esc(ctx.title) + ' · USBC ' + esc(ctx.catalogId) + '</div></div></div>' +
@@ -4834,14 +4861,16 @@ function apEditOpen(ctx) {
     '<div style="font-size:11px;color:var(--t3);margin-top:4px;line-height:1.45">Values filled from a paste make this a bowwwl correction (kept on this device). <span onclick="catPasteOpen()" style="color:var(--teal);cursor:pointer">Pick by hand instead</span></div>' +
     (_mm ? '<div style="font-size:12px;color:var(--gold);line-height:1.5;margin-top:10px">The maker page read was \u201c' + esc(_mm.page) + '\u201d, not \u201c' + esc(_mm.ball) + '\u201d: it may be a sibling ball, so its values may be wrong.</div>' : '') +
     tagPanelHTML(r && r.rawText, r && r.page) +
-    lab('Coverstock') + inpP('ape-coverName', sp.coverName, 'e.g. R2S Pearl Reactive') +
-    lab('Cover type') + inpP('ape-coverType', sp.coverType, 'e.g. Solid Reactive') +
-    lab('Factory finish') + inpP('ape-finish', sp.finish, 'e.g. 2000 Abralon') +
-    lab('Core') + inpP('ape-core', sp.core) +
-    lab('Core type') + '<div class="ape-f"><select id="ape-coreType" class="bdet-field-input" style="width:100%;font-size:15px"><option value=""' + (!sp.coreType ? ' selected' : '') + '>—</option><option' + (/^sym/i.test(sp.coreType || '') ? ' selected' : '') + '>Symmetrical</option><option' + (/asym/i.test(sp.coreType || '') ? ' selected' : '') + '>Asymmetrical</option></select></div>' +
-    lab('Release date') + inp('ape-released', sp.released ? String(sp.released).slice(0, 10) : '', 'YYYY-MM-DD') +
+    lab('Coverstock', 'coverName') + inpP('ape-coverName', sp.coverName, 'e.g. R2S Pearl Reactive') +
+    lab('Cover type', 'coverType') + inpP('ape-coverType', sp.coverType, 'e.g. Solid Reactive') +
+    lab('Factory finish', 'finish') + inpP('ape-finish', sp.finish, 'e.g. 2000 Abralon') +
+    lab('Core', 'core') + inpP('ape-core', sp.core) +
+    lab('Core type', 'coreType') + '<div class="ape-f"><select id="ape-coreType" class="bdet-field-input" style="width:100%;font-size:15px"><option value=""' + (!sp.coreType ? ' selected' : '') + '>—</option><option' + (/^sym/i.test(sp.coreType || '') ? ' selected' : '') + '>Symmetrical</option><option' + (/asym/i.test(sp.coreType || '') ? ' selected' : '') + '>Asymmetrical</option></select></div>' +
+    lab('Release date', 'released') + inp('ape-released', sp.released ? String(sp.released).slice(0, 10) : '', 'YYYY-MM-DD') +
     lab('RG / Diff / Int Diff by weight') +
     '<table style="width:100%;border-collapse:collapse"><tr style="font-size:11px;color:var(--t3)"><td></td><td>RG</td><td>Diff</td><td>Int</td></tr>' + ws.map(wrow).join('') + '</table>' +
+    '<button style="' + BTN_G + 'width:100%;padding:10px;font-size:13px;margin-top:6px" onclick="catPasteWeights()">Paste weights</button>' +
+    '<div style="font-size:11px;color:var(--t3);margin-top:4px;line-height:1.45">Copy a weight table (from a page, or from a picture: open it, long-press the text, Copy), then tap Paste weights. You see what it read before anything fills in.</div>' +
     lab('Source of this correction') + '<select id="ape-source" class="bdet-field-input" style="width:100%;font-size:15px">' +
       '<option value="maker">Maker spec sheet / page</option><option value="bowwwl">bowwwl.com (personal use)</option><option value="other">Other</option></select>' +
     lab('Note') + inp('ape-note', '', 'e.g. site shows 0.090, sheet PDF says 0.029') +
@@ -4855,18 +4884,84 @@ function apEditOpen(ctx) {
   ov.addEventListener('click', tagFieldTap, true);
 }
 function apEditDone(msg) {
-  var origin = _apEdit && _apEdit.origin, after = _apEdit && _apEdit.after;
+  var origin = _apEdit && _apEdit.origin, after = _apEdit && _apEdit.after, rid = _apEdit && _apEdit.catalogId;
   catApprovalsEditClose();
+  if (rid) catRecordChanged(rid);
   if (origin === 'sheet') { fixAfterEdit(); } else if (origin === 'list') { if (after) try { after(); } catch (e) {} } else apRender();
   if (msg && root.toast) root.toast(msg);
 }
 function catApprovalsEditClose() { var el = document.getElementById('ap-edit-ov'); if (el) el.parentNode.removeChild(el); _apEdit = null; }
+var AP_WEIGHTS = [16, 15, 14, 13, 12, 11, 10];   // v30.203 WB-2: every weight the card shows
+/* v30.203 WB-2 Pure-ish: where a field's value comes from, for the editor's labels. A correction on this
+   phone wins over one in the repo, which wins over the base (published, or what the bridge read). */
+function apFieldSource(id, base0, baseKind, k, w) {
+  var loc = localOverrides()[id] || null, rep = (_ovr && _ovr[id]) || null;
+  var has = function (o) { if (!o) return false; if (k === 'w') { var x = (o.weights || {})[w]; return !!x && Object.keys(x).some(function (q) { return x[q] != null && x[q] !== ''; }); } return o[k] != null && o[k] !== ''; };
+  var who = function (o) { return o.source === 'bowwwl' ? 'bowwwl' : o.source === 'maker' ? 'maker' : 'you'; };
+  if (has(loc)) return who(loc) + ' \u00b7 this phone';
+  if (has(rep)) return who(rep) + ' \u00b7 repo';
+  var sp = (base0 && base0.specs) || {};
+  if (has(sp)) return baseKind === 'bridge' ? 'read by the bridge' : 'published';
+  return '';
+}
+/* v30.203 WB-2 Pure: weights from any pasted table: labelled rows, column tables (the spec parser), and
+   bare rows from Live Text ("16 lb 2.510 0.048 0.015", or a weight row over RG / Diff / Int rows) */
+function parseWeightsText(text) {
+  var p = { weights: {} }, lines = String(text || '').replace(/\r/g, '').split('\n').map(function (l) { return l.replace(/\t/g, ' ').trim(); }).filter(Boolean);
+  var put = function (w, k, v) { var lim = { RG: [2.30, 2.90], Diff: [0, DIFF_MAX], IntDiff: [0, 0.040] }[k]; if (!(v >= lim[0] && v <= lim[1])) return;
+    var sl = p.weights[w] = p.weights[w] || {}; if (sl[k] == null) sl[k] = v; };
+  var num = function (t) { return Number(t.charAt(0) === '.' ? '0' + t : t); };
+  var classify = function (ns, w) {   // one weight's numbers in order: the RG, then Diff, then Int Diff
+    var rg = ns.filter(function (n) { return n >= 2.30 && n <= 2.90; })[0], rest = ns.filter(function (n) { return n < 1; });
+    if (rg != null) put(w, 'RG', rg); if (rest[0] != null) put(w, 'Diff', rest[0]); if (rest[1] != null) put(w, 'IntDiff', rest[1]);
+  };
+  lines.forEach(function (l) {   // "16 lb 2.510 0.048 0.015" or "16 | 2.51 | .048"
+    var m = /^(1[0-6])\s*(?:#|lbs?\.?|pounds?)?\s*[|:\-\u2013]?\s*((?:[0-2]?\.\d{2,3}[\s|,]*){2,3})$/i.exec(l);
+    if (m) classify((m[2].match(/[0-2]?\.\d{2,3}/g) || []).map(num), parseInt(m[1], 10));
+  });
+  for (var i = 0; i < lines.length; i++) {   // "16 15 14 13 12" then rows of numbers, one per column
+    var ws = lines[i].replace(/^(?:weights?|lbs?|pounds)\b\s*[:|]?\s*/i, '').split(/[\s|,]+/).filter(Boolean);
+    if (ws.length < 2 || !ws.every(function (x) { return /^(1[0-6])(?:#|lbs?\.?)?$/i.test(x); })) continue;
+    var cols = ws.map(function (x) { return parseInt(x, 10); }), rowsN = [];
+    for (var j = i + 1; j < Math.min(lines.length, i + 5); j++) {
+      var ns = (lines[j].replace(/^[a-z][a-z ]*\.?\s*[:|]?/i, '').match(/[0-2]?\.\d{2,3}/g) || []).map(num);
+      if (ns.length === cols.length) rowsN.push({ label: lines[j], ns: ns });
+    }
+    rowsN.forEach(function (r, ri) {
+      var k = /int|mass|psa/i.test(r.label) ? 'IntDiff' : /diff/i.test(r.label) ? 'Diff' : /rg|radius/i.test(r.label) ? 'RG' : null;
+      if (!k) k = r.ns.every(function (n) { return n >= 2.30; }) ? 'RG' : rowsN.filter(function (x, xi) { return xi < ri && x.ns.every(function (n) { return n < 1; }); }).length ? 'IntDiff' : 'Diff';
+      r.ns.forEach(function (n, ci) { put(cols[ci], k, n); });
+    });
+  }
+  /* nothing in those shapes: the spec parser (labelled rows, "16 lb 15 lb" tables, per-weight lines) */
+  if (!Object.keys(p.weights).length) p.weights = parseSpecText(text, 15, '').weights || {};
+  return { fields: {}, weights: p.weights, found: Object.keys(p.weights).length ? ['rg'] : [], source: null };
+}
+function catPasteWeights() {
+  if (!_apEdit) return;
+  var g = function (id) { var el = document.getElementById(id); return el ? el.value : null; }, rows = [];
+  AP_WEIGHTS.forEach(function (w) { [['RG', 'RG'], ['Diff', 'Diff'], ['IntDiff', 'Int Diff']].forEach(function (a) {
+    rows.push({ w: w, wk: a[0], label: w + ' lb ' + a[1], inputId: 'ape-' + w + '-' + a[0], cur: g('ape-' + w + '-' + a[0]) }); }); });
+  spReadClipboard(function (text) {
+    var p = parseWeightsText(text);
+    if (!Object.keys(p.weights).length) { if (root.toast) root.toast('No weights found in what you copied'); return; }
+    spOpen({ name: _apEdit.ballName, title: _apEdit.ballName + ' \u00b7 weights', catalogId: _apEdit.catalogId, rows: rows }, p);
+  });
+}
+/* v30.203 WB-2: after a correction is saved, every open view of that ball shows it */
+function catRecordChanged(id) {
+  if (typeof document === 'undefined') return;
+  try { if (_sheet && _sheet.id === id && document.getElementById('cat-sheet-ov')) { _sheet.detail = sheetDetail(id, _sheet.raw); renderSheet(); } } catch (e) {}
+  try { if (document.getElementById('hold-ov')) hlPaint(); } catch (e) {}
+  try { if (document.getElementById('srv-ov')) srvRender(); } catch (e) {}
+  try { var q = document.getElementById('cat-add-q'); if (document.getElementById('cat-add-results') && typeof catAddSearch === 'function') catAddSearch(q ? q.value : ''); } catch (e) {}
+}
 function catApprovalsEditSave() {
   if (!_apEdit) return;
   var g = function (id) { var el = document.getElementById(id); return el ? el.value : ''; };
   var form = { coverName: g('ape-coverName'), coverType: g('ape-coverType'), finish: g('ape-finish'), core: g('ape-core'), coreType: g('ape-coreType'), released: g('ape-released'),
                source: g('ape-source'), note: g('ape-note'), weights: {} };
-  [16, 15, 14, 13, 12].forEach(function (w) { form.weights[w] = { RG: g('ape-' + w + '-RG'), Diff: g('ape-' + w + '-Diff'), IntDiff: g('ape-' + w + '-IntDiff') }; });
+  AP_WEIGHTS.forEach(function (w) { form.weights[w] = { RG: g('ape-' + w + '-RG'), Diff: g('ape-' + w + '-Diff'), IntDiff: g('ape-' + w + '-IntDiff') }; });
   /* Only what differs from the baseline is stored. The baseline includes the
      OTHER store's corrections, so a bowwwl value shown in the form is never
      saved to the repo as a maker correction, and repo values are not copied
@@ -5127,8 +5222,9 @@ function catCompareAdd(x) {
 
 
 root.CATALOG_JS_VERSION = CAT_VERSION;
+root.catPasteWeights = catPasteWeights; root.catRecordChanged = catRecordChanged; root._wb2 = { parseWeightsText: parseWeightsText, apFieldSource: apFieldSource };
 root.catOldSearch = catOldSearch; root.catOldClose = catOldClose; root.catAddBlank = catAddBlank; root.catAddManual = catAddManual;
-root.catSpecReviewTab = catSpecReviewTab; root.catMissingCorrect = catMissingCorrect; root.catMissingFilter = catMissingFilter; root.catMissingPage = catMissingPage; root._ms = { msRows: msRows };
+root.catSpecReviewTab = catSpecReviewTab; root.catMissingCorrect = catMissingCorrect; root.catMissingFilter = catMissingFilter; root.catMissingPage = catMissingPage; root._ms = { msRows: msRows, oldMatchScore: oldMatchScore };
 root.catHoldCorrect = catHoldCorrect; root.catCorrectFor = catCorrectFor;
 root.catHoldOpen = catHoldOpen; root.catHoldClose = catHoldClose; root.catHoldShow = catHoldShow; root.catHoldFilter = catHoldFilter; root.catHoldPage = catHoldPage; root.catHoldSel = catHoldSel; root.catHoldApprove = catHoldApprove; root.catHoldSend = catHoldSend; root.catIsHeld = catIsHeld; root._hold = { hlRows: hlRows, hlHasSpecs: hlHasSpecs, rlMerge: rlMerge };
 root.catBackupOpen = catBackupOpen; root.catBackupMake = catBackupMake; root.catBackupShare = catBackupShare; root.catBackupRestore = catBackupRestore; root.catBackupStatus = catBackupStatus; root.catBackupBuild = catBackupBuild; root.catBackupMerge = catBackupMerge;
