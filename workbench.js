@@ -9,7 +9,7 @@
    Uses catalog.js through root._catAPI only. Design: DESIGN_add_ball_flow sections 50-55. */
 (function (root) {
   'use strict';
-  var WB_VERSION = 'v30.205';
+  var WB_VERSION = 'v30.206';
   var A = root._catAPI;
   if (!A) { if (root.toast) root.toast('Workbench needs catalog.js ' + WB_VERSION); return; }
   var esc = A.esc, jsq = A.jsq, norm = A.norm, cleanName = A.cleanName;
@@ -18,6 +18,15 @@
   var GROUPS = [['Brunswick', ['Brunswick', 'DV8', 'Radical', 'Ebonite', 'Hammer', 'Columbia 300', 'Track']], ['Storm', ['Storm', 'Roto Grip', '900 Global']]];
   var REQ = [['coverName', 'coverstock'], ['coverType', 'cover type'], ['finish', 'finish'], ['core', 'core'], ['coreType', 'core type'], ['released', 'release date']];
   var _wb = { tab: 'specs', group: '', brand: '', year: '', state: '', q: '', page: 0, sel: {}, found: {}, det: {}, staged: null, busy: '' };
+
+  /* ---------- v30.206 WB-4: change log with undo (this phone; the newest 60 changes) ----------
+     Each bulk change records what it replaced: status entries, releases, corrections (phone or repo),
+     region tags, picture links. Undo puts those back (and syncs, as the change did). */
+  var LOG_KEY = 'bowlingdb_catalog_log';
+  function logAll() { try { return JSON.parse(localStorage.getItem(LOG_KEY) || '[]') || []; } catch (e) { return []; } }
+  function logSave(l) { try { localStorage.setItem(LOG_KEY, JSON.stringify(l.slice(0, 60))); } catch (e) {} }
+  function logAdd(kind, label, items) { if (!items.length) return; var l = logAll(); l.unshift({ id: String(Date.now()) + Math.floor(Math.random() * 1000), at: new Date().toISOString(), kind: kind, label: label, items: items }); logSave(l); }
+  function cp(x) { return x == null ? null : JSON.parse(JSON.stringify(x)); }
 
   /* ---------- pure ---------- */
   function groupOf(m) {
@@ -72,6 +81,7 @@
       if (_wb.brand && e.m !== _wb.brand) return false;
       if (_wb.year && (_wb.year === 'older' ? parseInt(e.y, 10) >= 2021 : String(e.y) !== _wb.year)) return false;
       if (q && norm(e.m + ' ' + e.n).indexOf(q) < 0) return false;
+      if (_wb.region) { var rg = A.regionOf(e); if (_wb.region === 'us' ? !!rg : _wb.region === 'intl' ? !rg : rg !== _wb.region) return false; }
       return passState(e);
     });
     return list.sort(function (a, b) { return ((own[b.i] ? 1 : 0) - (own[a.i] ? 1 : 0)) || ((b.h === 2 ? 1 : 0) - (a.h === 2 ? 1 : 0)) || String(b.y || '').localeCompare(String(a.y || '')) || String(a.m).localeCompare(String(b.m)) || cleanName(a.n).localeCompare(cleanName(b.n)); });
@@ -100,13 +110,17 @@
     var st = specState(e), pic = !!A.catImageStored(e.i), stat = statusOf(e), d = _wb.det[e.i], f = _wb.found[e.i], on = !!_wb.sel[e.i];
     var sc = { complete: 'var(--teal)', partial: 'var(--gold)', waiting: '#7aa7ff', none: 'var(--t3)' }[st];
     var meta = '<div style="font-size:11px;color:var(--t3);margin-top:2px">' + dot('specs ' + st, sc) + ' \u00b7 ' + dot(pic ? 'picture' : 'no picture', pic ? 'var(--teal)' : 'var(--t3)') + ' \u00b7 ' + esc(stat) + '</div>';
-    var chips = (own[e.i] ? '<span style="' + A.CHIP_T + '">YOURS</span>' : '') + (A.catIsHeld(e) ? '<span style="' + A.CHIP_G + '">' + (e.h === 2 ? 'NEW' : 'HELD') + '</span>' : '');
+    var rgn = A.regionOf(e);
+    var chips = (own[e.i] ? '<span style="' + A.CHIP_T + '">YOURS</span>' : '') + (A.catIsHeld(e) ? '<span style="' + A.CHIP_G + '">' + (e.h === 2 ? 'NEW' : 'HELD') + '</span>' : '') +
+      (rgn ? '<span style="' + A.CHIP + 'color:#7aa7ff;border:1px solid rgba(122,167,255,0.45)">' + esc(rgn.toUpperCase()) + '</span>' : '');
     var extra = '';
     if (_wb.tab === 'specs') {
       var bw = A.bowwwlLinks(e.m, cleanName(e.n)), a = function (u, t) { return '<a href="' + esc(u) + '" target="_blank" rel="noopener noreferrer" style="color:var(--teal);text-decoration:none">' + t + '</a>'; };
       extra = (d && d.miss.length ? '<div style="font-size:12px;color:var(--gold);margin-top:4px">needs ' + esc(d.miss.join(', ')) + '</div>' : '') +
         (f ? '<div style="display:flex;align-items:center;gap:8px;margin-top:6px;padding:7px 9px;border-radius:9px;background:var(--bg2);border:1px solid ' + (f.nameSeen === false ? 'var(--gold)' : 'rgba(0,217,217,0.3)') + '">' +
-          '<div style="flex:1;min-width:0;font-size:12px;color:var(--t1);line-height:1.4">' + esc(foundLine(f)) + (f.warn ? '<div style="color:var(--gold)">' + esc(f.warn) + '</div>' : '') + (f.nameSeen === false ? '<div style="color:var(--gold)">the page doesn\u2019t name this ball: check it (not in Save all)</div>' : '') + '</div>' +
+          '<div style="flex:1;min-width:0;font-size:12px;color:var(--t1);line-height:1.4">' + esc(foundLine(f)) + (f.warn ? '<div style="color:var(--gold)">' + esc(f.warn) + '</div>' : '') +
+          (f.retired && statusOf(e) !== 'discontinued' && !f.retiredDone ? '<div style="color:var(--gold)">the page says it\u2019s discontinued \u00b7 <span onclick="wbMarkDisc(\'' + jsq(e.i) + '\')" style="color:var(--teal);cursor:pointer">Mark discontinued</span></div>' : '') +
+          (f.region && rgn !== f.region ? '<div style="color:#7aa7ff">the page says ' + esc(f.region) + ' release \u00b7 <span onclick="wbTagRegion(\'' + jsq(e.i) + '\',\'' + jsq(f.region) + '\')" style="color:var(--teal);cursor:pointer">Tag it</span></div>' : '') + (f.nameSeen === false ? '<div style="color:var(--gold)">the page doesn\u2019t name this ball: check it (not in Save all)</div>' : '') + '</div>' +
           '<button style="' + A.BTN_P + 'padding:6px 9px;font-size:12px" onclick="wbReview(\'' + jsq(e.i) + '\')">Review</button><button style="' + A.BTN_G + 'padding:6px 9px;font-size:12px" onclick="wbDrop(\'' + jsq(e.i) + '\')">\u2715</button></div>' : '') +
         '<div style="display:flex;align-items:center;gap:6px;margin-top:6px;flex-wrap:wrap"><button style="' + A.BTN_G + 'padding:6px 10px;font-size:12px" onclick="wbPaste(\'' + jsq(e.i) + '\')">Paste</button>' +
         '<button style="' + A.BTN_G + 'padding:6px 10px;font-size:12px" onclick="wbPdf(\'' + jsq(e.i) + '\')">PDF</button>' +
@@ -151,12 +165,12 @@
       var nSel = Object.keys(_wb.sel).length, nFound = Object.keys(_wb.found).filter(function (id) { return _wb.found[id].nameSeen !== false; }).length;
       var bar = '';
       if (_wb.tab === 'specs') bar = '<button onclick="wbPdfs()" style="' + A.BTN_G + 'flex:1;padding:10px;font-size:13px">Pick PDFs</button><button id="wb-saveall" onclick="wbSaveAll()" ' + (nFound ? '' : 'disabled ') + 'style="' + A.BTN_P + 'flex:1;padding:10px;font-size:13px;' + (nFound ? '' : 'opacity:.45') + '">Save all found (' + nFound + ')</button>';
-      else if (_wb.tab === 'pictures') bar = '<button onclick="wbPictureTool()" style="' + A.BTN_P + 'flex:1;padding:10px;font-size:13px">Open the picture tool</button>';
-      else if (_wb.tab === 'status') bar = ['discontinue', 'reject', 'restore'].map(function (k) { return '<button onclick="wbStatus(\'' + k + '\')" ' + (nSel ? '' : 'disabled ') + 'style="' + (k === 'reject' ? A.BTN_G + 'color:var(--red);' : A.BTN_G) + 'flex:1;padding:10px 4px;font-size:12px;' + (nSel ? '' : 'opacity:.45') + '">' + { discontinue: 'Discontinue', reject: 'Reject', restore: 'Restore' }[k] + ' ' + nSel + '</button>'; }).join('');
+      else if (_wb.tab === 'pictures') bar = '<button onclick="wbCheckLinks()" style="' + A.BTN_G + 'flex:1;padding:10px;font-size:13px">Check picture links</button><button onclick="wbPictureTool()" style="' + A.BTN_P + 'flex:1;padding:10px;font-size:13px">Open the picture tool</button>';
+      else if (_wb.tab === 'status') bar = '<button onclick="wbRegionAsk()" ' + (nSel ? '' : 'disabled ') + 'style="' + A.BTN_G + 'flex:1;padding:10px 4px;font-size:12px;' + (nSel ? '' : 'opacity:.45') + '">Region</button>' + ['discontinue', 'reject', 'restore'].map(function (k) { return '<button onclick="wbStatus(\'' + k + '\')" ' + (nSel ? '' : 'disabled ') + 'style="' + (k === 'reject' ? A.BTN_G + 'color:var(--red);' : A.BTN_G) + 'flex:1;padding:10px 4px;font-size:12px;' + (nSel ? '' : 'opacity:.45') + '">' + { discontinue: 'Discontinue', reject: 'Reject', restore: 'Restore' }[k] + ' ' + nSel + '</button>'; }).join('');
       else bar = '<button onclick="wbSelectReady()" style="' + A.BTN_G + 'flex:1;padding:10px;font-size:13px">Tick all ready</button><button onclick="wbRelease()" ' + (nSel ? '' : 'disabled ') + 'style="' + A.BTN_P + 'flex:1;padding:10px;font-size:13px;' + (nSel ? '' : 'opacity:.45') + '">Release ' + nSel + '</button>';
       var help = { specs: 'Held balls that still need specs. Paste or PDF on a row reads a page for that ball; <b>Pick PDFs</b> takes several saved pages at once and puts each on its ball. Check a row\u2019s read with Review, then <b>Save all found</b>. Tap a ball to edit it; saving opens the next one.',
-        pictures: 'Balls with no cover picture saved on this phone. The picture tool does the work (Find, Paste, Photo, Check bowwwl for all, Save all found).',
-        status: 'Tick balls to discontinue, reject (needs a reason) or restore. You see what will change before it does; balls you own are never changed in bulk.',
+        pictures: 'Balls with no cover picture saved on this phone. The picture tool does the work (Find, Paste, Photo, Check bowwwl for all, Save all found). <b>Check picture links</b> loads every saved link and offers to clear the ones that no longer load.',
+        status: 'Tick balls to discontinue, reject (needs a reason), restore, or set their <b>Region</b>. You see what will change before it does; balls you own are never changed in bulk. Every change can be undone: More \u203a Change log.',
         release: 'Held balls. A ball is ready with complete specs and a cover picture on this phone. Released balls show in Add a Ball here at once, and for everyone after the next catalog refresh.' }[_wb.tab];
       ov.innerHTML = '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 6px"><button style="' + A.BACK + '" onclick="wbClose()">\u2039</button>' +
         '<div style="flex:1;min-width:0"><div style="font-size:17px;font-weight:800;color:var(--t1)">Catalog workbench</div><div style="font-size:11px;color:var(--t3)">2021 and newer, plus yours \u00b7 ' + esc(_wb.busy || 'dev mode') + '</div></div>' +
@@ -167,7 +181,8 @@
           sel('wb-b', _wb.brand, [['', _wb.group ? 'All ' + _wb.group : 'Brand']].concat(Object.keys(brands).sort().map(function (b) { return [b, b]; })), 'wbBrand') + '</div>' +
         '<div style="display:flex;gap:6px;padding:0 16px 6px">' + sel('wb-y', _wb.year, [['', 'Any year']].concat(Object.keys(years).sort().reverse().map(function (y) { return [y, y]; })).concat(_wb.tab === 'status' || _wb.tab === 'pictures' ? [['older', 'Before 2021 (yours)']] : []), 'wbYear') +
           sel('wb-s', _wb.state, stateOptions(), 'wbState') + '</div>' +
-        '<div style="padding:0 16px 6px"><input class="bdet-field-input" type="search" placeholder="Search brand or name" value="' + esc(_wb.q) + '" oninput="wbQ(this.value)" style="width:100%;box-sizing:border-box;font-size:15px"></div>' +
+        '<div style="display:flex;gap:6px;padding:0 16px 6px">' + '<div style="flex:0 0 38%;display:flex">' + sel('wb-r', _wb.region || '', [['', 'Any region'], ['us', 'US releases'], ['intl', 'International (any)']].concat(A.REGIONS.map(function (r) { return [r, r]; })), 'wbRegion') + '</div>' +
+          '<input class="bdet-field-input" type="search" placeholder="Search brand or name" value="' + esc(_wb.q) + '" oninput="wbQ(this.value)" style="flex:1;min-width:0;box-sizing:border-box;font-size:15px"></div>' +
         '<div style="padding:0 16px 4px;font-size:12px;color:var(--t2);display:flex;align-items:center;gap:8px"><span style="flex:1">' + list.length + ' ball' + (list.length === 1 ? '' : 's') + (_wb.tab === 'release' || _wb.tab === 'status' ? ' \u00b7 ' + nSel + ' ticked' : '') + '</span>' +
           (_wb.tab === 'status' ? '<span onclick="wbSelAll()" style="color:var(--teal);cursor:pointer">Select all ' + list.length + '</span> \u00b7 <span onclick="wbSelNone()" style="color:var(--teal);cursor:pointer">None</span>' : '') + '</div>' +
         '<div id="wb-list" style="flex:1;overflow-y:auto;padding:0 16px 10px">' + (shown.length ? shown.map(function (e) { return rowHTML(e, own); }).join('') : '<div style="padding:30px 0;text-align:center;color:var(--t2);font-size:13px">Nothing here with these filters.</div>') +
@@ -195,6 +210,7 @@
   function wbBrand(v) { _wb.brand = v; _wb.page = 0; paint(); }
   function wbYear(v) { _wb.year = v; _wb.page = 0; paint(); }
   function wbState(v) { _wb.state = v; _wb.page = 0; paint(); }
+  function wbRegion(v) { _wb.region = v; _wb.page = 0; paint(); }
   function wbQ(v) { _wb.q = v; _wb.page = 0; clearTimeout(_wb.t); _wb.t = setTimeout(function () { paint(); setTimeout(function () { var i = document.querySelector('#wb-ov input[type=search]'); if (i) { i.focus(); i.setSelectionRange(i.value.length, i.value.length); } }, 0); }, 250); }
   function wbPage(d) { _wb.page += d; paint(); var l = document.getElementById('wb-list'); if (l) l.scrollTop = 0; }
   function wbSel(id, on) { if (on) _wb.sel[id] = 1; else delete _wb.sel[id]; paint(); }
@@ -268,7 +284,7 @@
   }
   function wbFromMine(id) {
     var bs = A.appBalls(), b = bs.filter(function (x) { return x.CatalogID === id && !x.Archived; })[0] || bs.filter(function (x) { return x.CatalogID === id; })[0];
-    if (!b) return; _wb.found[id] = mineAsRead(b, bs); paint();
+    if (!b) return; _wb.found[id] = (A.catMineAsRead || mineAsRead)(b, bs); paint();
   }
   function wbDrop(id) { delete _wb.found[id]; paint(); }
   function wbReview(id) { var f = _wb.found[id]; if (!f) return; A.catCorrectWithParsed(id, f, function () { delete _wb.found[id]; delete _wb.det[id]; paint(); }); }
@@ -281,18 +297,21 @@
   function wbSaveAll() {
     var ids = Object.keys(_wb.found).filter(function (id) { return _wb.found[id].nameSeen !== false; }); if (!ids.length) return;
     A.catLoad().then(function (rows) {
-      var ok = 0, bad = [];
+      var ok = 0, bad = [], items = [];
       _wb.busy = 'saving ' + ids.length; paint();
       ids.reduce(function (p, id) {
         return p.then(function () {
           var e = A.byIdIn(rows, id); if (!e) return;
           var base = e.s ? A.catDetailRaw(e).then(function (r) { return r ? A.detAsStaged(r) : null; }, function () { return null; }) : Promise.resolve(_wb.stagedRows ? A.srvStagedRow(_wb.stagedRows, id) : null);
-          return base.then(function (b) { return A.catSaveCorrection(id, formFrom(_wb.found[id]), b); }).then(function (r) {
+          var form = formFrom(_wb.found[id]), store = form.source === 'bowwwl' ? 'phone' : 'repo';
+          var before = cp(store === 'phone' ? A.localOverrides()[id] : A.repoOverride(id));
+          return base.then(function (b) { return A.catSaveCorrection(id, form, b); }).then(function (r) {
+            if (r.ok) items.push({ id: id, n: cleanName(e.n), store: store, before: before });
             if (r.ok || r.msg === 'Nothing changed.') { ok++; delete _wb.found[id]; delete _wb.det[id]; } else bad.push(cleanName(e.n) + ': ' + r.msg);
             _wb.busy = 'saving ' + (ok + bad.length) + ' of ' + ids.length; paint();
           });
         });
-      }, Promise.resolve()).then(function () { _wb.busy = ''; paint(); if (root.toast) root.toast('Saved ' + ok + (bad.length ? ' \u00b7 not saved: ' + bad.slice(0, 2).join('; ') : ''), 5000); });
+      }, Promise.resolve()).then(function () { logAdd('specs', 'Saved specs for ' + items.length, items); _wb.busy = ''; paint(); if (root.toast) root.toast('Saved ' + ok + (bad.length ? ' \u00b7 not saved: ' + bad.slice(0, 2).join('; ') : ''), 5000); });
     });
   }
   function wbPictureTool() { if (typeof root.catImagesOpen === 'function') root.catImagesOpen(); }
@@ -320,14 +339,16 @@
     if (kind === 'reject' && r && !r.value) { if (err) err.textContent = 'Choose a reason.'; return; }
     if (kind === 'reject' && sure && !sure.checked) { if (err) err.textContent = 'Tick the box to reject this many.'; return; }
     A.catLoad().then(function (rows) {
-      var n = 0;
+      var n = 0, items = [];
       (_wb.pending || []).forEach(function (id) {
         var e = A.byIdIn(rows, id); if (!e) return;
+        items.push({ id: id, n: cleanName(e.n), before: cp(A.stEntry(id)) });
         if (kind === 'restore') A.stSet(id, null, false);
         else A.stSet(id, { status: 'retired', rejected: kind === 'reject', reason: kind === 'reject' ? r.value : 'manual', at: A.stToday(), n: cleanName(e.n), m: e.m }, false);
         n++;
       });
       A.stSaveLocal(A.stLocal()); A.stQueueSync(); _wb.sel = {}; _wb.pending = null;
+      logAdd('status', { discontinue: 'Marked discontinued', reject: 'Rejected', restore: 'Restored' }[kind] + ' ' + n, items);
       if (root.closeModal) root.closeModal(); paint();
       if (root.toast) root.toast({ discontinue: 'Marked discontinued: ', reject: 'Rejected: ', restore: 'Restored: ' }[kind] + n);
     });
@@ -337,14 +358,91 @@
   function wbRelease() {
     A.catLoad().then(function (rows) {
       var o = A.rlLocal(), n = 0, today = A.stToday();
-      Object.keys(_wb.sel).forEach(function (id) { var e = A.byIdIn(rows, id); if (!e || !readyOf(e) || o.all[id]) return; o.all[id] = { at: today, n: cleanName(e.n), m: e.m }; o.pending[id] = Date.now() + Math.random(); n++; });
-      A.rlSaveLocal(o); if (n) A.rlQueueSync(); _wb.sel = {}; paint();
+      var items = [];
+      Object.keys(_wb.sel).forEach(function (id) { var e = A.byIdIn(rows, id); if (!e || !readyOf(e) || o.all[id]) return; o.all[id] = { at: today, n: cleanName(e.n), m: e.m }; o.pending[id] = Date.now() + Math.random(); n++; items.push({ id: id, n: cleanName(e.n) }); });
+      A.rlSaveLocal(o); if (n) A.rlQueueSync(); _wb.sel = {}; logAdd('release', 'Released ' + n, items); paint();
       if (root.toast) root.toast(n ? 'Released ' + n + ': now in Add a Ball' : 'Nothing ready to release');
     });
+  }
+  function wbUndo(lid) {
+    var l = logAll(), en = l.filter(function (x) { return x.id === lid; })[0]; if (!en || en.undone) return;
+    var done = function () { en.undone = new Date().toISOString(); logSave(l); _wb.det = {}; wbLogPaint(); paint(); if (root.toast) root.toast('Undone: ' + en.label); };
+    if (en.kind === 'status') { en.items.forEach(function (x) { A.stSet(x.id, x.before || null, false); }); A.stSaveLocal(A.stLocal()); A.stQueueSync(); return done(); }
+    if (en.kind === 'release') { var o = A.rlLocal(); en.items.forEach(function (x) { delete o.all[x.id]; o.pending[x.id] = Date.now() + Math.random(); }); A.rlSaveLocal(o); A.rlQueueSync(); return done(); }
+    if (en.kind === 'region') { en.items.forEach(function (x) { A.regionTagSet(x.id, x.had ? x.before : undefined); }); return done(); }
+    if (en.kind === 'pictures') { en.items.forEach(function (x) { A.imgPickSet(x.id, x.url); }); return done(); }
+    if (en.kind === 'specs') {
+      en.items.reduce(function (p, x) { return p.then(function () { return A.catRestoreCorrection(x.id, x.store, x.before); }); }, Promise.resolve())
+        .then(done, function (e) { if (root.toast) root.toast('Undo stopped: ' + (e && e.status ? 'GitHub ' + e.status : 'offline')); });
+    }
+  }
+  function wbLog() { var el = document.getElementById('wbl-ov'); if (el) el.parentNode.removeChild(el); document.body.appendChild(A.overlay('wbl-ov', 925)); wbLogPaint(); }
+  function wbLogPaint() {
+    var ov = document.getElementById('wbl-ov'); if (!ov) return;
+    var l = logAll(), when = function (t) { var d = new Date(t); return d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }); };
+    var row = function (x) {
+      var names = x.items.slice(0, 6).map(function (i) { return i.n || i.id; }).join(', ') + (x.items.length > 6 ? ' and ' + (x.items.length - 6) + ' more' : '');
+      return '<div style="padding:10px 0;border-bottom:1px solid var(--border1)"><div style="display:flex;gap:8px;align-items:center"><div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:600;color:var(--t1)">' + esc(x.label) + '</div>' +
+        '<div style="font-size:11px;color:var(--t3)">' + esc(when(x.at)) + (x.undone ? ' \u00b7 undone ' + esc(when(x.undone)) : '') + '</div></div>' +
+        (x.undone ? '<span style="font-size:12px;color:var(--t3)">undone</span>' : '<button style="' + A.BTN_G + 'padding:6px 12px;font-size:12px" onclick="wbUndo(\'' + jsq(x.id) + '\')">Undo</button>') + '</div>' +
+        '<div style="font-size:12px;color:var(--t2);margin-top:3px;line-height:1.4">' + esc(names) + '</div></div>';
+    };
+    ov.innerHTML = '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 8px"><button style="' + A.BACK + '" onclick="var e=document.getElementById(\'wbl-ov\');e.parentNode.removeChild(e)">\u2039</button>' +
+      '<div style="flex:1"><div style="font-size:17px;font-weight:800;color:var(--t1)">Change log</div><div style="font-size:11px;color:var(--t3)">Workbench changes on this phone \u00b7 newest first</div></div></div>' +
+      '<div style="flex:1;overflow-y:auto;padding:0 16px 16px">' + (l.length ? l.map(row).join('') : '<div style="padding:30px 0;text-align:center;color:var(--t2);font-size:13px">No changes yet.</div>') +
+      '<div style="font-size:11px;color:var(--t3);line-height:1.5;margin-top:10px">Undo puts back what the change replaced: statuses, releases, corrections (on this phone or in the repo), region tags and picture links. Changes made outside the workbench aren\u2019t listed.</div></div>';
+  }
+  /* page notes on a read: discontinued, a region release */
+  function wbMarkDisc(id) {
+    A.catLoad().then(function (rows) { var e = A.byIdIn(rows, id); if (!e) return;
+      logAdd('status', 'Marked discontinued 1 (the page said so)', [{ id: id, n: cleanName(e.n), before: cp(A.stEntry(id)) }]);
+      A.stSet(id, { status: 'retired', reason: 'manual', at: A.stToday(), n: cleanName(e.n), m: e.m }); A.stQueueSync(); if (_wb.found[id]) _wb.found[id].retiredDone = true; paint(); });
+  }
+  function tagRegion(ids, v, rows) {
+    var items = [], m = A.regionTags();
+    ids.forEach(function (id) { var e = A.byIdIn(rows, id); items.push({ id: id, n: e ? cleanName(e.n) : id, had: id in m, before: m[id] }); A.regionTagSet(id, v); });
+    logAdd('region', (v ? 'Tagged ' + v : v === '' ? 'Tagged US release' : 'Region from the name') + ' \u00b7 ' + ids.length, items);
+  }
+  function wbTagRegion(id, v) { A.catLoad().then(function (rows) { tagRegion([id], v, rows); paint(); }); }
+  function wbRegionAsk() {
+    var n = Object.keys(_wb.sel).length; if (!n || !root.openModal) return;
+    var b = function (v, t) { return '<button class="btn btn-ghost" style="width:100%;text-align:left;margin-top:6px;padding:10px" onclick="wbRegionGo(' + (v === null ? 'null' : '\'' + v + '\'') + ')">' + t + '</button>'; };
+    root.openModal('<div class="modal-title">Region for ' + n + ' ball' + (n === 1 ? '' : 's') + '</div>' + A.REGIONS.map(function (r) { return b(r, r + ' release'); }).join('') +
+      b('', 'US release (even if the name says otherwise)') + b(null, 'Go by the name (remove my tag)') + '<button class="btn btn-secondary" style="width:100%;margin-top:10px" onclick="closeModal()">Cancel</button>');
+  }
+  function wbRegionGo(v) { A.catLoad().then(function (rows) { tagRegion(Object.keys(_wb.sel), v === null ? undefined : v, rows); _wb.sel = {}; if (root.closeModal) root.closeModal(); paint(); }); }
+  /* picture-link checker: every saved cover link is loaded; the broken ones can be cleared (undo in the log) */
+  function wbCheckLinks() {
+    var m = A.imgPicks(), ids = Object.keys(m).filter(function (id) { return /^https?:/i.test(m[id]); }), bad = [], done = 0, next = 0;
+    if (!ids.length) { if (root.toast) root.toast('No picture links saved on this phone'); return; }
+    _wb.busy = 'checking ' + ids.length + ' picture links'; paint();
+    var one = function () {
+      if (next >= ids.length) return Promise.resolve();
+      var id = ids[next++];
+      return new Promise(function (res) {
+        var im = new Image(), t = setTimeout(function () { im.src = ''; bad.push(id); res(); }, 10000);
+        im.onload = function () { clearTimeout(t); res(); }; im.onerror = function () { clearTimeout(t); bad.push(id); res(); };
+        im.src = m[id];
+      }).then(function () { done++; if (done % 25 === 0) { _wb.busy = 'checked ' + done + ' of ' + ids.length; paint(); } return one(); });
+    };
+    Promise.all([one(), one(), one(), one(), one(), one()]).then(function () { _wb.busy = ''; _wb.broken = bad; paint(); wbBrokenShow(ids.length); });
+  }
+  function wbBrokenShow(total) {
+    A.catLoad().then(function (rows) {
+      var bad = _wb.broken || [], names = bad.slice(0, 15).map(function (id) { var e = A.byIdIn(rows, id); return esc(e ? e.m + ' ' + cleanName(e.n) : id); }).join(', ') + (bad.length > 15 ? ' and ' + (bad.length - 15) + ' more' : '');
+      if (root.openModal) root.openModal('<div class="modal-title">Picture links checked</div><div style="font-size:13px;color:var(--t2);line-height:1.5">' + total + ' links \u00b7 ' + (bad.length ? bad.length + ' don\u2019t load: ' + names : 'all load') + '</div>' +
+        (bad.length ? '<button class="btn btn-primary" style="width:100%;margin-top:12px" onclick="wbClearBroken()">Clear ' + bad.length + ' broken link' + (bad.length === 1 ? '' : 's') + '</button><div style="font-size:11px;color:var(--t3);margin-top:6px">Those balls go back to needing a picture. Undo is in the Change log.</div>' : '') +
+        '<button class="btn btn-secondary" style="width:100%;margin-top:8px" onclick="closeModal()">Close</button>');
+    });
+  }
+  function wbClearBroken() {
+    A.catLoad().then(function (rows) { var m = A.imgPicks(), items = (_wb.broken || []).map(function (id) { var e = A.byIdIn(rows, id); return { id: id, n: e ? cleanName(e.n) : id, url: m[id] }; });
+      items.forEach(function (x) { A.imgPickSet(x.id, null); }); logAdd('pictures', 'Cleared ' + items.length + ' broken picture links', items); _wb.broken = null; if (root.closeModal) root.closeModal(); paint(); });
   }
   function wbMore() {
     var it = function (t, sub, call) { return '<button class="btn btn-ghost" style="width:100%;text-align:left;margin-top:8px;padding:11px" onclick="closeModal();setTimeout(function(){' + call + '},350)"><div style="font-size:14px;font-weight:700;color:var(--t1)">' + t + '</div><div style="font-size:12px;color:var(--t3);margin-top:2px">' + sub + '</div></button>'; };
     if (root.openModal) root.openModal('<div class="modal-title">More catalog tools</div>' +
+      it('Change log', 'Your workbench changes, with Undo', 'wbLog()') +
       it('Spec approvals', 'What the bridge read from maker sites, to approve and publish', 'catApprovalsOpen()') +
       it('Discontinued & rejected lists', 'Everything you marked, and the repo copy', 'catDiscOpen()') +
       it('Coverage', 'Specs by brand and year', 'catCovOpen()') +
@@ -357,5 +455,7 @@
   root.wbQ = wbQ; root.wbPage = wbPage; root.wbSel = wbSel; root.wbSelAll = wbSelAll; root.wbSelNone = wbSelNone; root.wbOpenBall = wbOpenBall; root.wbPaste = wbPaste;
   root.wbPdf = wbPdf; root.wbPdfs = wbPdfs; root.wbDrop = wbDrop; root.wbReview = wbReview; root.wbSaveAll = wbSaveAll; root.wbPictureTool = wbPictureTool;
   root.wbStatus = wbStatus; root.wbStatusGo = wbStatusGo; root.wbSelectReady = wbSelectReady; root.wbRelease = wbRelease; root.wbMore = wbMore; root.wbFromMine = wbFromMine;
-  root._wb = { state: function () { return _wb; }, mineAsRead: mineAsRead, missingOf: missingOf, groupOf: groupOf, matchBall: matchBall, formFrom: formFrom, WB_VERSION: WB_VERSION };
+  root.wbUndo = wbUndo; root.wbLog = wbLog; root.wbMarkDisc = wbMarkDisc; root.wbTagRegion = wbTagRegion; root.wbRegionAsk = wbRegionAsk; root.wbRegionGo = wbRegionGo;
+  root.wbRegion = wbRegion; root.wbCheckLinks = wbCheckLinks; root.wbClearBroken = wbClearBroken;
+  root._wb = { log: logAll, state: function () { return _wb; }, mineAsRead: mineAsRead, missingOf: missingOf, groupOf: groupOf, matchBall: matchBall, formFrom: formFrom, WB_VERSION: WB_VERSION };
 })(typeof window !== 'undefined' ? window : globalThis);
