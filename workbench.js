@@ -9,7 +9,7 @@
    Uses catalog.js through root._catAPI only. Design: DESIGN_add_ball_flow sections 50-55. */
 (function (root) {
   'use strict';
-  var WB_VERSION = 'v30.204';
+  var WB_VERSION = 'v30.205';
   var A = root._catAPI;
   if (!A) { if (root.toast) root.toast('Workbench needs catalog.js ' + WB_VERSION); return; }
   var esc = A.esc, jsq = A.jsq, norm = A.norm, cleanName = A.cleanName;
@@ -106,10 +106,11 @@
       var bw = A.bowwwlLinks(e.m, cleanName(e.n)), a = function (u, t) { return '<a href="' + esc(u) + '" target="_blank" rel="noopener noreferrer" style="color:var(--teal);text-decoration:none">' + t + '</a>'; };
       extra = (d && d.miss.length ? '<div style="font-size:12px;color:var(--gold);margin-top:4px">needs ' + esc(d.miss.join(', ')) + '</div>' : '') +
         (f ? '<div style="display:flex;align-items:center;gap:8px;margin-top:6px;padding:7px 9px;border-radius:9px;background:var(--bg2);border:1px solid ' + (f.nameSeen === false ? 'var(--gold)' : 'rgba(0,217,217,0.3)') + '">' +
-          '<div style="flex:1;min-width:0;font-size:12px;color:var(--t1);line-height:1.4">' + esc(foundLine(f)) + (f.nameSeen === false ? '<div style="color:var(--gold)">the page doesn\u2019t name this ball: check it (not in Save all)</div>' : '') + '</div>' +
+          '<div style="flex:1;min-width:0;font-size:12px;color:var(--t1);line-height:1.4">' + esc(foundLine(f)) + (f.warn ? '<div style="color:var(--gold)">' + esc(f.warn) + '</div>' : '') + (f.nameSeen === false ? '<div style="color:var(--gold)">the page doesn\u2019t name this ball: check it (not in Save all)</div>' : '') + '</div>' +
           '<button style="' + A.BTN_P + 'padding:6px 9px;font-size:12px" onclick="wbReview(\'' + jsq(e.i) + '\')">Review</button><button style="' + A.BTN_G + 'padding:6px 9px;font-size:12px" onclick="wbDrop(\'' + jsq(e.i) + '\')">\u2715</button></div>' : '') +
         '<div style="display:flex;align-items:center;gap:6px;margin-top:6px;flex-wrap:wrap"><button style="' + A.BTN_G + 'padding:6px 10px;font-size:12px" onclick="wbPaste(\'' + jsq(e.i) + '\')">Paste</button>' +
         '<button style="' + A.BTN_G + 'padding:6px 10px;font-size:12px" onclick="wbPdf(\'' + jsq(e.i) + '\')">PDF</button>' +
+        (own[e.i] && !f ? '<button style="' + A.BTN_P + 'padding:6px 10px;font-size:12px" onclick="wbFromMine(\'' + jsq(e.i) + '\')">Use my ball\u2019s specs</button>' : '') +
         '<span style="font-size:11px;color:var(--t3)">Find: ' + a(bw.maker || bw.search, 'maker \u2197') + ' \u00b7 ' + a(bw.page, 'bowwwl \u2197') + '</span></div>';
     } else if (_wb.tab === 'release') {
       extra = '<div style="font-size:12px;margin-top:4px;color:' + (readyOf(e) ? 'var(--teal)' : 'var(--gold)') + '">' + (!d ? 'checking\u2026' : readyOf(e) ? 'ready to release' : 'needs ' + esc((d.miss.length ? d.miss : []).concat(pic ? [] : ['a cover picture']).join(', '))) + '</div>';
@@ -252,6 +253,23 @@
       });
     });
   }
+  /* v30.205: your arsenal ball's own specs as a read for its catalog entry (checked on the row, saved with Save all found) */
+  function mineAsRead(b, all) {
+    var ct = String(b.CoreType || ''), w = parseInt(b.Weight, 10) || 15, x = {};
+    if (b.RG != null && b.RG !== '') x.RG = Number(b.RG); if (b.Differential != null && b.Differential !== '') x.Diff = Number(b.Differential); if (b.IntDiff != null && b.IntDiff !== '') x.IntDiff = Number(b.IntDiff);
+    var f = { fields: {}, weights: {}, source: 'other', host: 'your ' + b.BallName, nameSeen: true };
+    [['coverName', b.CoverName], ['coverType', b.Coverstock], ['finish', b.BoxFinish], ['core', b.CoreShort], ['released', b.DateReleased]].forEach(function (p) { if (p[1]) f.fields[p[0]] = String(p[1]); });
+    if (/^a/i.test(ct)) f.fields.coreType = 'Asymmetrical'; else if (/^s/i.test(ct)) f.fields.coreType = 'Symmetrical';
+    if (/^(symm?|asymm?|symmetrical|asymmetrical)$/i.test(f.fields.core || '')) delete f.fields.core;   // "Symm" in the core name is the core type
+    if (Object.keys(x).length) f.weights[w] = x;
+    var twin = (all || []).filter(function (o) { return o !== b && o.RG != null && Number(o.RG) === Number(b.RG) && Number(o.Differential) === Number(b.Differential); })[0];
+    if (twin) f.warn = 'same RG / Diff as your ' + twin.BallName + ': check before saving';
+    return f;
+  }
+  function wbFromMine(id) {
+    var bs = A.appBalls(), b = bs.filter(function (x) { return x.CatalogID === id && !x.Archived; })[0] || bs.filter(function (x) { return x.CatalogID === id; })[0];
+    if (!b) return; _wb.found[id] = mineAsRead(b, bs); paint();
+  }
   function wbDrop(id) { delete _wb.found[id]; paint(); }
   function wbReview(id) { var f = _wb.found[id]; if (!f) return; A.catCorrectWithParsed(id, f, function () { delete _wb.found[id]; delete _wb.det[id]; paint(); }); }
   /* Pure: a read -> the editor's form */
@@ -325,7 +343,7 @@
     });
   }
   function wbMore() {
-    var it = function (t, sub, call) { return '<button class="btn btn-ghost" style="width:100%;text-align:left;margin-top:8px;padding:11px" onclick="closeModal();' + call + '"><div style="font-size:14px;font-weight:700;color:var(--t1)">' + t + '</div><div style="font-size:12px;color:var(--t3);margin-top:2px">' + sub + '</div></button>'; };
+    var it = function (t, sub, call) { return '<button class="btn btn-ghost" style="width:100%;text-align:left;margin-top:8px;padding:11px" onclick="closeModal();setTimeout(function(){' + call + '},350)"><div style="font-size:14px;font-weight:700;color:var(--t1)">' + t + '</div><div style="font-size:12px;color:var(--t3);margin-top:2px">' + sub + '</div></button>'; };
     if (root.openModal) root.openModal('<div class="modal-title">More catalog tools</div>' +
       it('Spec approvals', 'What the bridge read from maker sites, to approve and publish', 'catApprovalsOpen()') +
       it('Discontinued & rejected lists', 'Everything you marked, and the repo copy', 'catDiscOpen()') +
@@ -338,6 +356,6 @@
   root.wbOpen = wbOpen; root.wbClose = wbClose; root.wbTab = wbTab; root.wbGroup = wbGroup; root.wbBrand = wbBrand; root.wbYear = wbYear; root.wbState = wbState;
   root.wbQ = wbQ; root.wbPage = wbPage; root.wbSel = wbSel; root.wbSelAll = wbSelAll; root.wbSelNone = wbSelNone; root.wbOpenBall = wbOpenBall; root.wbPaste = wbPaste;
   root.wbPdf = wbPdf; root.wbPdfs = wbPdfs; root.wbDrop = wbDrop; root.wbReview = wbReview; root.wbSaveAll = wbSaveAll; root.wbPictureTool = wbPictureTool;
-  root.wbStatus = wbStatus; root.wbStatusGo = wbStatusGo; root.wbSelectReady = wbSelectReady; root.wbRelease = wbRelease; root.wbMore = wbMore;
-  root._wb = { state: function () { return _wb; }, missingOf: missingOf, groupOf: groupOf, matchBall: matchBall, formFrom: formFrom, WB_VERSION: WB_VERSION };
+  root.wbStatus = wbStatus; root.wbStatusGo = wbStatusGo; root.wbSelectReady = wbSelectReady; root.wbRelease = wbRelease; root.wbMore = wbMore; root.wbFromMine = wbFromMine;
+  root._wb = { state: function () { return _wb; }, mineAsRead: mineAsRead, missingOf: missingOf, groupOf: groupOf, matchBall: matchBall, formFrom: formFrom, WB_VERSION: WB_VERSION };
 })(typeof window !== 'undefined' ? window : globalThis);
