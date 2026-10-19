@@ -36,7 +36,7 @@
 'use strict';
 
 /* v30.169: shown in the app header when it differs from the build's EXPECTED_CATALOG_JS */
-var CAT_VERSION  = 'v30.205';
+var CAT_VERSION  = 'v30.206';
 var CAT_BASE     = 'https://raw.githubusercontent.com/jmarsh85/bowlingdb-mobile/dist/';
 var CAT_DB       = 'BowlingDB_Catalog';
 var CAT_DB_VER   = 1;
@@ -2407,7 +2407,7 @@ function srvFmt(f, v) {
 }
 function srvLoad() {
   _srv.busy = true; srvRender();
-  var balls = appBalls().filter(function (b) { return b.CatalogID && b.BallID != null && !b.Archived; });
+  var balls = appBalls().filter(function (b) { return b.BallID != null; });   // v30.206: every ball in your arsenal, linked or not, retired too
   var staged = null;
   var stP = apToken() ? apReadStaged().then(function (r) { staged = r; }, function () { _srv.noStaged = true; }) : Promise.resolve(_srv.noStaged = true);
   return Promise.all([catLoad(), stP]).then(function (res) {
@@ -2419,16 +2419,17 @@ function srvLoad() {
           var pub = d ? ballFromSpecs(specsOf(d, w)) : {};
           var sr = staged ? srvStagedRow(staged, b.CatalogID) : null;
           var pend = sr ? ballFromSpecs(specsOf(apAsDetail(apApplyOverride(sr, overrideFor(b.CatalogID))), w)) : {};
-          var rws = srvRows(b, pub, pend);
-          if (rws.length) acc.push({ ball: b, entry: e, weight: w, pubWeights: d ? Object.keys(d.SpecsByWeight || {}) : [], rows: rws, pub: pub, pend: pend });
+          var rws = e ? srvRows(b, pub, pend) : [];
+          var catHas = SRV_ORDER.some(function (f) { return pub[f] != null && pub[f] !== '' || pend[f] != null && pend[f] !== ''; });
+          acc.push({ ball: b, entry: e, weight: w, pubWeights: d ? Object.keys(d.SpecsByWeight || {}) : [], rows: rws, pub: pub, pend: pend, catHas: catHas });
           return acc;
         });
       });
     }, Promise.resolve([]));
   }).then(function (pages) {
-    pages.sort(function (a, b) { return String(a.ball.BallName).localeCompare(String(b.ball.BallName)); });
+    pages.sort(function (a, b) { return ((a.ball.Archived ? 1 : 0) - (b.ball.Archived ? 1 : 0)) || String(a.ball.BallName).localeCompare(String(b.ball.BallName)); });
     _srv.pages = pages; _srv.idx = 0; _srv.err = null;
-    if (_srv.focus != null) { var i = pages.map(function (p) { return p.ball.BallID; }).indexOf(_srv.focus); if (i >= 0) _srv.idx = i; _srv.focus = null; }
+    if (_srv.focus != null) { var i = pages.map(function (p) { return p.ball.BallID; }).indexOf(_srv.focus); if (i >= 0) { _srv.idx = i; _srv.view = 'ball'; } _srv.focus = null; }
   }).catch(function (e) { _srv.err = e.message || String(e); }).then(function () { _srv.busy = false; srvRender(); });
 }
 function catSpecReviewOpen(ballId) {
@@ -2437,7 +2438,7 @@ function catSpecReviewOpen(ballId) {
   if (mb && mb.classList.contains('open') && typeof root.closeModal === 'function') root.closeModal();
   catSpecReviewClose();
   document.body.appendChild(overlay('srv-ov', 906));
-  _srv.focus = ballId == null ? null : ballId; _srv.tab = 'mine'; _ms.page = 0;
+  _srv.focus = ballId == null ? null : ballId; _srv.tab = 'mine'; _srv.view = 'list'; _ms.page = 0;
   catLoad().then(function (rows) { var mine = {}; appBalls().forEach(function (b) { if (b.CatalogID && !b.Archived) mine[b.CatalogID] = 1; });
     _ms.count = msRows(rows, { mine: mine, rejected: catIsRejected, ovr: overrideFor }).length; if (!_srv.busy) srvRender(); });
   return srvLoad();
@@ -2496,11 +2497,12 @@ function srvRender() {
   if (_srv.tab === 'missing') { msRender(ov, head); return; }
   if (_srv.busy) { ov.innerHTML = head('Loading\u2026') + '<div style="padding:30px;text-align:center;color:var(--t3);font-size:13px">Comparing your balls with the catalog\u2026</div>'; return; }
   var pending = _srv.pages.filter(function (p) { return p.rows.length; });
+  if (_srv.view !== 'ball') { ov.innerHTML = head(_srv.pages.length + ' ball' + (_srv.pages.length === 1 ? '' : 's') + (pending.length ? ' \u00b7 ' + pending.length + ' to review' : '')) + srvListHTML(); return; }
   var allMatches = 0; _srv.pages.forEach(function (p) { p.rows.forEach(function (r) { if (r.kind === 'match') allMatches++; }); });
   var p = _srv.pages[_srv.idx];
   var note = (_srv.err ? '<div style="font-size:12px;color:var(--red);margin:0 16px 8px">' + esc(_srv.err) + '</div>' : '') +
     (_srv.noStaged ? '<div style="font-size:11px;color:var(--t3);margin:0 16px 6px">Published catalog only (pending specs need the GitHub token).</div>' : '');
-  if (!p) { ov.innerHTML = head('Nothing to review') + note + '<div style="padding:30px 16px;text-align:center;color:var(--t2);font-size:13px;line-height:1.6">Every linked ball\u2019s specs are verified, or the catalog has nothing to compare yet.</div>'; return; }
+  if (!p) { _srv.view = 'list'; srvRender(); return; }
   var b = p.ball;
   var rowsH = p.rows.length ? p.rows.map(function (r, i) {
     var chip = r.kind === 'match' ? '<span style="color:var(--teal)">\u2713 same</span>' : r.kind === 'differ' ? '<span style="color:var(--gold)">differs</span>' :
@@ -2521,13 +2523,14 @@ function srvRender() {
       '<div style="display:flex;gap:10px;font-size:13px;color:var(--t1);margin:3px 0 6px"><div style="flex:1"><div style="font-size:10px;color:var(--t3)">Yours</div>' + esc(srvFmt(r.f, r.mine)) + '</div>' +
       '<div style="flex:1"><div style="font-size:10px;color:var(--t3)">Catalog' + pendTag + '</div>' + esc(srvFmt(r.f, r.cat && r.cat.v)) + '</div></div>' +
       '<div style="display:flex;gap:6px;justify-content:flex-end;align-items:stretch">' + acts + '</div>' + (_srv.editing === i && _srv.editErr ? '<div style="font-size:12px;color:var(--red);margin-top:4px">' + esc(_srv.editErr) + '</div>' : '') + '</div>';
-  }).join('') : '<div style="padding:16px 0;color:var(--teal);font-size:13px">\u2713 All reviewed for this ball.</div>';
+  }).join('') : srvSummaryHTML(p);
   var nM = p.rows.filter(function (r) { return r.kind === 'match'; }).length, nD = p.rows.filter(function (r) { return r.kind === 'differ' || r.kind === 'fill'; }).length;
   var wNote = p.pubWeights.length && p.pubWeights.indexOf(String(p.weight)) < 0 ? '<div style="font-size:11px;color:var(--gold);margin-top:2px">Catalog has no ' + p.weight + ' lb numbers (published: ' + esc(p.pubWeights.join(', ')) + ' lb), so RG / Diff are not compared.</div>' : '';
   ov.innerHTML = head(pending.length + ' ball' + (pending.length === 1 ? '' : 's') + ' to review') + note +
     '<div style="flex:1;overflow-y:auto;padding:4px 16px 12px">' +
-    '<div style="font-size:15px;font-weight:700;color:var(--t1)">' + esc(b.BallName) + '</div>' +
-    '<div style="font-size:11px;color:var(--t3)">' + (p.entry ? entryLine(p.entry) : 'USBC ' + esc(b.CatalogID)) + ' \u00b7 your ' + esc(p.weight) + ' lb</div>' + wNote +
+    '<div onclick="catSpecReviewList()" style="font-size:13px;color:var(--teal);cursor:pointer;margin-bottom:6px">\u2039 All my balls</div>' +
+    '<div style="font-size:15px;font-weight:700;color:var(--t1)">' + esc(b.BallName) + (b.Archived ? ' <span style="' + CHIP_G + '">RETIRED</span>' : '') + '</div>' +
+    '<div style="font-size:11px;color:var(--t3)">' + (p.entry ? entryLine(p.entry) : b.CatalogID ? 'USBC ' + esc(b.CatalogID) + ' (not in the catalog now)' : 'not linked to the catalog') + ' \u00b7 your ' + esc(p.weight) + ' lb</div>' + wNote +
     '<div style="display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 2px">' +
       (nM ? '<button style="' + BTN_P + 'padding:8px 10px;font-size:12px" onclick="catSpecReviewBulk(\'ball\',\'matches\')">Confirm ' + nM + ' match' + (nM === 1 ? '' : 'es') + '</button>' : '') +
       (nD ? '<button style="' + BTN_G + 'padding:8px 10px;font-size:12px" onclick="catSpecReviewBulk(\'ball\',\'differences\')">Use catalog for ' + nD + '</button>' : '') + '</div>' +
@@ -2554,9 +2557,78 @@ function msRows(rows, opt) {
     .sort(function (a, b) { return ((mine[b.i] ? 1 : 0) - (mine[a.i] ? 1 : 0)) || String(b.y || '').localeCompare(String(a.y || '')) || String(a.m).localeCompare(String(b.m)) || cleanName(a.n).localeCompare(cleanName(b.n)); });
 }
 function srvTabs() {
-  var n1 = (_srv.pages || []).filter(function (p) { return p.rows.length; }).length;
+  var n1 = (_srv.pages || []).length;   // v30.206: the whole arsenal
   var chip = function (k, t) { return '<button onclick="catSpecReviewTab(\'' + k + '\')" style="' + ((_srv.tab || 'mine') === k ? BTN_P : BTN_G) + 'flex:1;padding:9px;font-size:13px">' + t + '</button>'; };
   return '<div style="display:flex;gap:8px;padding:0 16px 8px">' + chip('mine', 'My balls' + (_srv.busy ? '' : ' (' + n1 + ')')) + chip('missing', 'Missing specs' + (_ms.count == null ? '' : ' (' + _ms.count + ')')) + '</div>';
+}
+/* ---------- v30.206 WB-4: regions ----------
+   USBC has no region field. A ball's region comes from its name ("... Overseas", "(Korea)", "Int'l") or
+   from your tag on this phone (bowlingdb_catalog_region_local, in catalog backups). Your tag wins; an empty
+   tag means a US release even when the name says otherwise. */
+var REGION_KEY = 'bowlingdb_catalog_region_local';
+var REGION_WORDS = [['Overseas', /\boverseas\b/i], ['International', /\b(?:international|int'?l|intl|export)\b/i], ['Japan', /\b(?:japan|jpn)\b/i], ['Korea', /\b(?:korea|kor)\b/i],
+  ['Asia', /\basia(?:n)?\b/i], ['Europe', /\b(?:europe|european|euro)\b/i], ['Australia', /\baustralia\b/i]];
+function regionFromText(t) { t = String(t || ''); for (var i = 0; i < REGION_WORDS.length; i++) if (REGION_WORDS[i][1].test(t)) return REGION_WORDS[i][0]; return null; }
+function regionTags() { var l = apLS(); try { return JSON.parse((l && l.getItem(REGION_KEY)) || '{}') || {}; } catch (e) { return {}; } }
+function regionTagSet(id, v) { var l = apLS(); if (!l) return; var m = regionTags(); if (v === undefined) delete m[id]; else m[id] = v; l.setItem(REGION_KEY, JSON.stringify(m)); }
+function regionOf(e) { if (!e) return null; var m = regionTags(); if (e.i in m) return m[e.i] || null; return regionFromText(e.n + ' ' + (e.c || '')); }
+/* v30.206: My balls lists your whole arsenal (it showed only balls with fields left to review, so usually none) */
+function srvStateOf(p) {
+  if (!p.entry) return { t: 'not linked to the catalog', c: 'var(--gold)' };
+  if (p.rows.length) return { t: p.rows.length + ' field' + (p.rows.length === 1 ? '' : 's') + ' to review', c: 'var(--teal)' };
+  if (!p.catHas) return { t: 'catalog has no specs for it', c: 'var(--t3)' };
+  return { t: '\u2713 checked against the catalog', c: 'var(--t2)' };
+}
+function srvListHTML() {
+  var dev = catFixAllowed(), act = 0;
+  var row = function (p, i) {
+    var b = p.ball, st = srvStateOf(p), f = function (x, d) { return x == null || x === '' ? null : d ? Number(x).toFixed(3) : String(x); };
+    var sum = [f(b.RG, 1) && 'RG ' + f(b.RG, 1), f(b.Differential, 1) && 'Diff ' + f(b.Differential, 1), f(b.CoreType), f(b.CoverName)].filter(Boolean).join(' \u00b7 ');
+    var extra = !p.entry ? '<button style="' + BTN_G + 'padding:5px 9px;font-size:12px;margin-top:6px" onclick="event.stopPropagation();catSpecReviewClose();catReviewOpen()">Link</button>' :
+      dev && !p.catHas && sum ? '<button style="' + BTN_P + 'padding:5px 9px;font-size:12px;margin-top:6px" onclick="event.stopPropagation();srvShareMine(' + i + ')">Give the catalog my specs</button>' : '';
+    return '<div onclick="catSpecReviewGo(' + i + ')" style="padding:10px 2px;border-bottom:1px solid var(--border1);cursor:pointer">' +
+      '<div style="display:flex;justify-content:space-between;gap:8px"><div style="font-size:14px;font-weight:600;color:var(--t1)">' + esc(b.BallName) + '</div><div style="font-size:12px;color:' + st.c + ';text-align:right">' + esc(st.t) + '</div></div>' +
+      '<div style="font-size:12px;color:var(--t2)">' + esc(b.MFG || '') + (b.Weight ? ' \u00b7 ' + esc(b.Weight) + ' lb' : '') + (p.entry ? ' \u00b7 ' + esc(cleanName(p.entry.n)) + (p.entry.y ? ' (' + esc(p.entry.y) + ')' : '') : '') + '</div>' +
+      '<div style="font-size:11px;color:var(--t3);margin-top:2px">' + (sum ? 'yours: ' + esc(sum) : 'you have no specs on it') + '</div>' + extra + '</div>';
+  };
+  var active = [], retired = [];
+  _srv.pages.forEach(function (p, i) { (p.ball.Archived ? retired : active).push(row(p, i)); act++; });
+  var allMatches = 0; _srv.pages.forEach(function (p) { p.rows.forEach(function (r) { if (r.kind === 'match') allMatches++; }); });
+  return '<div style="flex:1;overflow-y:auto;padding:0 16px 12px">' +
+    (active.length ? '<div style="font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin:6px 0 2px">In your bag (' + active.length + ')</div>' + active.join('') : '') +
+    (retired.length ? '<div style="font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin:14px 0 2px">Retired (' + retired.length + ')</div>' + retired.join('') : '') +
+    (!act ? '<div style="padding:30px 0;text-align:center;color:var(--t2);font-size:13px">No balls in your arsenal yet.</div>' : '') +
+    '<div style="font-size:11px;color:var(--t3);line-height:1.5;margin-top:10px">Tap a ball to see your specs next to the catalog\u2019s and confirm, keep or edit each one.' + (dev ? ' \u201cGive the catalog my specs\u201d opens Correct specs with your values filled in, to check and save.' : '') + '</div></div>' +
+    (allMatches ? '<div style="padding:10px 16px;border-top:1px solid var(--border1)"><button style="' + BTN_P + 'width:100%;padding:10px" onclick="catSpecReviewBulk(\'all\',\'matches\')">Confirm all ' + allMatches + ' matches on every ball</button></div>' : '');
+}
+/* every field, yours next to the catalog's, when nothing is left to review */
+function srvSummaryHTML(p) {
+  var b = p.ball, has = function (v) { return v != null && v !== ''; };
+  var line = function (f) { var cv = has(p.pub[f]) ? p.pub[f] : has(p.pend[f]) ? p.pend[f] : null;
+    return '<div style="display:flex;gap:10px;padding:6px 0;border-bottom:1px solid var(--border1);font-size:13px"><div style="flex:0 0 90px;color:var(--t3);font-size:12px">' + SRV_LABEL[f] + '</div><div style="flex:1;color:var(--t1)">' + esc(srvFmt(f, has(b[f]) ? b[f] : null)) + '</div><div style="flex:1;color:var(--t2)">' + esc(srvFmt(f, cv)) + '</div></div>'; };
+  return '<div style="padding:10px 0 4px;color:var(--teal);font-size:13px">' + (p.entry ? '\u2713 Nothing left to review on this ball.' : 'Not linked to the catalog, so there is nothing to compare.') + '</div>' +
+    '<div style="display:flex;gap:10px;font-size:10px;color:var(--t3);padding:4px 0"><div style="flex:0 0 90px"></div><div style="flex:1">Yours</div><div style="flex:1">Catalog</div></div>' + SRV_ORDER.map(line).join('');
+}
+function catSpecReviewGo(i) { _srv.idx = i; _srv.view = 'ball'; _srv.editing = null; srvRender(); }
+function catSpecReviewList() { _srv.view = 'list'; _srv.editing = null; srvRender(); }
+/* Pure: your ball's specs as a read for its catalog entry (also the workbench's Use my ball's specs) */
+function catMineAsRead(b, all) {
+  var ct = String(b.CoreType || ''), w = parseInt(b.Weight, 10) || 15, x = {};
+  if (b.RG != null && b.RG !== '') x.RG = Number(b.RG); if (b.Differential != null && b.Differential !== '') x.Diff = Number(b.Differential); if (b.IntDiff != null && b.IntDiff !== '') x.IntDiff = Number(b.IntDiff);
+  var f = { fields: {}, weights: {}, source: 'other', host: 'your ' + b.BallName, nameSeen: true };
+  [['coverName', b.CoverName], ['coverType', b.Coverstock], ['finish', b.BoxFinish], ['core', b.CoreShort], ['released', b.DateReleased]].forEach(function (q) { if (q[1]) f.fields[q[0]] = String(q[1]); });
+  if (/^a/i.test(ct)) f.fields.coreType = 'Asymmetrical'; else if (/^s/i.test(ct)) f.fields.coreType = 'Symmetrical';
+  if (/^(symm?|asymm?|symmetrical|asymmetrical)$/i.test(f.fields.core || '')) delete f.fields.core;
+  if (Object.keys(x).length) f.weights[w] = x;
+  var twin = (all || []).filter(function (o) { return o !== b && o.RG != null && Number(o.RG) === Number(b.RG) && Number(o.Differential) === Number(b.Differential); })[0];
+  if (twin) f.warn = 'same RG / Diff as your ' + twin.BallName + ': check before saving';
+  return f;
+}
+function srvShareMine(i) {
+  var p = _srv.pages[i]; if (!p || !p.entry) return;
+  var read = catMineAsRead(p.ball, appBalls());
+  if (read.warn && root.toast) root.toast(read.warn, 5000);
+  catCorrectWithParsed(p.entry.i, read, function () { srvLoad(); });
 }
 function catSpecReviewTab(k) { _srv.tab = k; _ms.page = 0; srvRender(); }
 function msRender(ov, head) {
@@ -3207,7 +3279,7 @@ function hlHasSpecs(e, ovr) {
 /* Pure: repo map + pending approvals -> map to write (keys sorted) */
 function rlMerge(repo, local) {
   var next = Object.assign({}, repo || {});
-  Object.keys((local && local.pending) || {}).forEach(function (id) { if (local.all[id]) next[id] = local.all[id]; });
+  Object.keys((local && local.pending) || {}).forEach(function (id) { if (local.all[id]) next[id] = local.all[id]; else delete next[id]; });   // v30.206: undo removes
   var out = {}; Object.keys(next).sort().forEach(function (k) { out[k] = next[k]; }); return out;
 }
 function rlSync() {
@@ -3831,6 +3903,9 @@ function parseSpecText(text, weight, name) {
     if (rt && !/bowwwl/i.test(text)) { out.source = 'other'; out.host = /bowlersmart/i.test(rt[0]) ? 'bowlersmart.com' : /bowlingball/i.test(rt[0]) ? 'bowlingball.com' : 'bowling.com'; }
     else { var mk = spMakerOf(text); if (mk) { out.source = 'maker'; out.host = mk; } }
   }
+  /* v30.206 WB-4: what the page says about the ball itself: discontinued, or a region release */
+  if (/\b(?:retired|discontinued|no longer (?:available|made|produced))\b|bowling ball archives/i.test(text)) out.retired = true;
+  var rgHead = regionFromText(lines.slice(0, 40).join(' ')); if (rgHead) out.region = rgHead;
   /* v30.203 WB-2: a value the page wrapped onto the next line ("500, 1000, 1500 Siaair / Factory" + "Compound").
      Only when it ends on a joiner and the next line is one or two plain words that are not a label. */
   ['finish', 'coverName', 'core'].forEach(function (k) {
@@ -4607,7 +4682,7 @@ function catBackupBuild() {
     var st = stLocal(), rp = r[1];
     return { kind: 'bowlingdb-catalog-backup', v: 1, at: new Date(env.now()).toISOString(), app: (typeof APP_VERSION !== 'undefined' ? APP_VERSION : null), catalogJs: CAT_VERSION,
       covers: imgPicks(), cores: coreLinks(), files: r[0], scan: cbLSGet(SCAN_KEY, {}), makerLinks: cbLSGet(IMG_LINKS_KEY, null),
-      deviceCorrections: localOverrides(), status: { all: st.all, pending: st.pending, cleared: st.cleared }, released: rlLocal().all,
+      deviceCorrections: localOverrides(), status: { all: st.all, pending: st.pending, cleared: st.cleared }, released: rlLocal().all, regions: regionTags(),
       repo: rp && !rp.error ? rp : null, repoNote: !apToken() ? 'no token on this phone' : rp && rp.error ? rp.error : null };
   });
 }
@@ -4680,6 +4755,8 @@ function catBackupMerge(o) {
     if (out.status) stSaveLocal(st);
     var rl = rlLocal(); Object.keys(o.released || {}).forEach(function (id) { if (!rl.all[id]) { rl.all[id] = o.released[id]; out.status++; } });
     rlSaveLocal(rl);
+    var rg = regionTags(), rgn = 0; Object.keys(o.regions || {}).forEach(function (id) { if (!(id in rg)) { rg[id] = o.regions[id]; rgn++; } });   // v30.206
+    if (rgn) l.setItem(REGION_KEY, JSON.stringify(rg));
     return out;
   });
 }
@@ -5052,6 +5129,15 @@ function catRecordChanged(id) {
   try { if (document.getElementById('srv-ov')) srvRender(); } catch (e) {}
   try { var q = document.getElementById('cat-add-q'); if (document.getElementById('cat-add-results') && typeof catAddSearch === 'function') catAddSearch(q ? q.value : ''); } catch (e) {}
 }
+/* v30.206 WB-4: put a correction back as it was (undo). store 'phone' | 'repo'; prev null removes it. */
+function catRestoreCorrection(cid, store, prev) {
+  if (store === 'phone') { var l = apLS(); if (!l) return Promise.resolve(false); var all = localOverrides(); if (prev) all[cid] = prev; else delete all[cid]; l.setItem(LOCAL_OVR_KEY, JSON.stringify(all)); catRecordChanged(cid); return Promise.resolve(true); }
+  return apReadOverrides(true).then(function (all) {
+    var next = Object.assign({}, all); if (prev) next[cid] = prev; else delete next[cid];
+    var body = { message: 'spec correction undone: ' + cid, content: b64e(JSON.stringify(next, null, 1)), branch: 'specs' }; if (_ovrSha) body.sha = _ovrSha;
+    return apGH(OVR_PATH, { method: 'PUT', body: body }).then(function (res) { _ovr = next; _ovrSha = res && res.content ? res.content.sha : null; catRecordChanged(cid); return true; });
+  });
+}
 /* v30.204 WB-3: the save without the form, for the workbench's Save all found. form = the editor's
    fields (coverName ... released, source, note, weights {lb: {RG, Diff, IntDiff}}); base0 = published
    (as staged) or the bridge's row. Resolves { ok, msg } or { ok: false, msg }. */
@@ -5072,7 +5158,8 @@ function catSaveCorrection(cid, form, base0) {
   var o = res.override;
   if (!o.weights && !['coverName', 'coverType', 'finish', 'core', 'coreType', 'released'].some(function (k) { return o[k]; })) return Promise.resolve({ ok: false, msg: 'Nothing changed.' });
   if (o.source === 'bowwwl') { o.at = new Date().toISOString().slice(0, 10); saveLocalOverride(cid, mergeOverrides(localOverrides()[cid], o)); catRecordChanged(cid); return Promise.resolve({ ok: true, msg: 'Saved on this phone (bowwwl)' }); }
-  return apSaveOverride(cid, o).then(function () { catRecordChanged(cid); return { ok: true, msg: 'Saved to the repo' }; },
+  var keep = (_ovr && _ovr[cid]) || null;   // v30.206: merged, so a read that lacks a field never wipes an earlier repo correction
+  return apSaveOverride(cid, keep ? Object.assign(mergeOverrides(keep, o), { source: o.source, note: o.note || keep.note }) : o).then(function () { catRecordChanged(cid); return { ok: true, msg: 'Saved to the repo' }; },
     function (e) { return { ok: false, msg: e.status ? 'GitHub ' + e.status : 'offline' }; });
 }
 function catApprovalsEditSave() {
@@ -5342,7 +5429,7 @@ function catCompareAdd(x) {
 
 root.CATALOG_JS_VERSION = CAT_VERSION;
 root.catPasteWeights = catPasteWeights; root.catRecordChanged = catRecordChanged; root._wb2 = { parseWeightsText: parseWeightsText, apFieldSource: apFieldSource };
-root.catWorkbenchOpen = catWorkbenchOpen; root.catCorrectWithParsed = catCorrectWithParsed;
+root.catWorkbenchOpen = catWorkbenchOpen; root._srvState = function () { return _srv; }; root.catSpecReviewGo = catSpecReviewGo; root.catSpecReviewList = catSpecReviewList; root.srvShareMine = srvShareMine; root.catCorrectWithParsed = catCorrectWithParsed;
 /* v30.204 WB-3: what workbench.js uses (one place, so the internals stay private elsewhere) */
 root._catAPI = { catLoad: catLoad, byIdIn: byIdIn, cleanName: cleanName, esc: esc, jsq: jsq, norm: norm, thumbHTML: thumbHTML, overlay: overlay,
   BTN_P: BTN_P, BTN_G: BTN_G, BACK: BACK, CHIP: CHIP, CHIP_T: CHIP_T, CHIP_G: CHIP_G,
@@ -5352,7 +5439,9 @@ root._catAPI = { catLoad: catLoad, byIdIn: byIdIn, cleanName: cleanName, esc: es
   parseSpecText: parseSpecText, spReadClipboard: spReadClipboard, spPdfFileText: spPdfFileText, bowwwlLinks: bowwwlLinks, appBalls: appBalls,
   apToken: apToken, apReadOverrides: apReadOverrides, apReadStaged: apReadStaged, srvStagedRow: srvStagedRow, catDetailRaw: catDetailRaw, detAsStaged: detAsStaged,
   apApplyOverride: apApplyOverride, catCorrectFor: catCorrectFor, catCorrectWithParsed: catCorrectWithParsed, catSaveCorrection: catSaveCorrection,
-  brandSlug: brandSlug, catAddDetail: catAddDetail, normReleased: normReleased, AP_WEIGHTS: AP_WEIGHTS, version: CAT_VERSION }; root.catMyBallsOpen = catMyBallsOpen; root.catSaveCorrection = catSaveCorrection;
+  brandSlug: brandSlug, catAddDetail: catAddDetail, normReleased: normReleased, catMineAsRead: catMineAsRead,
+  catRestoreCorrection: catRestoreCorrection, localOverrides: localOverrides, repoOverride: function (id) { return (_ovr && _ovr[id]) || null; },
+  regionOf: regionOf, regionTags: regionTags, regionTagSet: regionTagSet, regionFromText: regionFromText, imgPicks: imgPicks, imgPickSet: imgPickSet, REGIONS: REGION_WORDS.map(function (r) { return r[0]; }), AP_WEIGHTS: AP_WEIGHTS, version: CAT_VERSION }; root.catMyBallsOpen = catMyBallsOpen; root.catSaveCorrection = catSaveCorrection;
 root.catOldSearch = catOldSearch; root.catOldClose = catOldClose; root.catAddBlank = catAddBlank; root.catAddManual = catAddManual;
 root.catSpecReviewTab = catSpecReviewTab; root.catMissingCorrect = catMissingCorrect; root.catMissingFilter = catMissingFilter; root.catMissingPage = catMissingPage; root._ms = { msRows: msRows, oldMatchScore: oldMatchScore };
 root.catHoldCorrect = catHoldCorrect; root.catCorrectFor = catCorrectFor;
