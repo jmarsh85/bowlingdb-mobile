@@ -1,5 +1,5 @@
 {
- "build": "e34ef7a09ec7cfec",
+ "build": "b19ca6a0eef25ccd",
  "files": {
   "detail/3g.json": {
    "bytes": 3601,
@@ -782,8 +782,8 @@
    "path": "detail/yuean.json"
   },
   "index.json": {
-   "bytes": 1391846,
-   "hash": "5bb877ab516d65a8",
+   "bytes": 1536980,
+   "hash": "a3d0b2a585600a70",
    "path": "index.json"
   },
   "usbc.json": {
