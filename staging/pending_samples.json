@@ -249,73 +249,6 @@
   ]
  },
  {
-  "source": "brunswick",
-  "reason": "no-usbc",
-  "n": 52,
-  "samples": [
-   {
-    "title": "Aura Mystic",
-    "url": "https://brunswickbowling.com/products/balls/retired/aura-mystic",
-    "candidates": []
-   },
-   {
-    "title": "Aura Paranormal",
-    "url": "https://brunswickbowling.com/products/balls/retired/aura-paranormal",
-    "candidates": []
-   },
-   {
-    "title": "Butterflies",
-    "url": "https://brunswickbowling.com/products/balls/current/butterflies",
-    "candidates": []
-   },
-   {
-    "title": "Edge Blue Pearl",
-    "url": "https://brunswickbowling.com/products/balls/retired/edge-blue-pearl",
-    "candidates": []
-   },
-   {
-    "title": "Edge Dark Purple Solid",
-    "url": "https://brunswickbowling.com/products/balls/retired/edge-dark-purple-solid",
-    "candidates": []
-   },
-   {
-    "title": "Fanatic BTU Pearl",
-    "url": "https://brunswickbowling.com/products/balls/retired/fanatic-btu-pearl",
-    "candidates": []
-   },
-   {
-    "title": "Flame",
-    "url": "https://brunswickbowling.com/products/balls/retired/flame",
-    "candidates": []
-   },
-   {
-    "title": "Flaming Skull",
-    "url": "https://brunswickbowling.com/products/balls/current/flaming-skull",
-    "candidates": []
-   },
-   {
-    "title": "Ivory Rhino Pro",
-    "url": "https://brunswickbowling.com/products/balls/retired/ivory-rhino-pro",
-    "candidates": []
-   },
-   {
-    "title": "Leopard",
-    "url": "https://brunswickbowling.com/products/balls/retired/leopard",
-    "candidates": []
-   },
-   {
-    "title": "Lizard Eye",
-    "url": "https://brunswickbowling.com/products/balls/current/lizard-eye",
-    "candidates": []
-   },
-   {
-    "title": "Medusa",
-    "url": "https://brunswickbowling.com/products/balls/retired/medusa",
-    "candidates": []
-   }
-  ]
- },
- {
   "source": "ebonite",
   "reason": "no-weight-specs",
   "n": 43,
@@ -657,92 +590,68 @@
  },
  {
   "source": "brunswick",
-  "reason": "no-weight-specs",
-  "n": 24,
+  "reason": "no-usbc",
+  "n": 26,
   "samples": [
    {
-    "title": "Crown Jewel",
-    "url": "https://brunswickbowling.com/products/balls/retired/crown-jewel",
-    "candidates": [
-     "brunswick-crown-jewel"
-    ]
+    "title": "Aura Mystic",
+    "url": "https://brunswickbowling.com/products/balls/retired/aura-mystic",
+    "candidates": []
    },
    {
-    "title": "Hearts",
-    "url": "https://brunswickbowling.com/products/balls/current/hearts",
-    "candidates": [
-     "brunswick-hearts"
-    ]
+    "title": "Aura Paranormal",
+    "url": "https://brunswickbowling.com/products/balls/retired/aura-paranormal",
+    "candidates": []
    },
    {
-    "title": "Igniter Solid",
-    "url": "https://brunswickbowling.com/products/balls/retired/igniter-solid",
-    "candidates": [
-     "brunswick-igniter-solid"
-    ]
+    "title": "Edge Blue Pearl",
+    "url": "https://brunswickbowling.com/products/balls/retired/edge-blue-pearl",
+    "candidates": []
    },
    {
-    "title": "Skull",
-    "url": "https://brunswickbowling.com/products/balls/retired/skull",
-    "candidates": [
-     "brunswick-skull"
-    ]
+    "title": "Edge Dark Purple Solid",
+    "url": "https://brunswickbowling.com/products/balls/retired/edge-dark-purple-solid",
+    "candidates": []
    },
    {
-    "title": "Team Brunswick",
-    "url": "https://brunswickbowling.com/products/balls/retired/team-brunswick",
-    "candidates": [
-     "brunswick-team-brunswick"
-    ]
+    "title": "Fanatic BTU Pearl",
+    "url": "https://brunswickbowling.com/products/balls/retired/fanatic-btu-pearl",
+    "candidates": []
    },
    {
-    "title": "TZone - Arctic Blast",
-    "url": "https://brunswickbowling.com/products/balls/retired/tzone-arctic-blast",
-    "candidates": [
-     "brunswick-t-zone-all-colors"
-    ]
+    "title": "Ivory Rhino Pro",
+    "url": "https://brunswickbowling.com/products/balls/retired/ivory-rhino-pro",
+    "candidates": []
    },
    {
-    "title": "TZone - Berry Blast",
-    "url": "https://brunswickbowling.com/products/balls/current/tzone-berry-blast",
-    "candidates": [
-     "brunswick-t-zone-all-colors"
-    ]
+    "title": "Melee Jab Special Edition",
+    "url": "https://brunswickbowling.com/products/balls/retired/melee-jab-special-edition",
+    "candidates": []
    },
    {
-    "title": "TZone - Black / Purple / Silver",
-    "url": "https://brunswickbowling.com/products/balls/current/tzone-black-purple-silver",
-    "candidates": [
-     "brunswick-t-zone-all-colors"
-    ]
+    "title": "Power Groove Reactive - Black / Pink Pearl",
+    "url": "https://brunswickbowling.com/products/balls/retired/power-groove-reactive-black-pink-pearl",
+    "candidates": []
    },
    {
-    "title": "TZone - Caribbean Blue",
-    "url": "https://brunswickbowling.com/products/balls/current/tzone-caribbean-blue",
-    "candidates": [
-     "brunswick-t-zone-all-colors"
-    ]
+    "title": "Power Groove Reactive - Blue / Red Pearl",
+    "url": "https://brunswickbowling.com/products/balls/retired/power-groove-reactive-blue-red-pearl",
+    "candidates": []
    },
    {
-    "title": "TZone - Deep Space",
-    "url": "https://brunswickbowling.com/products/balls/current/tzone-deep-space",
-    "candidates": [
-     "brunswick-t-zone-all-colors"
-    ]
+    "title": "Power Groove Reactive - Blue Pearl / Ivory",
+    "url": "https://brunswickbowling.com/products/balls/retired/power-groove-reactive-blue-pearl-ivory",
+    "candidates": []
    },
    {
-    "title": "TZone - Frozen Bliss",
-    "url": "https://brunswickbowling.com/products/balls/current/tzone-frozen-bliss",
-    "candidates": [
-     "brunswick-t-zone-all-colors"
-    ]
+    "title": "Power Groove Reactive - Lime / Lavender Pearl",
+    "url": "https://brunswickbowling.com/products/balls/retired/power-groove-reactive-lime-lavender-pearl",
+    "candidates": []
    },
    {
-    "title": "TZone - Galactic Sparkle",
-    "url": "https://brunswickbowling.com/products/balls/retired/tzone-galactic-sparkle",
-    "candidates": [
-     "brunswick-t-zone-all-colors"
-    ]
+    "title": "Power Groove Reactive - Merlot / Gold Pearl",
+    "url": "https://brunswickbowling.com/products/balls/retired/power-groove-reactive-merlot-gold-pearl",
+    "candidates": []
    }
   ]
  },
@@ -877,6 +786,97 @@
     "title": "Game Breaker 4 Pearl",
     "url": "https://ebonite.com/products/game-breaker-4-pearl",
     "candidates": []
+   }
+  ]
+ },
+ {
+  "source": "brunswick",
+  "reason": "no-weight-specs",
+  "n": 21,
+  "samples": [
+   {
+    "title": "Crown Jewel",
+    "url": "https://brunswickbowling.com/products/balls/retired/crown-jewel",
+    "candidates": [
+     "brunswick-crown-jewel"
+    ]
+   },
+   {
+    "title": "Igniter Solid",
+    "url": "https://brunswickbowling.com/products/balls/retired/igniter-solid",
+    "candidates": [
+     "brunswick-igniter-solid"
+    ]
+   },
+   {
+    "title": "TZone - Arctic Blast",
+    "url": "https://brunswickbowling.com/products/balls/retired/tzone-arctic-blast",
+    "candidates": [
+     "brunswick-t-zone-all-colors"
+    ]
+   },
+   {
+    "title": "TZone - Berry Blast",
+    "url": "https://brunswickbowling.com/products/balls/current/tzone-berry-blast",
+    "candidates": [
+     "brunswick-t-zone-all-colors"
+    ]
+   },
+   {
+    "title": "TZone - Black / Purple / Silver",
+    "url": "https://brunswickbowling.com/products/balls/current/tzone-black-purple-silver",
+    "candidates": [
+     "brunswick-t-zone-all-colors"
+    ]
+   },
+   {
+    "title": "TZone - Caribbean Blue",
+    "url": "https://brunswickbowling.com/products/balls/current/tzone-caribbean-blue",
+    "candidates": [
+     "brunswick-t-zone-all-colors"
+    ]
+   },
+   {
+    "title": "TZone - Deep Space",
+    "url": "https://brunswickbowling.com/products/balls/current/tzone-deep-space",
+    "candidates": [
+     "brunswick-t-zone-all-colors"
+    ]
+   },
+   {
+    "title": "TZone - Frozen Bliss",
+    "url": "https://brunswickbowling.com/products/balls/current/tzone-frozen-bliss",
+    "candidates": [
+     "brunswick-t-zone-all-colors"
+    ]
+   },
+   {
+    "title": "TZone - Galactic Sparkle",
+    "url": "https://brunswickbowling.com/products/balls/retired/tzone-galactic-sparkle",
+    "candidates": [
+     "brunswick-t-zone-all-colors"
+    ]
+   },
+   {
+    "title": "TZone - Gold Envy",
+    "url": "https://brunswickbowling.com/products/balls/retired/tzone-gold-envy",
+    "candidates": [
+     "brunswick-t-zone-all-colors"
+    ]
+   },
+   {
+    "title": "TZone - Indigo Swirl",
+    "url": "https://brunswickbowling.com/products/balls/current/tzone-indigo-swirl",
+    "candidates": [
+     "brunswick-t-zone-all-colors"
+    ]
+   },
+   {
+    "title": "TZone - Night Sky",
+    "url": "https://brunswickbowling.com/products/balls/current/tzone-night-sky",
+    "candidates": [
+     "brunswick-t-zone-all-colors"
+    ]
    }
   ]
  },
@@ -1095,6 +1095,69 @@
   ]
  },
  {
+  "source": "brunswick",
+  "reason": "variant",
+  "n": 7,
+  "samples": [
+   {
+    "title": "Karma Urethane",
+    "url": "https://brunswickbowling.com/products/balls/retired/karma-urethane",
+    "candidates": [
+     "brunswick-karma-urethane-solid"
+    ]
+   },
+   {
+    "title": "Method",
+    "url": "https://brunswickbowling.com/products/balls/retired/method",
+    "candidates": [
+     "brunswick-method-hybrid",
+     "brunswick-method-solid"
+    ]
+   },
+   {
+    "title": "Nexxus f(P+R)",
+    "url": "https://brunswickbowling.com/products/balls/retired/nexxus-fp-r",
+    "candidates": [
+     "brunswick-nexxus-f-pplusr-le-solid",
+     "brunswick-nexxus-f-pplusr-pearl",
+     "brunswick-nexxus-f-pplusr-solid"
+    ]
+   },
+   {
+    "title": "Purple Rhino Pro",
+    "url": "https://brunswickbowling.com/products/balls/current/purple-rhino-pro",
+    "candidates": [
+     "brunswick-purple-rhino-pro-2026",
+     "brunswick-purple-rhino-pro-legacy"
+    ]
+   },
+   {
+    "title": "Quantum Bias",
+    "url": "https://brunswickbowling.com/products/balls/retired/quantum-bias",
+    "candidates": [
+     "brunswick-quantum-bias-pearl",
+     "brunswick-quantum-bias-solid",
+     "brunswick-quantum-bias-urethane",
+     "brunswick-quantum-bias-urethane-blue"
+    ]
+   },
+   {
+    "title": "Rhino - Black / Green / Orange",
+    "url": "https://brunswickbowling.com/products/balls/retired/rhino-black-green-orange",
+    "candidates": [
+     "brunswick-rhino-black-green-orange-pearl"
+    ]
+   },
+   {
+    "title": "Uppercut",
+    "url": "https://brunswickbowling.com/products/balls/retired/uppercut",
+    "candidates": [
+     "brunswick-uppercut-pearl"
+    ]
+   }
+  ]
+ },
+ {
   "source": "motiv",
   "reason": "variant",
   "n": 7,
@@ -1195,61 +1258,6 @@
     "title": "Untamed Animal",
     "url": "https://trackbowling.com/products/untamed-animal",
     "candidates": []
-   }
-  ]
- },
- {
-  "source": "brunswick",
-  "reason": "variant",
-  "n": 6,
-  "samples": [
-   {
-    "title": "Karma Urethane",
-    "url": "https://brunswickbowling.com/products/balls/retired/karma-urethane",
-    "candidates": [
-     "brunswick-karma-urethane-solid"
-    ]
-   },
-   {
-    "title": "Method",
-    "url": "https://brunswickbowling.com/products/balls/retired/method",
-    "candidates": [
-     "brunswick-method-hybrid",
-     "brunswick-method-solid"
-    ]
-   },
-   {
-    "title": "Nexxus f(P+R)",
-    "url": "https://brunswickbowling.com/products/balls/retired/nexxus-fp-r",
-    "candidates": [
-     "brunswick-nexxus-f-pplusr-le-solid",
-     "brunswick-nexxus-f-pplusr-pearl",
-     "brunswick-nexxus-f-pplusr-solid"
-    ]
-   },
-   {
-    "title": "Quantum Bias",
-    "url": "https://brunswickbowling.com/products/balls/retired/quantum-bias",
-    "candidates": [
-     "brunswick-quantum-bias-pearl",
-     "brunswick-quantum-bias-solid",
-     "brunswick-quantum-bias-urethane",
-     "brunswick-quantum-bias-urethane-blue"
-    ]
-   },
-   {
-    "title": "Rhino - Black / Green / Orange",
-    "url": "https://brunswickbowling.com/products/balls/retired/rhino-black-green-orange",
-    "candidates": [
-     "brunswick-rhino-black-green-orange-pearl"
-    ]
-   },
-   {
-    "title": "Uppercut",
-    "url": "https://brunswickbowling.com/products/balls/retired/uppercut",
-    "candidates": [
-     "brunswick-uppercut-pearl"
-    ]
    }
   ]
  },

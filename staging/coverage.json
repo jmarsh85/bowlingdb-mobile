@@ -1,14 +1,22 @@
 {
-  "generated": "2026-10-20T16:19:27.062Z",
+  "generated": "2026-10-20T16:54:02.652Z",
   "since": 2021,
   "perSource": {
-    "ebonite": {
-      "pages": 216,
-      "parsed": 191,
-      "errors": 2,
+    "brunswick": {
+      "pages": 260,
+      "parsed": 231,
+      "errors": 29,
       "errorSample": [
-        "https://ebonite.com/products/real-one.json 429",
-        "https://ebonite.com/products/emerge.json 429"
+        "https://brunswickbowling.com/products/balls/current/team-brunswick-white 500",
+        "https://brunswickbowling.com/products/balls/current/sea-turtle 500",
+        "https://brunswickbowling.com/products/balls/current/retro-flowers 500",
+        "https://brunswickbowling.com/products/balls/retired/sunflower 500",
+        "https://brunswickbowling.com/products/balls/retired/sun-and-moon 500",
+        "https://brunswickbowling.com/products/balls/current/paint-splatter 500",
+        "https://brunswickbowling.com/products/balls/current/unicorn 500",
+        "https://brunswickbowling.com/products/balls/current/tie-dye-burst 500",
+        "https://brunswickbowling.com/products/balls/current/flaming-skull 500",
+        "https://brunswickbowling.com/products/balls/retired/medusa 500"
       ]
     }
   },
@@ -22,10 +30,10 @@
     },
     "Brunswick": {
       "all": 747,
-      "auto": 178,
-      "pending": 16,
+      "auto": 179,
+      "pending": 15,
       "recent": 111,
-      "recentAuto": 55
+      "recentAuto": 56
     },
     "Columbia 300": {
       "all": 553,
