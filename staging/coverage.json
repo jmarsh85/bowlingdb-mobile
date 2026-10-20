@@ -1,14 +1,14 @@
 {
-  "generated": "2026-10-20T12:27:24.496Z",
+  "generated": "2026-10-20T16:19:27.062Z",
   "since": 2021,
   "perSource": {
-    "hammer": {
-      "pages": 368,
-      "parsed": 199,
+    "ebonite": {
+      "pages": 216,
+      "parsed": 191,
       "errors": 2,
       "errorSample": [
-        "https://hammerbowling.com/products/raw-hammer-burn.json 429",
-        "https://hammerbowling.com/products/marshall-kent.json 429"
+        "https://ebonite.com/products/real-one.json 429",
+        "https://ebonite.com/products/emerge.json 429"
       ]
     }
   },
@@ -43,7 +43,7 @@
     },
     "Ebonite": {
       "all": 815,
-      "auto": 123,
+      "auto": 125,
       "pending": 21,
       "recent": 95,
       "recentAuto": 20

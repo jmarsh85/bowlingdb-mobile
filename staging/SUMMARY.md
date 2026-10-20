@@ -1,14 +1,14 @@
 # Spec bridge extract
 
-Staged 1743 ball pages: **1092 auto**, 642 pending, 6 duplicate, 2 outvoted.
+Staged 1746 ball pages: **1094 auto**, 643 pending, 6 duplicate, 2 outvoted.
 
 Rejected by you: 6 balls on the list, 1 staged rows set aside.
 
-Auto-applied by rule: same-name-reapproval 9, colourway 24, majority 1.
+Auto-applied by rule: same-name-reapproval 9, colourway 27, majority 1.
 
 | source | pages | ball pages | auto | pending | errors |
 |---|---|---|---|---|---|
-| hammer | 368 | 199 | 76 | 123 | 2 |
+| ebonite | 216 | 191 | 125 | 69 | 2 |
 
 | brand | USBC rows | specs (auto) | pending | 2021+ rows | 2021+ auto |
 |---|---|---|---|---|---|
@@ -16,7 +16,7 @@ Auto-applied by rule: same-name-reapproval 9, colourway 24, majority 1.
 | Brunswick | 747 | 178 | 16 | 111 | 55 |
 | Columbia 300 | 553 | 170 | 68 | 37 | 26 |
 | DV8 | 141 | 84 | 32 | 37 | 17 |
-| Ebonite | 815 | 123 | 21 | 95 | 20 |
+| Ebonite | 815 | 125 | 21 | 95 | 20 |
 | Hammer | 655 | 76 | 100 | 167 | 56 |
 | Motiv | 218 | 167 | 11 | 85 | 71 |
 | Radical | 165 | 122 | 1 | 70 | 53 |
@@ -24,7 +24,7 @@ Auto-applied by rule: same-name-reapproval 9, colourway 24, majority 1.
 | Storm | 1000 | 35 | 1 | 262 | 27 |
 | Track Inc. | 362 | 115 | 47 | 65 | 30 |
 
-Pending reasons: no-usbc 278, no-weight-specs 303, variant 44, out-of-range:16:RG=2.257 1, ambiguous 2, conflicting-sources 8, out-of-range:15:Diff=56 1, out-of-range:12:Diff=0.31 2, out-of-range:16:IntDiff=0.2 1, out-of-range:15:Diff=0.09 1, out-of-range:13:Diff=2.53 1
+Pending reasons: no-usbc 279, no-weight-specs 303, variant 44, out-of-range:16:RG=2.257 1, ambiguous 2, conflicting-sources 8, out-of-range:15:Diff=56 1, out-of-range:12:Diff=0.31 2, out-of-range:16:IntDiff=0.2 1, out-of-range:15:Diff=0.09 1, out-of-range:13:Diff=2.53 1
 
 | source | pending reason | count | e.g. |
 |---|---|---|---|
@@ -38,7 +38,7 @@ Pending reasons: no-usbc 278, no-weight-specs 303, variant 44, out-of-range:16:R
 | hammer | no-usbc | 27 | Blue Vibe; Cherry Vibe; Cobalt Vibe |
 | brunswick | no-weight-specs | 24 | Crown Jewel; Hearts; Igniter Solid |
 | motiv | no-usbc | 23 | Ascend - Green/Teal/Black; Ascent Pearl - Grn/Prp; Ascent Solid |
-| ebonite | no-usbc | 21 | Angry Birds; Bash - Purple / Yellow / Silver Pearl; Cyclone - Orange / Purple / Red |
+| ebonite | no-usbc | 22 | Angry Birds; Bash - Purple / Yellow / Silver Pearl; Cyclone - Orange / Purple / Red |
 | storm | no-usbc | 14 | ONYX POLYESTER; HUSTLE M-M; RG JESTER CLEAR POLYESTER |
 | columbia | variant | 11 | Aftershock Pearl; Messenger - Black; Messenger - Cherry |
 | dv8 | no-usbc | 10 | Diva Spare; Lime Luster Spare; Misfit - Magenta / Yellow |
