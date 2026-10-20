@@ -113,7 +113,11 @@ ok('weight limits surfaced', review.weightLimited.length >= 1);
 ok('shard per manufacturer',
    Object.keys(shards).length === new Set(entries.map(e => e.MFG)).size);
 ok('index is search-level only',
-   Object.keys(index[0]).sort().join(',') === 'c,i,k,m,n,t,y');
+   Object.keys(index[0]).sort().join(',') === (index[0].d ? 'c,d,i,k,m,n,t,y' : 'c,i,k,m,n,t,y'));
+// v30.208: approval month (YYYY-MM) for triage, only when USBC gave a date
+ok('index approval month is YYYY-MM of the approval date',
+   index.every(x => { const e = entries.find(y => y.CatalogID === x.i); const d = e && e.USBC.ApprovedDate;
+     return d ? x.d === d.slice(0, 7) && /^\d{4}-\d{2}$/.test(x.d) : !('d' in x); }));
 { /* v30.159: s:1 only on entries that have published specs */
   const id0 = entries[0].CatalogID;
   const ix = B.build(rows, { [id0]: { SpecsByWeight: { 15: { RG: 2.5, Diff: 0.05, IntDiff: null } } } }, '2026-09-15').index;
