@@ -36,7 +36,7 @@
 'use strict';
 
 /* v30.169: shown in the app header when it differs from the build's EXPECTED_CATALOG_JS */
-var CAT_VERSION  = 'v30.206';
+var CAT_VERSION  = 'v30.207';
 var CAT_BASE     = 'https://raw.githubusercontent.com/jmarsh85/bowlingdb-mobile/dist/';
 var CAT_DB       = 'BowlingDB_Catalog';
 var CAT_DB_VER   = 1;
@@ -1032,6 +1032,7 @@ function discontinuedOf(e, year) {
   var _st = stEntry(e.i); if (_st && _st.status === 'retired') return 'retired';   // v30.185: yours (manual or rejected)
   if (e.r === 1) return 'retired';
   if (e.r === 0) return null;
+  if (tgFresh().current[e.i]) return null;   // v30.207: you said it's still current
   var y = parseInt(e.y, 10), now = year || new Date().getFullYear();
   return isFinite(y) && y < now - 3 ? 'likely' : null;
 }
@@ -2569,9 +2570,46 @@ var REGION_KEY = 'bowlingdb_catalog_region_local';
 var REGION_WORDS = [['Overseas', /\boverseas\b/i], ['International', /\b(?:international|int'?l|intl|export)\b/i], ['Japan', /\b(?:japan|jpn)\b/i], ['Korea', /\b(?:korea|kor)\b/i],
   ['Asia', /\basia(?:n)?\b/i], ['Europe', /\b(?:europe|european|euro)\b/i], ['Australia', /\baustralia\b/i]];
 function regionFromText(t) { t = String(t || ''); for (var i = 0; i < REGION_WORDS.length; i++) if (REGION_WORDS[i][1].test(t)) return REGION_WORDS[i][0]; return null; }
-function regionTags() { var l = apLS(); try { return JSON.parse((l && l.getItem(REGION_KEY)) || '{}') || {}; } catch (e) { return {}; } }
-function regionTagSet(id, v) { var l = apLS(); if (!l) return; var m = regionTags(); if (v === undefined) delete m[id]; else m[id] = v; l.setItem(REGION_KEY, JSON.stringify(m)); }
-function regionOf(e) { if (!e) return null; var m = regionTags(); if (e.i in m) return m[e.i] || null; return regionFromText(e.n + ' ' + (e.c || '')); }
+var _rgC = null;
+var _rgRaw = null;   // parsed once per change (the raw string is compared: cheap, and safe if something else writes it)
+function rgFresh() { var l = apLS(), raw = (l && l.getItem(REGION_KEY)) || '{}'; if (_rgC && raw === _rgRaw) return _rgC; try { _rgC = JSON.parse(raw) || {}; } catch (e) { _rgC = {}; } _rgRaw = raw; return _rgC; }
+function regionTags() { return Object.assign({}, rgFresh()); }
+function regionTagSet(id, v) { var l = apLS(); if (!l) return; var m = regionTags(); if (v === undefined) delete m[id]; else m[id] = v; _rgC = null; l.setItem(REGION_KEY, JSON.stringify(m)); }
+function regionOf(e) { if (!e) return null; var m = rgFresh(); if (e.i in m) return m[e.i] || null;
+  var br = tgFresh().brandRegion[e.m]; if (br) return br;   // v30.207: a brand you set as a region's
+  return regionFromText(e.n + ' ' + (e.c || '')); }
+/* ---------- v30.207 triage ----------
+   bowlingdb_catalog_triage_local (this phone, in catalog backups):
+     current     { id: 1 }        balls you said are still made (no "likely discontinued")
+     brandRegion { brand: region } every ball of the brand is that region's release
+   Buckets (first that applies): discontinued (maker retired, or yours) > international > upcoming
+   (approved in the last 4 months, or a release date still ahead) > likely discontinued (approved
+   over 3 years ago, maker status unknown) > current. */
+var TRIAGE_KEY = 'bowlingdb_catalog_triage_local';
+var _tgC = null;   // read once: discontinuedOf / regionOf run for every row of a search
+var _tgRaw = null;
+function tgFresh() { var l = apLS(), raw = (l && l.getItem(TRIAGE_KEY)) || '{}'; if (_tgC && raw === _tgRaw) return _tgC; var o = {}; try { o = JSON.parse(raw) || {}; } catch (e) {} o.current = o.current || {}; o.brandRegion = o.brandRegion || {}; _tgC = o; _tgRaw = raw; return o; }
+function triageGet() { return JSON.parse(JSON.stringify(tgFresh())); }
+function triageSave(o) { var l = apLS(); _tgC = null; if (l) l.setItem(TRIAGE_KEY, JSON.stringify(o)); }
+/* Pure: months from 'YYYY-MM' to today's 'YYYY-MM' */
+function monthsSince(ym, today) { var a = /^(\d{4})-(\d{2})/.exec(ym || ''), b = /^(\d{4})-(\d{2})/.exec(today || ''); if (!a || !b) return null; return (+b[1] - +a[1]) * 12 + (+b[2] - +a[2]); }
+function upcomingOf(e, today, released) {
+  today = today || new Date().toISOString().slice(0, 10);
+  var rel = released || ((overrideFor(e.i) || {}).released) || null;
+  if (rel && String(rel).slice(0, 10) > today) return true;
+  var m = e.d ? monthsSince(e.d, today) : null;
+  return m != null && m >= 0 && m < 4 && !rel;
+}
+function triageOf(e, today, released) {
+  if (catIsRejected(e)) return 'rejected';
+  var d = discontinuedOf(e);
+  if (d === 'retired') return 'discontinued';
+  if (regionOf(e)) return 'international';
+  if (upcomingOf(e, today, released)) return 'upcoming';
+  if (d === 'likely') return 'likely';
+  return 'current';
+}
+/* v30.206: My balls lists your whole arsenal
 /* v30.206: My balls lists your whole arsenal (it showed only balls with fields left to review, so usually none) */
 function srvStateOf(p) {
   if (!p.entry) return { t: 'not linked to the catalog', c: 'var(--gold)' };
@@ -4682,7 +4720,7 @@ function catBackupBuild() {
     var st = stLocal(), rp = r[1];
     return { kind: 'bowlingdb-catalog-backup', v: 1, at: new Date(env.now()).toISOString(), app: (typeof APP_VERSION !== 'undefined' ? APP_VERSION : null), catalogJs: CAT_VERSION,
       covers: imgPicks(), cores: coreLinks(), files: r[0], scan: cbLSGet(SCAN_KEY, {}), makerLinks: cbLSGet(IMG_LINKS_KEY, null),
-      deviceCorrections: localOverrides(), status: { all: st.all, pending: st.pending, cleared: st.cleared }, released: rlLocal().all, regions: regionTags(),
+      deviceCorrections: localOverrides(), status: { all: st.all, pending: st.pending, cleared: st.cleared }, released: rlLocal().all, regions: regionTags(), triage: triageGet(),
       repo: rp && !rp.error ? rp : null, repoNote: !apToken() ? 'no token on this phone' : rp && rp.error ? rp.error : null };
   });
 }
@@ -4756,7 +4794,9 @@ function catBackupMerge(o) {
     var rl = rlLocal(); Object.keys(o.released || {}).forEach(function (id) { if (!rl.all[id]) { rl.all[id] = o.released[id]; out.status++; } });
     rlSaveLocal(rl);
     var rg = regionTags(), rgn = 0; Object.keys(o.regions || {}).forEach(function (id) { if (!(id in rg)) { rg[id] = o.regions[id]; rgn++; } });   // v30.206
-    if (rgn) l.setItem(REGION_KEY, JSON.stringify(rg));
+    if (rgn) { _rgC = null; l.setItem(REGION_KEY, JSON.stringify(rg)); }
+    if (o.triage) { var tg = triageGet(); Object.keys(o.triage.current || {}).forEach(function (id) { tg.current[id] = 1; });
+      Object.keys(o.triage.brandRegion || {}).forEach(function (b) { if (!(b in tg.brandRegion)) tg.brandRegion[b] = o.triage.brandRegion[b]; }); triageSave(tg); }
     return out;
   });
 }
@@ -5440,7 +5480,7 @@ root._catAPI = { catLoad: catLoad, byIdIn: byIdIn, cleanName: cleanName, esc: es
   apToken: apToken, apReadOverrides: apReadOverrides, apReadStaged: apReadStaged, srvStagedRow: srvStagedRow, catDetailRaw: catDetailRaw, detAsStaged: detAsStaged,
   apApplyOverride: apApplyOverride, catCorrectFor: catCorrectFor, catCorrectWithParsed: catCorrectWithParsed, catSaveCorrection: catSaveCorrection,
   brandSlug: brandSlug, catAddDetail: catAddDetail, normReleased: normReleased, catMineAsRead: catMineAsRead,
-  catRestoreCorrection: catRestoreCorrection, localOverrides: localOverrides, repoOverride: function (id) { return (_ovr && _ovr[id]) || null; },
+  catRestoreCorrection: catRestoreCorrection, triageGet: triageGet, triageSave: triageSave, triageOf: triageOf, upcomingOf: upcomingOf, monthsSince: monthsSince, localOverrides: localOverrides, repoOverride: function (id) { return (_ovr && _ovr[id]) || null; },
   regionOf: regionOf, regionTags: regionTags, regionTagSet: regionTagSet, regionFromText: regionFromText, imgPicks: imgPicks, imgPickSet: imgPickSet, REGIONS: REGION_WORDS.map(function (r) { return r[0]; }), AP_WEIGHTS: AP_WEIGHTS, version: CAT_VERSION }; root.catMyBallsOpen = catMyBallsOpen; root.catSaveCorrection = catSaveCorrection;
 root.catOldSearch = catOldSearch; root.catOldClose = catOldClose; root.catAddBlank = catAddBlank; root.catAddManual = catAddManual;
 root.catSpecReviewTab = catSpecReviewTab; root.catMissingCorrect = catMissingCorrect; root.catMissingFilter = catMissingFilter; root.catMissingPage = catMissingPage; root._ms = { msRows: msRows, oldMatchScore: oldMatchScore };
