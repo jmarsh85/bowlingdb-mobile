@@ -1,14 +1,14 @@
 # Spec bridge extract
 
-Staged 1719 ball pages: **1095 auto**, 615 pending, 6 duplicate, 2 outvoted.
+Staged 1720 ball pages: **1096 auto**, 615 pending, 6 duplicate, 2 outvoted.
 
 Rejected by you: 6 balls on the list, 1 staged rows set aside.
 
-Auto-applied by rule: same-name-reapproval 9, colourway 27, majority 1.
+Auto-applied by rule: same-name-reapproval 9, colourway 28, majority 1.
 
 | source | pages | ball pages | auto | pending | errors |
 |---|---|---|---|---|---|
-| brunswick | 260 | 231 | 179 | 54 | 29 |
+| track | 182 | 164 | 116 | 50 | 1 |
 
 | brand | USBC rows | specs (auto) | pending | 2021+ rows | 2021+ auto |
 |---|---|---|---|---|---|
@@ -22,7 +22,7 @@ Auto-applied by rule: same-name-reapproval 9, colourway 27, majority 1.
 | Radical | 165 | 122 | 1 | 70 | 53 |
 | Roto Grip | 469 | 18 | 3 | 133 | 17 |
 | Storm | 1000 | 35 | 1 | 262 | 27 |
-| Track Inc. | 362 | 115 | 47 | 65 | 30 |
+| Track Inc. | 362 | 116 | 47 | 65 | 31 |
 
 Pending reasons: no-usbc 253, no-weight-specs 300, variant 45, out-of-range:16:RG=2.257 1, ambiguous 2, conflicting-sources 8, out-of-range:15:Diff=56 1, out-of-range:12:Diff=0.31 2, out-of-range:16:IntDiff=0.2 1, out-of-range:15:Diff=0.09 1, out-of-range:13:Diff=2.53 1
 

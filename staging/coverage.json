@@ -1,22 +1,13 @@
 {
-  "generated": "2026-10-20T16:54:02.652Z",
+  "generated": "2026-10-20T23:33:59.093Z",
   "since": 2021,
   "perSource": {
-    "brunswick": {
-      "pages": 260,
-      "parsed": 231,
-      "errors": 29,
+    "track": {
+      "pages": 182,
+      "parsed": 164,
+      "errors": 1,
       "errorSample": [
-        "https://brunswickbowling.com/products/balls/current/team-brunswick-white 500",
-        "https://brunswickbowling.com/products/balls/current/sea-turtle 500",
-        "https://brunswickbowling.com/products/balls/current/retro-flowers 500",
-        "https://brunswickbowling.com/products/balls/retired/sunflower 500",
-        "https://brunswickbowling.com/products/balls/retired/sun-and-moon 500",
-        "https://brunswickbowling.com/products/balls/current/paint-splatter 500",
-        "https://brunswickbowling.com/products/balls/current/unicorn 500",
-        "https://brunswickbowling.com/products/balls/current/tie-dye-burst 500",
-        "https://brunswickbowling.com/products/balls/current/flaming-skull 500",
-        "https://brunswickbowling.com/products/balls/retired/medusa 500"
+        "https://trackbowling.com/products/paradox.json 429"
       ]
     }
   },
@@ -93,10 +84,10 @@
     },
     "Track Inc.": {
       "all": 362,
-      "auto": 115,
+      "auto": 116,
       "pending": 47,
       "recent": 65,
-      "recentAuto": 30
+      "recentAuto": 31
     }
   }
 }
