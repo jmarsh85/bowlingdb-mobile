@@ -175,6 +175,8 @@ function build(rows, specsByKey, listVersion) {
     n: e.BallName,
     c: e.Colorway,
     y: e.USBC.ApprovedDate ? e.USBC.ApprovedDate.slice(0, 4) : null,
+    /* v30.208 triage: approval month, so the app can tell a ball that is probably not out yet */
+    ...(e.USBC.ApprovedDate ? { d: e.USBC.ApprovedDate.slice(0, 7) } : {}),
     k: e.ModelKey,
     t: !!e.Images.Thumb,
     /* v30.159: published specs flag for the search-row dot; absent when none (keeps index small) */
