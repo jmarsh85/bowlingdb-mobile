@@ -9,7 +9,7 @@
    Uses catalog.js through root._catAPI only. Design: DESIGN_add_ball_flow sections 50-55. */
 (function (root) {
   'use strict';
-  var WB_VERSION = 'v30.207';
+  var WB_VERSION = 'v30.208';
   var A = root._catAPI;
   if (!A) { if (root.toast) root.toast('Workbench needs catalog.js ' + WB_VERSION); return; }
   var esc = A.esc, jsq = A.jsq, norm = A.norm, cleanName = A.cleanName;
@@ -190,7 +190,7 @@
         release: 'Held balls. A ball is ready with complete specs and a cover picture on this phone. Released balls show in Add a Ball here at once, and for everyone after the next catalog refresh.' }[_wb.tab];
       ov.innerHTML = '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 6px"><button style="' + A.BACK + '" onclick="wbClose()">\u2039</button>' +
         '<div style="flex:1;min-width:0"><div style="font-size:17px;font-weight:800;color:var(--t1)">Catalog workbench</div><div style="font-size:11px;color:var(--t3)">2021 and newer, plus yours \u00b7 ' + esc(_wb.busy || 'dev mode') + '</div></div>' +
-        '<button onclick="wbMore()" style="' + A.BTN_G + 'padding:7px 10px;font-size:12px">More</button></div>' +
+        '<button onclick="catUpdateOpen()" style="' + A.BTN_P + 'padding:7px 10px;font-size:12px">Update</button><button onclick="wbMore()" style="' + A.BTN_G + 'padding:7px 10px;font-size:12px">More</button></div>' + updLine() +
         '<div style="display:flex;gap:5px;padding:0 16px 8px">' + stat(c.scope, 'in scope', "wbTab('status')") + stat(c.held, 'held', "wbTab('release')") + stat(c.noSpecs, 'need specs', "wbTab('specs')") + stat(c.noPic, 'need picture', "wbTab('pictures')") + stat(c.ready + (c.checked < c.held ? '+' : ''), 'ready', "wbTab('release','ready')") + '</div>' +
         '<div style="display:flex;gap:6px;padding:0 16px 8px">' + tab('triage', 'Triage') + tab('specs', 'Specs') + tab('pictures', 'Pictures') + tab('status', 'Status') + tab('release', 'Release') + '</div>' +
         '<div style="display:flex;gap:6px;padding:0 16px 6px">' + sel('wb-g', _wb.group, [['', 'All brands']].concat(Object.keys(groups).sort().map(function (g) { return [g, g]; })), 'wbGroup') +
@@ -380,6 +380,7 @@
       if (root.toast) root.toast(n ? 'Released ' + n + ': now in Add a Ball' : 'Nothing ready to release');
     });
   }
+  function updLine() { var t = A.catUpdateLine ? A.catUpdateLine() : ''; return t ? '<div onclick="catUpdateOpen()" style="margin:0 16px 8px;padding:7px 10px;border-radius:9px;background:var(--bg2);border:1px solid rgba(0,217,217,0.3);font-size:12px;color:var(--t1);cursor:pointer">' + esc(t) + ' \u203a</div>' : ''; }
   function bucketName(k) { var b = BUCKETS.filter(function (x) { return x[0] === k; })[0]; return b ? b[1] : k; }
   function triageHTML(rows, c, stat, tab) {
     var own = ownedMap(), sc = wbScope(rows).filter(function (e) { return !A.catIsRejected(e); }), by = {}, held = {}, brands = {};
@@ -402,7 +403,7 @@
     var allBrands = {}; sc.forEach(function (e) { allBrands[e.m] = 1; });
     return '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 6px"><button style="' + A.BACK + '" onclick="wbClose()">\u2039</button>' +
         '<div style="flex:1;min-width:0"><div style="font-size:17px;font-weight:800;color:var(--t1)">Catalog workbench</div><div style="font-size:11px;color:var(--t3)">Triage \u00b7 ' + sc.length + ' balls in scope' + (_wb.busy ? ' \u00b7 ' + esc(_wb.busy) : '') + '</div></div>' +
-        '<button onclick="wbMore()" style="' + A.BTN_G + 'padding:7px 10px;font-size:12px">More</button></div>' +
+        '<button onclick="catUpdateOpen()" style="' + A.BTN_P + 'padding:7px 10px;font-size:12px">Update</button><button onclick="wbMore()" style="' + A.BTN_G + 'padding:7px 10px;font-size:12px">More</button></div>' + updLine() +
       '<div style="display:flex;gap:6px;padding:0 16px 8px">' + tab('triage', 'Triage') + tab('specs', 'Specs') + tab('pictures', 'Pictures') + tab('status', 'Status') + tab('release', 'Release') + '</div>' +
       '<div style="flex:1;overflow-y:auto;padding:0 16px 16px">' +
         '<div style="font-size:12px;color:var(--t2);line-height:1.5;margin-bottom:8px">Every ball sits in one bucket (the first that fits, top to bottom of the list below). Specs, Pictures and Release work only on <b>Current, US</b> and <b>Not out yet</b> unless you choose Show all there.</div>' +
@@ -532,6 +533,7 @@
       '<button class="btn btn-secondary" style="width:100%;margin-top:12px" onclick="closeModal()">Close</button>');
   }
 
+  root.wbRepaint = function () { if (document.getElementById('wb-ov')) paint(); };
   root.wbOpen = wbOpen; root.wbClose = wbClose; root.wbTab = wbTab; root.wbGroup = wbGroup; root.wbBrand = wbBrand; root.wbYear = wbYear; root.wbState = wbState;
   root.wbQ = wbQ; root.wbPage = wbPage; root.wbSel = wbSel; root.wbSelAll = wbSelAll; root.wbSelNone = wbSelNone; root.wbOpenBall = wbOpenBall; root.wbPaste = wbPaste;
   root.wbPdf = wbPdf; root.wbPdfs = wbPdfs; root.wbDrop = wbDrop; root.wbReview = wbReview; root.wbSaveAll = wbSaveAll; root.wbPictureTool = wbPictureTool;
