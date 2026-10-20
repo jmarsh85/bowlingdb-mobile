@@ -1,14 +1,14 @@
 # Spec bridge extract
 
-Staged 1740 ball pages: **1089 auto**, 642 pending, 6 duplicate, 2 outvoted.
+Staged 1743 ball pages: **1092 auto**, 642 pending, 6 duplicate, 2 outvoted.
 
-Rejected by you: 6 balls on the list, 4 staged rows set aside.
+Rejected by you: 6 balls on the list, 1 staged rows set aside.
 
 Auto-applied by rule: same-name-reapproval 9, colourway 24, majority 1.
 
 | source | pages | ball pages | auto | pending | errors |
 |---|---|---|---|---|---|
-| storm | 1790 | 74 | 57 | 18 | 0 |
+| hammer | 368 | 199 | 76 | 123 | 2 |
 
 | brand | USBC rows | specs (auto) | pending | 2021+ rows | 2021+ auto |
 |---|---|---|---|---|---|
@@ -17,7 +17,7 @@ Auto-applied by rule: same-name-reapproval 9, colourway 24, majority 1.
 | Columbia 300 | 553 | 170 | 68 | 37 | 26 |
 | DV8 | 141 | 84 | 32 | 37 | 17 |
 | Ebonite | 815 | 123 | 21 | 95 | 20 |
-| Hammer | 655 | 73 | 100 | 167 | 53 |
+| Hammer | 655 | 76 | 100 | 167 | 56 |
 | Motiv | 218 | 167 | 11 | 85 | 71 |
 | Radical | 165 | 122 | 1 | 70 | 53 |
 | Roto Grip | 469 | 18 | 3 | 133 | 17 |

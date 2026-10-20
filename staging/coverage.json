@@ -1,12 +1,15 @@
 {
-  "generated": "2026-10-20T05:46:41.516Z",
+  "generated": "2026-10-20T12:27:24.496Z",
   "since": 2021,
   "perSource": {
-    "storm": {
-      "pages": 1790,
-      "parsed": 74,
-      "errors": 0,
-      "errorSample": []
+    "hammer": {
+      "pages": 368,
+      "parsed": 199,
+      "errors": 2,
+      "errorSample": [
+        "https://hammerbowling.com/products/raw-hammer-burn.json 429",
+        "https://hammerbowling.com/products/marshall-kent.json 429"
+      ]
     }
   },
   "coverage": {
@@ -47,10 +50,10 @@
     },
     "Hammer": {
       "all": 655,
-      "auto": 73,
+      "auto": 76,
       "pending": 100,
       "recent": 167,
-      "recentAuto": 53
+      "recentAuto": 56
     },
     "Motiv": {
       "all": 218,
