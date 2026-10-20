@@ -36,7 +36,7 @@
 'use strict';
 
 /* v30.169: shown in the app header when it differs from the build's EXPECTED_CATALOG_JS */
-var CAT_VERSION  = 'v30.207';
+var CAT_VERSION  = 'v30.208';
 var CAT_BASE     = 'https://raw.githubusercontent.com/jmarsh85/bowlingdb-mobile/dist/';
 var CAT_DB       = 'BowlingDB_Catalog';
 var CAT_DB_VER   = 1;
@@ -2358,6 +2358,216 @@ function catVerifyApply(ballId) {
 if (typeof document !== 'undefined' && document.addEventListener) {
   document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible' && vfyActive()) vfyTick(); });
   setTimeout(function () { if (vfyActive()) { vfyPaint(); vfyArm(); vfyTick(); } }, 1500);
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible' && updActive()) updTick(); });
+  setTimeout(function () { if (updActive()) { updArm(); updTick(); } }, 1800);
+}
+
+/* ---------- v30.208 WB-5: Update catalog, one button ----------
+   One chain, kept in bdbgh_update so it resumes after the app is closed (polls every 15 s while open):
+     send     your status marks and releases go to the repo (status.json, released.json)
+     usbc     catalog-refresh: the new USBC list (new balls arrive held)
+     makers   specs-extract, one run per maker site you picked (sites with held balls needing specs)
+     approve  pauses for you: Spec approvals, then Publish (or Publish now)
+     publish  specs-publish (auto-matched + ticked rows, corrections)
+     rebuild  the catalog-refresh that publish starts (skipped by GitHub when specs didn't change)
+     download this phone downloads the new catalog; a summary of what changed
+   Runs are found as in Verify now: the first run of the workflow with an id above the newest one seen
+   just before the dispatch. One Update at a time; Verify now keeps its own chain. */
+var UPD_KEY = 'bdbgh_update';
+var UPD_STEPS = ['send', 'usbc', 'makers', 'approve', 'publish', 'rebuild', 'download'];
+var UPD_LABEL = { send: 'Send your changes', usbc: 'New USBC list', makers: 'Read maker sites', approve: 'Approve specs', publish: 'Publish', rebuild: 'Rebuild the catalog', download: 'Download to this phone' };
+var _updBusy = false, _updBusyAt = 0, _updTimer = null;
+function updState() { var l = apLS(); try { return JSON.parse((l && l.getItem(UPD_KEY)) || 'null'); } catch (e) { return null; } }
+function updSave(st) { var l = apLS(); if (l) { if (st) l.setItem(UPD_KEY, JSON.stringify(st)); else l.removeItem(UPD_KEY); } updPaint(); }
+function updActive() { var st = updState(); return st && st.v === 1 ? st : null; }
+/* Pure: maker sites worth reading: sources of in-scope held balls (not rejected) without RG / Diff, most first */
+function updSourcesFrom(rows, isHeld, hasSpecs, src) {
+  var n = {};
+  (rows || []).forEach(function (e) { if (e.a || !isHeld(e) || hasSpecs(e)) return; var s = src(e.m); if (s) n[s] = (n[s] || 0) + 1; });
+  return Object.keys(n).sort(function (a, b) { return n[b] - n[a] || a.localeCompare(b); }).map(function (k) { return { src: k, n: n[k] }; });
+}
+/* Pure: counts for the before / after summary */
+function updCounts(rows) {
+  var c = { total: 0, held: 0, fresh: 0, specs: 0 };
+  (rows || []).forEach(function (e) { if (e.a) return; c.total++; if (e.h) { c.held++; if (e.h === 2) c.fresh++; } if (e.s) c.specs++; });
+  return c;
+}
+function catUpdateOpen() {
+  if (typeof document === 'undefined') return;
+  if (!apToken()) { if (root.toast) root.toast('Add the GitHub token first (More \u203a Spec approvals)'); return; }
+  var el = document.getElementById('upd-ov'); if (el) el.parentNode.removeChild(el);
+  document.body.appendChild(overlay('upd-ov', 930));
+  if (updActive() && !updActive().done) { updPaint(); updTick(); return; }
+  catLoad().then(function (rows) {
+    _updPick = { srcs: updSourcesFrom(rows, catIsHeld, function (e) { return catIsRejected(e) || hlHasSpecs(e, overrideFor(e.i)); }, sourceForBrand), on: {} };
+    _updPick.srcs.slice(0, 3).forEach(function (x) { _updPick.on[x.src] = 1; });
+    updPaint();
+  });
+}
+var _updPick = null;
+function updPickToggle(src, on) { if (!_updPick) return; if (on) _updPick.on[src] = 1; else delete _updPick.on[src]; updPaint(); }
+function catUpdateStart() {
+  var srcs = _updPick ? _updPick.srcs.filter(function (x) { return _updPick.on[x.src]; }).map(function (x) { return x.src; }) : [];
+  catLoad().then(function (rows) {
+    updSave({ v: 1, at: env.now(), step: 'send', srcs: srcs, srcIdx: 0, log: {}, urls: {}, before: updCounts(rows) });
+    _updPick = null; updArm(); updTick();
+  });
+}
+function catUpdateStop() {
+  var st = updActive();
+  if (st && !st.done && root.confirm && !root.confirm('Stop following this update? Runs already started on GitHub keep going.')) return;
+  clearInterval(_updTimer); _updTimer = null; updSave(null);
+  var el = document.getElementById('upd-ov'); if (el && !st) el.parentNode.removeChild(el);
+}
+function catUpdateClose() { var el = document.getElementById('upd-ov'); if (el) el.parentNode.removeChild(el); if (typeof root.wbRepaint === 'function') root.wbRepaint(); }
+function catUpdatePublish() {   // from the approve step: send ticks, then publish
+  var st = updActive(); if (!st || st.step !== 'approve') return;
+  var q = Object.keys(apQueue()).length;
+  (q ? apFlush() : Promise.resolve(0)).catch(function () {}).then(function () {
+    var pb = 0, rb = 0;
+    return vfyLatestId('specs-publish.yml').then(function (id) { pb = id; return vfyLatestId('catalog-refresh.yml'); }).then(function (id) { rb = id; return apGH(''); })
+      .then(function (repo) { return apGH('/actions/workflows/specs-publish.yml/dispatches', { method: 'POST', body: { ref: repo.default_branch || 'main' } }); })
+      .then(function () { var s2 = updActive(); s2.pub = { base: pb, refreshBase: rb, at: env.now() }; s2.step = 'publish'; delete s2.waiting; updSave(s2); updTick(); });
+  }).catch(function (e) { var s2 = updActive(); if (s2) { s2.err = 'Publish did not start: ' + (e && e.status ? 'GitHub ' + e.status : 'offline'); s2.retry = 'approve'; updSave(s2); } });
+}
+function catUpdateRetry() {
+  var st = updActive(); if (!st) return;
+  if (st.retry === 'usbc') delete st.usbc; if (st.retry === 'makers') delete st.mk; if (st.retry === 'approve') st.step = 'approve'; if (st.retry === 'rebuild') delete st.rebuildRun;
+  delete st.err; delete st.retry; updSave(st); updTick();
+}
+function updDispatch(wf, inputs) {
+  var base = 0;
+  return vfyLatestId(wf).then(function (id) { base = id; return apGH(''); }).then(function (repo) {
+    return apGH('/actions/workflows/' + wf + '/dispatches', { method: 'POST', body: Object.assign({ ref: repo.default_branch || 'main' }, inputs ? { inputs: inputs } : {}) });
+  }).then(function () { return { base: base, at: env.now() }; });
+}
+/* follow one run: resolves 'wait' | 'done' | 'failed:<conclusion>' and notes its link */
+function updFollow(wf, run0, st, key, event) {
+  return vfyFindRun(wf, run0.base, event).then(function (run) {
+    if (!run) return env.now() - run0.at > VFY_START_GRACE_MS ? 'failed:did not start' : 'wait';
+    st.urls[key] = run.html_url;
+    if (run.status !== 'completed') return 'wait';
+    return run.conclusion === 'success' ? 'done' : 'failed:' + (run.conclusion || 'failed');
+  });
+}
+function updTick() {
+  var st = updActive();
+  if (!st || st.done || st.err || st.waiting === 'approve' && st.step === 'approve' || !apToken()) { updPaint(); return Promise.resolve(st); }
+  if (_updBusy && env.now() - _updBusyAt < VFY_BUSY_MAX_MS) return Promise.resolve(st);
+  _updBusy = true; _updBusyAt = env.now();
+  var go = function () {
+    if (st.step === 'send') {
+      return Promise.all([stSync().catch(function () { return {}; }), rlSync().catch(function () { return {}; })]).then(function (r) {
+        st.log.send = ((r[0] && r[0].sent) || 0) + ((r[1] && r[1].sent) || 0); st.step = 'usbc'; return true; });
+    }
+    if (st.step === 'usbc') {
+      if (!st.usbc) return updDispatch('catalog-refresh.yml').then(function (r) { st.usbc = r; return false; });
+      return updFollow('catalog-refresh.yml', st.usbc, st, 'usbc', 'workflow_dispatch').then(function (k) {
+        if (k === 'wait') return false;
+        if (k !== 'done') { st.err = 'catalog-refresh ' + k.slice(7) + '. Open it on GitHub for the reason, then Retry.'; st.retry = 'usbc'; return false; }
+        return catCheck({ force: true }).catch(function () {}).then(function () { return catLoad(); }).then(function (rows) { st.afterUsbc = updCounts(rows); st.step = 'makers'; return true; });
+      });
+    }
+    if (st.step === 'makers') {
+      if (st.srcIdx >= (st.srcs || []).length) { st.step = 'approve'; return Promise.resolve(true); }
+      var src = st.srcs[st.srcIdx], key = 'mk:' + src;
+      if (!st.mk) return updDispatch('specs-extract.yml', { only: src, limit: '0', since: '2021' }).then(function (r) { st.mk = r; return false; });
+      return updFollow('specs-extract.yml', st.mk, st, key, 'workflow_dispatch').then(function (k) {
+        if (k === 'wait') return false;
+        st.log[key] = k === 'done' ? 'done' : k.slice(7);   // a site that fails is noted; the others still run
+        delete st.mk; st.srcIdx++; return true;
+      });
+    }
+    if (st.step === 'approve') {
+      return apFetchIssue().then(function (is) { return apParseIssue(is.body); }, function () { return []; }).then(function (boxes) {
+        var q = apQueue(); st.boxes = boxes.length; st.ticked = boxes.filter(function (b) { return (b.tok in q) ? !!q[b.tok] : b.ticked; }).length;
+        st.waiting = 'approve'; return false;
+      });
+    }
+    if (st.step === 'publish') {
+      return updFollow('specs-publish.yml', st.pub, st, 'publish', 'workflow_dispatch').then(function (k) {
+        if (k === 'wait') return false;
+        if (k !== 'done') { st.err = 'specs-publish ' + k.slice(7) + '.'; st.retry = 'approve'; return false; }
+        return vfyFindRun('specs-publish.yml', st.pub.base, 'workflow_dispatch').then(function (run) { return apGH('/actions/runs/' + run.id + '/jobs'); }).then(function (j) {
+          var sx = []; ((j && j.jobs) || []).forEach(function (x) { sx = sx.concat(x.steps || []); });
+          var re = sx.filter(function (x) { return /catalog-refresh/i.test(x.name || ''); })[0];
+          st.unchanged = !!(re && re.conclusion === 'skipped');
+        }, function () {}).then(function () { st.step = 'rebuild'; return true; });
+      });
+    }
+    if (st.step === 'rebuild') {
+      if (st.unchanged) { st.log.rebuild = 'not needed'; st.step = 'download'; return Promise.resolve(true); }
+      return vfyFindRun('catalog-refresh.yml', st.pub.refreshBase, null).then(function (run) {
+        if (!run) { if (env.now() - st.pub.at > VFY_START_GRACE_MS) { st.log.rebuild = 'not started (nothing changed)'; st.step = 'download'; return true; } return false; }
+        st.urls.rebuild = run.html_url;
+        if (run.status !== 'completed') return false;
+        if (run.conclusion !== 'success') { st.err = 'catalog-refresh ' + (run.conclusion || 'failed') + ' after publish.'; st.retry = 'rebuild'; return false; }
+        st.step = 'download'; return true;
+      });
+    }
+    if (st.step === 'download') {
+      return catCheck({ force: true }).catch(function () {}).then(function () { return catLoad(); }).then(function (rows) { st.after = updCounts(rows); st.done = env.now(); return false; });
+    }
+    return Promise.resolve(false);
+  };
+  var loop = function () { return go().then(function (more) { return more && !st.done && !st.err ? loop() : null; }); };
+  return loop().catch(function (e) {
+    if (e && (e.status === 401 || e.status === 403 || e.status === 404)) st.err = 'GitHub ' + e.status + ': the token needs Actions read and write.';
+    else st.note = 'Offline or GitHub busy; trying again.';
+  }).then(function () {
+    var cur = updActive(); if (cur && cur.at === st.at) { if (!st.err && st.note && st.step !== cur.step) delete st.note; updSave(st); }
+    _updBusy = false; if (st.done && _updTimer) { clearInterval(_updTimer); _updTimer = null; }
+    return st;
+  });
+}
+function updArm() {
+  if (_updTimer || typeof setInterval !== 'function') return;
+  _updTimer = setInterval(function () { if (typeof document !== 'undefined' && document.visibilityState === 'hidden') return; var st = updActive(); if (!st || st.done) { clearInterval(_updTimer); _updTimer = null; return; } updTick(); }, VFY_POLL_MS);
+}
+/* one line for the workbench header; '' when nothing is running */
+function catUpdateLine() {
+  var st = updActive(); if (!st) return '';
+  if (st.done) return 'Update finished';
+  if (st.err) return 'Update stopped: ' + UPD_LABEL[st.step];
+  return (st.waiting === 'approve' ? 'Update waiting for you: ' : 'Updating: ') + UPD_LABEL[st.step] + (st.step === 'makers' && st.srcs[st.srcIdx] ? ' (' + st.srcs[st.srcIdx] + ')' : '');
+}
+function updPaint() {
+  if (typeof root.wbRepaint === 'function') try { root.wbRepaint(); } catch (e) {}
+  var ov = typeof document !== 'undefined' && document.getElementById('upd-ov'); if (!ov) return;
+  var st = updActive(), head = '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 8px"><button style="' + BACK + '" onclick="catUpdateClose()">\u2039</button>' +
+    '<div style="flex:1"><div style="font-size:17px;font-weight:800;color:var(--t1)">Update catalog</div><div style="font-size:11px;color:var(--t3)">USBC list, maker sites, publish, rebuild \u00b7 keeps going if you close this</div></div></div>';
+  if (!st) {
+    var p = _updPick;
+    ov.innerHTML = head + '<div style="flex:1;overflow-y:auto;padding:4px 16px 12px;font-size:13px;color:var(--t2);line-height:1.5">' +
+      '<div>One tap runs the whole update on GitHub and follows it here:</div><ol style="margin:6px 0 10px 18px;padding:0">' + UPD_STEPS.map(function (k) { return '<li>' + UPD_LABEL[k] + (k === 'approve' ? ' <span style="color:var(--t3)">(waits for you)</span>' : '') + '</li>'; }).join('') + '</ol>' +
+      '<div style="font-size:12px;font-weight:700;color:var(--t1);margin-top:6px">Maker sites to read</div><div style="font-size:12px;color:var(--t3)">Sites with held balls still needing specs (ball count). Each site takes a few minutes to half an hour; untick to skip.</div>' +
+      (p ? (p.srcs.length ? p.srcs.map(function (x) { return '<label style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border1)"><input type="checkbox" ' + (p.on[x.src] ? 'checked ' : '') + 'onchange="updPickToggle(\'' + jsq(x.src) + '\',this.checked)" style="width:20px;height:20px"><span style="flex:1;color:var(--t1)">' + esc(x.src) + '</span><span style="color:var(--t3)">' + x.n + '</span></label>'; }).join('') : '<div style="padding:8px 0">None: no held ball needing specs has a maker site in the bridge.</div>') : '<div style="padding:8px 0">Loading\u2026</div>') +
+      '</div><div style="padding:10px 16px;border-top:1px solid var(--border1)"><button style="' + BTN_P + 'width:100%;padding:12px" onclick="catUpdateStart()">Start update' + (p ? ' (' + Object.keys(p.on).length + ' site' + (Object.keys(p.on).length === 1 ? '' : 's') + ')' : '') + '</button></div>';
+    return;
+  }
+  var ix = UPD_STEPS.indexOf(st.step);
+  var link = function (u) { return u ? ' \u00b7 <a href="' + esc(u) + '" target="_blank" rel="noopener noreferrer" style="color:var(--teal)">on GitHub \u2197</a>' : ''; };
+  var row = function (k, i) {
+    var state = st.done || i < ix ? 'done' : i === ix ? (st.err ? 'err' : st.waiting === 'approve' && k === 'approve' ? 'you' : 'run') : 'todo';
+    var ic = { done: '<span style="color:var(--teal)">\u2713</span>', run: '<span style="color:var(--gold)">\u25cf</span>', you: '<span style="color:#7aa7ff">\u23f8</span>', err: '<span style="color:var(--red)">\u2715</span>', todo: '<span style="color:var(--t3)">\u25cb</span>' }[state];
+    var sub = '';
+    if (k === 'send' && st.log.send != null) sub = st.log.send + ' change' + (st.log.send === 1 ? '' : 's') + ' sent';
+    if (k === 'usbc') sub = (st.afterUsbc ? (st.afterUsbc.fresh - (st.before.fresh || 0) > 0 ? (st.afterUsbc.fresh - st.before.fresh) + ' new balls held for review' : 'no new balls') : state === 'run' ? 'running' : '') + link(st.urls.usbc);
+    if (k === 'makers') sub = (st.srcs.length ? st.srcs.map(function (x, j) { var lg = st.log['mk:' + x]; return esc(x) + ' ' + (lg === 'done' ? '\u2713' : lg ? '(' + esc(lg) + ')' : j === st.srcIdx && state === 'run' ? '\u2026' : ''); }).join(' \u00b7 ') : 'skipped') + (state === 'run' ? link(st.urls['mk:' + st.srcs[st.srcIdx]]) : '');
+    if (k === 'approve' && state === 'you') sub = (st.boxes || 0) + ' waiting in Spec approvals, ' + (st.ticked || 0) + ' ticked. Auto-matched rows and your corrections publish too.';
+    if (k === 'publish') sub = link(st.urls.publish);
+    if (k === 'rebuild') sub = (st.log.rebuild || '') + link(st.urls.rebuild);
+    return '<div style="display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--border1)"><div style="width:16px;text-align:center;font-size:14px">' + ic + '</div><div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:600;color:' + (state === 'todo' ? 'var(--t3)' : 'var(--t1)') + '">' + UPD_LABEL[k] + '</div>' +
+      (sub ? '<div style="font-size:12px;color:var(--t2);margin-top:2px;line-height:1.4">' + sub + '</div>' : '') + '</div></div>';
+  };
+  var sum = st.done && st.after ? '<div style="margin-top:10px;padding:10px;border-radius:10px;background:var(--bg2);border:1px solid var(--border1);font-size:13px;color:var(--t1);line-height:1.6">Done. ' +
+    'Catalog ' + st.before.total + ' \u2192 ' + st.after.total + ' balls \u00b7 held ' + st.before.held + ' \u2192 ' + st.after.held + ' \u00b7 with specs ' + st.before.specs + ' \u2192 ' + st.after.specs + '.</div>' : '';
+  var acts = st.err ? '<button style="' + BTN_P + 'flex:1;padding:11px" onclick="catUpdateRetry()">Retry</button>' :
+    st.waiting === 'approve' && st.step === 'approve' ? '<button style="' + BTN_G + 'flex:1;padding:11px" onclick="catApprovalsOpen()">Spec approvals</button><button style="' + BTN_P + 'flex:1;padding:11px" onclick="catUpdatePublish()">Publish now</button>' : '';
+  ov.innerHTML = head + '<div style="flex:1;overflow-y:auto;padding:0 16px 12px">' + UPD_STEPS.map(row).join('') +
+    (st.err ? '<div style="font-size:13px;color:var(--red);margin-top:8px">' + esc(st.err) + '</div>' : st.note ? '<div style="font-size:12px;color:var(--t3);margin-top:8px">' + esc(st.note) + '</div>' : '') + sum + '</div>' +
+    '<div style="display:flex;gap:8px;padding:10px 16px;border-top:1px solid var(--border1)">' + acts +
+    '<button style="' + BTN_G + 'flex:' + (acts ? '0 0 auto' : '1') + ';padding:11px" onclick="' + (st.done ? 'updSave(null);catUpdateClose()' : 'catUpdateStop()') + '">' + (st.done ? 'Close' : 'Stop following') + '</button></div>';
 }
 
 /* ---------- v30.173 CAT-NEW-8: Review my specs ----------
@@ -5469,7 +5679,8 @@ function catCompareAdd(x) {
 
 root.CATALOG_JS_VERSION = CAT_VERSION;
 root.catPasteWeights = catPasteWeights; root.catRecordChanged = catRecordChanged; root._wb2 = { parseWeightsText: parseWeightsText, apFieldSource: apFieldSource };
-root.catWorkbenchOpen = catWorkbenchOpen; root._srvState = function () { return _srv; }; root.catSpecReviewGo = catSpecReviewGo; root.catSpecReviewList = catSpecReviewList; root.srvShareMine = srvShareMine; root.catCorrectWithParsed = catCorrectWithParsed;
+root.catWorkbenchOpen = catWorkbenchOpen; root.catUpdateOpen = catUpdateOpen; root.catUpdateStart = catUpdateStart; root.catUpdateStop = catUpdateStop; root.catUpdateClose = catUpdateClose;
+root.catUpdatePublish = catUpdatePublish; root.catUpdateRetry = catUpdateRetry; root.updPickToggle = updPickToggle; root.updSave = updSave; root.updTick = updTick; root._upd = { sourcesFrom: updSourcesFrom, counts: updCounts, state: updActive }; root._srvState = function () { return _srv; }; root.catSpecReviewGo = catSpecReviewGo; root.catSpecReviewList = catSpecReviewList; root.srvShareMine = srvShareMine; root.catCorrectWithParsed = catCorrectWithParsed;
 /* v30.204 WB-3: what workbench.js uses (one place, so the internals stay private elsewhere) */
 root._catAPI = { catLoad: catLoad, byIdIn: byIdIn, cleanName: cleanName, esc: esc, jsq: jsq, norm: norm, thumbHTML: thumbHTML, overlay: overlay,
   BTN_P: BTN_P, BTN_G: BTN_G, BACK: BACK, CHIP: CHIP, CHIP_T: CHIP_T, CHIP_G: CHIP_G,
@@ -5480,7 +5691,7 @@ root._catAPI = { catLoad: catLoad, byIdIn: byIdIn, cleanName: cleanName, esc: es
   apToken: apToken, apReadOverrides: apReadOverrides, apReadStaged: apReadStaged, srvStagedRow: srvStagedRow, catDetailRaw: catDetailRaw, detAsStaged: detAsStaged,
   apApplyOverride: apApplyOverride, catCorrectFor: catCorrectFor, catCorrectWithParsed: catCorrectWithParsed, catSaveCorrection: catSaveCorrection,
   brandSlug: brandSlug, catAddDetail: catAddDetail, normReleased: normReleased, catMineAsRead: catMineAsRead,
-  catRestoreCorrection: catRestoreCorrection, triageGet: triageGet, triageSave: triageSave, triageOf: triageOf, upcomingOf: upcomingOf, monthsSince: monthsSince, localOverrides: localOverrides, repoOverride: function (id) { return (_ovr && _ovr[id]) || null; },
+  catRestoreCorrection: catRestoreCorrection, catUpdateLine: catUpdateLine, triageGet: triageGet, triageSave: triageSave, triageOf: triageOf, upcomingOf: upcomingOf, monthsSince: monthsSince, localOverrides: localOverrides, repoOverride: function (id) { return (_ovr && _ovr[id]) || null; },
   regionOf: regionOf, regionTags: regionTags, regionTagSet: regionTagSet, regionFromText: regionFromText, imgPicks: imgPicks, imgPickSet: imgPickSet, REGIONS: REGION_WORDS.map(function (r) { return r[0]; }), AP_WEIGHTS: AP_WEIGHTS, version: CAT_VERSION }; root.catMyBallsOpen = catMyBallsOpen; root.catSaveCorrection = catSaveCorrection;
 root.catOldSearch = catOldSearch; root.catOldClose = catOldClose; root.catAddBlank = catAddBlank; root.catAddManual = catAddManual;
 root.catSpecReviewTab = catSpecReviewTab; root.catMissingCorrect = catMissingCorrect; root.catMissingFilter = catMissingFilter; root.catMissingPage = catMissingPage; root._ms = { msRows: msRows, oldMatchScore: oldMatchScore };
