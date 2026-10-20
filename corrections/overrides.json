@@ -258,8 +258,8 @@
   "at": "2026-10-18"
  },
  "storm-hy-road-hybrid": {
-  "coverName": "R2S Solid",
-  "coverType": "Solid",
+  "coverName": "R2S Solid Reactive",
+  "coverType": "Reactive",
   "finish": "2000 Grit",
   "core": "Inverted Fe2",
   "coreType": "Symmetrical",
@@ -271,7 +271,7 @@
    }
   },
   "source": "other",
-  "at": "2026-10-19"
+  "at": "2026-10-20"
  },
  "storm-night-road": {
   "coverName": "ReX Pearl",
