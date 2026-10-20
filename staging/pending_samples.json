@@ -950,7 +950,7 @@
  {
   "source": "columbia",
   "reason": "variant",
-  "n": 12,
+  "n": 11,
   "samples": [
    {
     "title": "Aftershock Pearl",
@@ -987,9 +987,7 @@
     "url": "https://columbia300.com/products/pulse",
     "candidates": [
      "columbia-300-pulse-2025",
-     "columbia-300-pulse-clear-pin",
-     "columbia-300-pulse-hybrid",
-     "columbia-300-pulse-pearl"
+     "columbia-300-pulse-hybrid"
     ]
    },
    {
@@ -1000,13 +998,6 @@
      "columbia-300-scout-black-red",
      "columbia-300-scout-pearl-jade",
      "columbia-300-scout-purple"
-    ]
-   },
-   {
-    "title": "Scout Reactive - Black / Red",
-    "url": "https://columbia300.com/products/scout-reactive-black-red",
-    "candidates": [
-     "columbia-300-scout-reactive-black-red-pearl"
     ]
    },
    {
@@ -1041,8 +1032,7 @@
     "title": "Wicked",
     "url": "https://columbia300.com/products/wicked",
     "candidates": [
-     "columbia-300-wicked-encounter",
-     "columbia-300-wicked-ultra"
+     "columbia-300-wicked-encounter"
     ]
    }
   ]

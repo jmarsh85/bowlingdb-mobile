@@ -1,30 +1,30 @@
 # Spec bridge extract
 
-Staged 1739 ball pages: **1088 auto**, 643 pending, 6 duplicate, 2 outvoted.
+Staged 1740 ball pages: **1089 auto**, 642 pending, 6 duplicate, 2 outvoted.
 
-Rejected by you: 0 balls on the list (no status file found at /home/runner/work/bowlingdb-mobile/bowlingdb-mobile/corrections/status.json), 0 staged rows set aside.
+Rejected by you: 6 balls on the list, 4 staged rows set aside.
 
 Auto-applied by rule: same-name-reapproval 9, colourway 24, majority 1.
 
 | source | pages | ball pages | auto | pending | errors |
 |---|---|---|---|---|---|
-| motiv (kept 204 from last run) | 1 | 1 | 167 | 35 | 0 |
+| storm | 1790 | 74 | 57 | 18 | 0 |
 
-| brand | USBC rows | specs (auto) | pending | 2023+ rows | 2023+ auto |
+| brand | USBC rows | specs (auto) | pending | 2021+ rows | 2021+ auto |
 |---|---|---|---|---|---|
-| 900 Global | 376 | 4 | 0 | 69 | 4 |
-| Brunswick | 745 | 178 | 16 | 74 | 38 |
-| Columbia 300 | 553 | 170 | 73 | 20 | 15 |
-| DV8 | 139 | 84 | 32 | 24 | 17 |
-| Ebonite | 814 | 123 | 21 | 61 | 16 |
-| Hammer | 653 | 73 | 100 | 114 | 39 |
-| Motiv | 218 | 167 | 12 | 57 | 49 |
-| Radical | 162 | 122 | 1 | 43 | 36 |
-| Roto Grip | 469 | 18 | 3 | 89 | 13 |
-| Storm | 998 | 34 | 1 | 178 | 18 |
-| Track Inc. | 361 | 115 | 47 | 46 | 24 |
+| 900 Global | 376 | 4 | 0 | 123 | 4 |
+| Brunswick | 747 | 178 | 16 | 111 | 55 |
+| Columbia 300 | 553 | 170 | 68 | 37 | 26 |
+| DV8 | 141 | 84 | 32 | 37 | 17 |
+| Ebonite | 815 | 123 | 21 | 95 | 20 |
+| Hammer | 655 | 73 | 100 | 167 | 53 |
+| Motiv | 218 | 167 | 11 | 85 | 71 |
+| Radical | 165 | 122 | 1 | 70 | 53 |
+| Roto Grip | 469 | 18 | 3 | 133 | 17 |
+| Storm | 1000 | 35 | 1 | 262 | 27 |
+| Track Inc. | 362 | 115 | 47 | 65 | 30 |
 
-Pending reasons: no-usbc 278, no-weight-specs 303, variant 45, out-of-range:16:RG=2.257 1, ambiguous 2, conflicting-sources 8, out-of-range:15:Diff=56 1, out-of-range:12:Diff=0.31 2, out-of-range:16:IntDiff=0.2 1, out-of-range:15:Diff=0.09 1, out-of-range:13:Diff=2.53 1
+Pending reasons: no-usbc 278, no-weight-specs 303, variant 44, out-of-range:16:RG=2.257 1, ambiguous 2, conflicting-sources 8, out-of-range:15:Diff=56 1, out-of-range:12:Diff=0.31 2, out-of-range:16:IntDiff=0.2 1, out-of-range:15:Diff=0.09 1, out-of-range:13:Diff=2.53 1
 
 | source | pending reason | count | e.g. |
 |---|---|---|---|
@@ -40,7 +40,7 @@ Pending reasons: no-usbc 278, no-weight-specs 303, variant 45, out-of-range:16:R
 | motiv | no-usbc | 23 | Ascend - Green/Teal/Black; Ascent Pearl - Grn/Prp; Ascent Solid |
 | ebonite | no-usbc | 21 | Angry Birds; Bash - Purple / Yellow / Silver Pearl; Cyclone - Orange / Purple / Red |
 | storm | no-usbc | 14 | ONYX POLYESTER; HUSTLE M-M; RG JESTER CLEAR POLYESTER |
-| columbia | variant | 12 | Aftershock Pearl; Messenger - Black; Messenger - Cherry |
+| columbia | variant | 11 | Aftershock Pearl; Messenger - Black; Messenger - Cherry |
 | dv8 | no-usbc | 10 | Diva Spare; Lime Luster Spare; Misfit - Magenta / Yellow |
 | motiv | variant | 7 | Allegiant Sniper; Freestyle; Jackal |
 | track | no-usbc | 7 | 916 All Terrain; Arsenal Angular; Heat Red |
