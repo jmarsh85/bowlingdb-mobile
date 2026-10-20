@@ -9,7 +9,7 @@
    Uses catalog.js through root._catAPI only. Design: DESIGN_add_ball_flow sections 50-55. */
 (function (root) {
   'use strict';
-  var WB_VERSION = 'v30.206';
+  var WB_VERSION = 'v30.207';
   var A = root._catAPI;
   if (!A) { if (root.toast) root.toast('Workbench needs catalog.js ' + WB_VERSION); return; }
   var esc = A.esc, jsq = A.jsq, norm = A.norm, cleanName = A.cleanName;
@@ -17,7 +17,17 @@
   /* brands grouped by parent company (researched 10/18/26); the rest are their own group */
   var GROUPS = [['Brunswick', ['Brunswick', 'DV8', 'Radical', 'Ebonite', 'Hammer', 'Columbia 300', 'Track']], ['Storm', ['Storm', 'Roto Grip', '900 Global']]];
   var REQ = [['coverName', 'coverstock'], ['coverType', 'cover type'], ['finish', 'finish'], ['core', 'core'], ['coreType', 'core type'], ['released', 'release date']];
-  var _wb = { tab: 'specs', group: '', brand: '', year: '', state: '', q: '', page: 0, sel: {}, found: {}, det: {}, staged: null, busy: '' };
+  /* v30.207 triage: the work queue (Specs, Pictures, Release) is current US balls plus upcoming ones,
+     unless you choose Show all; Triage sorts the rest into buckets you can confirm in bulk */
+  var BUCKETS = [['current', 'Current, US', 'The work queue: approved in the last 3 years (or confirmed current by you or the maker), no region.'],
+    ['upcoming', 'Not out yet', 'Approved by USBC in the last 4 months with no release date yet, or a release date still ahead.'],
+    ['international', 'International', 'An Overseas / Japan / Korea / Int\u2019l\u2026 name, your region tag, or a brand you set as a region\u2019s.'],
+    ['likely', 'Likely discontinued', 'Approved over 3 years ago and the maker\u2019s site hasn\u2019t said either way. Confirm by brand below.'],
+    ['discontinued', 'Discontinued', 'The maker\u2019s site says retired, or you marked it.']];
+  var FOCUS_KEY = 'bowlingdb_wb_focus';
+  function focusOn() { try { return localStorage.getItem(FOCUS_KEY) !== 'all'; } catch (e) { return true; } }
+  function inQueue(e) { var b = A.triageOf(e); return b === 'current' || b === 'upcoming'; }
+  var _wb = { tab: 'triage', bucket: '', group: '', brand: '', year: '', state: '', q: '', page: 0, sel: {}, found: {}, det: {}, staged: null, busy: '' };
 
   /* ---------- v30.206 WB-4: change log with undo (this phone; the newest 60 changes) ----------
      Each bulk change records what it replaced: status entries, releases, corrections (phone or repo),
@@ -81,6 +91,8 @@
       if (_wb.brand && e.m !== _wb.brand) return false;
       if (_wb.year && (_wb.year === 'older' ? parseInt(e.y, 10) >= 2021 : String(e.y) !== _wb.year)) return false;
       if (q && norm(e.m + ' ' + e.n).indexOf(q) < 0) return false;
+      if (_wb.bucket && A.triageOf(e) !== _wb.bucket) return false;
+      if (!_wb.bucket && focusOn() && (_wb.tab === 'specs' || _wb.tab === 'pictures' || _wb.tab === 'release') && !inQueue(e)) return false;
       if (_wb.region) { var rg = A.regionOf(e); if (_wb.region === 'us' ? !!rg : _wb.region === 'intl' ? !rg : rg !== _wb.region) return false; }
       return passState(e);
     });
@@ -112,7 +124,8 @@
     var meta = '<div style="font-size:11px;color:var(--t3);margin-top:2px">' + dot('specs ' + st, sc) + ' \u00b7 ' + dot(pic ? 'picture' : 'no picture', pic ? 'var(--teal)' : 'var(--t3)') + ' \u00b7 ' + esc(stat) + '</div>';
     var rgn = A.regionOf(e);
     var chips = (own[e.i] ? '<span style="' + A.CHIP_T + '">YOURS</span>' : '') + (A.catIsHeld(e) ? '<span style="' + A.CHIP_G + '">' + (e.h === 2 ? 'NEW' : 'HELD') + '</span>' : '') +
-      (rgn ? '<span style="' + A.CHIP + 'color:#7aa7ff;border:1px solid rgba(122,167,255,0.45)">' + esc(rgn.toUpperCase()) + '</span>' : '');
+      (rgn ? '<span style="' + A.CHIP + 'color:#7aa7ff;border:1px solid rgba(122,167,255,0.45)">' + esc(rgn.toUpperCase()) + '</span>' : '') +
+      (function () { var k = A.triageOf(e); return k === 'upcoming' ? '<span style="' + A.CHIP_G + '">NOT OUT YET</span>' : k === 'likely' ? '<span style="' + A.CHIP_G + '">LIKELY DISC.</span>' : k === 'discontinued' ? '<span style="' + A.CHIP_G + '">DISCONTINUED</span>' : ''; })();
     var extra = '';
     if (_wb.tab === 'specs') {
       var bw = A.bowwwlLinks(e.m, cleanName(e.n)), a = function (u, t) { return '<a href="' + esc(u) + '" target="_blank" rel="noopener noreferrer" style="color:var(--teal);text-decoration:none">' + t + '</a>'; };
@@ -168,6 +181,9 @@
       else if (_wb.tab === 'pictures') bar = '<button onclick="wbCheckLinks()" style="' + A.BTN_G + 'flex:1;padding:10px;font-size:13px">Check picture links</button><button onclick="wbPictureTool()" style="' + A.BTN_P + 'flex:1;padding:10px;font-size:13px">Open the picture tool</button>';
       else if (_wb.tab === 'status') bar = '<button onclick="wbRegionAsk()" ' + (nSel ? '' : 'disabled ') + 'style="' + A.BTN_G + 'flex:1;padding:10px 4px;font-size:12px;' + (nSel ? '' : 'opacity:.45') + '">Region</button>' + ['discontinue', 'reject', 'restore'].map(function (k) { return '<button onclick="wbStatus(\'' + k + '\')" ' + (nSel ? '' : 'disabled ') + 'style="' + (k === 'reject' ? A.BTN_G + 'color:var(--red);' : A.BTN_G) + 'flex:1;padding:10px 4px;font-size:12px;' + (nSel ? '' : 'opacity:.45') + '">' + { discontinue: 'Discontinue', reject: 'Reject', restore: 'Restore' }[k] + ' ' + nSel + '</button>'; }).join('');
       else bar = '<button onclick="wbSelectReady()" style="' + A.BTN_G + 'flex:1;padding:10px;font-size:13px">Tick all ready</button><button onclick="wbRelease()" ' + (nSel ? '' : 'disabled ') + 'style="' + A.BTN_P + 'flex:1;padding:10px;font-size:13px;' + (nSel ? '' : 'opacity:.45') + '">Release ' + nSel + '</button>';
+      if (_wb.tab === 'triage') { ov.innerHTML = triageHTML(rows, c, stat, tab); return; }
+      var qline = _wb.bucket ? '<div style="padding:0 16px 6px;font-size:12px;color:var(--t2)">Bucket: <b>' + esc(bucketName(_wb.bucket)) + '</b> \u00b7 <span onclick="wbBucket(\'\')" style="color:var(--teal);cursor:pointer">clear</span></div>' :
+        (_wb.tab === 'specs' || _wb.tab === 'pictures' || _wb.tab === 'release') ? '<div style="padding:0 16px 6px;font-size:12px;color:var(--t2)">' + (focusOn() ? 'Work queue: current US balls and ones not out yet \u00b7 <span onclick="wbFocus(false)" style="color:var(--teal);cursor:pointer">Show all</span>' : 'Showing every ball \u00b7 <span onclick="wbFocus(true)" style="color:var(--teal);cursor:pointer">Work queue only</span>') + '</div>' : '';
       var help = { specs: 'Held balls that still need specs. Paste or PDF on a row reads a page for that ball; <b>Pick PDFs</b> takes several saved pages at once and puts each on its ball. Check a row\u2019s read with Review, then <b>Save all found</b>. Tap a ball to edit it; saving opens the next one.',
         pictures: 'Balls with no cover picture saved on this phone. The picture tool does the work (Find, Paste, Photo, Check bowwwl for all, Save all found). <b>Check picture links</b> loads every saved link and offers to clear the ones that no longer load.',
         status: 'Tick balls to discontinue, reject (needs a reason), restore, or set their <b>Region</b>. You see what will change before it does; balls you own are never changed in bulk. Every change can be undone: More \u203a Change log.',
@@ -176,14 +192,14 @@
         '<div style="flex:1;min-width:0"><div style="font-size:17px;font-weight:800;color:var(--t1)">Catalog workbench</div><div style="font-size:11px;color:var(--t3)">2021 and newer, plus yours \u00b7 ' + esc(_wb.busy || 'dev mode') + '</div></div>' +
         '<button onclick="wbMore()" style="' + A.BTN_G + 'padding:7px 10px;font-size:12px">More</button></div>' +
         '<div style="display:flex;gap:5px;padding:0 16px 8px">' + stat(c.scope, 'in scope', "wbTab('status')") + stat(c.held, 'held', "wbTab('release')") + stat(c.noSpecs, 'need specs', "wbTab('specs')") + stat(c.noPic, 'need picture', "wbTab('pictures')") + stat(c.ready + (c.checked < c.held ? '+' : ''), 'ready', "wbTab('release','ready')") + '</div>' +
-        '<div style="display:flex;gap:6px;padding:0 16px 8px">' + tab('specs', 'Specs') + tab('pictures', 'Pictures') + tab('status', 'Status') + tab('release', 'Release') + '</div>' +
+        '<div style="display:flex;gap:6px;padding:0 16px 8px">' + tab('triage', 'Triage') + tab('specs', 'Specs') + tab('pictures', 'Pictures') + tab('status', 'Status') + tab('release', 'Release') + '</div>' +
         '<div style="display:flex;gap:6px;padding:0 16px 6px">' + sel('wb-g', _wb.group, [['', 'All brands']].concat(Object.keys(groups).sort().map(function (g) { return [g, g]; })), 'wbGroup') +
           sel('wb-b', _wb.brand, [['', _wb.group ? 'All ' + _wb.group : 'Brand']].concat(Object.keys(brands).sort().map(function (b) { return [b, b]; })), 'wbBrand') + '</div>' +
         '<div style="display:flex;gap:6px;padding:0 16px 6px">' + sel('wb-y', _wb.year, [['', 'Any year']].concat(Object.keys(years).sort().reverse().map(function (y) { return [y, y]; })).concat(_wb.tab === 'status' || _wb.tab === 'pictures' ? [['older', 'Before 2021 (yours)']] : []), 'wbYear') +
           sel('wb-s', _wb.state, stateOptions(), 'wbState') + '</div>' +
         '<div style="display:flex;gap:6px;padding:0 16px 6px">' + '<div style="flex:0 0 38%;display:flex">' + sel('wb-r', _wb.region || '', [['', 'Any region'], ['us', 'US releases'], ['intl', 'International (any)']].concat(A.REGIONS.map(function (r) { return [r, r]; })), 'wbRegion') + '</div>' +
           '<input class="bdet-field-input" type="search" placeholder="Search brand or name" value="' + esc(_wb.q) + '" oninput="wbQ(this.value)" style="flex:1;min-width:0;box-sizing:border-box;font-size:15px"></div>' +
-        '<div style="padding:0 16px 4px;font-size:12px;color:var(--t2);display:flex;align-items:center;gap:8px"><span style="flex:1">' + list.length + ' ball' + (list.length === 1 ? '' : 's') + (_wb.tab === 'release' || _wb.tab === 'status' ? ' \u00b7 ' + nSel + ' ticked' : '') + '</span>' +
+        qline + '<div style="padding:0 16px 4px;font-size:12px;color:var(--t2);display:flex;align-items:center;gap:8px"><span style="flex:1">' + list.length + ' ball' + (list.length === 1 ? '' : 's') + (_wb.tab === 'release' || _wb.tab === 'status' ? ' \u00b7 ' + nSel + ' ticked' : '') + '</span>' +
           (_wb.tab === 'status' ? '<span onclick="wbSelAll()" style="color:var(--teal);cursor:pointer">Select all ' + list.length + '</span> \u00b7 <span onclick="wbSelNone()" style="color:var(--teal);cursor:pointer">None</span>' : '') + '</div>' +
         '<div id="wb-list" style="flex:1;overflow-y:auto;padding:0 16px 10px">' + (shown.length ? shown.map(function (e) { return rowHTML(e, own); }).join('') : '<div style="padding:30px 0;text-align:center;color:var(--t2);font-size:13px">Nothing here with these filters.</div>') +
           '<div style="font-size:11px;color:var(--t3);line-height:1.5;margin-top:10px">' + help + '</div></div>' +
@@ -197,7 +213,7 @@
   function wbOpen(opt) {
     if (typeof document === 'undefined') return;
     var mb = document.getElementById('modal-bg'); if (mb && mb.classList.contains('open') && root.closeModal) root.closeModal();
-    wbClose(); opt = opt || {}; if (opt.tab) _wb.tab = opt.tab; _wb.page = 0; _wb.sel = {};
+    wbClose(); opt = opt || {}; if (opt.tab) _wb.tab = opt.tab;   // remembers the last tab; Triage the first time _wb.page = 0; _wb.sel = {};
     document.body.appendChild(A.overlay('wb-ov', 905)); paint();
     if (A.apToken()) {
       A.apReadOverrides().then(paint, function () {});
@@ -205,7 +221,7 @@
     }
   }
   function wbClose() { var el = document.getElementById('wb-ov'); if (el) el.parentNode.removeChild(el); }
-  function wbTab(k, st) { _wb.tab = k; _wb.state = st || ''; _wb.page = 0; _wb.sel = {}; paint(); }
+  function wbTab(k, st) { _wb.tab = k; _wb.state = st || ''; _wb.bucket = ''; _wb.page = 0; _wb.sel = {}; paint(); }
   function wbGroup(v) { _wb.group = v; _wb.brand = ''; _wb.page = 0; paint(); }
   function wbBrand(v) { _wb.brand = v; _wb.page = 0; paint(); }
   function wbYear(v) { _wb.year = v; _wb.page = 0; paint(); }
@@ -364,12 +380,77 @@
       if (root.toast) root.toast(n ? 'Released ' + n + ': now in Add a Ball' : 'Nothing ready to release');
     });
   }
+  function bucketName(k) { var b = BUCKETS.filter(function (x) { return x[0] === k; })[0]; return b ? b[1] : k; }
+  function triageHTML(rows, c, stat, tab) {
+    var own = ownedMap(), sc = wbScope(rows).filter(function (e) { return !A.catIsRejected(e); }), by = {}, held = {}, brands = {};
+    BUCKETS.forEach(function (b) { by[b[0]] = 0; held[b[0]] = 0; });
+    sc.forEach(function (e) { var k = A.triageOf(e); if (!(k in by)) return; by[k]++; if (A.catIsHeld(e)) held[k]++; if (k === 'likely') { var m = brands[e.m] = brands[e.m] || { n: 0, mine: 0 }; m.n++; if (own[e.i]) m.mine++; } });
+    var noD = !sc.some(function (e) { return e.d; });
+    var card = function (b) {
+      return '<div style="padding:10px 12px;border:1px solid var(--border1);border-radius:12px;background:var(--bg2);margin-bottom:8px"><div style="display:flex;align-items:baseline;gap:8px"><div style="flex:1;font-size:14px;font-weight:700;color:var(--t1)">' + esc(b[1]) + '</div>' +
+        '<div style="font-size:16px;font-weight:800;color:var(--t1)">' + by[b[0]] + '</div></div>' +
+        '<div style="font-size:12px;color:var(--t3);margin-top:2px;line-height:1.4">' + esc(b[2]) + '</div>' +
+        '<div style="display:flex;align-items:center;gap:8px;margin-top:6px"><span style="flex:1;font-size:12px;color:var(--t2)">' + held[b[0]] + ' held for review</span>' +
+        '<button style="' + A.BTN_G + 'padding:6px 10px;font-size:12px" onclick="wbBucket(\'' + b[0] + '\')">Show</button></div>' +
+        (b[0] === 'upcoming' && noD ? '<div style="font-size:11px;color:var(--gold);margin-top:4px">Approval months arrive with the next catalog refresh; until then only release dates count.</div>' : '') + '</div>';
+    };
+    var bl = Object.keys(brands).sort(function (a, b) { return brands[b].n - brands[a].n; });
+    var brandRows = bl.map(function (m) { var x = brands[m];
+      return '<div style="display:flex;align-items:center;gap:6px;padding:7px 0;border-bottom:1px solid var(--border1)"><div style="flex:1;min-width:0;font-size:13px;color:var(--t1)">' + esc(m) + ' <span style="color:var(--t3)">' + x.n + (x.mine ? ' \u00b7 ' + x.mine + ' yours (left alone)' : '') + '</span></div>' +
+        '<button style="' + A.BTN_G + 'padding:5px 8px;font-size:11px" onclick="wbLikely(\'' + jsq(m) + '\',\'disc\')">Discontinued</button><button style="' + A.BTN_G + 'padding:5px 8px;font-size:11px" onclick="wbLikely(\'' + jsq(m) + '\',\'current\')">Still made</button></div>'; }).join('');
+    var tg = A.triageGet(), rules = Object.keys(tg.brandRegion);
+    var allBrands = {}; sc.forEach(function (e) { allBrands[e.m] = 1; });
+    return '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 6px"><button style="' + A.BACK + '" onclick="wbClose()">\u2039</button>' +
+        '<div style="flex:1;min-width:0"><div style="font-size:17px;font-weight:800;color:var(--t1)">Catalog workbench</div><div style="font-size:11px;color:var(--t3)">Triage \u00b7 ' + sc.length + ' balls in scope' + (_wb.busy ? ' \u00b7 ' + esc(_wb.busy) : '') + '</div></div>' +
+        '<button onclick="wbMore()" style="' + A.BTN_G + 'padding:7px 10px;font-size:12px">More</button></div>' +
+      '<div style="display:flex;gap:6px;padding:0 16px 8px">' + tab('triage', 'Triage') + tab('specs', 'Specs') + tab('pictures', 'Pictures') + tab('status', 'Status') + tab('release', 'Release') + '</div>' +
+      '<div style="flex:1;overflow-y:auto;padding:0 16px 16px">' +
+        '<div style="font-size:12px;color:var(--t2);line-height:1.5;margin-bottom:8px">Every ball sits in one bucket (the first that fits, top to bottom of the list below). Specs, Pictures and Release work only on <b>Current, US</b> and <b>Not out yet</b> unless you choose Show all there.</div>' +
+        ['current', 'upcoming', 'international', 'likely', 'discontinued'].map(function (k) { return card(BUCKETS.filter(function (b) { return b[0] === k; })[0]); }).join('') +
+        '<div style="font-size:13px;font-weight:700;color:var(--t1);margin:14px 0 2px">Likely discontinued, by brand</div>' +
+        '<div style="font-size:12px;color:var(--t3);line-height:1.4">One tap settles a whole brand: <b>Discontinued</b> marks them (as your manual mark, synced with the GitHub token); <b>Still made</b> moves them to Current. Your own balls are never changed. Undo: More \u203a Change log.</div>' +
+        (brandRows || '<div style="font-size:12px;color:var(--t2);padding:8px 0">Nothing likely discontinued.</div>') +
+        '<div style="font-size:13px;font-weight:700;color:var(--t1);margin:16px 0 2px">Brands that are a region\u2019s</div>' +
+        '<div style="font-size:12px;color:var(--t3);line-height:1.4">For a brand that only sells outside the US: every one of its balls counts as that region\u2019s release.</div>' +
+        rules.map(function (b) { return '<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border1)"><div style="flex:1;font-size:13px;color:var(--t1)">' + esc(b) + ' \u2192 ' + esc(tg.brandRegion[b]) + '</div><button style="' + A.BTN_G + 'padding:5px 9px;font-size:11px" onclick="wbBrandRegion(\'' + jsq(b) + '\',null)">Remove</button></div>'; }).join('') +
+        '<div style="display:flex;gap:6px;margin-top:8px"><select id="wb-br-b" class="bdet-field-input" style="flex:1;min-width:0;font-size:13px;padding:7px 6px"><option value="">Brand</option>' + Object.keys(allBrands).sort().map(function (b) { return '<option>' + esc(b) + '</option>'; }).join('') + '</select>' +
+        '<select id="wb-br-r" class="bdet-field-input" style="flex:1;min-width:0;font-size:13px;padding:7px 6px">' + A.REGIONS.map(function (r) { return '<option>' + esc(r) + '</option>'; }).join('') + '</select>' +
+        '<button style="' + A.BTN_P + 'padding:7px 10px;font-size:12px" onclick="wbBrandRegion(document.getElementById(\'wb-br-b\').value,document.getElementById(\'wb-br-r\').value)">Set</button></div>' +
+      '</div>';
+  }
+  function wbBucket(k) { _wb.bucket = k; if (k) { if (_wb.tab === 'triage') _wb.tab = 'status'; } _wb.page = 0; _wb.sel = {}; paint(); }
+  function wbFocus(on) { try { localStorage.setItem(FOCUS_KEY, on ? 'queue' : 'all'); } catch (e) {} _wb.page = 0; paint(); }
+  /* a whole brand of likely-discontinued balls, one way or the other (never yours) */
+  function wbLikely(brand, how) {
+    A.catLoad().then(function (rows) {
+      var own = ownedMap(), list = wbScope(rows).filter(function (e) { return e.m === brand && !own[e.i] && A.triageOf(e) === 'likely'; });
+      if (!list.length) return;
+      if (list.length > 25 && root.confirm && !root.confirm((how === 'disc' ? 'Mark ' : 'Keep ') + list.length + ' ' + brand + ' balls ' + (how === 'disc' ? 'discontinued' : 'as still made') + '?')) return;
+      if (how === 'disc') {
+        var items = list.map(function (e) { return { id: e.i, n: cleanName(e.n), before: cp(A.stEntry(e.i)) }; });
+        list.forEach(function (e) { A.stSet(e.i, { status: 'retired', reason: 'manual', at: A.stToday(), n: cleanName(e.n), m: e.m }, false); });
+        A.stSaveLocal(A.stLocal()); A.stQueueSync(); logAdd('status', 'Marked discontinued ' + list.length + ' (' + brand + ')', items);
+      } else {
+        var tg = A.triageGet(), it2 = list.map(function (e) { return { id: e.i, n: cleanName(e.n), had: !!tg.current[e.i] }; });
+        list.forEach(function (e) { tg.current[e.i] = 1; }); A.triageSave(tg); logAdd('current', 'Still made ' + list.length + ' (' + brand + ')', it2);
+      }
+      paint(); if (root.toast) root.toast((how === 'disc' ? 'Discontinued: ' : 'Still made: ') + list.length + ' ' + brand);
+    });
+  }
+  function wbBrandRegion(brand, region) {
+    if (!brand) { if (root.toast) root.toast('Choose a brand'); return; }
+    var tg = A.triageGet(), had = brand in tg.brandRegion, before = tg.brandRegion[brand];
+    if (region) tg.brandRegion[brand] = region; else delete tg.brandRegion[brand];
+    A.triageSave(tg); logAdd('brandregion', region ? brand + ' \u2192 ' + region : brand + ': region rule removed', [{ id: brand, n: brand, had: had, before: before }]); paint();
+  }
   function wbUndo(lid) {
     var l = logAll(), en = l.filter(function (x) { return x.id === lid; })[0]; if (!en || en.undone) return;
     var done = function () { en.undone = new Date().toISOString(); logSave(l); _wb.det = {}; wbLogPaint(); paint(); if (root.toast) root.toast('Undone: ' + en.label); };
     if (en.kind === 'status') { en.items.forEach(function (x) { A.stSet(x.id, x.before || null, false); }); A.stSaveLocal(A.stLocal()); A.stQueueSync(); return done(); }
     if (en.kind === 'release') { var o = A.rlLocal(); en.items.forEach(function (x) { delete o.all[x.id]; o.pending[x.id] = Date.now() + Math.random(); }); A.rlSaveLocal(o); A.rlQueueSync(); return done(); }
     if (en.kind === 'region') { en.items.forEach(function (x) { A.regionTagSet(x.id, x.had ? x.before : undefined); }); return done(); }
+    if (en.kind === 'current') { var tg = A.triageGet(); en.items.forEach(function (x) { if (!x.had) delete tg.current[x.id]; }); A.triageSave(tg); return done(); }
+    if (en.kind === 'brandregion') { var tb = A.triageGet(); en.items.forEach(function (x) { if (x.had) tb.brandRegion[x.id] = x.before; else delete tb.brandRegion[x.id]; }); A.triageSave(tb); return done(); }
     if (en.kind === 'pictures') { en.items.forEach(function (x) { A.imgPickSet(x.id, x.url); }); return done(); }
     if (en.kind === 'specs') {
       en.items.reduce(function (p, x) { return p.then(function () { return A.catRestoreCorrection(x.id, x.store, x.before); }); }, Promise.resolve())
@@ -456,6 +537,6 @@
   root.wbPdf = wbPdf; root.wbPdfs = wbPdfs; root.wbDrop = wbDrop; root.wbReview = wbReview; root.wbSaveAll = wbSaveAll; root.wbPictureTool = wbPictureTool;
   root.wbStatus = wbStatus; root.wbStatusGo = wbStatusGo; root.wbSelectReady = wbSelectReady; root.wbRelease = wbRelease; root.wbMore = wbMore; root.wbFromMine = wbFromMine;
   root.wbUndo = wbUndo; root.wbLog = wbLog; root.wbMarkDisc = wbMarkDisc; root.wbTagRegion = wbTagRegion; root.wbRegionAsk = wbRegionAsk; root.wbRegionGo = wbRegionGo;
-  root.wbRegion = wbRegion; root.wbCheckLinks = wbCheckLinks; root.wbClearBroken = wbClearBroken;
+  root.wbRegion = wbRegion; root.wbBucket = wbBucket; root.wbFocus = wbFocus; root.wbLikely = wbLikely; root.wbBrandRegion = wbBrandRegion; root.wbCheckLinks = wbCheckLinks; root.wbClearBroken = wbClearBroken;
   root._wb = { log: logAll, state: function () { return _wb; }, mineAsRead: mineAsRead, missingOf: missingOf, groupOf: groupOf, matchBall: matchBall, formFrom: formFrom, WB_VERSION: WB_VERSION };
 })(typeof window !== 'undefined' ? window : globalThis);
