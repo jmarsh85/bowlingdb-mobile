@@ -9,7 +9,7 @@
    Uses catalog.js through root._catAPI only. Design: DESIGN_add_ball_flow sections 50-55. */
 (function (root) {
   'use strict';
-  var WB_VERSION = 'v30.208';
+  var WB_VERSION = 'v30.209';
   var A = root._catAPI;
   if (!A) { if (root.toast) root.toast('Workbench needs catalog.js ' + WB_VERSION); return; }
   var esc = A.esc, jsq = A.jsq, norm = A.norm, cleanName = A.cleanName;
@@ -20,7 +20,7 @@
   /* v30.207 triage: the work queue (Specs, Pictures, Release) is current US balls plus upcoming ones,
      unless you choose Show all; Triage sorts the rest into buckets you can confirm in bulk */
   var BUCKETS = [['current', 'Current, US', 'The work queue: approved in the last 3 years (or confirmed current by you or the maker), no region.'],
-    ['upcoming', 'Not out yet', 'Approved by USBC in the last 4 months with no release date yet, or a release date still ahead.'],
+    ['upcoming', 'Not out yet', 'No specs anywhere yet, and approved by USBC in the last 4 months (no release date) or a release date still ahead. A ball with specs counts as out.'],
     ['international', 'International', 'An Overseas / Japan / Korea / Int\u2019l\u2026 name, your region tag, or a brand you set as a region\u2019s.'],
     ['likely', 'Likely discontinued', 'Approved over 3 years ago and the maker\u2019s site hasn\u2019t said either way. Confirm by brand below.'],
     ['discontinued', 'Discontinued', 'The maker\u2019s site says retired, or you marked it.']];
