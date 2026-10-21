@@ -1,5 +1,6 @@
 /* BowlingDB Catalog workbench (v30.204 WB-3, dev mode). Loaded on first use by catalog.js
-   (catWorkbenchOpen). One screen from USBC intake to a finished card in Add a Ball:
+   (catWorkbenchOpen). v30.213: three tabs, Triage / Waiting / Status. Waiting (WAIT-1) replaces the
+   Specs, Pictures, Release and Review tabs below (their code stays, reached only from Waiting):
      Specs    held balls that need specs; per row Find (maker / bowwwl), Paste, PDF; what was read shows
               on the row (Review / ✕); several PDFs at once are matched to their balls; Save all found.
      Pictures balls with no cover picture saved on this phone; opens the picture tool for the work.
@@ -9,7 +10,7 @@
    Uses catalog.js through root._catAPI only. Design: DESIGN_add_ball_flow sections 50-55. */
 (function (root) {
   'use strict';
-  var WB_VERSION = 'v30.212';
+  var WB_VERSION = 'v30.213';
   var A = root._catAPI;
   if (!A) { if (root.toast) root.toast('Workbench needs catalog.js ' + WB_VERSION); return; }
   var esc = A.esc, jsq = A.jsq, norm = A.norm, cleanName = A.cleanName;
@@ -27,7 +28,7 @@
   var FOCUS_KEY = 'bowlingdb_wb_focus';
   function focusOn() { try { return localStorage.getItem(FOCUS_KEY) !== 'all'; } catch (e) { return true; } }
   function inQueue(e) { var b = A.triageOf(e); return b === 'current' || b === 'upcoming'; }
-  var _wb = { tab: 'triage', bucket: '', group: '', brand: '', year: '', state: '', q: '', page: 0, sel: {}, found: {}, det: {}, staged: null, busy: '' };
+  var _wb = { tab: 'waiting', bucket: '', group: '', brand: '', year: '', state: '', q: '', page: 0, sel: {}, found: {}, det: {}, staged: null, busy: '' };
 
   /* ---------- v30.206 WB-4: change log with undo (this phone; the newest 60 changes) ----------
      Each bulk change records what it replaced: status entries, releases, corrections (phone or repo),
@@ -113,6 +114,7 @@
           var sp = ((A.apApplyOverride(b, A.overrideFor(e.i)) || {}).specs) || {};
           var any = REQ.some(function (r) { return sp[r[0]]; }) || Object.keys(sp.weights || {}).length > 0;
           _wb.det[e.i] = { miss: missingOf(sp), any: any, base: b, sp: sp };
+          if (!b && _wb.loose && _wb.loose[e.i] && !_wb.found[e.i] && !_wb.looseDone[e.i]) { _wb.found[e.i] = looseFound(_wb.loose[e.i]); _wb.looseDone[e.i] = 1; }   // v30.213 LOOSE-1
         });
       });
     }, Promise.resolve()).then(function () { return todo.length; });
@@ -191,6 +193,7 @@
         '<button onclick="wbRvOpen()" style="' + A.BTN_G + 'flex:1;padding:10px 4px;font-size:12px">One by one</button><button onclick="wbRvAcceptAll()" style="' + A.BTN_P + 'flex:1;padding:10px 4px;font-size:12px">Accept all complete</button>';
       else bar = '<button onclick="wbSelectReady()" style="' + A.BTN_G + 'flex:1;padding:10px;font-size:13px">Tick all ready</button><button onclick="wbRelease()" ' + (nSel ? '' : 'disabled ') + 'style="' + A.BTN_P + 'flex:1;padding:10px;font-size:13px;' + (nSel ? '' : 'opacity:.45') + '">Release ' + nSel + '</button>';
       if (_wb.tab === 'triage') { ov.innerHTML = triageHTML(rows, c, stat, tab); return; }
+      if (_wb.tab === 'waiting') { ov.innerHTML = waitingHTML(rows); return; }   // v30.213 WAIT-1
       var rvSum = '';
       if (_wb.tab === 'review') {
         var chk = list.filter(function (e) { return _wb.det[e.i]; }), nC = 0, nBr = 0, nPic = 0, nCore = 0;
@@ -212,8 +215,7 @@
       ov.innerHTML = '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 6px"><button style="' + A.BACK + '" onclick="wbClose()">\u2039</button>' +
         '<div style="flex:1;min-width:0"><div style="font-size:17px;font-weight:800;color:var(--t1)">Catalog workbench</div><div style="font-size:11px;color:var(--t3)">2021 and newer, plus yours \u00b7 ' + esc(_wb.busy || 'dev mode') + '</div></div>' +
         '<button onclick="catUpdateOpen()" style="' + A.BTN_P + 'padding:7px 10px;font-size:12px">Update</button><button onclick="wbMore()" style="' + A.BTN_G + 'padding:7px 10px;font-size:12px">More</button></div>' + updLine() +
-        '<div style="display:flex;gap:5px;padding:0 16px 8px">' + stat(c.scope, 'in scope', "wbTab('status')") + stat(c.held, 'held', "wbTab('release')") + stat(c.noSpecs, 'need specs', "wbTab('specs')") + stat(c.noPic, 'need picture', "wbTab('pictures')") + stat(c.ready + (c.checked < c.held ? '+' : ''), 'ready', "wbTab('release','ready')") + '</div>' +
-        '<div style="display:flex;gap:6px;padding:0 16px 8px">' + tab('triage', 'Triage') + tab('review', 'Review') + tab('specs', 'Specs') + tab('pictures', 'Pictures') + tab('status', 'Status') + tab('release', 'Release') + '</div>' +
+        '<div style="display:flex;gap:6px;padding:0 16px 8px">' + tab('triage', 'Triage') + tab('waiting', 'Waiting') + tab('status', 'Status') + '</div>' +
         '<div style="display:flex;gap:6px;padding:0 16px 6px">' + sel('wb-g', _wb.group, [['', 'All brands']].concat(Object.keys(groups).sort().map(function (g) { return [g, g]; })), 'wbGroup') +
           sel('wb-b', _wb.brand, [['', _wb.group ? 'All ' + _wb.group : 'Brand']].concat(Object.keys(brands).sort().map(function (b) { return [b, b]; })), 'wbBrand') + '</div>' +
         '<div style="display:flex;gap:6px;padding:0 16px 6px">' + sel('wb-y', _wb.year, [['', 'Any year']].concat(Object.keys(years).sort().reverse().map(function (y) { return [y, y]; })).concat(_wb.tab === 'status' || _wb.tab === 'pictures' ? [['older', 'Before 2021 (yours)']] : []), 'wbYear') +
@@ -236,9 +238,13 @@
     var mb = document.getElementById('modal-bg'); if (mb && mb.classList.contains('open') && root.closeModal) root.closeModal();
     wbClose(); opt = opt || {}; if (opt.tab) _wb.tab = opt.tab;   // remembers the last tab; Triage the first time _wb.page = 0; _wb.sel = {};
     document.body.appendChild(A.overlay('wb-ov', 905)); paint();
+    _wb.stagedP = Promise.resolve();
     if (A.apToken()) {
       A.apReadOverrides().then(paint, function () {});
-      A.apReadStaged().then(function (st) { var w = {}; (st || []).forEach(function (r) { if (r.decision === 'pending') { if (r.catalogId) w[r.catalogId] = 1; (r.candidates || []).forEach(function (id) { w[id] = 1; }); } }); _wb.staged = w; _wb.stagedRows = st; paint(); }, function () {});
+      /* v30.213: Waiting waits for the staged rows (bridge reads and near matches) before sorting balls into groups */
+      _wb.stagedP = A.apReadStaged().then(function (st) { var w = {}; (st || []).forEach(function (r) { if (r.decision === 'pending') { if (r.catalogId) w[r.catalogId] = 1; (r.candidates || []).forEach(function (id) { w[id] = 1; }); } }); _wb.staged = w; _wb.stagedRows = st;
+        return A.catLoad().then(function (rows) { var h = wtHeld(rows).filter(function (e) { return !A.srvStagedRow(st, e.i); }); _wb.loose = looseMap(st, h); _wb.looseDone = _wb.looseDone || {}; paint(); }); }, function () {});
+      bwResume();
     }
   }
   function wbClose() { var el = document.getElementById('wb-ov'); if (el) el.parentNode.removeChild(el); }
@@ -445,7 +451,8 @@
     var pic = !!rvPicOf(e), full = !m.miss.length, any = Object.keys(m.sp.weights || {}).length > 0 || REQ.some(function (r) { return m.sp[r[0]]; });
     return full && pic ? 'complete' : full ? 'specs' : pic ? 'picture' : any ? 'some' : 'none';
   }
-  function rvList(cb) { A.catLoad().then(function (rows) { var t = _wb.tab; _wb.tab = 'review'; var l = filtered(rows); _wb.tab = t; cb(l, rows); }); }
+  function rvList(cb) { if (_wb.fetchList) { var fl = _wb.fetchList; _wb.fetchList = null; return A.catLoad().then(function (rows) { cb(fl, rows); }); }   // v30.213: Waiting's Find pictures
+    A.catLoad().then(function (rows) { var t = _wb.tab; _wb.tab = 'review'; var l = filtered(rows); _wb.tab = t; cb(l, rows); }); }
   function probeFirst(c) { var next = function (i) { return i >= c.length ? Promise.resolve(null) : A.imgProbe(c[i], 6000).then(function (u) { return u || next(i + 1); }); }; return next(0); }
   function wbRvFetch() {
     rvList(function (list) {
@@ -576,16 +583,20 @@
         '<button style="' + A.BTN_G + 'padding:7px 10px;font-size:12px" onclick="wbRvNext(-1)" ' + (_rv.idx ? '' : 'disabled') + '>\u2039 Prev</button></div>' +
         '<div style="flex:1;overflow-y:auto;padding:0 16px 10px">' +
           '<div style="font-size:12px;margin-bottom:8px;color:' + (stg === 'complete' ? 'var(--teal)' : 'var(--gold)') + '">' + esc(RV_STAGE[stg]) + (m.miss.length ? ' \u00b7 needs ' + esc(m.miss.join(', ')) : '') + '</div>' +
+          '<div style="margin:-4px 0 8px">' + confChip('specs', specConf(e)) + confChip('picture', picConf(e)) + '</div>' +
           brNote + '<div style="display:flex;gap:10px">' + picBox(stored || (found && found.url), 'cover', stored ? 'saved' : found ? 'found, not saved' : '') + picBox(cpic, 'core', sp.core ? (cfound && !A.catCoreImageFor(e.m, sp.core) ? 'found, not saved' : cpic ? 'saved' : '') : 'core name unknown') + '</div>' +
           '<div style="display:flex;gap:6px;margin-top:6px">' + b('Paste cover', "wbRvPastePic('" + idq + "','cover')") + b('Photo', "wbRvPhoto('" + idq + "','cover')") + b('Paste core', "wbRvPastePic('" + idq + "','core')", false, !sp.core) + b('Photo', "wbRvPhoto('" + idq + "','core')", false, !sp.core) + '</div>' +
           '<div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:.5px;margin:14px 0 2px">SPECS</div>' +
           fld('Coverstock', 'coverName') + fld('Cover type', 'coverType') + fld('Finish', 'finish') + fld('Core', 'core') + fld('Core type', 'coreType') + fld('Released', 'released') + wtab +
-          (f ? '<div style="font-size:12px;color:#7aa7ff;margin-top:6px">' + esc(foundLine(f)) + (f.nameSeen === false ? '<div style="color:var(--gold)">The page doesn\u2019t name this ball: check it is the right one.</div>' : '') + '</div>' : '') +
-          '<div style="display:flex;gap:6px;margin-top:8px">' + b('Paste specs', "wbRvPasteSpecs('" + idq + "')") + b('PDF', "wbRvPdf('" + idq + "')") + b('Edit', "wbRvEdit('" + idq + "')") + '</div>' +
-          '<div style="font-size:11px;color:var(--t3);margin-top:8px">Look it up: <a href="' + esc(bw.maker || bw.search) + '" target="_blank" rel="noopener noreferrer" style="color:var(--teal)">maker \u2197</a> \u00b7 <a href="' + esc(bw.page) + '" target="_blank" rel="noopener noreferrer" style="color:var(--teal)">bowwwl \u2197</a> \u00b7 copy the page or picture there, then Paste here.</div>' +
+          (f ? '<div style="font-size:12px;color:#7aa7ff;margin-top:6px">' + esc(foundLine(f)) + (f.warn ? '<div style="color:var(--gold)">' + esc(f.warn) + '</div>' : f.nameSeen === false ? '<div style="color:var(--gold)">The page doesn\u2019t name this ball: check it is the right one.</div>' : '') +
+            (f.retired && A.triageOf(e) !== 'discontinued' ? '<div style="color:var(--gold)">The page says it\u2019s discontinued \u00b7 <span onclick="wtPageDisc(\'' + idq + '\')" style="color:var(--teal);cursor:pointer">Mark discontinued</span></div>' : '') +
+            (f.region && A.regionOf(e) !== f.region ? '<div style="color:#7aa7ff">The page says ' + esc(f.region) + ' release \u00b7 <span onclick="wtPageRegion(\'' + idq + '\',\'' + jsq(f.region) + '\')" style="color:var(--teal);cursor:pointer">Tag it</span></div>' : '') + '</div>' : '') +
+          '<div style="display:flex;gap:6px;margin-top:8px">' + b(_bw[e.i] ? 'Reading\u2026' : 'Read bowwwl', "wbBwRead('" + idq + "')", !_bw[e.i] && !f, !!_bw[e.i]) + b('Paste specs', "wbRvPasteSpecs('" + idq + "')") + b('PDF', "wbRvPdf('" + idq + "')") + b('Edit', "wbRvEdit('" + idq + "')") + '</div>' +
+          (_bw[e.i] ? '<div style="font-size:11px;color:#7aa7ff;margin-top:4px">Reading the bowwwl page on GitHub (about a minute). You can move on; it lands here when done.</div>' : '') +
+          '<div style="font-size:11px;color:var(--t3);margin-top:8px">Look it up: ' + a2(webSearch(e), 'search \u2197') + ' \u00b7 <a href="' + esc(bw.maker || bw.search) + '" target="_blank" rel="noopener noreferrer" style="color:var(--teal)">maker \u2197</a> \u00b7 <a href="' + esc(bw.page) + '" target="_blank" rel="noopener noreferrer" style="color:var(--teal)">bowwwl \u2197</a> \u00b7 copy the page or picture there, then Paste here.</div>' +
         '</div>' +
         '<div style="padding:8px 16px;border-top:1px solid var(--border1)"><div style="display:flex;gap:6px">' + b('Accept and release', "wbRvAccept('" + idq + "',true)", true, !canRel) + b('Accept', "wbRvAccept('" + idq + "',false)", false, !(f || found || cfound || (br && br.decision === 'pending'))) + '</div>' +
-          '<div style="display:flex;gap:6px;margin-top:6px">' + b('Discontinued', "wbRvDisc('" + idq + "')") + b('Reject', "wbRvReject('" + idq + "')") + b('Skip \u203a', 'wbRvNext(1)') + '</div></div>';
+          '<div style="display:flex;gap:6px;margin-top:6px">' + b('Mark\u2026', "wtMarkAsk(null,'" + idq + "')") + b('Skip \u203a', 'wbRvNext(1)') + '</div></div>';
     });
   }
   function wbRvPastePic(id, slot) {
@@ -640,6 +651,314 @@
   }
   function wbRvReject(id) { _wb.sel = {}; _wb.sel[id] = 1; _rv.after = 'reject'; wbStatus('reject'); }
 
+  /* ---------- v30.213 WAIT-1: Waiting for Add a Ball (replaces Specs, Pictures, Release, Review) ----------
+     One screen for the held balls: each is put in one group by what is known (full / partial / no specs,
+     cover picture, core picture), with a plain count per group and one action per group. Confidence:
+       specs   high = published, your own correction, or a bridge auto-match;
+               med  = a bridge read that names the ball, a bowwwl page read, or a paste naming the ball;
+               low  = a bridge candidate only, a loose name match, or a paste that doesn't name the ball.
+       picture high = saved on this phone; med = bowwwl's file for this ball's name; low = pasted / photo.
+     The work queue is current US balls; balls marked not out yet sit on their own line ("parked").
+     Design: DESIGN_add_ball_flow section 64. */
+  var GRP = [
+    ['ready', 'Ready to approve', 'Full specs and a cover picture.'],
+    ['specs', 'Specs, no picture', 'Full specs; needs a cover picture.'],
+    ['pBoth', 'Partial specs, both pictures', 'Some specs missing; cover and core pictures known.'],
+    ['pCover', 'Partial specs, cover picture', 'Some specs missing; no core picture.'],
+    ['pCore', 'Partial specs, core picture', 'Some specs missing; no cover picture.'],
+    ['pNone', 'Partial specs, no pictures', 'Some specs, nothing else.'],
+    ['both', 'Both pictures, no specs', ''],
+    ['cover', 'Cover picture, no specs', 'bowwwl has a page for most of these: Read bowwwl on the card.'],
+    ['core', 'Core picture, no specs', ''],
+    ['none', 'Nothing yet', 'No specs or pictures anywhere. Search, or mark discontinued / international.']];
+  var _wt = { open: '', brand: '', q: '', page: 0, scope: 'queue', ready: false, loading: false };
+  function wtQueue(e) { return A.triageOf(e) === 'current'; }
+  function wtParked(e) { return A.triageOf(e) === 'upcoming'; }
+  function wtHeld(rows) { return wbScope(rows).filter(function (e) { return A.catIsHeld(e) && !A.catIsRejected(e); }); }
+  function specConf(e) {
+    var d = _wb.det[e.i], f = _wb.found[e.i]; if (!d) return null;
+    if (f) return f.loose || f.nameSeen === false ? 'low' : 'med';
+    var ov = A.overrideFor(e.i), b = d.base;
+    if (e.s || (ov && A.hlHasSpecs({}, ov))) return 'high';
+    if (b && b.decision === 'auto') return 'high';
+    if (b && b.decision === 'pending') return b.catalogId === e.i ? 'med' : 'low';
+    return d.any || ov ? 'high' : null;   // your own partial entry
+  }
+  function picConf(e) { if (A.catImageStored(e.i)) return 'high'; var p = _rv.pic[e.i]; return !p ? null : /bowwwl/.test(p.how || '') ? 'med' : 'low'; }
+  function grpOf(e) {
+    var m = rvMerged(e); if (!m) return null;
+    var full = !m.miss.length, any = Object.keys(m.sp.weights || {}).length > 0 || REQ.some(function (r) { return m.sp[r[0]]; });
+    var cov = !!rvPicOf(e), cor = !!rvCorePic(e, m.sp);
+    if (full) return cov ? 'ready' : 'specs';
+    if (any) return cov && cor ? 'pBoth' : cov ? 'pCover' : cor ? 'pCore' : 'pNone';
+    return cov && cor ? 'both' : cov ? 'cover' : cor ? 'core' : 'none';
+  }
+  var CONF_C = { high: 'var(--teal)', med: '#7aa7ff', low: 'var(--gold)' };
+  function confChip(t, c) { return c ? '<span style="' + A.CHIP + 'color:' + CONF_C[c] + ';border:1px solid ' + CONF_C[c] + '">' + t + ' ' + c.toUpperCase() + '</span>' : ''; }
+  function wtBrandOk(e) { var b = _wt.brand; if (!b) return true; return b.slice(0, 2) === 'g:' ? groupOf(e.m) === b.slice(2) : e.m === b.slice(2); }
+  function wtGroupList(rows, gk) {
+    var q = norm(_wt.q || '');
+    return wtHeld(rows).filter(function (e) {
+      if (gk === 'parked') { if (!wtParked(e)) return false; } else if (!(_wt.scope === 'all' ? !wtParked(e) : wtQueue(e)) || grpOf(e) !== gk) return false;
+      return wtBrandOk(e) && (!q || norm(e.m + ' ' + e.n).indexOf(q) >= 0);
+    }).sort(function (a, b) { return String(b.y || '').localeCompare(String(a.y || '')) || String(a.m).localeCompare(String(b.m)) || cleanName(a.n).localeCompare(cleanName(b.n)); });
+  }
+  /* every held ball's details, once (published shards are cached by catalog.js) */
+  function wtLoad(rows) {
+    if (_wt.loading) return; _wt.loading = true; _wb.busy = 'checking what is known';
+    (_wb.stagedP || Promise.resolve()).then(function () { return loadDetails(wtHeld(rows)); }).then(function () { _wt.ready = true; _wt.loading = false; _wb.busy = ''; paint(); }, function () { _wt.loading = false; _wb.busy = ''; paint(); });
+  }
+  function webSearch(e) { return 'https://www.google.com/search?q=' + encodeURIComponent(e.m + ' ' + cleanName(e.n) + ' bowling ball'); }
+  function a2(u, t) { return '<a href="' + esc(u) + '" target="_blank" rel="noopener noreferrer" style="color:var(--teal);text-decoration:none">' + t + '</a>'; }
+  function waitingHTML(rows) {
+    var held = wtHeld(rows), inQ = held.filter(wtQueue), parked = held.filter(wtParked), other = held.length - inQ.length - parked.length;
+    var head = '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 6px"><button style="' + A.BACK + '" onclick="' + (_wt.open ? "wtShow('')" : 'wbClose()') + '">\u2039</button>' +
+      '<div style="flex:1;min-width:0"><div style="font-size:17px;font-weight:800;color:var(--t1)">' + (_wt.open ? esc(wtName(_wt.open)) : 'Waiting for Add a Ball') + '</div><div style="font-size:11px;color:var(--t3)">' + esc(_wb.busy || 'catalog workbench \u00b7 dev mode') + (_rv.fetch && !_rv.fetch.end ? ' \u00b7 <span onclick="wbRvFetchStop()" style="color:var(--teal);cursor:pointer">stop</span>' : '') + '</div></div>' +
+      '<button onclick="catUpdateOpen()" style="' + A.BTN_P + 'padding:7px 10px;font-size:12px">Update</button><button onclick="wbMore()" style="' + A.BTN_G + 'padding:7px 10px;font-size:12px">More</button></div>' + updLine();
+    var tabs = '<div style="display:flex;gap:6px;padding:0 16px 8px">' + ['triage:Triage', 'waiting:Waiting', 'status:Status'].map(function (x) { var k = x.split(':'); return '<button onclick="wbTab(\'' + k[0] + '\')" style="' + (_wb.tab === k[0] ? A.BTN_P : A.BTN_G) + 'flex:1;padding:8px 2px;font-size:12px">' + k[1] + '</button>'; }).join('') + '</div>';
+    /* every held ball needs its details for the groups; an undo or a save clears some, so check each time */
+    var missing = held.filter(function (e) { return !_wb.det[e.i]; }).length;
+    if (missing) { wtLoad(rows); return head + tabs + '<div style="padding:30px 16px;text-align:center;color:var(--t2);font-size:13px">Checking ' + missing + ' held ball' + (missing === 1 ? '' : 's') + '\u2026</div>'; }
+    if (_wt.open) return head + wtListHTML(rows);
+    var pool = _wt.scope === 'all' ? held.filter(function (e) { return !wtParked(e); }) : inQ, by = {}, cf = {};
+    GRP.forEach(function (g) { by[g[0]] = 0; cf[g[0]] = { high: 0, med: 0, low: 0 }; });
+    pool.forEach(function (e) { var g = grpOf(e); if (!g) return; by[g]++; var c = /^(ready|specs|p)/.test(g) ? specConf(e) : picConf(e); if (c) cf[g][c]++; });
+    var line = function (g) {
+      var n = by[g[0]]; if (!n) return '';
+      var c = cf[g[0]], cc = ['high', 'med', 'low'].filter(function (k) { return c[k]; }).map(function (k) { return '<span style="color:' + CONF_C[k] + '">' + c[k] + ' ' + k + '</span>'; }).join(' \u00b7 ');
+      var act = g[0] === 'ready' ? '<button style="' + A.BTN_P + 'padding:6px 10px;font-size:12px" onclick="wtApprove()">Approve all ' + n + '</button>' :
+        g[0] === 'specs' || g[0] === 'none' ? '<button style="' + A.BTN_G + 'padding:6px 10px;font-size:12px" onclick="wtFetch(\'' + g[0] + '\')">Find pictures</button>' : '';
+      return '<div style="padding:10px 12px;border:1px solid var(--border1);border-radius:12px;background:var(--bg2);margin-bottom:8px">' +
+        '<div onclick="wtShow(\'' + g[0] + '\')" style="display:flex;align-items:baseline;gap:8px;cursor:pointer"><div style="flex:1;font-size:14px;font-weight:700;color:var(--t1)">' + esc(g[1]) + '</div><div style="font-size:17px;font-weight:800;color:var(--t1)">' + n + ' \u203a</div></div>' +
+        (g[2] ? '<div style="font-size:12px;color:var(--t3);margin-top:2px;line-height:1.4">' + esc(g[2]) + '</div>' : '') +
+        '<div style="display:flex;align-items:center;gap:6px;margin-top:6px;flex-wrap:wrap"><span style="flex:1;font-size:11px">' + (cc ? (/^(ready|specs|p)/.test(g[0]) ? 'specs ' : 'picture ') + cc : '') + '</span>' +
+        '<button style="' + A.BTN_G + 'padding:6px 10px;font-size:12px" onclick="wtCard(\'' + g[0] + '\')">One by one</button>' + act +
+        '<button style="' + A.BTN_G + 'padding:6px 10px;font-size:12px" onclick="wtMarkAsk(\'' + g[0] + '\')">Mark\u2026</button></div></div>';
+    };
+    var total = pool.length;
+    return head + tabs + '<div style="flex:1;overflow-y:auto;padding:0 16px 16px">' +
+      '<div style="font-size:13px;color:var(--t1);line-height:1.5;margin-bottom:8px"><b>' + held.length + '</b> balls are waiting to get into Add a Ball. ' +
+        (_wt.scope === 'all' ? 'Showing <b>' + total + '</b>: every held ball except those not out yet \u00b7 <span onclick="wtScope(\'queue\')" style="color:var(--teal);cursor:pointer">Current US only</span>' :
+          '<b>' + inQ.length + '</b> are current US balls (below) \u00b7 <span onclick="wtScope(\'all\')" style="color:var(--teal);cursor:pointer">Show all ' + (held.length - parked.length) + '</span>') + '</div>' +
+      GRP.map(line).join('') +
+      (parked.length ? '<div onclick="wtShow(\'parked\')" style="display:flex;gap:8px;padding:10px 12px;border:1px dashed var(--border1);border-radius:12px;margin-bottom:8px;cursor:pointer"><div style="flex:1;font-size:13px;color:var(--t2)">Not out yet (parked)</div><div style="font-size:15px;font-weight:800;color:var(--t2)">' + parked.length + ' \u203a</div></div>' : '') +
+      (_wt.scope !== 'all' && other ? '<div style="font-size:12px;color:var(--t3);line-height:1.5;margin-top:4px">' + other + ' more are likely discontinued or international: settle them in Triage, or Show all.</div>' : '') +
+      '<div style="font-size:11px;color:var(--t3);line-height:1.5;margin-top:10px">Confidence: <span style="color:var(--teal)">high</span> = published, yours or a maker auto-match \u00b7 <span style="color:#7aa7ff">med</span> = a read that names the ball \u00b7 <span style="color:var(--gold)">low</span> = a near match to check. <b>Approve all</b> saves what was found and puts each ball in Add a Ball. Every change can be undone: More \u203a Change log.</div></div>';
+  }
+  function wtName(gk) { if (gk === 'parked') return 'Not out yet'; var g = GRP.filter(function (x) { return x[0] === gk; })[0]; return g ? g[1] : gk; }
+  function wtListHTML(rows) {
+    var list = wtGroupList(rows, _wt.open), pages = Math.max(1, Math.ceil(list.length / PAGE)); if (_wt.page >= pages) _wt.page = pages - 1;
+    var shown = list.slice(_wt.page * PAGE, (_wt.page + 1) * PAGE), fams = {}, brands = {};
+    wtHeld(rows).forEach(function (e) { fams[groupOf(e.m)] = 1; brands[e.m] = 1; });
+    var opts = [['', 'All brands']];
+    Object.keys(fams).sort().forEach(function (g) { var inF = Object.keys(brands).filter(function (b) { return groupOf(b) === g; }); if (inF.length > 1) opts.push(['g:' + g, g + ' family (' + inF.length + ' brands)']); });
+    Object.keys(brands).sort().forEach(function (b) { opts.push(['b:' + b, b]); });
+    var row = function (e) {
+      var m = rvMerged(e) || { miss: [], sp: {} }, sc = specConf(e), pc = picConf(e), k = A.triageOf(e), idq = jsq(e.i), bw = A.bowwwlLinks(e.m, cleanName(e.n));
+      return '<div style="padding:9px 2px;border-bottom:1px solid var(--border1)"><div onclick="wtCard(\'' + jsq(_wt.open) + '\',\'' + idq + '\')" style="display:flex;gap:10px;align-items:center;cursor:pointer">' + A.thumbHTML(e, 40) +
+        '<div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:600;color:var(--t1)">' + esc(cleanName(e.n)) + (k === 'upcoming' ? '<span style="' + A.CHIP_G + '">NOT OUT YET</span>' : '') + '</div>' +
+        '<div style="font-size:12px;color:var(--t2)">' + esc(e.m) + (e.y ? ' \u00b7 ' + esc(e.y) : '') + '</div>' +
+        '<div style="margin-top:3px">' + confChip('specs', sc) + confChip('picture', pc) + '</div></div></div>' +
+        (m.miss.length ? '<div style="font-size:12px;color:var(--gold);margin-top:4px">needs ' + esc(m.miss.join(', ')) + (rvPicOf(e) ? '' : ', a cover picture') + '</div>' : !rvPicOf(e) ? '<div style="font-size:12px;color:var(--gold);margin-top:4px">needs a cover picture</div>' : '') +
+        '<div style="display:flex;align-items:center;gap:6px;margin-top:6px;flex-wrap:wrap"><button style="' + A.BTN_G + 'padding:5px 9px;font-size:12px" onclick="wtCard(\'' + jsq(_wt.open) + '\',\'' + idq + '\')">Open</button>' +
+        '<button style="' + A.BTN_G + 'padding:5px 9px;font-size:12px" onclick="wtMarkAsk(null,\'' + idq + '\')">Mark\u2026</button>' +
+        '<span style="font-size:11px;color:var(--t3)">' + a2(webSearch(e), 'search \u2197') + ' \u00b7 ' + a2(bw.page, 'bowwwl \u2197') + ' \u00b7 ' + a2(bw.maker || bw.search, 'maker \u2197') + '</span></div></div>';
+    };
+    return '<div style="display:flex;gap:6px;padding:0 16px 6px">' + sel('wt-b', _wt.brand, opts, 'wtBrand') +
+        '<input class="bdet-field-input" type="search" placeholder="Search name" value="' + esc(_wt.q) + '" oninput="wtQ(this.value)" style="flex:1;min-width:0;box-sizing:border-box;font-size:15px"></div>' +
+      '<div style="padding:0 16px 4px;font-size:12px;color:var(--t2)">' + list.length + ' ball' + (list.length === 1 ? '' : 's') + (_wt.open !== 'parked' ? ' \u00b7 ' + (_wt.scope === 'all' ? 'all held' : 'current US') : '') + '</div>' +
+      '<div id="wb-list" style="flex:1;overflow-y:auto;padding:0 16px 10px">' + (shown.length ? shown.map(row).join('') : '<div style="padding:30px 0;text-align:center;color:var(--t2);font-size:13px">Nothing here.</div>') + '</div>' +
+      (pages > 1 ? '<div style="display:flex;gap:8px;align-items:center;padding:6px 16px 0"><button style="' + A.BTN_G + 'flex:1;padding:9px" ' + (_wt.page ? '' : 'disabled ') + 'onclick="wtPage(-1)">\u2039 Prev</button><span style="font-size:12px;color:var(--t2);min-width:70px;text-align:center">' + (_wt.page + 1) + ' of ' + pages + '</span><button style="' + A.BTN_G + 'flex:1;padding:9px" ' + (_wt.page < pages - 1 ? '' : 'disabled ') + 'onclick="wtPage(1)">Next \u203a</button></div>' : '') +
+      '<div style="display:flex;gap:8px;padding:10px 16px;border-top:1px solid var(--border1);margin-top:6px"><button onclick="wtCard(\'' + jsq(_wt.open) + '\')" style="' + A.BTN_G + 'flex:1;padding:10px;font-size:13px">One by one</button>' +
+        (_wt.open === 'ready' ? '<button onclick="wtApprove()" style="' + A.BTN_P + 'flex:1;padding:10px;font-size:13px">Approve all ' + list.length + '</button>' : '<button onclick="wtMarkAsk(\'' + jsq(_wt.open) + '\')" style="' + A.BTN_G + 'flex:1;padding:10px;font-size:13px">Mark all ' + list.length + '\u2026</button>') + '</div>';
+  }
+  function wtShow(gk) { _wt.open = gk || ''; _wt.page = 0; paint(); var l = document.getElementById('wb-list'); if (l) l.scrollTop = 0; }
+  function wtScope(s) { _wt.scope = s; paint(); }
+  function wtBrand(v) { _wt.brand = v; _wt.page = 0; paint(); }
+  function wtQ(v) { _wt.q = v; _wt.page = 0; clearTimeout(_wt.t); _wt.t = setTimeout(function () { paint(); setTimeout(function () { var i = document.querySelector('#wb-ov input[type=search]'); if (i) { i.focus(); i.setSelectionRange(i.value.length, i.value.length); } }, 0); }, 250); }
+  function wtPage(d) { _wt.page += d; paint(); var l = document.getElementById('wb-list'); if (l) l.scrollTop = 0; }
+  /* the card, over one group (or from one ball in it) */
+  function wtCard(gk, id) {
+    A.catLoad().then(function (rows) {
+      var l = wtGroupList(rows, gk); _rv.ids = l.map(function (e) { return e.i; }); _rv.grp = gk;
+      _rv.idx = Math.max(0, id ? _rv.ids.indexOf(id) : 0);
+      if (!_rv.ids.length) { if (root.toast) root.toast('Nothing in this group'); return; }
+      var el = document.getElementById('rv-ov'); if (el) el.parentNode.removeChild(el);
+      document.body.appendChild(A.overlay('rv-ov', 912)); rvPaint();
+    });
+  }
+  function wtApprove() {
+    A.catLoad().then(function (rows) {
+      var go = wtGroupList(rows, 'ready');
+      if (!go.length) { if (root.toast) root.toast('Nothing ready yet'); return; }
+      var low = go.filter(function (e) { return specConf(e) === 'low'; }).length;
+      if (root.confirm && !root.confirm('Approve ' + go.length + ' ball' + (go.length === 1 ? '' : 's') + ' into Add a Ball?' + (low ? '\n\n' + low + ' have LOW confidence specs (a near match): open them one by one first if unsure.' : '') + '\n\nUndo from the Change log.')) return;
+      var res = [], bad = []; _wb.busy = 'approving ' + go.length; paint();
+      go.reduce(function (p, e) { return p.then(function () { return rvAcceptOne(e, true).then(function (r) { res.push(r); }, function (er) { bad.push(cleanName(e.n) + ': ' + (er && er.message)); }); }); }, Promise.resolve())
+        .then(function () { var n = rvLog(res, 'Approve all'); _wb.busy = ''; paint();
+          if (root.toast) root.toast('In Add a Ball: ' + n.rel + (n.ticks ? ' \u00b7 ticked ' + n.ticks + ' in Spec approvals: Publish to finish' : '') + (bad.length ? ' \u00b7 ' + bad.length + ' not saved' : ''), 6000); });
+    });
+  }
+  /* bowwwl picture files for a group (the existing Fetch, over this group) */
+  function wtFetch(gk) {
+    A.catLoad().then(function (rows) { var l = wtGroupList(rows, gk); if (!l.length) return; _wb.fetchList = l; wbRvFetch(); });
+  }
+  /* status in place: one ball (id) or a whole group (gk) */
+  function wtMarkAsk(gk, id) {
+    if (!root.openModal) return;
+    A.catLoad().then(function (rows) {
+      var ids = id ? [id] : wtGroupList(rows, gk).map(function (e) { return e.i; }); if (!ids.length) return;
+      _wt.mark = ids;
+      var b = function (k, t, sub) { return '<button class="btn btn-ghost" style="width:100%;text-align:left;margin-top:6px;padding:10px" onclick="wtMark(\'' + k + '\')"><div style="font-size:14px;font-weight:700;color:var(--t1)">' + t + '</div><div style="font-size:12px;color:var(--t3)">' + sub + '</div></button>'; };
+      root.openModal('<div class="modal-title">Mark ' + (ids.length === 1 ? esc(cleanName((A.byIdIn(rows, ids[0]) || {}).n || '')) : ids.length + ' balls') + '</div>' +
+        b('disc', 'Discontinued', 'Stays out of Add a Ball unless you show discontinued') + b('intl', 'International', 'An overseas release (leaves the work queue)') +
+        b('upcoming', 'Not out yet', 'Parked until it comes out') + b('reject', 'Reject\u2026', 'Not a real ball, or a duplicate (asks for a reason)') +
+        (ids.length === 1 ? b('clear', 'Back to current', 'Remove my not-out-yet / region marks') : '') +
+        '<div style="font-size:11px;color:var(--t3);margin-top:8px">Balls you own are never changed in bulk. Undo: More \u203a Change log.</div>' +
+        '<button class="btn btn-secondary" style="width:100%;margin-top:10px" onclick="closeModal()">Cancel</button>');
+    });
+  }
+  function wtMark(kind) {
+    var ids = _wt.mark || []; if (!ids.length) return;
+    A.catLoad().then(function (rows) {
+      var own = ownedMap(), many = ids.length > 1, go = ids.filter(function (id) { return !(many && own[id]); });
+      if (kind === 'disc' || kind === 'reject') { if (root.closeModal) root.closeModal(); _wb.sel = {}; go.forEach(function (id) { _wb.sel[id] = 1; }); if (document.getElementById('rv-ov') && ids.length === 1) _rv.after = 'reject'; setTimeout(function () { wbStatus(kind === 'disc' ? 'discontinue' : 'reject'); }, 300); return; }
+      if (kind === 'intl') tagRegion(go, 'International', rows);
+      if (kind === 'upcoming' || kind === 'clear') {
+        var tg = A.triageGet(), items = go.map(function (id) { var e = A.byIdIn(rows, id); return { id: id, n: e ? cleanName(e.n) : id, had: !!tg.upcoming[id] }; });
+        go.forEach(function (id) { if (kind === 'upcoming') tg.upcoming[id] = 1; else delete tg.upcoming[id]; }); A.triageSave(tg);
+        logAdd('upcoming', (kind === 'upcoming' ? 'Not out yet ' : 'Back to current ') + go.length, items);
+        if (kind === 'clear') tagRegion(go, undefined, rows);
+      }
+      if (root.closeModal) root.closeModal();
+      if (root.toast) root.toast({ intl: 'International: ', upcoming: 'Not out yet: ', clear: 'Back to current: ' }[kind] + go.length + (go.length < ids.length ? ' (yours left alone)' : ''));
+      rvAfterMark(go); paint();
+    });
+  }
+  /* the card moves on when the ball it shows was marked */
+  function rvAfterMark(ids) {
+    if (!document.getElementById('rv-ov') || ids.indexOf(_rv.ids[_rv.idx]) < 0) return;
+    _rv.ids.splice(_rv.idx, 1); if (_rv.idx >= _rv.ids.length) _rv.idx = Math.max(0, _rv.ids.length - 1);
+    if (!_rv.ids.length) wbRvClose(); else rvPaint();
+  }
+
+  /* ---------- v30.213 LOOSE-1: maker pages the bridge couldn't place, matched to held balls by name ----------
+     Same words in another order ("Raw Hammer - Blue / Black / Orange" = "Raw Hammer Black/Blue/Orange"),
+     a short form ("Game Breaker 5" = "GB5 (Game Breaker 5)"), or extra colour words only. Anything else
+     (a different model word: "Black Pearl Urethane" vs "Black Widow Urethane Black Pearl") is no match.
+     A match is offered as a read with LOW confidence; Accept saves it as your correction. */
+  var LZ_COLOURS = {}; 'black white red blue green yellow orange purple pink teal navy grey gray silver gold lime sky smoke charcoal bronze copper ruby sapphire emerald jade maroon burgundy aqua cyan violet magenta crimson scarlet ivory cream tan brown dark light neon royal electric frost ice clear translucent'.split(' ').forEach(function (w) { LZ_COLOURS[w] = 1; });
+  var LZ_STOP = { bowling: 1, ball: 1, the: 1, and: 1 };
+  function lzToks(t) { return String(t || '').toLowerCase().replace(/[\u2122\u00ae]/g, '').replace(/[^a-z0-9.]+/g, ' ').replace(/(\d)\.0\b/g, '$1').replace(/\./g, ' ').split(/\s+/).filter(function (w) { return w && !LZ_STOP[w]; }); }
+  function lzAcr(ts) { var k = -1; for (var i = 0; i < ts.length; i++) if (/^\d+$/.test(ts[i])) { k = i; break; } if (k < 2) return null; var a = ts.slice(0, k); return a.every(function (w) { return /^[a-z]/.test(w); }) ? a.map(function (w) { return w[0]; }).join('') + ts[k] : null; }
+  function lzBrand(b) { return String(b || '').toLowerCase().replace(/[^a-z0-9]/g, '').replace(/(inc|bowling|global)$/, ''); }
+  function looseMatch(row, held) {
+    var t = lzToks(row.title); if (!t.length) return null; var ts = {}, ac = lzAcr(t); t.forEach(function (w) { ts[w] = 1; });
+    var out = [];
+    held.forEach(function (h) {
+      if (lzBrand(h.m) !== lzBrand(row.brand)) return;
+      var ns = {}; lzToks(h.n).forEach(function (w) { ns[w] = 1; });
+      if (!Object.keys(ts).every(function (w) { return ns[w] || (ac && w === ac); })) return;
+      var extra = Object.keys(ns).filter(function (w) { return !ts[w] && w !== ac; });
+      if (extra.every(function (w) { return LZ_COLOURS[w]; })) out.push({ id: h.i, kind: extra.length ? 'colour' : 'same' });
+    });
+    return out.length ? { ids: out.map(function (x) { return x.id; }), kind: out.length === 1 && out[0].kind === 'same' ? 'same' : 'colour' } : null;
+  }
+  /* staged rows -> { heldId: row } for pending pages with no catalog id */
+  function looseMap(staged, held) {
+    var m = {};
+    (staged || []).forEach(function (r) { if (r.decision !== 'pending' || r.catalogId || !r.specs) return; var x = looseMatch(r, held); if (!x) return; x.ids.forEach(function (id) { if (!m[id]) m[id] = { row: r, kind: x.kind, n: x.ids.length }; }); });
+    return m;
+  }
+  function looseFound(L) {
+    var s = L.row.specs || {}, fx = {};
+    ['coverName', 'coverType', 'finish', 'core', 'coreType', 'released'].forEach(function (k) { if (s[k]) fx[k] = s[k]; });
+    return { fields: fx, weights: cp(s.weights || {}) || {}, source: 'maker', host: String(L.row.url || '').replace(/^https?:\/\/(www\.)?/, '').split('/')[0], url: L.row.url, loose: true, nameSeen: false,
+      warn: 'Near match: the maker page is \u201c' + L.row.title + '\u201d' + (L.n > 1 ? ' (fits ' + L.n + ' balls)' : '') + '. Check it is this ball.' };
+  }
+
+  /* ---------- v30.213 BW-1: Read bowwwl (one page, on your tap, kept on this phone) ----------
+     The phone can't load bowwwl pages (the browser blocks it), so a tap starts the bowwwl-read workflow
+     for that one page. It seals what it read with this phone's public key and leaves it on the repo's
+     inbox branch; the phone fetches it, opens it with its private key (kept here as bdbgh_bwkey), deletes
+     the file, and shows it as a read (source bowwwl, so Accept stores it on this phone only). */
+  var BW_KEY = 'bdbgh_bwkey', BW_PEND = 'bdbgh_bwreads', _bw = {};
+  function b64(buf) { var s = '', u = new Uint8Array(buf); for (var i = 0; i < u.length; i++) s += String.fromCharCode(u[i]); return btoa(s); }
+  function unb64(t) { var s = atob(String(t || '').replace(/\s/g, '')), u = new Uint8Array(s.length); for (var i = 0; i < s.length; i++) u[i] = s.charCodeAt(i); return u; }
+  function bwKeys() {
+    var S = root.crypto && root.crypto.subtle; if (!S) return Promise.reject(new Error('no WebCrypto'));
+    var k = null; try { k = JSON.parse(localStorage.getItem(BW_KEY) || 'null'); } catch (e) {}
+    if (k && k.pub && k.priv) return S.importKey('jwk', k.priv, { name: 'RSA-OAEP', hash: 'SHA-256' }, false, ['decrypt']).then(function (pk) { return { pub: k.pub, priv: pk }; });
+    return S.generateKey({ name: 'RSA-OAEP', modulusLength: 2048, publicExponent: new Uint8Array([1, 0, 1]), hash: 'SHA-256' }, true, ['encrypt', 'decrypt']).then(function (kp) {
+      return Promise.all([S.exportKey('spki', kp.publicKey), S.exportKey('jwk', kp.privateKey)]).then(function (x) {
+        var o = { pub: b64(x[0]), priv: x[1] }; localStorage.setItem(BW_KEY, JSON.stringify(o)); return { pub: o.pub, priv: kp.privateKey };
+      });
+    });
+  }
+  function bwOpen(box, priv) {
+    var S = root.crypto.subtle;
+    return S.decrypt({ name: 'RSA-OAEP' }, priv, unb64(box.k)).then(function (raw) { return S.importKey('raw', raw, 'AES-GCM', false, ['decrypt']); })
+      .then(function (aes) { return S.decrypt({ name: 'AES-GCM', iv: unb64(box.iv) }, aes, unb64(box.d)); })
+      .then(function (pt) { return JSON.parse(new TextDecoder().decode(pt)); });
+  }
+  /* the page address: from the bowwwl picture saved for this ball when there is one, else from the name */
+  function bwPageUrl(e) {
+    var links = A.bowwwlLinks(e.m, cleanName(e.n)), brand = String(links.page).split('/')[4] || '';
+    var pic = A.catImageStored(e.i) || (_rv.pic[e.i] && _rv.pic[e.i].url) || '', mm = /bowwwl\.com\/sites\/default\/files\/(?:styles\/[^/]+\/public\/)?balls\/([a-z0-9-]+)\.(?:png|jpe?g)/i.exec(pic);
+    if (mm && brand && mm[1].indexOf(brand + '-') === 0) return 'https://www.bowwwl.com/bowling-ball-database/' + brand + '/' + mm[1].slice(brand.length + 1);
+    return links.page;
+  }
+  function bwPend(o) { if (o === undefined) { try { return JSON.parse(localStorage.getItem(BW_PEND) || '{}') || {}; } catch (e) { return {}; } } try { localStorage.setItem(BW_PEND, JSON.stringify(o)); } catch (e) {} }
+  function wbBwRead(id) {
+    if (!A.apToken()) { if (root.toast) root.toast('Add your GitHub token first (More \u203a Spec approvals)'); return; }
+    var p = bwPend(); if (p[id]) { if (root.toast) root.toast('Already reading this one'); return; }
+    A.catLoad().then(function (rows) {
+      var e = A.byIdIn(rows, id); if (!e) return;
+      var url = bwPageUrl(e), nonce = 'bw-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8);
+      _bw[id] = 'starting'; rvPaint();
+      bwKeys().then(function (k) {
+        return A.apGH('').then(function (repo) { return A.apGH('/actions/workflows/bowwwl-read.yml/dispatches', { method: 'POST', body: { ref: repo.default_branch || 'main', inputs: { url: url, key: k.pub, nonce: nonce } } }); });
+      }).then(function () {
+        p = bwPend(); p[id] = { nonce: nonce, url: url, at: Date.now() }; bwPend(p); _bw[id] = 'reading'; rvPaint(); bwPoll(id);
+      }, function (er) { delete _bw[id]; rvPaint(); if (root.toast) root.toast('Could not start the read: ' + (er && er.status === 404 ? 'bowwwl-read.yml isn\u2019t in the repo yet' : er && er.message), 6000); });
+    });
+  }
+  function bwPoll(id, tries) {
+    tries = tries || 0; var p = bwPend(), r = p[id]; if (!r) return;
+    var stop = function (msg) { var q = bwPend(); delete q[id]; bwPend(q); delete _bw[id]; rvPaint(); paint(); if (msg && root.toast) root.toast(msg, 6000); };
+    if (Date.now() - r.at > 6 * 60000) return stop('No answer from bowwwl-read after 6 minutes: check GitHub Actions');
+    A.apGH('/contents/bw/' + r.nonce + '.json?ref=inbox').then(function (f) {
+      var o = JSON.parse(decodeURIComponent(escape(atob(String(f.content || '').replace(/\s/g, '')))));
+      A.apGH('/contents/bw/' + r.nonce + '.json', { method: 'DELETE', body: { message: 'read ' + r.nonce, sha: f.sha, branch: 'inbox' } }).catch(function () {});
+      if (o.err) return stop('bowwwl: ' + (o.err === 'HTTP 404' ? 'no page at ' + r.url.replace(/^https:\/\/www\./, '') + ': use the bowwwl \u2197 link to find it' : o.err));
+      return bwKeys().then(function (k) { return bwOpen(o.sealed, k.priv); }).then(function (got) { stop(); bwApply(id, got); }, function () { stop('Could not open the read (a different phone\u2019s key?)'); });
+    }, function (er) {
+      if (er && er.status && er.status !== 404) return stop('GitHub ' + er.status + ' while reading');
+      var next = function () { setTimeout(function () { bwPoll(id, tries + 1); }, 6000); };
+      if (tries % 4 !== 3) return next();
+      A.apGH('/actions/workflows/bowwwl-read.yml/runs?per_page=10').then(function (j) {
+        var run = (j.workflow_runs || []).filter(function (x) { return String(x.display_title || x.name || '').indexOf(r.nonce) >= 0; })[0];
+        if (run && run.status === 'completed' && run.conclusion !== 'success') stop('bowwwl-read ' + run.conclusion + ': see GitHub Actions'); else next();
+      }, next);
+    });
+  }
+  function bwResume() { Object.keys(bwPend()).forEach(function (id) { if (!_bw[id]) { _bw[id] = 'reading'; bwPoll(id); } }); }
+  function bwFile(u) { var m = /^(https:\/\/www\.bowwwl\.com\/sites\/default\/files\/)styles\/[^/]+\/public\/(.+?)(\?.*)?$/.exec(u || ''); return m ? m[1] + m[2] : u; }
+  function bwApply(id, got) {
+    A.catLoad().then(function (rows) {
+      var e = A.byIdIn(rows, id), pg = (got && got.page) || {}; if (!e) return;
+      var fx = {}; ['coverName', 'coverType', 'finish', 'core', 'coreType', 'released'].forEach(function (k) { if (pg[k]) fx[k] = pg[k]; });
+      var a = lzToks(pg.name), b = lzToks(cleanName(e.n)), seen = !!a.length && (a.every(function (w) { return b.indexOf(w) >= 0; }) || b.every(function (w) { return a.indexOf(w) >= 0; }));
+      if (!Object.keys(fx).length && !Object.keys(pg.weights || {}).length) { if (root.toast) root.toast('bowwwl page read, but no specs on it'); return; }
+      _wb.found[id] = { fields: fx, weights: pg.weights || {}, source: 'bowwwl', host: 'bowwwl.com', how: 'bowwwl-read', url: got.url, nameSeen: seen,
+        region: pg.international ? 'International' : null, retired: !!pg.discontinued, warn: seen ? null : 'The page is \u201c' + (pg.name || '?') + '\u201d: check it is this ball.' };
+      if (pg.ballImg && !A.catImageStored(id)) _rv.pic[id] = { url: bwFile(pg.ballImg), how: 'bowwwl', link: true };
+      if (pg.coreImg && pg.core) { var ck = A.coreKeyOf(e.m, pg.core); if (ck && !A.catCoreImageFor(e.m, pg.core)) _rv.core[ck] = { url: bwFile(pg.coreImg), how: 'bowwwl', link: true, brand: e.m, name: pg.core }; }
+      rvSaveFinds(); rvPaint(); paint();
+      if (root.toast) root.toast('Read from bowwwl: ' + cleanName(e.n) + ' (not saved until Accept)');
+    });
+  }
+
   function updLine() { var t = A.catUpdateLine ? A.catUpdateLine() : ''; return t ? '<div onclick="catUpdateOpen()" style="margin:0 16px 8px;padding:7px 10px;border-radius:9px;background:var(--bg2);border:1px solid rgba(0,217,217,0.3);font-size:12px;color:var(--t1);cursor:pointer">' + esc(t) + ' \u203a</div>' : ''; }
   function bucketName(k) { var b = BUCKETS.filter(function (x) { return x[0] === k; })[0]; return b ? b[1] : k; }
   function triageHTML(rows, c, stat, tab) {
@@ -664,7 +983,7 @@
     return '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 6px"><button style="' + A.BACK + '" onclick="wbClose()">\u2039</button>' +
         '<div style="flex:1;min-width:0"><div style="font-size:17px;font-weight:800;color:var(--t1)">Catalog workbench</div><div style="font-size:11px;color:var(--t3)">Triage \u00b7 ' + sc.length + ' balls in scope' + (_wb.busy ? ' \u00b7 ' + esc(_wb.busy) : '') + '</div></div>' +
         '<button onclick="catUpdateOpen()" style="' + A.BTN_P + 'padding:7px 10px;font-size:12px">Update</button><button onclick="wbMore()" style="' + A.BTN_G + 'padding:7px 10px;font-size:12px">More</button></div>' + updLine() +
-      '<div style="display:flex;gap:6px;padding:0 16px 8px">' + tab('triage', 'Triage') + tab('review', 'Review') + tab('specs', 'Specs') + tab('pictures', 'Pictures') + tab('status', 'Status') + tab('release', 'Release') + '</div>' +
+      '<div style="display:flex;gap:6px;padding:0 16px 8px">' + tab('triage', 'Triage') + tab('waiting', 'Waiting') + tab('status', 'Status') + '</div>' +
       '<div style="flex:1;overflow-y:auto;padding:0 16px 16px">' +
         '<div style="font-size:12px;color:var(--t2);line-height:1.5;margin-bottom:8px">Every ball sits in one bucket (the first that fits, top to bottom of the list below). Specs, Pictures and Release work only on <b>Current, US</b> and <b>Not out yet</b> unless you choose Show all there.</div>' +
         ['current', 'upcoming', 'international', 'likely', 'discontinued'].map(function (k) { return card(BUCKETS.filter(function (b) { return b[0] === k; })[0]); }).join('') +
@@ -710,6 +1029,7 @@
     if (en.kind === 'status') { en.items.forEach(function (x) { A.stSet(x.id, x.before || null, false); }); A.stSaveLocal(A.stLocal()); A.stQueueSync(); return done(); }
     if (en.kind === 'release') { var o = A.rlLocal(); en.items.forEach(function (x) { delete o.all[x.id]; o.pending[x.id] = Date.now() + Math.random(); }); A.rlSaveLocal(o); A.rlQueueSync(); return done(); }
     if (en.kind === 'region') { en.items.forEach(function (x) { A.regionTagSet(x.id, x.had ? x.before : undefined); }); return done(); }
+    if (en.kind === 'upcoming') { var tu = A.triageGet(); en.items.forEach(function (x) { if (x.had) tu.upcoming[x.id] = 1; else delete tu.upcoming[x.id]; }); A.triageSave(tu); return done(); }   // v30.213
     if (en.kind === 'current') { var tg = A.triageGet(); en.items.forEach(function (x) { if (!x.had) delete tg.current[x.id]; }); A.triageSave(tg); return done(); }
     if (en.kind === 'brandregion') { var tb = A.triageGet(); en.items.forEach(function (x) { if (x.had) tb.brandRegion[x.id] = x.before; else delete tb.brandRegion[x.id]; }); A.triageSave(tb); return done(); }
     if (en.kind === 'ticks') { var qq = A.apQueue(); en.items.forEach(function (x) { Object.keys(x.before || {}).forEach(function (t) { if (x.before[t] == null) delete qq[t]; else qq[t] = x.before[t]; }); }); A.apSetQueue(qq); return done(); }
@@ -741,6 +1061,8 @@
       logAdd('status', 'Marked discontinued 1 (the page said so)', [{ id: id, n: cleanName(e.n), before: cp(A.stEntry(id)) }]);
       A.stSet(id, { status: 'retired', reason: 'manual', at: A.stToday(), n: cleanName(e.n), m: e.m }); A.stQueueSync(); if (_wb.found[id]) _wb.found[id].retiredDone = true; paint(); });
   }
+  function wtPageDisc(id) { wbMarkDisc(id); rvAfterMark([id]); }
+  function wtPageRegion(id, v) { A.catLoad().then(function (rows) { tagRegion([id], v, rows); paint(); rvAfterMark([id]); }); }
   function tagRegion(ids, v, rows) {
     var items = [], m = A.regionTags();
     ids.forEach(function (id) { var e = A.byIdIn(rows, id); items.push({ id: id, n: e ? cleanName(e.n) : id, had: id in m, before: m[id] }); A.regionTagSet(id, v); });
@@ -797,6 +1119,9 @@
   root.wbRvFetch = wbRvFetch; root.wbRvFetchStop = wbRvFetchStop; root.wbRvOpen = wbRvOpen; root.wbRvClose = wbRvClose; root.wbRvNext = wbRvNext; root.wbRvAcceptAll = wbRvAcceptAll;
   root.wbRvPastePic = wbRvPastePic; root.wbRvPhoto = wbRvPhoto; root.wbRvPasteSpecs = wbRvPasteSpecs; root.wbRvPdf = wbRvPdf; root.wbRvEdit = wbRvEdit; root.wbRvAccept = wbRvAccept; root.wbRvDisc = wbRvDisc; root.wbRvReject = wbRvReject;
   root._wbt = { mergeFound: mergeFound, rvStage: function (e) { return rvStage(e); }, rv: _rv, wb: _wb };
+  root.wtShow = wtShow; root.wtScope = wtScope; root.wtBrand = wtBrand; root.wtQ = wtQ; root.wtPage = wtPage; root.wtCard = wtCard; root.wtApprove = wtApprove;
+  root.wtFetch = wtFetch; root.wtMarkAsk = wtMarkAsk; root.wtMark = wtMark; root.wbBwRead = wbBwRead; root.wtPageDisc = wtPageDisc; root.wtPageRegion = wtPageRegion;
+  root._wbw = { looseMatch: looseMatch, looseMap: looseMap, grpOf: grpOf, specConf: specConf, picConf: picConf, bwPageUrl: bwPageUrl, bwOpen: bwOpen, bwApply: bwApply, wt: _wt, GRP: GRP };
   root.wbRepaint = function () { if (document.getElementById('wb-ov')) paint(); };
   root.wbOpen = wbOpen; root.wbClose = wbClose; root.wbTab = wbTab; root.wbGroup = wbGroup; root.wbBrand = wbBrand; root.wbYear = wbYear; root.wbState = wbState;
   root.wbQ = wbQ; root.wbPage = wbPage; root.wbSel = wbSel; root.wbSelAll = wbSelAll; root.wbSelNone = wbSelNone; root.wbOpenBall = wbOpenBall; root.wbPaste = wbPaste;
