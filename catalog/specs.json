@@ -3290,6 +3290,69 @@
   "Checked": "2026-10-20",
   "Status": "retired"
  },
+ "brunswick-purple-rhino-pro-2026": {
+  "DateReleased": "2026-10-22",
+  "Core": {
+   "Name": "Vintage Light Bulb",
+   "Type": "Symmetrical"
+  },
+  "Cover": {
+   "Name": "Savvy Hook 4.0 Solid",
+   "Type": "Solid Reactive",
+   "Finish": "500, 1000, 1500 Siaair / Crown Factory Compound"
+  },
+  "SpecsByWeight": {
+   "12": {
+    "RG": 2.597,
+    "Diff": 0.04,
+    "IntDiff": null
+   },
+   "13": {
+    "RG": 2.574,
+    "Diff": 0.04,
+    "IntDiff": null
+   },
+   "14": {
+    "RG": 2.585,
+    "Diff": 0.032,
+    "IntDiff": null
+   },
+   "15": {
+    "RG": 2.568,
+    "Diff": 0.032,
+    "IntDiff": null
+   },
+   "16": {
+    "RG": 2.517,
+    "Diff": 0.044,
+    "IntDiff": null
+   }
+  },
+  "Source": "https://brunswickbowling.com/products/balls/current/purple-rhino-pro",
+  "Checked": "2026-10-20",
+  "Status": "current",
+  "Corrected": {
+   "source": "maker",
+   "at": "2026-10-21"
+  }
+ },
+ "brunswick-purple-rhino-pro-legacy": {
+  "DateReleased": null,
+  "Core": {
+   "Name": null,
+   "Type": null
+  },
+  "Cover": {
+   "Name": null,
+   "Type": null,
+   "Finish": null
+  },
+  "SpecsByWeight": {},
+  "Source": null,
+  "Checked": null,
+  "Status": "retired",
+  "Rejected": true
+ },
  "brunswick-python": {
   "DateReleased": null,
   "Core": {
