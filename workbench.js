@@ -9,7 +9,7 @@
    Uses catalog.js through root._catAPI only. Design: DESIGN_add_ball_flow sections 50-55. */
 (function (root) {
   'use strict';
-  var WB_VERSION = 'v30.209';
+  var WB_VERSION = 'v30.210';
   var A = root._catAPI;
   if (!A) { if (root.toast) root.toast('Workbench needs catalog.js ' + WB_VERSION); return; }
   var esc = A.esc, jsq = A.jsq, norm = A.norm, cleanName = A.cleanName;
@@ -74,6 +74,7 @@
     if (_wb.tab === 'specs') return [['', 'Any state'], ['none', 'No specs'], ['partial', 'Partial'], ['waiting', 'Read, waiting']];
     if (_wb.tab === 'status') return [['', 'Any status'], ['current', 'Current'], ['likely', 'Likely discontinued'], ['discontinued', 'Discontinued'], ['rejected', 'Rejected']];
     if (_wb.tab === 'release') return [['', 'Any'], ['ready', 'Ready'], ['specs', 'Needs specs'], ['picture', 'Needs a cover picture']];
+    if (_wb.tab === 'review') return [['', 'Any'], ['complete', 'Complete'], ['specs', 'Specs, no picture'], ['picture', 'Picture, specs short'], ['some', 'Some found'], ['none', 'Nothing yet'], ['unchecked', 'Not checked yet']];
     return [['', 'Any']];
   }
   function passState(e) {
@@ -81,6 +82,7 @@
     if (_wb.tab === 'specs') return specState(e) === s;
     if (_wb.tab === 'status') return statusOf(e) === s;
     if (_wb.tab === 'release') { var d = _wb.det[e.i]; return s === 'ready' ? readyOf(e) : s === 'specs' ? !d || d.miss.length > 0 : !A.catImageStored(e.i); }
+    if (_wb.tab === 'review') return rvStage(e) === s;
     return true;
   }
   function filtered(rows) {
@@ -92,10 +94,11 @@
       if (_wb.year && (_wb.year === 'older' ? parseInt(e.y, 10) >= 2021 : String(e.y) !== _wb.year)) return false;
       if (q && norm(e.m + ' ' + e.n).indexOf(q) < 0) return false;
       if (_wb.bucket && A.triageOf(e) !== _wb.bucket) return false;
-      if (!_wb.bucket && focusOn() && (_wb.tab === 'specs' || _wb.tab === 'pictures' || _wb.tab === 'release') && !inQueue(e)) return false;
+      if (!_wb.bucket && focusOn() && (_wb.tab === 'specs' || _wb.tab === 'pictures' || _wb.tab === 'release' || _wb.tab === 'review') && !inQueue(e)) return false;
       if (_wb.region) { var rg = A.regionOf(e); if (_wb.region === 'us' ? !!rg : _wb.region === 'intl' ? !rg : rg !== _wb.region) return false; }
       return passState(e);
     });
+    if (_wb.tab === 'review') { var rk = { complete: 0, specs: 1, picture: 2, some: 3, none: 4, unchecked: 5 }; return list.sort(function (a, b) { return rk[rvStage(a)] - rk[rvStage(b)] || String(b.y || '').localeCompare(String(a.y || '')) || String(a.m).localeCompare(String(b.m)); }); }
     return list.sort(function (a, b) { return ((own[b.i] ? 1 : 0) - (own[a.i] ? 1 : 0)) || ((b.h === 2 ? 1 : 0) - (a.h === 2 ? 1 : 0)) || String(b.y || '').localeCompare(String(a.y || '')) || String(a.m).localeCompare(String(b.m)) || cleanName(a.n).localeCompare(cleanName(b.n)); });
   }
 
@@ -139,6 +142,10 @@
         '<button style="' + A.BTN_G + 'padding:6px 10px;font-size:12px" onclick="wbPdf(\'' + jsq(e.i) + '\')">PDF</button>' +
         (own[e.i] && !f ? '<button style="' + A.BTN_P + 'padding:6px 10px;font-size:12px" onclick="wbFromMine(\'' + jsq(e.i) + '\')">Use my ball\u2019s specs</button>' : '') +
         '<span style="font-size:11px;color:var(--t3)">Find: ' + a(bw.maker || bw.search, 'maker \u2197') + ' \u00b7 ' + a(bw.page, 'bowwwl \u2197') + '</span></div>';
+    } else if (_wb.tab === 'review') {
+      var rs = rvStage(e), mg = rvMerged(e), rpic = rvPicOf(e);
+      extra = '<div style="font-size:12px;margin-top:4px;color:' + ({ complete: 'var(--teal)', specs: 'var(--gold)', picture: 'var(--gold)' }[rs] || 'var(--t3)') + '">' + esc(RV_STAGE[rs]) +
+        (mg && mg.miss.length && rs !== 'unchecked' ? ' \u00b7 needs ' + esc(mg.miss.join(', ')) : '') + (rpic && !A.catImageStored(e.i) ? ' \u00b7 picture found, not saved' : '') + (_wb.found[e.i] ? ' \u00b7 specs read, not saved' : '') + '</div>';
     } else if (_wb.tab === 'release') {
       extra = '<div style="font-size:12px;margin-top:4px;color:' + (readyOf(e) ? 'var(--teal)' : 'var(--gold)') + '">' + (!d ? 'checking\u2026' : readyOf(e) ? 'ready to release' : 'needs ' + esc((d.miss.length ? d.miss : []).concat(pic ? [] : ['a cover picture']).join(', '))) + '</div>';
     }
@@ -171,7 +178,7 @@
       if (_wb.page >= pages) _wb.page = pages - 1;
       var shown = list.slice(_wb.page * PAGE, (_wb.page + 1) * PAGE), c = counts(rows);
       var stat = function (n, t, call) { return '<div onclick="' + call + '" style="flex:1;min-width:0;padding:6px 4px;border-radius:9px;background:var(--bg2);border:1px solid var(--border1);text-align:center;cursor:pointer"><div style="font-size:15px;font-weight:800;color:var(--t1)">' + n + '</div><div style="font-size:10px;color:var(--t3)">' + t + '</div></div>'; };
-      var tab = function (k, t) { return '<button onclick="wbTab(\'' + k + '\')" style="' + (_wb.tab === k ? A.BTN_P : A.BTN_G) + 'flex:1;padding:8px 4px;font-size:13px">' + t + '</button>'; };
+      var tab = function (k, t) { return '<button onclick="wbTab(\'' + k + '\')" style="' + (_wb.tab === k ? A.BTN_P : A.BTN_G) + 'flex:1;min-width:0;padding:8px 2px;font-size:12px">' + t + '</button>'; };
       var brands = {}; tabRows(rows).forEach(function (e) { if (!_wb.group || groupOf(e.m) === _wb.group) brands[e.m] = 1; });
       var groups = {}; tabRows(rows).forEach(function (e) { groups[groupOf(e.m)] = 1; });
       var years = {}; tabRows(rows).forEach(function (e) { if (parseInt(e.y, 10) >= 2021) years[e.y] = 1; });
@@ -180,19 +187,22 @@
       if (_wb.tab === 'specs') bar = '<button onclick="wbPdfs()" style="' + A.BTN_G + 'flex:1;padding:10px;font-size:13px">Pick PDFs</button><button id="wb-saveall" onclick="wbSaveAll()" ' + (nFound ? '' : 'disabled ') + 'style="' + A.BTN_P + 'flex:1;padding:10px;font-size:13px;' + (nFound ? '' : 'opacity:.45') + '">Save all found (' + nFound + ')</button>';
       else if (_wb.tab === 'pictures') bar = '<button onclick="wbCheckLinks()" style="' + A.BTN_G + 'flex:1;padding:10px;font-size:13px">Check picture links</button><button onclick="wbPictureTool()" style="' + A.BTN_P + 'flex:1;padding:10px;font-size:13px">Open the picture tool</button>';
       else if (_wb.tab === 'status') bar = '<button onclick="wbRegionAsk()" ' + (nSel ? '' : 'disabled ') + 'style="' + A.BTN_G + 'flex:1;padding:10px 4px;font-size:12px;' + (nSel ? '' : 'opacity:.45') + '">Region</button>' + ['discontinue', 'reject', 'restore'].map(function (k) { return '<button onclick="wbStatus(\'' + k + '\')" ' + (nSel ? '' : 'disabled ') + 'style="' + (k === 'reject' ? A.BTN_G + 'color:var(--red);' : A.BTN_G) + 'flex:1;padding:10px 4px;font-size:12px;' + (nSel ? '' : 'opacity:.45') + '">' + { discontinue: 'Discontinue', reject: 'Reject', restore: 'Restore' }[k] + ' ' + nSel + '</button>'; }).join('');
+      else if (_wb.tab === 'review') bar = (_rv.fetch && !_rv.fetch.end ? '<button onclick="wbRvFetchStop()" style="' + A.BTN_G + 'flex:1;padding:10px 4px;font-size:12px">Stop (' + _rv.fetch.done + '/' + _rv.fetch.total + ')</button>' : '<button onclick="wbRvFetch()" style="' + A.BTN_G + 'flex:1;padding:10px 4px;font-size:12px">Fetch for these</button>') +
+        '<button onclick="wbRvOpen()" style="' + A.BTN_G + 'flex:1;padding:10px 4px;font-size:12px">One by one</button><button onclick="wbRvAcceptAll()" style="' + A.BTN_P + 'flex:1;padding:10px 4px;font-size:12px">Accept all complete</button>';
       else bar = '<button onclick="wbSelectReady()" style="' + A.BTN_G + 'flex:1;padding:10px;font-size:13px">Tick all ready</button><button onclick="wbRelease()" ' + (nSel ? '' : 'disabled ') + 'style="' + A.BTN_P + 'flex:1;padding:10px;font-size:13px;' + (nSel ? '' : 'opacity:.45') + '">Release ' + nSel + '</button>';
       if (_wb.tab === 'triage') { ov.innerHTML = triageHTML(rows, c, stat, tab); return; }
       var qline = _wb.bucket ? '<div style="padding:0 16px 6px;font-size:12px;color:var(--t2)">Bucket: <b>' + esc(bucketName(_wb.bucket)) + '</b> \u00b7 <span onclick="wbBucket(\'\')" style="color:var(--teal);cursor:pointer">clear</span></div>' :
-        (_wb.tab === 'specs' || _wb.tab === 'pictures' || _wb.tab === 'release') ? '<div style="padding:0 16px 6px;font-size:12px;color:var(--t2)">' + (focusOn() ? 'Work queue: current US balls and ones not out yet \u00b7 <span onclick="wbFocus(false)" style="color:var(--teal);cursor:pointer">Show all</span>' : 'Showing every ball \u00b7 <span onclick="wbFocus(true)" style="color:var(--teal);cursor:pointer">Work queue only</span>') + '</div>' : '';
+        (_wb.tab === 'specs' || _wb.tab === 'pictures' || _wb.tab === 'release' || _wb.tab === 'review') ? '<div style="padding:0 16px 6px;font-size:12px;color:var(--t2)">' + (focusOn() ? 'Work queue: current US balls and ones not out yet \u00b7 <span onclick="wbFocus(false)" style="color:var(--teal);cursor:pointer">Show all</span>' : 'Showing every ball \u00b7 <span onclick="wbFocus(true)" style="color:var(--teal);cursor:pointer">Work queue only</span>') + '</div>' : '';
       var help = { specs: 'Held balls that still need specs. Paste or PDF on a row reads a page for that ball; <b>Pick PDFs</b> takes several saved pages at once and puts each on its ball. Check a row\u2019s read with Review, then <b>Save all found</b>. Tap a ball to edit it; saving opens the next one.',
         pictures: 'Balls with no cover picture saved on this phone. The picture tool does the work (Find, Paste, Photo, Check bowwwl for all, Save all found). <b>Check picture links</b> loads every saved link and offers to clear the ones that no longer load.',
         status: 'Tick balls to discontinue, reject (needs a reason), restore, or set their <b>Region</b>. You see what will change before it does; balls you own are never changed in bulk. Every change can be undone: More \u203a Change log.',
+        review: 'One ball at a time: what is known and what was found, with Paste and PDF for specs and Paste or Photo for pictures. <b>Fetch for these</b> reads what the bridge found and looks on bowwwl for cover and core pictures (nothing is saved until you accept). <b>Accept all complete</b> saves and releases every ball with complete specs and a picture, after a count to confirm. Undo: More \u203a Change log.',
         release: 'Held balls. A ball is ready with complete specs and a cover picture on this phone. Released balls show in Add a Ball here at once, and for everyone after the next catalog refresh.' }[_wb.tab];
       ov.innerHTML = '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 6px"><button style="' + A.BACK + '" onclick="wbClose()">\u2039</button>' +
         '<div style="flex:1;min-width:0"><div style="font-size:17px;font-weight:800;color:var(--t1)">Catalog workbench</div><div style="font-size:11px;color:var(--t3)">2021 and newer, plus yours \u00b7 ' + esc(_wb.busy || 'dev mode') + '</div></div>' +
         '<button onclick="catUpdateOpen()" style="' + A.BTN_P + 'padding:7px 10px;font-size:12px">Update</button><button onclick="wbMore()" style="' + A.BTN_G + 'padding:7px 10px;font-size:12px">More</button></div>' + updLine() +
         '<div style="display:flex;gap:5px;padding:0 16px 8px">' + stat(c.scope, 'in scope', "wbTab('status')") + stat(c.held, 'held', "wbTab('release')") + stat(c.noSpecs, 'need specs', "wbTab('specs')") + stat(c.noPic, 'need picture', "wbTab('pictures')") + stat(c.ready + (c.checked < c.held ? '+' : ''), 'ready', "wbTab('release','ready')") + '</div>' +
-        '<div style="display:flex;gap:6px;padding:0 16px 8px">' + tab('triage', 'Triage') + tab('specs', 'Specs') + tab('pictures', 'Pictures') + tab('status', 'Status') + tab('release', 'Release') + '</div>' +
+        '<div style="display:flex;gap:6px;padding:0 16px 8px">' + tab('triage', 'Triage') + tab('review', 'Review') + tab('specs', 'Specs') + tab('pictures', 'Pictures') + tab('status', 'Status') + tab('release', 'Release') + '</div>' +
         '<div style="display:flex;gap:6px;padding:0 16px 6px">' + sel('wb-g', _wb.group, [['', 'All brands']].concat(Object.keys(groups).sort().map(function (g) { return [g, g]; })), 'wbGroup') +
           sel('wb-b', _wb.brand, [['', _wb.group ? 'All ' + _wb.group : 'Brand']].concat(Object.keys(brands).sort().map(function (b) { return [b, b]; })), 'wbBrand') + '</div>' +
         '<div style="display:flex;gap:6px;padding:0 16px 6px">' + sel('wb-y', _wb.year, [['', 'Any year']].concat(Object.keys(years).sort().reverse().map(function (y) { return [y, y]; })).concat(_wb.tab === 'status' || _wb.tab === 'pictures' ? [['older', 'Before 2021 (yours)']] : []), 'wbYear') +
@@ -205,7 +215,7 @@
           '<div style="font-size:11px;color:var(--t3);line-height:1.5;margin-top:10px">' + help + '</div></div>' +
         (pages > 1 ? '<div style="display:flex;gap:8px;align-items:center;padding:6px 16px 0"><button style="' + A.BTN_G + 'flex:1;padding:9px" ' + (_wb.page ? '' : 'disabled ') + 'onclick="wbPage(-1)">\u2039 Prev</button><span style="font-size:12px;color:var(--t2);min-width:70px;text-align:center">' + (_wb.page + 1) + ' of ' + pages + '</span><button style="' + A.BTN_G + 'flex:1;padding:9px" ' + (_wb.page < pages - 1 ? '' : 'disabled ') + 'onclick="wbPage(1)">Next \u203a</button></div>' : '') +
         '<div style="display:flex;gap:8px;padding:10px 16px;border-top:1px solid var(--border1);margin-top:6px">' + bar + '</div>';
-      if (_wb.tab === 'specs' || _wb.tab === 'release') loadDetails(shown).then(function (n) { if (n) paint(); });
+      if (_wb.tab === 'specs' || _wb.tab === 'release' || _wb.tab === 'review') loadDetails(shown).then(function (n) { if (n) paint(); });
     });
   }
 
@@ -234,6 +244,7 @@
   function wbSelNone() { _wb.sel = {}; paint(); }
   /* Save & next: saving a ball opens the next one in the list as it stands */
   function wbOpenBall(id) {
+    if (_wb.tab === 'review') return wbRvOpen(id);   // v30.210: the review card
     A.catCorrectFor(id, function () {
       delete _wb.det[id]; delete _wb.found[id];
       A.catLoad().then(function (rows) {
@@ -367,6 +378,7 @@
       logAdd('status', { discontinue: 'Marked discontinued', reject: 'Rejected', restore: 'Restored' }[kind] + ' ' + n, items);
       if (root.closeModal) root.closeModal(); paint();
       if (root.toast) root.toast({ discontinue: 'Marked discontinued: ', reject: 'Rejected: ', restore: 'Restored: ' }[kind] + n);
+      if (_rv.after && document.getElementById('rv-ov')) { _rv.after = null; if (n) { _rv.ids.splice(_rv.idx, 1); if (_rv.idx >= _rv.ids.length) _rv.idx = Math.max(0, _rv.ids.length - 1); } if (!_rv.ids.length) wbRvClose(); else rvPaint(); }
     });
   }
   function wbSelectReady() { A.catLoad().then(function (rows) { var l = filtered(rows); _wb.busy = 'checking ' + l.length; paint();
@@ -380,6 +392,213 @@
       if (root.toast) root.toast(n ? 'Released ' + n + ': now in Add a Ball' : 'Nothing ready to release');
     });
   }
+
+  /* ---------- v30.210: batch review ----------
+     Review tab: held balls in the work queue, complete ones first. Fetch for these loads every ball's
+     details (published + your corrections + what the bridge read) and looks on bowwwl for cover and core
+     pictures; finds are kept here (this session) until you accept. One by one: a card per ball with
+     Paste / PDF / Edit for specs, Paste / Photo for the cover and core pictures, and Accept and release,
+     Accept, Discontinued, Reject, Skip. Accept all complete: every ball with complete specs and a cover
+     picture, after a count. Each run writes one Change log entry per kind (specs, pictures, release). */
+  var _rv = { pic: {}, core: {}, idx: 0, ids: [], fetch: null };
+  var RV_STAGE = { complete: 'complete: ready to accept and release', specs: 'specs complete, no picture', picture: 'picture, specs short', some: 'some specs found', none: 'nothing found yet', unchecked: 'not checked yet' };
+  /* a read (Paste / PDF) laid over what is known */
+  function mergeFound(sp, f) {
+    var out = cp(sp || {}) || {}; out.weights = out.weights || {}; if (!f) return out;
+    var fm = formFrom(f);
+    ['coverName', 'coverType', 'finish', 'core', 'coreType', 'released'].forEach(function (k) { if (fm[k]) out[k] = fm[k]; });
+    Object.keys(fm.weights || {}).forEach(function (w) { var x = fm.weights[w], o = out.weights[w] = Object.assign({}, out.weights[w] || {});
+      ['RG', 'Diff', 'IntDiff'].forEach(function (k) { if (x[k] !== '' && x[k] != null) o[k] = +x[k]; }); });
+    return out;
+  }
+  function rvMerged(e) { var d = _wb.det[e.i]; if (!d) return null; var sp = mergeFound(d.sp, _wb.found[e.i]); return { sp: sp, miss: missingOf(sp) }; }
+  function rvPicOf(e) { return A.catImageStored(e.i) || (_rv.pic[e.i] && _rv.pic[e.i].url) || null; }
+  function rvCoreKey(e, sp) { return sp && sp.core ? A.coreKeyOf(e.m, sp.core) : null; }
+  function rvCorePic(e, sp) { var k = rvCoreKey(e, sp); return k ? (A.catCoreImageFor(e.m, sp.core) || (_rv.core[k] && _rv.core[k].url) || null) : null; }
+  function rvStage(e) {
+    var m = rvMerged(e); if (!m) return 'unchecked';
+    var pic = !!rvPicOf(e), full = !m.miss.length, any = Object.keys(m.sp.weights || {}).length > 0 || REQ.some(function (r) { return m.sp[r[0]]; });
+    return full && pic ? 'complete' : full ? 'specs' : pic ? 'picture' : any ? 'some' : 'none';
+  }
+  function rvList(cb) { A.catLoad().then(function (rows) { var t = _wb.tab; _wb.tab = 'review'; var l = filtered(rows); _wb.tab = t; cb(l, rows); }); }
+  function probeFirst(c) { var next = function (i) { return i >= c.length ? Promise.resolve(null) : A.imgProbe(c[i], 6000).then(function (u) { return u || next(i + 1); }); }; return next(0); }
+  function wbRvFetch() {
+    rvList(function (list) {
+      if (!list.length) return;
+      var f = _rv.fetch = { total: list.length, done: 0, pics: 0, cores: 0, stop: false }; _wb.busy = 'checking ' + list.length; paint();
+      loadDetails(list).then(function () {
+        var i = 0, last = 0;
+        var tick = function () { var t = Date.now(); if (t - last > 800) { last = t; _wb.busy = 'fetching ' + f.done + ' of ' + f.total; paint(); rvPaint(); } };
+        var one = function () {
+          if (f.stop || i >= list.length) return Promise.resolve();
+          var e = list[i++], nm = cleanName(e.n), m = rvMerged(e);
+          var cov = A.catImageStored(e.i) || _rv.pic[e.i] ? Promise.resolve() : probeFirst(A.bowwwlImgCandidates(e.m, nm)).then(function (u) { if (u) { _rv.pic[e.i] = { url: u, how: 'bowwwl', link: true }; f.pics++; } });
+          var ck = m && rvCoreKey(e, m.sp);
+          var cor = !ck || rvCorePic(e, m.sp) ? Promise.resolve() : probeFirst(A.bowwwlCoreCandidates(e.m, m.sp.core)).then(function (u) { if (u) { _rv.core[ck] = { url: u, how: 'bowwwl', link: true, brand: e.m, name: m.sp.core }; f.cores++; } });
+          return Promise.all([cov, cor]).then(function () { f.done++; tick(); return one(); });
+        };
+        return Promise.all([one(), one(), one(), one()]);
+      }).then(function () {
+        f.end = true; _wb.busy = '';
+        if (root.toast) root.toast((f.stop ? 'Stopped. ' : '') + 'Found ' + f.pics + ' cover and ' + f.cores + ' core picture' + (f.cores === 1 ? '' : 's') + ' (not saved yet)');
+        paint(); rvPaint();
+      });
+    });
+  }
+  function wbRvFetchStop() { if (_rv.fetch) _rv.fetch.stop = true; }
+  /* saves one ball's finds; returns log items; release only when complete */
+  function rvAcceptOne(e, release, rows) {
+    var out = { specs: null, pic: null, rel: null, core: null }, d = _wb.det[e.i], f = _wb.found[e.i];
+    var sp0 = d ? d.sp : null;
+    var specs = !f ? Promise.resolve() : (function () {
+      var form = formFrom(f), store = form.source === 'bowwwl' ? 'phone' : 'repo';
+      var before = cp(store === 'phone' ? A.localOverrides()[e.i] : A.repoOverride(e.i));
+      return A.catSaveCorrection(e.i, form, d ? d.base : null).then(function (r) {
+        if (r.ok) out.specs = { id: e.i, n: cleanName(e.n), store: store, before: before };
+        if (r.ok || r.msg === 'Nothing changed.') delete _wb.found[e.i]; else throw new Error(r.msg || 'not saved');
+      });
+    })();
+    return specs.then(function () {
+      var pf = _rv.pic[e.i];
+      return pf && !A.catImageStored(e.i) ? A.catSaveCover(e.i, pf).then(function (b) { out.pic = { id: e.i, url: b.url, file: b.file }; delete _rv.pic[e.i]; }) : null;
+    }).then(function () {
+      var sp = mergeFound(sp0, null), k = rvCoreKey(e, d ? mergeFound(d.sp, f) : sp), cf = k && _rv.core[k];
+      if (!cf) return null;
+      return A.catSaveCore(cf.brand, cf.name, cf).then(function () { out.core = cf; delete _rv.core[k]; });
+    }).then(function () {
+      delete _wb.det[e.i];
+      return loadDetails([e]);
+    }).then(function () {
+      if (!release) return out;
+      var m = rvMerged(e), o = A.rlLocal();
+      if (!m || m.miss.length || !A.catImageStored(e.i) || o.all[e.i]) return out;
+      o.all[e.i] = { at: A.stToday(), n: cleanName(e.n), m: e.m }; o.pending[e.i] = Date.now() + Math.random(); A.rlSaveLocal(o);
+      out.rel = { id: e.i, n: cleanName(e.n) }; return out;
+    });
+  }
+  function rvLog(results, label) {
+    var sp = [], pc = [], rl = [];
+    results.forEach(function (r) { if (r.specs) sp.push(r.specs); if (r.pic) pc.push(r.pic); if (r.rel) rl.push(r.rel); });
+    logAdd('specs', label + ': specs ' + sp.length, sp); logAdd('pictures', label + ': cover pictures ' + pc.length, pc); logAdd('release', label + ': released ' + rl.length, rl);
+    if (rl.length) A.rlQueueSync();
+    return { specs: sp.length, pics: pc.length, rel: rl.length };
+  }
+  function wbRvAcceptAll() {
+    rvList(function (list) {
+      loadDetails(list).then(function () {
+        var go = list.filter(function (e) { return rvStage(e) === 'complete'; });
+        if (!go.length) { if (root.toast) root.toast('Nothing complete yet. Fetch for these, or review one by one.'); paint(); return; }
+        if (root.confirm && !root.confirm('Accept and release ' + go.length + ' complete ball' + (go.length === 1 ? '' : 's') + '? Found specs and pictures are saved, then each ball shows in Add a Ball. Undo from the Change log.')) return;
+        var res = [], bad = []; _wb.busy = 'accepting ' + go.length; paint();
+        go.reduce(function (p, e) { return p.then(function () { return rvAcceptOne(e, true).then(function (r) { res.push(r); }, function (er) { bad.push(cleanName(e.n) + ': ' + (er && er.message)); }); }); }, Promise.resolve())
+          .then(function () {
+            var n = rvLog(res, 'Accept all'); _wb.busy = ''; paint();
+            if (root.toast) root.toast('Released ' + n.rel + (n.specs ? ' \u00b7 specs saved ' + n.specs : '') + (n.pics ? ' \u00b7 pictures ' + n.pics : '') + (bad.length ? ' \u00b7 ' + bad.length + ' not saved' : ''));
+            if (bad.length && root.openModal) root.openModal('<div class="modal-title">Not saved</div><div style="font-size:13px;color:var(--t2);line-height:1.5">' + bad.map(esc).join('<br>') + '</div><button class="btn btn-secondary" style="width:100%;margin-top:10px" onclick="closeModal()">OK</button>');
+          });
+      });
+    });
+  }
+  /* ---------- the card ---------- */
+  function wbRvOpen(id) {
+    rvList(function (list) {
+      _rv.ids = list.map(function (e) { return e.i; }); _rv.idx = Math.max(0, id ? _rv.ids.indexOf(id) : 0);
+      if (!_rv.ids.length) { if (root.toast) root.toast('Nothing to review here'); return; }
+      var el = document.getElementById('rv-ov'); if (el) el.parentNode.removeChild(el);
+      document.body.appendChild(A.overlay('rv-ov', 912)); rvPaint();
+    });
+  }
+  function wbRvClose() { var el = document.getElementById('rv-ov'); if (el) el.parentNode.removeChild(el); paint(); }
+  function wbRvNext(step) { _rv.idx = Math.min(_rv.ids.length - 1, Math.max(0, _rv.idx + (step || 1))); rvPaint(); }
+  function rvCur(cb) { A.catLoad().then(function (rows) { var e = A.byIdIn(rows, _rv.ids[_rv.idx]); if (e) cb(e, rows); }); }
+  function rvPaint() {
+    var ov = document.getElementById('rv-ov'); if (!ov) return;
+    rvCur(function (e) {
+      if (!_wb.det[e.i]) { loadDetails([e]).then(rvPaint); ov.innerHTML = '<div style="padding:40px;text-align:center;color:var(--t3)">Loading\u2026</div>'; return; }
+      var m = rvMerged(e), sp = m.sp, f = _wb.found[e.i], d = _wb.det[e.i], own = ownedMap();
+      var stored = A.catImageStored(e.i), found = _rv.pic[e.i], cpic = rvCorePic(e, sp), ck = rvCoreKey(e, sp), cfound = ck && _rv.core[ck];
+      var srcOf = function (k) { return f && formFrom(f)[k] ? 'read, not saved' : d.sp[k] ? 'saved' : ''; };
+      var fld = function (t, k) { var v = sp[k], s2 = srcOf(k); return '<div style="display:flex;gap:8px;padding:5px 0;border-bottom:1px solid var(--border1);font-size:13px"><div style="flex:0 0 34%;color:var(--t3)">' + t + '</div>' +
+        '<div style="flex:1;min-width:0;color:' + (v ? 'var(--t1)' : 'var(--gold)') + '">' + (v ? esc(v) : 'missing') + (s2 === 'read, not saved' ? ' <span style="font-size:10px;color:#7aa7ff">NEW</span>' : '') + '</div></div>'; };
+      var ws = Object.keys(sp.weights || {}).sort(function (a, b) { return b - a; });
+      var wtab = ws.length ? '<div style="font-size:12px;color:var(--t2);margin-top:6px">' + ws.map(function (w) { var x = sp.weights[w] || {}, fw = f && f.weights && f.weights[w];
+        return '<div style="display:flex;gap:8px;padding:3px 0' + (fw ? ';color:#7aa7ff' : '') + '"><span style="flex:0 0 46px">' + w + ' lb</span><span>RG ' + (x.RG != null ? Number(x.RG).toFixed(3) : '\u2014') + '</span><span>Diff ' + (x.Diff != null ? Number(x.Diff).toFixed(3) : '\u2014') + '</span>' + (x.IntDiff != null ? '<span>Int ' + Number(x.IntDiff).toFixed(3) + '</span>' : '') + '</div>'; }).join('') + '</div>' : '<div style="font-size:12px;color:var(--gold);margin-top:6px">No RG / Diff yet</div>';
+      var picBox = function (u, lab, note) { return '<div style="flex:1;min-width:0;text-align:center"><div style="height:120px;border-radius:12px;background:var(--bg2);border:1px solid var(--border1);display:flex;align-items:center;justify-content:center;overflow:hidden">' +
+        (u ? '<img src="' + esc(u) + '" referrerpolicy="no-referrer" style="max-width:100%;max-height:100%;object-fit:contain">' : '<span style="font-size:12px;color:var(--t3)">no ' + lab + '</span>') + '</div><div style="font-size:11px;color:' + (note === 'found, not saved' ? '#7aa7ff' : 'var(--t3)') + ';margin-top:3px">' + lab + (note ? ' \u00b7 ' + note : '') + '</div></div>'; };
+      var stg = rvStage(e), canRel = !m.miss.length && !!(stored || found);
+      var k = A.triageOf(e), chip = k === 'upcoming' ? 'NOT OUT YET' : k === 'likely' ? 'LIKELY DISC.' : k === 'discontinued' ? 'DISCONTINUED' : '';
+      var b = function (t, js, p, dis) { return '<button onclick="' + js + '" ' + (dis ? 'disabled ' : '') + 'style="' + (p ? A.BTN_P : A.BTN_G) + 'flex:1;padding:9px 4px;font-size:12px' + (dis ? ';opacity:.45' : '') + '">' + t + '</button>'; };
+      var idq = jsq(e.i), bw = A.bowwwlLinks(e.m, cleanName(e.n));
+      ov.innerHTML = '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 6px"><button style="' + A.BACK + '" onclick="wbRvClose()">\u2039</button>' +
+        '<div style="flex:1;min-width:0"><div style="font-size:17px;font-weight:800;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(cleanName(e.n)) + '</div>' +
+        '<div style="font-size:11px;color:var(--t3)">' + esc(e.m) + (e.y ? ' \u00b7 ' + esc(e.y) : '') + ' \u00b7 ' + (_rv.idx + 1) + ' of ' + _rv.ids.length + (own[e.i] ? ' \u00b7 yours' : '') + (chip ? ' \u00b7 ' + chip : '') + '</div></div>' +
+        '<button style="' + A.BTN_G + 'padding:7px 10px;font-size:12px" onclick="wbRvNext(-1)" ' + (_rv.idx ? '' : 'disabled') + '>\u2039 Prev</button></div>' +
+        '<div style="flex:1;overflow-y:auto;padding:0 16px 10px">' +
+          '<div style="font-size:12px;margin-bottom:8px;color:' + (stg === 'complete' ? 'var(--teal)' : 'var(--gold)') + '">' + esc(RV_STAGE[stg]) + (m.miss.length ? ' \u00b7 needs ' + esc(m.miss.join(', ')) : '') + '</div>' +
+          '<div style="display:flex;gap:10px">' + picBox(stored || (found && found.url), 'cover', stored ? 'saved' : found ? 'found, not saved' : '') + picBox(cpic, 'core', sp.core ? (cfound && !A.catCoreImageFor(e.m, sp.core) ? 'found, not saved' : cpic ? 'saved' : '') : 'core name unknown') + '</div>' +
+          '<div style="display:flex;gap:6px;margin-top:6px">' + b('Paste cover', "wbRvPastePic('" + idq + "','cover')") + b('Photo', "wbRvPhoto('" + idq + "','cover')") + b('Paste core', "wbRvPastePic('" + idq + "','core')", false, !sp.core) + b('Photo', "wbRvPhoto('" + idq + "','core')", false, !sp.core) + '</div>' +
+          '<div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:.5px;margin:14px 0 2px">SPECS</div>' +
+          fld('Coverstock', 'coverName') + fld('Cover type', 'coverType') + fld('Finish', 'finish') + fld('Core', 'core') + fld('Core type', 'coreType') + fld('Released', 'released') + wtab +
+          (f ? '<div style="font-size:12px;color:#7aa7ff;margin-top:6px">' + esc(foundLine(f)) + (f.nameSeen === false ? '<div style="color:var(--gold)">The page doesn\u2019t name this ball: check it is the right one.</div>' : '') + '</div>' : '') +
+          '<div style="display:flex;gap:6px;margin-top:8px">' + b('Paste specs', "wbRvPasteSpecs('" + idq + "')") + b('PDF', "wbRvPdf('" + idq + "')") + b('Edit', "wbRvEdit('" + idq + "')") + '</div>' +
+          '<div style="font-size:11px;color:var(--t3);margin-top:8px">Look it up: <a href="' + esc(bw.maker || bw.search) + '" target="_blank" rel="noopener noreferrer" style="color:var(--teal)">maker \u2197</a> \u00b7 <a href="' + esc(bw.page) + '" target="_blank" rel="noopener noreferrer" style="color:var(--teal)">bowwwl \u2197</a> \u00b7 copy the page or picture there, then Paste here.</div>' +
+        '</div>' +
+        '<div style="padding:8px 16px;border-top:1px solid var(--border1)"><div style="display:flex;gap:6px">' + b('Accept and release', "wbRvAccept('" + idq + "',true)", true, !canRel) + b('Accept', "wbRvAccept('" + idq + "',false)", false, !(f || found || cfound)) + '</div>' +
+          '<div style="display:flex;gap:6px;margin-top:6px">' + b('Discontinued', "wbRvDisc('" + idq + "')") + b('Reject', "wbRvReject('" + idq + "')") + b('Skip \u203a', 'wbRvNext(1)') + '</div></div>';
+    });
+  }
+  function wbRvPastePic(id, slot) {
+    A.catPastePicture(function (f) { rvSetPic(id, slot, f); });
+  }
+  function rvSetPic(id, slot, f) {
+    A.catLoad().then(function (rows) { var e = A.byIdIn(rows, id); if (!e) return;
+      if (slot === 'cover') _rv.pic[id] = f;
+      else { var m = rvMerged(e), k = m && rvCoreKey(e, m.sp); if (!k) { if (root.toast) root.toast('Fill in the core name first'); return; } f.brand = e.m; f.name = m.sp.core; _rv.core[k] = f; }
+      rvPaint(); paint(); });
+  }
+  function wbRvPhoto(id, slot) {
+    var inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'image/*'; inp.style.display = 'none';
+    inp.addEventListener('change', function () { var fl = inp.files && inp.files[0]; if (inp.parentNode) inp.parentNode.removeChild(inp); if (!fl) return;
+      A.imgShrink(fl).then(function (bl) { rvSetPic(id, slot, { blob: bl, url: URL.createObjectURL(bl), how: 'photo' }); }); });
+    document.body.appendChild(inp); inp.click();
+  }
+  function wbRvPasteSpecs(id) {
+    A.catLoad().then(function (rows) { var e = A.byIdIn(rows, id); if (!e) return;
+      A.spReadClipboard(function (text) { var r = A.parseSpecText(text, 15, cleanName(e.n)); if (!r || (!Object.keys(r.fields || {}).length && !Object.keys(r.weights || {}).length)) { if (root.toast) root.toast('No specs found in what was pasted'); return; } _wb.found[id] = r; rvPaint(); }); });
+  }
+  function wbRvPdf(id) {
+    A.catLoad().then(function (rows) { var e = A.byIdIn(rows, id); if (!e) return;
+      pickPdfs(false, function (fs) { if (root.toast) root.toast('Reading the PDF\u2026');
+        A.spPdfFileText(fs[0]).then(function (t) { if (!t) { if (root.toast) root.toast('No text in that PDF'); return; } _wb.found[id] = A.parseSpecText(t, 15, cleanName(e.n)); rvPaint(); }, function () { if (root.toast) root.toast('Could not read the PDF'); }); }); });
+  }
+  function wbRvEdit(id) {
+    if (_wb.found[id]) A.catCorrectWithParsed(id, _wb.found[id], function () { delete _wb.found[id]; delete _wb.det[id]; rvPaint(); });
+    else A.catCorrectFor(id, function () { delete _wb.det[id]; rvPaint(); });
+  }
+  function wbRvAccept(id, release) {
+    rvCur(function (e) {
+      if (e.i !== id) return;
+      rvAcceptOne(e, release).then(function (r) {
+        rvLog([r], cleanName(e.n));
+        var bits = [r.specs && 'specs', r.pic && 'picture', r.core && 'core picture', r.rel && 'released'].filter(Boolean);
+        if (root.toast) root.toast(bits.length ? 'Saved: ' + bits.join(', ') : 'Nothing new to save');
+        if (r.core) A.catCoreShareOffer(r.core.brand, r.core.name, r.core);
+        if (r.rel) { _rv.ids.splice(_rv.idx, 1); if (_rv.idx >= _rv.ids.length) _rv.idx = Math.max(0, _rv.ids.length - 1); if (!_rv.ids.length) return wbRvClose(); }
+        rvPaint(); paint();
+      }, function (er) { if (root.toast) root.toast('Not saved: ' + (er && er.message)); });
+    });
+  }
+  function wbRvDisc(id) {
+    rvCur(function (e) {
+      var before = cp(A.stEntry(id));
+      A.stSet(id, { status: 'retired', reason: 'manual', at: A.stToday(), n: cleanName(e.n), m: e.m }, false); A.stSaveLocal(A.stLocal()); A.stQueueSync();
+      logAdd('status', 'Marked discontinued ' + cleanName(e.n), [{ id: id, n: cleanName(e.n), before: before }]);
+      if (root.toast) root.toast('Marked discontinued: ' + cleanName(e.n));
+      wbRvNext(1);
+    });
+  }
+  function wbRvReject(id) { _wb.sel = {}; _wb.sel[id] = 1; _rv.after = 'reject'; wbStatus('reject'); }
+
   function updLine() { var t = A.catUpdateLine ? A.catUpdateLine() : ''; return t ? '<div onclick="catUpdateOpen()" style="margin:0 16px 8px;padding:7px 10px;border-radius:9px;background:var(--bg2);border:1px solid rgba(0,217,217,0.3);font-size:12px;color:var(--t1);cursor:pointer">' + esc(t) + ' \u203a</div>' : ''; }
   function bucketName(k) { var b = BUCKETS.filter(function (x) { return x[0] === k; })[0]; return b ? b[1] : k; }
   function triageHTML(rows, c, stat, tab) {
@@ -404,7 +623,7 @@
     return '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 6px"><button style="' + A.BACK + '" onclick="wbClose()">\u2039</button>' +
         '<div style="flex:1;min-width:0"><div style="font-size:17px;font-weight:800;color:var(--t1)">Catalog workbench</div><div style="font-size:11px;color:var(--t3)">Triage \u00b7 ' + sc.length + ' balls in scope' + (_wb.busy ? ' \u00b7 ' + esc(_wb.busy) : '') + '</div></div>' +
         '<button onclick="catUpdateOpen()" style="' + A.BTN_P + 'padding:7px 10px;font-size:12px">Update</button><button onclick="wbMore()" style="' + A.BTN_G + 'padding:7px 10px;font-size:12px">More</button></div>' + updLine() +
-      '<div style="display:flex;gap:6px;padding:0 16px 8px">' + tab('triage', 'Triage') + tab('specs', 'Specs') + tab('pictures', 'Pictures') + tab('status', 'Status') + tab('release', 'Release') + '</div>' +
+      '<div style="display:flex;gap:6px;padding:0 16px 8px">' + tab('triage', 'Triage') + tab('review', 'Review') + tab('specs', 'Specs') + tab('pictures', 'Pictures') + tab('status', 'Status') + tab('release', 'Release') + '</div>' +
       '<div style="flex:1;overflow-y:auto;padding:0 16px 16px">' +
         '<div style="font-size:12px;color:var(--t2);line-height:1.5;margin-bottom:8px">Every ball sits in one bucket (the first that fits, top to bottom of the list below). Specs, Pictures and Release work only on <b>Current, US</b> and <b>Not out yet</b> unless you choose Show all there.</div>' +
         ['current', 'upcoming', 'international', 'likely', 'discontinued'].map(function (k) { return card(BUCKETS.filter(function (b) { return b[0] === k; })[0]); }).join('') +
@@ -452,7 +671,7 @@
     if (en.kind === 'region') { en.items.forEach(function (x) { A.regionTagSet(x.id, x.had ? x.before : undefined); }); return done(); }
     if (en.kind === 'current') { var tg = A.triageGet(); en.items.forEach(function (x) { if (!x.had) delete tg.current[x.id]; }); A.triageSave(tg); return done(); }
     if (en.kind === 'brandregion') { var tb = A.triageGet(); en.items.forEach(function (x) { if (x.had) tb.brandRegion[x.id] = x.before; else delete tb.brandRegion[x.id]; }); A.triageSave(tb); return done(); }
-    if (en.kind === 'pictures') { en.items.forEach(function (x) { A.imgPickSet(x.id, x.url); }); return done(); }
+    if (en.kind === 'pictures') { en.items.forEach(function (x) { if (x.file) A.catImgDel(x.id); A.imgPickSet(x.id, x.url); }); return done(); }
     if (en.kind === 'specs') {
       en.items.reduce(function (p, x) { return p.then(function () { return A.catRestoreCorrection(x.id, x.store, x.before); }); }, Promise.resolve())
         .then(done, function (e) { if (root.toast) root.toast('Undo stopped: ' + (e && e.status ? 'GitHub ' + e.status : 'offline')); });
@@ -533,6 +752,9 @@
       '<button class="btn btn-secondary" style="width:100%;margin-top:12px" onclick="closeModal()">Close</button>');
   }
 
+  root.wbRvFetch = wbRvFetch; root.wbRvFetchStop = wbRvFetchStop; root.wbRvOpen = wbRvOpen; root.wbRvClose = wbRvClose; root.wbRvNext = wbRvNext; root.wbRvAcceptAll = wbRvAcceptAll;
+  root.wbRvPastePic = wbRvPastePic; root.wbRvPhoto = wbRvPhoto; root.wbRvPasteSpecs = wbRvPasteSpecs; root.wbRvPdf = wbRvPdf; root.wbRvEdit = wbRvEdit; root.wbRvAccept = wbRvAccept; root.wbRvDisc = wbRvDisc; root.wbRvReject = wbRvReject;
+  root._wbt = { mergeFound: mergeFound, rvStage: function (e) { return rvStage(e); }, rv: _rv, wb: _wb };
   root.wbRepaint = function () { if (document.getElementById('wb-ov')) paint(); };
   root.wbOpen = wbOpen; root.wbClose = wbClose; root.wbTab = wbTab; root.wbGroup = wbGroup; root.wbBrand = wbBrand; root.wbYear = wbYear; root.wbState = wbState;
   root.wbQ = wbQ; root.wbPage = wbPage; root.wbSel = wbSel; root.wbSelAll = wbSelAll; root.wbSelNone = wbSelNone; root.wbOpenBall = wbOpenBall; root.wbPaste = wbPaste;
