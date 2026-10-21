@@ -1,20 +1,20 @@
 # Spec bridge extract
 
-Staged 1722 ball pages: **1098 auto**, 615 pending, 6 duplicate, 2 outvoted.
+Staged 1722 ball pages: **1099 auto**, 614 pending, 6 duplicate, 2 outvoted.
 
-Rejected by you: 6 balls on the list, 2 staged rows set aside.
+Rejected by you: 6 balls on the list, 3 staged rows set aside.
 
 Auto-applied by rule: same-name-reapproval 9, colourway 28, majority 1.
 
 | source | pages | ball pages | auto | pending | errors |
 |---|---|---|---|---|---|
-| motiv | 206 | 205 | 167 | 35 | 0 |
+| columbia | 404 | 386 | 171 | 216 | 3 |
 
 | brand | USBC rows | specs (auto) | pending | 2021+ rows | 2021+ auto |
 |---|---|---|---|---|---|
 | 900 Global | 376 | 4 | 0 | 123 | 4 |
 | Brunswick | 747 | 179 | 15 | 111 | 56 |
-| Columbia 300 | 553 | 170 | 68 | 37 | 26 |
+| Columbia 300 | 553 | 171 | 67 | 37 | 26 |
 | DV8 | 141 | 84 | 32 | 37 | 17 |
 | Ebonite | 815 | 125 | 21 | 95 | 20 |
 | Hammer | 655 | 76 | 100 | 167 | 56 |
@@ -24,12 +24,12 @@ Auto-applied by rule: same-name-reapproval 9, colourway 28, majority 1.
 | Storm | 1000 | 35 | 1 | 262 | 27 |
 | Track Inc. | 362 | 116 | 47 | 65 | 31 |
 
-Pending reasons: no-usbc 253, no-weight-specs 300, variant 45, out-of-range:16:RG=2.257 1, ambiguous 2, conflicting-sources 8, out-of-range:15:Diff=56 1, out-of-range:12:Diff=0.31 2, out-of-range:16:IntDiff=0.2 1, out-of-range:15:Diff=0.09 1, out-of-range:13:Diff=2.53 1
+Pending reasons: no-usbc 253, no-weight-specs 299, variant 45, out-of-range:16:RG=2.257 1, ambiguous 2, conflicting-sources 8, out-of-range:15:Diff=56 1, out-of-range:12:Diff=0.31 2, out-of-range:16:IntDiff=0.2 1, out-of-range:15:Diff=0.09 1, out-of-range:13:Diff=2.53 1
 
 | source | pending reason | count | e.g. |
 |---|---|---|---|
 | columbia | no-usbc | 118 | ABC Masters Yellow Dot; ABC White Dot Limited Edition; Beast |
-| columbia | no-weight-specs | 87 | Aftershock; Backyard Bully; BALLER |
+| columbia | no-weight-specs | 86 | Aftershock; Backyard Bully; BALLER |
 | hammer | no-weight-specs | 84 | Absolut Curve; Absolut Flip; Absolut Hook |
 | ebonite | no-weight-specs | 43 | Big Time Special Edition; Complete NV; Envision Pearl |
 | track | no-weight-specs | 36 | 100P; Animal; Arsenal Aggressive |

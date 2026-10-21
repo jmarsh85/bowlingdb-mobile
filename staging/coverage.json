@@ -1,12 +1,16 @@
 {
-  "generated": "2026-10-21T01:12:57.622Z",
+  "generated": "2026-10-21T01:23:20.803Z",
   "since": 2021,
   "perSource": {
-    "motiv": {
-      "pages": 206,
-      "parsed": 205,
-      "errors": 0,
-      "errorSample": []
+    "columbia": {
+      "pages": 404,
+      "parsed": 386,
+      "errors": 3,
+      "errorSample": [
+        "https://columbia300.com/products/surge.json 429",
+        "https://columbia300.com/products/mass-eruption.json 429",
+        "https://columbia300.com/products/sideswipe.json 429"
+      ]
     }
   },
   "coverage": {
@@ -26,8 +30,8 @@
     },
     "Columbia 300": {
       "all": 553,
-      "auto": 170,
-      "pending": 68,
+      "auto": 171,
+      "pending": 67,
       "recent": 37,
       "recentAuto": 26
     },
