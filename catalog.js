@@ -36,7 +36,7 @@
 'use strict';
 
 /* v30.169: shown in the app header when it differs from the build's EXPECTED_CATALOG_JS */
-var CAT_VERSION  = 'v30.212';
+var CAT_VERSION  = 'v30.213';
 var CAT_BASE     = 'https://raw.githubusercontent.com/jmarsh85/bowlingdb-mobile/dist/';
 var CAT_DB       = 'BowlingDB_Catalog';
 var CAT_DB_VER   = 1;
@@ -3036,18 +3036,20 @@ function regionOf(e) { if (!e) return null; var m = rgFresh(); if (e.i in m) ret
    bowlingdb_catalog_triage_local (this phone, in catalog backups):
      current     { id: 1 }        balls you said are still made (no "likely discontinued")
      brandRegion { brand: region } every ball of the brand is that region's release
+     upcoming    { id: 1 }        v30.213: balls you marked not out yet (Waiting screen)
    Buckets (first that applies): discontinued (maker retired, or yours) > international > upcoming
    (no specs yet, and approved in the last 4 months or a release date still ahead) > likely discontinued (approved
    over 3 years ago, maker status unknown) > current. */
 var TRIAGE_KEY = 'bowlingdb_catalog_triage_local';
 var _tgC = null;   // read once: discontinuedOf / regionOf run for every row of a search
 var _tgRaw = null;
-function tgFresh() { var l = apLS(), raw = (l && l.getItem(TRIAGE_KEY)) || '{}'; if (_tgC && raw === _tgRaw) return _tgC; var o = {}; try { o = JSON.parse(raw) || {}; } catch (e) {} o.current = o.current || {}; o.brandRegion = o.brandRegion || {}; _tgC = o; _tgRaw = raw; return o; }
+function tgFresh() { var l = apLS(), raw = (l && l.getItem(TRIAGE_KEY)) || '{}'; if (_tgC && raw === _tgRaw) return _tgC; var o = {}; try { o = JSON.parse(raw) || {}; } catch (e) {} o.current = o.current || {}; o.brandRegion = o.brandRegion || {}; o.upcoming = o.upcoming || {}; _tgC = o; _tgRaw = raw; return o; }
 function triageGet() { return JSON.parse(JSON.stringify(tgFresh())); }
 function triageSave(o) { var l = apLS(); _tgC = null; if (l) l.setItem(TRIAGE_KEY, JSON.stringify(o)); }
 /* Pure: months from 'YYYY-MM' to today's 'YYYY-MM' */
 function monthsSince(ym, today) { var a = /^(\d{4})-(\d{2})/.exec(ym || ''), b = /^(\d{4})-(\d{2})/.exec(today || ''); if (!a || !b) return null; return (+b[1] - +a[1]) * 12 + (+b[2] - +a[2]); }
 function upcomingOf(e, today, released) {
+  if (tgFresh().upcoming[e.i]) return true;   // v30.213: you marked it not out yet (wins over the rules below)
   if (e.s) return false;   // v30.209: specs already out means it is out, whatever the dates say
   today = today || new Date().toISOString().slice(0, 10);
   var m = e.d ? monthsSince(e.d, today) : null, recent = m != null && m >= 0 && m < 4;
@@ -5255,7 +5257,8 @@ function catBackupMerge(o) {
     var rg = regionTags(), rgn = 0; Object.keys(o.regions || {}).forEach(function (id) { if (!(id in rg)) { rg[id] = o.regions[id]; rgn++; } });   // v30.206
     if (rgn) { _rgC = null; l.setItem(REGION_KEY, JSON.stringify(rg)); }
     if (o.triage) { var tg = triageGet(); Object.keys(o.triage.current || {}).forEach(function (id) { tg.current[id] = 1; });
-      Object.keys(o.triage.brandRegion || {}).forEach(function (b) { if (!(b in tg.brandRegion)) tg.brandRegion[b] = o.triage.brandRegion[b]; }); triageSave(tg); }
+      Object.keys(o.triage.brandRegion || {}).forEach(function (b) { if (!(b in tg.brandRegion)) tg.brandRegion[b] = o.triage.brandRegion[b]; });
+      Object.keys(o.triage.upcoming || {}).forEach(function (id) { tg.upcoming[id] = 1; }); triageSave(tg); }   // v30.213
     return out;
   });
 }
@@ -5944,7 +5947,7 @@ root._catAPI = { catLoad: catLoad, byIdIn: byIdIn, cleanName: cleanName, esc: es
   apFetchIssue: apFetchIssue, apParseIssue: apParseIssue, apQueue: apQueue, apSetQueue: apSetQueue,
   catPastePicture: catPastePicture, catSaveCover: catSaveCover, catSaveCore: catSaveCore, catCoreShareOffer: catCoreShareOffer, coreShareCandidates: coreShareCandidates, taSuggest: taSuggest,
   imgProbe: imgProbe, imgShrink: imgShrink, catImgDel: catImgDel, bowwwlImgCandidates: bowwwlImgCandidates, bowwwlCoreCandidates: bowwwlCoreCandidates, coreKeyOf: coreKeyOf, catCoreImageFor: catCoreImageFor, coreLinkSet: coreLinkSet, scanMem: scanMem, vocabLoad: vocabLoad, triageGet: triageGet, triageSave: triageSave, triageOf: triageOf, upcomingOf: upcomingOf, monthsSince: monthsSince, localOverrides: localOverrides, repoOverride: function (id) { return (_ovr && _ovr[id]) || null; },
-  regionOf: regionOf, regionTags: regionTags, regionTagSet: regionTagSet, regionFromText: regionFromText, imgPicks: imgPicks, imgPickSet: imgPickSet, REGIONS: REGION_WORDS.map(function (r) { return r[0]; }), AP_WEIGHTS: AP_WEIGHTS, version: CAT_VERSION }; root.catMyBallsOpen = catMyBallsOpen; root.catSaveCorrection = catSaveCorrection;
+  apGH: apGH, regionOf: regionOf, regionTags: regionTags, regionTagSet: regionTagSet, regionFromText: regionFromText, imgPicks: imgPicks, imgPickSet: imgPickSet, REGIONS: REGION_WORDS.map(function (r) { return r[0]; }), AP_WEIGHTS: AP_WEIGHTS, version: CAT_VERSION }; root.catMyBallsOpen = catMyBallsOpen; root.catSaveCorrection = catSaveCorrection;
 root.catOldSearch = catOldSearch; root.catOldClose = catOldClose; root.catAddBlank = catAddBlank; root.catAddManual = catAddManual;
 root.catSpecReviewTab = catSpecReviewTab; root.catMissingCorrect = catMissingCorrect; root.catMissingFilter = catMissingFilter; root.catMissingPage = catMissingPage; root._ms = { msRows: msRows, oldMatchScore: oldMatchScore };
 root.catHoldCorrect = catHoldCorrect; root.catCorrectFor = catCorrectFor;
