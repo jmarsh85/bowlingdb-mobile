@@ -2,13 +2,13 @@
 
 Staged 1722 ball pages: **1098 auto**, 615 pending, 6 duplicate, 2 outvoted.
 
-Rejected by you: 6 balls on the list, 1 staged rows set aside.
+Rejected by you: 6 balls on the list, 2 staged rows set aside.
 
 Auto-applied by rule: same-name-reapproval 9, colourway 28, majority 1.
 
 | source | pages | ball pages | auto | pending | errors |
 |---|---|---|---|---|---|
-| radical | 131 | 131 | 124 | 7 | 0 |
+| motiv | 206 | 205 | 167 | 35 | 0 |
 
 | brand | USBC rows | specs (auto) | pending | 2021+ rows | 2021+ auto |
 |---|---|---|---|---|---|
