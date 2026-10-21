@@ -1,6 +1,6 @@
 # Spec bridge extract
 
-Staged 1720 ball pages: **1096 auto**, 615 pending, 6 duplicate, 2 outvoted.
+Staged 1722 ball pages: **1098 auto**, 615 pending, 6 duplicate, 2 outvoted.
 
 Rejected by you: 6 balls on the list, 1 staged rows set aside.
 
@@ -8,7 +8,7 @@ Auto-applied by rule: same-name-reapproval 9, colourway 28, majority 1.
 
 | source | pages | ball pages | auto | pending | errors |
 |---|---|---|---|---|---|
-| track | 182 | 164 | 116 | 50 | 1 |
+| radical | 131 | 131 | 124 | 7 | 0 |
 
 | brand | USBC rows | specs (auto) | pending | 2021+ rows | 2021+ auto |
 |---|---|---|---|---|---|
@@ -19,7 +19,7 @@ Auto-applied by rule: same-name-reapproval 9, colourway 28, majority 1.
 | Ebonite | 815 | 125 | 21 | 95 | 20 |
 | Hammer | 655 | 76 | 100 | 167 | 56 |
 | Motiv | 218 | 167 | 11 | 85 | 71 |
-| Radical | 165 | 122 | 1 | 70 | 53 |
+| Radical | 165 | 124 | 1 | 70 | 55 |
 | Roto Grip | 469 | 18 | 3 | 133 | 17 |
 | Storm | 1000 | 35 | 1 | 262 | 27 |
 | Track Inc. | 362 | 116 | 47 | 65 | 31 |
