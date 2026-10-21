@@ -1,0 +1,58 @@
+name: bowwwl-read
+run-name: bowwwl-read ${{ inputs.nonce }}
+# v30.213 BW-1: reads ONE bowwwl ball page, when James taps "Read bowwwl" on a ball in the app.
+# Personal use, on request only: no schedule, no list of pages, one address per run.
+# The result is encrypted with the public key the app sent; the sealed file lands on the
+# `inbox` branch for the phone to fetch, and the phone deletes it after reading.
+# Nothing goes to main, specs or dist.
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: 'One bowwwl ball page (https://www.bowwwl.com/bowling-ball-database/<brand>/<ball>)'
+        required: true
+      key:
+        description: 'Public key from the app (SPKI, base64)'
+        required: true
+      nonce:
+        description: 'Request id from the app'
+        required: true
+permissions:
+  contents: write
+concurrency: { group: bowwwl-inbox, cancel-in-progress: false }
+jobs:
+  read:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with: { node-version: 22 }
+      - name: Test
+        run: node bridge/bwread_test.js
+      - name: Read the page
+        env:
+          URL: ${{ inputs.url }}
+          KEY: ${{ inputs.key }}
+          NONCE: ${{ inputs.nonce }}
+        run: |
+          case "$NONCE" in *[!A-Za-z0-9-]*|'') echo "::error::bad nonce"; exit 1;; esac
+          node bridge/bwread.js --url "$URL" --key "$KEY" --nonce "$NONCE" --out "/tmp/$NONCE.json"
+      - name: Leave it in the inbox
+        env:
+          NONCE: ${{ inputs.nonce }}
+        run: |
+          git config --global user.name  "bowwwl-read"
+          git config --global user.email "bowwwl-read@users.noreply.github.com"
+          REMOTE="$(git config --get remote.origin.url)"
+          rm -rf /tmp/inbox && mkdir /tmp/inbox && cd /tmp/inbox && git init -q
+          git remote add origin "$REMOTE"
+          git config http.https://github.com/.extraheader "$(git -C "$GITHUB_WORKSPACE" config --get http.https://github.com/.extraheader)"
+          for i in 1 2 3 4; do
+            if git fetch -q --depth=1 origin inbox; then git checkout -q -B inbox FETCH_HEAD; else git checkout -q --orphan inbox; git rm -rfq . 2>/dev/null || true; fi
+            mkdir -p bw && cp "/tmp/$NONCE.json" "bw/$NONCE.json"
+            git add bw && git commit -qm "bowwwl-read $NONCE"
+            if git push -q origin HEAD:inbox; then echo "Left in inbox: bw/$NONCE.json"; exit 0; fi
+            echo "inbox moved on; retrying ($i)"; sleep $((i * 2))
+          done
+          echo "::error::could not push to inbox"; exit 1
