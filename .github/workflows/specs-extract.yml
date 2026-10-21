@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       only:
-        description: 'One source id only (blank = all manufacturers)'
+        description: 'Source ids, one or comma-separated (storm,hammer); blank = all manufacturers'
         default: ''
       limit:
         description: 'Max pages per source (0 = no limit; use 10 for a quick test)'
@@ -57,7 +57,16 @@ jobs:
           git add -A
           if git diff --cached --quiet; then echo "No change"; exit 0; fi
           git commit -m "extract: $(date -u +%F) only=${{ inputs.only }} limit=${{ inputs.limit }}"
-          git push origin HEAD:specs
+          # v30.212: the app can write corrections/ on the specs branch while this runs (status, releases,
+          # corrections). Those never touch staging/, so take them in and push again (up to 4 tries).
+          for i in 1 2 3 4; do
+            if git push origin HEAD:specs; then exit 0; fi
+            echo "specs moved on while extracting; rebasing (try $i)"
+            sleep $((i * 3))
+            git fetch --deepen=50 origin specs || git fetch origin specs
+            git rebase FETCH_HEAD || { git rebase --abort || true; echo "Could not rebase onto specs"; exit 1; }
+          done
+          echo "Push still rejected after 4 tries"; exit 1
       - name: Update approvals issue
         env:
           GH_TOKEN: ${{ github.token }}
