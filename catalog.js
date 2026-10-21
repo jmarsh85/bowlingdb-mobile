@@ -36,7 +36,7 @@
 'use strict';
 
 /* v30.169: shown in the app header when it differs from the build's EXPECTED_CATALOG_JS */
-var CAT_VERSION  = 'v30.208';
+var CAT_VERSION  = 'v30.209';
 var CAT_BASE     = 'https://raw.githubusercontent.com/jmarsh85/bowlingdb-mobile/dist/';
 var CAT_DB       = 'BowlingDB_Catalog';
 var CAT_DB_VER   = 1;
@@ -1024,7 +1024,19 @@ function addSearchIn(rows, q, limit) {
    build_catalog); Discontinued uses r (1 retired, 0 current from the maker's
    site). Unknown status: likely discontinued when USBC-approved over 3 years
    ago (year precision: approved before this year minus 3). */
-var _af = { brands: [], cover: [], core: [], specs: true, disc: false, extra: [] };
+var _af = { brands: [], cover: [], core: [], specs: true, disc: false, show: 'current', extra: [] };
+/* v30.209 WB-6: brand families. A family row picks every brand in it; > opens it to pick one. Others stand alone. */
+var BRAND_GROUPS = [['Brunswick', /brunswick|dv8|radical|ebonite|hammer|columbia|track/], ['Storm', /storm|roto ?grip|900 ?global/]];
+function brandGroupOf(m) { var t = String(m || '').toLowerCase(); for (var i = 0; i < BRAND_GROUPS.length; i++) if (BRAND_GROUPS[i][1].test(t)) return BRAND_GROUPS[i][0]; return m; }
+/* Pure: brand -> count of rows, grouped: [{ g, n, brands: [{ m, n }] }], families first, then A-Z */
+function brandTree(rows) {
+  var g = {};
+  (rows || []).forEach(function (e) { var k = brandGroupOf(e.m), x = g[k] = g[k] || { g: k, n: 0, b: {} }; x.n++; x.b[e.m] = (x.b[e.m] || 0) + 1; });
+  var fam = BRAND_GROUPS.map(function (x) { return x[0]; });
+  return Object.keys(g).sort(function (a, b) { var fa = fam.indexOf(a), fb = fam.indexOf(b); if (fa >= 0 || fb >= 0) return (fa < 0 ? 99 : fa) - (fb < 0 ? 99 : fb); return a.localeCompare(b); })
+    .map(function (k) { var x = g[k]; return { g: k, n: x.n, brands: Object.keys(x.b).sort(function (a, b) { return x.b[b] - x.b[a] || a.localeCompare(b); }).map(function (m) { return { m: m, n: x.b[m] }; }) }; });
+}
+var SHOW_OPTS = [['current', 'Current'], ['disc', 'Discontinued'], ['all', 'All']];
 var COVER_BUBBLES = [['S', 'Solid'], ['P', 'Pearl'], ['H', 'Hybrid'], ['U', 'Urethane']];
 var CORE_BUBBLES = [['a', 'Asym'], ['s', 'Sym']];
 function discontinuedOf(e, year) {
@@ -1045,7 +1057,9 @@ function bubbleFilter(rows, f, year) {
     if (catIsHeld(e)) return false;       // v30.200 HOLD-1: held until you approve it (Review new balls)
     if (e.a) return false;                // v30.202 WB-1: Archived (no specs, approved before 2021): only Enter manually finds it
     if (f.specs && !e.s) return false;
-    if (!f.disc && discontinuedOf(e, year)) return false;
+    var show = f.show && !f.disc ? f.show : f.disc ? 'all' : 'current', dc = discontinuedOf(e, year);   // v30.209: Show dropdown
+    if (show === 'current' && dc) return false;
+    if (show === 'disc' && !dc) return false;
     if (hasB && !bs[norm(e.m)]) return false;
     if (hasC && f.cover.indexOf(e.cv) < 0) return false;
     if (hasK && f.core.indexOf(e.co) < 0) return false;
@@ -1074,6 +1088,33 @@ function bubble(on, label, js) {
   return '<button onclick="' + js + '" style="' + BUB + (on ? 'background:rgba(0,217,217,0.14);color:var(--teal);border:1px solid rgba(0,217,217,0.45)' : 'background:var(--bg2);color:var(--t2);border:1px solid var(--border1)') + '">' + label + '</button>';
 }
 function jsq(s) { return esc(s).replace(/&#39;/g, "\\'"); }
+/* v30.209 WB-6: Brand / Cover / Core / Show dropdowns (replaces the bubble rows) */
+var DD = 'border-radius:10px;padding:7px 10px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;background:var(--bg2);';
+function ddStyle(on) { return DD + (on ? 'color:var(--teal);border:1px solid rgba(0,217,217,0.45)' : 'color:var(--t1);border:1px solid var(--border1)'); }
+function brandLabel() {
+  var b = _af.brands; if (!b.length) return 'All brands';
+  if (b.length === 1) return b[0];
+  var g = brandGroupOf(b[0]); if (b.every(function (x) { return brandGroupOf(x) === g; }) && _af.brandGroup === g) return g + ' family';
+  return b.length + ' brands';
+}
+function filtersHTML(rows) {
+  var hasCv = rows.some(function (e) { return e.cv; }), hasCo = rows.some(function (e) { return e.co; });
+  var sel = function (id, cur, opts, js) {
+    return '<select id="' + id + '" onchange="' + js + '" style="' + ddStyle(!!cur && cur !== 'current') + 'width:100%;min-width:0">' +
+      opts.map(function (o) { return '<option value="' + o[0] + '"' + (o[0] === (cur || '') ? ' selected' : '') + '>' + esc(o[1]) + '</option>'; }).join('') + '</select>';
+  };
+  return '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:3px 0">' +
+    '<button id="cat-dd-brand" onclick="catAddBrandPick()" style="' + ddStyle(_af.brands.length > 0) + 'width:100%;min-width:0;overflow:hidden;text-overflow:ellipsis;text-align:left">' + esc(brandLabel()) + ' \u25be</button>' +
+    (hasCv ? sel('cat-dd-cover', _af.cover[0], [['', 'Any cover']].concat(COVER_BUBBLES), "catAddSet('c',this.value)") : '') +
+    (hasCo ? sel('cat-dd-core', _af.core[0], [['', 'Any core']].concat(CORE_BUBBLES), "catAddSet('k',this.value)") : '') +
+    sel('cat-dd-show', _af.show || 'current', SHOW_OPTS, "catAddSet('show',this.value)") + '</div>';
+}
+function catAddSet(kind, v) {
+  if (kind === 'c') _af.cover = v ? [v] : [];
+  else if (kind === 'k') _af.core = v ? [v] : [];
+  else if (kind === 'show') { _af.show = v || 'current'; _af.disc = false; }
+  catAddRefresh();
+}
 function bubblesHTML(rows) {
   var row = function (h) { return '<div style="display:flex;gap:6px;overflow-x:auto;padding:3px 0;-webkit-overflow-scrolling:touch;scrollbar-width:none">' + h + '</div>'; };
   var brands = yourBrands(); _af.extra.concat(_af.brands).forEach(function (b) { if (brands.indexOf(b) < 0) brands.push(b); });
@@ -1091,9 +1132,9 @@ function addListHTML(rows, q, owned) {
   var list = bubbleFilter(pool, _af);
   var oneBrand = _af.brands.length === 1 || (list.length && list.every(function (e) { return e.m === list[0].m; }));
   if (!list.length) {
-    var loose = bubbleFilter(pool, { brands: _af.brands, cover: _af.cover, core: _af.core, specs: false, disc: true }).length;
+    var loose = bubbleFilter(pool, { brands: _af.brands, cover: _af.cover, core: _af.core, specs: false, show: 'all' }).length;
     return '<div style="font-size:13px;color:var(--t2);padding:16px 2px;line-height:1.6">No match' + (text ? ' in the USBC list' : '') + '.' +
-      (loose ? ' <a href="#" onclick="event.preventDefault();catAddLoosen()" style="color:var(--teal)">Show ' + loose + ' without specs or discontinued</a>' : '') + '</div>';
+      (loose ? ' <a href="#" onclick="event.preventDefault();catAddLoosen()" style="color:var(--teal)">Show ' + loose + ' ' + (_af.show === 'current' ? 'including discontinued and without specs' : 'without specs') + '</a>' : '') + '</div>';
   }
   var cap = 100, more = list.length - cap;
   return list.slice(0, cap).map(function (e) { return addRowHTML(e, owned, !oneBrand); }).join('') +
@@ -1108,26 +1149,53 @@ function catAddBubble(kind, v) {
   }
   catAddRefresh();
 }
-function catAddLoosen() { _af.specs = false; _af.disc = true; catAddRefresh(); }
+function catAddLoosen() { _af.specs = false; _af.disc = false; _af.show = 'all'; catAddRefresh(); }
 function catAddRefresh() { var q = document.getElementById('cat-add-q'); catAddSearch(q ? q.value : ''); }
 function catAddSpecsOnly(on) { _af.specs = !!on; catAddRefresh(); }   // kept for older callers
-/* "+ brand": every catalog brand, tap to add it as a bubble (selected). */
+/* v30.209 WB-6: the Brand dropdown. Counts follow the other filters (Show Current lists only brands with
+   current balls). Families: tap the row for every brand in it, > to open it and pick one. */
+var _bp = { open: {} };
 function catAddBrandPick() {
   catLoad().then(function (rows) {
-    var n = {}; rows.forEach(function (e) { n[e.m] = (n[e.m] || 0) + 1; });
-    var ov = overlay('cat-brand-ov', 905);
+    var pool = bubbleFilter(rows, { brands: [], cover: _af.cover, core: _af.core, specs: _af.specs, show: _af.show, disc: _af.disc });
+    var tree = brandTree(pool), mine = yourBrands(), cnt = {}; pool.forEach(function (e) { cnt[e.m] = (cnt[e.m] || 0) + 1; });
+    var on = function (m) { return _af.brands.indexOf(m) >= 0; };
+    var line = function (label, n, js, sel, indent, extra) {
+      return '<div style="display:flex;align-items:center;border-bottom:1px solid var(--border1)"><div onclick="' + js + '" style="flex:1;display:flex;justify-content:space-between;padding:11px 2px 11px ' + (indent ? 22 : 2) + 'px;cursor:pointer;font-size:15px;color:' + (sel ? 'var(--teal)' : 'var(--t1)') + '">' +
+        '<span>' + (sel ? '\u2713 ' : '') + label + '</span><span style="font-size:12px;color:var(--t3);padding-left:8px">' + n + '</span></div>' + (extra || '') + '</div>';
+    };
+    var h = line('All brands', pool.length, 'catAddBrandSet(null)', !_af.brands.length);
+    var mineH = mine.filter(function (m) { return cnt[m]; }).map(function (m) { return line(esc(m), cnt[m], "catAddBrandSet('b','" + jsq(m) + "')", _af.brands.length === 1 && on(m)); }).join('');
+    if (mineH) h += '<div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:.5px;margin:14px 2px 2px">YOUR BRANDS</div>' + mineH;
+    h += '<div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:.5px;margin:14px 2px 2px">ALL BRANDS</div>';
+    tree.forEach(function (g) {
+      if (g.brands.length === 1 && g.brands[0].m === g.g) { h += line(esc(g.g), g.n, "catAddBrandSet('b','" + jsq(g.g) + "')", _af.brands.length === 1 && on(g.g)); return; }
+      var open = !!_bp.open[g.g], famOn = _af.brandGroup === g.g && g.brands.every(function (b) { return on(b.m); });
+      h += line('<b>' + esc(g.g) + '</b> <span style="font-size:12px;color:var(--t3)">' + g.brands.length + ' brands</span>', g.n, "catAddBrandSet('g','" + jsq(g.g) + "')", famOn, false,
+        '<button onclick="catAddBrandOpen(\'' + jsq(g.g) + '\')" aria-label="Open" style="background:none;border:none;color:var(--t2);font-size:20px;padding:6px 10px;cursor:pointer">' + (open ? '\u02c5' : '\u203a') + '</button>');
+      if (open) g.brands.forEach(function (b) { h += line(esc(b.m), b.n, "catAddBrandSet('b','" + jsq(b.m) + "')", _af.brands.length === 1 && on(b.m), true); });
+    });
+    var ov = document.getElementById('cat-brand-ov'), fresh = !ov;
+    if (fresh) ov = overlay('cat-brand-ov', 905);
     ov.innerHTML = '<div style="padding:12px 16px 6px;display:flex;align-items:center;gap:12px"><button onclick="catAddBrandPickClose()" style="' + BACK + '" aria-label="Back">\u2039</button>' +
-      '<div style="font-size:18px;font-weight:800;color:var(--t1)">Brands</div></div>' +
-      '<div style="flex:1;overflow-y:auto;padding:0 16px 16px;-webkit-overflow-scrolling:touch">' +
-      Object.keys(n).sort(function (a, b) { return a.localeCompare(b); }).map(function (b) {
-        var on = _af.brands.indexOf(b) >= 0;
-        return '<div onclick="catAddBrandToggle(\'' + jsq(b) + '\')" style="display:flex;justify-content:space-between;padding:11px 2px;border-bottom:1px solid var(--border1);cursor:pointer;font-size:15px;color:' + (on ? 'var(--teal)' : 'var(--t1)') + '">' +
-          '<span>' + (on ? '\u2713 ' : '') + esc(b) + '</span><span style="font-size:12px;color:var(--t3)">' + n[b] + '</span></div>';
-      }).join('') + '</div>';
-    document.body.appendChild(ov);
+      '<div style="flex:1"><div style="font-size:18px;font-weight:800;color:var(--t1)">Brand</div><div style="font-size:11px;color:var(--t3)">' + esc((SHOW_OPTS.filter(function (o) { return o[0] === (_af.show || 'current'); })[0] || [0, 'Current'])[1]) + ' balls \u00b7 tap a family for all its brands, \u203a to pick one</div></div></div>' +
+      '<div style="flex:1;overflow-y:auto;padding:0 16px 16px;-webkit-overflow-scrolling:touch">' + h + '</div>';
+    if (fresh) document.body.appendChild(ov);
   });
 }
-function catAddBrandToggle(b) {
+function catAddBrandOpen(g) { _bp.open[g] = !_bp.open[g]; catAddBrandPick(); }
+function catAddBrandSet(kind, v) {
+  if (!kind) { _af.brands = []; _af.brandGroup = null; }
+  else if (kind === 'b') { _af.brands = [v]; _af.brandGroup = null; }
+  else {
+    return catLoad().then(function (rows) {
+      var b = {}; rows.forEach(function (e) { if (brandGroupOf(e.m) === v) b[e.m] = 1; });
+      _af.brands = Object.keys(b).sort(); _af.brandGroup = v; catAddBrandPickClose(); catAddRefresh();
+    });
+  }
+  catAddBrandPickClose(); catAddRefresh();
+}
+function catAddBrandToggle(b) {   // kept for older callers
   var i = _af.brands.indexOf(b);
   if (i >= 0) _af.brands.splice(i, 1); else { _af.brands.push(b); if (_af.extra.indexOf(b) < 0) _af.extra.push(b); }
   catAddBrandPickClose(); catAddRefresh();
@@ -1159,7 +1227,7 @@ function catOpenAddSearch() {
   var s = catStatus();
   if (!(s.count > 0)) return false;
   catCloseAddSearch();
-  _af.specs = true; _af.disc = false; _af.brands = []; _af.cover = []; _af.core = [];   // each visit starts on specs only, current balls
+  _af.specs = true; _af.disc = false; _af.show = 'current'; _af.brands = []; _af.brandGroup = null; _af.cover = []; _af.core = [];   // each visit starts on current balls with specs
   var ov = overlay('cat-search-ov', 900);
   ov.innerHTML =
     '<div style="padding:12px 16px 4px"><button onclick="catCloseAddSearch()" style="' + BACK + '" aria-label="Back">‹</button></div>' +
@@ -1181,7 +1249,7 @@ function catCloseAddSearch() {
 function catAddSearch(q) {
   catLoad().then(function (rows) {
     var box = document.getElementById('cat-add-results');
-    var bb = document.getElementById('cat-add-bubbles'); if (bb) bb.innerHTML = bubblesHTML(rows);
+    var bb = document.getElementById('cat-add-bubbles'); if (bb) bb.innerHTML = filtersHTML(rows);
     if (box) { box.innerHTML = addListHTML(rows, q, ownedIndex(rows)); markPartials(box, rows); }
   });
 }
@@ -2793,7 +2861,7 @@ function regionOf(e) { if (!e) return null; var m = rgFresh(); if (e.i in m) ret
      current     { id: 1 }        balls you said are still made (no "likely discontinued")
      brandRegion { brand: region } every ball of the brand is that region's release
    Buckets (first that applies): discontinued (maker retired, or yours) > international > upcoming
-   (approved in the last 4 months, or a release date still ahead) > likely discontinued (approved
+   (no specs yet, and approved in the last 4 months or a release date still ahead) > likely discontinued (approved
    over 3 years ago, maker status unknown) > current. */
 var TRIAGE_KEY = 'bowlingdb_catalog_triage_local';
 var _tgC = null;   // read once: discontinuedOf / regionOf run for every row of a search
@@ -2804,11 +2872,15 @@ function triageSave(o) { var l = apLS(); _tgC = null; if (l) l.setItem(TRIAGE_KE
 /* Pure: months from 'YYYY-MM' to today's 'YYYY-MM' */
 function monthsSince(ym, today) { var a = /^(\d{4})-(\d{2})/.exec(ym || ''), b = /^(\d{4})-(\d{2})/.exec(today || ''); if (!a || !b) return null; return (+b[1] - +a[1]) * 12 + (+b[2] - +a[2]); }
 function upcomingOf(e, today, released) {
+  if (e.s) return false;   // v30.209: specs already out means it is out, whatever the dates say
   today = today || new Date().toISOString().slice(0, 10);
-  var rel = released || ((overrideFor(e.i) || {}).released) || null;
+  var m = e.d ? monthsSince(e.d, today) : null, recent = m != null && m >= 0 && m < 4;
+  if (!recent && !released && !e.h) return false;   // cheap exit: only recent or held balls can be upcoming
+  var ov = overrideFor(e.i);
+  if (hlHasSpecs(e, ov)) return false;   // read from bowwwl or a maker page, or yours
+  var rel = released || ((ov || {}).released) || null;
   if (rel && String(rel).slice(0, 10) > today) return true;
-  var m = e.d ? monthsSince(e.d, today) : null;
-  return m != null && m >= 0 && m < 4 && !rel;
+  return recent && !rel;
 }
 function triageOf(e, today, released) {
   if (catIsRejected(e)) return 'rejected';
@@ -5714,7 +5786,7 @@ root.catReviewLink = catReviewLink; root.catReviewSkip = catReviewSkip;
 root.catReviewResetSkips = catReviewResetSkips;
 root.catOpenAddSearch = catOpenAddSearch; root.catCloseAddSearch = catCloseAddSearch;
 root.catAddSearch = catAddSearch; root.catAddManual = catAddManual; root.catAddBrand = catAddBrand;
-root.catAddBubble = catAddBubble; root.catAddLoosen = catAddLoosen; root.catAddBrandPick = catAddBrandPick; root.catAddBrandToggle = catAddBrandToggle; root.catAddBrandPickClose = catAddBrandPickClose;
+root.catAddBubble = catAddBubble; root.catAddSet = catAddSet; root.catAddBrandSet = catAddBrandSet; root.catAddBrandOpen = catAddBrandOpen; root.catAddLoosen = catAddLoosen; root.catAddBrandPick = catAddBrandPick; root.catAddBrandToggle = catAddBrandToggle; root.catAddBrandPickClose = catAddBrandPickClose;
 root.catAddDetail = catAddDetail; root.catSheetClose = catSheetClose; root.catSheetWeight = catSheetWeight;
 root.catAddToArsenal = catAddToArsenal; root.catFillFromCatalog = catFillFromCatalog;
 root.catSpecSource = catSpecSource; root.catDetail = catDetail;
@@ -5730,7 +5802,7 @@ root.catSearch = function (q, n) { return catLoad().then(function (rows) { retur
 root._catStep5 = { norm: norm, modelKey: modelKey, lookupIn: lookupIn, searchIn: searchIn, reviewModel: reviewModel,
                    pickerBodyHTML: pickerBodyHTML, reviewHTML: reviewHTML, resultsHTML: resultsHTML,
                    setPick: function (p) { _pick = p; }, auditModel: auditModel, auditHTML: auditHTML,
-                   addListHTML: addListHTML, addSearchIn: addSearchIn, newest: newest, bubbleFilter: bubbleFilter, discontinuedOf: discontinuedOf, dcGroups: dcGroups, covRows: covRows, covBrandOf: covBrandOf, detAsStaged: detAsStaged, sheetDetail: sheetDetail, withLocalCorrection: withLocalCorrection, catFixAllowed: catFixAllowed, stMerge: stMerge, catIsRejected: catIsRejected, stSet: stSet, stLocal: stLocal, stReset: function () { _stc = null; }, addFilters: function () { return _af; },
+                   addListHTML: addListHTML, addSearchIn: addSearchIn, newest: newest, bubbleFilter: bubbleFilter, discontinuedOf: discontinuedOf, dcGroups: dcGroups, covRows: covRows, covBrandOf: covBrandOf, detAsStaged: detAsStaged, sheetDetail: sheetDetail, withLocalCorrection: withLocalCorrection, catFixAllowed: catFixAllowed, stMerge: stMerge, catIsRejected: catIsRejected, stSet: stSet, stLocal: stLocal, stReset: function () { _stc = null; }, addFilters: function () { return _af; }, brandTree: brandTree, brandGroupOf: brandGroupOf,
                    specsOf: specsOf, shardMap: shardMap, shardKeyFor: shardKeyFor, detailFiles: detailFiles,
                    buildOwnedBall: buildOwnedBall, ballFromSpecs: ballFromSpecs, fillPlan: fillPlan,
                    catSpecSource: catSpecSource, setFilled: function (f) { _filled = f; },
