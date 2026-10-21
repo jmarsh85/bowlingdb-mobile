@@ -654,7 +654,10 @@ async function main(argv, fetchImpl, log = s => process.stdout.write(s + '\n')) 
   fs.mkdirSync(out, { recursive: true });
   const byBrand = indexByBrand(rows);
   const idName = {}; rows.forEach(r => { idName[r.i] = r.n; });
-  const sources = cfg.sources.filter(s => s.kind === 'manufacturer' && PLATFORM[s.id] && (!only || s.id === only));
+  /* v30.212: --only takes one source or a comma list ("storm,hammer,motiv"), so one run covers every site the app picked */
+  const onlySet = only ? String(only).split(',').map(x => x.trim()).filter(Boolean) : null;
+  if (pageList.length && onlySet && onlySet.length !== 1) throw new Error('--pages needs exactly one --only source');
+  const sources = cfg.sources.filter(s => s.kind === 'manufacturer' && PLATFORM[s.id] && (!onlySet || onlySet.includes(s.id)));
   const stormSince = +(arg('storm-since') || 2000);
   const runs = await Promise.all(sources.map(s => extractSource(s, cfg, fetchImpl, limit, log, { rows, stormSince, pages: pageList, prevByUrl }).catch(e => ({ recs: [], errors: [String(e)], pages: 0 }))));
   const fetched = new Date().toISOString().slice(0, 10), staged = [], perSource = {}, snaps = {};
