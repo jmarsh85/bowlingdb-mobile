@@ -310,5 +310,42 @@
   "coreType": "Symmetrical",
   "source": "maker",
   "at": "2026-10-21"
+ },
+ "900-global-gear-mark": {
+  "coverName": "Reserve Blend 93 Pearl",
+  "coverType": "Pearl Reactive",
+  "finish": "Power Edge",
+  "core": "Identity A.I.",
+  "coreType": "Asymmetrical",
+  "released": "2026-04",
+  "weights": {
+   "12": {
+    "RG": 2.58,
+    "Diff": 0.031,
+    "IntDiff": 0.009
+   },
+   "13": {
+    "RG": 2.56,
+    "Diff": 0.034,
+    "IntDiff": 0.011
+   },
+   "14": {
+    "RG": 2.51,
+    "Diff": 0.056,
+    "IntDiff": 0.021
+   },
+   "15": {
+    "RG": 2.47,
+    "Diff": 0.056,
+    "IntDiff": 0.025
+   },
+   "16": {
+    "RG": 2.47,
+    "Diff": 0.056,
+    "IntDiff": 0.022
+   }
+  },
+  "source": "maker",
+  "at": "2026-10-21"
  }
 }
