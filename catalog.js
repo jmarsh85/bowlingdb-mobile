@@ -36,7 +36,7 @@
 'use strict';
 
 /* v30.169: shown in the app header when it differs from the build's EXPECTED_CATALOG_JS */
-var CAT_VERSION  = 'v30.210';
+var CAT_VERSION  = 'v30.212';
 var CAT_BASE     = 'https://raw.githubusercontent.com/jmarsh85/bowlingdb-mobile/dist/';
 var CAT_DB       = 'BowlingDB_Catalog';
 var CAT_DB_VER   = 1;
@@ -2644,7 +2644,7 @@ function updPickToggle(src, on) { if (!_updPick) return; if (on) _updPick.on[src
 function catUpdateStart() {
   var srcs = _updPick ? _updPick.srcs.filter(function (x) { return _updPick.on[x.src]; }).map(function (x) { return x.src; }) : [];
   catLoad().then(function (rows) {
-    updSave({ v: 1, at: env.now(), step: 'send', srcs: srcs, srcIdx: 0, log: {}, urls: {}, before: updCounts(rows) });
+    updSave({ v: 1, at: env.now(), step: 'send', srcs: srcs, log: {}, urls: {}, before: updCounts(rows) });
     _updPick = null; updArm(); updTick();
   });
 }
@@ -2667,7 +2667,7 @@ function catUpdatePublish() {   // from the approve step: send ticks, then publi
 }
 function catUpdateRetry() {
   var st = updActive(); if (!st) return;
-  if (st.retry === 'usbc') delete st.usbc; if (st.retry === 'makers') delete st.mk; if (st.retry === 'approve') st.step = 'approve'; if (st.retry === 'rebuild') delete st.rebuildRun;
+  if (st.retry === 'usbc') delete st.usbc; if (st.retry === 'makers') { delete st.mk; st.mkSelf = true; } if (st.retry === 'approve') st.step = 'approve'; if (st.retry === 'rebuild') delete st.rebuildRun;
   delete st.err; delete st.retry; updSave(st); updTick();
 }
 function updDispatch(wf, inputs) {
@@ -2696,7 +2696,12 @@ function updTick() {
         st.log.send = ((r[0] && r[0].sent) || 0) + ((r[1] && r[1].sent) || 0); st.step = 'usbc'; return true; });
     }
     if (st.step === 'usbc') {
-      if (!st.usbc) return updDispatch('catalog-refresh.yml').then(function (r) { st.usbc = r; return false; });
+      /* v30.212: catalog-refresh starts the maker-site read itself (then_extract), so that part runs on GitHub
+         without the app open. An older workflow without that input answers 422: dispatch plain, and the app starts the read. */
+      if (!st.usbc) return vfyLatestId('specs-extract.yml').then(function (id) {
+        st.mkBase = id; var inp = (st.srcs || []).length ? { then_extract: st.srcs.join(',') } : null;
+        return updDispatch('catalog-refresh.yml', inp).catch(function (e) { if (inp && e && e.status === 422) { st.mkSelf = true; return updDispatch('catalog-refresh.yml'); } throw e; });
+      }).then(function (r) { st.usbc = r; return false; });
       return updFollow('catalog-refresh.yml', st.usbc, st, 'usbc', 'workflow_dispatch').then(function (k) {
         if (k === 'wait') return false;
         if (k !== 'done') { st.err = 'catalog-refresh ' + k.slice(7) + '. Open it on GitHub for the reason, then Retry.'; st.retry = 'usbc'; return false; }
@@ -2704,13 +2709,17 @@ function updTick() {
       });
     }
     if (st.step === 'makers') {
-      if (st.srcIdx >= (st.srcs || []).length) { st.step = 'approve'; return Promise.resolve(true); }
-      var src = st.srcs[st.srcIdx], key = 'mk:' + src;
-      if (!st.mk) return updDispatch('specs-extract.yml', { only: src, limit: '0', since: '2021' }).then(function (r) { st.mk = r; return false; });
-      return updFollow('specs-extract.yml', st.mk, st, key, 'workflow_dispatch').then(function (k) {
+      /* v30.212: one specs-extract run for every ticked site (only = comma list) */
+      if (!(st.srcs || []).length) { st.step = 'approve'; return Promise.resolve(true); }
+      if (!st.mk) {
+        if (st.mkSelf) return updDispatch('specs-extract.yml', { only: st.srcs.join(','), limit: '0', since: '2021' }).then(function (r) { st.mk = r; return false; });
+        st.mk = { base: st.mkBase || 0, at: env.now() }; return Promise.resolve(false);
+      }
+      return updFollow('specs-extract.yml', st.mk, st, 'makers', 'workflow_dispatch').then(function (k) {
         if (k === 'wait') return false;
-        st.log[key] = k === 'done' ? 'done' : k.slice(7);   // a site that fails is noted; the others still run
-        delete st.mk; st.srcIdx++; return true;
+        if (k === 'failed:did not start' && !st.mkSelf) { st.mkSelf = true; delete st.mk; return true; }   // the refresh didn't start it: the app does
+        if (k !== 'done') { st.err = 'specs-extract ' + k.slice(7) + '. Open it on GitHub for the reason, then Retry.'; st.retry = 'makers'; return false; }
+        st.log.makers = 'done'; st.step = 'approve'; return true;
       });
     }
     if (st.step === 'approve') {
@@ -2764,7 +2773,7 @@ function catUpdateLine() {
   var st = updActive(); if (!st) return '';
   if (st.done) return 'Update finished';
   if (st.err) return 'Update stopped: ' + UPD_LABEL[st.step];
-  return (st.waiting === 'approve' ? 'Update waiting for you: ' : 'Updating: ') + UPD_LABEL[st.step] + (st.step === 'makers' && st.srcs[st.srcIdx] ? ' (' + st.srcs[st.srcIdx] + ')' : '');
+  return (st.waiting === 'approve' ? 'Update waiting for you: ' : 'Updating: ') + UPD_LABEL[st.step] + (st.step === 'makers' ? ' (' + st.srcs.length + ' site' + (st.srcs.length === 1 ? '' : 's') + ')' : '');
 }
 function updPaint() {
   if (typeof root.wbRepaint === 'function') try { root.wbRepaint(); } catch (e) {}
@@ -2775,7 +2784,7 @@ function updPaint() {
     var p = _updPick;
     ov.innerHTML = head + '<div style="flex:1;overflow-y:auto;padding:4px 16px 12px;font-size:13px;color:var(--t2);line-height:1.5">' +
       '<div>One tap runs the whole update on GitHub and follows it here:</div><ol style="margin:6px 0 10px 18px;padding:0">' + UPD_STEPS.map(function (k) { return '<li>' + UPD_LABEL[k] + (k === 'approve' ? ' <span style="color:var(--t3)">(waits for you)</span>' : '') + '</li>'; }).join('') + '</ol>' +
-      '<div style="font-size:12px;font-weight:700;color:var(--t1);margin-top:6px">Maker sites to read</div><div style="font-size:12px;color:var(--t3)">Sites with held balls still needing specs (ball count). Each site takes a few minutes to half an hour; untick to skip.</div>' +
+      '<div style="font-size:12px;font-weight:700;color:var(--t1);margin-top:6px">Maker sites to read</div><div style="font-size:12px;color:var(--t3)">Sites with held balls still needing specs (ball count). Read together in one GitHub run started by the USBC step, so it keeps going with the app closed; untick to skip.</div>' +
       (p ? (p.srcs.length ? p.srcs.map(function (x) { return '<label style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border1)"><input type="checkbox" ' + (p.on[x.src] ? 'checked ' : '') + 'onchange="updPickToggle(\'' + jsq(x.src) + '\',this.checked)" style="width:20px;height:20px"><span style="flex:1;color:var(--t1)">' + esc(x.src) + '</span><span style="color:var(--t3)">' + x.n + '</span></label>'; }).join('') : '<div style="padding:8px 0">None: no held ball needing specs has a maker site in the bridge.</div>') : '<div style="padding:8px 0">Loading\u2026</div>') +
       '</div><div style="padding:10px 16px;border-top:1px solid var(--border1)"><button style="' + BTN_P + 'width:100%;padding:12px" onclick="catUpdateStart()">Start update' + (p ? ' (' + Object.keys(p.on).length + ' site' + (Object.keys(p.on).length === 1 ? '' : 's') + ')' : '') + '</button></div>';
     return;
@@ -2788,7 +2797,7 @@ function updPaint() {
     var sub = '';
     if (k === 'send' && st.log.send != null) sub = st.log.send + ' change' + (st.log.send === 1 ? '' : 's') + ' sent';
     if (k === 'usbc') sub = (st.afterUsbc ? (st.afterUsbc.fresh - (st.before.fresh || 0) > 0 ? (st.afterUsbc.fresh - st.before.fresh) + ' new balls held for review' : 'no new balls') : state === 'run' ? 'running' : '') + link(st.urls.usbc);
-    if (k === 'makers') sub = (st.srcs.length ? st.srcs.map(function (x, j) { var lg = st.log['mk:' + x]; return esc(x) + ' ' + (lg === 'done' ? '\u2713' : lg ? '(' + esc(lg) + ')' : j === st.srcIdx && state === 'run' ? '\u2026' : ''); }).join(' \u00b7 ') : 'skipped') + (state === 'run' ? link(st.urls['mk:' + st.srcs[st.srcIdx]]) : '');
+    if (k === 'makers') sub = (st.srcs.length ? st.srcs.map(function (x) { return esc(x) + (st.log.makers === 'done' ? ' \u2713' : ''); }).join(' \u00b7 ') + (state === 'run' ? ' \u00b7 one run on GitHub, you can leave the app' : '') : 'skipped') + link(st.urls.makers);
     if (k === 'approve' && state === 'you') sub = (st.boxes || 0) + ' waiting in Spec approvals, ' + (st.ticked || 0) + ' ticked. Auto-matched rows and your corrections publish too.';
     if (k === 'publish') sub = link(st.urls.publish);
     if (k === 'rebuild') sub = (st.log.rebuild || '') + link(st.urls.rebuild);
@@ -2798,7 +2807,7 @@ function updPaint() {
   var sum = st.done && st.after ? '<div style="margin-top:10px;padding:10px;border-radius:10px;background:var(--bg2);border:1px solid var(--border1);font-size:13px;color:var(--t1);line-height:1.6">Done. ' +
     'Catalog ' + st.before.total + ' \u2192 ' + st.after.total + ' balls \u00b7 held ' + st.before.held + ' \u2192 ' + st.after.held + ' \u00b7 with specs ' + st.before.specs + ' \u2192 ' + st.after.specs + '.</div>' : '';
   var acts = st.err ? '<button style="' + BTN_P + 'flex:1;padding:11px" onclick="catUpdateRetry()">Retry</button>' :
-    st.waiting === 'approve' && st.step === 'approve' ? '<button style="' + BTN_G + 'flex:1;padding:11px" onclick="catApprovalsOpen()">Spec approvals</button><button style="' + BTN_P + 'flex:1;padding:11px" onclick="catUpdatePublish()">Publish now</button>' : '';
+    st.waiting === 'approve' && st.step === 'approve' ? '<button style="' + BTN_G + 'flex:1;padding:11px" onclick="catUpdateClose();catApprovalsOpen()">Spec approvals</button><button style="' + BTN_P + 'flex:1;padding:11px" onclick="catUpdatePublish()">Publish now</button>' : '';
   ov.innerHTML = head + '<div style="flex:1;overflow-y:auto;padding:0 16px 12px">' + UPD_STEPS.map(row).join('') +
     (st.err ? '<div style="font-size:13px;color:var(--red);margin-top:8px">' + esc(st.err) + '</div>' : st.note ? '<div style="font-size:12px;color:var(--t3);margin-top:8px">' + esc(st.note) + '</div>' : '') + sum + '</div>' +
     '<div style="display:flex;gap:8px;padding:10px 16px;border-top:1px solid var(--border1)">' + acts +
@@ -5932,6 +5941,7 @@ root._catAPI = { catLoad: catLoad, byIdIn: byIdIn, cleanName: cleanName, esc: es
   apApplyOverride: apApplyOverride, catCorrectFor: catCorrectFor, catCorrectWithParsed: catCorrectWithParsed, catSaveCorrection: catSaveCorrection,
   brandSlug: brandSlug, catAddDetail: catAddDetail, normReleased: normReleased, catMineAsRead: catMineAsRead,
   catRestoreCorrection: catRestoreCorrection, catUpdateLine: catUpdateLine,
+  apFetchIssue: apFetchIssue, apParseIssue: apParseIssue, apQueue: apQueue, apSetQueue: apSetQueue,
   catPastePicture: catPastePicture, catSaveCover: catSaveCover, catSaveCore: catSaveCore, catCoreShareOffer: catCoreShareOffer, coreShareCandidates: coreShareCandidates, taSuggest: taSuggest,
   imgProbe: imgProbe, imgShrink: imgShrink, catImgDel: catImgDel, bowwwlImgCandidates: bowwwlImgCandidates, bowwwlCoreCandidates: bowwwlCoreCandidates, coreKeyOf: coreKeyOf, catCoreImageFor: catCoreImageFor, coreLinkSet: coreLinkSet, scanMem: scanMem, vocabLoad: vocabLoad, triageGet: triageGet, triageSave: triageSave, triageOf: triageOf, upcomingOf: upcomingOf, monthsSince: monthsSince, localOverrides: localOverrides, repoOverride: function (id) { return (_ovr && _ovr[id]) || null; },
   regionOf: regionOf, regionTags: regionTags, regionTagSet: regionTagSet, regionFromText: regionFromText, imgPicks: imgPicks, imgPickSet: imgPickSet, REGIONS: REGION_WORDS.map(function (r) { return r[0]; }), AP_WEIGHTS: AP_WEIGHTS, version: CAT_VERSION }; root.catMyBallsOpen = catMyBallsOpen; root.catSaveCorrection = catSaveCorrection;
