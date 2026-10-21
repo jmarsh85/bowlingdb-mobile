@@ -29,6 +29,10 @@ on:
         description: 'HOLD-1: start the hold (first pass: every ball without specs). Once hold.json exists every run keeps it.'
         type: boolean
         default: false
+      then_extract:
+        description: 'v30.212 Update catalog: maker sites to read next (comma-separated source ids). Blank = none.'
+        type: string
+        default: ''
 
 permissions:
   contents: write
@@ -166,6 +170,24 @@ jobs:
       - name: No-op notice
         if: steps.build.outputs.changed != 'true'
         run: echo "No change this week. Existing catalog remains published." >> "$GITHUB_STEP_SUMMARY"
+
+  # v30.212 Update catalog: after a good refresh, start specs-extract for the sites the app picked, so the
+  # maker-site step runs on GitHub without the app open (the app only follows it).
+  then-extract:
+    runs-on: ubuntu-24.04
+    needs: refresh
+    if: needs.refresh.result == 'success' && inputs.then_extract != ''
+    permissions:
+      actions: write
+    steps:
+      - name: Start specs-extract
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SITES: ${{ inputs.then_extract }}
+        run: |
+          case "$SITES" in *[!a-z0-9,_-]*) echo "::error::then_extract: source ids only"; exit 1;; esac
+          gh workflow run specs-extract.yml --repo "${{ github.repository }}" --ref "${{ github.ref_name }}" -f only="$SITES" -f limit=0 -f since=2021
+          echo "Started specs-extract for: $SITES" >> "$GITHUB_STEP_SUMMARY"
 
   # Runs even when refresh fails, so a silent source outage is visible.
   heartbeat:
