@@ -5,7 +5,7 @@
     "Columbia 300",
     "Hammer"
    ],
-   "n": 44,
+   "n": 45,
    "v": "2-Piece"
   },
   {
@@ -76,6 +76,13 @@
   },
   {
    "b": [
+    "Hammer"
+   ],
+   "n": 9,
+   "v": "Gas Mask"
+  },
+  {
+   "b": [
     "Motiv"
    ],
    "n": 9,
@@ -87,13 +94,6 @@
    ],
    "n": 9,
    "v": "Sigma"
-  },
-  {
-   "b": [
-    "Hammer"
-   ],
-   "n": 8,
-   "v": "Gas Mask"
   },
   {
    "b": [
@@ -111,6 +111,13 @@
   },
   {
    "b": [
+    "Columbia 300"
+   ],
+   "n": 8,
+   "v": "Nitrous"
+  },
+  {
+   "b": [
     "Hammer"
    ],
    "n": 8,
@@ -125,24 +132,10 @@
   },
   {
    "b": [
-    "Ebonite"
-   ],
-   "n": 7,
-   "v": "Centrex Symmetrical Mass Bias"
-  },
-  {
-   "b": [
     "Brunswick"
    ],
    "n": 7,
    "v": "Melee"
-  },
-  {
-   "b": [
-    "Columbia 300"
-   ],
-   "n": 7,
-   "v": "Nitrous"
   },
   {
    "b": [
@@ -181,10 +174,17 @@
   },
   {
    "b": [
-    "Track Inc."
+    "Ebonite"
    ],
    "n": 6,
-   "v": "I-Core 2.0 (Dual Density)"
+   "v": "Centrex Symmetrical Mass Bias"
+  },
+  {
+   "b": [
+    "Ebonite"
+   ],
+   "n": 6,
+   "v": "Mission 1.0"
   },
   {
    "b": [
@@ -269,6 +269,13 @@
    ],
    "n": 5,
    "v": "Hustle"
+  },
+  {
+   "b": [
+    "Track Inc."
+   ],
+   "n": 5,
+   "v": "I-Core 2.0 (Dual Density)"
   },
   {
    "b": [
@@ -472,6 +479,13 @@
    ],
    "n": 4,
    "v": "Kingpin Ultra Low RG"
+  },
+  {
+   "b": [
+    "Track Inc."
+   ],
+   "n": 4,
+   "v": "LT-2"
   },
   {
    "b": [
@@ -792,6 +806,13 @@
   },
   {
    "b": [
+    "Storm"
+   ],
+   "n": 3,
+   "v": "Inverted Fe2"
+  },
+  {
+   "b": [
     "Brunswick"
    ],
    "n": 3,
@@ -810,13 +831,6 @@
    ],
    "n": 3,
    "v": "Legion 2 Turbo"
-  },
-  {
-   "b": [
-    "Track Inc."
-   ],
-   "n": 3,
-   "v": "LT-2"
   },
   {
    "b": [
@@ -872,14 +886,14 @@
     "Ebonite"
    ],
    "n": 3,
-   "v": "Mission 1.0"
+   "v": "Mod-1"
   },
   {
    "b": [
-    "Ebonite"
+    "Radical"
    ],
    "n": 3,
-   "v": "Mod-1"
+   "v": "Modified Intel Symmetric"
   },
   {
    "b": [
@@ -1079,6 +1093,13 @@
   },
   {
    "b": [
+    "Ebonite"
+   ],
+   "n": 2,
+   "v": "Big Time"
+  },
+  {
+   "b": [
     "900 Global"
    ],
    "n": 2,
@@ -1142,6 +1163,13 @@
   },
   {
    "b": [
+    "Brunswick"
+   ],
+   "n": 2,
+   "v": "Dual Centric"
+  },
+  {
+   "b": [
     "DV8"
    ],
    "n": 2,
@@ -1156,10 +1184,10 @@
   },
   {
    "b": [
-    "Ebonite"
+    "Storm"
    ],
    "n": 2,
-   "v": "Emerge"
+   "v": "Element Tour AI"
   },
   {
    "b": [
@@ -1286,6 +1314,13 @@
    ],
    "n": 2,
    "v": "I-Core 3.0 Slim"
+  },
+  {
+   "b": [
+    "Track Inc."
+   ],
+   "n": 2,
+   "v": "I-Core Gen4"
   },
   {
    "b": [
@@ -1443,13 +1478,6 @@
   },
   {
    "b": [
-    "Radical"
-   ],
-   "n": 2,
-   "v": "Modified Intel Symmetric"
-  },
-  {
-   "b": [
     "Track Inc."
    ],
    "n": 2,
@@ -1593,13 +1621,6 @@
     "Columbia 300"
    ],
    "n": 2,
-   "v": "Resurgence Symmetric"
-  },
-  {
-   "b": [
-    "Columbia 300"
-   ],
-   "n": 2,
    "v": "Ricochet"
   },
   {
@@ -1628,6 +1649,13 @@
     "Columbia 300"
    ],
    "n": 2,
+   "v": "SD Medium RG"
+  },
+  {
+   "b": [
+    "Columbia 300"
+   ],
+   "n": 2,
    "v": "SD Medium RG Core"
   },
   {
@@ -1636,13 +1664,6 @@
    ],
    "n": 2,
    "v": "Shapeshifter Sym / Asym"
-  },
-  {
-   "b": [
-    "Columbia 300"
-   ],
-   "n": 2,
-   "v": "Sideswipe"
   },
   {
    "b": [
@@ -1933,13 +1954,6 @@
   },
   {
    "b": [
-    "Ebonite"
-   ],
-   "n": 1,
-   "v": "Big Time"
-  },
-  {
-   "b": [
     "Radical"
    ],
    "n": 1,
@@ -2076,13 +2090,6 @@
     "Brunswick"
    ],
    "n": 1,
-   "v": "Dual Centric"
-  },
-  {
-   "b": [
-    "Brunswick"
-   ],
-   "n": 1,
    "v": "Dual Flip i-Block"
   },
   {
@@ -2122,10 +2129,10 @@
   },
   {
    "b": [
-    "Storm"
+    "Ebonite"
    ],
    "n": 1,
-   "v": "Element Tour AI"
+   "v": "Emerge"
   },
   {
    "b": [
@@ -2311,13 +2318,6 @@
   },
   {
    "b": [
-    "Track Inc."
-   ],
-   "n": 1,
-   "v": "I-Core Gen4"
-  },
-  {
-   "b": [
     "Hammer"
    ],
    "n": 1,
@@ -2343,13 +2343,6 @@
    ],
    "n": 1,
    "v": "Inverted Centrex Symmetrical Mass Bias"
-  },
-  {
-   "b": [
-    "Storm"
-   ],
-   "n": 1,
-   "v": "Inverted Fe2"
   },
   {
    "b": [
@@ -2696,6 +2689,13 @@
   },
   {
    "b": [
+    "Columbia 300"
+   ],
+   "n": 1,
+   "v": "Resurgence Symmetric"
+  },
+  {
+   "b": [
     "Track Inc."
    ],
    "n": 1,
@@ -2717,17 +2717,17 @@
   },
   {
    "b": [
-    "Columbia 300"
-   ],
-   "n": 1,
-   "v": "SD Medium RG"
-  },
-  {
-   "b": [
     "Track Inc."
    ],
    "n": 1,
    "v": "Shuffle"
+  },
+  {
+   "b": [
+    "Columbia 300"
+   ],
+   "n": 1,
+   "v": "Sideswipe"
   },
   {
    "b": [
@@ -2770,6 +2770,13 @@
    ],
    "n": 1,
    "v": "Spinner Symmetric"
+  },
+  {
+   "b": [
+    "Hammer"
+   ],
+   "n": 1,
+   "v": "Stacked LED"
   },
   {
    "b": [
@@ -2934,10 +2941,24 @@
   },
   {
    "b": [
+    "Radical"
+   ],
+   "n": 1,
+   "v": "Vexed Variant Asymmetric"
+  },
+  {
+   "b": [
     "Ebonite"
    ],
    "n": 1,
    "v": "VII Core Design"
+  },
+  {
+   "b": [
+    "Hammer"
+   ],
+   "n": 1,
+   "v": "Vindicator"
   },
   {
    "b": [
@@ -2983,7 +3004,7 @@
     "Storm",
     "Track Inc."
    ],
-   "n": 243,
+   "n": 246,
    "v": "Asymmetrical"
   },
   {
@@ -3000,7 +3021,7 @@
     "Storm",
     "Track Inc."
    ],
-   "n": 242,
+   "n": 243,
    "v": "Symmetrical"
   }
  ],
@@ -3043,6 +3064,14 @@
   },
   {
    "b": [
+    "Hammer",
+    "Radical"
+   ],
+   "n": 10,
+   "v": "HK22C² Solid"
+  },
+  {
+   "b": [
     "Columbia 300"
    ],
    "n": 10,
@@ -3050,24 +3079,9 @@
   },
   {
    "b": [
-    "Hammer",
-    "Radical"
+    "Columbia 300"
    ],
    "n": 8,
-   "v": "HK22C² Solid"
-  },
-  {
-   "b": [
-    "Columbia 300"
-   ],
-   "n": 7,
-   "v": "Bend-It Pearl"
-  },
-  {
-   "b": [
-    "Columbia 300"
-   ],
-   "n": 7,
    "v": "Boost/R"
   },
   {
@@ -3077,6 +3091,13 @@
    ],
    "n": 7,
    "v": "Urethane Pearl"
+  },
+  {
+   "b": [
+    "Columbia 300"
+   ],
+   "n": 6,
+   "v": "Bend-It Pearl"
   },
   {
    "b": [
@@ -3357,6 +3378,13 @@
     "Ebonite"
    ],
    "n": 3,
+   "v": "GB 12.7"
+  },
+  {
+   "b": [
+    "Ebonite"
+   ],
+   "n": 3,
    "v": "GSV-1 Hybrid"
   },
   {
@@ -3452,13 +3480,6 @@
   },
   {
    "b": [
-    "Track Inc."
-   ],
-   "n": 3,
-   "v": "QR-9 Hybrid"
-  },
-  {
-   "b": [
     "Columbia 300"
    ],
    "n": 3,
@@ -3470,6 +3491,13 @@
    ],
    "n": 3,
    "v": "Reflex Solid"
+  },
+  {
+   "b": [
+    "Storm"
+   ],
+   "n": 3,
+   "v": "REX Pearl"
   },
   {
    "b": [
@@ -3540,6 +3568,13 @@
    ],
    "n": 2,
    "v": "Aggression Hybrid CFI"
+  },
+  {
+   "b": [
+    "Hammer"
+   ],
+   "n": 2,
+   "v": "Aggression Pearl"
   },
   {
    "b": [
@@ -3819,6 +3854,13 @@
     "Track Inc."
    ],
    "n": 2,
+   "v": "MR-6 Hybrid"
+  },
+  {
+   "b": [
+    "Track Inc."
+   ],
+   "n": 2,
    "v": "MR-6 Solid"
   },
   {
@@ -3840,13 +3882,6 @@
     "Columbia 300"
    ],
    "n": 2,
-   "v": "New Era Hybrid"
-  },
-  {
-   "b": [
-    "Columbia 300"
-   ],
-   "n": 2,
    "v": "New Era Solid"
   },
   {
@@ -3856,6 +3891,13 @@
    ],
    "n": 2,
    "v": "Not Urethane"
+  },
+  {
+   "b": [
+    "Storm"
+   ],
+   "n": 2,
+   "v": "NRG Pearl"
   },
   {
    "b": [
@@ -3982,6 +4024,13 @@
     "Track Inc."
    ],
    "n": 2,
+   "v": "QR-9 Hybrid"
+  },
+  {
+   "b": [
+    "Track Inc."
+   ],
+   "n": 2,
    "v": "QR-9 Solid"
   },
   {
@@ -3997,13 +4046,6 @@
    ],
    "n": 2,
    "v": "Relativity Flip Solid"
-  },
-  {
-   "b": [
-    "Storm"
-   ],
-   "n": 2,
-   "v": "REX Pearl"
   },
   {
    "b": [
@@ -4311,13 +4353,6 @@
     "Hammer"
    ],
    "n": 1,
-   "v": "Aggression Pearl"
-  },
-  {
-   "b": [
-    "Hammer"
-   ],
-   "n": 1,
    "v": "Aggression Pearl CFI"
   },
   {
@@ -4571,6 +4606,13 @@
    ],
    "n": 1,
    "v": "Bring-It Pearl"
+  },
+  {
+   "b": [
+    "Columbia 300"
+   ],
+   "n": 1,
+   "v": "Bring-It Solid"
   },
   {
    "b": [
@@ -5480,13 +5522,6 @@
     "Ebonite"
    ],
    "n": 1,
-   "v": "GB 13.3 Hybrid"
-  },
-  {
-   "b": [
-    "Ebonite"
-   ],
-   "n": 1,
    "v": "GB 13.3 Pearl"
   },
   {
@@ -5719,6 +5754,13 @@
    ],
    "n": 1,
    "v": "Hexion™ SE Pearl"
+  },
+  {
+   "b": [
+    "Radical"
+   ],
+   "n": 1,
+   "v": "HK22 Hybrid"
   },
   {
    "b": [
@@ -6047,13 +6089,6 @@
     "Track Inc."
    ],
    "n": 1,
-   "v": "MR-6 Hybrid"
-  },
-  {
-   "b": [
-    "Track Inc."
-   ],
-   "n": 1,
    "v": "MR-8 Hybrid"
   },
   {
@@ -6089,6 +6124,13 @@
     "Columbia 300"
    ],
    "n": 1,
+   "v": "New Era Hybrid"
+  },
+  {
+   "b": [
+    "Columbia 300"
+   ],
+   "n": 1,
    "v": "New Era Reactive Plus™"
   },
   {
@@ -6111,13 +6153,6 @@
    ],
    "n": 1,
    "v": "NRG Hybrid"
-  },
-  {
-   "b": [
-    "Storm"
-   ],
-   "n": 1,
-   "v": "NRG Pearl"
   },
   {
    "b": [
@@ -6251,6 +6286,13 @@
    ],
    "n": 1,
    "v": "Prime Response Hybrid"
+  },
+  {
+   "b": [
+    "Track Inc."
+   ],
+   "n": 1,
+   "v": "Prime Response Pearl (HK22C ² )"
   },
   {
    "b": [
@@ -6461,6 +6503,13 @@
    ],
    "n": 1,
    "v": "R2S Pearl"
+  },
+  {
+   "b": [
+    "Storm"
+   ],
+   "n": 1,
+   "v": "R2S Solid"
   },
   {
    "b": [
@@ -6860,6 +6909,13 @@
    ],
    "n": 1,
    "v": "TEC 2 Particle Pearl"
+  },
+  {
+   "b": [
+    "Columbia 300"
+   ],
+   "n": 1,
+   "v": "TEC Particle"
   },
   {
    "b": [
@@ -7286,9 +7342,10 @@
     "Motiv",
     "Radical",
     "Roto Grip",
+    "Storm",
     "Track Inc."
    ],
-   "n": 179,
+   "n": 182,
    "v": "Pearl Reactive"
   },
   {
@@ -7302,7 +7359,7 @@
     "Radical",
     "Track Inc."
    ],
-   "n": 171,
+   "n": 174,
    "v": "Solid Reactive"
   },
   {
@@ -7315,7 +7372,7 @@
     "Radical",
     "Track Inc."
    ],
-   "n": 92,
+   "n": 94,
    "v": "Hybrid Reactive"
   },
   {
@@ -7339,9 +7396,10 @@
   {
    "b": [
     "Brunswick",
-    "Ebonite"
+    "Ebonite",
+    "Storm"
    ],
-   "n": 6,
+   "n": 7,
    "v": "Solid"
   },
   {
@@ -7390,7 +7448,7 @@
     "Radical",
     "Track Inc."
    ],
-   "n": 49,
+   "n": 50,
    "v": "500, 2000 Siaair Micro Pad"
   },
   {
@@ -7403,7 +7461,7 @@
     "Radical",
     "Track Inc."
    ],
-   "n": 37,
+   "n": 38,
    "v": "500, 1500 Siaair Micro Pad"
   },
   {
@@ -7485,7 +7543,7 @@
     "Radical",
     "Track Inc."
    ],
-   "n": 15,
+   "n": 16,
    "v": "500, 1000 Siaair Micro Pad"
   },
   {
@@ -7497,18 +7555,27 @@
   },
   {
    "b": [
-    "Ebonite",
-    "Track Inc."
-   ],
-   "n": 12,
-   "v": "500, 2000 Abralon®"
-  },
-  {
-   "b": [
     "Motiv"
    ],
    "n": 12,
    "v": "5000 Grit Laser Scan Polished"
+  },
+  {
+   "b": [
+    "Ebonite",
+    "Track Inc."
+   ],
+   "n": 11,
+   "v": "500, 2000 Abralon®"
+  },
+  {
+   "b": [
+    "900 Global",
+    "Roto Grip",
+    "Storm"
+   ],
+   "n": 10,
+   "v": "2000 Grit"
   },
   {
    "b": [
@@ -7527,19 +7594,18 @@
   },
   {
    "b": [
-    "900 Global",
-    "Roto Grip",
-    "Storm"
-   ],
-   "n": 9,
-   "v": "2000 Grit"
-  },
-  {
-   "b": [
     "Motiv"
    ],
    "n": 8,
    "v": "1000 Grit LSS"
+  },
+  {
+   "b": [
+    "Roto Grip",
+    "Storm"
+   ],
+   "n": 7,
+   "v": "4000 Grit"
   },
   {
    "b": [
@@ -7558,6 +7624,17 @@
   },
   {
    "b": [
+    "Brunswick",
+    "Columbia 300",
+    "Hammer",
+    "Radical",
+    "Track Inc."
+   ],
+   "n": 7,
+   "v": "500, 1500, 3000 Siaair Micro Pad"
+  },
+  {
+   "b": [
     "Motiv"
    ],
    "n": 7,
@@ -7569,14 +7646,6 @@
    ],
    "n": 6,
    "v": "3000 Grit Laser Scan Sanded"
-  },
-  {
-   "b": [
-    "Roto Grip",
-    "Storm"
-   ],
-   "n": 6,
-   "v": "4000 Grit"
   },
   {
    "b": [
@@ -7593,16 +7662,6 @@
    ],
    "n": 6,
    "v": "500 Siaair / Rough Buff"
-  },
-  {
-   "b": [
-    "Brunswick",
-    "Columbia 300",
-    "Hammer",
-    "Radical"
-   ],
-   "n": 6,
-   "v": "500, 1500, 3000 Siaair Micro Pad"
   },
   {
    "b": [
@@ -7781,6 +7840,13 @@
   },
   {
    "b": [
+    "Storm"
+   ],
+   "n": 2,
+   "v": "4k Fast"
+  },
+  {
+   "b": [
     "DV8",
     "Radical"
    ],
@@ -7949,13 +8015,6 @@
    ],
    "n": 1,
    "v": "4000 Siaair Micro Pad"
-  },
-  {
-   "b": [
-    "Storm"
-   ],
-   "n": 1,
-   "v": "4K-Fast"
   },
   {
    "b": [

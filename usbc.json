@@ -1,6 +1,6 @@
 {
  "Counts": {
-  "approved": 8064
+  "approved": 8065
  },
  "Eligibility": {
   "3g-galaxy-black": {
@@ -19319,6 +19319,10 @@
    "NoSlowOil": false,
    "SlowOil78D": false
   },
+  "legends-the-black-pearl-phantom": {
+   "NoSlowOil": false,
+   "SlowOil78D": false
+  },
   "legends-the-black-pearl-the-deep-sea": {
    "NoSlowOil": false,
    "SlowOil78D": false
@@ -32260,5 +32264,5 @@
    "SlowOil78D": false
   }
  },
- "ListVersion": "2026-10-20"
+ "ListVersion": "2026-10-21"
 }

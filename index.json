@@ -19735,12 +19735,15 @@
  },
  {
   "c": null,
+  "cv": "H",
   "d": "2026-10",
   "h": 1,
   "i": "brunswick-strategy-logic",
   "k": "brunswick|strategylogic",
   "m": "Brunswick",
   "n": "Strategy Logic",
+  "r": 0,
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -24169,15 +24172,13 @@
   "y": "1999"
  },
  {
+  "a": 1,
   "c": null,
-  "co": "s",
-  "cv": "H",
   "d": "2012-10",
   "i": "columbia-300-mass-eruption",
   "k": "columbia300|masseruption",
   "m": "Columbia 300",
   "n": "Mass Eruption",
-  "s": 1,
   "t": false,
   "y": "2012"
  },
@@ -24349,13 +24350,13 @@
   "y": "2019"
  },
  {
-  "a": 1,
   "c": null,
   "d": "2000-04",
   "i": "columbia-300-messenger-tec",
   "k": "columbia300|messengertec",
   "m": "Columbia 300",
   "n": "Messenger TEC",
+  "s": 1,
   "t": false,
   "y": "2000"
  },
@@ -24814,13 +24815,13 @@
   "y": "2016"
  },
  {
-  "a": 1,
   "c": null,
   "d": "2016-05",
   "i": "columbia-300-nitrous-silver-black",
   "k": "columbia300|nitroussilverblack",
   "m": "Columbia 300",
   "n": "Nitrous Silver/Black",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -26725,14 +26726,13 @@
   "y": "2009"
  },
  {
+  "a": 1,
   "c": null,
-  "cv": "P",
   "d": "2016-06",
   "i": "columbia-300-sideswipe",
   "k": "columbia300|sideswipe",
   "m": "Columbia 300",
   "n": "Sideswipe",
-  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -27616,13 +27616,14 @@
   "y": "2004"
  },
  {
-  "a": 1,
   "c": null,
+  "cv": "S",
   "d": "2014-08",
   "i": "columbia-300-throw-down",
   "k": "columbia300|throwdown",
   "m": "Columbia 300",
   "n": "Throw Down",
+  "s": 1,
   "t": false,
   "y": "2014"
  },
@@ -33157,13 +33158,11 @@
  },
  {
   "c": null,
-  "cv": "P",
   "d": "2023-06",
   "i": "ebonite-emerge",
   "k": "ebonite|emerge",
   "m": "Ebonite",
   "n": "Emerge",
-  "s": 1,
   "t": false,
   "y": "2023"
  },
@@ -33822,12 +33821,14 @@
  },
  {
   "c": null,
+  "cv": "S",
   "d": "2026-10",
   "h": 1,
   "i": "ebonite-go-time",
   "k": "ebonite|gotime",
   "m": "Ebonite",
   "n": "Go Time",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -35277,35 +35278,35 @@
   "y": "2010"
  },
  {
-  "a": 1,
   "c": null,
   "d": "2016-08",
   "i": "ebonite-mission-unknown-black",
   "k": "ebonite|missionunknownblack",
   "m": "Ebonite",
   "n": "Mission Unknown Black",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
  {
-  "a": 1,
   "c": null,
   "d": "2016-08",
   "i": "ebonite-mission-unknown-gold",
   "k": "ebonite|missionunknowngold",
   "m": "Ebonite",
   "n": "Mission Unknown Gold",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
  {
-  "a": 1,
   "c": null,
   "d": "2016-08",
   "i": "ebonite-mission-unknown-red",
   "k": "ebonite|missionunknownred",
   "m": "Ebonite",
   "n": "Mission Unknown Red",
+  "s": 1,
   "t": false,
   "y": "2016"
  },
@@ -36891,15 +36892,13 @@
   "y": "2016"
  },
  {
+  "a": 1,
   "c": null,
-  "co": "s",
-  "cv": "H",
   "d": "2006-04",
   "i": "ebonite-real-one",
   "k": "ebonite|realone",
   "m": "Ebonite",
   "n": "Real One",
-  "s": 1,
   "t": false,
   "y": "2006"
  },
@@ -43637,12 +43636,15 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "d": "2021-10",
   "h": 1,
   "i": "hammer-black-widow-ghost-pearl",
   "k": "hammer|blackwidowghostpearl",
   "m": "Hammer",
   "n": "Black Widow Ghost Pearl",
+  "s": 1,
   "t": false,
   "y": "2021"
  },
@@ -44753,12 +44755,14 @@
  },
  {
   "c": null,
+  "cv": "P",
   "d": "2026-10",
   "h": 1,
   "i": "hammer-blacklist",
   "k": "hammer|blacklist",
   "m": "Hammer",
   "n": "Blacklist",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -47477,12 +47481,14 @@
  },
  {
   "c": null,
+  "cv": "S",
   "d": "2026-10",
   "h": 1,
   "i": "hammer-reckoning",
   "k": "hammer|reckoning",
   "m": "Hammer",
   "n": "Reckoning",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -54047,6 +54053,17 @@
   "y": "2016"
  },
  {
+  "c": null,
+  "d": "2026-10",
+  "h": 2,
+  "i": "legends-the-black-pearl-phantom",
+  "k": "legends|theblackpearlphantom",
+  "m": "Legends",
+  "n": "The Black Pearl Phantom",
+  "t": false,
+  "y": "2026"
+ },
+ {
   "a": 1,
   "c": null,
   "d": "2012-12",
@@ -57579,7 +57596,6 @@
  {
   "c": null,
   "d": "2026-04",
-  "h": 1,
   "i": "motiv-max-thrill-pearl-lime-orange",
   "k": "motiv|maxthrillpearllimeorange",
   "m": "Motiv",
@@ -62594,12 +62610,16 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "H",
   "d": "2026-10",
   "h": 1,
   "i": "radical-intel-recon-hybrid",
   "k": "radical|intelreconhybrid",
   "m": "Radical",
   "n": "Intel Recon Hybrid",
+  "r": 0,
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -63030,7 +63050,6 @@
   "co": "a",
   "cv": "H",
   "d": "2026-04",
-  "h": 1,
   "i": "radical-prime-power-hitter",
   "k": "radical|primepowerhitter",
   "m": "Radical",
@@ -63900,12 +63919,15 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "S",
   "d": "2026-10",
-  "h": 1,
   "i": "radical-vexed-variant",
   "k": "radical|vexedvariant",
   "m": "Radical",
   "n": "Vexed Variant",
+  "r": 0,
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -74660,12 +74682,15 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "S",
   "d": "2026-09",
   "h": 1,
   "i": "storm-hy-road-hybrid",
   "k": "storm|hyroadhybrid",
   "m": "Storm",
   "n": "Hy-Road Hybrid",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -75226,12 +75251,16 @@
  },
  {
   "c": null,
+  "co": "a",
+  "cv": "P",
   "d": "2026-10",
   "h": 1,
   "i": "storm-ion-pro-pearl",
   "k": "storm|ionpropearl",
   "m": "Storm",
   "n": "Ion Pro Pearl",
+  "r": 0,
+  "s": 1,
   "t": false,
   "y": "2026"
  },
@@ -75362,7 +75391,6 @@
  {
   "c": null,
   "d": "2026-03",
-  "h": 1,
   "i": "storm-level-up",
   "k": "storm|levelup",
   "m": "Storm",
@@ -76720,12 +76748,15 @@
  },
  {
   "c": null,
+  "co": "s",
+  "cv": "P",
   "d": "2022-05",
   "h": 1,
   "i": "storm-night-road",
   "k": "storm|nightroad",
   "m": "Storm",
   "n": "Night Road",
+  "s": 1,
   "t": false,
   "y": "2022"
  },
@@ -78053,7 +78084,6 @@
  {
   "c": null,
   "d": "2026-09",
-  "h": 1,
   "i": "storm-q-focus",
   "k": "storm|qfocus",
   "m": "Storm",
@@ -83012,7 +83042,6 @@
  {
   "c": null,
   "d": "2026-03",
-  "h": 1,
   "i": "swag-black-dragon-hybrid",
   "k": "swag|blackdragonhybrid",
   "m": "Swag",
@@ -85884,13 +85913,14 @@
   "y": "2020"
  },
  {
-  "a": 1,
   "c": null,
+  "cv": "H",
   "d": "2006-11",
   "i": "track-inc-legion",
   "k": "trackinc|legion",
   "m": "Track Inc.",
   "n": "Legion",
+  "s": 1,
   "t": false,
   "y": "2006"
  },
@@ -86244,14 +86274,13 @@
   "y": "1993"
  },
  {
+  "a": 1,
   "c": null,
-  "cv": "H",
   "d": "2015-06",
   "i": "track-inc-paradox",
   "k": "trackinc|paradox",
   "m": "Track Inc.",
   "n": "Paradox",
-  "s": 1,
   "t": false,
   "y": "2015"
  },
@@ -87597,12 +87626,14 @@
  },
  {
   "c": null,
+  "cv": "P",
   "d": "2026-10",
   "h": 1,
   "i": "track-inc-synthesis-prime",
   "k": "trackinc|synthesisprime",
   "m": "Track Inc.",
   "n": "Synthesis Prime",
+  "s": 1,
   "t": false,
   "y": "2026"
  },
