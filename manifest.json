@@ -1,5 +1,5 @@
 {
- "build": "614accd3487faf05",
+ "build": "9c6babb871105e43",
  "files": {
   "detail/3g.json": {
    "bytes": 3601,
@@ -162,8 +162,8 @@
    "path": "detail/bowltech.json"
   },
   "detail/brunswick.json": {
-   "bytes": 747160,
-   "hash": "396482100543ec8d",
+   "bytes": 747790,
+   "hash": "c5c634e43f0cbe7e",
    "path": "detail/brunswick.json"
   },
   "detail/bulldogbowlingproducts.json": {
@@ -782,8 +782,8 @@
    "path": "detail/yuean.json"
   },
   "index.json": {
-   "bytes": 1537425,
-   "hash": "8ca3543b572a9faf",
+   "bytes": 1537491,
+   "hash": "5c1849734abb9245",
    "path": "index.json"
   },
   "usbc.json": {
@@ -792,8 +792,8 @@
    "path": "usbc.json"
   },
   "vocab.json": {
-   "bytes": 92354,
-   "hash": "ac777a84689dde5d",
+   "bytes": 92628,
+   "hash": "619c67375b6fa66a",
    "path": "vocab.json"
   }
  },
