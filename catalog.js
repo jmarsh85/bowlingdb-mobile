@@ -36,7 +36,7 @@
 'use strict';
 
 /* v30.169: shown in the app header when it differs from the build's EXPECTED_CATALOG_JS */
-var CAT_VERSION  = 'v30.209';
+var CAT_VERSION  = 'v30.210';
 var CAT_BASE     = 'https://raw.githubusercontent.com/jmarsh85/bowlingdb-mobile/dist/';
 var CAT_DB       = 'BowlingDB_Catalog';
 var CAT_DB_VER   = 1;
@@ -2430,6 +2430,173 @@ if (typeof document !== 'undefined' && document.addEventListener) {
   setTimeout(function () { if (updActive()) { updArm(); updTick(); } }, 1800);
 }
 
+
+/* ---------- v30.210: paste a picture (image on the clipboard, a copied picture address, or a paste box) ----------
+   done({ blob, url, how }) once something usable is found; nothing happens when the user backs out. */
+function catPastePicture(done) {
+  var take = function (blob, url) {
+    if (blob) return imgShrink(blob).then(function (b) { done({ blob: b, url: URL.createObjectURL(b), how: 'pasted picture' }); });
+    if (url) return imgProbe(url).then(function (u) { if (u) done({ url: u, how: 'pasted link', link: true }); else if (root.toast) root.toast('That address did not load as a picture'); });
+  };
+  var cb = typeof navigator !== 'undefined' && navigator.clipboard;
+  if (cb && cb.read) return cb.read().then(function (items) {
+    for (var i = 0; i < items.length; i++) { var t = items[i].types.filter(function (x) { return /^image\//.test(x); })[0]; if (t) return items[i].getType(t).then(function (b) { return take(b); }); }
+    for (var j = 0; j < items.length; j++) if (items[j].types.indexOf('text/plain') >= 0) return items[j].getType('text/plain').then(function (b) { return b.text(); }).then(function (x) { var m = /https?:\/\/\S+/.exec(x || ''); return m ? take(null, m[0]) : ppBox(take); });
+    return ppBox(take);
+  }, function () { return ppBox(take); });
+  return Promise.resolve(ppBox(take));
+}
+/* fallback: a box to paste into (iPhone: long-press, Paste); takes the first picture or address pasted */
+function ppBox(take) {
+  if (typeof document === 'undefined') return;
+  var old = document.getElementById('ppb-ov'); if (old) old.parentNode.removeChild(old);
+  var ov = overlay('ppb-ov', 960);
+  ov.innerHTML = '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 8px"><button style="' + BACK + '" onclick="catPasteBoxClose()">\u2039</button>' +
+    '<div style="flex:1"><div style="font-size:17px;font-weight:800;color:var(--t1)">Paste the picture</div><div style="font-size:11px;color:var(--t3)">In Safari: long-press the picture, Copy. Here: long-press the box, Paste.</div></div></div>' +
+    '<div style="padding:0 16px 16px"><div id="ppb-box" contenteditable="true" style="min-height:180px;border:1px dashed var(--border1);border-radius:12px;padding:10px;color:var(--t2);font-size:14px;background:var(--bg2)"></div></div>';
+  document.body.appendChild(ov);
+  var box = document.getElementById('ppb-box'), fin = function (blob, url) { catPasteBoxClose(); take(blob, url); };
+  box.addEventListener('paste', function (ev) {
+    var cd = ev.clipboardData, items = (cd && cd.items) || [];
+    for (var i = 0; i < items.length; i++) if (/^image\//.test(items[i].type)) { var f = items[i].getAsFile(); if (f) { ev.preventDefault(); fin(f); return; } }
+    var tx = cd && cd.getData && cd.getData('text/plain'), m = /https?:\/\/\S+/.exec(tx || '');
+    if (m) { ev.preventDefault(); fin(null, m[0]); return; }
+    setTimeout(function () { var im = box.querySelector('img'); if (im && im.src) { if (/^https?:/.test(im.src)) fin(null, im.src); else env.fetch(im.src).then(function (r) { return r.blob(); }).then(function (b) { fin(b); }, function () {}); } }, 60);
+  });
+  setTimeout(function () { try { box.focus(); } catch (e) {} }, 50);
+}
+function catPasteBoxClose() { var el = document.getElementById('ppb-ov'); if (el) el.parentNode.removeChild(el); }
+/* Saves a picture found or pasted: cover for a catalog ball, or a core picture by core key. Returns what it replaced (for undo). */
+function catSaveCover(id, f) {
+  var before = imgPicks()[id] || null, hadFile = !!_catImgObj[id];
+  var job = f.blob ? catImgPut(id, f.blob).then(function () { imgPickSet(id, null); }) : Promise.resolve(imgPickSet(id, f.url));
+  return job.then(function () { imgPersist(); catRecordChanged(id); return { id: id, url: before, hadFile: hadFile, file: !!f.blob }; });
+}
+function catSaveCore(brand, coreName, f) {
+  var k = coreKeyOf(brand, coreName); if (!k) return Promise.resolve(null);
+  var job = f.blob ? catImgPut('core:' + k, f.blob).then(function () { coreLinkSet(k, null); }) : Promise.resolve(coreLinkSet(k, f.url));
+  return job.then(function () {
+    /* your balls with this core and no core picture get it too */
+    return Promise.all(appBalls().filter(function (b) { return b.CoreShort && coreKeyOf(b.MFG, b.CoreShort) === k; }).map(function (b) { return miOwnSet(b, 'core', f, false); }))
+      .then(function () { if (root.saveDB) root.saveDB(); return k; });
+  });
+}
+
+/* ---------- v30.210: a core picture, shared with the same core under another spelling or brand ----------
+   Balls with the same brand + core name already share one picture (coreKeyOf). This finds the rest:
+   the same core name under another brand of the family (Brunswick / Storm / Motiv), and close spellings
+   ("Gas Mask" / "GasMask", "Rad X" / "Rad-X 2"). You tick which ones are the same core. */
+function levCap(a, b, cap) {
+  if (Math.abs(a.length - b.length) > cap) return cap + 1;
+  var prev = []; for (var j = 0; j <= b.length; j++) prev[j] = j;
+  for (var i = 1; i <= a.length; i++) { var cur = [i], lo = i;
+    for (var k = 1; k <= b.length; k++) { cur[k] = Math.min(prev[k] + 1, cur[k - 1] + 1, prev[k - 1] + (a[i - 1] === b[k - 1] ? 0 : 1)); if (cur[k] < lo) lo = cur[k]; }
+    if (lo > cap) return cap + 1; prev = cur; }
+  return prev[b.length];
+}
+/* Pure: vocab core list [{v, n, b[]}] -> { same: n balls on this key, others: [{key, v, brand, n, why}] } */
+function coreShareCandidates(list, brand, coreName, haveFor) {
+  var key = coreKeyOf(brand, coreName), fam = familyOf(brand), base = slugBw(coreBase(coreName)), flat = base.replace(/-/g, '');
+  var out = [], seen = {}, same = 0;
+  (list || []).forEach(function (o) {
+    (o.b || [brand]).forEach(function (b) {
+      var k2 = coreKeyOf(b, o.v); if (!k2) return;
+      if (k2 === key) { same += o.n || 1; return; }
+      if (seen[k2] || (fam ? familyOf(b) !== fam : brandSlug(b) !== brandSlug(brand))) return;
+      var b2 = slugBw(coreBase(o.v)), f2 = b2.replace(/-/g, ''), why = null;
+      if (b2 === base) why = 'same name, ' + b;
+      else if (f2 === flat) why = 'same letters';
+      else if (flat.length >= 4 && f2.length >= 4 && (b2.indexOf(base + '-') === 0 || base.indexOf(b2 + '-') === 0)) why = 'starts the same';
+      else if (flat.length >= 5 && levCap(flat, f2, 1) <= 1) why = 'one letter apart';
+      if (!why || (haveFor && haveFor(k2))) return;
+      seen[k2] = 1; out.push({ key: k2, v: o.v, brand: b, n: o.n || 1, why: why });
+    });
+  });
+  return { key: key, same: same, others: out.sort(function (a, b) { return b.n - a.n; }).slice(0, 12) };
+}
+var _cs = null;
+function catCoreShareOffer(brand, coreName, f) {
+  if (typeof document === 'undefined' || !coreName) return Promise.resolve(null);
+  return vocabLoad().then(function (v) {
+    var c = coreShareCandidates(v && v.core, brand, coreName, function (k) { return !!(_catImgObj['core:' + k] || coreLinks()[k]); });
+    if (!c.others.length) { if (root.toast) root.toast('Core picture saved' + (c.same > 1 ? ': shows on ' + c.same + ' balls with the ' + coreName + ' core' : '')); return c; }
+    _cs = { f: f, list: c.others, on: {} };
+    var ov = overlay('cs-ov', 955);
+    ov.innerHTML = '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 8px"><button style="' + BACK + '" onclick="catCoreShareClose()">\u2039</button>' +
+      '<div style="flex:1"><div style="font-size:17px;font-weight:800;color:var(--t1)">Same core?</div><div style="font-size:11px;color:var(--t3)">' + esc(coreName) + ' \u00b7 ' + esc(brand) + (c.same ? ' \u00b7 already shows on ' + c.same + ' ball' + (c.same === 1 ? '' : 's') : '') + '</div></div></div>' +
+      '<div style="flex:1;overflow-y:auto;padding:0 16px 12px"><div style="font-size:12px;color:var(--t2);line-height:1.5;margin-bottom:6px">These cores have no picture and a name close to this one. Tick the ones that are the same core to give them this picture.</div>' +
+      c.others.map(function (o, i) { return '<label style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border1)"><input type="checkbox" onchange="catCoreShareTick(' + i + ',this.checked)" style="width:20px;height:20px">' +
+        '<div style="flex:1;min-width:0"><div style="font-size:14px;color:var(--t1)">' + esc(o.v) + ' <span style="color:var(--t3)">\u00b7 ' + esc(o.brand) + '</span></div><div style="font-size:11px;color:var(--t3)">' + o.n + ' ball' + (o.n === 1 ? '' : 's') + ' \u00b7 ' + esc(o.why) + '</div></div></label>'; }).join('') +
+      '</div><div style="display:flex;gap:8px;padding:10px 16px;border-top:1px solid var(--border1)"><button style="' + BTN_G + 'flex:1;padding:11px" onclick="catCoreShareClose()">None of these</button><button style="' + BTN_P + 'flex:1;padding:11px" onclick="catCoreShareGo()">Use for ticked</button></div>';
+    document.body.appendChild(ov);
+    return c;
+  });
+}
+function catCoreShareTick(i, on) { if (_cs) { if (on) _cs.on[i] = 1; else delete _cs.on[i]; } }
+function catCoreShareGo() {
+  if (!_cs) return Promise.resolve(0);
+  var pick = Object.keys(_cs.on).map(function (i) { return _cs.list[+i]; }), f = _cs.f;
+  return pick.reduce(function (p, o) { return p.then(function () { return catSaveCore(o.brand, o.v, f); }); }, Promise.resolve()).then(function () {
+    catCoreShareClose(); if (root.toast) root.toast(pick.length ? 'Core picture also on ' + pick.length + ' more core' + (pick.length === 1 ? '' : 's') : 'Nothing ticked');
+    if (typeof root.wbRepaint === 'function') root.wbRepaint(); return pick.length;
+  });
+}
+function catCoreShareClose() { var el = document.getElementById('cs-ov'); if (el) el.parentNode.removeChild(el); _cs = null; }
+
+/* ---------- v30.210: type-ahead for text fields (core, coverstock, cover type, finish) ----------
+   Any input listed below shows up to 6 values already in use as you type: the brand's family first,
+   names that start with what you typed before ones that contain it, then by how many balls use it.
+   Tap one to fill the field; keep typing to ignore. The \u25be pickers still list everything. */
+var TA_FIELDS = Object.assign({ 'bef-corename': 'core', 'bef-covername': 'coverName', 'bef-cover': 'coverType', 'bef-finish': 'finish' }, VOCAB_FIELDS);
+/* Pure: the suggestions for typed text */
+function taSuggest(list, brand, q, cur, max) {
+  var qq = vocabKey(q); if (!qq) return [];
+  var fam = familyOf(brand), ck = vocabKey(cur);
+  return (list || []).map(function (o) {
+    var k = vocabKey(o.v), at = k.indexOf(qq); if (at < 0 || k === ck) return null;
+    var inFam = fam && (o.b || []).some(function (x) { return familyOf(x) === fam; });
+    var word = at === 0 || k.charAt(at - 1) === ' ';
+    return { o: o, s: (inFam ? 4 : 0) + (at === 0 ? 2 : word ? 1 : 0) };
+  }).filter(Boolean).sort(function (a, b) { return b.s - a.s || (b.o.n || 0) - (a.o.n || 0) || a.o.v.localeCompare(b.o.v); }).slice(0, max || 6).map(function (x) { return x.o; });
+}
+function taBrandFor(id) {
+  if (/^bef-/.test(id)) { var m = document.getElementById('bef-mfg'); return m ? m.value : ''; }
+  if (/^lk-/.test(id)) return (_lk && _lk.brand) || '';
+  if (/^ape-/.test(id)) return (_apEdit && _apEdit.brand) || '';
+  return '';
+}
+var _ta = { el: null, list: [] };
+function taClose() { var b = document.getElementById('ta-box'); if (b) b.parentNode.removeChild(b); _ta.el = null; _ta.list = []; }
+function taShow(el) {
+  var k = TA_FIELDS[el.id]; if (!k) return;
+  vocabLoad().then(function (v) {
+    if (document.activeElement !== el) return;
+    var list = taSuggest(v && v[k], taBrandFor(el.id), el.value, el.value, 6);
+    var b = document.getElementById('ta-box');
+    if (!list.length) { if (b) b.parentNode.removeChild(b); return; }
+    _ta.el = el; _ta.list = list;
+    if (!b) { b = document.createElement('div'); b.id = 'ta-box'; document.body.appendChild(b);
+      b.addEventListener('mousedown', function (ev) { ev.preventDefault(); }); b.addEventListener('touchstart', function (ev) { ev.preventDefault(); var t = ev.target.closest && ev.target.closest('[data-ta]'); if (t) taChoose(+t.getAttribute('data-ta')); }, { passive: false }); }
+    var r = el.getBoundingClientRect(), vh = (root.visualViewport && root.visualViewport.height) || root.innerHeight || 800, h = Math.min(list.length * 44 + 4, 268);
+    var below = r.bottom + 4 + h <= vh;
+    b.setAttribute('style', 'position:fixed;z-index:99999;left:' + Math.max(8, r.left) + 'px;width:' + Math.max(220, r.width) + 'px;max-width:calc(100vw - 16px);' +
+      (below ? 'top:' + (r.bottom + 4) : 'top:' + Math.max(4, r.top - h - 4)) + 'px;max-height:' + h + 'px;overflow-y:auto;background:var(--bg1, #1b1d22);border:1px solid var(--border1);border-radius:10px;box-shadow:0 6px 20px rgba(0,0,0,.45)');
+    b.innerHTML = list.map(function (o, i) { return '<div data-ta="' + i + '" onclick="taChoose(' + i + ')" style="padding:8px 10px;border-bottom:1px solid var(--border1);cursor:pointer;min-height:26px">' +
+      '<div style="font-size:14px;color:var(--t1)">' + esc(o.v) + '</div><div style="font-size:11px;color:var(--t3)">' + (o.n || 1) + ' ball' + ((o.n || 1) === 1 ? '' : 's') + ' \u00b7 ' + esc((o.b || []).slice(0, 3).join(', ')) + '</div></div>'; }).join('');
+  });
+}
+function taChoose(i) {
+  var el = _ta.el, o = _ta.list[i]; if (!el || !o) return;
+  el.value = o.v; taClose();
+  try { el.dispatchEvent(new Event('input', { bubbles: true })); el.dispatchEvent(new Event('change', { bubbles: true })); } catch (e) {}
+  el.style.boxShadow = '0 0 0 2px var(--teal)'; setTimeout(function () { el.style.boxShadow = ''; }, 600);
+}
+if (typeof document !== 'undefined' && document.addEventListener) {
+  document.addEventListener('input', function (ev) { var t = ev.target; if (t && t.id && TA_FIELDS[t.id] && t.tagName === 'INPUT' && ev.isTrusted !== false) taShow(t); }, true);
+  document.addEventListener('focusout', function (ev) { if (_ta.el && ev.target === _ta.el) setTimeout(function () { if (document.activeElement !== _ta.el) taClose(); }, 150); }, true);
+  document.addEventListener('keydown', function (ev) { if (ev.key === 'Escape' && _ta.el) taClose(); }, true);
+}
+
 /* ---------- v30.208 WB-5: Update catalog, one button ----------
    One chain, kept in bdbgh_update so it resumes after the app is closed (polls every 15 s while open):
      send     your status marks and releases go to the repo (status.json, released.json)
@@ -4622,7 +4789,7 @@ function fkFor(k, part) { return part === 'core' && _mi.slot === 'cover' ? 'rc' 
 function rowCoreKey(r) { return r.coreKey || (r.coreName && plausibleText('core', r.coreName) ? coreKeyOf(r.brand, r.coreName) : null); }
 function coreRowOf(r) {
   var k = rowCoreKey(r) || 'id-' + (r.catId || ('b' + r.ballId));
-  return { coreKey: k, ballId: r.ballId, catId: r.catId, balls: r.catId ? [r.catId] : null };
+  return { coreKey: k, ballId: r.ballId, catId: r.catId, balls: r.catId ? [r.catId] : null, brand: r.brand, coreName: r.coreName };
 }
 /* core name + whether a core picture is already kept, for a Cover row (loads its catalog detail once) */
 function miEnsureCore(r) {
@@ -4881,6 +5048,7 @@ function miStore(r, f, slot) {
       .forEach(function (b) { jobs.push(miOwnSet(b, 'cover', f, r.ballId != null)); });
   } else {
     if (r.coreKey) jobs.push(f.blob ? catImgPut('core:' + r.coreKey, f.blob).then(function () { coreLinkSet(r.coreKey, null); }) : Promise.resolve(coreLinkSet(r.coreKey, f.url)));
+    if (r.coreKey && !_mi.bulk && r.brand && r.coreName && !/^id-/.test(r.coreKey)) setTimeout(function () { catCoreShareOffer(r.brand, r.coreName, f); }, 300);   // v30.210
     /* the ball listed, and every ball of yours with this core that has no core picture */
     balls.forEach(function (b) {
       var mine = r.ballId != null && b.BallID == r.ballId;
@@ -5332,7 +5500,7 @@ function apEditOpen(ctx) {
   var r = apApplyOverride(ctx.base0, overrideFor(ctx.catalogId));
   var sp = (r && r.specs) || {};
   var _ee = ctx.entry, _bn = _ee ? cleanName(_ee.n) : ctx.title;
-  _apEdit = { catalogId: ctx.catalogId, i: ctx.i, page: (r && r.page) || null, ballName: _bn, url: (r && r.url) || null, base0: ctx.base0 || null, origin: ctx.origin || 'ap', after: ctx.after || null };
+  _apEdit = { brand: _ee ? _ee.m : (r && r.brand) || '', catalogId: ctx.catalogId, i: ctx.i, page: (r && r.page) || null, ballName: _bn, url: (r && r.url) || null, base0: ctx.base0 || null, origin: ctx.origin || 'ap', after: ctx.after || null };
   var _bw = bowwwlLinks(_ee ? _ee.m : (r && r.brand) || '', _bn), _mm = (r && r.title) ? pageMismatch(r.title, _bn) : null;
   var inp = function (id, v, ph) { return '<div class="ape-f"><input id="' + id + '" class="bdet-field-input" value="' + esc(v == null ? '' : v) + '" placeholder="' + esc(ph || '') + '" style="width:100%;box-sizing:border-box;font-size:15px"></div>'; };
   /* v30.173 CAT-NEW-7: type, or pick a value already in use */
@@ -5763,7 +5931,9 @@ root._catAPI = { catLoad: catLoad, byIdIn: byIdIn, cleanName: cleanName, esc: es
   apToken: apToken, apReadOverrides: apReadOverrides, apReadStaged: apReadStaged, srvStagedRow: srvStagedRow, catDetailRaw: catDetailRaw, detAsStaged: detAsStaged,
   apApplyOverride: apApplyOverride, catCorrectFor: catCorrectFor, catCorrectWithParsed: catCorrectWithParsed, catSaveCorrection: catSaveCorrection,
   brandSlug: brandSlug, catAddDetail: catAddDetail, normReleased: normReleased, catMineAsRead: catMineAsRead,
-  catRestoreCorrection: catRestoreCorrection, catUpdateLine: catUpdateLine, triageGet: triageGet, triageSave: triageSave, triageOf: triageOf, upcomingOf: upcomingOf, monthsSince: monthsSince, localOverrides: localOverrides, repoOverride: function (id) { return (_ovr && _ovr[id]) || null; },
+  catRestoreCorrection: catRestoreCorrection, catUpdateLine: catUpdateLine,
+  catPastePicture: catPastePicture, catSaveCover: catSaveCover, catSaveCore: catSaveCore, catCoreShareOffer: catCoreShareOffer, coreShareCandidates: coreShareCandidates, taSuggest: taSuggest,
+  imgProbe: imgProbe, imgShrink: imgShrink, catImgDel: catImgDel, bowwwlImgCandidates: bowwwlImgCandidates, bowwwlCoreCandidates: bowwwlCoreCandidates, coreKeyOf: coreKeyOf, catCoreImageFor: catCoreImageFor, coreLinkSet: coreLinkSet, scanMem: scanMem, vocabLoad: vocabLoad, triageGet: triageGet, triageSave: triageSave, triageOf: triageOf, upcomingOf: upcomingOf, monthsSince: monthsSince, localOverrides: localOverrides, repoOverride: function (id) { return (_ovr && _ovr[id]) || null; },
   regionOf: regionOf, regionTags: regionTags, regionTagSet: regionTagSet, regionFromText: regionFromText, imgPicks: imgPicks, imgPickSet: imgPickSet, REGIONS: REGION_WORDS.map(function (r) { return r[0]; }), AP_WEIGHTS: AP_WEIGHTS, version: CAT_VERSION }; root.catMyBallsOpen = catMyBallsOpen; root.catSaveCorrection = catSaveCorrection;
 root.catOldSearch = catOldSearch; root.catOldClose = catOldClose; root.catAddBlank = catAddBlank; root.catAddManual = catAddManual;
 root.catSpecReviewTab = catSpecReviewTab; root.catMissingCorrect = catMissingCorrect; root.catMissingFilter = catMissingFilter; root.catMissingPage = catMissingPage; root._ms = { msRows: msRows, oldMatchScore: oldMatchScore };
@@ -5786,7 +5956,7 @@ root.catReviewLink = catReviewLink; root.catReviewSkip = catReviewSkip;
 root.catReviewResetSkips = catReviewResetSkips;
 root.catOpenAddSearch = catOpenAddSearch; root.catCloseAddSearch = catCloseAddSearch;
 root.catAddSearch = catAddSearch; root.catAddManual = catAddManual; root.catAddBrand = catAddBrand;
-root.catAddBubble = catAddBubble; root.catAddSet = catAddSet; root.catAddBrandSet = catAddBrandSet; root.catAddBrandOpen = catAddBrandOpen; root.catAddLoosen = catAddLoosen; root.catAddBrandPick = catAddBrandPick; root.catAddBrandToggle = catAddBrandToggle; root.catAddBrandPickClose = catAddBrandPickClose;
+root.catAddBubble = catAddBubble; root.catPasteBoxClose = catPasteBoxClose; root.catCoreShareTick = catCoreShareTick; root.catCoreShareGo = catCoreShareGo; root.catCoreShareClose = catCoreShareClose; root.taChoose = taChoose; root.catCoreShareOffer = catCoreShareOffer; root.catAddSet = catAddSet; root.catAddBrandSet = catAddBrandSet; root.catAddBrandOpen = catAddBrandOpen; root.catAddLoosen = catAddLoosen; root.catAddBrandPick = catAddBrandPick; root.catAddBrandToggle = catAddBrandToggle; root.catAddBrandPickClose = catAddBrandPickClose;
 root.catAddDetail = catAddDetail; root.catSheetClose = catSheetClose; root.catSheetWeight = catSheetWeight;
 root.catAddToArsenal = catAddToArsenal; root.catFillFromCatalog = catFillFromCatalog;
 root.catSpecSource = catSpecSource; root.catDetail = catDetail;
