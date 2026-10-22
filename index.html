@@ -1609,7 +1609,7 @@ background:radial-gradient(circle at 35% 35%, var(--purple), #1A0A30);
 border:2px solid rgba(157,78,221,0.3);
 overflow:hidden; display:flex; align-items:center; justify-content:center;
 }
-.ball-picker-img img { width:100%; height:100%; object-fit:cover; }
+.ball-picker-img img { width:100%; height:100%; object-fit:contain; }
 .ball-picker-img.selected {
 border-color:var(--teal);
 box-shadow:0 0 0 2px rgba(0,217,217,0.25);
@@ -2519,7 +2519,7 @@ box-sizing:border-box; margin-bottom:8px;
 }
 .bdet-img-input-row input:focus { border-color:rgba(0,217,217,0.5); }
 .bdet-img-preview {
-width:120px; height:120px; object-fit:cover; background:#fff;
+width:120px; height:120px; object-fit:contain; background:#fff;
 border-radius:50%; display:none; margin:0 auto 8px;
 }
 .bdet-img-preview.loaded { display:block; }
@@ -3457,10 +3457,10 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
 /* v30.169: ONE place for the version. The header, the home screen label, the
    page title and backups all read these, so nothing can go stale on an update.
    Bump both lines (and CATALOG_JS_VERSION in catalog.js when it changes). */
-const APP_VERSION = 'v30.214';
-const APP_BUILD_DATE = '2026-10-21';
+const APP_VERSION = 'v30.215';
+const APP_BUILD_DATE = '2026-10-22';
 /* catalog.js this build expects; an older file on the server shows a warning */
-const EXPECTED_CATALOG_JS = 'v30.214';
+const EXPECTED_CATALOG_JS = 'v30.215';
 function applyAppVersion() {
 const ref = document.getElementById('hdr-build-ref');
 const cat = (typeof window.CATALOG_JS_VERSION === 'string') ? window.CATALOG_JS_VERSION : null;
@@ -27394,7 +27394,7 @@ const lastPrep  = db.surfaceDetails.filter(sd => sd.BallID == b.BallID)
 .sort((a,z) => z.DateSurfaced > a.DateSurfaced ? 1 : -1)[0];
 const _dtThumbSrc = getBallImgSrc(b.BallID, 'cover');
 const thumb = _dtThumbSrc
-? `<img src="${_dtThumbSrc}" alt="" style="width:36px;height:36px;object-fit:cover;border-radius:50%;background:#fff;flex-shrink:0" onerror="this.style.display='none'">`
+? `<img src="${_dtThumbSrc}" alt="" style="width:36px;height:36px;object-fit:contain;border-radius:50%;background:#fff;flex-shrink:0" onerror="this.style.display='none'">`
 : `<div style="width:36px;height:36px;border-radius:6px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">🎳</div>`;
 const orderBtns = !isArchived ? `
         <div style="display:flex;flex-direction:column;gap:1px;flex-shrink:0">
@@ -28639,7 +28639,7 @@ const hookBar = b.HookRating!=null ? `
 openModal(`
     ${getBallImgSrc(b.BallID,'cover') ? `<div style="text-align:center;margin-bottom:14px">
         <img src="${getBallImgSrc(b.BallID,'cover')}" alt="${b.BallName}"
-          style="width:120px;height:120px;object-fit:cover;border-radius:50%;background:#fff"
+          style="width:120px;height:120px;object-fit:contain;border-radius:50%;background:#fff"
           onerror="this.style.display='none'">
       </div>`: ''}
     <div class="modal-title" style="margin-bottom:2px">${b.BallName}</div>
