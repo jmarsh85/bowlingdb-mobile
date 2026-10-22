@@ -36,7 +36,7 @@
 'use strict';
 
 /* v30.169: shown in the app header when it differs from the build's EXPECTED_CATALOG_JS */
-var CAT_VERSION  = 'v30.213';
+var CAT_VERSION  = 'v30.214';
 var CAT_BASE     = 'https://raw.githubusercontent.com/jmarsh85/bowlingdb-mobile/dist/';
 var CAT_DB       = 'BowlingDB_Catalog';
 var CAT_DB_VER   = 1;
@@ -980,7 +980,7 @@ function thumbHTML(e, size) {
   var dev = catImageFor(e.i);
   if (dev) return '<span style="position:relative;display:inline-flex;width:' + px + 'px;height:' + px + 'px;flex-shrink:0">' +
     '<img src="' + esc(dev) + '" alt="" referrerpolicy="no-referrer" loading="lazy" onerror="this.style.display=\'none\';this.nextSibling.style.display=\'flex\'" ' +
-    'style="width:' + px + 'px;height:' + px + 'px;border-radius:50%;object-fit:contain;background:#fff;flex-shrink:0">' +
+    'style="width:' + px + 'px;height:' + px + 'px;border-radius:50%;object-fit:cover;background:#fff;flex-shrink:0">' +
     '<div style="display:none;width:' + px + 'px;height:' + px + 'px;border-radius:50%;flex-shrink:0;align-items:center;justify-content:center;' +
     'background:radial-gradient(circle at 32% 28%,rgba(255,255,255,0.35),' + c + ' 45%,rgba(0,0,0,0.55));color:#fff;font-weight:800;font-size:' + Math.round(px * 0.4) + 'px">' + ini + '</div></span>';
   return '<div style="width:' + px + 'px;height:' + px + 'px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;' +
@@ -1389,7 +1389,7 @@ function ballFromSpecs(s) {
 function sheetCoreHTML(e) {
   var d = _sheet && _sheet.loaded ? _sheet.detail : null, nm = d && d.Core && d.Core.Name;
   var u = (nm ? catCoreImageFor(e.m, nm) : null) || _catImgObj['core:id-' + e.i] || coreLinks()['id-' + e.i] || null;
-  return u ? '<img src="' + esc(u) + '" alt="core" referrerpolicy="no-referrer" onerror="this.style.display=\'none\'" style="width:110px;height:110px;border-radius:14px;object-fit:contain;background:#fff">' : '';
+  return u ? '<img src="' + esc(u) + '" alt="core" referrerpolicy="no-referrer" onerror="this.style.display=\'none\'" style="width:110px;height:110px;border-radius:50%;object-fit:cover;background:#fff">' : '';
 }
 function sheetHTML(e, rows) {
   var s = specsOf(_sheet.detail, _sheet.weight || 15);
@@ -3612,8 +3612,8 @@ function fixPicHTML(e) {
   var row = function (part, label, url, note) {
     var b = function (t, js) { return '<button style="' + BTN_G + 'flex:1;padding:9px 0;font-size:12px" onclick="' + js + '">' + t + '</button>'; };
     return '<div style="display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--border1)">' +
-      '<div style="flex:0 0 64px;height:64px;border-radius:12px;background:#fff;overflow:hidden;display:flex;align-items:center;justify-content:center">' +
-        (url ? '<img src="' + esc(url) + '" referrerpolicy="no-referrer" alt="" style="width:100%;height:100%;object-fit:contain">' : '<span style="font-size:11px;color:#888">none</span>') + '</div>' +
+      '<div style="flex:0 0 64px;height:64px;border-radius:50%;background:#fff;overflow:hidden;display:flex;align-items:center;justify-content:center">' +
+        (url ? '<img src="' + esc(url) + '" referrerpolicy="no-referrer" alt="" style="width:100%;height:100%;object-fit:cover">' : '<span style="font-size:11px;color:#888">none</span>') + '</div>' +
       '<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:700;color:var(--t1)">' + label + '</div>' +
         (note ? '<div style="font-size:11px;color:var(--t3);margin:2px 0 6px">' + note + '</div>' : '<div style="height:6px"></div>') +
         '<div style="display:flex;gap:6px">' + b('bowwwl', 'catFixPic(\'' + part + '\',\'bowwwl\')') + b('Paste', 'catFixPic(\'' + part + '\',\'paste\')') + b('Camera', 'catFixPic(\'' + part + '\',\'camera\')') + b('File', 'catFixPic(\'' + part + '\',\'file\')') +
@@ -4317,6 +4317,8 @@ function spMakerOf(text) {
   for (var j = 0; j < 3; j++) if (SP_MAKERS[j][0].test(t)) return SP_MAKERS[j][1];
   return null;
 }
+/* v30.213: page prose with no capital or digit ("adds length and responsiveness") is not a cover, core or finish name */
+function spLowerProse(v) { var s = String(v || '').trim(); return !/[A-Z0-9]/.test(s) && s.split(/\s+/).length >= 3; }
 function parseSpecText(text, weight, name) {
   var out = { fields: {}, weights: {}, found: [], nameSeen: null, url: null, image: null };
   var raw = String(text || '').replace(/\r/g, '').replace(/\u00a0/g, ' ');
@@ -4343,7 +4345,7 @@ function parseSpecText(text, weight, name) {
     v = String(v).replace(/[\u2122\u00ae]/g, '').replace(/^[:|#\-\s]+/, '').replace(/\s*\|\s*$/, '').trim();
     if (k === 'released') { var r = tagValueFor('ape-released', v.split(/\s+\|\s+|\s{2,}/)[0]); if (!r.v) return; v = r.v; }
     else if (k === 'coreType') { if (/asym/i.test(v)) v = 'Asymmetrical'; else if (/sym/i.test(v)) v = 'Symmetrical'; else return; }
-    else { v = v.split(/\s+\|\s+/)[0]; if (SP_NOT_VALUE.test(v) || !plausibleText(k === 'core' ? 'core' : k, v)) return; }
+    else { v = v.split(/\s+\|\s+/)[0]; if (SP_NOT_VALUE.test(v) || !plausibleText(k === 'core' ? 'core' : k, v) || spLowerProse(v)) return; }
     out.fields[k] = v; out.found.push(k);
   };
   var setN = function (k, raw, line) {
@@ -4459,7 +4461,7 @@ function spRender() {
   var list = _sp.rows.map(function (x, i) {
     if (x.r.img) return '<div style="display:flex;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--border1)">' +
       '<input type="checkbox" data-sp-cb="' + i + '" ' + (x.on ? 'checked' : '') + ' onchange="catSpToggle(' + i + ',this.checked)" style="width:18px;height:18px">' +
-      '<img src="' + esc(x.v) + '" referrerpolicy="no-referrer" style="width:56px;height:56px;object-fit:contain;border-radius:8px;background:var(--bg3)" onerror="this.style.display=\'none\'">' +
+      '<img src="' + esc(x.v) + '" referrerpolicy="no-referrer" style="width:56px;height:56px;border-radius:50%;object-fit:cover;background:#fff;flex-shrink:0" onerror="this.style.display=\'none\'">' +
       '<div style="flex:1;font-size:12px;font-weight:700;color:var(--t2)">' + esc(x.r.label) + (x.same ? '<div style="color:var(--teal);font-weight:600">\u2713 in use</div>' : '') + '</div></div>';
     return '<div style="display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--border1)">' +
       '<input type="checkbox" data-sp-cb="' + i + '" ' + (x.on ? 'checked' : '') + ' onchange="catSpToggle(' + i + ',this.checked)" style="margin-top:22px;width:18px;height:18px">' +
@@ -4667,7 +4669,8 @@ function bowwwlImgCandidates(brand, name) {
 }
 /* Pure: a core's name without "core"/"weight block" and symmetry words. */
 function coreBase(name) {
-  return String(name || '').replace(/[\u2122\u00ae]/g, '').replace(/\b(?:a?symmetric(?:al)?|weight\s*block|mass\s*bias|core)\b/ig, ' ').replace(/\s+/g, ' ').trim();
+  /* v30.213: dotted letters count as one word ("Element Tour A.I." = "Element Tour AI"), so a read doesn't lose the saved core picture */
+  return String(name || '').replace(/[\u2122\u00ae]/g, '').replace(/\b([A-Za-z])\.(?=[A-Za-z](?:\.|\b))/g, '$1').replace(/\b(?:a?symmetric(?:al)?|weight\s*block|mass\s*bias|core)\b/ig, ' ').replace(/\s+/g, ' ').trim();
 }
 /* Pure: one key per core (brand + core name), so balls sharing a core share its picture. */
 function brandSlug(brand) { return slugBw(brand).replace(/-(?:inc|bowling|international|industries|co)$/, ''); }   // "Track Inc" = "Track"
@@ -4852,7 +4855,7 @@ function miRender() {
   var row = function (r) {
     if (_mi.slot === 'cover') return rowCover(r);
     var f = _mi.found[miFk(r.key)], busy = _mi.busy[miFk(r.key)];
-    var pic = f ? '<img src="' + esc(f.url) + '" referrerpolicy="no-referrer" style="width:52px;height:52px;border-radius:' + (_mi.slot === 'core' ? '10px' : '50%') + ';object-fit:contain;background:#fff;flex-shrink:0">' :
+    var pic = f ? '<img src="' + esc(f.url) + '" referrerpolicy="no-referrer" style="width:52px;height:52px;border-radius:50%;object-fit:cover;background:#fff;flex-shrink:0">' :
       '<div style="width:52px;height:52px;border-radius:' + (_mi.slot === 'core' ? '10px' : '50%') + ';flex-shrink:0;background:var(--bg3);display:flex;align-items:center;justify-content:center;color:var(--t3);font-size:11px">' + (busy ? '\u2026' : r.miss ? 'none' : '') + '</div>';
     var canBw = _mi.slot === 'cover' || r.coreKey;
     var acts = f ? '<button style="' + BTN_P + 'padding:6px 10px;font-size:12px" onclick="catImagesUse(\'' + r.key + '\')">Use</button><button style="' + BTN_G + 'padding:6px 10px;font-size:12px" onclick="catImagesDrop(\'' + r.key + '\')">\u2715</button>' :
@@ -4962,7 +4965,7 @@ function rowCover(r) {
   var bb = _mi.busy[miFk(k)], bc = _mi.busy[fkFor(k, 'core')];
   var pill = function (t, call, on) { return '<button style="' + (on ? BTN_P : BTN_G) + 'padding:5px 9px;font-size:12px" onclick="' + call + '">' + t + '</button>'; };
   var thumb = function (url, round, busy, miss) {
-    return url ? '<img src="' + esc(url) + '" referrerpolicy="no-referrer" style="width:48px;height:48px;border-radius:' + (round ? '50%' : '10px') + ';object-fit:contain;background:#fff;flex-shrink:0">' :
+    return url ? '<img src="' + esc(url) + '" referrerpolicy="no-referrer" style="width:48px;height:48px;border-radius:50%;object-fit:cover;background:#fff;flex-shrink:0">' :
       '<div style="width:48px;height:48px;border-radius:' + (round ? '50%' : '10px') + ';flex-shrink:0;background:var(--bg3);display:flex;align-items:center;justify-content:center;color:var(--t3);font-size:10px">' + (busy ? '\u2026' : miss ? 'none' : round ? 'ball' : 'core') + '</div>';
   };
   var q = function (s2) { return '\'' + k + '\'' + (s2 ? ',\'' + s2 + '\'' : ''); };
@@ -5345,9 +5348,9 @@ function pgvRender() {
   var cur = _apEdit ? imgPicks()[_apEdit.catalogId] : null;
   var imgs = (snap.images || []).map(function (u, i) {
     var on = cur === u;
-    return '<div onclick="catPageImg(' + i + ')" style="position:relative;flex:0 0 31%;aspect-ratio:1;border-radius:10px;overflow:hidden;background:var(--bg3);border:2px solid ' + (on ? 'var(--teal)' : 'transparent') + ';cursor:pointer">' +
-      '<img src="' + esc(u) + '" referrerpolicy="no-referrer" loading="lazy" onerror="this.parentNode.style.display=\'none\'" style="width:100%;height:100%;object-fit:contain">' +
-      (on ? '<span style="position:absolute;top:4px;right:4px;font-size:10px;font-weight:800;color:#000;background:var(--teal);border-radius:6px;padding:1px 5px">IN USE</span>' : '') + '</div>';
+    return '<div onclick="catPageImg(' + i + ')" style="position:relative;flex:0 0 31%;aspect-ratio:1;border-radius:50%;overflow:hidden;background:#fff;border:2px solid ' + (on ? 'var(--teal)' : 'transparent') + ';cursor:pointer">' +
+      '<img src="' + esc(u) + '" referrerpolicy="no-referrer" loading="lazy" onerror="this.parentNode.style.display=\'none\'" style="width:100%;height:100%;object-fit:cover">' +
+      (on ? '<span style="position:absolute;bottom:10%;left:50%;transform:translateX(-50%);font-size:10px;font-weight:800;color:#000;background:var(--teal);border-radius:6px;padding:1px 5px">IN USE</span>' : '') + '</div>';
   }).join('');
   var lines = (snap.lines || []).map(function (l) {
     return '<div style="padding:3px 0;line-height:1.7">' + tagLine(l).map(function (p) {
