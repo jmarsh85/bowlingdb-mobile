@@ -41,6 +41,17 @@ eq(p2.released, '2015-09', 'Sept month');
 eq(p2.coreType, 'Symmetrical', 'symmetric');
 eq(p2.weights['15'], { RG: 2.48, Diff: 0.051 }, 'no MB diff for sym');
 
+/* v30.215: the One Reverb page as plain text (Safari's PDF of the page, 10-22): colons, inline values,
+   a wrapped core heading, a finish with a comma */
+const REVERB = `The One Reverb\nRelease Date: Sep 2024\nPBA Approval Date: Sep 3, 2024\nDiscontinued\nEbonite\u2019s Game Breaker and One lines produce\nFactory Finish:\n500/1000/1500 Siaair, Crown Factory Compound\nHK22C - GB 15.1 Pearl Coverstock\nType: Pearl Reactive\nCentrex Symmetrical Mass Bias\nCore\nCore Type: Asymmetric\n16 pounds\nRG: 2.474\nDiff: 0.049\nMB Diff: 0.021\n12 pounds\nRG: 2.593\nDiff: 0.041\nMB Diff: 0.014\nShop`.split('\n');
+const r3 = B.parseLines(['# The One Reverb'].concat(REVERB.slice(1)));
+eq(r3.finish, '500/1000/1500 Siaair, Crown Factory Compound', 'finish after "Factory Finish:"');
+eq(r3.released, '2024-09', 'inline release date');
+eq([r3.coverName, r3.coverType], ['HK22C - GB 15.1 Pearl', 'Pearl Reactive'], 'cover from a plain line + inline type');
+eq([r3.core, r3.coreType], ['Centrex Symmetrical Mass Bias', 'Asymmetrical'], 'wrapped core heading + inline core type');
+eq(r3.weights['16'], { RG: 2.474, Diff: 0.049, IntDiff: 0.021 }, 'inline RG / Diff / MB Diff');
+ok(r3.discontinued, 'discontinued');
+
 /* addresses */
 ok(B.URL_OK.test('https://www.bowwwl.com/bowling-ball-database/storm/absolute-reign'), 'url ok');
 ok(!B.URL_OK.test('https://www.bowwwl.com/bowling-ball-database/storm'), 'brand page refused');
