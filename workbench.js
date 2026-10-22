@@ -10,7 +10,7 @@
    Uses catalog.js through root._catAPI only. Design: DESIGN_add_ball_flow sections 50-55. */
 (function (root) {
   'use strict';
-  var WB_VERSION = 'v30.213';
+  var WB_VERSION = 'v30.214';
   var A = root._catAPI;
   if (!A) { if (root.toast) root.toast('Workbench needs catalog.js ' + WB_VERSION); return; }
   var esc = A.esc, jsq = A.jsq, norm = A.norm, cleanName = A.cleanName;
@@ -569,8 +569,8 @@
       var ws = Object.keys(sp.weights || {}).sort(function (a, b) { return b - a; });
       var wtab = ws.length ? '<div style="font-size:12px;color:var(--t2);margin-top:6px">' + ws.map(function (w) { var x = sp.weights[w] || {}, fw = f && f.weights && f.weights[w];
         return '<div style="display:flex;gap:8px;padding:3px 0' + (fw ? ';color:#7aa7ff' : '') + '"><span style="flex:0 0 46px">' + w + ' lb</span><span>RG ' + (x.RG != null ? Number(x.RG).toFixed(3) : '\u2014') + '</span><span>Diff ' + (x.Diff != null ? Number(x.Diff).toFixed(3) : '\u2014') + '</span>' + (x.IntDiff != null ? '<span>Int ' + Number(x.IntDiff).toFixed(3) + '</span>' : '') + '</div>'; }).join('') + '</div>' : '<div style="font-size:12px;color:var(--gold);margin-top:6px">No RG / Diff yet</div>';
-      var picBox = function (u, lab, note) { return '<div style="flex:1;min-width:0;text-align:center"><div style="height:120px;border-radius:12px;background:var(--bg2);border:1px solid var(--border1);display:flex;align-items:center;justify-content:center;overflow:hidden">' +
-        (u ? '<img src="' + esc(u) + '" referrerpolicy="no-referrer" style="max-width:100%;max-height:100%;object-fit:contain">' : '<span style="font-size:12px;color:var(--t3)">no ' + lab + '</span>') + '</div><div style="font-size:11px;color:' + (note === 'found, not saved' ? '#7aa7ff' : 'var(--t3)') + ';margin-top:3px">' + lab + (note ? ' \u00b7 ' + note : '') + '</div></div>'; };
+      var picBox = function (u, lab, note) { return '<div style="flex:1;min-width:0;text-align:center"><div style="height:124px;border-radius:12px;background:var(--bg2);border:1px solid var(--border1);display:flex;align-items:center;justify-content:center;overflow:hidden">' +
+        (u ? '<img src="' + esc(u) + '" referrerpolicy="no-referrer" style="width:116px;height:116px;border-radius:50%;object-fit:cover;background:#fff">' : '<span style="font-size:12px;color:var(--t3)">no ' + lab + '</span>') + '</div><div style="font-size:11px;color:' + (note === 'found, not saved' ? '#7aa7ff' : 'var(--t3)') + ';margin-top:3px">' + lab + (note ? ' \u00b7 ' + note : '') + '</div></div>'; };
       var stg = rvStage(e), canRel = !m.miss.length && !!(stored || found), br = rvBridge(e);
       var brNote = br ? '<div style="font-size:12px;color:#7aa7ff;margin:-2px 0 8px;line-height:1.4">Specs from a bridge read' + (br.url ? ' (' + esc(String(br.url).replace(/^https?:\/\/(www\.)?/, '').split('/')[0]) + ')' : '') + ', not published yet: ' +
         (br.decision === 'auto' ? 'auto-matched, publishes with the next Publish.' : 'Accept ticks it in Spec approvals; Publish to finish.') + '</div>' : '';
