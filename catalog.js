@@ -36,7 +36,7 @@
 'use strict';
 
 /* v30.169: shown in the app header when it differs from the build's EXPECTED_CATALOG_JS */
-var CAT_VERSION  = 'v30.214';
+var CAT_VERSION  = 'v30.215';
 var CAT_BASE     = 'https://raw.githubusercontent.com/jmarsh85/bowlingdb-mobile/dist/';
 var CAT_DB       = 'BowlingDB_Catalog';
 var CAT_DB_VER   = 1;
@@ -980,7 +980,7 @@ function thumbHTML(e, size) {
   var dev = catImageFor(e.i);
   if (dev) return '<span style="position:relative;display:inline-flex;width:' + px + 'px;height:' + px + 'px;flex-shrink:0">' +
     '<img src="' + esc(dev) + '" alt="" referrerpolicy="no-referrer" loading="lazy" onerror="this.style.display=\'none\';this.nextSibling.style.display=\'flex\'" ' +
-    'style="width:' + px + 'px;height:' + px + 'px;border-radius:50%;object-fit:cover;background:#fff;flex-shrink:0">' +
+    'style="width:' + px + 'px;height:' + px + 'px;border-radius:50%;object-fit:contain;background:#fff;flex-shrink:0">' +
     '<div style="display:none;width:' + px + 'px;height:' + px + 'px;border-radius:50%;flex-shrink:0;align-items:center;justify-content:center;' +
     'background:radial-gradient(circle at 32% 28%,rgba(255,255,255,0.35),' + c + ' 45%,rgba(0,0,0,0.55));color:#fff;font-weight:800;font-size:' + Math.round(px * 0.4) + 'px">' + ini + '</div></span>';
   return '<div style="width:' + px + 'px;height:' + px + 'px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;' +
@@ -1354,13 +1354,14 @@ function specRows(e, s) {
 /* v30.174: a spec text field is a short name, not page prose (same rule as
    the bridge's plausibleText). Catalog values that fail it are treated as
    missing everywhere the app offers them: Fill, Apply, Review my specs. */
-var TEXT_MAX = { core: 40, coverName: 45, coverType: 30, finish: 40 };
+var TEXT_MAX = { core: 40, coverName: 45, coverType: 30, finish: 60 };   // v30.215: finish 60
 function plausibleText(field, v) {
   if (v == null) return null;
   var s = String(v).replace(/\s+/g, ' ').trim();
   if (!s) return null;
-  if (s.length > (TEXT_MAX[field] || 40) || s.split(' ').length > 6) return null;
-  if (/[.!?;]\s+\S|,\s(?!\d)|\s[-\u2013\u2014]\s/.test(s)) return null;
+  var fin = field === 'finish';   // v30.215: a finish lists grits and a compound: "500, 1000, 1500 Siaair / Factory Compound"
+  if (s.length > (TEXT_MAX[field] || 40) || s.split(' ').length > (fin ? 10 : 6)) return null;
+  if (fin ? /[.!?;]\s+\S|,\s(?![\dA-Z])/.test(s) : /[.!?;]\s+\S|,\s(?!\d)|\s[-\u2013\u2014]\s/.test(s)) return null;
   if (/^(this|that|it|its|our|we|you|your|with|when|while|for|if|from|traditionally|firmly|featuring|introducing|designed|built|created|using|combining)\b/i.test(s)) return null;
   if (/\b(is|are|was|were|has|have|had|will|be|been|that|which|who|ensconced|provides?|delivers?|offers?|gives?)\b/i.test(s)) return null;
   return s;
@@ -1389,7 +1390,7 @@ function ballFromSpecs(s) {
 function sheetCoreHTML(e) {
   var d = _sheet && _sheet.loaded ? _sheet.detail : null, nm = d && d.Core && d.Core.Name;
   var u = (nm ? catCoreImageFor(e.m, nm) : null) || _catImgObj['core:id-' + e.i] || coreLinks()['id-' + e.i] || null;
-  return u ? '<img src="' + esc(u) + '" alt="core" referrerpolicy="no-referrer" onerror="this.style.display=\'none\'" style="width:110px;height:110px;border-radius:50%;object-fit:cover;background:#fff">' : '';
+  return u ? '<img src="' + esc(u) + '" alt="core" referrerpolicy="no-referrer" onerror="this.style.display=\'none\'" style="width:110px;height:110px;border-radius:50%;object-fit:contain;background:#fff">' : '';
 }
 function sheetHTML(e, rows) {
   var s = specsOf(_sheet.detail, _sheet.weight || 15);
@@ -3613,7 +3614,7 @@ function fixPicHTML(e) {
     var b = function (t, js) { return '<button style="' + BTN_G + 'flex:1;padding:9px 0;font-size:12px" onclick="' + js + '">' + t + '</button>'; };
     return '<div style="display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--border1)">' +
       '<div style="flex:0 0 64px;height:64px;border-radius:50%;background:#fff;overflow:hidden;display:flex;align-items:center;justify-content:center">' +
-        (url ? '<img src="' + esc(url) + '" referrerpolicy="no-referrer" alt="" style="width:100%;height:100%;object-fit:cover">' : '<span style="font-size:11px;color:#888">none</span>') + '</div>' +
+        (url ? '<img src="' + esc(url) + '" referrerpolicy="no-referrer" alt="" style="width:100%;height:100%;object-fit:contain">' : '<span style="font-size:11px;color:#888">none</span>') + '</div>' +
       '<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:700;color:var(--t1)">' + label + '</div>' +
         (note ? '<div style="font-size:11px;color:var(--t3);margin:2px 0 6px">' + note + '</div>' : '<div style="height:6px"></div>') +
         '<div style="display:flex;gap:6px">' + b('bowwwl', 'catFixPic(\'' + part + '\',\'bowwwl\')') + b('Paste', 'catFixPic(\'' + part + '\',\'paste\')') + b('Camera', 'catFixPic(\'' + part + '\',\'camera\')') + b('File', 'catFixPic(\'' + part + '\',\'file\')') +
@@ -4363,6 +4364,12 @@ function parseSpecText(text, weight, name) {
   var curW = null;   // v30.178: a "16 pounds" heading applies to the numbers under it (bowwwl)
   lines.forEach(function (l, i) {
     var wh = /^(1[0-6])\s*(?:#|lbs?\.?|pounds?)\s*(?:ball)?$/i.exec(l); if (wh) { curW = +wh[1]; return; }
+    /* v30.215: a bowwwl heading the PDF wrapped before its last word ("Centrex Symmetrical Mass Bias" / "Core") */
+    var pv = i > 0 ? lines[i - 1] : '';
+    if (/^(?:core|cover\s*stock)$/i.test(l) && /^[A-Z0-9]/.test(pv) && pv.length <= 45 && !SP_LABELS.some(function (x) { return x[1].test(pv); }) && !/[:|]/.test(pv)) {
+      if (/^core$/i.test(l)) setF('core', pv); else setF('coverName', pv.replace(/\s+[-\u2013\u2014]\s+/g, ' '));
+      return;
+    }
     var lab = l.replace(/^(1[0-6])\s*(?:#|lbs?\.?|pounds?)\s*[|:\-\u2013]?\s*(?=[a-z])/i, '');   // v30.201: "16 lb - RG (2.610)" (Hammer)   // "16 lbs RG 2.48 ...": the label follows the weight
     var matched = false;
     for (var j = 0; j < SP_LABELS.length; j++) {
@@ -4422,6 +4429,20 @@ function parseSpecText(text, weight, name) {
 }
 /* Clipboard read with a manual fallback box. done(text) */
 function spReadClipboard(done) {
+  /* v30.215: a PDF on the clipboard first (Safari: Share \u203a Options \u203a PDF \u203a Copy), then text */
+  var C = typeof navigator !== 'undefined' && navigator.clipboard;
+  if (C && C.read) {
+    return C.read().then(function (items) {
+      var pdf = null, txt = null;
+      (items || []).forEach(function (it) { (it.types || []).forEach(function (t) { if (!pdf && /pdf/i.test(t)) pdf = { it: it, t: t }; else if (!txt && t === 'text/plain') txt = { it: it, t: t }; }); });
+      if (pdf) return pdf.it.getType(pdf.t).then(function (bl) { if (root.toast) root.toast('Reading the PDF\u2026'); return spPdfFileText(bl); }).then(function (t) { if (t) done(t); else spManual(done); });
+      if (txt) return txt.it.getType('text/plain').then(function (bl) { return bl.text(); }).then(function (t) { if (t && t.trim()) done(t); else spManual(done); });
+      spManual(done);
+    }).catch(function () { spReadText(done); });
+  }
+  spReadText(done);
+}
+function spReadText(done) {
   if (typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.readText) {
     navigator.clipboard.readText().then(function (t) { if (t && t.trim()) done(t); else spManual(done); }, function () { spManual(done); });
   } else spManual(done);
@@ -4431,12 +4452,31 @@ function spManual(done) {
   _spDone = done;
   var ov = overlay('spm-ov', 945);
   ov.innerHTML = '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 8px"><button style="' + BACK + '" onclick="catSpManualClose()">\u2039</button>' +
-    '<div style="flex:1"><div style="font-size:17px;font-weight:800;color:var(--t1)">Paste the page</div><div style="font-size:11px;color:var(--t3)">Long-press the box and tap Paste.</div></div></div>' +
-    '<div style="flex:1;padding:0 16px 16px"><textarea id="spm-txt" class="bdet-field-input" style="width:100%;height:60%;box-sizing:border-box;font-size:14px"></textarea></div>' +
+    '<div style="flex:1"><div style="font-size:17px;font-weight:800;color:var(--t1)">Paste the page</div><div style="font-size:11px;color:var(--t3)">Long-press the box and tap Paste: page text, or a PDF you copied (Share \u203a Options \u203a PDF \u203a Copy).</div></div></div>' +
+    '<div style="flex:1;padding:0 16px 16px"><textarea id="spm-txt" class="bdet-field-input" style="width:100%;height:60%;box-sizing:border-box;font-size:14px"></textarea>' +
+    '<button style="' + BTN_G + 'width:100%;padding:10px;margin-top:8px" onclick="catSpManualFile()">Choose a saved PDF instead</button></div>' +
     '<div style="padding:10px 16px;border-top:1px solid var(--border1)"><button style="' + BTN_P + 'width:100%;padding:11px" onclick="catSpManualGo()">Read it</button></div>';
   document.body.appendChild(ov);
+  /* v30.215: a PDF pasted into the box arrives as a file */
+  var ta = document.getElementById('spm-txt');
+  if (ta) ta.addEventListener('paste', function (ev) {
+    var dt = ev.clipboardData, fl = null;
+    Array.prototype.slice.call((dt && dt.files) || []).forEach(function (f) { if (!fl && /pdf/i.test(f.type || f.name || '')) fl = f; });
+    if (!fl) Array.prototype.slice.call((dt && dt.items) || []).forEach(function (it) { if (!fl && it.kind === 'file' && /pdf/i.test(it.type)) fl = it.getAsFile(); });
+    if (!fl) return;
+    ev.preventDefault(); spManualPdf(fl);
+  });
 }
 function catSpManualGo() { var el = document.getElementById('spm-txt'), t = el ? el.value : '', d = _spDone; catSpManualClose(); if (d && t.trim()) d(t); }
+function spManualPdf(fl) {
+  var d = _spDone; if (root.toast) root.toast('Reading the PDF\u2026');
+  spPdfFileText(fl).then(function (t) { if (!t) { if (root.toast) root.toast('No text in that PDF'); return; } catSpManualClose(); if (d) d(t); }, function () { if (root.toast) root.toast('Could not read the PDF'); });
+}
+function catSpManualFile() {
+  var inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'application/pdf,.pdf'; inp.style.display = 'none';
+  inp.addEventListener('change', function () { var f = inp.files && inp.files[0]; if (inp.parentNode) inp.parentNode.removeChild(inp); if (f) spManualPdf(f); });
+  document.body.appendChild(inp); inp.click();
+}
 function catSpManualClose() { var el = document.getElementById('spm-ov'); if (el) el.parentNode.removeChild(el); }
 /* Review list. target: { name, weight, rows:[{k, label, cur, inputId, num?}] , apply(values), title } */
 var _sp = null;
@@ -4461,7 +4501,7 @@ function spRender() {
   var list = _sp.rows.map(function (x, i) {
     if (x.r.img) return '<div style="display:flex;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--border1)">' +
       '<input type="checkbox" data-sp-cb="' + i + '" ' + (x.on ? 'checked' : '') + ' onchange="catSpToggle(' + i + ',this.checked)" style="width:18px;height:18px">' +
-      '<img src="' + esc(x.v) + '" referrerpolicy="no-referrer" style="width:56px;height:56px;border-radius:50%;object-fit:cover;background:#fff;flex-shrink:0" onerror="this.style.display=\'none\'">' +
+      '<img src="' + esc(x.v) + '" referrerpolicy="no-referrer" style="width:56px;height:56px;border-radius:50%;object-fit:contain;background:#fff;flex-shrink:0" onerror="this.style.display=\'none\'">' +
       '<div style="flex:1;font-size:12px;font-weight:700;color:var(--t2)">' + esc(x.r.label) + (x.same ? '<div style="color:var(--teal);font-weight:600">\u2713 in use</div>' : '') + '</div></div>';
     return '<div style="display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--border1)">' +
       '<input type="checkbox" data-sp-cb="' + i + '" ' + (x.on ? 'checked' : '') + ' onchange="catSpToggle(' + i + ',this.checked)" style="margin-top:22px;width:18px;height:18px">' +
@@ -4855,7 +4895,7 @@ function miRender() {
   var row = function (r) {
     if (_mi.slot === 'cover') return rowCover(r);
     var f = _mi.found[miFk(r.key)], busy = _mi.busy[miFk(r.key)];
-    var pic = f ? '<img src="' + esc(f.url) + '" referrerpolicy="no-referrer" style="width:52px;height:52px;border-radius:50%;object-fit:cover;background:#fff;flex-shrink:0">' :
+    var pic = f ? '<img src="' + esc(f.url) + '" referrerpolicy="no-referrer" style="width:52px;height:52px;border-radius:50%;object-fit:contain;background:#fff;flex-shrink:0">' :
       '<div style="width:52px;height:52px;border-radius:' + (_mi.slot === 'core' ? '10px' : '50%') + ';flex-shrink:0;background:var(--bg3);display:flex;align-items:center;justify-content:center;color:var(--t3);font-size:11px">' + (busy ? '\u2026' : r.miss ? 'none' : '') + '</div>';
     var canBw = _mi.slot === 'cover' || r.coreKey;
     var acts = f ? '<button style="' + BTN_P + 'padding:6px 10px;font-size:12px" onclick="catImagesUse(\'' + r.key + '\')">Use</button><button style="' + BTN_G + 'padding:6px 10px;font-size:12px" onclick="catImagesDrop(\'' + r.key + '\')">\u2715</button>' :
@@ -4965,7 +5005,7 @@ function rowCover(r) {
   var bb = _mi.busy[miFk(k)], bc = _mi.busy[fkFor(k, 'core')];
   var pill = function (t, call, on) { return '<button style="' + (on ? BTN_P : BTN_G) + 'padding:5px 9px;font-size:12px" onclick="' + call + '">' + t + '</button>'; };
   var thumb = function (url, round, busy, miss) {
-    return url ? '<img src="' + esc(url) + '" referrerpolicy="no-referrer" style="width:48px;height:48px;border-radius:50%;object-fit:cover;background:#fff;flex-shrink:0">' :
+    return url ? '<img src="' + esc(url) + '" referrerpolicy="no-referrer" style="width:48px;height:48px;border-radius:50%;object-fit:contain;background:#fff;flex-shrink:0">' :
       '<div style="width:48px;height:48px;border-radius:' + (round ? '50%' : '10px') + ';flex-shrink:0;background:var(--bg3);display:flex;align-items:center;justify-content:center;color:var(--t3);font-size:10px">' + (busy ? '\u2026' : miss ? 'none' : round ? 'ball' : 'core') + '</div>';
   };
   var q = function (s2) { return '\'' + k + '\'' + (s2 ? ',\'' + s2 + '\'' : ''); };
@@ -5349,7 +5389,7 @@ function pgvRender() {
   var imgs = (snap.images || []).map(function (u, i) {
     var on = cur === u;
     return '<div onclick="catPageImg(' + i + ')" style="position:relative;flex:0 0 31%;aspect-ratio:1;border-radius:50%;overflow:hidden;background:#fff;border:2px solid ' + (on ? 'var(--teal)' : 'transparent') + ';cursor:pointer">' +
-      '<img src="' + esc(u) + '" referrerpolicy="no-referrer" loading="lazy" onerror="this.parentNode.style.display=\'none\'" style="width:100%;height:100%;object-fit:cover">' +
+      '<img src="' + esc(u) + '" referrerpolicy="no-referrer" loading="lazy" onerror="this.parentNode.style.display=\'none\'" style="width:100%;height:100%;object-fit:contain">' +
       (on ? '<span style="position:absolute;bottom:10%;left:50%;transform:translateX(-50%);font-size:10px;font-weight:800;color:#000;background:var(--teal);border-radius:6px;padding:1px 5px">IN USE</span>' : '') + '</div>';
   }).join('');
   var lines = (snap.lines || []).map(function (l) {
@@ -5957,7 +5997,7 @@ root.catHoldCorrect = catHoldCorrect; root.catCorrectFor = catCorrectFor;
 root.catHoldOpen = catHoldOpen; root.catHoldClose = catHoldClose; root.catHoldShow = catHoldShow; root.catHoldFilter = catHoldFilter; root.catHoldPage = catHoldPage; root.catHoldSel = catHoldSel; root.catHoldApprove = catHoldApprove; root.catHoldSend = catHoldSend; root.catIsHeld = catIsHeld; root._hold = { hlRows: hlRows, hlHasSpecs: hlHasSpecs, rlMerge: rlMerge };
 root.catBackupOpen = catBackupOpen; root.catBackupMake = catBackupMake; root.catBackupShare = catBackupShare; root.catBackupRestore = catBackupRestore; root.catBackupStatus = catBackupStatus; root.catBackupBuild = catBackupBuild; root.catBackupMerge = catBackupMerge;
 root.catPickerMount = catPickerMount;
-root.catApprovalsOpen = catApprovalsOpen; root.catImagesScanAll = catImagesScanAll; root.catImagesScanStop = catImagesScanStop; root.catImagesSlot = catImagesSlot; root.catImagesExport = catImagesExport; root.catImagesImport = catImagesImport; root.catCoreImageFor = catCoreImageFor; root.catImagesOpen = catImagesOpen; root.catImagesClose = catImagesClose; root.catImagesTab = catImagesTab; root.catImagesFilter = catImagesFilter; root.catImagesPage = catImagesPage; root.catImagesTry = catImagesTry; root.catImagesTryPage = catImagesTryPage; root.catImagesPaste = catImagesPaste; root.catImagesPhoto = catImagesPhoto; root.catImagesDrop = catImagesDrop; root.catImagesUse = catImagesUse; root.catImagesUseAll = catImagesUseAll; root.catSpApPdf = catSpApPdf; root.catSpBallPdf = catSpBallPdf; root.catPdfHelp = catPdfHelp; root.catShortcutHelp = catShortcutHelp; root.catShortcutCopy = catShortcutCopy; root.catShortcutClose = catShortcutClose; root.catSpAp = catSpAp; root.catSpBall = catSpBall; root.catSpToggle = catSpToggle; root.catSpAll = catSpAll; root.catSpEdit = catSpEdit; root.catSpClose = catSpClose; root.catSpApply = catSpApply; root.catSpManualGo = catSpManualGo; root.catSpManualClose = catSpManualClose; root.catLookBall = catLookBall; root.catLookOk = catLookOk; root.catLookSave = catLookSave; root.catLookClose = catLookClose; root.catPasteOpen = catPasteOpen; root.catPasteClose = catPasteClose; root.catPasteClip = catPasteClip; root.catPasteShow = catPasteShow; root.catFillToggle = catFillToggle; root.catFillClose = catFillClose; root.catFillConfirm = catFillConfirm; root.catPageOpen = catPageOpen; root.catPageClose = catPageClose; root.catPageUseSel = catPageUseSel; root.catPageUseVal = catPageUseVal; root.catPageImg = catPageImg; root.catPickOpen = catPickOpen; root.catPickFilter = catPickFilter; root.catPickChoose = catPickChoose; root.catPickClose = catPickClose; root.catSpecReviewOpen = catSpecReviewOpen; root.catSpecReviewClose = catSpecReviewClose; root.catSpecReviewAct = catSpecReviewAct; root.catSpecReviewBulk = catSpecReviewBulk; root.catSpecReviewPage = catSpecReviewPage; root.catTagPick = catTagPick; root.catTagCancel = catTagCancel; root.catVerifyRefresh = catVerifyRefresh; root.catVerifyDismiss = catVerifyDismiss; root.catVerifyRetry = catVerifyRetry; root.catVerifyOpenApprovals = catVerifyOpenApprovals; root.catVerifyPublish = catVerifyPublish; root.catVerifyApply = catVerifyApply; root.catVerifyTick = vfyTick; root.catVerifyState = vfyActive; root.catApprovalsRetryStaged = catApprovalsRetryStaged; root.apStagedErrText = apStagedErrText; root.catApprovalsClose = catApprovalsClose; root.catApprovalsSaveToken = catApprovalsSaveToken;
+root.catApprovalsOpen = catApprovalsOpen; root.catImagesScanAll = catImagesScanAll; root.catImagesScanStop = catImagesScanStop; root.catImagesSlot = catImagesSlot; root.catImagesExport = catImagesExport; root.catImagesImport = catImagesImport; root.catCoreImageFor = catCoreImageFor; root.catImagesOpen = catImagesOpen; root.catImagesClose = catImagesClose; root.catImagesTab = catImagesTab; root.catImagesFilter = catImagesFilter; root.catImagesPage = catImagesPage; root.catImagesTry = catImagesTry; root.catImagesTryPage = catImagesTryPage; root.catImagesPaste = catImagesPaste; root.catImagesPhoto = catImagesPhoto; root.catImagesDrop = catImagesDrop; root.catImagesUse = catImagesUse; root.catImagesUseAll = catImagesUseAll; root.catSpApPdf = catSpApPdf; root.catSpBallPdf = catSpBallPdf; root.catPdfHelp = catPdfHelp; root.catShortcutHelp = catShortcutHelp; root.catShortcutCopy = catShortcutCopy; root.catShortcutClose = catShortcutClose; root.catSpAp = catSpAp; root.catSpBall = catSpBall; root.catSpToggle = catSpToggle; root.catSpAll = catSpAll; root.catSpEdit = catSpEdit; root.catSpClose = catSpClose; root.catSpApply = catSpApply; root.catSpManualGo = catSpManualGo; root.catSpManualClose = catSpManualClose; root.catSpManualFile = catSpManualFile; root.catLookBall = catLookBall; root.catLookOk = catLookOk; root.catLookSave = catLookSave; root.catLookClose = catLookClose; root.catPasteOpen = catPasteOpen; root.catPasteClose = catPasteClose; root.catPasteClip = catPasteClip; root.catPasteShow = catPasteShow; root.catFillToggle = catFillToggle; root.catFillClose = catFillClose; root.catFillConfirm = catFillConfirm; root.catPageOpen = catPageOpen; root.catPageClose = catPageClose; root.catPageUseSel = catPageUseSel; root.catPageUseVal = catPageUseVal; root.catPageImg = catPageImg; root.catPickOpen = catPickOpen; root.catPickFilter = catPickFilter; root.catPickChoose = catPickChoose; root.catPickClose = catPickClose; root.catSpecReviewOpen = catSpecReviewOpen; root.catSpecReviewClose = catSpecReviewClose; root.catSpecReviewAct = catSpecReviewAct; root.catSpecReviewBulk = catSpecReviewBulk; root.catSpecReviewPage = catSpecReviewPage; root.catTagPick = catTagPick; root.catTagCancel = catTagCancel; root.catVerifyRefresh = catVerifyRefresh; root.catVerifyDismiss = catVerifyDismiss; root.catVerifyRetry = catVerifyRetry; root.catVerifyOpenApprovals = catVerifyOpenApprovals; root.catVerifyPublish = catVerifyPublish; root.catVerifyApply = catVerifyApply; root.catVerifyTick = vfyTick; root.catVerifyState = vfyActive; root.catApprovalsRetryStaged = catApprovalsRetryStaged; root.apStagedErrText = apStagedErrText; root.catApprovalsClose = catApprovalsClose; root.catApprovalsSaveToken = catApprovalsSaveToken;
 root.catApprovalsForgetToken = catApprovalsForgetToken; root.catApprovalsChangeToken = catApprovalsChangeToken; root.catApprovalsPage = catApprovalsPage; root.catApprovalsFilter = catApprovalsFilter;
 root.catApprovalsTick = catApprovalsTick; root.catApprovalsEdit = catApprovalsEdit; root.catApprovalsEditClose = catApprovalsEditClose; root.catApprovalsEditSave = catApprovalsEditSave; root.catAddSpecsOnly = catAddSpecsOnly; root.catVerifyNow = catVerifyNow; root.catImagesSet = catImagesSet;
 root.catImagesRefresh = catImagesRefresh; root.catImagesStatus = catImagesStatus; root.catImageFor = catImageFor; root.catApprovalsSend = catApprovalsSend; root.catApprovalsPublish = catApprovalsPublish; root.catPickerSearch = catPickerSearch;
