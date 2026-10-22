@@ -352,5 +352,41 @@
   "finish": "500/1000/1500 Siaair, Crown Factory Compound",
   "source": "maker",
   "at": "2026-10-22"
+ },
+ "motiv-ascend-black-green-teal": {
+  "coverName": "Vitality Pearl Reactive",
+  "coverType": "Pearl Reactive",
+  "finish": "5500 Grit LSP",
+  "core": "Flux™ V2 Symmetric",
+  "coreType": "Symmetrical",
+  "weights": {
+   "10": {
+    "RG": 2.83,
+    "Diff": 0.015
+   },
+   "11": {
+    "RG": 2.76,
+    "Diff": 0.015
+   },
+   "12": {
+    "RG": 2.72,
+    "Diff": 0.015
+   },
+   "13": {
+    "RG": 2.65,
+    "Diff": 0.017
+   },
+   "14": {
+    "RG": 2.6,
+    "Diff": 0.024
+   },
+   "15": {
+    "RG": 2.59,
+    "Diff": 0.023
+   }
+  },
+  "source": "maker",
+  "note": "from motivbowling.com",
+  "at": "2026-10-22"
  }
 }
