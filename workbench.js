@@ -10,7 +10,7 @@
    Uses catalog.js through root._catAPI only. Design: DESIGN_add_ball_flow sections 50-55. */
 (function (root) {
   'use strict';
-  var WB_VERSION = 'v30.214';
+  var WB_VERSION = 'v30.215';
   var A = root._catAPI;
   if (!A) { if (root.toast) root.toast('Workbench needs catalog.js ' + WB_VERSION); return; }
   var esc = A.esc, jsq = A.jsq, norm = A.norm, cleanName = A.cleanName;
@@ -443,9 +443,9 @@
     return out;
   }
   function rvMerged(e) { var d = _wb.det[e.i]; if (!d) return null; var sp = mergeFound(d.sp, _wb.found[e.i]); return { sp: sp, miss: missingOf(sp) }; }
-  function rvPicOf(e) { return A.catImageStored(e.i) || (_rv.pic[e.i] && _rv.pic[e.i].url) || null; }
+  function rvPicOf(e) { return (_rv.pic[e.i] && _rv.pic[e.i].url) || A.catImageStored(e.i) || null; }
   function rvCoreKey(e, sp) { return sp && sp.core ? A.coreKeyOf(e.m, sp.core) : null; }
-  function rvCorePic(e, sp) { var k = rvCoreKey(e, sp); return k ? (A.catCoreImageFor(e.m, sp.core) || (_rv.core[k] && _rv.core[k].url) || null) : null; }
+  function rvCorePic(e, sp) { var k = rvCoreKey(e, sp); return k ? ((_rv.core[k] && _rv.core[k].url) || A.catCoreImageFor(e.m, sp.core) || null) : null; }   // v30.215: a find shows over the saved one
   function rvStage(e) {
     var m = rvMerged(e); if (!m) return 'unchecked';
     var pic = !!rvPicOf(e), full = !m.miss.length, any = Object.keys(m.sp.weights || {}).length > 0 || REQ.some(function (r) { return m.sp[r[0]]; });
@@ -564,13 +564,14 @@
       var m = rvMerged(e), sp = m.sp, f = _wb.found[e.i], d = _wb.det[e.i], own = ownedMap();
       var stored = A.catImageStored(e.i), found = _rv.pic[e.i], cpic = rvCorePic(e, sp), ck = rvCoreKey(e, sp), cfound = ck && _rv.core[ck];
       var srcOf = function (k) { return f && formFrom(f)[k] ? 'read, not saved' : d.sp[k] ? 'saved' : ''; };
-      var fld = function (t, k) { var v = sp[k], s2 = srcOf(k); return '<div style="display:flex;gap:8px;padding:5px 0;border-bottom:1px solid var(--border1);font-size:13px"><div style="flex:0 0 34%;color:var(--t3)">' + t + '</div>' +
+      var fld = function (t, k) { var v = sp[k], s2 = srcOf(k); return '<div onclick="wtEdit(\'' + idq + '\',\'' + k + '\')" style="display:flex;gap:8px;padding:5px 0;border-bottom:1px solid var(--border1);font-size:13px;cursor:pointer"><div style="flex:0 0 34%;color:var(--t3)">' + t + '</div>' +
         '<div style="flex:1;min-width:0;color:' + (v ? 'var(--t1)' : 'var(--gold)') + '">' + (v ? esc(v) : 'missing') + (s2 === 'read, not saved' ? ' <span style="font-size:10px;color:#7aa7ff">NEW</span>' : '') + '</div></div>'; };
       var ws = Object.keys(sp.weights || {}).sort(function (a, b) { return b - a; });
       var wtab = ws.length ? '<div style="font-size:12px;color:var(--t2);margin-top:6px">' + ws.map(function (w) { var x = sp.weights[w] || {}, fw = f && f.weights && f.weights[w];
-        return '<div style="display:flex;gap:8px;padding:3px 0' + (fw ? ';color:#7aa7ff' : '') + '"><span style="flex:0 0 46px">' + w + ' lb</span><span>RG ' + (x.RG != null ? Number(x.RG).toFixed(3) : '\u2014') + '</span><span>Diff ' + (x.Diff != null ? Number(x.Diff).toFixed(3) : '\u2014') + '</span>' + (x.IntDiff != null ? '<span>Int ' + Number(x.IntDiff).toFixed(3) + '</span>' : '') + '</div>'; }).join('') + '</div>' : '<div style="font-size:12px;color:var(--gold);margin-top:6px">No RG / Diff yet</div>';
-      var picBox = function (u, lab, note) { return '<div style="flex:1;min-width:0;text-align:center"><div style="height:124px;border-radius:12px;background:var(--bg2);border:1px solid var(--border1);display:flex;align-items:center;justify-content:center;overflow:hidden">' +
-        (u ? '<img src="' + esc(u) + '" referrerpolicy="no-referrer" style="width:116px;height:116px;border-radius:50%;object-fit:cover;background:#fff">' : '<span style="font-size:12px;color:var(--t3)">no ' + lab + '</span>') + '</div><div style="font-size:11px;color:' + (note === 'found, not saved' ? '#7aa7ff' : 'var(--t3)') + ';margin-top:3px">' + lab + (note ? ' \u00b7 ' + note : '') + '</div></div>'; };
+        return '<div onclick="wtEditW(\'' + idq + '\',\'' + w + '\')" style="display:flex;gap:8px;padding:3px 0;cursor:pointer' + (fw ? ';color:#7aa7ff' : '') + '"><span style="flex:0 0 46px">' + w + ' lb</span><span>RG ' + (x.RG != null ? Number(x.RG).toFixed(3) : '\u2014') + '</span><span>Diff ' + (x.Diff != null ? Number(x.Diff).toFixed(3) : '\u2014') + '</span>' + (x.IntDiff != null ? '<span>Int ' + Number(x.IntDiff).toFixed(3) + '</span>' : '') + '</div>'; }).join('') + '<div onclick="wtEditW(\'' + idq + '\',\'\')" style="color:var(--teal);cursor:pointer;padding:3px 0">+ add a weight</div></div>' : '<div onclick="wtEditW(\'' + idq + '\',\'\')" style="font-size:12px;color:var(--gold);margin-top:6px;cursor:pointer">No RG / Diff yet \u00b7 <span style="color:var(--teal)">+ add a weight</span></div>';
+      var picBox = function (u, lab, note, slot) { return '<div style="flex:1;min-width:0;text-align:center"><div style="height:124px;border-radius:12px;background:var(--bg2);border:1px solid var(--border1);display:flex;align-items:center;justify-content:center;overflow:hidden">' +
+        (u ? '<img src="' + esc(u) + '" referrerpolicy="no-referrer" style="width:116px;height:116px;border-radius:50%;object-fit:contain;background:#fff">' : '<span style="font-size:12px;color:var(--t3)">no ' + lab + '</span>') + '</div><div style="font-size:11px;color:' + (note === 'found, not saved' ? '#7aa7ff' : 'var(--t3)') + ';margin-top:3px">' + lab + (note ? ' \u00b7 ' + note : '') +
+        (u && slot ? ' \u00b7 <span onclick="wtPicClear(\'' + idq + '\',\'' + slot + '\')" style="color:var(--red);cursor:pointer">\u2715 ' + (note === 'found, not saved' ? 'drop' : 'remove') + '</span>' : '') + '</div></div>'; };
       var stg = rvStage(e), canRel = !m.miss.length && !!(stored || found), br = rvBridge(e);
       var brNote = br ? '<div style="font-size:12px;color:#7aa7ff;margin:-2px 0 8px;line-height:1.4">Specs from a bridge read' + (br.url ? ' (' + esc(String(br.url).replace(/^https?:\/\/(www\.)?/, '').split('/')[0]) + ')' : '') + ', not published yet: ' +
         (br.decision === 'auto' ? 'auto-matched, publishes with the next Publish.' : 'Accept ticks it in Spec approvals; Publish to finish.') + '</div>' : '';
@@ -584,7 +585,7 @@
         '<div style="flex:1;overflow-y:auto;padding:0 16px 10px">' +
           '<div style="font-size:12px;margin-bottom:8px;color:' + (stg === 'complete' ? 'var(--teal)' : 'var(--gold)') + '">' + esc(RV_STAGE[stg]) + (m.miss.length ? ' \u00b7 needs ' + esc(m.miss.join(', ')) : '') + '</div>' +
           '<div style="margin:-4px 0 8px">' + confChip('specs', specConf(e)) + confChip('picture', picConf(e)) + '</div>' +
-          brNote + '<div style="display:flex;gap:10px">' + picBox(stored || (found && found.url), 'cover', stored ? 'saved' : found ? 'found, not saved' : '') + picBox(cpic, 'core', sp.core ? (cfound && !A.catCoreImageFor(e.m, sp.core) ? 'found, not saved' : cpic ? 'saved' : '') : 'core name unknown') + '</div>' +
+          brNote + '<div style="display:flex;gap:10px">' + picBox((found && found.url) || stored, 'cover', found ? 'found, not saved' : stored ? 'saved' : '', 'cover') + picBox(cpic, 'core', sp.core ? (cfound ? 'found, not saved' : cpic ? 'saved' : '') : 'core name unknown', 'core') + '</div>' +
           '<div style="display:flex;gap:6px;margin-top:6px">' + b('Paste cover', "wbRvPastePic('" + idq + "','cover')") + b('Photo', "wbRvPhoto('" + idq + "','cover')") + b('Paste core', "wbRvPastePic('" + idq + "','core')", false, !sp.core) + b('Photo', "wbRvPhoto('" + idq + "','core')", false, !sp.core) + '</div>' +
           '<div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:.5px;margin:14px 0 2px">SPECS</div>' +
           fld('Coverstock', 'coverName') + fld('Cover type', 'coverType') + fld('Finish', 'finish') + fld('Core', 'core') + fld('Core type', 'coreType') + fld('Released', 'released') + wtab +
@@ -593,7 +594,7 @@
             (f.region && A.regionOf(e) !== f.region ? '<div style="color:#7aa7ff">The page says ' + esc(f.region) + ' release \u00b7 <span onclick="wtPageRegion(\'' + idq + '\',\'' + jsq(f.region) + '\')" style="color:var(--teal);cursor:pointer">Tag it</span></div>' : '') + '</div>' : '') +
           '<div style="display:flex;gap:6px;margin-top:8px">' + b(_bw[e.i] ? 'Reading\u2026' : 'Read bowwwl', "wbBwRead('" + idq + "')", !_bw[e.i] && !f, !!_bw[e.i]) + b('Paste specs', "wbRvPasteSpecs('" + idq + "')") + b('PDF', "wbRvPdf('" + idq + "')") + b('Edit', "wbRvEdit('" + idq + "')") + '</div>' +
           (_bw[e.i] ? '<div style="font-size:11px;color:#7aa7ff;margin-top:4px">Reading the bowwwl page on GitHub (about a minute). You can move on; it lands here when done.</div>' : '') +
-          '<div style="font-size:11px;color:var(--t3);margin-top:8px">Look it up: ' + a2(webSearch(e), 'search \u2197') + ' \u00b7 <a href="' + esc(bw.maker || bw.search) + '" target="_blank" rel="noopener noreferrer" style="color:var(--teal)">maker \u2197</a> \u00b7 <a href="' + esc(bw.page) + '" target="_blank" rel="noopener noreferrer" style="color:var(--teal)">bowwwl \u2197</a> \u00b7 copy the page or picture there, then Paste here.</div>' +
+          '<div style="font-size:11px;color:var(--t3);margin-top:8px">Look it up: ' + a2(webSearch(e), 'search \u2197') + ' \u00b7 <a href="' + esc(bw.maker || bw.search) + '" target="_blank" rel="noopener noreferrer" style="color:var(--teal)">maker \u2197</a> \u00b7 <a href="' + esc(bw.page) + '" target="_blank" rel="noopener noreferrer" style="color:var(--teal)">bowwwl \u2197</a> \u00b7 copy the page or picture there, then Paste here. Paste also takes a PDF (Share \u203a Options \u203a PDF \u203a Copy). Tap any spec or weight to type it in.</div>' +
         '</div>' +
         '<div style="padding:8px 16px;border-top:1px solid var(--border1)"><div style="display:flex;gap:6px">' + b('Accept and release', "wbRvAccept('" + idq + "',true)", true, !canRel) + b('Accept', "wbRvAccept('" + idq + "',false)", false, !(f || found || cfound || (br && br.decision === 'pending'))) + '</div>' +
           '<div style="display:flex;gap:6px;margin-top:6px">' + b('Mark\u2026', "wtMarkAsk(null,'" + idq + "')") + b('Skip \u203a', 'wbRvNext(1)') + '</div></div>';
@@ -677,7 +678,7 @@
   function wtHeld(rows) { return wbScope(rows).filter(function (e) { return A.catIsHeld(e) && !A.catIsRejected(e); }); }
   function specConf(e) {
     var d = _wb.det[e.i], f = _wb.found[e.i]; if (!d) return null;
-    if (f) return f.loose || f.nameSeen === false ? 'low' : 'med';
+    if (f) return f.how === 'hand' ? 'high' : f.loose || f.nameSeen === false ? 'low' : 'med';
     var ov = A.overrideFor(e.i), b = d.base;
     if (e.s || (ov && A.hlHasSpecs({}, ov))) return 'high';
     if (b && b.decision === 'auto') return 'high';
@@ -959,6 +960,82 @@
     });
   }
 
+
+  /* ---------- v30.215 EDIT-1: type a value straight into the card (any field, any weight) ----------
+     What you type goes into this ball's read (as if read from a page), shown NEW, and saves with Accept.
+     With no read yet you say where it came from; bowwwl stays on this phone, maker / other go to the repo. */
+  var ED_LAB = { coverName: 'Coverstock', coverType: 'Cover type', finish: 'Factory finish', core: 'Core', coreType: 'Core type', released: 'Release date' };
+  function edFound(id, src) { var f = _wb.found[id]; if (!f) f = _wb.found[id] = { fields: {}, weights: {}, source: src || 'bowwwl', host: '', how: 'hand', nameSeen: true }; return f; }
+  function edSrcSel(id) { return _wb.found[id] ? '' : '<label style="display:block;font-size:12px;color:var(--t3);margin-top:10px">Where is this from?</label><select id="ed-src" class="bdet-field-input" style="width:100%;font-size:15px"><option value="bowwwl">bowwwl (kept on this phone)</option><option value="maker">Maker spec sheet / page</option><option value="other">Other</option></select>'; }
+  function wtEdit(id, k) {
+    if (!root.openModal) return;
+    A.catLoad().then(function (rows) {
+      var e = A.byIdIn(rows, id); if (!e || !_wb.det[id]) return;
+      var m = rvMerged(e), v = m.sp[k] || '';
+      var inp = k === 'coreType' ? '<select id="ed-v" class="bdet-field-input" style="width:100%;font-size:15px"><option value="">\u2014</option>' + ['Asymmetrical', 'Symmetrical'].map(function (o) { return '<option' + (o === v ? ' selected' : '') + '>' + o + '</option>'; }).join('') + '</select>' :
+        '<input id="ed-v" class="bdet-field-input" value="' + esc(v) + '" placeholder="' + (k === 'released' ? '2024-09 or 2024-09-19' : '') + '" autocomplete="off" autocorrect="off" style="width:100%;box-sizing:border-box;font-size:16px">';
+      root.openModal('<div class="modal-title">' + esc(ED_LAB[k]) + '</div><div style="font-size:12px;color:var(--t3);margin-bottom:8px">' + esc(cleanName(e.n)) + '</div>' + inp + edSrcSel(id) +
+        '<div id="ed-err" style="font-size:12px;color:var(--red);margin-top:6px"></div>' +
+        '<button class="btn btn-primary" style="width:100%;margin-top:10px" onclick="wtEditGo(\'' + jsq(id) + '\',\'' + k + '\')">Use this</button>' +
+        (_wb.found[id] && _wb.found[id].fields && _wb.found[id].fields[k] ? '<button class="btn btn-ghost" style="width:100%;margin-top:8px" onclick="wtEditGo(\'' + jsq(id) + '\',\'' + k + '\',true)">Undo my change to this field</button>' : '') +
+        '<button class="btn btn-secondary" style="width:100%;margin-top:8px" onclick="closeModal()">Cancel</button>');
+      setTimeout(function () { var i = document.getElementById('ed-v'); if (i && i.focus) i.focus(); }, 300);
+    });
+  }
+  function wtEditGo(id, k, drop) {
+    var el = document.getElementById('ed-v'), err = document.getElementById('ed-err'), sv = document.getElementById('ed-src');
+    if (drop) { var f0 = _wb.found[id]; if (f0) { delete f0.fields[k]; if (!Object.keys(f0.fields).length && !Object.keys(f0.weights || {}).length) delete _wb.found[id]; } if (root.closeModal) root.closeModal(); rvPaint(); paint(); return; }
+    var v = el ? String(el.value || '').replace(/\s+/g, ' ').trim() : '';
+    if (!v) { if (err) err.textContent = 'Type a value (or Cancel).'; return; }
+    if (k === 'released') { var mm = /^(\d{4})-(\d{2})(?:-(\d{2}))?$/.exec(v); if (!mm || +mm[2] < 1 || +mm[2] > 12) { if (err) err.textContent = 'Use 2024-09 or 2024-09-19.'; return; } }
+    var f = edFound(id, sv && sv.value); f.fields = f.fields || {}; f.fields[k] = v; (f.hand = f.hand || {})[k] = 1;
+    if (root.closeModal) root.closeModal(); rvPaint(); paint();
+  }
+  var ED_LIM = { RG: [2.3, 2.9], Diff: [0, 0.08], IntDiff: [0, 0.04] };
+  function wtEditW(id, w) {
+    if (!root.openModal) return;
+    A.catLoad().then(function (rows) {
+      var e = A.byIdIn(rows, id); if (!e || !_wb.det[id]) return;
+      var m = rvMerged(e), x = (w && m.sp.weights[w]) || {};
+      var box = function (k, t) { return '<div style="flex:1;min-width:0"><div style="font-size:11px;color:var(--t3)">' + t + '</div><input id="edw-' + k + '" class="bdet-field-input" inputmode="decimal" value="' + (x[k] != null ? Number(x[k]).toFixed(3) : '') + '" style="width:100%;box-sizing:border-box;font-size:16px"></div>'; };
+      root.openModal('<div class="modal-title">' + (w ? w + ' lb' : 'Add a weight') + '</div><div style="font-size:12px;color:var(--t3);margin-bottom:8px">' + esc(cleanName(e.n)) + '</div>' +
+        (w ? '' : '<select id="edw-w" class="bdet-field-input" style="width:100%;font-size:15px;margin-bottom:8px">' + ['16', '15', '14', '13', '12', '11', '10'].filter(function (z) { return !m.sp.weights[z]; }).map(function (z) { return '<option value="' + z + '">' + z + ' lb</option>'; }).join('') + '</select>') +
+        '<div style="display:flex;gap:6px">' + box('RG', 'RG') + box('Diff', 'Diff') + box('IntDiff', 'Int diff') + '</div>' + edSrcSel(id) +
+        '<div id="ed-err" style="font-size:12px;color:var(--red);margin-top:6px"></div>' +
+        '<button class="btn btn-primary" style="width:100%;margin-top:10px" onclick="wtEditWGo(\'' + jsq(id) + '\',\'' + (w || '') + '\')">Use these</button>' +
+        '<button class="btn btn-secondary" style="width:100%;margin-top:8px" onclick="closeModal()">Cancel</button>');
+    });
+  }
+  function wtEditWGo(id, w) {
+    var err = document.getElementById('ed-err'), sv = document.getElementById('ed-src'), ws = document.getElementById('edw-w');
+    w = w || (ws && ws.value); if (!w) return;
+    var vals = {}, bad = null;
+    ['RG', 'Diff', 'IntDiff'].forEach(function (k) { var el = document.getElementById('edw-' + k), t = el ? String(el.value).trim() : ''; if (!t) return;
+      var n = Number(t.charAt(0) === '.' ? '0' + t : t); if (!(n >= ED_LIM[k][0] && n <= ED_LIM[k][1])) bad = k + ' should be ' + ED_LIM[k][0] + '\u2013' + ED_LIM[k][1]; else vals[k] = n; });
+    if (bad) { if (err) err.textContent = bad + '.'; return; }
+    if (vals.RG == null || vals.Diff == null) { if (err) err.textContent = 'RG and Diff are needed.'; return; }
+    var f = edFound(id, sv && sv.value); f.weights = f.weights || {}; f.weights[w] = Object.assign({}, f.weights[w] || {}, vals); f.hand = f.hand || {}; f.hand['w' + w] = 1;
+    if (root.closeModal) root.closeModal(); rvPaint(); paint();
+  }
+  /* ---------- v30.215 PIC-1: drop a find, or remove a saved picture ---------- */
+  function wtPicClear(id, slot) {
+    A.catLoad().then(function (rows) {
+      var e = A.byIdIn(rows, id); if (!e) return;
+      var m = rvMerged(e), k = slot === 'core' && m ? rvCoreKey(e, m.sp) : null;
+      if (slot === 'cover' && _rv.pic[id]) { delete _rv.pic[id]; rvSaveFinds(); rvPaint(); paint(); return; }
+      if (slot === 'core' && k && _rv.core[k]) { delete _rv.core[k]; rvSaveFinds(); rvPaint(); paint(); return; }
+      var link = slot === 'cover' ? A.imgPicks()[id] : (k ? A.catCoreImageFor(e.m, m.sp.core) : null), isFile = link && /^blob:/.test(link);
+      if (!link) return;
+      var msg = 'Remove the saved ' + slot + ' picture' + (slot === 'core' ? ' (every ball with the ' + m.sp.core + ' core uses it)' : '') + '?' + (isFile ? '\n\nIt was pasted or photographed, so Undo can\u2019t bring it back.' : '\n\nUndo: More \u203a Change log.');
+      if (root.confirm && !root.confirm(msg)) return;
+      var job = slot === 'cover' ? A.catImgDel(id).then(function () { A.imgPickSet(id, null); }) : A.catImgDel('core:' + k).then(function () { A.coreLinkSet(k, null); });
+      job.then(function () {
+        logAdd('picdel', 'Removed ' + slot + ' picture: ' + cleanName(e.n), [{ id: id, n: cleanName(e.n), slot: slot, key: k, link: isFile ? null : link }]);
+        rvPaint(); paint(); if (root.toast) root.toast('Removed. Paste, Photo or Find pictures for a new one.');
+      });
+    });
+  }
+
   function updLine() { var t = A.catUpdateLine ? A.catUpdateLine() : ''; return t ? '<div onclick="catUpdateOpen()" style="margin:0 16px 8px;padding:7px 10px;border-radius:9px;background:var(--bg2);border:1px solid rgba(0,217,217,0.3);font-size:12px;color:var(--t1);cursor:pointer">' + esc(t) + ' \u203a</div>' : ''; }
   function bucketName(k) { var b = BUCKETS.filter(function (x) { return x[0] === k; })[0]; return b ? b[1] : k; }
   function triageHTML(rows, c, stat, tab) {
@@ -1029,6 +1106,7 @@
     if (en.kind === 'status') { en.items.forEach(function (x) { A.stSet(x.id, x.before || null, false); }); A.stSaveLocal(A.stLocal()); A.stQueueSync(); return done(); }
     if (en.kind === 'release') { var o = A.rlLocal(); en.items.forEach(function (x) { delete o.all[x.id]; o.pending[x.id] = Date.now() + Math.random(); }); A.rlSaveLocal(o); A.rlQueueSync(); return done(); }
     if (en.kind === 'region') { en.items.forEach(function (x) { A.regionTagSet(x.id, x.had ? x.before : undefined); }); return done(); }
+    if (en.kind === 'picdel') { en.items.forEach(function (x) { if (!x.link) return; if (x.slot === 'cover') A.imgPickSet(x.id, x.link); else if (x.key) A.coreLinkSet(x.key, x.link); }); return done(); }   // v30.215
     if (en.kind === 'upcoming') { var tu = A.triageGet(); en.items.forEach(function (x) { if (x.had) tu.upcoming[x.id] = 1; else delete tu.upcoming[x.id]; }); A.triageSave(tu); return done(); }   // v30.213
     if (en.kind === 'current') { var tg = A.triageGet(); en.items.forEach(function (x) { if (!x.had) delete tg.current[x.id]; }); A.triageSave(tg); return done(); }
     if (en.kind === 'brandregion') { var tb = A.triageGet(); en.items.forEach(function (x) { if (x.had) tb.brandRegion[x.id] = x.before; else delete tb.brandRegion[x.id]; }); A.triageSave(tb); return done(); }
@@ -1120,7 +1198,7 @@
   root.wbRvPastePic = wbRvPastePic; root.wbRvPhoto = wbRvPhoto; root.wbRvPasteSpecs = wbRvPasteSpecs; root.wbRvPdf = wbRvPdf; root.wbRvEdit = wbRvEdit; root.wbRvAccept = wbRvAccept; root.wbRvDisc = wbRvDisc; root.wbRvReject = wbRvReject;
   root._wbt = { mergeFound: mergeFound, rvStage: function (e) { return rvStage(e); }, rv: _rv, wb: _wb };
   root.wtShow = wtShow; root.wtScope = wtScope; root.wtBrand = wtBrand; root.wtQ = wtQ; root.wtPage = wtPage; root.wtCard = wtCard; root.wtApprove = wtApprove;
-  root.wtFetch = wtFetch; root.wtMarkAsk = wtMarkAsk; root.wtMark = wtMark; root.wbBwRead = wbBwRead; root.wtPageDisc = wtPageDisc; root.wtPageRegion = wtPageRegion;
+  root.wtFetch = wtFetch; root.wtMarkAsk = wtMarkAsk; root.wtMark = wtMark; root.wbBwRead = wbBwRead; root.wtEdit = wtEdit; root.wtEditGo = wtEditGo; root.wtEditW = wtEditW; root.wtEditWGo = wtEditWGo; root.wtPicClear = wtPicClear; root.wtPageDisc = wtPageDisc; root.wtPageRegion = wtPageRegion;
   root._wbw = { looseMatch: looseMatch, looseMap: looseMap, grpOf: grpOf, specConf: specConf, picConf: picConf, bwPageUrl: bwPageUrl, bwOpen: bwOpen, bwApply: bwApply, wt: _wt, GRP: GRP };
   root.wbRepaint = function () { if (document.getElementById('wb-ov')) paint(); };
   root.wbOpen = wbOpen; root.wbClose = wbClose; root.wbTab = wbTab; root.wbGroup = wbGroup; root.wbBrand = wbBrand; root.wbYear = wbYear; root.wbState = wbState;
