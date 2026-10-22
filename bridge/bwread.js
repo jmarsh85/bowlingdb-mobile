@@ -39,7 +39,26 @@ function monthYear(t) {
   const mo = MONTHS[m[1].toLowerCase().slice(0, m[1].toLowerCase() === 'sept' ? 4 : 3)]; return mo ? m[2] + '-' + String(mo).padStart(2, '0') : null;
 }
 function num(t) { const m = /^(\d?\.\d{2,4}|\d\.\d{1,4})$/.exec(String(t || '').trim()); return m ? +m[1] : null; }
+/* v30.215: the same page as text can come as "Label: value" on one line, "Label:" then the value,
+   or a heading wrapped before its last word ("Centrex Symmetrical Mass Bias" / "Core"). Put it in one shape. */
+const INLINE = /^(release date|factory finish|box finish|type|core type|rg|diff|mb diff|int\.? diff)\s*:\s*(.+)$/i;
+function normLines(lines) {
+  const out = [];
+  lines.forEach(raw => {
+    const s = String(raw).trim(); if (!s) return;
+    const hm = /^(#+)\s/.exec(s), body = s.replace(/^#+\s*/, '');
+    const m = !hm && INLINE.exec(body);
+    if (m) { out.push(m[1]); out.push(m[2].trim()); return; }
+    if (!hm && /^(core|coverstock)$/i.test(body) && out.length && !/^#/.test(out[out.length - 1]) && /^[A-Z0-9]/.test(out[out.length - 1]) && out[out.length - 1].length <= 45 && !INLINE.test(out[out.length - 1])) {
+      out.push('##### ' + out.pop() + ' ' + body); return;   // the wrapped heading, made whole
+    }
+    if (!hm && /^[A-Z0-9].{1,60}\s(core|coverstock)$/i.test(body) && !/^core type/i.test(body)) { out.push('##### ' + body); return; }   // a heading line without its # (text or PDF)
+    out.push(hm ? s : body.replace(/:\s*$/, ''));
+  });
+  return out;
+}
 function parseLines(lines) {
+  lines = normLines(lines);
   const out = { name: null, released: null, international: false, discontinued: false, finish: null, coverName: null, coverType: null, core: null, coreType: null, coreImg: null, weights: {} };
   const L = lines.map(s => s.replace(/^#+\s*/, '').trim());
   const head = lines.map(s => (/^(#+)\s/.exec(s) || [])[1] || '');
@@ -93,5 +112,5 @@ async function main() {
   write({ sealed: seal({ url, page, lines: lines.slice(0, 400) }, key) });
 }
 
-module.exports = { htmlToLines, parseLines, ogImage, monthYear, seal, URL_OK };
+module.exports = { htmlToLines, parseLines, normLines, ogImage, monthYear, seal, URL_OK };
 if (require.main === module && !process.argv.includes('--test')) main().catch(e => { console.error(e); process.exit(1); });
