@@ -36,7 +36,7 @@
 'use strict';
 
 /* v30.169: shown in the app header when it differs from the build's EXPECTED_CATALOG_JS */
-var CAT_VERSION  = 'v30.217';
+var CAT_VERSION  = 'v30.218';
 var CAT_BASE     = 'https://raw.githubusercontent.com/jmarsh85/bowlingdb-mobile/dist/';
 var CAT_DB       = 'BowlingDB_Catalog';
 var CAT_DB_VER   = 1;
@@ -2548,7 +2548,8 @@ function catCoreShareClose() { var el = document.getElementById('cs-ov'); if (el
    Any input listed below shows up to 6 values already in use as you type: the brand's family first,
    names that start with what you typed before ones that contain it, then by how many balls use it.
    Tap one to fill the field; keep typing to ignore. The \u25be pickers still list everything. */
-var TA_FIELDS = Object.assign({ 'bef-corename': 'core', 'bef-covername': 'coverName', 'bef-cover': 'coverType', 'bef-finish': 'finish' }, VOCAB_FIELDS);
+var TA_FIELDS = Object.assign({ 'bef-corename': 'core', 'bef-covername': 'coverName', 'bef-cover': 'coverType', 'bef-finish': 'finish',
+  'wt-ed-core': 'core', 'wt-ed-coverName': 'coverName', 'wt-ed-coverType': 'coverType', 'wt-ed-finish': 'finish' }, VOCAB_FIELDS);   // v30.218: the workbench card's edit box
 /* Pure: the suggestions for typed text */
 function taSuggest(list, brand, q, cur, max) {
   var qq = vocabKey(q); if (!qq) return [];
@@ -2564,6 +2565,7 @@ function taBrandFor(id) {
   if (/^bef-/.test(id)) { var m = document.getElementById('bef-mfg'); return m ? m.value : ''; }
   if (/^lk-/.test(id)) return (_lk && _lk.brand) || '';
   if (/^ape-/.test(id)) return (_apEdit && _apEdit.brand) || '';
+  if (/^wt-ed-/.test(id)) { var we = document.getElementById(id); return (we && we.getAttribute('data-brand')) || ''; }
   return '';
 }
 var _ta = { el: null, list: [] };
@@ -4358,8 +4360,13 @@ function parseSpecText(text, weight, name) {
     .map(function (l) { return l.replace(/\t+/g, ' | ').replace(/^[\s\u2022\u00b7*\-\u2013|]+/, '').replace(/\s+/g, ' ').trim(); })
     .filter(Boolean);
   var w0 = parseInt(weight, 10) || 15;
-  var setF = function (k, v) {
+  var setF = function (k, v, lab) {
+    /* v30.218 retailers (bowlingball.com): "Coverstock | Pearl Reactive" is the type, "Coverstock Name | VTC Pearl" the name;
+       "Finish | Polished" is a kind, "Factory Finish | Reacta Gloss" the finish */
+    if (k === 'coverName' && v != null && /^(?:(?:solid|pearl|hybrid)\s+)?(?:reactive|urethane|polyester|plastic)(?:\s+resin)?$/i.test(String(v).replace(/^[:|#\-\s]+/, '').trim())) k = 'coverType';
+    if (k === 'finish' && out._finWeak && v != null && /factory|box|out/i.test(lab || '')) { delete out.fields.finish; out._finWeak = false; }
     if (k in out.fields || v == null) return;
+    if (k === 'finish') out._finWeak = !/factory|box|out/i.test(lab || '');
     v = String(v).replace(/[\u2122\u00ae]/g, '').replace(/^[:|#\-\s]+/, '').replace(/\s*\|\s*$/, '').trim();
     if (k === 'released') { var nd = normDate(v.split(/\s+\|\s+|\s{2,}/)[0]); if (!nd) return; v = nd; }   // v30.216
     else if (k === 'coreType') { if (/asym/i.test(v)) v = 'Asymmetrical'; else if (/sym/i.test(v)) v = 'Symmetrical'; else return; }
@@ -4399,7 +4406,7 @@ function parseSpecText(text, weight, name) {
         setN(k, rest, l);
         var dm = /\b(?:total\s*)?diff(?:erential)?\.?\s*[:|]?\s*\(?\s*([0-2]?\.\d{2,3})/i.exec(rest); if (k === 'rg' && dm) setN('diff', dm[1], l);
         var im = /\b(?:int(?:ermediate)?\.?\s*diff\.?|psa|mass\s*bias|mb)\s*[:|]?\s*\(?\s*([0-2]?\.\d{2,3})/i.exec(rest); if (k !== 'intDiff' && im) setN('intDiff', im[1], l);
-      } else setF(k, rest);
+      } else setF(k, rest, m[0]);
       matched = true; break;
     }
     /* v30.178 bowwwl headings: "HK22C2 - Alpha Premier Solid Coverstock", "Rampart Core" */
@@ -4426,8 +4433,8 @@ function parseSpecText(text, weight, name) {
   if (out.url) { var hst = ''; try { hst = new URL(out.url).host.replace(/^www\./, ''); } catch (e) {} out.host = hst;
     out.source = /bowwwl\.com$/.test(hst) ? 'bowwwl' : /storm|rotogrip|900global|brunswick|dv8|radical|hammer|ebonite|track|columbia300|motiv/.test(hst) ? 'maker' : 'other'; }
   else if (out.pdf) {   // only a saved page: a pasted bowwwl excerpt may name a maker
-    var rt = /\u00a9\s*bowlersmart|bowlersmart\.com|\bbowlingball\.com\b|\bbowling\.com\b/i.exec(text);   // v30.204: retailers are "other", named
-    if (rt && !/bowwwl/i.test(text)) { out.source = 'other'; out.host = /bowlersmart/i.test(rt[0]) ? 'bowlersmart.com' : /bowlingball/i.test(rt[0]) ? 'bowlingball.com' : 'bowling.com'; }
+    var rt = /\u00a9\s*bowlersmart|bowlersmart\.com|\bbowlingball\.com\b|\bbowling\.com\b|perfect scale hook rating|shop smart price/i.exec(text);   // v30.218: bowlingball.com's own words   // v30.204: retailers are "other", named
+    if (rt && !/bowwwl/i.test(text)) { out.source = 'other'; out.host = /bowlersmart/i.test(rt[0]) ? 'bowlersmart.com' : /bowlingball|perfect scale|shop smart/i.test(rt[0]) ? 'bowlingball.com' : 'bowling.com'; }
     else { var mk = spMakerOf(text); if (mk) { out.source = 'maker'; out.host = mk; } }
   }
   /* v30.206 WB-4: what the page says about the ball itself: discontinued, or a region release */
@@ -4445,6 +4452,7 @@ function parseSpecText(text, weight, name) {
       break;
     }
   });   // only a saved page: a pasted bowwwl excerpt may name a maker   // v30.201: a saved maker page (PDF) has no address; its footer names the maker
+  delete out._finWeak;
   return out;
 }
 /* Clipboard read with a manual fallback box. done(text) */
@@ -4631,11 +4639,13 @@ function pdfItemsToLines(items) {
     .sort(function (a, b) { return Math.abs(b.y - a.y) > 2.5 ? b.y - a.y : a.x - b.x; });
   var lines = [], cur = null;
   it.forEach(function (x) {
+    /* v30.218: some saved pages draw every word twice on top of itself (bowlingball.com: "CoverstockCoverstock") */
+    if (cur && Math.abs(cur.y - x.y) <= 2.5 && cur.lastS === x.s && Math.abs(cur.lastX - x.x) <= 2) return;
     if (cur && Math.abs(cur.y - x.y) <= 2.5) {
       var gap = x.x - cur.end;
       cur.t += (gap > 24 ? ' | ' : gap > 1 ? ' ' : '') + x.s;
-      cur.end = x.x + x.w;
-    } else { if (cur) lines.push(cur.t); cur = { y: x.y, t: x.s, end: x.x + x.w }; }
+      cur.end = x.x + x.w; cur.lastS = x.s; cur.lastX = x.x;
+    } else { if (cur) lines.push(cur.t); cur = { y: x.y, t: x.s, end: x.x + x.w, lastS: x.s, lastX: x.x }; }
   });
   if (cur) lines.push(cur.t);
   return lines.map(function (l) { return l.replace(/\s+/g, ' ').trim(); }).filter(Boolean);
