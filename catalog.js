@@ -36,7 +36,7 @@
 'use strict';
 
 /* v30.169: shown in the app header when it differs from the build's EXPECTED_CATALOG_JS */
-var CAT_VERSION  = 'v30.215';
+var CAT_VERSION  = 'v30.216';
 var CAT_BASE     = 'https://raw.githubusercontent.com/jmarsh85/bowlingdb-mobile/dist/';
 var CAT_DB       = 'BowlingDB_Catalog';
 var CAT_DB_VER   = 1;
@@ -3214,16 +3214,33 @@ function apApplyOverride(r, o) {
    (e.g. Track 300T 15 lb 0.090). Same value as the bridge GATES. */
 var DIFF_MAX = 0.060;
 /* v30.205 Pure: a release date as YYYY-MM-DD or YYYY-MM ("06-05-2024", "6/5/2024", "06-2021" were saved as typed) */
-function normReleased(v) {
-  var t = String(v || '').trim(), m;
-  if ((m = /^(\d{4})-(\d{1,2})(?:-(\d{1,2}))?$/.exec(t))) return m[1] + '-' + ('0' + m[2]).slice(-2) + (m[3] ? '-' + ('0' + m[3]).slice(-2) : '');
-  if ((m = /^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})$/.exec(t))) return m[3] + '-' + ('0' + m[1]).slice(-2) + '-' + ('0' + m[2]).slice(-2);
-  if ((m = /^(\d{1,2})[\/\-.](\d{4})$/.exec(t))) return m[2] + '-' + ('0' + m[1]).slice(-2);
-  return t;
+function normReleased(v) { var t = String(v || '').trim(); return normDate(t) || t; }
+/* v30.216 Pure: any way a page or a person writes a release date -> 'YYYY-MM-DD', 'YYYY-MM' or 'YYYY'
+   (null if it isn't one). "7/23/2025", "07-23-25", "2025/07/23", "July 23, 2025", "Sept. 3rd 2024",
+   "23 July 2025", "Sep 2024", "Jul-2025", "07/2025", "2025-7", "Available: 7/23/2025", "2024".
+   Numbers are month first (US sites) unless the first can't be a month ("23/7/2025"). */
+var MONTH_ALL = { jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6, jul: 7, aug: 8, sep: 9, sept: 9, oct: 10, nov: 11, dec: 12 };
+function normDate(v) {
+  var t = String(v == null ? '' : v).replace(/[\u2013\u2014]/g, '-').replace(/\s+/g, ' ').trim()
+    .replace(/^(?:(?:release(?:d)?|launch(?:ed)?|available|availability|on sale|in stores|ship(?:s|ping)?)(?:\s*date)?(?:\s*(?:on|from))?\s*[:|\-]?\s*)/i, '')
+    .replace(/(\d)(?:st|nd|rd|th)\b/gi, '$1').replace(/[.,]\s*$/, '').trim();
+  if (!t) return null;
+  var p2 = function (n) { return ('0' + n).slice(-2); }, yr = function (y) { y = +y; return y < 100 ? (y <= (new Date().getFullYear() % 100) + 1 ? 2000 + y : 1900 + y) : y; };
+  var ok = function (y, mo, d) { y = yr(y); mo = +mo; if (!(y >= 1950 && y <= 2100 && mo >= 1 && mo <= 12)) return null; if (d == null) return y + '-' + p2(mo); d = +d; return d >= 1 && d <= 31 ? y + '-' + p2(mo) + '-' + p2(d) : null; };
+  var mon = function (w) { w = String(w || '').toLowerCase().replace(/\.$/, ''); if (w.length < 3) return null; for (var k in MONTH_ALL) if (w.indexOf(k) === 0 || (k.indexOf(w) === 0 && w.length >= 3)) return MONTH_ALL[k]; return null; };
+  var m;
+  if ((m = /^(\d{4})[\/\-.](\d{1,2})(?:[\/\-.](\d{1,2}))?$/.exec(t))) return ok(m[1], m[2], m[3]);
+  if ((m = /^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2}|\d{4})$/.exec(t))) return +m[1] > 12 && +m[2] <= 12 ? ok(m[3], m[2], m[1]) : ok(m[3], m[1], m[2]);
+  if ((m = /^(\d{1,2})[\/\-.](\d{4})$/.exec(t))) return ok(m[2], m[1]);
+  if ((m = /^([A-Za-z]{3,9})\.?[\s\-]+(\d{1,2})(?:,\s*|\s+)(\d{4})$/.exec(t)) && mon(m[1])) return ok(m[3], mon(m[1]), m[2]);
+  if ((m = /^(\d{1,2})\s+([A-Za-z]{3,9})\.?,?\s+(\d{4})$/.exec(t)) && mon(m[2])) return ok(m[3], mon(m[2]), m[1]);
+  if ((m = /^([A-Za-z]{3,9})\.?[\s\-,]+'?(\d{4}|\d{2})$/.exec(t)) && mon(m[1])) return ok(m[2], mon(m[1]));
+  if ((m = /^(\d{4})$/.exec(t)) && +m[1] >= 1950 && +m[1] <= 2100) return m[1];
+  return null;
 }
 function apOverrideFrom(form) {
   var o = {}, err = [];
-  ['coverName', 'coverType', 'finish', 'core', 'coreType', 'released'].forEach(function (k) { var v = String(form[k] || '').trim(); if (k === 'released') v = normReleased(v); if (v) o[k] = v; });
+  ['coverName', 'coverType', 'finish', 'core', 'coreType', 'released'].forEach(function (k) { var v = String(form[k] || '').trim(); if (k === 'released' && v) { var nd = normDate(v); if (!nd) err.push('Release date \u201c' + v + '\u201d: use e.g. 7/23/2025, July 2025 or 2025-07-23'); v = nd || ''; } if (v) o[k] = v; });
   var w = {};
   Object.keys(form.weights || {}).forEach(function (lb) {
     var x = form.weights[lb] || {}, y = {};
@@ -4221,7 +4238,7 @@ var SP_LABELS = [
   ['finish', /^(?:box\s*finish|factory\s*finish|out[\s-]*of[\s-]*(?:the[\s-]*)?box\s*finish|finish)/i],
   ['coreType', /^(?:core\s*type|core\s*symmetry|symmetry)/i],
   ['core', /^(?:core\s*name|weight\s*block|core)/i],
-  ['released', /^(?:release\s*date|released|launch\s*date)/i]];
+  ['released', /^(?:release\s*date|released|launch\s*date|available(?:\s*(?:date|on|from))?|availability(?:\s*date)?|on\s*sale(?:\s*date)?|in\s*stores|ship\s*date)/i]];   // v30.216: MOTIV "AVAILABLE 7/23/2025"
 var SP_NUM = /(?:^|[^\d.])([0-2]?\.\d{2,3})(?!\d)/;
 /* v30.201 maker pages: a label followed by a rating ("CORE (2)", Hammer) or a heading word ("CORE NUMBERS", Radical) is not a value */
 var SP_NOT_VALUE = /^(?:\(?\s*\d+(?:\.\d+)?\s*\)?|numbers|specs?|specifications|details|technology|info(?:rmation)?|stock|rating|shape|name|type|bowling ball)$/i;   // v30.204: + BowlersMart's split labels
@@ -4344,7 +4361,7 @@ function parseSpecText(text, weight, name) {
   var setF = function (k, v) {
     if (k in out.fields || v == null) return;
     v = String(v).replace(/[\u2122\u00ae]/g, '').replace(/^[:|#\-\s]+/, '').replace(/\s*\|\s*$/, '').trim();
-    if (k === 'released') { var r = tagValueFor('ape-released', v.split(/\s+\|\s+|\s{2,}/)[0]); if (!r.v) return; v = r.v; }
+    if (k === 'released') { var nd = normDate(v.split(/\s+\|\s+|\s{2,}/)[0]); if (!nd) return; v = nd; }   // v30.216
     else if (k === 'coreType') { if (/asym/i.test(v)) v = 'Asymmetrical'; else if (/sym/i.test(v)) v = 'Symmetrical'; else return; }
     else { v = v.split(/\s+\|\s+/)[0]; if (SP_NOT_VALUE.test(v) || !plausibleText(k === 'core' ? 'core' : k, v) || spLowerProse(v)) return; }
     out.fields[k] = v; out.found.push(k);
@@ -4401,6 +4418,9 @@ function parseSpecText(text, weight, name) {
       if (wr[4] != null && s.IntDiff == null && Number(wr[4]) <= 0.04) s.IntDiff = Number(wr[4]);
       ['rg', 'diff'].forEach(function (k) { if (out.found.indexOf(k) < 0) out.found.push(k); }); }
   });
+  /* v30.216: a cover name that ends in its type ("Vitality Pearl Reactive", MOTIV) gives the cover type */
+  var ctm = !out.fields.coverType && out.fields.coverName && /\b(solid|pearl|hybrid)\s+(reactive|urethane)$/i.exec(out.fields.coverName);
+  if (ctm) { out.fields.coverType = ctm[1].charAt(0).toUpperCase() + ctm[1].slice(1).toLowerCase() + ' ' + ctm[2].charAt(0).toUpperCase() + ctm[2].slice(1).toLowerCase(); out.found.push('coverType'); }
   if (!out.fields.coreType && out.fields.core && /asym|sym/i.test(out.fields.core)) out.fields.coreType = /asym/i.test(out.fields.core) ? 'Asymmetrical' : 'Symmetrical';
   if (name) { var f = foldName(name), all = foldName(text); out.nameSeen = !!f && all.indexOf(f) >= 0; }
   if (out.url) { var hst = ''; try { hst = new URL(out.url).host.replace(/^www\./, ''); } catch (e) {} out.host = hst;
@@ -5482,13 +5502,14 @@ function tagValueFor(fieldId, v) {
     return { err: 'Core type takes Symmetrical or Asymmetrical' };
   }
   if (fieldId === 'ape-released') {
+    var nd = normDate(s); if (nd) return { v: nd };   // v30.216: one rule for every date format
     var m = /^(\d{4})-(\d{2})(?:-(\d{2}))?/.exec(s); if (m) return { v: m[0] };
     m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(s); if (m) return { v: m[3] + '-' + ('0' + m[1]).slice(-2) + '-' + ('0' + m[2]).slice(-2) };
     m = /^([A-Za-z]+)\.?\s+(?:\d{1,2},?\s+)?(\d{4})$/.exec(s);
     var mn = m && (MONTH_N[m[1].toLowerCase()] || MONTH_N[Object.keys(MONTH_N).filter(function (k) { return m[1].length >= 3 && k.indexOf(m[1].toLowerCase()) === 0; })[0]]);
     if (mn) return { v: m[2] + '-' + ('0' + mn).slice(-2) };
     m = /^(\d{4})$/.exec(s); if (m) return { v: m[1] };
-    return { err: 'Release date needs a date, e.g. October 2022' };
+    return { err: 'Release date needs a date, e.g. 7/23/2025, July 2025 or 2025-07-23' };
   }
   if (/^ape-(coverName|coverType|finish|core|note)$/.test(fieldId)) return { v: s.replace(/[\u2122\u00ae]/g, '').trim() };
   return { err: 'That field does not take tapped values' };
@@ -5584,7 +5605,7 @@ function apEditOpen(ctx) {
     lab('Factory finish', 'finish') + inpP('ape-finish', sp.finish, 'e.g. 2000 Abralon') +
     lab('Core', 'core') + inpP('ape-core', sp.core) +
     lab('Core type', 'coreType') + '<div class="ape-f"><select id="ape-coreType" class="bdet-field-input" style="width:100%;font-size:15px"><option value=""' + (!sp.coreType ? ' selected' : '') + '>—</option><option' + (/^sym/i.test(sp.coreType || '') ? ' selected' : '') + '>Symmetrical</option><option' + (/asym/i.test(sp.coreType || '') ? ' selected' : '') + '>Asymmetrical</option></select></div>' +
-    lab('Release date', 'released') + inp('ape-released', sp.released ? String(sp.released).slice(0, 10) : '', 'YYYY-MM-DD') +
+    lab('Release date', 'released') + inp('ape-released', sp.released ? String(sp.released).slice(0, 10) : '', 'any format: 7/23/2025, July 2025') +
     lab('RG / Diff / Int Diff by weight') +
     '<table style="width:100%;border-collapse:collapse"><tr style="font-size:11px;color:var(--t3)"><td></td><td>RG</td><td>Diff</td><td>Int</td></tr>' + ws.map(wrow).join('') + '</table>' +
     '<button style="' + BTN_G + 'width:100%;padding:10px;font-size:13px;margin-top:6px" onclick="catPasteWeights()">Paste weights</button>' +
@@ -5985,7 +6006,7 @@ root._catAPI = { catLoad: catLoad, byIdIn: byIdIn, cleanName: cleanName, esc: es
   parseSpecText: parseSpecText, spReadClipboard: spReadClipboard, spPdfFileText: spPdfFileText, bowwwlLinks: bowwwlLinks, appBalls: appBalls,
   apToken: apToken, apReadOverrides: apReadOverrides, apReadStaged: apReadStaged, srvStagedRow: srvStagedRow, catDetailRaw: catDetailRaw, detAsStaged: detAsStaged,
   apApplyOverride: apApplyOverride, catCorrectFor: catCorrectFor, catCorrectWithParsed: catCorrectWithParsed, catSaveCorrection: catSaveCorrection,
-  brandSlug: brandSlug, catAddDetail: catAddDetail, normReleased: normReleased, catMineAsRead: catMineAsRead,
+  brandSlug: brandSlug, catAddDetail: catAddDetail, normReleased: normReleased, normDate: normDate, catMineAsRead: catMineAsRead,
   catRestoreCorrection: catRestoreCorrection, catUpdateLine: catUpdateLine,
   apFetchIssue: apFetchIssue, apParseIssue: apParseIssue, apQueue: apQueue, apSetQueue: apSetQueue,
   catPastePicture: catPastePicture, catSaveCover: catSaveCover, catSaveCore: catSaveCore, catCoreShareOffer: catCoreShareOffer, coreShareCandidates: coreShareCandidates, taSuggest: taSuggest,
