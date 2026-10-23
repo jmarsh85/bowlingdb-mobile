@@ -550,5 +550,46 @@
   "source": "maker",
   "note": "from ebonite.com",
   "at": "2026-10-23"
+ },
+ "hammer-raw-hammer-black-blue-orange": {
+  "coverName": "Juiced Hybrid",
+  "coverType": "Hybrid Reactive",
+  "finish": "500, 1000, 2000 Siaair / Factory Compound",
+  "core": "Raw Hammer",
+  "coreType": "Symmetrical",
+  "released": "2024-05-16",
+  "weights": {
+   "10": {
+    "RG": 2.8,
+    "Diff": 0.002
+   },
+   "11": {
+    "RG": 2.769,
+    "Diff": 0.002
+   },
+   "12": {
+    "RG": 2.608,
+    "Diff": 0.04
+   },
+   "13": {
+    "RG": 2.585,
+    "Diff": 0.04
+   },
+   "14": {
+    "RG": 2.554,
+    "Diff": 0.038
+   },
+   "15": {
+    "RG": 2.537,
+    "Diff": 0.038
+   },
+   "16": {
+    "RG": 2.543,
+    "Diff": 0.033
+   }
+  },
+  "source": "maker",
+  "note": "from hammerbowling.com",
+  "at": "2026-10-23"
  }
 }
