@@ -36,7 +36,7 @@
 'use strict';
 
 /* v30.169: shown in the app header when it differs from the build's EXPECTED_CATALOG_JS */
-var CAT_VERSION  = 'v30.216';
+var CAT_VERSION  = 'v30.217';
 var CAT_BASE     = 'https://raw.githubusercontent.com/jmarsh85/bowlingdb-mobile/dist/';
 var CAT_DB       = 'BowlingDB_Catalog';
 var CAT_DB_VER   = 1;
@@ -2520,14 +2520,14 @@ function catCoreShareOffer(brand, coreName, f) {
   if (typeof document === 'undefined' || !coreName) return Promise.resolve(null);
   return vocabLoad().then(function (v) {
     var c = coreShareCandidates(v && v.core, brand, coreName, function (k) { return !!(_catImgObj['core:' + k] || coreLinks()[k]); });
-    if (!c.others.length) { if (root.toast) root.toast('Core picture saved' + (c.same > 1 ? ': shows on ' + c.same + ' balls with the ' + coreName + ' core' : '')); return c; }
+    if (!c.others.length) { if (root.toast) root.toast('Core picture saved: shows on every ' + brand + ' ball with the ' + coreName + ' core'); return c; }
     _cs = { f: f, list: c.others, on: {} };
     var ov = overlay('cs-ov', 955);
     ov.innerHTML = '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 8px"><button style="' + BACK + '" onclick="catCoreShareClose()">\u2039</button>' +
-      '<div style="flex:1"><div style="font-size:17px;font-weight:800;color:var(--t1)">Same core?</div><div style="font-size:11px;color:var(--t3)">' + esc(coreName) + ' \u00b7 ' + esc(brand) + (c.same ? ' \u00b7 already shows on ' + c.same + ' ball' + (c.same === 1 ? '' : 's') : '') + '</div></div></div>' +
-      '<div style="flex:1;overflow-y:auto;padding:0 16px 12px"><div style="font-size:12px;color:var(--t2);line-height:1.5;margin-bottom:6px">These cores have no picture and a name close to this one. Tick the ones that are the same core to give them this picture.</div>' +
+      '<div style="flex:1"><div style="font-size:17px;font-weight:800;color:var(--t1)">Same core?</div><div style="font-size:11px;color:var(--t3)">' + esc(coreName) + ' \u00b7 ' + esc(brand) + '' + '</div></div></div>' +
+      '<div style="flex:1;overflow-y:auto;padding:0 16px 12px"><div style="font-size:12px;color:var(--t2);line-height:1.5;margin-bottom:6px">These cores have no picture and a name close to this one. Only cores with no picture are listed, and only they get it: a core that has one keeps it, and so do your own balls. Tick the ones that are the same core to give them this picture.</div>' +
       c.others.map(function (o, i) { return '<label style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border1)"><input type="checkbox" onchange="catCoreShareTick(' + i + ',this.checked)" style="width:20px;height:20px">' +
-        '<div style="flex:1;min-width:0"><div style="font-size:14px;color:var(--t1)">' + esc(o.v) + ' <span style="color:var(--t3)">\u00b7 ' + esc(o.brand) + '</span></div><div style="font-size:11px;color:var(--t3)">' + o.n + ' ball' + (o.n === 1 ? '' : 's') + ' \u00b7 ' + esc(o.why) + '</div></div></label>'; }).join('') +
+        '<div style="flex:1;min-width:0"><div style="font-size:14px;color:var(--t1)">' + esc(o.v) + ' <span style="color:var(--t3)">\u00b7 ' + esc(o.brand) + '</span></div><div style="font-size:11px;color:var(--t3)">' + esc(o.why) + '</div></div></label>'; }).join('') +
       '</div><div style="display:flex;gap:8px;padding:10px 16px;border-top:1px solid var(--border1)"><button style="' + BTN_G + 'flex:1;padding:11px" onclick="catCoreShareClose()">None of these</button><button style="' + BTN_P + 'flex:1;padding:11px" onclick="catCoreShareGo()">Use for ticked</button></div>';
     document.body.appendChild(ov);
     return c;
@@ -2536,7 +2536,7 @@ function catCoreShareOffer(brand, coreName, f) {
 function catCoreShareTick(i, on) { if (_cs) { if (on) _cs.on[i] = 1; else delete _cs.on[i]; } }
 function catCoreShareGo() {
   if (!_cs) return Promise.resolve(0);
-  var pick = Object.keys(_cs.on).map(function (i) { return _cs.list[+i]; }), f = _cs.f;
+  var pick = Object.keys(_cs.on).map(function (i) { return _cs.list[+i]; }).filter(function (o) { return !(_catImgObj['core:' + o.key] || coreLinks()[o.key]); }), f = _cs.f;   // v30.217: missing only
   return pick.reduce(function (p, o) { return p.then(function () { return catSaveCore(o.brand, o.v, f); }); }, Promise.resolve()).then(function () {
     catCoreShareClose(); if (root.toast) root.toast(pick.length ? 'Core picture also on ' + pick.length + ' more core' + (pick.length === 1 ? '' : 's') : 'Nothing ticked');
     if (typeof root.wbRepaint === 'function') root.wbRepaint(); return pick.length;
