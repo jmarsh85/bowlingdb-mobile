@@ -36,7 +36,7 @@
 'use strict';
 
 /* v30.169: shown in the app header when it differs from the build's EXPECTED_CATALOG_JS */
-var CAT_VERSION  = 'v30.219';
+var CAT_VERSION  = 'v30.220';
 var CAT_BASE     = 'https://raw.githubusercontent.com/jmarsh85/bowlingdb-mobile/dist/';
 var CAT_DB       = 'BowlingDB_Catalog';
 var CAT_DB_VER   = 1;
@@ -4440,6 +4440,9 @@ function parseSpecText(text, weight, name) {
   /* v30.206 WB-4: what the page says about the ball itself: discontinued, or a region release */
   if (/\b(?:retired|discontinued|no longer (?:available|made|produced))\b|bowling ball archives/i.test(text)) out.retired = true;
   var rgHead = regionFromText(lines.slice(0, 40).join(' ')); if (rgHead) out.region = rgHead;
+  /* v30.220: bowwwl's overseas pages say where from ("Translated from Korean") */
+  var tf = /translated from (korean|japanese|chinese|thai|german|french|spanish|italian|swedish)\b/i.exec(lines.slice(0, 60).join(' '));
+  if (tf && (!out.region || /^(?:overseas|international)$/i.test(out.region))) out.region = { korean: 'Korea', japanese: 'Japan', chinese: 'Asia', thai: 'Asia' }[tf[1].toLowerCase()] || 'Europe';
   /* v30.203 WB-2: a value the page wrapped onto the next line ("500, 1000, 1500 Siaair / Factory" + "Compound").
      Only when it ends on a joiner and the next line is one or two plain words that are not a label. */
   ['finish', 'coverName', 'core'].forEach(function (k) {
