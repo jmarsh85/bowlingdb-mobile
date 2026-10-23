@@ -59,7 +59,7 @@ function normLines(lines) {
 }
 function parseLines(lines) {
   lines = normLines(lines);
-  const out = { name: null, released: null, international: false, discontinued: false, finish: null, coverName: null, coverType: null, core: null, coreType: null, coreImg: null, weights: {} };
+  const out = { name: null, released: null, international: false, country: null, discontinued: false, finish: null, coverName: null, coverType: null, core: null, coreType: null, coreImg: null, weights: {} };
   const L = lines.map(s => s.replace(/^#+\s*/, '').trim());
   const head = lines.map(s => (/^(#+)\s/.exec(s) || [])[1] || '');
   let w = null, sect = null;
@@ -68,6 +68,8 @@ function parseLines(lines) {
     const s = L[i], low = s.toLowerCase();
     if (head[i] === '#' && !out.name) { out.name = s; continue; }
     if (/^overseas\s*\/?\s*international release$/i.test(s) || /^international release$/i.test(s)) out.international = true;
+    const tf = /^translated from (korean|japanese|chinese|thai|german|french|spanish|italian|swedish)\b/i.exec(s);   // v30.220: where it was released
+    if (tf && !out.country) out.country = { korean: 'Korea', japanese: 'Japan', chinese: 'Asia', thai: 'Asia' }[tf[1].toLowerCase()] || 'Europe';
     if (/^discontinued$/i.test(s) || /^discontinued\b.*\bball\b/i.test(s)) out.discontinued = true;
     if (low === 'release date') { out.released = monthYear(after(i)) || out.released; continue; }
     if (low === 'factory finish' || low === 'box finish') { if (after(i)) out.finish = after(i); continue; }
