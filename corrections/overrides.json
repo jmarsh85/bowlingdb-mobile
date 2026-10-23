@@ -649,5 +649,21 @@
   "source": "other",
   "at": "2026-10-23",
   "note": "from bowlingball.com"
+ },
+ "motiv-frenzy-red-dark-red-black": {
+  "coverName": "Vitality Pearl Reactive",
+  "coverType": "Pearl Reactive",
+  "finish": "5500 Grit LSP",
+  "core": "Excel Symmetrical",
+  "coreType": "Symmetrical",
+  "weights": {
+   "15": {
+    "RG": 2.55,
+    "Diff": 0.03
+   }
+  },
+  "source": "maker",
+  "note": "from motivbowling.com",
+  "at": "2026-10-23"
  }
 }
