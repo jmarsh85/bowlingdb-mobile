@@ -10,7 +10,7 @@
    Uses catalog.js through root._catAPI only. Design: DESIGN_add_ball_flow sections 50-55. */
 (function (root) {
   'use strict';
-  var WB_VERSION = 'v30.218';
+  var WB_VERSION = 'v30.219';
   var A = root._catAPI;
   if (!A) { if (root.toast) root.toast('Workbench needs catalog.js ' + WB_VERSION); return; }
   var esc = A.esc, jsq = A.jsq, norm = A.norm, cleanName = A.cleanName;
@@ -610,7 +610,7 @@
       else { var m = rvMerged(e), k = m && rvCoreKey(e, m.sp); if (!k) { if (root.toast) root.toast('Fill in the core name first'); return; } f.brand = e.m; f.name = m.sp.core; _rv.core[k] = f; }
       rvPaint(); paint(); });
   }
-  function wbRvPhoto(id, slot) {
+  function wbRvPhoto(id, slot) { wtKeep(id);
     var inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'image/*'; inp.style.display = 'none';
     inp.addEventListener('change', function () { var fl = inp.files && inp.files[0]; if (inp.parentNode) inp.parentNode.removeChild(inp); if (!fl) return;
       A.imgShrink(fl).then(function (bl) { rvSetPic(id, slot, { blob: bl, url: URL.createObjectURL(bl), how: 'photo' }); }); });
@@ -619,12 +619,12 @@
   function wtKeep(id) { if (_wt.open && !document.getElementById('rv-ov')) (_wt.keep = _wt.keep || {})[_wt.open + '|' + id] = 1; }
   function wbRvPasteSpecs(id) { wtKeep(id);
     A.catLoad().then(function (rows) { var e = A.byIdIn(rows, id); if (!e) return;
-      A.spReadClipboard(function (text) { var r = A.parseSpecText(text, 15, cleanName(e.n)); if (!r || (!Object.keys(r.fields || {}).length && !Object.keys(r.weights || {}).length)) { if (root.toast) root.toast('No specs found in what was pasted'); return; } _wb.found[id] = r; rvPaint(); paint(); if (!document.getElementById('rv-ov') && root.toast) root.toast('Read: ' + foundLine(r)); }); });
+      A.spReadClipboard(function (text) { var r = A.parseSpecText(text, 15, cleanName(e.n)); if (!r || (!Object.keys(r.fields || {}).length && !Object.keys(r.weights || {}).length)) { if (root.toast) root.toast('No specs found in what was pasted'); return; } _wb.found[id] = r; rvPaint(); paint(); wtCompare(id); }); });   // v30.219: show what changes
   }
   function wbRvPdf(id) { wtKeep(id);
     A.catLoad().then(function (rows) { var e = A.byIdIn(rows, id); if (!e) return;
       pickPdfs(false, function (fs) { if (root.toast) root.toast('Reading the PDF\u2026');
-        A.spPdfFileText(fs[0]).then(function (t) { if (!t) { if (root.toast) root.toast('No text in that PDF'); return; } _wb.found[id] = A.parseSpecText(t, 15, cleanName(e.n)); rvPaint(); paint(); }, function () { if (root.toast) root.toast('Could not read the PDF'); }); }); });
+        A.spPdfFileText(fs[0]).then(function (t) { if (!t) { if (root.toast) root.toast('No text in that PDF'); return; } _wb.found[id] = A.parseSpecText(t, 15, cleanName(e.n)); rvPaint(); paint(); wtCompare(id); }, function () { if (root.toast) root.toast('Could not read the PDF'); }); }); });
   }
   function wbRvEdit(id) {
     if (_wb.found[id]) A.catCorrectWithParsed(id, _wb.found[id], function () { delete _wb.found[id]; delete _wb.det[id]; rvPaint(); });
@@ -764,19 +764,24 @@
     Object.keys(fams).sort().forEach(function (g) { var inF = Object.keys(brands).filter(function (b) { return groupOf(b) === g; }); if (inF.length > 1) opts.push(['g:' + g, g + ' family (' + inF.length + ' brands)']); });
     Object.keys(brands).sort().forEach(function (b) { opts.push(['b:' + b, b]); });
     var row = function (e) {
-      var m = rvMerged(e) || { miss: [], sp: {} }, sc = specConf(e), pc = picConf(e), k = A.triageOf(e), idq = jsq(e.i), bw = A.bowwwlLinks(e.m, cleanName(e.n));
-      return '<div style="padding:9px 2px;border-bottom:1px solid var(--border1)"><div onclick="wtCard(\'' + jsq(_wt.open) + '\',\'' + idq + '\')" style="display:flex;gap:10px;align-items:center;cursor:pointer">' + A.thumbHTML(e, 40) +
+      var m = rvMerged(e) || { miss: [], sp: {} }, sc = specConf(e), pc = picConf(e), k = A.triageOf(e), idq = jsq(e.i), bw = A.bowwwlLinks(e.m, cleanName(e.n)), ck = rvCoreKey(e, m.sp);
+      var pill = function (t, js) { return '<button style="' + A.BTN_G + 'padding:5px 9px;font-size:12px" onclick="' + js + '">' + t + '</button>'; };
+      var rowLine = function (lab, inner) { return '<div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-top:6px"><span style="width:38px;font-size:11px;font-weight:700;color:var(--t3)">' + lab + '</span>' + inner + '</div>'; };
+      var picSt = function (found, saved, miss, clr) { return found ? '<span style="font-size:12px;color:#7aa7ff">found</span> <span onclick="' + clr + '" style="color:var(--red);font-size:12px;cursor:pointer">\u2715</span>' : saved ? '<span style="font-size:12px;color:var(--teal)">\u2713 saved</span>' : miss ? '<span style="font-size:11px;color:var(--gold)">not on bowwwl</span>' : ''; };
+      var cpic = rvCorePic(e, m.sp);
+      var th = function (u) { return '<img src="' + esc(u) + '" referrerpolicy="no-referrer" style="width:40px;height:40px;border-radius:50%;object-fit:contain;background:#fff;flex-shrink:0">'; };
+      return '<div style="padding:9px 2px;border-bottom:1px solid var(--border1)"><div onclick="wtCard(\'' + jsq(_wt.open) + '\',\'' + idq + '\')" style="display:flex;gap:10px;align-items:center;cursor:pointer">' + (_rv.pic[e.i] ? th(_rv.pic[e.i].url) : A.thumbHTML(e, 40)) + (cpic ? th(cpic) : '') +
         '<div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:600;color:var(--t1)">' + esc(cleanName(e.n)) + (k === 'upcoming' ? '<span style="' + A.CHIP_G + '">NOT OUT YET</span>' : '') + '</div>' +
         '<div style="font-size:12px;color:var(--t2)">' + esc(e.m) + (e.y ? ' \u00b7 ' + esc(e.y) : '') + '</div>' +
         '<div style="margin-top:3px">' + confChip('specs', sc) + confChip('picture', pc) + '</div></div></div>' +
         (m.miss.length ? '<div style="font-size:12px;color:var(--gold);margin-top:4px">needs ' + esc(m.miss.join(', ')) + (rvPicOf(e) ? '' : ', a cover picture') + '</div>' : !rvPicOf(e) ? '<div style="font-size:12px;color:var(--gold);margin-top:4px">needs a cover picture</div>' : '') +
         (_wb.found[e.i] ? '<div style="font-size:12px;color:#7aa7ff;margin-top:4px">read, not saved: ' + esc(foundLine(_wb.found[e.i])) + '</div>' : '') +
-        '<div style="display:flex;align-items:center;gap:6px;margin-top:6px;flex-wrap:wrap">' +
-          '<button style="' + A.BTN_G + 'padding:5px 9px;font-size:12px" onclick="wbRvPasteSpecs(\'' + idq + '\')">Paste specs</button>' +
-          '<button style="' + A.BTN_G + 'padding:5px 9px;font-size:12px" onclick="wbRvPdf(\'' + idq + '\')">PDF</button>' +
-          '<button style="' + A.BTN_G + 'padding:5px 9px;font-size:12px" onclick="wbRvPastePic(\'' + idq + '\',\'cover\')">Paste picture</button>' +
-          '<button style="' + A.BTN_G + 'padding:5px 9px;font-size:12px" onclick="wtCopyOpen(\'' + idq + '\')">Copy specs</button>' +
-          (_wb.found[e.i] || _rv.pic[e.i] ? '<button style="' + A.BTN_P + 'padding:5px 9px;font-size:12px" onclick="wtRowAccept(\'' + idq + '\')">Accept</button>' : '') + '</div>' +
+        rowLine('Specs', pill('Paste', "wbRvPasteSpecs('" + idq + "')") + pill('PDF', "wbRvPdf('" + idq + "')") + pill('Copy', "wtCopyOpen('" + idq + "')") +
+          (_wb.found[e.i] ? pill('Changes', "wtCompare('" + idq + "')") : '')) +
+        rowLine('Ball', picSt(_rv.pic[e.i], A.catImageStored(e.i), missFresh(_rv.miss[e.i]), "wtPicClear('" + idq + "','cover')") + pill('bowwwl', "wtBwPic('" + idq + "')") + pill('Paste', "wbRvPastePic('" + idq + "','cover')") + pill('Photo', "wbRvPhoto('" + idq + "','cover')")) +
+        rowLine('Core', ck ? picSt(_rv.core[ck], A.catCoreImageFor(e.m, m.sp.core), missFresh(_rv.coreMiss[ck]), "wtPicClear('" + idq + "','core')") + pill('bowwwl', "wtBwPic('" + idq + "')") + pill('Paste', "wbRvPastePic('" + idq + "','core')") + pill('Photo', "wbRvPhoto('" + idq + "','core')") :
+          '<span style="font-size:11px;color:var(--t3)">core name unknown: add it under Specs first</span>') +
+        (_wb.found[e.i] || _rv.pic[e.i] || (ck && _rv.core[ck]) ? '<div style="margin-top:6px"><button style="' + A.BTN_P + 'padding:6px 12px;font-size:12px" onclick="wtRowAccept(\'' + idq + '\')">Accept what\u2019s found</button></div>' : '') +
         '<div style="display:flex;align-items:center;gap:6px;margin-top:6px;flex-wrap:wrap"><button style="' + A.BTN_G + 'padding:5px 9px;font-size:12px" onclick="wtCard(\'' + jsq(_wt.open) + '\',\'' + idq + '\')">Open</button>' +
         '<button style="' + A.BTN_G + 'padding:5px 9px;font-size:12px" onclick="wtMarkAsk(null,\'' + idq + '\')">Mark\u2026</button>' +
         '<span style="font-size:11px;color:var(--t3)">' + a2(webSearch(e), 'search \u2197') + ' \u00b7 ' + a2(bw.page, 'bowwwl \u2197') + ' \u00b7 ' + a2(bw.maker || bw.search, 'maker \u2197') + '</span></div></div>';
@@ -971,8 +976,7 @@
         region: pg.international ? 'International' : null, retired: !!pg.discontinued, warn: seen ? null : 'The page is \u201c' + (pg.name || '?') + '\u201d: check it is this ball.' };
       if (pg.ballImg && !A.catImageStored(id)) _rv.pic[id] = { url: bwFile(pg.ballImg), how: 'bowwwl', link: true };
       if (pg.coreImg && pg.core) { var ck = A.coreKeyOf(e.m, pg.core); if (ck && !A.catCoreImageFor(e.m, pg.core)) _rv.core[ck] = { url: bwFile(pg.coreImg), how: 'bowwwl', link: true, brand: e.m, name: pg.core }; }
-      rvSaveFinds(); rvPaint(); paint();
-      if (root.toast) root.toast('Read from bowwwl: ' + cleanName(e.n) + ' (not saved until Accept)');
+      rvSaveFinds(); rvPaint(); paint(); wtCompare(id);
     });
   }
 
@@ -1180,6 +1184,72 @@
       }, function (er) { if (root.toast) root.toast('Not saved: ' + (er && er.message)); }); });
   }
 
+  /* ---------- v30.219 CMP-1: what a read changes, before it is kept ----------
+     After a PDF, paste or bowwwl read, a box lists every field: what the ball has now, and what the
+     page says (editable). Changed rows are ticked. Save ticked = saved like Accept; Keep for later =
+     the ticked values stay as the ball's read (not saved); Discard drops the read. */
+  var CMP_W = ['16', '15', '14', '13', '12', '11', '10'];
+  function wtCompare(id) {
+    if (!root.openModal) return;
+    A.catLoad().then(function (rows) {
+      var e = A.byIdIn(rows, id), d = _wb.det[id], f = _wb.found[id]; if (!e || !f) return;
+      if (!d) return loadDetails([e]).then(function () { wtCompare(id); });
+      var now = d.sp || {}, nf = f.fields || {}, nw = f.weights || {}, n3 = function (v) { return v == null || v === '' ? '' : Number(v).toFixed(3); };
+      var row = function (key, lab, cur, nv, inp) {
+        var same = String(cur || '').toLowerCase() === String(nv || '').toLowerCase(), on = !same && nv !== '' && nv != null;
+        return '<div style="padding:7px 0;border-bottom:1px solid var(--border1)"><label style="display:flex;gap:8px;align-items:center"><input type="checkbox" data-cmp="' + key + '"' + (on ? ' checked' : '') + (same ? ' disabled' : '') + ' style="width:20px;height:20px">' +
+          '<span style="font-size:12px;font-weight:700;color:var(--t2)">' + lab + '</span>' + (same ? '<span style="font-size:11px;color:var(--t3)">same</span>' : !cur ? '<span style="font-size:11px;color:var(--teal)">new</span>' : '<span style="font-size:11px;color:var(--gold)">changes</span>') + '</label>' +
+          '<div style="display:flex;gap:8px;margin-top:4px;align-items:center"><div style="flex:1;min-width:0;font-size:13px;color:var(--t3)">now: ' + (cur ? esc(cur) : '<i>empty</i>') + '</div></div>' +
+          '<div style="margin-top:4px">' + inp + '</div></div>';
+      };
+      var tx = function (k) { return '<input id="cmp-' + k + '" class="bdet-field-input" value="' + esc(nf[k] || '') + '" style="width:100%;box-sizing:border-box;font-size:15px">'; };
+      var html = CP_FIELDS.filter(function (x) { return nf[x[0]] || now[x[0]]; }).map(function (x) { return row(x[0], x[1], now[x[0]], nf[x[0]], tx(x[0])); }).join('');
+      CMP_W.forEach(function (w) {
+        var a = (now.weights || {})[w], b = nw[w]; if (!a && !b) return;
+        var cur = a ? [n3(a.RG), n3(a.Diff), n3(a.IntDiff)].filter(Boolean).join(' / ') : '', nv = b ? [n3(b.RG), n3(b.Diff), n3(b.IntDiff)].filter(Boolean).join(' / ') : '';
+        var box = function (k, t) { return '<div style="flex:1;min-width:0"><div style="font-size:10px;color:var(--t3)">' + t + '</div><input id="cmp-w' + w + '-' + k + '" class="bdet-field-input" inputmode="decimal" value="' + (b && b[k] != null ? n3(b[k]) : '') + '" style="width:100%;box-sizing:border-box;font-size:15px"></div>'; };
+        html += row('w' + w, w + ' lb', cur, nv, '<div style="display:flex;gap:6px">' + box('RG', 'RG') + box('Diff', 'Diff') + box('IntDiff', 'Int') + '</div>');
+      });
+      root.openModal('<div class="modal-title">What this read changes</div><div style="font-size:12px;color:var(--t3);margin-bottom:6px">' + esc(cleanName(e.n)) + ' \u00b7 from ' + esc(f.host || f.source || 'the page') + '</div>' +
+        (f.warn || f.nameSeen === false ? '<div style="font-size:12px;color:var(--gold);margin-bottom:6px">' + esc(f.warn || 'The page doesn\u2019t name this ball: check it is the right one.') + '</div>' : '') +
+        '<div style="max-height:56vh;overflow-y:auto">' + html + '</div><div id="cmp-err" style="font-size:12px;color:var(--red);margin-top:6px"></div>' +
+        '<button class="btn btn-primary" style="width:100%;margin-top:8px" onclick="wtCompareGo(\'' + jsq(id) + '\',\'save\')">Save ticked</button>' +
+        '<div style="display:flex;gap:8px;margin-top:8px"><button class="btn btn-ghost" style="flex:1" onclick="wtCompareGo(\'' + jsq(id) + '\',\'keep\')">Keep for later</button><button class="btn btn-secondary" style="flex:1" onclick="wtCompareGo(\'' + jsq(id) + '\',\'drop\')">Discard read</button></div>');
+    });
+  }
+  function wtCompareGo(id, how) {
+    var f = _wb.found[id]; if (!f) { if (root.closeModal) root.closeModal(); return; }
+    if (how === 'drop') { delete _wb.found[id]; if (root.closeModal) root.closeModal(); rvPaint(); paint(); return; }
+    var err = document.getElementById('cmp-err'), on = {}, bad = null;
+    Array.prototype.slice.call(document.querySelectorAll('[data-cmp]')).forEach(function (x) { if (x.checked) on[x.getAttribute('data-cmp')] = 1; });
+    var fx = {}, wx = {};
+    CP_FIELDS.forEach(function (x) { var k = x[0], el = document.getElementById('cmp-' + k); if (!on[k] || !el) return; var v = String(el.value || '').replace(/\s+/g, ' ').trim(); if (!v) return;
+      if (k === 'released') { var nd = A.normDate(v); if (!nd) { bad = 'Release date \u201c' + v + '\u201d: try 7/23/2025 or July 2025'; return; } v = nd; }
+      if (k === 'coreType') { v = /asym/i.test(v) ? 'Asymmetrical' : /sym/i.test(v) ? 'Symmetrical' : ''; if (!v) { bad = 'Core type: Symmetrical or Asymmetrical'; return; } }
+      fx[k] = v; });
+    CMP_W.forEach(function (w) { if (!on['w' + w]) return; var y = {};
+      ['RG', 'Diff', 'IntDiff'].forEach(function (k) { var el = document.getElementById('cmp-w' + w + '-' + k), t = el ? String(el.value).trim() : ''; if (!t) return; var n = Number(t.charAt(0) === '.' ? '0' + t : t);
+        if (!(n >= ED_LIM[k][0] && n <= ED_LIM[k][1])) bad = w + ' lb ' + k + ' should be ' + ED_LIM[k][0] + '\u2013' + ED_LIM[k][1]; else y[k] = n; });
+      if (Object.keys(y).length) wx[w] = y; });
+    if (bad) { if (err) err.textContent = bad + '.'; return; }
+    if (!Object.keys(fx).length && !Object.keys(wx).length) { if (how === 'keep') { if (root.closeModal) root.closeModal(); return; } if (err) err.textContent = 'Nothing ticked.'; return; }
+    f.fields = fx; f.weights = wx;
+    if (root.closeModal) root.closeModal();
+    if (how === 'keep') { rvPaint(); paint(); if (root.toast) root.toast('Kept as a read: not saved until Accept'); return; }
+    A.catLoad().then(function (rows) { var e = A.byIdIn(rows, id); if (!e) return;
+      rvAcceptOne(e, false).then(function (r) { rvLog([r], cleanName(e.n)); rvPaint(); paint();
+        if (root.toast) root.toast(r.specs || r.ticks ? 'Saved' + (r.ticks ? ' (ticked in Spec approvals: Publish to finish)' : '') : 'Nothing new to save');
+        if (r.specs) cpOfferAfter(e);
+      }, function (er) { if (root.toast) root.toast('Not saved: ' + (er && er.message)); });
+    });
+  }
+  /* ---------- v30.219 ROW-2: bowwwl picture check for one ball, on tap ---------- */
+  function wtBwPic(id) {
+    A.catLoad().then(function (rows) { var e = A.byIdIn(rows, id); if (!e) return; wtKeep(id);
+      delete _rv.miss[id]; var m = rvMerged(e), ck = m && rvCoreKey(e, m.sp); if (ck) delete _rv.coreMiss[ck];
+      _wb.fetchList = [e]; wbRvFetch(); });
+  }
+
   function updLine() { var t = A.catUpdateLine ? A.catUpdateLine() : ''; return t ? '<div onclick="catUpdateOpen()" style="margin:0 16px 8px;padding:7px 10px;border-radius:9px;background:var(--bg2);border:1px solid rgba(0,217,217,0.3);font-size:12px;color:var(--t1);cursor:pointer">' + esc(t) + ' \u203a</div>' : ''; }
   function bucketName(k) { var b = BUCKETS.filter(function (x) { return x[0] === k; })[0]; return b ? b[1] : k; }
   function triageHTML(rows, c, stat, tab) {
@@ -1342,7 +1412,7 @@
   root.wbRvPastePic = wbRvPastePic; root.wbRvPhoto = wbRvPhoto; root.wbRvPasteSpecs = wbRvPasteSpecs; root.wbRvPdf = wbRvPdf; root.wbRvEdit = wbRvEdit; root.wbRvAccept = wbRvAccept; root.wbRvDisc = wbRvDisc; root.wbRvReject = wbRvReject;
   root._wbt = { mergeFound: mergeFound, rvStage: function (e) { return rvStage(e); }, rv: _rv, wb: _wb };
   root.wtShow = wtShow; root.wtScope = wtScope; root.wtBrand = wtBrand; root.wtQ = wtQ; root.wtPage = wtPage; root.wtCard = wtCard; root.wtApprove = wtApprove;
-  root.wtFetch = wtFetch; root.wtMarkAsk = wtMarkAsk; root.wtMark = wtMark; root.wbBwRead = wbBwRead; root.wtCopyOpen = wtCopyOpen; root.wtCopySearch = wtCopySearch; root.wtCopyPick = wtCopyPick; root.wtCopyBack = wtCopyBack; root.wtCopyGo = wtCopyGo; root.wtGiveTick = wtGiveTick; root.wtGiveGo = wtGiveGo; root.wtRowAccept = wtRowAccept; root.wtEdit = wtEdit; root.wtEditGo = wtEditGo; root.wtEditW = wtEditW; root.wtEditWGo = wtEditWGo; root.wtPicClear = wtPicClear; root.wtPageDisc = wtPageDisc; root.wtPageRegion = wtPageRegion;
+  root.wtFetch = wtFetch; root.wtMarkAsk = wtMarkAsk; root.wtMark = wtMark; root.wbBwRead = wbBwRead; root.wtCompare = wtCompare; root.wtCompareGo = wtCompareGo; root.wtBwPic = wtBwPic; root.wtCopyOpen = wtCopyOpen; root.wtCopySearch = wtCopySearch; root.wtCopyPick = wtCopyPick; root.wtCopyBack = wtCopyBack; root.wtCopyGo = wtCopyGo; root.wtGiveTick = wtGiveTick; root.wtGiveGo = wtGiveGo; root.wtRowAccept = wtRowAccept; root.wtEdit = wtEdit; root.wtEditGo = wtEditGo; root.wtEditW = wtEditW; root.wtEditWGo = wtEditWGo; root.wtPicClear = wtPicClear; root.wtPageDisc = wtPageDisc; root.wtPageRegion = wtPageRegion;
   root._wbw = { sameModel: sameModel, cpApply: cpApply, cpOfferAfter: cpOfferAfter, looseMatch: looseMatch, looseMap: looseMap, grpOf: grpOf, specConf: specConf, picConf: picConf, bwPageUrl: bwPageUrl, bwOpen: bwOpen, bwApply: bwApply, wt: _wt, GRP: GRP };
   root.wbRepaint = function () { if (document.getElementById('wb-ov')) paint(); };
   root.wbOpen = wbOpen; root.wbClose = wbClose; root.wbTab = wbTab; root.wbGroup = wbGroup; root.wbBrand = wbBrand; root.wbYear = wbYear; root.wbState = wbState;
