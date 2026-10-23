@@ -10,7 +10,7 @@
    Uses catalog.js through root._catAPI only. Design: DESIGN_add_ball_flow sections 50-55. */
 (function (root) {
   'use strict';
-  var WB_VERSION = 'v30.215';
+  var WB_VERSION = 'v30.216';
   var A = root._catAPI;
   if (!A) { if (root.toast) root.toast('Workbench needs catalog.js ' + WB_VERSION); return; }
   var esc = A.esc, jsq = A.jsq, norm = A.norm, cleanName = A.cleanName;
@@ -973,7 +973,7 @@
       var e = A.byIdIn(rows, id); if (!e || !_wb.det[id]) return;
       var m = rvMerged(e), v = m.sp[k] || '';
       var inp = k === 'coreType' ? '<select id="ed-v" class="bdet-field-input" style="width:100%;font-size:15px"><option value="">\u2014</option>' + ['Asymmetrical', 'Symmetrical'].map(function (o) { return '<option' + (o === v ? ' selected' : '') + '>' + o + '</option>'; }).join('') + '</select>' :
-        '<input id="ed-v" class="bdet-field-input" value="' + esc(v) + '" placeholder="' + (k === 'released' ? '2024-09 or 2024-09-19' : '') + '" autocomplete="off" autocorrect="off" style="width:100%;box-sizing:border-box;font-size:16px">';
+        '<input id="ed-v" class="bdet-field-input" value="' + esc(v) + '" placeholder="' + (k === 'released' ? 'any format: 7/23/2025, July 2025\u2026' : '') + '" autocomplete="off" autocorrect="off" style="width:100%;box-sizing:border-box;font-size:16px">';
       root.openModal('<div class="modal-title">' + esc(ED_LAB[k]) + '</div><div style="font-size:12px;color:var(--t3);margin-bottom:8px">' + esc(cleanName(e.n)) + '</div>' + inp + edSrcSel(id) +
         '<div id="ed-err" style="font-size:12px;color:var(--red);margin-top:6px"></div>' +
         '<button class="btn btn-primary" style="width:100%;margin-top:10px" onclick="wtEditGo(\'' + jsq(id) + '\',\'' + k + '\')">Use this</button>' +
@@ -987,7 +987,7 @@
     if (drop) { var f0 = _wb.found[id]; if (f0) { delete f0.fields[k]; if (!Object.keys(f0.fields).length && !Object.keys(f0.weights || {}).length) delete _wb.found[id]; } if (root.closeModal) root.closeModal(); rvPaint(); paint(); return; }
     var v = el ? String(el.value || '').replace(/\s+/g, ' ').trim() : '';
     if (!v) { if (err) err.textContent = 'Type a value (or Cancel).'; return; }
-    if (k === 'released') { var mm = /^(\d{4})-(\d{2})(?:-(\d{2}))?$/.exec(v); if (!mm || +mm[2] < 1 || +mm[2] > 12) { if (err) err.textContent = 'Use 2024-09 or 2024-09-19.'; return; } }
+    if (k === 'released') { var nd = A.normDate(v); if (!nd) { if (err) err.textContent = 'Not a date I can read: try 7/23/2025, July 2025 or 2025-07-23.'; return; } v = nd; }   // v30.216: any format
     var f = edFound(id, sv && sv.value); f.fields = f.fields || {}; f.fields[k] = v; (f.hand = f.hand || {})[k] = 1;
     if (root.closeModal) root.closeModal(); rvPaint(); paint();
   }
