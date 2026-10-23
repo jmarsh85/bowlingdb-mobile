@@ -10,7 +10,7 @@
    Uses catalog.js through root._catAPI only. Design: DESIGN_add_ball_flow sections 50-55. */
 (function (root) {
   'use strict';
-  var WB_VERSION = 'v30.216';
+  var WB_VERSION = 'v30.217';
   var A = root._catAPI;
   if (!A) { if (root.toast) root.toast('Workbench needs catalog.js ' + WB_VERSION); return; }
   var esc = A.esc, jsq = A.jsq, norm = A.norm, cleanName = A.cleanName;
@@ -480,7 +480,7 @@
   }
   function wbRvFetchStop() { if (_rv.fetch) _rv.fetch.stop = true; }
   /* saves one ball's finds; returns log items; release only when complete */
-  function rvAcceptOne(e, release, rows) {
+  function rvAcceptOne(e, release, rows, force) {   // v30.217 force: release even with gaps (you confirmed)
     var out = { specs: null, pic: null, rel: null, core: null, ticks: null }, d = _wb.det[e.i], f = _wb.found[e.i];
     var sp0 = d ? d.sp : null;
     var specs = !f ? Promise.resolve() : (function () {
@@ -511,7 +511,7 @@
     }).then(function () {
       if (!release) return out;
       var m = rvMerged(e), o = A.rlLocal();
-      if (!m || m.miss.length || !A.catImageStored(e.i) || o.all[e.i]) return out;
+      if (!m || o.all[e.i] || (!force && (m.miss.length || !A.catImageStored(e.i)))) return out;
       o.all[e.i] = { at: A.stToday(), n: cleanName(e.n), m: e.m }; o.pending[e.i] = Date.now() + Math.random(); A.rlSaveLocal(o);
       out.rel = { id: e.i, n: cleanName(e.n) }; return out;
     }).then(function (r) { rvSaveFinds(); return r; });
@@ -596,7 +596,7 @@
           (_bw[e.i] ? '<div style="font-size:11px;color:#7aa7ff;margin-top:4px">Reading the bowwwl page on GitHub (about a minute). You can move on; it lands here when done.</div>' : '') +
           '<div style="font-size:11px;color:var(--t3);margin-top:8px">Look it up: ' + a2(webSearch(e), 'search \u2197') + ' \u00b7 <a href="' + esc(bw.maker || bw.search) + '" target="_blank" rel="noopener noreferrer" style="color:var(--teal)">maker \u2197</a> \u00b7 <a href="' + esc(bw.page) + '" target="_blank" rel="noopener noreferrer" style="color:var(--teal)">bowwwl \u2197</a> \u00b7 copy the page or picture there, then Paste here. Paste also takes a PDF (Share \u203a Options \u203a PDF \u203a Copy). Tap any spec or weight to type it in.</div>' +
         '</div>' +
-        '<div style="padding:8px 16px;border-top:1px solid var(--border1)"><div style="display:flex;gap:6px">' + b('Accept and release', "wbRvAccept('" + idq + "',true)", true, !canRel) + b('Accept', "wbRvAccept('" + idq + "',false)", false, !(f || found || cfound || (br && br.decision === 'pending'))) + '</div>' +
+        '<div style="padding:8px 16px;border-top:1px solid var(--border1)"><div style="display:flex;gap:6px">' + b(canRel ? 'Accept and release' : 'Release with gaps\u2026', "wbRvAccept('" + idq + "',true)", canRel, !!A.rlLocal().all[e.i]) + b('Accept', "wbRvAccept('" + idq + "',false)", false, !(f || found || cfound || (br && br.decision === 'pending'))) + '</div>' +
           '<div style="display:flex;gap:6px;margin-top:6px">' + b('Mark\u2026', "wtMarkAsk(null,'" + idq + "')") + b('Skip \u203a', 'wbRvNext(1)') + '</div></div>';
     });
   }
@@ -631,7 +631,14 @@
   function wbRvAccept(id, release) {
     rvCur(function (e) {
       if (e.i !== id) return;
-      rvAcceptOne(e, release).then(function (r) {
+      /* v30.217: with gaps, ask instead of refusing (plastic balls have no RG / Diff; some pages give no date) */
+      var m = rvMerged(e), gaps = m ? m.miss.slice() : [], force = false;
+      if (release && !rvPicOf(e)) gaps.push('a cover picture');
+      if (release && gaps.length) {
+        if (root.confirm && !root.confirm('Release ' + cleanName(e.n) + ' into Add a Ball without ' + gaps.join(', ') + '?\n\nIt shows with those blank; you can fill them in later and they update.')) return;
+        force = true;
+      }
+      rvAcceptOne(e, release, null, force).then(function (r) {
         rvLog([r], cleanName(e.n));
         var bits = [r.specs && 'specs', r.ticks && 'ticked in Spec approvals', r.pic && 'picture', r.core && 'core picture', r.rel && 'released'].filter(Boolean);
         if (root.toast) root.toast(bits.length ? 'Saved: ' + bits.join(', ') : 'Nothing new to save');
