@@ -665,5 +665,42 @@
   "source": "maker",
   "note": "from motivbowling.com",
   "at": "2026-10-23"
+ },
+ "motiv-frenzy-blue-navy-teal": {
+  "coverName": "Vitality Pearl Reactive",
+  "coverType": "Pearl Reactive",
+  "finish": "5500 Grit LSP",
+  "core": "Excel™ Symmetrical",
+  "coreType": "Symmetrical",
+  "released": "2026-09-30",
+  "weights": {
+   "10": {
+    "RG": 2.78,
+    "Diff": 0.011
+   },
+   "11": {
+    "RG": 2.71,
+    "Diff": 0.018
+   },
+   "12": {
+    "RG": 2.64,
+    "Diff": 0.026
+   },
+   "13": {
+    "RG": 2.6,
+    "Diff": 0.031
+   },
+   "14": {
+    "RG": 2.57,
+    "Diff": 0.03
+   },
+   "15": {
+    "RG": 2.55,
+    "Diff": 0.03
+   }
+  },
+  "source": "maker",
+  "note": "from motivbowling.com",
+  "at": "2026-10-23"
  }
 }
