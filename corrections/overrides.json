@@ -476,5 +476,38 @@
   "source": "maker",
   "note": "from ebonite.com",
   "at": "2026-10-23"
+ },
+ "brunswick-rhino-pro-ivory": {
+  "coverName": "HK22 - Activator Plus 3.0 Pearl",
+  "coverType": "Pearl Reactive",
+  "finish": "500, 1000, 1500 Siaair / Crown Factory Compound",
+  "core": "Vintage Light Bulb",
+  "coreType": "Symmetrical",
+  "released": "2024-10-24",
+  "weights": {
+   "12": {
+    "RG": 2.597,
+    "Diff": 0.04
+   },
+   "13": {
+    "RG": 2.574,
+    "Diff": 0.04
+   },
+   "14": {
+    "RG": 2.585,
+    "Diff": 0.032
+   },
+   "15": {
+    "RG": 2.568,
+    "Diff": 0.032
+   },
+   "16": {
+    "RG": 2.517,
+    "Diff": 0.044
+   }
+  },
+  "source": "maker",
+  "note": "from brunswickbowling.com",
+  "at": "2026-10-23"
  }
 }
