@@ -50,6 +50,9 @@ eq(r3.released, '2024-09', 'inline release date');
 eq([r3.coverName, r3.coverType], ['HK22C - GB 15.1 Pearl', 'Pearl Reactive'], 'cover from a plain line + inline type');
 eq([r3.core, r3.coreType], ['Centrex Symmetrical Mass Bias', 'Asymmetrical'], 'wrapped core heading + inline core type');
 eq(r3.weights['16'], { RG: 2.474, Diff: 0.049, IntDiff: 0.021 }, 'inline RG / Diff / MB Diff');
+const r4 = B.parseLines(['# Prime Angular One', 'Release Date: May 2026', 'Overseas/International Release', 'Translated from Korean:', 'Iron Core', 'Core Type: Asymmetric']);
+ok(r4.international && r4.country === 'Korea', 'overseas + translated from Korean -> Korea');
+eq(r4.released, '2026-05', 'May 2026');
 ok(r3.discontinued, 'discontinued');
 
 /* addresses */
