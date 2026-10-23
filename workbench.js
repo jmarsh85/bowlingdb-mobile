@@ -10,7 +10,7 @@
    Uses catalog.js through root._catAPI only. Design: DESIGN_add_ball_flow sections 50-55. */
 (function (root) {
   'use strict';
-  var WB_VERSION = 'v30.217';
+  var WB_VERSION = 'v30.218';
   var A = root._catAPI;
   if (!A) { if (root.toast) root.toast('Workbench needs catalog.js ' + WB_VERSION); return; }
   var esc = A.esc, jsq = A.jsq, norm = A.norm, cleanName = A.cleanName;
@@ -593,6 +593,7 @@
             (f.retired && A.triageOf(e) !== 'discontinued' ? '<div style="color:var(--gold)">The page says it\u2019s discontinued \u00b7 <span onclick="wtPageDisc(\'' + idq + '\')" style="color:var(--teal);cursor:pointer">Mark discontinued</span></div>' : '') +
             (f.region && A.regionOf(e) !== f.region ? '<div style="color:#7aa7ff">The page says ' + esc(f.region) + ' release \u00b7 <span onclick="wtPageRegion(\'' + idq + '\',\'' + jsq(f.region) + '\')" style="color:var(--teal);cursor:pointer">Tag it</span></div>' : '') + '</div>' : '') +
           '<div style="display:flex;gap:6px;margin-top:8px">' + b(_bw[e.i] ? 'Reading\u2026' : 'Read bowwwl', "wbBwRead('" + idq + "')", !_bw[e.i] && !f, !!_bw[e.i]) + b('Paste specs', "wbRvPasteSpecs('" + idq + "')") + b('PDF', "wbRvPdf('" + idq + "')") + b('Edit', "wbRvEdit('" + idq + "')") + '</div>' +
+          '<div style="display:flex;gap:6px;margin-top:6px">' + b('Copy specs from another color or ball\u2026', "wtCopyOpen('" + idq + "')") + '</div>' +
           (_bw[e.i] ? '<div style="font-size:11px;color:#7aa7ff;margin-top:4px">Reading the bowwwl page on GitHub (about a minute). You can move on; it lands here when done.</div>' : '') +
           '<div style="font-size:11px;color:var(--t3);margin-top:8px">Look it up: ' + a2(webSearch(e), 'search \u2197') + ' \u00b7 <a href="' + esc(bw.maker || bw.search) + '" target="_blank" rel="noopener noreferrer" style="color:var(--teal)">maker \u2197</a> \u00b7 <a href="' + esc(bw.page) + '" target="_blank" rel="noopener noreferrer" style="color:var(--teal)">bowwwl \u2197</a> \u00b7 copy the page or picture there, then Paste here. Paste also takes a PDF (Share \u203a Options \u203a PDF \u203a Copy). Tap any spec or weight to type it in.</div>' +
         '</div>' +
@@ -600,7 +601,7 @@
           '<div style="display:flex;gap:6px;margin-top:6px">' + b('Mark\u2026', "wtMarkAsk(null,'" + idq + "')") + b('Skip \u203a', 'wbRvNext(1)') + '</div></div>';
     });
   }
-  function wbRvPastePic(id, slot) {
+  function wbRvPastePic(id, slot) { wtKeep(id);
     A.catPastePicture(function (f) { rvSetPic(id, slot, f); });
   }
   function rvSetPic(id, slot, f) {
@@ -615,14 +616,15 @@
       A.imgShrink(fl).then(function (bl) { rvSetPic(id, slot, { blob: bl, url: URL.createObjectURL(bl), how: 'photo' }); }); });
     document.body.appendChild(inp); inp.click();
   }
-  function wbRvPasteSpecs(id) {
+  function wtKeep(id) { if (_wt.open && !document.getElementById('rv-ov')) (_wt.keep = _wt.keep || {})[_wt.open + '|' + id] = 1; }
+  function wbRvPasteSpecs(id) { wtKeep(id);
     A.catLoad().then(function (rows) { var e = A.byIdIn(rows, id); if (!e) return;
-      A.spReadClipboard(function (text) { var r = A.parseSpecText(text, 15, cleanName(e.n)); if (!r || (!Object.keys(r.fields || {}).length && !Object.keys(r.weights || {}).length)) { if (root.toast) root.toast('No specs found in what was pasted'); return; } _wb.found[id] = r; rvPaint(); }); });
+      A.spReadClipboard(function (text) { var r = A.parseSpecText(text, 15, cleanName(e.n)); if (!r || (!Object.keys(r.fields || {}).length && !Object.keys(r.weights || {}).length)) { if (root.toast) root.toast('No specs found in what was pasted'); return; } _wb.found[id] = r; rvPaint(); paint(); if (!document.getElementById('rv-ov') && root.toast) root.toast('Read: ' + foundLine(r)); }); });
   }
-  function wbRvPdf(id) {
+  function wbRvPdf(id) { wtKeep(id);
     A.catLoad().then(function (rows) { var e = A.byIdIn(rows, id); if (!e) return;
       pickPdfs(false, function (fs) { if (root.toast) root.toast('Reading the PDF\u2026');
-        A.spPdfFileText(fs[0]).then(function (t) { if (!t) { if (root.toast) root.toast('No text in that PDF'); return; } _wb.found[id] = A.parseSpecText(t, 15, cleanName(e.n)); rvPaint(); }, function () { if (root.toast) root.toast('Could not read the PDF'); }); }); });
+        A.spPdfFileText(fs[0]).then(function (t) { if (!t) { if (root.toast) root.toast('No text in that PDF'); return; } _wb.found[id] = A.parseSpecText(t, 15, cleanName(e.n)); rvPaint(); paint(); }, function () { if (root.toast) root.toast('Could not read the PDF'); }); }); });
   }
   function wbRvEdit(id) {
     if (_wb.found[id]) A.catCorrectWithParsed(id, _wb.found[id], function () { delete _wb.found[id]; delete _wb.det[id]; rvPaint(); });
@@ -642,7 +644,7 @@
         rvLog([r], cleanName(e.n));
         var bits = [r.specs && 'specs', r.ticks && 'ticked in Spec approvals', r.pic && 'picture', r.core && 'core picture', r.rel && 'released'].filter(Boolean);
         if (root.toast) root.toast(bits.length ? 'Saved: ' + bits.join(', ') : 'Nothing new to save');
-        if (r.core) A.catCoreShareOffer(r.core.brand, r.core.name, r.core);
+        if (r.core) A.catCoreShareOffer(r.core.brand, r.core.name, r.core); else if (r.specs) cpOfferAfter(e);   // v30.218
         if (r.rel) { _rv.ids.splice(_rv.idx, 1); if (_rv.idx >= _rv.ids.length) _rv.idx = Math.max(0, _rv.ids.length - 1); if (!_rv.ids.length) return wbRvClose(); }
         rvPaint(); paint();
       }, function (er) { if (root.toast) root.toast('Not saved: ' + (er && er.message)); });
@@ -707,7 +709,7 @@
   function wtGroupList(rows, gk) {
     var q = norm(_wt.q || '');
     return wtHeld(rows).filter(function (e) {
-      if (gk === 'parked') { if (!wtParked(e)) return false; } else if (!(_wt.scope === 'all' ? !wtParked(e) : wtQueue(e)) || grpOf(e) !== gk) return false;
+      if (gk === 'parked') { if (!wtParked(e)) return false; } else if (!(_wt.scope === 'all' ? !wtParked(e) : wtQueue(e)) || (grpOf(e) !== gk && !(_wt.keep && _wt.keep[gk + '|' + e.i]))) return false;
       return wtBrandOk(e) && (!q || norm(e.m + ' ' + e.n).indexOf(q) >= 0);
     }).sort(function (a, b) { return String(b.y || '').localeCompare(String(a.y || '')) || String(a.m).localeCompare(String(b.m)) || cleanName(a.n).localeCompare(cleanName(b.n)); });
   }
@@ -768,6 +770,13 @@
         '<div style="font-size:12px;color:var(--t2)">' + esc(e.m) + (e.y ? ' \u00b7 ' + esc(e.y) : '') + '</div>' +
         '<div style="margin-top:3px">' + confChip('specs', sc) + confChip('picture', pc) + '</div></div></div>' +
         (m.miss.length ? '<div style="font-size:12px;color:var(--gold);margin-top:4px">needs ' + esc(m.miss.join(', ')) + (rvPicOf(e) ? '' : ', a cover picture') + '</div>' : !rvPicOf(e) ? '<div style="font-size:12px;color:var(--gold);margin-top:4px">needs a cover picture</div>' : '') +
+        (_wb.found[e.i] ? '<div style="font-size:12px;color:#7aa7ff;margin-top:4px">read, not saved: ' + esc(foundLine(_wb.found[e.i])) + '</div>' : '') +
+        '<div style="display:flex;align-items:center;gap:6px;margin-top:6px;flex-wrap:wrap">' +
+          '<button style="' + A.BTN_G + 'padding:5px 9px;font-size:12px" onclick="wbRvPasteSpecs(\'' + idq + '\')">Paste specs</button>' +
+          '<button style="' + A.BTN_G + 'padding:5px 9px;font-size:12px" onclick="wbRvPdf(\'' + idq + '\')">PDF</button>' +
+          '<button style="' + A.BTN_G + 'padding:5px 9px;font-size:12px" onclick="wbRvPastePic(\'' + idq + '\',\'cover\')">Paste picture</button>' +
+          '<button style="' + A.BTN_G + 'padding:5px 9px;font-size:12px" onclick="wtCopyOpen(\'' + idq + '\')">Copy specs</button>' +
+          (_wb.found[e.i] || _rv.pic[e.i] ? '<button style="' + A.BTN_P + 'padding:5px 9px;font-size:12px" onclick="wtRowAccept(\'' + idq + '\')">Accept</button>' : '') + '</div>' +
         '<div style="display:flex;align-items:center;gap:6px;margin-top:6px;flex-wrap:wrap"><button style="' + A.BTN_G + 'padding:5px 9px;font-size:12px" onclick="wtCard(\'' + jsq(_wt.open) + '\',\'' + idq + '\')">Open</button>' +
         '<button style="' + A.BTN_G + 'padding:5px 9px;font-size:12px" onclick="wtMarkAsk(null,\'' + idq + '\')">Mark\u2026</button>' +
         '<span style="font-size:11px;color:var(--t3)">' + a2(webSearch(e), 'search \u2197') + ' \u00b7 ' + a2(bw.page, 'bowwwl \u2197') + ' \u00b7 ' + a2(bw.maker || bw.search, 'maker \u2197') + '</span></div></div>';
@@ -780,7 +789,7 @@
       '<div style="display:flex;gap:8px;padding:10px 16px;border-top:1px solid var(--border1);margin-top:6px"><button onclick="wtCard(\'' + jsq(_wt.open) + '\')" style="' + A.BTN_G + 'flex:1;padding:10px;font-size:13px">One by one</button>' +
         (_wt.open === 'ready' ? '<button onclick="wtApprove()" style="' + A.BTN_P + 'flex:1;padding:10px;font-size:13px">Approve all ' + list.length + '</button>' : '<button onclick="wtMarkAsk(\'' + jsq(_wt.open) + '\')" style="' + A.BTN_G + 'flex:1;padding:10px;font-size:13px">Mark all ' + list.length + '\u2026</button>') + '</div>';
   }
-  function wtShow(gk) { _wt.open = gk || ''; _wt.page = 0; paint(); var l = document.getElementById('wb-list'); if (l) l.scrollTop = 0; }
+  function wtShow(gk) { _wt.open = gk || ''; _wt.page = 0; _wt.keep = {}; paint(); var l = document.getElementById('wb-list'); if (l) l.scrollTop = 0; }
   function wtScope(s) { _wt.scope = s; paint(); }
   function wtBrand(v) { _wt.brand = v; _wt.page = 0; paint(); }
   function wtQ(v) { _wt.q = v; _wt.page = 0; clearTimeout(_wt.t); _wt.t = setTimeout(function () { paint(); setTimeout(function () { var i = document.querySelector('#wb-ov input[type=search]'); if (i) { i.focus(); i.setSelectionRange(i.value.length, i.value.length); } }, 0); }, 250); }
@@ -980,17 +989,17 @@
       var e = A.byIdIn(rows, id); if (!e || !_wb.det[id]) return;
       var m = rvMerged(e), v = m.sp[k] || '';
       var inp = k === 'coreType' ? '<select id="ed-v" class="bdet-field-input" style="width:100%;font-size:15px"><option value="">\u2014</option>' + ['Asymmetrical', 'Symmetrical'].map(function (o) { return '<option' + (o === v ? ' selected' : '') + '>' + o + '</option>'; }).join('') + '</select>' :
-        '<input id="ed-v" class="bdet-field-input" value="' + esc(v) + '" placeholder="' + (k === 'released' ? 'any format: 7/23/2025, July 2025\u2026' : '') + '" autocomplete="off" autocorrect="off" style="width:100%;box-sizing:border-box;font-size:16px">';
+        '<input id="' + (/^(coverName|coverType|finish|core)$/.test(k) ? 'wt-ed-' + k : 'ed-v') + '" data-brand="' + esc(e.m) + '" class="bdet-field-input" value="' + esc(v) + '" placeholder="' + (k === 'released' ? 'any format: 7/23/2025, July 2025\u2026' : '') + '" autocomplete="off" autocorrect="off" style="width:100%;box-sizing:border-box;font-size:16px">';
       root.openModal('<div class="modal-title">' + esc(ED_LAB[k]) + '</div><div style="font-size:12px;color:var(--t3);margin-bottom:8px">' + esc(cleanName(e.n)) + '</div>' + inp + edSrcSel(id) +
         '<div id="ed-err" style="font-size:12px;color:var(--red);margin-top:6px"></div>' +
         '<button class="btn btn-primary" style="width:100%;margin-top:10px" onclick="wtEditGo(\'' + jsq(id) + '\',\'' + k + '\')">Use this</button>' +
         (_wb.found[id] && _wb.found[id].fields && _wb.found[id].fields[k] ? '<button class="btn btn-ghost" style="width:100%;margin-top:8px" onclick="wtEditGo(\'' + jsq(id) + '\',\'' + k + '\',true)">Undo my change to this field</button>' : '') +
         '<button class="btn btn-secondary" style="width:100%;margin-top:8px" onclick="closeModal()">Cancel</button>');
-      setTimeout(function () { var i = document.getElementById('ed-v'); if (i && i.focus) i.focus(); }, 300);
+      setTimeout(function () { var i = document.getElementById('ed-v') || document.getElementById('wt-ed-' + k); if (i && i.focus) i.focus(); }, 300);
     });
   }
   function wtEditGo(id, k, drop) {
-    var el = document.getElementById('ed-v'), err = document.getElementById('ed-err'), sv = document.getElementById('ed-src');
+    var el = document.getElementById('ed-v') || document.getElementById('wt-ed-' + k), err = document.getElementById('ed-err'), sv = document.getElementById('ed-src');
     if (drop) { var f0 = _wb.found[id]; if (f0) { delete f0.fields[k]; if (!Object.keys(f0.fields).length && !Object.keys(f0.weights || {}).length) delete _wb.found[id]; } if (root.closeModal) root.closeModal(); rvPaint(); paint(); return; }
     var v = el ? String(el.value || '').replace(/\s+/g, ' ').trim() : '';
     if (!v) { if (err) err.textContent = 'Type a value (or Cancel).'; return; }
@@ -1041,6 +1050,134 @@
         rvPaint(); paint(); if (root.toast) root.toast('Removed. Paste, Photo or Find pictures for a new one.');
       });
     });
+  }
+
+  /* ---------- v30.218 COPY-1: the same specs on another color of the same ball, or from any ball ----------
+     Colorways (plastic / polyester lines, most reactive lines) share coverstock, core and RG / Diff.
+     "Same model": same brand and the same first word(s) of the name; a different number ("2.0" / "3.0")
+     or cover word (pearl, solid, hybrid, urethane) means a different ball, so those are left out.
+     You always pick: copy from one ball into this one (ticked fields only), or after Accept give this
+     ball's specs to the other colors still missing them. Copies keep the source's store rule
+     (a bowwwl value stays on this phone). */
+  var CP_COLOR = {}; ('smoke mint cherry snow midnight sky night haze ink wine berry rose lavender coral plum indigo amber olive sand steel platinum pewter onyx ' +
+    'carbon graphite cobalt turquoise lilac peach blush fuchsia tangerine citrus lemon lime aqua sapphire ruby emerald jade gold silver bronze copper ' +
+    'charcoal violet magenta crimson scarlet maroon burgundy navy teal royal electric neon frost ice smoke glow camo').split(' ').forEach(function (w) { CP_COLOR[w] = 1; });
+  /* the name without "(codes)", as words */
+  function cpToks(e) { return lzToks(cleanName(e.n).replace(/\([^)]*\)/g, ' ')); }
+  var CP_VERSION = { i: 1, ii: 1, iii: 1, iv: 1, v: 1, vi: 1, vii: 1, viii: 1, ix: 1, x: 1, xi: 1, xii: 1, ex: 1, se: 1, le: 1, ai: 1, xr: 1, xl: 1, xp: 1, xt: 1, hd: 1, sp: 1, ss: 1, us: 1, ur: 1, rg: 1, cs: 1, on: 1, it: 1, of: 1, to: 1, in: 1, my: 1, up: 1, go: 1, no: 1, so: 1, by: 1, at: 1, an: 1, or: 1, me: 1, we: 1, be: 1, do: 1, he: 1, if: 1, is: 1, ok: 1, oh: 1 };   // + short English words ("Lock-On" / "Lock It")
+  /* a color word, or a short letter code for colors ("M+M", "BP"); not a version ("II", "EX", "AI") or a number */
+  function cpColorish(w) { return LZ_COLOURS[w] || CP_COLOR[w] || (w.length <= 2 && /^[a-z]+$/.test(w) && !CP_VERSION[w]); }
+  /* same model = same brand, same leading words, and every other word is a color (or a short color code) */
+  function sameModel(a, b) {
+    if (a.i === b.i || a.m !== b.m || cleanName(a.n) === cleanName(b.n)) return false;
+    var x = cpToks(a), y = cpToks(b), L = 0;
+    while (L < x.length && L < y.length && x[L] === y[L]) L++;
+    if (!L || cpColorish(x[0])) return false;
+    return x.slice(L).concat(y.slice(L)).every(cpColorish);
+  }
+  function cpSiblings(e, rows) { return rows.filter(function (r) { return !r.a && sameModel(e, r); }); }
+  function cpHasSpecs(e) { var d = _wb.det[e.i]; return !!(d && (d.any || _wb.found[e.i])); }
+  function cpSpecsOf(e) { var d = _wb.det[e.i]; return d ? mergeFound(d.sp, _wb.found[e.i]) : {}; }
+  function cpSourceOf(e) { var f = _wb.found[e.i]; if (f && f.source) return f.source; return A.localOverrides()[e.i] ? 'bowwwl' : 'maker'; }
+  function cpSummary(sp) {
+    var w = Object.keys(sp.weights || {}).sort(function (a, b) { return b - a; })[0], x = w ? sp.weights[w] : null;
+    return [sp.coverName, sp.core, x && x.RG != null ? w + ' lb ' + Number(x.RG).toFixed(3) + (x.Diff != null ? ' / ' + Number(x.Diff).toFixed(3) : '') : null].filter(Boolean).join(' \u00b7 ') || 'no specs';
+  }
+  var _cp = null;
+  function wtCopyOpen(id) { wtKeep(id);
+    if (!root.openModal) return;
+    A.catLoad().then(function (rows) {
+      var e = A.byIdIn(rows, id); if (!e) return;
+      var sib = cpSiblings(e, rows);
+      _cp = { id: id, rows: rows, q: '', from: null };
+      root.openModal('<div class="modal-title">Copy specs into ' + esc(cleanName(e.n)) + '</div><div id="cp-body" style="font-size:13px;color:var(--t3)">Checking ' + sib.length + ' other color' + (sib.length === 1 ? '' : 's') + '\u2026</div>');
+      loadDetails(sib.slice(0, 40)).then(function () { _cp.sib = sib.filter(cpHasSpecs); cpPaint(); });
+    });
+  }
+  function cpPaint() {
+    var el = document.getElementById('cp-body'); if (!el || !_cp) return;
+    var rowsHTML = function (l) { return l.map(function (r) { return '<div onclick="wtCopyPick(\'' + jsq(r.i) + '\')" style="padding:8px 0;border-bottom:1px solid var(--border1);cursor:pointer"><div style="font-size:14px;color:var(--t1)">' + esc(cleanName(r.n)) + ' <span style="color:var(--t3)">\u00b7 ' + esc(r.m) + (r.y ? ' \u00b7 ' + esc(r.y) : '') + '</span></div><div style="font-size:11px;color:var(--t3)">' + esc(cpSummary(cpSpecsOf(r))) + '</div></div>'; }).join(''); };
+    var found = _cp.hits || [];
+    el.innerHTML = '<div style="font-size:12px;color:var(--t2);margin-bottom:4px">Same model, other colors' + (_cp.sib.length ? '' : ': none with specs yet') + '</div>' + rowsHTML(_cp.sib) +
+      '<div style="font-size:12px;color:var(--t2);margin:10px 0 4px">Or any ball (other brands use the same covers and cores)</div>' +
+      '<input id="cp-q" class="bdet-field-input" type="search" placeholder="Brand or ball name" value="' + esc(_cp.q) + '" oninput="wtCopySearch(this.value)" autocomplete="off" style="width:100%;box-sizing:border-box;font-size:16px">' +
+      '<div id="cp-hits">' + rowsHTML(found) + (_cp.q && !found.length ? '<div style="padding:8px 0;color:var(--t3)">' + (_cp.busy ? 'Looking\u2026' : 'No ball with specs matches') + '</div>' : '') + '</div>' +
+      '<button class="btn btn-secondary" style="width:100%;margin-top:10px" onclick="closeModal()">Cancel</button>';
+  }
+  function wtCopySearch(v) {
+    if (!_cp) return; _cp.q = v; clearTimeout(_cp.t);
+    _cp.t = setTimeout(function () {
+      var q = norm(v || ''); if (q.length < 2) { _cp.hits = []; cpPaintHits(); return; }
+      var cand = _cp.rows.filter(function (r) { return !r.a && r.i !== _cp.id && (r.s || A.overrideFor(r.i)) && norm(r.m + ' ' + r.n).indexOf(q) >= 0; }).slice(0, 15);
+      _cp.busy = true; cpPaintHits();
+      loadDetails(cand).then(function () { _cp.busy = false; _cp.hits = cand.filter(cpHasSpecs); cpPaintHits(); });
+    }, 300);
+  }
+  function cpPaintHits() { var h = document.getElementById('cp-hits'), q = document.getElementById('cp-q'); if (!h) return; var keep = q && document.activeElement === q; var tmp = document.createElement('div'); var save = _cp.q; cpPaint(); var q2 = document.getElementById('cp-q'); if (keep && q2) { q2.focus(); q2.setSelectionRange(save.length, save.length); } }
+  var CP_FIELDS = [['coverName', 'Coverstock'], ['coverType', 'Cover type'], ['finish', 'Finish'], ['core', 'Core'], ['coreType', 'Core type'], ['released', 'Release date']];
+  function wtCopyPick(fromId) {
+    var el = document.getElementById('cp-body'); if (!el || !_cp) return;
+    var from = A.byIdIn(_cp.rows, fromId), to = A.byIdIn(_cp.rows, _cp.id); if (!from || !to) return;
+    var src = cpSpecsOf(from), cur = (rvMerged(to) || { sp: {} }).sp, ws = Object.keys(src.weights || {}).sort(function (a, b) { return b - a; });
+    if (!CP_FIELDS.some(function (f) { return src[f[0]]; }) && !ws.length) { if (root.toast) root.toast(cleanName(from.n) + ' has no specs to copy yet'); return; }
+    _cp.from = fromId;
+    var line = function (key, lab, val, on) { return '<label style="display:flex;gap:10px;align-items:flex-start;padding:6px 0;border-bottom:1px solid var(--border1)"><input type="checkbox" data-cp="' + key + '"' + (on ? ' checked' : '') + ' style="width:20px;height:20px;margin-top:2px"><div style="flex:1;min-width:0"><div style="font-size:11px;color:var(--t3)">' + lab + '</div><div style="font-size:14px;color:var(--t1)">' + esc(val) + '</div></div></label>'; };
+    el.innerHTML = '<div style="font-size:12px;color:var(--t2);margin-bottom:6px">From ' + esc(cleanName(from.n)) + ' (' + esc(from.m) + '). Ticked: what this ball is missing; the release date is off because colors come out at different times.</div>' +
+      CP_FIELDS.filter(function (f) { return src[f[0]]; }).map(function (f) { return line(f[0], f[1] + (cur[f[0]] ? ' (now: ' + cur[f[0]] + ')' : ''), src[f[0]], !cur[f[0]] && f[0] !== 'released'); }).join('') +
+      (ws.length ? line('weights', 'RG / Diff (' + ws.length + ' weight' + (ws.length === 1 ? '' : 's') + ')', ws.map(function (w) { var x = src.weights[w]; return w + ': ' + (x.RG != null ? Number(x.RG).toFixed(3) : '\u2014') + ' / ' + (x.Diff != null ? Number(x.Diff).toFixed(3) : '\u2014'); }).join(' \u00b7 '), !Object.keys(cur.weights || {}).length) : '') +
+      '<button class="btn btn-primary" style="width:100%;margin-top:10px" onclick="wtCopyGo()">Copy ticked</button><button class="btn btn-secondary" style="width:100%;margin-top:8px" onclick="wtCopyBack()">\u2039 Pick another ball</button>';
+  }
+  function wtCopyBack() { if (_cp) { _cp.from = null; cpPaint(); } }
+  /* copy fields into a ball's read; only: list of keys, or null for "whatever it is missing (not the date)" */
+  function cpApply(fromE, toE, only) {
+    var src = cpSpecsOf(fromE), cur = (rvMerged(toE) || { sp: {} }).sp, f = _wb.found[toE.i], n = 0;
+    if (!f) f = _wb.found[toE.i] = { fields: {}, weights: {}, source: cpSourceOf(fromE), host: '', how: 'copy', nameSeen: true };
+    f.fields = f.fields || {}; f.weights = f.weights || {};
+    CP_FIELDS.forEach(function (x) { var k = x[0]; if (!src[k]) return; if (only ? only.indexOf(k) < 0 : (cur[k] || k === 'released')) return; f.fields[k] = src[k]; n++; });
+    if ((only ? only.indexOf('weights') >= 0 : !Object.keys(cur.weights || {}).length) && src.weights) Object.keys(src.weights).forEach(function (w) { f.weights[w] = Object.assign({}, src.weights[w]); n++; });
+    f.from = cleanName(fromE.n); if (!f.warn) f.warn = 'Copied from ' + f.from + ' (same specs, another color): check anything that differs.';
+    return n;
+  }
+  function wtCopyGo() {
+    if (!_cp || !_cp.from) return;
+    var only = Array.prototype.slice.call(document.querySelectorAll('[data-cp]')).filter(function (x) { return x.checked; }).map(function (x) { return x.getAttribute('data-cp'); });
+    var from = A.byIdIn(_cp.rows, _cp.from), to = A.byIdIn(_cp.rows, _cp.id);
+    var n = only.length ? cpApply(from, to, only) : 0;
+    if (root.closeModal) root.closeModal(); rvPaint(); paint();
+    if (root.toast) root.toast(n ? 'Copied from ' + cleanName(from.n) + ' (not saved until Accept)' : 'Nothing ticked');
+  }
+  /* after Accept: give these specs to the other colors that are missing them */
+  function cpOfferAfter(e) {
+    if (!root.openModal) return;
+    A.catLoad().then(function (rows) {
+      var sib = cpSiblings(e, rows).filter(function (r) { return A.catIsHeld(r) && !A.catIsRejected(r); }); if (!sib.length) return;
+      loadDetails(sib.concat([e])).then(function () {
+        var need = sib.filter(function (r) { var m = rvMerged(r); return m && m.miss.length; }); if (!need.length) return;
+        _cp = { id: e.i, rows: rows, give: need.map(function (r) { return r.i; }), on: {} };
+        root.openModal('<div class="modal-title">Same specs for the other colors?</div><div style="font-size:12px;color:var(--t2);margin-bottom:6px">' + esc(cleanName(e.n)) + ': ' + esc(cpSummary(cpSpecsOf(e))) + '. Tick the colors that are the same ball; each gets only what it is missing (not the release date), and is saved like an Accept.</div>' +
+          need.map(function (r, i) { var m = rvMerged(r); return '<label style="display:flex;gap:10px;align-items:center;padding:7px 0;border-bottom:1px solid var(--border1)"><input type="checkbox" onchange="wtGiveTick(' + i + ',this.checked)" style="width:20px;height:20px"><div style="flex:1;min-width:0"><div style="font-size:14px;color:var(--t1)">' + esc(cleanName(r.n)) + (r.y ? ' <span style="color:var(--t3)">\u00b7 ' + esc(r.y) + '</span>' : '') + '</div><div style="font-size:11px;color:var(--gold)">needs ' + esc(m.miss.join(', ')) + '</div></div></label>'; }).join('') +
+          '<button class="btn btn-primary" style="width:100%;margin-top:10px" onclick="wtGiveGo()">Give to ticked</button><button class="btn btn-secondary" style="width:100%;margin-top:8px" onclick="closeModal()">None of these</button>');
+      });
+    });
+  }
+  function wtGiveTick(i, on) { if (_cp && _cp.give) { if (on) _cp.on[i] = 1; else delete _cp.on[i]; } }
+  function wtGiveGo() {
+    if (!_cp || !_cp.give) return;
+    var rows = _cp.rows, from = A.byIdIn(rows, _cp.id), ids = Object.keys(_cp.on).map(function (i) { return _cp.give[+i]; });
+    if (root.closeModal) root.closeModal(); if (!ids.length) return;
+    var res = [];
+    ids.reduce(function (p, id) { return p.then(function () { var e = A.byIdIn(rows, id); if (!e || !cpApply(from, e, null)) return; return rvAcceptOne(e, false).then(function (r) { res.push(r); }, function () {}); }); }, Promise.resolve())
+      .then(function () { var n = rvLog(res, 'Same specs as ' + cleanName(from.n)); paint(); if (root.toast) root.toast('Specs saved on ' + n.specs + ' more color' + (n.specs === 1 ? '' : 's') + (n.ticks ? '' : '') + ' \u00b7 undo from the Change log'); });
+  }
+
+  /* ---------- v30.218 ROW-1: work a ball from the group list without opening its card ---------- */
+  function wtRowAccept(id) { wtKeep(id);
+    A.catLoad().then(function (rows) { var e = A.byIdIn(rows, id); if (!e) return;
+      rvAcceptOne(e, false).then(function (r) { rvLog([r], cleanName(e.n)); paint();
+        var bits = [r.specs && 'specs', r.ticks && 'ticked in Spec approvals', r.pic && 'picture', r.core && 'core picture'].filter(Boolean);
+        if (root.toast) root.toast(bits.length ? 'Saved: ' + bits.join(', ') : 'Nothing new to save');
+        if (r.core) A.catCoreShareOffer(r.core.brand, r.core.name, r.core); else if (r.specs) cpOfferAfter(e);
+      }, function (er) { if (root.toast) root.toast('Not saved: ' + (er && er.message)); }); });
   }
 
   function updLine() { var t = A.catUpdateLine ? A.catUpdateLine() : ''; return t ? '<div onclick="catUpdateOpen()" style="margin:0 16px 8px;padding:7px 10px;border-radius:9px;background:var(--bg2);border:1px solid rgba(0,217,217,0.3);font-size:12px;color:var(--t1);cursor:pointer">' + esc(t) + ' \u203a</div>' : ''; }
@@ -1205,8 +1342,8 @@
   root.wbRvPastePic = wbRvPastePic; root.wbRvPhoto = wbRvPhoto; root.wbRvPasteSpecs = wbRvPasteSpecs; root.wbRvPdf = wbRvPdf; root.wbRvEdit = wbRvEdit; root.wbRvAccept = wbRvAccept; root.wbRvDisc = wbRvDisc; root.wbRvReject = wbRvReject;
   root._wbt = { mergeFound: mergeFound, rvStage: function (e) { return rvStage(e); }, rv: _rv, wb: _wb };
   root.wtShow = wtShow; root.wtScope = wtScope; root.wtBrand = wtBrand; root.wtQ = wtQ; root.wtPage = wtPage; root.wtCard = wtCard; root.wtApprove = wtApprove;
-  root.wtFetch = wtFetch; root.wtMarkAsk = wtMarkAsk; root.wtMark = wtMark; root.wbBwRead = wbBwRead; root.wtEdit = wtEdit; root.wtEditGo = wtEditGo; root.wtEditW = wtEditW; root.wtEditWGo = wtEditWGo; root.wtPicClear = wtPicClear; root.wtPageDisc = wtPageDisc; root.wtPageRegion = wtPageRegion;
-  root._wbw = { looseMatch: looseMatch, looseMap: looseMap, grpOf: grpOf, specConf: specConf, picConf: picConf, bwPageUrl: bwPageUrl, bwOpen: bwOpen, bwApply: bwApply, wt: _wt, GRP: GRP };
+  root.wtFetch = wtFetch; root.wtMarkAsk = wtMarkAsk; root.wtMark = wtMark; root.wbBwRead = wbBwRead; root.wtCopyOpen = wtCopyOpen; root.wtCopySearch = wtCopySearch; root.wtCopyPick = wtCopyPick; root.wtCopyBack = wtCopyBack; root.wtCopyGo = wtCopyGo; root.wtGiveTick = wtGiveTick; root.wtGiveGo = wtGiveGo; root.wtRowAccept = wtRowAccept; root.wtEdit = wtEdit; root.wtEditGo = wtEditGo; root.wtEditW = wtEditW; root.wtEditWGo = wtEditWGo; root.wtPicClear = wtPicClear; root.wtPageDisc = wtPageDisc; root.wtPageRegion = wtPageRegion;
+  root._wbw = { sameModel: sameModel, cpApply: cpApply, cpOfferAfter: cpOfferAfter, looseMatch: looseMatch, looseMap: looseMap, grpOf: grpOf, specConf: specConf, picConf: picConf, bwPageUrl: bwPageUrl, bwOpen: bwOpen, bwApply: bwApply, wt: _wt, GRP: GRP };
   root.wbRepaint = function () { if (document.getElementById('wb-ov')) paint(); };
   root.wbOpen = wbOpen; root.wbClose = wbClose; root.wbTab = wbTab; root.wbGroup = wbGroup; root.wbBrand = wbBrand; root.wbYear = wbYear; root.wbState = wbState;
   root.wbQ = wbQ; root.wbPage = wbPage; root.wbSel = wbSel; root.wbSelAll = wbSelAll; root.wbSelNone = wbSelNone; root.wbOpenBall = wbOpenBall; root.wbPaste = wbPaste;
