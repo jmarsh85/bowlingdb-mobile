@@ -776,5 +776,44 @@
   "source": "maker",
   "note": "from hammerbowling.com",
   "at": "2026-10-24"
+ },
+ "columbia-300-the-beast-lime-sky-black": {
+  "coverName": "Bend-It",
+  "coverType": "Hybrid Reactive",
+  "finish": "500 Siaair / Crown Factory Compound / Crown Factory Polish",
+  "core": "Beast",
+  "weights": {
+   "10": {
+    "RG": 2.8,
+    "Diff": 0.002
+   },
+   "11": {
+    "RG": 2.769,
+    "Diff": 0.002
+   },
+   "12": {
+    "RG": 2.62,
+    "Diff": 0.033
+   },
+   "13": {
+    "RG": 2.59,
+    "Diff": 0.033
+   },
+   "14": {
+    "RG": 2.54,
+    "Diff": 0.033
+   },
+   "15": {
+    "RG": 2.54,
+    "Diff": 0.033
+   },
+   "16": {
+    "RG": 2.54,
+    "Diff": 0.033
+   }
+  },
+  "source": "maker",
+  "note": "from columbia300.com",
+  "at": "2026-10-24"
  }
 }
