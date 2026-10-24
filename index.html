@@ -1,6 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>
+/* v30.223 BOOT-1: if the app doesn't start (a file that failed to update, a cached mix of old and new
+   files, a script error), show what happened and three ways out instead of a blank home screen.
+   Plain old JavaScript on purpose, in its own script tag, so it still runs when the main script can't.
+   The app sets window.__bdbBoot when it has drawn its home screen. Your data (localStorage, IndexedDB)
+   is never touched by "Fresh files". */
+(function () {
+  var errs = [], shown = false;
+  window.addEventListener('error', function (e) {
+    var t = e && e.target;
+    if (t && t !== window && t.tagName === 'SCRIPT') { errs.push('file did not load: ' + String(t.src || '').split('/').pop()); return; }
+    if (e && e.message) errs.push(e.message + (e.filename ? ' (' + String(e.filename).split('/').pop().split('?')[0] + ':' + e.lineno + ')' : ''));
+  }, true);
+  window.addEventListener('unhandledrejection', function (e) { var r = e && e.reason; if (!window.__bdbBoot) errs.push('promise: ' + ((r && r.message) || r)); });
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function show() {
+    if (window.__bdbBoot || shown || !document.body) return; shown = true;
+    var d = document.createElement('div');
+    d.id = 'bdb-boot-fail';
+    d.style.cssText = 'position:fixed;inset:0;z-index:99999;background:#0d1014;color:#e8eaf0;font:15px -apple-system,system-ui,sans-serif;padding:max(24px,env(safe-area-inset-top)) 20px 24px;overflow-y:auto;line-height:1.45';
+    var b = 'display:block;width:100%;margin-top:10px;padding:13px;border-radius:12px;border:1px solid #2a3340;font:600 15px -apple-system,system-ui,sans-serif;';
+    d.innerHTML = '<div style="font-size:22px;font-weight:800">BowlingDB didn\u2019t start</div>' +
+      '<div style="color:#9aa3b2;margin-top:6px">Your games and balls are stored on this phone and are not affected. Usually this is an update that arrived half-way (some files new, some old) or a file that failed to upload.</div>' +
+      '<div style="margin-top:12px;padding:10px;border-radius:10px;background:#161b22;font:12px ui-monospace,Menlo,monospace;color:#f0b35a;white-space:pre-wrap;word-break:break-word">' + esc(errs.length ? errs.slice(0, 6).join('\n') : 'No error was reported: the main script may not have loaded at all.') + '</div>' +
+      '<button style="' + b + 'background:#103a3a;color:#5fe0d0" onclick="location.reload()">Try again</button>' +
+      '<button style="' + b + 'background:#161b22;color:#e8eaf0" onclick="bdbBootFresh()">Fresh files (clears the offline copy, keeps your data)</button>' +
+      '<button style="' + b + 'background:#161b22;color:#e8eaf0" onclick="bdbBootBackup()">Save a safety copy of my data</button>' +
+      '<button style="' + b + 'background:transparent;color:#9aa3b2" onclick="document.getElementById(\'bdb-boot-fail\').remove()">Show the app anyway</button>' +
+      '<div id="bdb-boot-msg" style="color:#9aa3b2;font-size:13px;margin-top:10px"></div>' +
+      '<div style="color:#6b7385;font-size:12px;margin-top:14px">Screenshot this screen for help. Build: ' + esc(document.title || '') + '</div>';
+    document.body.appendChild(d);
+  }
+  function msg(t) { var m = document.getElementById('bdb-boot-msg'); if (m) m.textContent = t; }
+  window.bdbBootFresh = function () {
+    msg('Clearing the offline copy\u2026');
+    var jobs = [];
+    try { if (navigator.serviceWorker && navigator.serviceWorker.getRegistrations) jobs.push(navigator.serviceWorker.getRegistrations().then(function (rs) { return Promise.all(rs.map(function (r) { return r.unregister(); })); })); } catch (e) {}
+    try { if (window.caches && caches.keys) jobs.push(caches.keys().then(function (ks) { return Promise.all(ks.map(function (k) { return caches.delete(k); })); })); } catch (e) {}
+    Promise.all(jobs).then(function () { location.replace(location.pathname + '?fresh=' + Date.now()); }, function () { location.reload(); });
+  };
+  window.bdbBootBackup = function () {
+    msg('Collecting\u2026');
+    var out = { kind: 'bowlingdb-emergency-copy', at: new Date().toISOString(), localStorage: {}, idb: {}, skipped: 0 };
+    try { for (var i = 0; i < localStorage.length; i++) { var k = localStorage.key(i); if (!/^bdbgh_|ai_key/.test(k)) out.localStorage[k] = localStorage.getItem(k); } } catch (e) {}
+    var done = function () {
+      try {
+        var blob = new Blob([JSON.stringify(out)], { type: 'application/json' }), a = document.createElement('a');
+        a.href = URL.createObjectURL(blob); a.download = 'BowlingDB_SafetyCopy_' + out.at.slice(0, 10) + '.json'; document.body.appendChild(a); a.click();
+        msg('Saved' + (out.skipped ? ' (' + out.skipped + ' pictures left out)' : '') + '. Keep it until the app opens normally again.');
+      } catch (e) { msg('Could not save: ' + e.message); }
+    };
+    try {
+      var rq = indexedDB.open('BowlingDB');
+      rq.onerror = done;
+      rq.onsuccess = function () {
+        var db = rq.result, names = Array.prototype.slice.call(db.objectStoreNames || []), left = names.length;
+        if (!left) return done();
+        names.forEach(function (n) {
+          try {
+            var all = db.transaction(n, 'readonly').objectStore(n).getAll();
+            all.onsuccess = function () { out.idb[n] = (all.result || []).map(function (r) { return JSON.parse(JSON.stringify(r, function (k, v) { if (v instanceof Blob) { out.skipped++; return null; } return v; })); }); if (!--left) done(); };
+            all.onerror = function () { if (!--left) done(); };
+          } catch (e) { if (!--left) done(); }
+        });
+      };
+    } catch (e) { done(); }
+  };
+  window.addEventListener('load', function () { setTimeout(show, 3000); });
+  setTimeout(show, 12000);   // in case "load" never comes
+})();
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -3457,10 +3528,10 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
 /* v30.169: ONE place for the version. The header, the home screen label, the
    page title and backups all read these, so nothing can go stale on an update.
    Bump both lines (and CATALOG_JS_VERSION in catalog.js when it changes). */
-const APP_VERSION = 'v30.222';
-const APP_BUILD_DATE = '2026-10-22';
+const APP_VERSION = 'v30.223';
+const APP_BUILD_DATE = '2026-10-24';
 /* catalog.js this build expects; an older file on the server shows a warning */
-const EXPECTED_CATALOG_JS = 'v30.222';
+const EXPECTED_CATALOG_JS = 'v30.223';
 function applyAppVersion() {
 const ref = document.getElementById('hdr-build-ref');
 const cat = (typeof window.CATALOG_JS_VERSION === 'string') ? window.CATALOG_JS_VERSION : null;
@@ -30260,6 +30331,7 @@ applyTheme();
 applyCustomPinColors();
 renderHome();
 renderNavGrid();
+window.__bdbBoot = 1;   // v30.223 BOOT-1: home drawn, the startup guard stands down
 
 
 loadScoringData().then(async () => { renderHome(); fixPrecisionDup185(); fixBallText189(); await fixNoTap191(); await fixPinPalShape197(); await fixLeaveIDs196(); renderHome(); }).catch(() => {});
