@@ -10,7 +10,7 @@
    Uses catalog.js through root._catAPI only. Design: DESIGN_add_ball_flow sections 50-55. */
 (function (root) {
   'use strict';
-  var WB_VERSION = 'v30.222';
+  var WB_VERSION = 'v30.223';
   var A = root._catAPI;
   if (!A) { if (root.toast) root.toast('Workbench needs catalog.js ' + WB_VERSION); return; }
   var esc = A.esc, jsq = A.jsq, norm = A.norm, cleanName = A.cleanName;
@@ -713,7 +713,7 @@
   function wtGroupList(rows, gk) {
     var q = norm(_wt.q || '');
     return wtHeld(rows).filter(function (e) {
-      if (gk === 'parked') { if (!wtParked(e)) return false; } else if (!(_wt.scope === 'all' ? !wtParked(e) : wtQueue(e)) || (grpOf(e) !== gk && !(_wt.keep && _wt.keep[gk + '|' + e.i]))) return false;
+      if (gk === 'reads') { if (!_wb.found[e.i]) return false; } else if (gk === 'parked') { if (!wtParked(e)) return false; } else if (!(_wt.scope === 'all' ? !wtParked(e) : wtQueue(e)) || (grpOf(e) !== gk && !(_wt.keep && _wt.keep[gk + '|' + e.i]))) return false;
       return wtBrandOk(e) && (!q || norm(e.m + ' ' + e.n).indexOf(q) >= 0);
     }).sort(function (a, b) { return String(b.y || '').localeCompare(String(a.y || '')) || String(a.m).localeCompare(String(b.m)) || cleanName(a.n).localeCompare(cleanName(b.n)); });
   }
@@ -754,12 +754,13 @@
       '<div style="font-size:13px;color:var(--t1);line-height:1.5;margin-bottom:8px"><b>' + held.length + '</b> balls are waiting to get into Add a Ball. ' +
         (_wt.scope === 'all' ? 'Showing <b>' + total + '</b>: every held ball except those not out yet \u00b7 <span onclick="wtScope(\'queue\')" style="color:var(--teal);cursor:pointer">Current US only</span>' :
           '<b>' + inQ.length + '</b> are current US balls (below) \u00b7 <span onclick="wtScope(\'all\')" style="color:var(--teal);cursor:pointer">Show all ' + (held.length - parked.length) + '</span>') + '</div>' +
+      (Object.keys(_wb.found).length ? '<div onclick="wtShow(\'reads\')" style="display:flex;gap:8px;padding:10px 12px;border:1px solid #7aa7ff;border-radius:12px;margin-bottom:8px;cursor:pointer"><div style="flex:1;font-size:13px;color:#7aa7ff">Reads not saved yet (from PDFs, pastes, copies)</div><div style="font-size:15px;font-weight:800;color:#7aa7ff">' + Object.keys(_wb.found).length + ' \u203a</div></div>' : '') +
       GRP.map(line).join('') +
       (parked.length ? '<div onclick="wtShow(\'parked\')" style="display:flex;gap:8px;padding:10px 12px;border:1px dashed var(--border1);border-radius:12px;margin-bottom:8px;cursor:pointer"><div style="flex:1;font-size:13px;color:var(--t2)">Not out yet (parked)</div><div style="font-size:15px;font-weight:800;color:var(--t2)">' + parked.length + ' \u203a</div></div>' : '') +
       (_wt.scope !== 'all' && other ? '<div style="font-size:12px;color:var(--t3);line-height:1.5;margin-top:4px">' + other + ' more are likely discontinued or international: settle them in Triage, or Show all.</div>' : '') +
       '<div style="font-size:11px;color:var(--t3);line-height:1.5;margin-top:10px">Confidence: <span style="color:var(--teal)">high</span> = published, yours or a maker auto-match \u00b7 <span style="color:#7aa7ff">med</span> = a read that names the ball \u00b7 <span style="color:var(--gold)">low</span> = a near match to check. <b>Approve all</b> saves what was found and puts each ball in Add a Ball. Every change can be undone: More \u203a Change log.</div></div>';
   }
-  function wtName(gk) { if (gk === 'parked') return 'Not out yet'; var g = GRP.filter(function (x) { return x[0] === gk; })[0]; return g ? g[1] : gk; }
+  function wtName(gk) { if (gk === 'reads') return 'Reads not saved yet'; if (gk === 'parked') return 'Not out yet'; var g = GRP.filter(function (x) { return x[0] === gk; })[0]; return g ? g[1] : gk; }
   function wtListHTML(rows) {
     var list = wtGroupList(rows, _wt.open), pages = Math.max(1, Math.ceil(list.length / PAGE)); if (_wt.page >= pages) _wt.page = pages - 1;
     var shown = list.slice(_wt.page * PAGE, (_wt.page + 1) * PAGE), fams = {}, brands = {};
@@ -774,12 +775,13 @@
       var picSt = function (found, saved, miss, clr) { return found ? '<span style="font-size:12px;color:#7aa7ff">found</span> <span onclick="' + clr + '" style="color:var(--red);font-size:12px;cursor:pointer">\u2715</span>' : saved ? '<span style="font-size:12px;color:var(--teal)">\u2713 saved</span>' : miss ? '<span style="font-size:11px;color:var(--gold)">not on bowwwl</span>' : ''; };
       var cpic = rvCorePic(e, m.sp);
       var th = function (u) { return '<img src="' + esc(u) + '" referrerpolicy="no-referrer" style="width:40px;height:40px;border-radius:50%;object-fit:contain;background:#fff;flex-shrink:0">'; };
-      return '<div style="padding:9px 2px;border-bottom:1px solid var(--border1)"><div onclick="wtCard(\'' + jsq(_wt.open) + '\',\'' + idq + '\')" style="display:flex;gap:10px;align-items:center;cursor:pointer">' + (_rv.pic[e.i] ? th(_rv.pic[e.i].url) : A.thumbHTML(e, 40)) + (cpic ? th(cpic) : '') +
+      return '<div style="padding:9px 2px;border-bottom:1px solid var(--border1)"><div onclick="wtCard(\'' + jsq(_wt.open) + '\',\'' + idq + '\')" style="display:flex;gap:10px;align-items:center;cursor:pointer">' + (_rv.pic[e.i] ? th(_rv.pic[e.i].url) : A.thumbHTML(e, 40)) +
         '<div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:600;color:var(--t1)">' + esc(cleanName(e.n)) + (k === 'upcoming' ? '<span style="' + A.CHIP_G + '">NOT OUT YET</span>' : '') + '</div>' +
         '<div style="font-size:12px;color:var(--t2)">' + esc(e.m) + (e.y ? ' \u00b7 ' + esc(e.y) : '') + '</div>' +
         '<div style="margin-top:3px">' + confChip('specs', sc) + confChip('picture', pc) + '</div></div></div>' +
         (m.miss.length ? '<div style="font-size:12px;color:var(--gold);margin-top:4px">needs ' + esc(m.miss.join(', ')) + (rvPicOf(e) ? '' : ', a cover picture') + '</div>' : !rvPicOf(e) ? '<div style="font-size:12px;color:var(--gold);margin-top:4px">needs a cover picture</div>' : '') +
         (_wb.found[e.i] ? '<div style="font-size:12px;color:#7aa7ff;margin-top:4px">read, not saved: ' + esc(foundLine(_wb.found[e.i])) + '</div>' : '') +
+        '<div style="margin-top:6px">' + wtPicStrip(e, 64) + '</div>' +
         rowLine('Specs', pill('Paste', "wbRvPasteSpecs('" + idq + "')") + pill('PDF', "wbRvPdf('" + idq + "')") + pill('Copy', "wtCopyOpen('" + idq + "')") +
           (_wb.found[e.i] ? pill('Changes', "wtCompare('" + idq + "')") : '')) +
         rowLine('Ball', picSt(_rv.pic[e.i], A.catImageStored(e.i), missFresh(_rv.miss[e.i]), "wtPicClear('" + idq + "','cover')") + pill('bowwwl', "wtBwPic('" + idq + "')") + pill('Paste', "wbRvPastePic('" + idq + "','cover')") + pill('Photo', "wbRvPhoto('" + idq + "','cover')")) +
@@ -801,7 +803,7 @@
       (pages > 1 ? '<div style="display:flex;gap:8px;align-items:center;padding:6px 16px 0"><button style="' + A.BTN_G + 'flex:1;padding:9px" ' + (_wt.page ? '' : 'disabled ') + 'onclick="wtPage(-1)">\u2039 Prev</button><span style="font-size:12px;color:var(--t2);min-width:70px;text-align:center">' + (_wt.page + 1) + ' of ' + pages + '</span><button style="' + A.BTN_G + 'flex:1;padding:9px" ' + (_wt.page < pages - 1 ? '' : 'disabled ') + 'onclick="wtPage(1)">Next \u203a</button></div>' : '') +
       '<div style="display:flex;gap:8px;padding:10px 16px 0;margin-top:6px;border-top:1px solid var(--border1)"><button onclick="wtRunStart(\'' + jsq(_wt.open) + '\')" style="' + A.BTN_P + 'flex:1;padding:10px;font-size:13px">Saving run: one page after another</button></div>' +
       '<div style="display:flex;gap:8px;padding:8px 16px 10px"><button onclick="wtImportPdfs()" style="' + A.BTN_G + 'flex:1;padding:10px;font-size:13px">Import PDFs</button><button onclick="wtCard(\'' + jsq(_wt.open) + '\')" style="' + A.BTN_G + 'flex:1;padding:10px;font-size:13px">One by one</button>' +
-        (_wt.open === 'ready' ? '<button onclick="wtApprove()" style="' + A.BTN_P + 'flex:1;padding:10px;font-size:13px">Approve all ' + list.length + '</button>' : '<button onclick="wtMarkAsk(\'' + jsq(_wt.open) + '\')" style="' + A.BTN_G + 'flex:1;padding:10px;font-size:13px">Mark all ' + list.length + '\u2026</button>') + '</div>';
+        (_wt.open === 'reads' ? '<button onclick="wtReadsGo()" style="' + A.BTN_P + 'flex:1;padding:10px;font-size:13px">Go through changes (' + list.length + ')</button>' : _wt.open === 'ready' ? '<button onclick="wtApprove()" style="' + A.BTN_P + 'flex:1;padding:10px;font-size:13px">Approve all ' + list.length + '</button>' : '<button onclick="wtMarkAsk(\'' + jsq(_wt.open) + '\')" style="' + A.BTN_G + 'flex:1;padding:10px;font-size:13px">Mark all ' + list.length + '\u2026</button>') + '</div>';
   }
   function wtShow(gk) { _wt.open = gk || ''; _wt.page = 0; _wt.keep = {}; paint(); var l = document.getElementById('wb-list'); if (l) l.scrollTop = 0; }
   function wtScope(s) { _wt.scope = s; paint(); }
@@ -1239,15 +1241,18 @@
         '<div style="font-size:13px;color:var(--t1);margin-top:4px">Tag as a ' + esc(rg) + ' release (leaves the US work queue)</div><div style="font-size:12px;color:var(--t3)">now: ' + esc(A.regionOf(e) || 'US / none') + '</div></div>';
       var qn = _wt.cqN ? (_wt.cqN - (_wt.cq ? _wt.cq.length : 0)) + ' of ' + _wt.cqN + ' \u00b7 ' : '';
       root.openModal('<div class="modal-title">What this read changes</div><div style="font-size:11px;color:var(--teal)">' + qn + '</div><div style="font-size:12px;color:var(--t3);margin-bottom:6px">' + esc(cleanName(e.n)) + ' \u00b7 from ' + esc(f.host || f.source || 'the page') + '</div>' +
+        wtPicStrip(e, 84) +
         (f.warn || f.nameSeen === false ? '<div style="font-size:12px;color:var(--gold);margin-bottom:6px">' + esc(f.warn || 'The page doesn\u2019t name this ball: check it is the right one.') + '</div>' : '') +
         '<div style="max-height:56vh;overflow-y:auto">' + html + '</div><div id="cmp-err" style="font-size:12px;color:var(--red);margin-top:6px"></div>' +
         '<button class="btn btn-primary" style="width:100%;margin-top:8px" onclick="wtCompareGo(\'' + jsq(id) + '\',\'save\')">Save ticked</button>' +
-        '<div style="display:flex;gap:8px;margin-top:8px"><button class="btn btn-ghost" style="flex:1" onclick="wtCompareGo(\'' + jsq(id) + '\',\'keep\')">Keep for later</button><button class="btn btn-secondary" style="flex:1" onclick="wtCompareGo(\'' + jsq(id) + '\',\'drop\')">Discard read</button></div>');
+        '<div style="display:flex;gap:8px;margin-top:8px"><button class="btn btn-ghost" style="flex:1" onclick="wtCompareGo(\'' + jsq(id) + '\',\'keep\')">Keep for later</button><button class="btn btn-secondary" style="flex:1" onclick="wtCompareGo(\'' + jsq(id) + '\',\'drop\')">Discard read</button></div>' +
+        (_wt.cq ? '<button class="btn btn-secondary" style="width:100%;margin-top:8px" onclick="wtCompareStop()">Stop here (the rest stay as reads)</button>' : ''));
     });
   }
   function wtCompareGo(id, how) {
     var f = _wb.found[id]; if (!f) { if (root.closeModal) root.closeModal(); return; }
     var nxt = function () { if (_wt.cq) setTimeout(wtCompareNext, 350); };   // v30.221: the next imported PDF
+    var cs = _wt.cqSt; if (cs && _wt.cq) cs[how === 'drop' ? 'dropped' : how === 'keep' ? 'kept' : 'saved']++;
     if (how === 'drop') { delete _wb.found[id]; if (root.closeModal) root.closeModal(); rvPaint(); paint(); nxt(); return; }
     var rgOn = document.getElementById('cmp-region'), rgTag = rgOn && rgOn.checked ? f.region : null;   // v30.220
     var err = document.getElementById('cmp-err'), on = {}, bad = null;
@@ -1335,15 +1340,53 @@
           _wb.busy = ''; paint();
           return loadDetails(got.map(function (id) { return A.byIdIn(rows, id); }).filter(Boolean));
         }).then(function () {
-          if (miss.length && root.toast) root.toast('Not matched to a ball: ' + miss.slice(0, 3).join(', ') + (miss.length > 3 ? ' +' + (miss.length - 3) : '') + ' \u00b7 use PDF on that ball\u2019s row', 7000);
-          if (!got.length) { if (!miss.length && root.toast) root.toast('No PDFs read'); return; }
-          _wt.cq = got.slice(); _wt.cqN = got.length; wtCompareNext();
+          var st = { files: fs.length, matched: got.length, miss: miss, cores: 0, saved: 0, kept: 0, dropped: 0 };
+          if (!got.length) return wtImportSummary(st, false);
+          _wb.busy = 'looking for core pictures'; paint();
+          return wtCoreProbe(got.map(function (id) { return A.byIdIn(rows, id); }).filter(Boolean)).then(function (n) {
+            st.cores = n; _wb.busy = ''; paint();
+            _wt.cq = got.slice(); _wt.cqN = got.length; _wt.cqSt = st; wtImportSummary(st, false);
+          });
         });
       });
     });
   }
+  function wtPicStrip(e, px) {
+    var m = rvMerged(e) || { sp: {} }, cov = rvPicOf(e), cor = rvCorePic(e, m.sp), ck = rvCoreKey(e, m.sp);
+    var box = function (u, lab, note) { return '<div style="text-align:center"><div style="width:' + px + 'px;height:' + px + 'px;border-radius:50%;background:' + (u ? '#fff' : 'var(--bg3)') + ';display:flex;align-items:center;justify-content:center;overflow:hidden;margin:0 auto">' + (u ? '<img src="' + esc(u) + '" referrerpolicy="no-referrer" style="width:100%;height:100%;object-fit:contain">' : '<span style="font-size:10px;color:var(--t3);padding:4px">' + note + '</span>') + '</div><div style="font-size:10px;color:var(--t3);margin-top:2px">' + lab + '</div></div>'; };
+    return '<div style="display:flex;gap:14px;justify-content:center;margin:4px 0 8px">' + box(cov, 'cover' + (_rv.pic[e.i] ? ' \u00b7 found' : cov ? ' \u00b7 saved' : ''), 'no cover picture') +
+      box(cor, 'core' + (ck && _rv.core[ck] ? ' \u00b7 found' : cor ? ' \u00b7 saved' : ''), m.sp.core ? 'no ' + esc(m.sp.core) + ' picture' : 'no core name') + '</div>';
+  }
+  function wtCoreProbe(list) {
+    var todo = list.filter(function (e) { var m = rvMerged(e), ck = m && rvCoreKey(e, m.sp); return ck && !rvCorePic(e, m.sp) && !missFresh(_rv.coreMiss[ck]); }), i = 0, n = 0;
+    var day = new Date().toISOString().slice(0, 10);
+    var one = function () {
+      if (i >= todo.length) return Promise.resolve();
+      var e = todo[i++], m = rvMerged(e), ck = rvCoreKey(e, m.sp);
+      return probeFirst(A.bowwwlCoreCandidates(e.m, m.sp.core)).then(function (u) { if (u) { _rv.core[ck] = { url: u, how: 'bowwwl', link: true, brand: e.m, name: m.sp.core }; delete _rv.coreMiss[ck]; n++; } else _rv.coreMiss[ck] = day; }, function () {}).then(one);
+    };
+    return Promise.all([one(), one(), one()]).then(function () { if (todo.length) rvSaveFinds(); return n; });
+  }
+  /* v30.223: what the import did, before (and after) going through it */
+  function wtImportSummary(st, final) {
+    if (!root.openModal) return;
+    var l = function (n, t, c) { return n ? '<div style="display:flex;gap:8px;padding:4px 0"><span style="min-width:28px;font-weight:800;color:' + (c || 'var(--t1)') + '">' + n + '</span><span style="color:var(--t2)">' + t + '</span></div>' : ''; };
+    var left = st.left != null ? st.left : (_wt.cq || []).length, reads = Object.keys(_wb.found).length;
+    root.openModal('<div class="modal-title">' + (final ? (st.stopped ? 'Run stopped' : 'Done') : 'PDFs read') + '</div>' +
+      l(st.files, 'PDF' + (st.files === 1 ? '' : 's') + ' picked') + l(st.matched, 'matched to a ball', 'var(--teal)') + l(st.miss.length, 'not matched', 'var(--gold)') +
+      (st.miss.length ? '<div style="font-size:11px;color:var(--t3);margin:0 0 6px 36px">' + st.miss.slice(0, 6).map(esc).join('<br>') + (st.miss.length > 6 ? '<br>+' + (st.miss.length - 6) + ' more' : '') + '<br>Use PDF on that ball’s row.</div>' : '') +
+      l(st.cores, 'core picture' + (st.cores === 1 ? '' : 's') + ' found on bowwwl', '#7aa7ff') +
+      (final ? l(st.saved, 'saved', 'var(--teal)') + l(st.kept, 'kept as a read (not saved)', '#7aa7ff') + l(st.dropped, 'discarded') + l(left, 'not looked at yet (kept as reads)', '#7aa7ff') : '') +
+      (final ? (reads ? '<button class="btn btn-primary" style="width:100%;margin-top:10px" onclick="closeModal();wtShow(\'reads\')">Show the ' + reads + ' ball' + (reads === 1 ? '' : 's') + ' with reads not saved</button>' : '') :
+        '<button class="btn btn-primary" style="width:100%;margin-top:10px" onclick="closeModal();setTimeout(wtCompareNext,300)">Go through the changes (' + st.matched + ')</button>' +
+        '<button class="btn btn-ghost" style="width:100%;margin-top:8px" onclick="wtRunLater()">Later: keep them as reads</button>') +
+      '<button class="btn btn-secondary" style="width:100%;margin-top:8px" onclick="closeModal()">Close</button>');
+  }
+  function wtRunLater() { _wt.cq = null; _wt.cqN = 0; if (root.closeModal) root.closeModal(); wtShow('reads'); }
+  function wtCompareStop() { var st = _wt.cqSt || { miss: [] }; st.stopped = true; st.left = (_wt.cq || []).length + 1; _wt.cq = null; _wt.cqN = 0; _wt.cqSt = null; if (root.closeModal) root.closeModal(); paint(); setTimeout(function () { wtImportSummary(st, true); }, 300); }
+  function wtReadsGo() { A.catLoad().then(function (rows) { var ids = wtGroupList(rows, 'reads').map(function (e) { return e.i; }); if (!ids.length) return; _wt.cq = ids; _wt.cqN = ids.length; _wt.cqSt = { files: 0, matched: 0, miss: [], cores: 0, saved: 0, kept: 0, dropped: 0 }; wtCompareNext(); }); }
   function wtCompareNext() {
-    if (!_wt.cq || !_wt.cq.length) { if (_wt.cqN && root.toast) root.toast('Done: ' + _wt.cqN + ' PDF' + (_wt.cqN === 1 ? '' : 's') + ' gone through'); _wt.cq = null; _wt.cqN = 0; paint(); return; }
+    if (!_wt.cq || !_wt.cq.length) { var st = _wt.cqSt; _wt.cq = null; _wt.cqN = 0; paint(); if (st) { _wt.cqSt = null; wtImportSummary(st, true); } return; }
     var id = _wt.cq.shift(); if (!_wb.found[id]) return wtCompareNext();
     wtKeep(id); wtCompare(id);
   }
@@ -1564,7 +1607,7 @@
   root.wbRvPastePic = wbRvPastePic; root.wbRvPhoto = wbRvPhoto; root.wbRvPasteSpecs = wbRvPasteSpecs; root.wbRvPdf = wbRvPdf; root.wbRvEdit = wbRvEdit; root.wbRvAccept = wbRvAccept; root.wbRvDisc = wbRvDisc; root.wbRvReject = wbRvReject;
   root._wbt = { mergeFound: mergeFound, rvStage: function (e) { return rvStage(e); }, rv: _rv, wb: _wb };
   root.wtShow = wtShow; root.wtScope = wtScope; root.wtBrand = wtBrand; root.wtQ = wtQ; root.wtPage = wtPage; root.wtCard = wtCard; root.wtApprove = wtApprove;
-  root.wtFetch = wtFetch; root.wtMarkAsk = wtMarkAsk; root.wtMark = wtMark; root.wbBwRead = wbBwRead; root.wtCompare = wtCompare; root.wtCompareGo = wtCompareGo; root.wtBwPic = wtBwPic; root.wtCopyOpen = wtCopyOpen; root.wtCopySearch = wtCopySearch; root.wtCopyPick = wtCopyPick; root.wtCopyBack = wtCopyBack; root.wtCopyGo = wtCopyGo; root.wtGiveTick = wtGiveTick; root.wtGiveGo = wtGiveGo; root.wtRowAccept = wtRowAccept; root.wtRunStart = wtRunStart; root.wtRunOpened = wtRunOpened; root.wtRunGo = wtRunGo; root.wtRunSite = wtRunSite; root.wtRunEnd = wtRunEnd; root.wtRunNotThere = wtRunNotThere; root.wtImportPdfs = wtImportPdfs; root.wtRowRelease = wtRowRelease; root.wtEdit = wtEdit; root.wtEditGo = wtEditGo; root.wtEditW = wtEditW; root.wtEditWGo = wtEditWGo; root.wtPicClear = wtPicClear; root.wtPageDisc = wtPageDisc; root.wtPageRegion = wtPageRegion;
+  root.wtFetch = wtFetch; root.wtMarkAsk = wtMarkAsk; root.wtMark = wtMark; root.wbBwRead = wbBwRead; root.wtCompare = wtCompare; root.wtCompareGo = wtCompareGo; root.wtBwPic = wtBwPic; root.wtCopyOpen = wtCopyOpen; root.wtCopySearch = wtCopySearch; root.wtCopyPick = wtCopyPick; root.wtCopyBack = wtCopyBack; root.wtCopyGo = wtCopyGo; root.wtGiveTick = wtGiveTick; root.wtGiveGo = wtGiveGo; root.wtRowAccept = wtRowAccept; root.wtCompareStop = wtCompareStop; root.wtReadsGo = wtReadsGo; root.wtRunLater = wtRunLater; root.wtCompareNext = wtCompareNext; root.wtRunStart = wtRunStart; root.wtRunOpened = wtRunOpened; root.wtRunGo = wtRunGo; root.wtRunSite = wtRunSite; root.wtRunEnd = wtRunEnd; root.wtRunNotThere = wtRunNotThere; root.wtImportPdfs = wtImportPdfs; root.wtRowRelease = wtRowRelease; root.wtEdit = wtEdit; root.wtEditGo = wtEditGo; root.wtEditW = wtEditW; root.wtEditWGo = wtEditWGo; root.wtPicClear = wtPicClear; root.wtPageDisc = wtPageDisc; root.wtPageRegion = wtPageRegion;
   root._wbw = { pdfTitle: pdfTitle, matchByFile: matchByFile, rvSetPic: rvSetPic, sameModel: sameModel, cpApply: cpApply, cpOfferAfter: cpOfferAfter, looseMatch: looseMatch, looseMap: looseMap, grpOf: grpOf, specConf: specConf, picConf: picConf, bwPageUrl: bwPageUrl, bwOpen: bwOpen, bwApply: bwApply, wt: _wt, GRP: GRP };
   root.wbRepaint = function () { if (document.getElementById('wb-ov')) paint(); };
   root.wbOpen = wbOpen; root.wbClose = wbClose; root.wbTab = wbTab; root.wbGroup = wbGroup; root.wbBrand = wbBrand; root.wbYear = wbYear; root.wbState = wbState;
