@@ -702,5 +702,46 @@
   "source": "maker",
   "note": "from motivbowling.com",
   "at": "2026-10-23"
+ },
+ "ebonite-gb4-game-breaker-4-pearl": {
+  "coverName": "GB 12.0 Pearl",
+  "coverType": "Pearl Reactive",
+  "finish": "500, 1000, 1500 Siaair / Crown Factory Compound",
+  "core": "Enhanced V2",
+  "coreType": "Symmetrical",
+  "released": "2022-02-25",
+  "weights": {
+   "10": {
+    "RG": 2.8,
+    "Diff": 0.002
+   },
+   "11": {
+    "RG": 2.769,
+    "Diff": 0.002
+   },
+   "12": {
+    "RG": 2.597,
+    "Diff": 0.04
+   },
+   "13": {
+    "RG": 2.574,
+    "Diff": 0.04
+   },
+   "14": {
+    "RG": 2.517,
+    "Diff": 0.048
+   },
+   "15": {
+    "RG": 2.48,
+    "Diff": 0.048
+   },
+   "16": {
+    "RG": 2.491,
+    "Diff": 0.041
+   }
+  },
+  "source": "maker",
+  "note": "from ebonite.com",
+  "at": "2026-10-24"
  }
 }
