@@ -743,5 +743,38 @@
   "source": "maker",
   "note": "from ebonite.com",
   "at": "2026-10-24"
+ },
+ "hammer-purple-reactive-solid": {
+  "coverName": "Reactive Solid",
+  "coverType": "Solid Reactive",
+  "finish": "500, 1500 Siaair Micro Pad",
+  "core": "LED",
+  "coreType": "Symmetrical",
+  "released": "2022-11-18",
+  "weights": {
+   "12": {
+    "RG": 2.592,
+    "Diff": 0.031
+   },
+   "13": {
+    "RG": 2.598,
+    "Diff": 0.025
+   },
+   "14": {
+    "RG": 2.605,
+    "Diff": 0.026
+   },
+   "15": {
+    "RG": 2.586,
+    "Diff": 0.027
+   },
+   "16": {
+    "RG": 2.541,
+    "Diff": 0.035
+   }
+  },
+  "source": "maker",
+  "note": "from hammerbowling.com",
+  "at": "2026-10-24"
  }
 }
