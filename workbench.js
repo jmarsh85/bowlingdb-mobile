@@ -10,7 +10,7 @@
    Uses catalog.js through root._catAPI only. Design: DESIGN_add_ball_flow sections 50-55. */
 (function (root) {
   'use strict';
-  var WB_VERSION = 'v30.220';
+  var WB_VERSION = 'v30.222';
   var A = root._catAPI;
   if (!A) { if (root.toast) root.toast('Workbench needs catalog.js ' + WB_VERSION); return; }
   var esc = A.esc, jsq = A.jsq, norm = A.norm, cleanName = A.cleanName;
@@ -245,6 +245,7 @@
       _wb.stagedP = A.apReadStaged().then(function (st) { var w = {}; (st || []).forEach(function (r) { if (r.decision === 'pending') { if (r.catalogId) w[r.catalogId] = 1; (r.candidates || []).forEach(function (id) { w[id] = 1; }); } }); _wb.staged = w; _wb.stagedRows = st;
         return A.catLoad().then(function (rows) { var h = wtHeld(rows).filter(function (e) { return !A.srvStagedRow(st, e.i); }); _wb.loose = looseMap(st, h); _wb.looseDone = _wb.looseDone || {}; paint(); }); }, function () {});
       bwResume();
+      if (runGet()) setTimeout(wtRunPaint, 600);   // v30.222: the saving run you left
     }
   }
   function wbClose() { var el = document.getElementById('wb-ov'); if (el) el.parentNode.removeChild(el); }
@@ -745,11 +746,11 @@
         '<div onclick="wtShow(\'' + g[0] + '\')" style="display:flex;align-items:baseline;gap:8px;cursor:pointer"><div style="flex:1;font-size:14px;font-weight:700;color:var(--t1)">' + esc(g[1]) + '</div><div style="font-size:17px;font-weight:800;color:var(--t1)">' + n + ' \u203a</div></div>' +
         (g[2] ? '<div style="font-size:12px;color:var(--t3);margin-top:2px;line-height:1.4">' + esc(g[2]) + '</div>' : '') +
         '<div style="display:flex;align-items:center;gap:6px;margin-top:6px;flex-wrap:wrap"><span style="flex:1;font-size:11px">' + (cc ? (/^(ready|specs|p)/.test(g[0]) ? 'specs ' : 'picture ') + cc : '') + '</span>' +
-        '<button style="' + A.BTN_G + 'padding:6px 10px;font-size:12px" onclick="wtCard(\'' + g[0] + '\')">One by one</button>' + act +
+        '<button style="' + A.BTN_G + 'padding:6px 10px;font-size:12px" onclick="wtCard(\'' + g[0] + '\')">One by one</button>' + (g[0] === 'ready' || g[0] === 'specs' ? '' : '<button style="' + A.BTN_G + 'padding:6px 10px;font-size:12px" onclick="wtRunStart(\'' + g[0] + '\')">Saving run</button>') + act +
         '<button style="' + A.BTN_G + 'padding:6px 10px;font-size:12px" onclick="wtMarkAsk(\'' + g[0] + '\')">Mark\u2026</button></div></div>';
     };
     var total = pool.length;
-    return head + tabs + '<div style="flex:1;overflow-y:auto;padding:0 16px 16px">' +
+    return head + tabs + '<div style="padding:0 16px 8px"><button onclick="wtImportPdfs()" style="' + A.BTN_P + 'width:100%;padding:10px;font-size:13px">Import PDFs (pick many from Files)</button></div>' + '<div style="flex:1;overflow-y:auto;padding:0 16px 16px">' +
       '<div style="font-size:13px;color:var(--t1);line-height:1.5;margin-bottom:8px"><b>' + held.length + '</b> balls are waiting to get into Add a Ball. ' +
         (_wt.scope === 'all' ? 'Showing <b>' + total + '</b>: every held ball except those not out yet \u00b7 <span onclick="wtScope(\'queue\')" style="color:var(--teal);cursor:pointer">Current US only</span>' :
           '<b>' + inQ.length + '</b> are current US balls (below) \u00b7 <span onclick="wtScope(\'all\')" style="color:var(--teal);cursor:pointer">Show all ' + (held.length - parked.length) + '</span>') + '</div>' +
@@ -798,7 +799,8 @@
       '<div style="padding:0 16px 4px;font-size:12px;color:var(--t2)">' + list.length + ' ball' + (list.length === 1 ? '' : 's') + (_wt.open !== 'parked' ? ' \u00b7 ' + (_wt.scope === 'all' ? 'all held' : 'current US') : '') + '</div>' +
       '<div id="wb-list" style="flex:1;overflow-y:auto;padding:0 16px 10px">' + (shown.length ? shown.map(row).join('') : '<div style="padding:30px 0;text-align:center;color:var(--t2);font-size:13px">Nothing here.</div>') + '</div>' +
       (pages > 1 ? '<div style="display:flex;gap:8px;align-items:center;padding:6px 16px 0"><button style="' + A.BTN_G + 'flex:1;padding:9px" ' + (_wt.page ? '' : 'disabled ') + 'onclick="wtPage(-1)">\u2039 Prev</button><span style="font-size:12px;color:var(--t2);min-width:70px;text-align:center">' + (_wt.page + 1) + ' of ' + pages + '</span><button style="' + A.BTN_G + 'flex:1;padding:9px" ' + (_wt.page < pages - 1 ? '' : 'disabled ') + 'onclick="wtPage(1)">Next \u203a</button></div>' : '') +
-      '<div style="display:flex;gap:8px;padding:10px 16px;border-top:1px solid var(--border1);margin-top:6px"><button onclick="wtCard(\'' + jsq(_wt.open) + '\')" style="' + A.BTN_G + 'flex:1;padding:10px;font-size:13px">One by one</button>' +
+      '<div style="display:flex;gap:8px;padding:10px 16px 0;margin-top:6px;border-top:1px solid var(--border1)"><button onclick="wtRunStart(\'' + jsq(_wt.open) + '\')" style="' + A.BTN_P + 'flex:1;padding:10px;font-size:13px">Saving run: one page after another</button></div>' +
+      '<div style="display:flex;gap:8px;padding:8px 16px 10px"><button onclick="wtImportPdfs()" style="' + A.BTN_G + 'flex:1;padding:10px;font-size:13px">Import PDFs</button><button onclick="wtCard(\'' + jsq(_wt.open) + '\')" style="' + A.BTN_G + 'flex:1;padding:10px;font-size:13px">One by one</button>' +
         (_wt.open === 'ready' ? '<button onclick="wtApprove()" style="' + A.BTN_P + 'flex:1;padding:10px;font-size:13px">Approve all ' + list.length + '</button>' : '<button onclick="wtMarkAsk(\'' + jsq(_wt.open) + '\')" style="' + A.BTN_G + 'flex:1;padding:10px;font-size:13px">Mark all ' + list.length + '\u2026</button>') + '</div>';
   }
   function wtShow(gk) { _wt.open = gk || ''; _wt.page = 0; _wt.keep = {}; paint(); var l = document.getElementById('wb-list'); if (l) l.scrollTop = 0; }
@@ -1235,7 +1237,8 @@
       var rg = f.region && A.regionOf(e) !== f.region ? f.region : null;
       if (rg) html += '<div style="padding:7px 0;border-bottom:1px solid var(--border1)"><label style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="cmp-region" checked style="width:20px;height:20px"><span style="font-size:12px;font-weight:700;color:var(--t2)">Region</span><span style="font-size:11px;color:var(--teal)">page says</span></label>' +
         '<div style="font-size:13px;color:var(--t1);margin-top:4px">Tag as a ' + esc(rg) + ' release (leaves the US work queue)</div><div style="font-size:12px;color:var(--t3)">now: ' + esc(A.regionOf(e) || 'US / none') + '</div></div>';
-      root.openModal('<div class="modal-title">What this read changes</div><div style="font-size:12px;color:var(--t3);margin-bottom:6px">' + esc(cleanName(e.n)) + ' \u00b7 from ' + esc(f.host || f.source || 'the page') + '</div>' +
+      var qn = _wt.cqN ? (_wt.cqN - (_wt.cq ? _wt.cq.length : 0)) + ' of ' + _wt.cqN + ' \u00b7 ' : '';
+      root.openModal('<div class="modal-title">What this read changes</div><div style="font-size:11px;color:var(--teal)">' + qn + '</div><div style="font-size:12px;color:var(--t3);margin-bottom:6px">' + esc(cleanName(e.n)) + ' \u00b7 from ' + esc(f.host || f.source || 'the page') + '</div>' +
         (f.warn || f.nameSeen === false ? '<div style="font-size:12px;color:var(--gold);margin-bottom:6px">' + esc(f.warn || 'The page doesn\u2019t name this ball: check it is the right one.') + '</div>' : '') +
         '<div style="max-height:56vh;overflow-y:auto">' + html + '</div><div id="cmp-err" style="font-size:12px;color:var(--red);margin-top:6px"></div>' +
         '<button class="btn btn-primary" style="width:100%;margin-top:8px" onclick="wtCompareGo(\'' + jsq(id) + '\',\'save\')">Save ticked</button>' +
@@ -1244,7 +1247,8 @@
   }
   function wtCompareGo(id, how) {
     var f = _wb.found[id]; if (!f) { if (root.closeModal) root.closeModal(); return; }
-    if (how === 'drop') { delete _wb.found[id]; if (root.closeModal) root.closeModal(); rvPaint(); paint(); return; }
+    var nxt = function () { if (_wt.cq) setTimeout(wtCompareNext, 350); };   // v30.221: the next imported PDF
+    if (how === 'drop') { delete _wb.found[id]; if (root.closeModal) root.closeModal(); rvPaint(); paint(); nxt(); return; }
     var rgOn = document.getElementById('cmp-region'), rgTag = rgOn && rgOn.checked ? f.region : null;   // v30.220
     var err = document.getElementById('cmp-err'), on = {}, bad = null;
     Array.prototype.slice.call(document.querySelectorAll('[data-cmp]')).forEach(function (x) { if (x.checked) on[x.getAttribute('data-cmp')] = 1; });
@@ -1259,15 +1263,16 @@
       if (Object.keys(y).length) wx[w] = y; });
     if (bad) { if (err) err.textContent = bad + '.'; return; }
     if (rgTag) A.catLoad().then(function (rows) { tagRegion([id], rgTag, rows); paint(); });
-    if (!Object.keys(fx).length && !Object.keys(wx).length) { if (how === 'keep' || rgTag) { if (root.closeModal) root.closeModal(); if (rgTag && root.toast) root.toast('Tagged ' + rgTag + ' release'); return; } if (err) err.textContent = 'Nothing ticked.'; return; }
+    if (!Object.keys(fx).length && !Object.keys(wx).length) { if (how === 'keep' || rgTag) { if (root.closeModal) root.closeModal(); if (rgTag && root.toast) root.toast('Tagged ' + rgTag + ' release'); nxt(); return; } if (err) err.textContent = 'Nothing ticked.'; return; }
     f.fields = fx; f.weights = wx;
     if (root.closeModal) root.closeModal();
-    if (how === 'keep') { rvPaint(); paint(); if (root.toast) root.toast('Kept as a read: not saved until Accept'); return; }
+    if (how === 'keep') { rvPaint(); paint(); if (root.toast && !_wt.cq) root.toast('Kept as a read: not saved until Accept'); nxt(); return; }
     A.catLoad().then(function (rows) { var e = A.byIdIn(rows, id); if (!e) return;
       rvAcceptOne(e, false).then(function (r) { rvLog([r], cleanName(e.n)); rvPaint(); paint();
         if (root.toast) root.toast(r.specs || r.ticks ? 'Saved' + (r.ticks ? ' (ticked in Spec approvals: Publish to finish)' : '') : 'Nothing new to save');
-        if (r.specs) cpOfferAfter(e);
-      }, function (er) { if (root.toast) root.toast('Not saved: ' + (er && er.message)); });
+        if (r.specs && !_wt.cq) cpOfferAfter(e);   // in a PDF run the other-colors offer waits (it would interrupt the run)
+        nxt();
+      }, function (er) { if (root.toast) root.toast('Not saved: ' + (er && er.message)); nxt(); });
     });
   }
   /* ---------- v30.219 ROW-2: bowwwl picture check for one ball, on tap ---------- */
@@ -1276,6 +1281,126 @@
       delete _rv.miss[id]; var m = rvMerged(e), ck = m && rvCoreKey(e, m.sp); if (ck) delete _rv.coreMiss[ck];
       _wb.fetchList = [e]; wbRvFetch(); });
   }
+
+  /* ---------- v30.221 IMP-1: import many saved PDFs at once, then go through what each changes ----------
+     Pick any number of PDFs from Files. Each is matched to a ball by its file name first (Safari names a
+     saved bowwwl page "Ebonite_Prime_Angular_One_Bowling_Ball__bowwwl_com.pdf": brand + ball), then by the
+     ball name inside the page. Then "What this read changes" opens for each in turn (1 of N). */
+  function pdfTitle(fn) {
+    return String(fn || '').replace(/\.pdf$/i, '').replace(/\s*\(\d+\)\s*$/, '')
+      .replace(/[_\s]+(?:bowling[_\s]+balls?)?[_\s]*(?:free[_\s]+shipping)?[_\s]*(?:bowwwl[_\s]*com|bowlingball[_\s]*com|bowling[_\s]*com|bowlersmart[_\s]*com)?[_\s]*$/i, '')
+      .replace(/[_\s]+bowling[_\s]+balls?$/i, '').replace(/_/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+  /* words of a title or page head; "GreenTealBlack" -> green teal black */
+  function imWords(t) { return lzToks(String(t || '').replace(/([a-z])([A-Z])/g, '$1 $2').replace(/\([^)]*\)/g, ' ')); }
+  function matchByFile(fn, cands) {
+    var title = pdfTitle(fn), t = norm(title), tw = imWords(title), best = null; if (t.length < 4) return null;
+    cands.forEach(function (e) {
+      var nm = norm(cleanName(e.n)), br = norm(e.m), full = br + nm, sc = 0;
+      if (t === full) sc = 1000; else if (t === nm) sc = 900; else if (t.indexOf(full) >= 0) sc = 800;
+      if (!sc) {   // every word of the ball's name is in the title (any order), the brand counts extra
+        var nw = imWords(cleanName(e.n));
+        if (nw.length && nm.length >= 4 && nw.every(function (w) { return tw.indexOf(w) >= 0; })) sc = 500 + nw.length * 10 + (tw.indexOf(imWords(e.m)[0]) >= 0 ? 5 : 0) - (tw.length - nw.length);
+      }
+      if (sc && (!best || sc > best.sc)) best = { e: e, sc: sc };
+    });
+    return best ? best.e : null;
+  }
+  /* the ball whose whole name (as words) appears in the page's first lines */
+  function matchText(text, cands) {
+    var head = ' ' + imWords(String(text || '').split('\n').slice(0, 60).join(' ')).join(' ') + ' ', best = null;
+    cands.forEach(function (e) {
+      var nw = imWords(cleanName(e.n)), nm = nw.join(' '); if (nm.length < 4) return;
+      if (head.indexOf(' ' + nm + ' ') < 0) return;
+      var sc = nm.length * 2 + (head.indexOf(' ' + imWords(e.m).join(' ') + ' ') >= 0 ? 1 : 0);
+      if (!best || sc > best.sc) best = { e: e, sc: sc };
+    });
+    return best ? best.e : null;
+  }
+  function wtImportPdfs() {
+    pickPdfs(true, function (fs) {
+      A.catLoad().then(function (rows) {
+        var held = wtHeld(rows), all = rows.filter(function (e) { return !e.a; }), got = [], miss = [];
+        _wb.busy = 'reading ' + fs.length + ' PDF' + (fs.length === 1 ? '' : 's'); paint();
+        fs.reduce(function (p, f, i) {
+          return p.then(function () { return A.spPdfFileText(f).then(function (t) {
+            if (!t) { miss.push(f.name); return; }
+            var e = matchByFile(f.name, held) || matchByFile(f.name, all) || matchText(t, held);
+            if (!e) { miss.push(f.name); return; }
+            var r = A.parseSpecText(t, 15, cleanName(e.n)); if (!Object.keys(r.fields || {}).length && !Object.keys(r.weights || {}).length) { miss.push(f.name + ' (no specs)'); return; }
+            _wb.found[e.i] = r; if (got.indexOf(e.i) < 0) got.push(e.i);
+            _wb.busy = 'read ' + (i + 1) + ' of ' + fs.length; paint();
+          }, function () { miss.push(f.name); }); });
+        }, Promise.resolve()).then(function () {
+          _wb.busy = ''; paint();
+          return loadDetails(got.map(function (id) { return A.byIdIn(rows, id); }).filter(Boolean));
+        }).then(function () {
+          if (miss.length && root.toast) root.toast('Not matched to a ball: ' + miss.slice(0, 3).join(', ') + (miss.length > 3 ? ' +' + (miss.length - 3) : '') + ' \u00b7 use PDF on that ball\u2019s row', 7000);
+          if (!got.length) { if (!miss.length && root.toast) root.toast('No PDFs read'); return; }
+          _wt.cq = got.slice(); _wt.cqN = got.length; wtCompareNext();
+        });
+      });
+    });
+  }
+  function wtCompareNext() {
+    if (!_wt.cq || !_wt.cq.length) { if (_wt.cqN && root.toast) root.toast('Done: ' + _wt.cqN + ' PDF' + (_wt.cqN === 1 ? '' : 's') + ' gone through'); _wt.cq = null; _wt.cqN = 0; paint(); return; }
+    var id = _wt.cq.shift(); if (!_wb.found[id]) return wtCompareNext();
+    wtKeep(id); wtCompare(id);
+  }
+
+  /* ---------- v30.222 RUN-1: a saving run: one ball after another, one tap to its page ----------
+     For a group: shows one ball, a big button that opens its page (bowwwl, the maker or a web search)
+     in Safari; you save the PDF there (Share › Save as PDF shortcut, or Options › PDF › Save to Files),
+     come back, and the next ball is up. Nothing is fetched by the app: each page is one you open.
+     Then Import PDFs reads the whole batch. The place in the run is kept on this phone. */
+  var RUN_KEY = 'bowlingdb_wb_run';
+  function runGet() { try { return JSON.parse(localStorage.getItem(RUN_KEY) || 'null'); } catch (e) { return null; } }
+  function runSet(r) { try { if (r) localStorage.setItem(RUN_KEY, JSON.stringify(r)); else localStorage.removeItem(RUN_KEY); } catch (e) {} }
+  function wtRunStart(gk) {
+    A.catLoad().then(function (rows) {
+      var l = wtGroupList(rows, gk).filter(function (e) { var m = rvMerged(e); return !_wb.found[e.i] && (!m || m.miss.length); });
+      if (!l.length) { if (root.toast) root.toast('Every ball here has a read or full specs'); return; }
+      var r = runGet(), site = (r && r.site) || 'bowwwl';
+      runSet({ gk: gk, ids: l.map(function (e) { return e.i; }), idx: 0, site: site, opened: {} });
+      wtRunPaint();
+    });
+  }
+  function runUrl(e, site) { var bw = A.bowwwlLinks(e.m, cleanName(e.n)); return site === 'maker' ? (bw.maker || bw.search) : site === 'web' ? webSearch(e) : bwPageUrl(e); }
+  function wtRunPaint() {
+    var r = runGet(); var ov = document.getElementById('run-ov');
+    if (!r) { if (ov) ov.parentNode.removeChild(ov); return; }
+    if (!ov) { ov = A.overlay('run-ov', 913); document.body.appendChild(ov); }
+    A.catLoad().then(function (rows) {
+      if (r.idx >= r.ids.length) {
+        ov.innerHTML = '<div style="display:flex;align-items:center;gap:10px;padding:12px 16px"><button style="' + A.BACK + '" onclick="wtRunEnd()">\u2039</button><div style="font-size:17px;font-weight:800;color:var(--t1)">Run finished</div></div>' +
+          '<div style="padding:20px 16px;font-size:14px;color:var(--t1);line-height:1.5">You opened ' + Object.keys(r.opened || {}).length + ' of ' + r.ids.length + ' pages. Now read them all in one go.</div>' +
+          '<div style="padding:0 16px"><button style="' + A.BTN_P + 'width:100%;padding:13px;font-size:15px" onclick="wtRunEnd();wtImportPdfs()">Import PDFs</button><button style="' + A.BTN_G + 'width:100%;padding:11px;margin-top:8px" onclick="wtRunGo(-1)">\u2039 Back to the last ball</button></div>';
+        return;
+      }
+      var e = A.byIdIn(rows, r.ids[r.idx]); if (!e) { r.idx++; runSet(r); return wtRunPaint(); }
+      var url = runUrl(e, r.site), done = r.opened && r.opened[e.i], has = !!_wb.found[e.i];
+      var siteB = function (k, t) { return '<button onclick="wtRunSite(\'' + k + '\')" style="' + (r.site === k ? A.BTN_P : A.BTN_G) + 'flex:1;padding:8px 2px;font-size:12px">' + t + '</button>'; };
+      ov.innerHTML = '<div style="display:flex;align-items:center;gap:10px;padding:12px 16px"><button style="' + A.BACK + '" onclick="wtRunEnd()">\u2039</button><div style="flex:1"><div style="font-size:17px;font-weight:800;color:var(--t1)">Saving run</div><div style="font-size:11px;color:var(--t3)">' + (r.idx + 1) + ' of ' + r.ids.length + ' \u00b7 ' + esc(wtName(r.gk)) + '</div></div>' +
+          '<button onclick="wtRunEnd();wtImportPdfs()" style="' + A.BTN_G + 'padding:7px 10px;font-size:12px">Import PDFs</button></div>' +
+        '<div style="display:flex;gap:6px;padding:0 16px 8px">' + siteB('bowwwl', 'bowwwl') + siteB('maker', 'Maker site') + siteB('web', 'Web search') + '</div>' +
+        '<div style="flex:1;overflow-y:auto;padding:8px 16px;text-align:center">' +
+          '<div style="display:flex;justify-content:center;margin:6px 0 10px">' + (rvPicOf(e) ? '<img src="' + esc(rvPicOf(e)) + '" referrerpolicy="no-referrer" style="width:120px;height:120px;border-radius:50%;object-fit:contain;background:#fff">' : A.thumbHTML(e, 120)) + '</div>' +
+          '<div style="font-size:20px;font-weight:800;color:var(--t1)">' + esc(cleanName(e.n)) + '</div><div style="font-size:13px;color:var(--t2)">' + esc(e.m) + (e.y ? ' \u00b7 ' + esc(e.y) : '') + '</div>' +
+          (done ? '<div style="font-size:12px;color:var(--teal);margin-top:6px">\u2713 opened' + (has ? ' \u00b7 read' : '') + '</div>' : '') +
+          '<a href="' + esc(url) + '" target="_blank" rel="noopener noreferrer" onclick="wtRunOpened()" style="display:block;margin-top:16px;' + A.BTN_P + 'padding:15px;font-size:16px;text-decoration:none">Open ' + (r.site === 'bowwwl' ? 'bowwwl page' : r.site === 'maker' ? 'maker site' : 'web search') + ' \u2197</a>' +
+          '<div style="font-size:12px;color:var(--t3);line-height:1.5;margin-top:10px">In Safari: Share \u203a your <b>Save as PDF</b> shortcut (or Options \u203a PDF \u203a Save to Files). Come back here and the next ball is ready.</div></div>' +
+        '<div style="display:flex;gap:8px;padding:10px 16px;border-top:1px solid var(--border1)"><button style="' + A.BTN_G + 'flex:1;padding:11px" ' + (r.idx ? '' : 'disabled ') + 'onclick="wtRunGo(-1)">\u2039 Back</button><button style="' + A.BTN_G + 'flex:1;padding:11px" onclick="wtRunGo(1)">Skip \u203a</button>' +
+          '<button style="' + A.BTN_G + 'flex:1;padding:11px" onclick="wtRunNotThere()">Not there</button></div>';
+    });
+  }
+  function wtRunOpened() { var r = runGet(); if (!r) return; (r.opened = r.opened || {})[r.ids[r.idx]] = 1; r.pend = 1; runSet(r); }
+  function wtRunGo(d) { var r = runGet(); if (!r) return; r.idx = Math.max(0, Math.min(r.ids.length, r.idx + d)); r.pend = 0; runSet(r); wtRunPaint(); }
+  function wtRunSite(k) { var r = runGet(); if (!r) return; r.site = k; runSet(r); wtRunPaint(); }
+  function wtRunEnd() { runSet(null); wtRunPaint(); paint(); }
+  /* the page wasn't there: try the next site for this ball, after the last site move on */
+  function wtRunNotThere() { var r = runGet(); if (!r) return; var nx = { bowwwl: 'maker', maker: 'web' }[r.site]; if (nx) { r.site = nx; runSet(r); wtRunPaint(); } else { r.site = 'bowwwl'; runSet(r); wtRunGo(1); } }
+  /* back from Safari: the next ball */
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState !== 'visible') return; var r = runGet(); if (!r || !r.pend || !document.getElementById('run-ov')) return; r.pend = 0; r.idx = Math.min(r.ids.length, r.idx + 1); runSet(r); wtRunPaint(); });
 
   function updLine() { var t = A.catUpdateLine ? A.catUpdateLine() : ''; return t ? '<div onclick="catUpdateOpen()" style="margin:0 16px 8px;padding:7px 10px;border-radius:9px;background:var(--bg2);border:1px solid rgba(0,217,217,0.3);font-size:12px;color:var(--t1);cursor:pointer">' + esc(t) + ' \u203a</div>' : ''; }
   function bucketName(k) { var b = BUCKETS.filter(function (x) { return x[0] === k; })[0]; return b ? b[1] : k; }
@@ -1439,8 +1564,8 @@
   root.wbRvPastePic = wbRvPastePic; root.wbRvPhoto = wbRvPhoto; root.wbRvPasteSpecs = wbRvPasteSpecs; root.wbRvPdf = wbRvPdf; root.wbRvEdit = wbRvEdit; root.wbRvAccept = wbRvAccept; root.wbRvDisc = wbRvDisc; root.wbRvReject = wbRvReject;
   root._wbt = { mergeFound: mergeFound, rvStage: function (e) { return rvStage(e); }, rv: _rv, wb: _wb };
   root.wtShow = wtShow; root.wtScope = wtScope; root.wtBrand = wtBrand; root.wtQ = wtQ; root.wtPage = wtPage; root.wtCard = wtCard; root.wtApprove = wtApprove;
-  root.wtFetch = wtFetch; root.wtMarkAsk = wtMarkAsk; root.wtMark = wtMark; root.wbBwRead = wbBwRead; root.wtCompare = wtCompare; root.wtCompareGo = wtCompareGo; root.wtBwPic = wtBwPic; root.wtCopyOpen = wtCopyOpen; root.wtCopySearch = wtCopySearch; root.wtCopyPick = wtCopyPick; root.wtCopyBack = wtCopyBack; root.wtCopyGo = wtCopyGo; root.wtGiveTick = wtGiveTick; root.wtGiveGo = wtGiveGo; root.wtRowAccept = wtRowAccept; root.wtRowRelease = wtRowRelease; root.wtEdit = wtEdit; root.wtEditGo = wtEditGo; root.wtEditW = wtEditW; root.wtEditWGo = wtEditWGo; root.wtPicClear = wtPicClear; root.wtPageDisc = wtPageDisc; root.wtPageRegion = wtPageRegion;
-  root._wbw = { rvSetPic: rvSetPic, sameModel: sameModel, cpApply: cpApply, cpOfferAfter: cpOfferAfter, looseMatch: looseMatch, looseMap: looseMap, grpOf: grpOf, specConf: specConf, picConf: picConf, bwPageUrl: bwPageUrl, bwOpen: bwOpen, bwApply: bwApply, wt: _wt, GRP: GRP };
+  root.wtFetch = wtFetch; root.wtMarkAsk = wtMarkAsk; root.wtMark = wtMark; root.wbBwRead = wbBwRead; root.wtCompare = wtCompare; root.wtCompareGo = wtCompareGo; root.wtBwPic = wtBwPic; root.wtCopyOpen = wtCopyOpen; root.wtCopySearch = wtCopySearch; root.wtCopyPick = wtCopyPick; root.wtCopyBack = wtCopyBack; root.wtCopyGo = wtCopyGo; root.wtGiveTick = wtGiveTick; root.wtGiveGo = wtGiveGo; root.wtRowAccept = wtRowAccept; root.wtRunStart = wtRunStart; root.wtRunOpened = wtRunOpened; root.wtRunGo = wtRunGo; root.wtRunSite = wtRunSite; root.wtRunEnd = wtRunEnd; root.wtRunNotThere = wtRunNotThere; root.wtImportPdfs = wtImportPdfs; root.wtRowRelease = wtRowRelease; root.wtEdit = wtEdit; root.wtEditGo = wtEditGo; root.wtEditW = wtEditW; root.wtEditWGo = wtEditWGo; root.wtPicClear = wtPicClear; root.wtPageDisc = wtPageDisc; root.wtPageRegion = wtPageRegion;
+  root._wbw = { pdfTitle: pdfTitle, matchByFile: matchByFile, rvSetPic: rvSetPic, sameModel: sameModel, cpApply: cpApply, cpOfferAfter: cpOfferAfter, looseMatch: looseMatch, looseMap: looseMap, grpOf: grpOf, specConf: specConf, picConf: picConf, bwPageUrl: bwPageUrl, bwOpen: bwOpen, bwApply: bwApply, wt: _wt, GRP: GRP };
   root.wbRepaint = function () { if (document.getElementById('wb-ov')) paint(); };
   root.wbOpen = wbOpen; root.wbClose = wbClose; root.wbTab = wbTab; root.wbGroup = wbGroup; root.wbBrand = wbBrand; root.wbYear = wbYear; root.wbState = wbState;
   root.wbQ = wbQ; root.wbPage = wbPage; root.wbSel = wbSel; root.wbSelAll = wbSelAll; root.wbSelNone = wbSelNone; root.wbOpenBall = wbOpenBall; root.wbPaste = wbPaste;
