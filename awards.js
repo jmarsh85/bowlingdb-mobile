@@ -5,7 +5,7 @@
    (from step 3); also require()-able for the Node harness. */
 (function (root) {
 'use strict';
-var AWD_VERSION = 'v30.227';   // step 1 engine + step 3 trophy case (v30.227: filters, splits, brackets)
+var AWD_VERSION = 'v30.228';   // step 1 engine + step 3 trophy case (v30.227: filters, splits, brackets)
 
 /* USBC national brackets (2011-12 adult revision) -- default, editable in Settings (step 6). */
 var USBC_BRACKETS = [
@@ -40,7 +40,7 @@ var AWARDS = {
   hspare: { cls: 'honor', name: 'All-spare game' },
   hdutch: { cls: 'honor', name: 'Dutch 200' },
   htrip:  { cls: 'honor', name: 'Triplicate' },
-  nt300:  { cls: 'honor', name: 'No-Tap 300' },
+  nt300:  { cls: 'notap', name: 'No-Tap 300' },
   pg:     { cls: 'poa',   name: 'pins over average (game)' },
   ps:     { cls: 'poa',   name: 'pins over average (series)' },
   mhg:    { cls: 'mile',  name: 'New career high game' },
@@ -62,7 +62,7 @@ var DESC = {
   h11f: 'The first 11 balls of the game were strikes (not a 300).', h11b: 'The last 11 balls of the game were strikes (not a 300).',
   hclean: 'A strike or spare in every frame.', hcleans: 'Three clean games in one series.', hspare: 'A spare in every frame, no strikes.',
   hdutch: 'Strike and spare alternating every frame, for exactly 200.', htrip: 'All three games of a series with the same score.',
-  nt300: 'A perfect No-Tap game (a 9 on the first ball counts as a strike).',
+  nt300: 'Twelve No-Tap strikes. In No-Tap a 9 on the first ball counts as a strike, so this is not a 300 game and never counts as one.',
   pg: 'A game at least 75 pins over your average (USBC national: 75).', ps: 'A series at least 140 pins over three times your average (USBC national: 140).',
   mhg: 'A new career high game.', mhs: 'A new career high series.', m250: 'Your first game of 250 or more.', m275: 'Your first game of 275 or more.',
   mrun: 'A new longest run of strikes (6 or more).',
@@ -327,9 +327,10 @@ var SECTIONS = [
   { cls: 'poa',    title: 'Pins over average',        note: 'Against your average going into that session.' },
   { cls: 'capped', title: 'Achievements',             note: 'Average-capped, USBC national brackets.' },
   { cls: 'split',  title: 'Split conversions',        note: 'Unlocked by picking the split up. Locked ones show how many chances you have had.' },
-  { cls: 'mile',   title: 'Personal milestones',      note: 'Against your own history; not USBC awards.' }
+  { cls: 'mile',   title: 'Personal milestones',      note: 'Against your own history; not USBC awards.' },
+  { cls: 'notap',  title: 'No-Tap',                   note: 'A 9 on the first ball counts as a strike, so these are not standard scores and are kept apart from them.' }
 ];
-var ICON = { honor: '\ud83c\udfc6', poa: '\ud83d\udcc8', capped: '\ud83c\udf96\ufe0f', split: '\ud83c\udfaf', mile: '\u2b50' };
+var ICON = { honor: '\ud83c\udfc6', poa: '\ud83d\udcc8', capped: '\ud83c\udf96\ufe0f', split: '\ud83c\udfaf', mile: '\u2b50', notap: '\u2726' };
 var ui = { filter: 'all', certOnly: false, res: null };
 /* the app's db and G are top-level const/let in index.html: global, but not window properties */
 function DB() { try { return typeof db !== 'undefined' ? db : (root.db || {}); } catch (e) { return root.db || {}; } }
@@ -534,6 +535,24 @@ async function awOpen() {
   scanNow();
   root.openModal(caseHtml());
 }
+/* v30.228 AWD-1 step 4: awards earned by one game (and its series, when this game completed it). */
+function awUnlocksFor(gameID, seriesID) {
+  var res = scanNow(), all = res.occurrences.filter(function (o) { return !o.pending && !AWARDS[o.award].chance; });
+  var d = DB(), g = (d.games || []).find(function (x) { return x.GameID === gameID; });
+  var sGames = (d.games || []).filter(function (x) { return x.SeriesID === seriesID && x.FinalScore != null; }).sort(function (a, b) { return (a.GameNumber || 0) - (b.GameNumber || 0); });
+  var completesSeries = g && sGames.length >= 3 && sGames[2].GameID === gameID;
+  var out = [];
+  all.forEach(function (o, i) {
+    var mine = o.gameID === gameID || (o.gameID == null && completesSeries && o.seriesID === seriesID);
+    if (!mine) return;
+    var n = all.filter(function (x, j) { return x.award === o.award && j <= i; }).length;
+    var a = AWARDS[o.award];
+    var name = o.award === 'pg' ? o.over + ' pins over average' : o.award === 'ps' ? 'Series ' + o.over + ' pins over average' : a.name;
+    out.push({ award: o.award, name: name, value: o.value, nth: n, first: n === 1, cls: a.cls, icon: ICON[a.cls] });
+  });
+  return out;
+}
+function awOpenAward(id) { awOpen().then(function () { awDetail(id); }); }
 function awFilter(f) { ui.filter = f; show(caseHtml()); }
 function awCert() { ui.certOnly = !ui.certOnly; show(caseHtml()); }
 function awBack() { scanNow(); show(caseHtml()); }
@@ -564,7 +583,7 @@ function awOpenSeries(sid) {
   root.navTo('s-game-select');
 }
 if (typeof document !== 'undefined') {
-  root.awOpen = awOpen; root.awFilter = awFilter; root.awCert = awCert; root.awBack = awBack; root.awDetail = awDetail; root.awPending = awPending;
+  root.awOpen = awOpen; root.awFilter = awFilter; root.awCert = awCert; root.awUnlocksFor = awUnlocksFor; root.awOpenAward = awOpenAward; root.awBack = awBack; root.awDetail = awDetail; root.awPending = awPending;
   root.awMarkList = awMarkList; root.awMark = awMark; root.awOpenSeries = awOpenSeries;
 }
 
