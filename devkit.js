@@ -1,5 +1,5 @@
 /* v30.224 OFF-2: sw.js checks this line against index.html's file list; bump it when devkit.js changes */
-var DK_VERSION = 'v30.227';
+var DK_VERSION = 'v30.230';
 
 
 
@@ -533,6 +533,7 @@ host.insertAdjacentHTML('beforeend',`<!-- ── DEVKIT OVERLAY ─────�
 
           <div class="dk-tool-group">Maintenance — writes data</div>
           <button class="dk-tool-btn write" onclick="dkBackfillF10Flags()" title="Populate Strike/Spare flags on historical frame-10 rows (dry run first)">🔟 F10 Flags — backfill frame-10 Strike/Spare</button>
+          <button class="dk-tool-btn write" onclick="dkBackfillF10Flags(true)" title="Check Strike/Spare flags on every frame against the pins (review first)">🎳 Frame Flags — check all frames against the pins</button>
           <button class="dk-tool-btn write" onclick="dkReviewStaleGames()" title="Review and purge empty game shells that count as zeros">🧹 Stale Games — review &amp; purge empty shells</button>
           <button class="dk-tool-btn write" onclick="dkBakerPurgeShells()" title="Remove empty db.games shells created in Baker rounds by the pre-v30.126 routing bug">🎳 Baker Purge — remove Baker game shells</button>
           <button class="dk-tool-btn write" onclick="dkUpdateGamesSincePrompt()">Update Games-Since-Prompt</button>
@@ -764,8 +765,10 @@ toast('Purged '+ gameIDs.length + ' empty game shell(s)');
 
 
 
-async function dkBackfillF10Flags() {
-var f10 = db.frames.filter(function(f){ return f.FrameNumber === 10; });
+async function dkBackfillF10Flags(allFrames) {
+/* v30.230: allFrames = check frames 1-10 (same review, same rules); default frame 10 only */
+window._dkFlagsAll = !!allFrames;
+var f10 = db.frames.filter(function(f){ return allFrames || f.FrameNumber === 10; });
 if (!f10.length) { toast('No frame-10 rows found'); return; }
 var attsByFrame = {};
 db.attempts.forEach(function(a){
@@ -817,10 +820,10 @@ var pctB = framesWithData ? Math.round(cleanBefore / framesWithData * 100) : 0;
 var pctA = framesWithData ? Math.round(cleanAfter  / framesWithData * 100) : 0;
 var catRows = _dkF10ReviewRows(changed, cats);
 var summary =
-'<div class="modal-title">Frame 10 Flags</div>'+
+'<div class="modal-title">'+ (allFrames ? 'Frame Flags (all frames)' : 'Frame 10 Flags') + '</div>'+
 '<div style="font-size:12px;color:var(--t2);line-height:1.5;margin-bottom:10px">'+
-'Frame 10 never had its Strike/Spare flags written, so historical 10th frames read as opens '+
-'no matter what was thrown. These flags are not shown anywhere directly \u2014 they feed Clean %, '+
+(allFrames ? 'Every frame\u2019s Strike/Spare flags checked against its pins. ' : 'Frame 10 never had its Strike/Spare flags written, so historical 10th frames read as opens '+
+'no matter what was thrown. ') + 'These flags are not shown anywhere directly \u2014 they feed Clean %, '+
 'the game-card mark counts, and streak brackets.'+
 '</div>'+
 '<div style="display:flex;gap:8px;margin-bottom:12px">'+
@@ -843,7 +846,7 @@ return;
 }
 openModal(summary +
 '<div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:2px">Changes by transition</div>'+
-'<div style="font-size:11px;color:var(--t3);margin-bottom:6px;line-height:1.45">Tap a group to see every game. Untick any you want left as it is; View opens the scorecard (come back to DevKit \u203a Frame 10 Flags, your ticks are kept).</div>'+
+'<div style="font-size:11px;color:var(--t3);margin-bottom:6px;line-height:1.45">Tap a group to see every game. Untick any you want left as it is; View opens the scorecard (come back to the same DevKit tool, your ticks are kept).</div>'+
 '<div id="dk-f10-list">'+ catRows + '</div>'+
 '<div style="background:var(--bg3);border-radius:8px;padding:9px;margin-top:12px">'+
 '<div style="font-size:10px;color:var(--t3);letter-spacing:0.5px">EFFECT ON CLEAN %</div>'+
@@ -891,7 +894,7 @@ var seq = c.seq.map(function(v){ return v === null ? '_' : v; }).join(' ');
 return '<label style="display:flex;gap:8px;align-items:flex-start;padding:7px 0;border-top:1px solid var(--border1)">'+
 '<input type="checkbox" '+ (_dkF10On(c) ? 'checked' : '') + ' onchange="dkF10Toggle('+ i + ',this.checked)" style="margin-top:3px;width:18px;height:18px;flex-shrink:0">'+
 '<div style="flex:1;min-width:0"><div style="font-size:12px;color:var(--t1);font-weight:600">'+ (d ? d.slice(5,7)+'/'+d.slice(8,10)+'/'+d.slice(2,4) : '?') + ' \u00b7 G'+ (g.GameNumber || '?') + ' \u00b7 '+ (g.FinalScore != null ? g.FinalScore : '\u2013') +
-' \u00b7 10th: <span style="font-family:monospace">'+ seq + '</span></div>'+
+' \u00b7 '+ (c.fr.FrameNumber === 10 ? '10th' : 'F'+ c.fr.FrameNumber) + ': <span style="font-family:monospace">'+ seq + '</span></div>'+
 '<div style="font-size:11px;color:var(--t3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+ lName(sr).replace(/</g,'&lt;') + ' \u00b7 game '+ c.fr.GameID + '</div>'+ (c.why ? '<div style="font-size:11px;color:var(--gold)">'+ c.why + '</div>' : '') + '</div>'+
 (g.SeriesID != null ? '<button class="btn btn-secondary btn-sm" style="flex-shrink:0;padding:4px 10px;font-size:11px" onclick="event.preventDefault();dkOpenStaleSeries('+ g.SeriesID + ')">View</button>' : '') +
 '</label>';
@@ -919,7 +922,7 @@ changed.forEach(function(c){ c.fr.Strike = c.flags.Strike; c.fr.Spare = c.flags.
 await saveAll();
 window._dkF10Pending = null;
 closeModal();
-toast('Updated '+ changed.length + ' frame-10 row(s)');
+toast('Updated '+ changed.length + (window._dkFlagsAll ? ' frame row(s)' : ' frame-10 row(s)'));
 }async function dkBakerPurgeShells() {
 var strays = db.games.filter(function(g){ return bakerSeriesIsBaker(g.SeriesID); });
 if (!strays.length) { alert('No db.games rows exist in any Baker-format round. Nothing to purge.'); return; }
