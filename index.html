@@ -82,7 +82,7 @@
      (its *_VERSION line). sw.js reads this block: it keeps the app's
      files as one matching set and never opens a mix of old and new files. Every file
      is fetched as name.js?v=APP_VERSION. Update a version here when that file changes. -->
-<script type="application/json" id="bdb-files">{"devkit.js":"v30.234","report.js":"v30.156","catalog.js":"v30.224","workbench.js":"v30.223","pinpal.js":"v30.199","awards.js":"v30.233","share.js":"v30.239"}</script>
+<script type="application/json" id="bdb-files">{"devkit.js":"v30.234","report.js":"v30.156","catalog.js":"v30.224","workbench.js":"v30.223","pinpal.js":"v30.199","awards.js":"v30.233","share.js":"v30.240","connect.js":"v30.240"}</script>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#0E0F11">
@@ -3435,7 +3435,7 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
     <div id="s-league-dashboard" class="screen" data-title="League Dashboard">
       <div id="league-dashboard-content" style="padding:0 0 32px"></div>
     </div>
-    <div id="s-friend-feed" class="screen" data-title="Bowler Connect">
+    <div id="s-friend-feed" class="screen" data-title="Connect">
       <div id="friend-feed-content" style="padding:0 0 32px"></div>
     </div>
     <div id="s-bowler-profile" class="screen" data-title="Bowler Profile">
@@ -3541,7 +3541,7 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
    Bump both lines (and CATALOG_JS_VERSION in catalog.js when it changes).
    v30.224 OFF-2: also bump the ?v= on the three <script src> tags at the end of
    the page, and the file list in <script id="bdb-files"> when a .js file changes. */
-const APP_VERSION = 'v30.239';
+const APP_VERSION = 'v30.240';
 const APP_BUILD_DATE = '2026-10-25';
 /* catalog.js this build expects; an older file on the server shows a warning */
 const EXPECTED_CATALOG_JS = 'v30.224';
@@ -4347,7 +4347,7 @@ navBack();
 
 
 
-const NAV_TILES_DEFAULT = ['leagues','tb','open','balls','settings','export','notap','stats','tournament','awards'];
+const NAV_TILES_DEFAULT = ['leagues','tb','open','balls','settings','export','notap','stats','tournament','awards','connect'];
 const NAV_TILE_DEFS = {
 leagues: {
 label: 'Leagues',
@@ -4439,6 +4439,15 @@ bg: 'linear-gradient(135deg,rgba(255,200,60,0.26),rgba(157,78,221,0.22))',
 svg: `<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="url(#g-aw)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <defs><linearGradient id="g-aw" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#F5C542"/><stop offset="100%" stop-color="#00D9D9"/></linearGradient></defs>
       <path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v5a5 5 0 01-10 0V4z"/><path d="M17 5h3v2a3 3 0 01-3 3"/><path d="M7 5H4v2a3 3 0 003 3"/>
+    </svg>`
+},
+connect: {
+label: 'Connect',
+action: () => navTo('s-friend-feed'),   // v30.240 SOC-1: Connect hub (connect.js, loaded on first use)
+bg: 'linear-gradient(135deg,rgba(0,217,217,0.26),rgba(255,200,60,0.20))',
+svg: `<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="url(#g-cn)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <defs><linearGradient id="g-cn" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#00D9D9"/><stop offset="100%" stop-color="#F5C542"/></linearGradient></defs>
+      <circle cx="9" cy="8" r="3.2"/><circle cx="17" cy="9.5" r="2.6"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M15.5 14.6c3 .2 5.5 2.4 5.5 5.4"/>
     </svg>`
 },
 tournament: {
@@ -15576,7 +15585,7 @@ const summaryHTML = `
         <button class="btn btn-ghost" style="width:100%;font-size:13px" onclick="navTo('s-league-report')">📊 League Report</button>
       </div>
       <div style="margin-top:6px">
-        <button class="btn btn-ghost" style="width:100%;font-size:13px" onclick="navTo('s-friend-feed')">🤝 Bowler Connect <span style="opacity:0.6;font-weight:500">(preview)</span></button>
+        <button class="btn btn-ghost" style="width:100%;font-size:13px" onclick="navTo('s-friend-feed')">🤝 Connect <span style="opacity:0.6;font-weight:500">(preview)</span></button>
       </div>
     </div>`;
 
@@ -18550,7 +18559,7 @@ renderFriendFeed();
 
 
 function _tbTeammateStatsAll() {
-const sessions = grpLoadAll();
+const sessions = grpLoadAll().filter(s => !s.noTap);   // v30.240: No-Tap Team Bowl nights stay out of teammate stats
 const byID = {};
 sessions.forEach(sess => {
 const centerName = sess.centerID != null
@@ -18610,7 +18619,7 @@ rec.f10Sum += f10; rec.f10N++;
 }
 });
 });
-if (sessionGames > 0) rec.sessionPts.push({ date: sess.date || '', score: Math.round(sessionTotal / sessionGames) });
+if (sessionGames > 0) rec.sessionPts.push({ date: sess.date || '', score: Math.floor(sessionTotal / sessionGames) });
 });
 });
 return Object.values(byID).map(rec => {
@@ -18674,12 +18683,13 @@ const gamesForBest = (sess.games || []).map(g => g.finalScores ? g.finalScores[b
 if (!gamesForBest.length) return null;
 const daysAgo = sess.date ? Math.max(0, (new Date(today) - new Date(sess.date)) / 86400000) : 0;
 let headline = null;
-if (gamesForBest.includes(300)) headline = '🎳 PERFECT GAME';
+if (sess.noTap) headline = gamesForBest.includes(300) ? 'NO-TAP 300' : 'NO-TAP';   // v30.240: never "perfect" for No-Tap
+else if (gamesForBest.includes(300)) headline = '🎳 PERFECT GAME';
 else if (Math.max(...gamesForBest) >= 279) headline = '🔥 Great Game';
 const league = sess.leagueID != null ? db.leagues.find(l => l.LeagueID === sess.leagueID) : null;
 const centerName = sess.centerID != null ? (db.centers.find(c => c.CenterID === sess.centerID)?.CenterName || null) : null;
 return {
-id: 'tb-'+ sess.id, friendId: 'tb'+ best.b.BowlerID, daysAgo,
+id: 'tb-'+ sess.id, friendId: 'tb'+ best.b.BowlerID, daysAgo, date: sess.date || null,
 league: league ? league.LeagueName : (sess.teamName || 'Team Bowl'),
 center: centerName, games: gamesForBest, headline, acks: []
 };
@@ -18816,7 +18826,19 @@ return `<div class="${cardClass}" style="margin-bottom:12px">
     </div>`}
   </div>`;
 }
+/* v30.240 SOC-1: the Connect hub lives in connect.js (same-origin, loaded on first use); the v30.128
+   preview below stays as the fallback when connect.js is missing. */
+function _cnLoad(then, fallback) {
+if (typeof cnRender === 'function') return then();
+const s = document.createElement('script');
+s.src = 'connect.js?v=' + encodeURIComponent(APP_VERSION);
+s.onload = () => { if (typeof cnRender === 'function') then(); else if (fallback) fallback(); };
+s.onerror = () => { toast('Connect unavailable: upload connect.js next to index.html'); if (fallback) fallback(); };
+document.head.appendChild(s);
+}
 function renderFriendFeed() {
+if (typeof cnRender === 'function') return cnRender();
+if (!window._cnTried) { window._cnTried = true; return _cnLoad(() => cnRender(), () => renderFriendFeed()); }
 const el = document.getElementById('friend-feed-content');
 if (!el) return;
 const profile = fsGetProfile();
@@ -38157,10 +38179,10 @@ _editStatus:'', _editPriority:1, _newSnap:null, _newStatus:'tbd', _editCat:'note
 };
 var _DKM_STATUS_LABELS = {ok:'🟢 Working',partial:'🟡 Partial',broken:'🔴 Broken',tbd:'⚪ TBD'};
 </script>
-<script src="devkit.js?v=v30.239"></script>
-<script src="report.js?v=v30.239"></script>
+<script src="devkit.js?v=v30.240"></script>
+<script src="report.js?v=v30.240"></script>
 <!-- v30.157 NEW-11 step 4: ball catalog manifest check + IDB cache (same-origin, like devkit.js/report.js). Optional: if missing, the app behaves exactly as before. -->
-<script src="catalog.js?v=v30.239"></script>
+<script src="catalog.js?v=v30.240"></script>
 <script>
 /* v30.162 OFF-1: service worker (sw.js, same folder) so the app opens with
    no connection, and a request that the browser keep this app's storage.
