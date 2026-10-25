@@ -5,7 +5,7 @@
    (from step 3); also require()-able for the Node harness. */
 (function (root) {
 'use strict';
-var AWD_VERSION = 'v30.226';   // step 1 engine + step 3 trophy case
+var AWD_VERSION = 'v30.227';   // step 1 engine + step 3 trophy case (v30.227: filters, splits, brackets)
 
 /* USBC national brackets (2011-12 adult revision) -- default, editable in Settings (step 6). */
 var USBC_BRACKETS = [
@@ -51,8 +51,8 @@ var AWARDS = {
 };
 Object.keys(NAMED_LEAVES).forEach(function (k) {
   var L = NAMED_LEAVES[k];
-  AWARDS[L.id + 'c'] = { cls: 'honor', name: L.name + ' converted', leave: k };
-  AWARDS[L.id + 'l'] = { cls: 'fun',   name: 'Left the ' + L.name, leave: k };
+  AWARDS[L.id + 'c'] = { cls: 'split', name: L.name + ' converted', leave: k };
+  AWARDS[L.id + 'l'] = { cls: 'split', name: 'Left the ' + L.name, leave: k, chance: true };
 });
 USBC_BRACKETS.forEach(function (b) { AWARDS[b.id] = { cls: 'capped', name: b.name }; });
 var DESC = {
@@ -233,7 +233,8 @@ function awardsScan(data, cfg) {
     if (s.level.kind === 'league') {
       if (s.leagueAvgBefore != null) return { avg: s.leagueAvgBefore, rule: 'this league, ' + s.leagueGamesBefore + ' games' };
       var lg = L[s.leagueID];
-      if (lg && lg.EntryAvg != null) return { avg: Math.floor(lg.EntryAvg), rule: 'entering average' };
+      var ea = data.entryAvg && data.entryAvg[s.leagueID] != null ? data.entryAvg[s.leagueID] : (lg && lg.EntryAvg != null ? lg.EntryAvg : null);
+      if (ea != null) return { avg: Math.floor(ea), rule: 'entering average' };
       return priorSeasonBest(s.date, lg ? lg.LineageID : null);
     }
     return establishedAvg(s.date);
@@ -301,7 +302,10 @@ function awardsScan(data, cfg) {
     });
     if (tot > hiSeries) { if (hiSeries) add('mhs', s, null, { value: tot, previous: hiSeries }); hiSeries = tot; }
   });
-  return { version: AWD_VERSION, occurrences: out, scanned: { games: games.length, series: seriesList.length,
+  /* the bowler's average now: the most recent league with 21+ games (for "locked" explanations) */
+  var cur = null;
+  Object.keys(leagueRun).forEach(function (lid) { var r = leagueRun[lid]; if (r.n >= minG && (!cur || r.lastDate > cur.lastDate)) cur = { avg: floorAvg(r.sum, r.n), lastDate: r.lastDate, league: L[lid] ? L[lid].LeagueName : '' }; });
+  return { version: AWD_VERSION, occurrences: out, currentAvg: cur, scanned: { games: games.length, series: seriesList.length,
     withFrames: games.filter(function (x) { return framesByGame[x.g.GameID] && framesByGame[x.g.GameID].length === 10; }).length } };
 }
 
@@ -317,16 +321,16 @@ var LEVELS = {
   open:         { label: 'Open / practice',  short: 'Open',       color: 'var(--lilac, #b18cfe)' },
   notap:        { label: 'No-Tap',           short: 'No-Tap',     color: 'var(--gold)' }
 };
-var FILTERS = [['all', 'All'], ['certified', 'Certified'], ['league', 'League'], ['open', 'Open'], ['notap', 'No-Tap']];
+var FILTERS = [['all', 'All'], ['league', 'League'], ['tournament', 'Tournament'], ['open', 'Open'], ['notap', 'No-Tap']];
 var SECTIONS = [
   { cls: 'honor',  title: 'Honor scores',             note: 'Any average.' },
   { cls: 'poa',    title: 'Pins over average',        note: 'Against your average going into that session.' },
   { cls: 'capped', title: 'Achievements',             note: 'Average-capped, USBC national brackets.' },
-  { cls: 'fun',    title: 'Splits left',              note: 'The ones that got away.' },
+  { cls: 'split',  title: 'Split conversions',        note: 'Unlocked by picking the split up. Locked ones show how many chances you have had.' },
   { cls: 'mile',   title: 'Personal milestones',      note: 'Against your own history; not USBC awards.' }
 ];
-var ICON = { honor: '\ud83c\udfc6', poa: '\ud83d\udcc8', capped: '\ud83c\udf96\ufe0f', fun: '\ud83d\ude2c', mile: '\u2b50' };
-var ui = { filter: 'all', res: null };
+var ICON = { honor: '\ud83c\udfc6', poa: '\ud83d\udcc8', capped: '\ud83c\udf96\ufe0f', split: '\ud83c\udfaf', mile: '\u2b50' };
+var ui = { filter: 'all', certOnly: false, res: null };
 /* the app's db and G are top-level const/let in index.html: global, but not window properties */
 function DB() { try { return typeof db !== 'undefined' ? db : (root.db || {}); } catch (e) { return root.db || {}; } }
 function GS() { try { return typeof G !== 'undefined' ? G : root.G; } catch (e) { return root.G; } }
@@ -336,15 +340,15 @@ function fmtDate(d) { if (!d) return ''; var p = d.split('-'); return +p[1] + '/
 function seen() { try { return JSON.parse(localStorage.getItem(SEEN_KEY) || '{}') || {}; } catch (e) { return {}; } }
 function markSeen(id, n) { try { var s = seen(); s[id] = n; localStorage.setItem(SEEN_KEY, JSON.stringify(s)); } catch (e) {} }
 function passFilter(o) {
-  var f = ui.filter;
-  if (f === 'all') return true;
-  if (f === 'league') return o.level === 'noncertified' || o.level === 'unmarked';
-  return o.level === f;
+  if (ui.certOnly && o.level !== 'certified') return false;
+  return ui.filter === 'all' || o.kind === ui.filter;
 }
 function scanNow() {
   var d = DB();
+  var ea = {};
+  try { (d.leagues || []).forEach(function (l) { var c = typeof root.hdcpGet === 'function' ? root.hdcpGet(root.hdcpLeagueKey(l.LeagueID)) : null; if (c && c.entryAvg != null) ea[l.LeagueID] = c.entryAvg; }); } catch (e) {}
   ui.res = awardsScan({ games: d.games, series: d.series, frames: d.frames, attempts: d.attempts, leagues: d.leagues,
-    tournaments: d.tournaments, leaves: d.leaves }, cfgNow());
+    tournaments: d.tournaments, leaves: d.leaves, entryAvg: ea }, cfgNow());
   return ui.res;
 }
 function cfgNow() {
@@ -366,54 +370,90 @@ function unmarkedLists() {
   return out;
 }
 
+function chip(label, on, js, color) {
+  return '<button onclick="' + js + '" style="padding:6px 12px;border-radius:16px;font-size:13px;font-weight:600;border:1px solid ' + (on ? color : 'var(--border1, #2a3340)') + ';background:' + (on ? 'rgba(0,217,217,0.14)' : 'transparent') + ';color:' + (on ? color : 'var(--t2)') + '">' + label + '</button>';
+}
+function levelLine(occ) {
+  var n = {}; occ.forEach(function (o) { n[o.level] = (n[o.level] || 0) + 1; });
+  return ['certified', 'noncertified', 'unmarked', 'open', 'notap'].filter(function (l) { return n[l]; }).map(function (l) {
+    return '<span style="font-size:10px;font-weight:700;color:' + LEVELS[l].color + ';white-space:nowrap">\u25cf ' + LEVELS[l].short + ' ' + n[l] + '</span>';
+  }).join(' ');
+}
+function tileHtml(o) {
+  return '<div onclick="' + o.js + '" style="position:relative;padding:10px;border-radius:12px;background:var(--bg2, #161b22);border:1px ' + (o.locked ? 'dashed' : 'solid') + ' var(--border1, #2a3340);cursor:pointer;min-width:0;' + (o.locked ? 'opacity:.62' : '') + '">' +
+    (o.isNew ? '<span style="position:absolute;top:6px;right:8px;font-size:10px;font-weight:800;color:var(--gold)">NEW</span>' : '') +
+    '<div style="font-size:22px">' + o.icon + '</div>' +
+    '<div style="font-size:13px;font-weight:700;margin-top:4px;line-height:1.25;padding-right:18px">' + esc(o.title) + '</div>' +
+    '<div style="font-size:12px;color:var(--t2);margin-top:4px;line-height:1.35">' + o.sub + '</div>' +
+    (o.levels ? '<div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap">' + o.levels + '</div>' : '') + '</div>';
+}
+var GRID = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px">';
+function sectionHead(sec) {
+  return '<div style="margin:16px 0 4px;font-size:13px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--t2)">' + ICON[sec.cls] + ' ' + sec.title + '</div>' +
+    '<div style="font-size:11px;color:var(--t3);margin-bottom:8px">' + sec.note + '</div>';
+}
+function countLine(occ) {
+  var first = occ[0], last = occ[occ.length - 1];
+  return '<b>' + occ.length + '\u00d7</b> \u00b7 first ' + fmtDate(first.date) + (occ.length > 1 ? '<br>latest ' + fmtDate(last.date) : '');
+}
+var LOCK = '\ud83d\udd12';
 function caseHtml() {
   var res = ui.res, sn = seen();
   var list = res.occurrences.filter(passFilter);
   var real = list.filter(function (o) { return !o.pending; });
   var by = groupOcc(real), pending = list.filter(function (o) { return o.pending; });
+  var allCount = function (k) { return res.occurrences.filter(function (o) { return o.award === k && !o.pending; }).length; };
+  var isNew = function (k) { var n = allCount(k); return n > 0 && (sn[k] || 0) < n; };
   var h = '<div class="modal-title">\ud83c\udfc6 Trophy case</div>';
-  h += '<div style="font-size:12px;color:var(--t3);margin:-4px 0 10px">Personal awards from your own games. USBC awards need USBC-certified competition and an application at bowl.com.</div>';
-  h += '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">' + FILTERS.map(function (f) {
-    var on = ui.filter === f[0];
-    return '<button onclick="awFilter(\'' + f[0] + '\')" style="padding:6px 12px;border-radius:16px;font-size:13px;font-weight:600;border:1px solid ' + (on ? 'var(--teal)' : 'var(--border1, #2a3340)') + ';background:' + (on ? 'rgba(0,217,217,0.14)' : 'transparent') + ';color:' + (on ? 'var(--teal)' : 'var(--t2)') + '">' + f[1] + '</button>';
-  }).join('') + '</div>';
+  h += '<div style="font-size:12px;color:var(--t3);margin:-4px 0 10px">Personal awards from your own games. Official USBC awards need USBC-certified competition and an application at bowl.com.</div>';
+  h += '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px">' + FILTERS.map(function (f) { return chip(f[1], ui.filter === f[0], "awFilter('" + f[0] + "')", 'var(--teal)'); }).join('') + '</div>';
+  h += '<div style="margin-bottom:12px">' + chip((ui.certOnly ? '\u2713 ' : '') + 'USBC-certified only', ui.certOnly, 'awCert()', 'var(--gold)') + '</div>';
   var um = unmarkedLists();
-  if (um.length) h += '<div class="card" style="font-size:12px;margin-bottom:12px;cursor:pointer" onclick="awMarkList()"><b>' + um.length + ' league' + (um.length === 1 ? '' : 's') + ' or tournament' + (um.length === 1 ? '' : 's') + ' not marked</b> as certified or not. Their awards sit under "Not marked". <span style="color:var(--teal)">Mark them \u203a</span></div>';
-  var any = false;
+  if (um.length) h += '<div class="card" style="font-size:12px;margin-bottom:12px;cursor:pointer" onclick="awMarkList()"><b>' + um.length + ' league' + (um.length === 1 ? '' : 's') + ' or tournament' + (um.length === 1 ? '' : 's') + ' not marked</b> as certified or not. <span style="color:var(--teal)">Mark \u203a</span></div>';
   SECTIONS.forEach(function (sec) {
-    var ids = Object.keys(by).filter(function (k) { return AWARDS[k].cls === sec.cls; });
-    var pend = sec.cls === 'capped' ? pending : [];
-    if (!ids.length && !pend.length) return;
-    any = true;
-    ids.sort(function (a, b) { return by[a][0].date < by[b][0].date ? -1 : 1; });
-    h += '<div style="margin:14px 0 6px;font-size:13px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--t2)">' + ICON[sec.cls] + ' ' + sec.title + '</div>';
-    h += '<div style="font-size:11px;color:var(--t3);margin-bottom:8px">' + sec.note + '</div>';
-    h += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px">';
-    ids.forEach(function (k) {
-      var occ = by[k], a = AWARDS[k], first = occ[0], last = occ[occ.length - 1];
-      var isNew = (sn[k] || 0) < res.occurrences.filter(function (o) { return o.award === k && !o.pending; }).length;
-      var lvls = {}; occ.forEach(function (o) { lvls[o.level] = 1; });
-      h += '<div onclick="awDetail(\'' + k + '\')" style="position:relative;padding:10px;border-radius:12px;background:var(--bg2, #161b22);border:1px solid var(--border1, #2a3340);cursor:pointer;min-width:0">' +
-        (isNew ? '<span style="position:absolute;top:6px;right:8px;font-size:10px;font-weight:800;color:var(--gold)">NEW</span>' : '') +
-        '<div style="font-size:22px">' + ICON[a.cls] + '</div>' +
-        '<div style="font-size:13px;font-weight:700;margin-top:4px;line-height:1.25;padding-right:18px">' + esc(k === 'pg' || k === 'ps' ? (k === 'pg' ? 'Game ' : 'Series ') + 'over average' : a.name) + '</div>' +
-        '<div style="font-size:12px;color:var(--t2);margin-top:4px">' + (occ.length > 1 ? '\u00d7' + occ.length + ' \u00b7 ' : '') + (k === 'mrun' || k === 'mhg' || k === 'mhs' ? 'now ' + last.value : 'first ' + fmtDate(first.date)) + '</div>' +
-        '<div style="margin-top:6px;display:flex;gap:4px;flex-wrap:wrap">' + Object.keys(lvls).map(function (l) { return '<span style="font-size:10px;font-weight:700;color:' + LEVELS[l].color + '">\u25cf ' + LEVELS[l].short + '</span>'; }).join(' ') + '</div></div>';
-    });
-    if (pend.length) {
-      h += '<div onclick="awPending()" style="padding:10px;border-radius:12px;border:1px dashed var(--border1, #2a3340);cursor:pointer;min-width:0">' +
-        '<div style="font-size:22px">\u23f3</div><div style="font-size:13px;font-weight:700;margin-top:4px">Pending average</div>' +
-        '<div style="font-size:12px;color:var(--t2);margin-top:4px">' + pend.length + ' bowled before you had a 21-game average</div></div>';
+    if (sec.cls === 'split') {
+      h += sectionHead(sec) + GRID;
+      Object.keys(NAMED_LEAVES).forEach(function (lv) {
+        var L = NAMED_LEAVES[lv], conv = by[L.id + 'c'] || [], left = by[L.id + 'l'] || [];
+        var chances = conv.length + left.length;
+        if (conv.length) h += tileHtml({ js: "awDetail('" + L.id + "c')", icon: ICON.split, title: L.name, isNew: isNew(L.id + 'c'),
+          sub: '<b>Converted ' + conv.length + '\u00d7</b> of ' + chances + ' chance' + (chances === 1 ? '' : 's') + '<br>first ' + fmtDate(conv[0].date), levels: levelLine(conv) });
+        else h += tileHtml({ js: "awDetail('" + L.id + "c')", icon: LOCK, title: L.name, locked: true,
+          sub: chances ? 'Not converted yet<br>left ' + chances + '\u00d7 \u00b7 latest ' + fmtDate(left[left.length - 1].date) : 'Not left yet' });
+      });
+      h += '</div>';
+      return;
     }
+    if (sec.cls === 'capped') {
+      h += sectionHead(sec) + GRID;
+      var cur = res.currentAvg;
+      cfgNow().brackets.forEach(function (br) {
+        var occ = by[br.id] || [];
+        if (occ.length) h += tileHtml({ js: "awDetail('" + br.id + "')", icon: ICON.capped, title: br.name, isNew: isNew(br.id), sub: countLine(occ) + '<br><span style="color:var(--t3)">avg ' + br.maxAvg + ' or below</span>', levels: levelLine(occ) });
+        else h += tileHtml({ js: "awDetail('" + br.id + "')", icon: LOCK, title: br.name, locked: true,
+          sub: br.lo + '\u2013' + br.hi + ' at an average of ' + br.maxAvg + ' or below' + (cur && cur.avg > br.maxAvg ? '<br><span style="color:var(--t3)">yours is ' + cur.avg + '</span>' : '') });
+      });
+      h += '</div>';
+      if (pending.length) h += '<div onclick="awPending()" style="margin-top:8px;font-size:12px;color:var(--t2);cursor:pointer;line-height:1.45">\u23f3 <b>' + pending.length + ' score' + (pending.length === 1 ? '' : 's') + ' can\u2019t be checked</b>: bowled before the app had 21 of your league games, so there is no average to compare with the cap. <span style="color:var(--teal)">See which \u203a</span></div>';
+      return;
+    }
+    var ids = Object.keys(by).filter(function (k) { return AWARDS[k].cls === sec.cls; });
+    if (!ids.length) return;
+    ids.sort(function (a, b) { return by[a][0].date < by[b][0].date ? -1 : 1; });
+    h += sectionHead(sec) + GRID;
+    ids.forEach(function (k) {
+      var occ = by[k], a = AWARDS[k], last = occ[occ.length - 1];
+      var title = k === 'pg' ? 'Game over average' : k === 'ps' ? 'Series over average' : a.name;
+      var sub = (k === 'mrun' || k === 'mhg' || k === 'mhs') ? '<b>' + occ.length + '\u00d7</b> \u00b7 now ' + last.value + (k === 'mrun' ? ' in a row' : '') + '<br>since ' + fmtDate(last.date) : countLine(occ);
+      h += tileHtml({ js: "awDetail('" + k + "')", icon: ICON[a.cls], title: title, isNew: isNew(k), sub: sub, levels: levelLine(occ) });
+    });
     h += '</div>';
   });
-  if (!any) h += '<div class="card" style="font-size:13px;margin-top:8px">No awards here yet' + (ui.filter === 'all' ? '.' : ' for this filter.') + '</div>';
-  /* not yet earned honor scores */
-  var earned = {}; res.occurrences.forEach(function (o) { if (!o.pending) earned[o.award] = 1; });
-  var notYet = Object.keys(AWARDS).filter(function (k) { var c = AWARDS[k].cls; return (c === 'honor') && !earned[k]; });
-  if (notYet.length) h += '<details style="margin-top:16px"><summary style="font-size:13px;color:var(--t2);cursor:pointer">Not yet earned (' + notYet.length + ')</summary><div style="font-size:12px;color:var(--t3);line-height:1.7;margin-top:6px">' +
+  var earned = {}; real.forEach(function (o) { earned[o.award] = 1; });
+  var notYet = Object.keys(AWARDS).filter(function (k) { return AWARDS[k].cls === 'honor' && !earned[k]; });
+  if (notYet.length) h += '<details style="margin-top:16px"><summary style="font-size:13px;color:var(--t2);cursor:pointer">Honor scores not yet earned' + (ui.filter !== 'all' || ui.certOnly ? ' here' : '') + ' (' + notYet.length + ')</summary><div style="font-size:12px;color:var(--t3);line-height:1.7;margin-top:6px">' +
     notYet.map(function (k) { return esc(AWARDS[k].name); }).join(' \u00b7 ') + '</div></details>';
-  h += '<div style="font-size:11px;color:var(--t3);margin-top:14px">Checked ' + res.scanned.games.toLocaleString() + ' games (' + res.scanned.withFrames.toLocaleString() + ' with frames; score-only games count for score awards only).</div>';
+  h += '<div style="font-size:11px;color:var(--t3);margin-top:14px">Counts are every time it happened in the games the filter shows. Checked ' + res.scanned.games.toLocaleString() + ' games (' + res.scanned.withFrames.toLocaleString() + ' with frames; score-only games count for score awards only).</div>';
   h += '<button class="btn btn-secondary" style="margin-top:12px" onclick="closeModal()">Close</button>';
   return h;
 }
@@ -432,7 +472,11 @@ function lineFor(o) {
 function detailHtml(id) {
   var a = AWARDS[id], res = ui.res;
   var occ = res.occurrences.filter(function (o) { return o.award === id && !o.pending && passFilter(o); }).slice().reverse();
-  var h = '<div class="modal-title">' + ICON[a.cls] + ' ' + esc(a.name) + '</div>';
+  var isSplit = !!a.leave, isBracket = a.cls === 'capped';
+  var left = isSplit ? res.occurrences.filter(function (o) { return o.award === id.slice(0, -1) + 'l' && passFilter(o); }).slice().reverse() : [];
+  var title = isSplit ? NAMED_LEAVES[a.leave].name : a.name;
+  var lockIcon = '\ud83d\udd12 ';
+  var h = '<div class="modal-title">' + (isSplit ? (occ.length ? ICON.split + ' ' : lockIcon) : (isBracket && !occ.length ? lockIcon : ICON[a.cls] + ' ')) + esc(title) + '</div>';
   h += '<div style="font-size:13px;color:var(--t2);line-height:1.5;margin-bottom:12px">' + esc(a.desc) + (a.app ? '' : '') + '</div>';
   if (occ.length) {
     var first = occ[occ.length - 1];
@@ -446,13 +490,23 @@ function detailHtml(id) {
       '<div style="font-size:12px;color:var(--t3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(ln.where) + (o.avgUsed != null ? ' \u00b7 avg ' + o.avgUsed : '') + '</div></div>' +
       '<span style="font-size:11px;font-weight:700;color:' + L.color + ';white-space:nowrap">' + L.short + '</span><span style="color:var(--t3)">\u203a</span></div>';
   }).join('');
-  if (!occ.length) h += '<div class="card" style="font-size:13px">None for this filter.</div>';
+  if (!occ.length) h += '<div class="card" style="font-size:13px">' + (isSplit ? 'Not converted yet' + (ui.filter !== 'all' || ui.certOnly ? ' in this filter' : '') + '.' : isBracket ? lockedWhy(id) : 'None for this filter.') + '</div>';
+  if (isSplit) {
+    h += '<div style="margin:16px 0 4px;font-size:12px;font-weight:800;color:var(--t2);text-transform:uppercase;letter-spacing:.04em">Left ' + left.length + '\u00d7 (chances)</div>';
+    h += left.length ? left.map(function (o) { var ln = lineFor(o); return '<div onclick="awOpenSeries(' + o.seriesID + ')" style="display:flex;gap:10px;padding:8px 4px;border-bottom:1px solid var(--border1, #2a3340);cursor:pointer"><div style="flex:1;min-width:0"><div style="font-size:13px">' + fmtDate(o.date) + (ln.what ? ' \u00b7 ' + esc(ln.what) : '') + '</div><div style="font-size:11px;color:var(--t3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(ln.where) + '</div></div><span style="font-size:11px;font-weight:700;color:' + LEVELS[o.level].color + '">' + LEVELS[o.level].short + '</span></div>'; }).join('')
+      : '<div style="font-size:12px;color:var(--t3)">You have never left it.</div>';
+  }
   h += '<button class="btn btn-secondary" style="margin-top:14px" onclick="awBack()">\u2039 Trophy case</button>';
   return h;
 }
+function lockedWhy(id) {
+  var br = cfgNow().brackets.filter(function (b) { return b.id === id; })[0], cur = ui.res.currentAvg;
+  if (!br) return 'Not earned yet.';
+  return 'A ' + br.lo + '\u2013' + br.hi + ' ' + br.kind + ' earns this when your average going into that session is ' + br.maxAvg + ' or below.' + (cur ? ' Your current average is ' + cur.avg + ' (' + esc(cur.league) + ').' : '');
+}
 function pendingHtml() {
   var occ = ui.res.occurrences.filter(function (o) { return o.pending && passFilter(o); });
-  var h = '<div class="modal-title">\u23f3 Pending average</div><div style="font-size:13px;color:var(--t2);line-height:1.5;margin-bottom:12px">These scores fall in an average-capped bracket, but were bowled before you had a 21-game average (in that league, last season, or any league). Typing an <b>entering average</b> on the league settles them either way.</div>';
+  var h = '<div class="modal-title">\u23f3 Scores that can\u2019t be checked</div><div style="font-size:13px;color:var(--t2);line-height:1.5;margin-bottom:12px">Average-capped awards need your average at the time. A league average counts once you have 21 games in it; before that, last season\u2019s. These scores are from your first weeks in the app, when neither existed, so the app can\u2019t tell whether you were under the cap.<br><br>If you know your average back then, enter it as the <b>entering average</b> in that league\u2019s Handicap setup, and these are decided either way. Otherwise they stay unchecked; nothing is lost.</div>';
   h += occ.map(function (o) {
     var ln = lineFor(o);
     return '<div onclick="awOpenSeries(' + o.seriesID + ')" style="padding:10px 4px;border-bottom:1px solid var(--border1, #2a3340);cursor:pointer"><div style="font-size:14px;font-weight:600">' + esc(AWARDS[o.award].name) + ' \u00b7 ' + o.value + '</div><div style="font-size:12px;color:var(--t3)">' + fmtDate(o.date) + ' \u00b7 ' + esc(ln.where) + '</div></div>';
@@ -481,6 +535,7 @@ async function awOpen() {
   root.openModal(caseHtml());
 }
 function awFilter(f) { ui.filter = f; show(caseHtml()); }
+function awCert() { ui.certOnly = !ui.certOnly; show(caseHtml()); }
 function awBack() { scanNow(); show(caseHtml()); }
 function awDetail(id) {
   markSeen(id, ui.res.occurrences.filter(function (o) { return o.award === id && !o.pending; }).length);
@@ -509,7 +564,7 @@ function awOpenSeries(sid) {
   root.navTo('s-game-select');
 }
 if (typeof document !== 'undefined') {
-  root.awOpen = awOpen; root.awFilter = awFilter; root.awBack = awBack; root.awDetail = awDetail; root.awPending = awPending;
+  root.awOpen = awOpen; root.awFilter = awFilter; root.awCert = awCert; root.awBack = awBack; root.awDetail = awDetail; root.awPending = awPending;
   root.awMarkList = awMarkList; root.awMark = awMark; root.awOpenSeries = awOpenSeries;
 }
 
