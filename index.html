@@ -78,6 +78,11 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="BowlingDB">
 <!-- v30.162 OFF-1: manifest + icons so the home-screen app installs and launches as an app -->
+<!-- v30.224 OFF-2: the files this build runs with, and the version each must carry
+     (its *_VERSION line). sw.js reads this block: it keeps the app's
+     files as one matching set and never opens a mix of old and new files. Every file
+     is fetched as name.js?v=APP_VERSION. Update a version here when that file changes. -->
+<script type="application/json" id="bdb-files">{"devkit.js":"v30.224","report.js":"v30.156","catalog.js":"v30.224","workbench.js":"v30.223","pinpal.js":"v30.199","awards.js":"v30.226"}</script>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#0E0F11">
@@ -3527,11 +3532,13 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
 <script>
 /* v30.169: ONE place for the version. The header, the home screen label, the
    page title and backups all read these, so nothing can go stale on an update.
-   Bump both lines (and CATALOG_JS_VERSION in catalog.js when it changes). */
-const APP_VERSION = 'v30.223';
+   Bump both lines (and CATALOG_JS_VERSION in catalog.js when it changes).
+   v30.224 OFF-2: also bump the ?v= on the three <script src> tags at the end of
+   the page, and the file list in <script id="bdb-files"> when a .js file changes. */
+const APP_VERSION = 'v30.226';
 const APP_BUILD_DATE = '2026-10-24';
 /* catalog.js this build expects; an older file on the server shows a warning */
-const EXPECTED_CATALOG_JS = 'v30.223';
+const EXPECTED_CATALOG_JS = 'v30.224';
 function applyAppVersion() {
 const ref = document.getElementById('hdr-build-ref');
 const cat = (typeof window.CATALOG_JS_VERSION === 'string') ? window.CATALOG_JS_VERSION : null;
@@ -3747,7 +3754,7 @@ req.onsuccess = e => {
 _idb = e.target.result;
 
 _idb.onclose = () => { _idb = null; };
-_idb.onversionchange = () => { _idb.close(); _idb = null; };
+_idb.onversionchange = (ev) => { try { ev.target.close(); } catch (e) {} _idb = null; };   // v30.225: onclose may already have cleared _idb
 res(_idb);
 };
 req.onerror = e => rej(e.target.error);
@@ -4334,7 +4341,7 @@ navBack();
 
 
 
-const NAV_TILES_DEFAULT = ['leagues','tb','open','balls','settings','export','notap','stats','tournament'];
+const NAV_TILES_DEFAULT = ['leagues','tb','open','balls','settings','export','notap','stats','tournament','awards'];
 const NAV_TILE_DEFS = {
 leagues: {
 label: 'Leagues',
@@ -4419,6 +4426,15 @@ svg: `<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="url(#g
       <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
     </svg>`
 },
+awards: {
+label: 'Trophies',
+action: () => openAwards(),   // v30.226 AWD-1: trophy case (awards.js, loaded on first use)
+bg: 'linear-gradient(135deg,rgba(255,200,60,0.26),rgba(157,78,221,0.22))',
+svg: `<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="url(#g-aw)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <defs><linearGradient id="g-aw" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#F5C542"/><stop offset="100%" stop-color="#00D9D9"/></linearGradient></defs>
+      <path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v5a5 5 0 01-10 0V4z"/><path d="M17 5h3v2a3 3 0 01-3 3"/><path d="M7 5H4v2a3 3 0 003 3"/>
+    </svg>`
+},
 tournament: {
 label: 'Tournament',
 action: () => navTo('s-tournaments'),
@@ -4433,9 +4449,12 @@ svg: `<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="url(#g
 function getTileOrder() {
 try {
 const saved = JSON.parse(localStorage.getItem('bowlingdb_tile_order') || 'null');
-if (Array.isArray(saved) &&
-saved.length === NAV_TILES_DEFAULT.length &&
-saved.every(id => NAV_TILE_DEFS[id])) return saved;
+/* v30.226: keep a saved order when tiles are added or retired: drop ids that no longer exist,
+   append new defaults at the end (was: any change in the tile count reset the order). */
+if (Array.isArray(saved)) {
+const keep = saved.filter(id => NAV_TILE_DEFS[id] && NAV_TILES_DEFAULT.includes(id));
+if (keep.length) return keep.concat(NAV_TILES_DEFAULT.filter(id => !keep.includes(id)));
+}
 } catch(e) {}
 return [...NAV_TILES_DEFAULT];
 }
@@ -19444,6 +19463,8 @@ openModal(`
       <input class="finput" id="tm-date" type="date" value="${t?.DateStart||today}"></div>
     <div class="fgroup"><label class="flabel">Games Per Round</label>
       <select class="finput" id="tm-gps">${gpsOpts}</select></div>
+    <div class="fgroup"><label class="flabel">Sanctioned</label>
+      <select class="finput" id="tm-sanctioned"><option value="" ${t?.Sanctioned==null?'selected':''}>— Unknown —</option><option value="1" ${t?.Sanctioned===true?'selected':''}>Sanctioned (USBC-certified)</option><option value="0" ${t?.Sanctioned===false?'selected':''}>Not Sanctioned</option></select></div>
     <div class="fgroup"><label class="flabel">Notes</label>
       <input class="finput" id="tm-notes" type="text" placeholder="Optional" value="${t?.Notes||''}"></div>
     <div class="fgroup"><label class="flabel">NoTap Mode <span style="color:var(--gold);font-size:11px">(9-pin = strike)</span></label>
@@ -19493,6 +19514,8 @@ const centerID = parseInt(document.getElementById('tm-center')?.value);
 const date     = document.getElementById('tm-date')?.value;
 const gps      = parseInt(document.getElementById('tm-gps')?.value)||6;
 const notes    = document.getElementById('tm-notes')?.value.trim()||'';
+const sancV    = document.getElementById('tm-sanctioned')?.value;
+const sanctioned = sancV === '1' ? true : sancV === '0' ? false : null;   // v30.226: awards shelf (certified / not / not marked)
 const noTap    = !!(window._tournNoTap);
 window._tournNoTap = false;
 const bakerFormat = !!(window._tournBaker);
@@ -19504,7 +19527,7 @@ const t = db.tournaments.find(x=>x.TournamentID===id);
 if (t) {
 t.TournamentName=name; t.CenterID=centerID; t.DateStart=date;
 t.GamesPerRound=gps; t.Notes=notes; t.NoTap=noTap;
-t.BakerFormat=bakerFormat; t.BakerTeamSize=bakerTeamSize;
+t.BakerFormat=bakerFormat; t.BakerTeamSize=bakerTeamSize; t.Sanctioned=sanctioned;
 t.Archived = document.getElementById('tm-arch-yes')?.classList.contains('on')||false;
 }
 saveDB(); closeModal(); renderTournamentList(); toast('Tournament updated!');
@@ -19512,7 +19535,7 @@ saveDB(); closeModal(); renderTournamentList(); toast('Tournament updated!');
 const newID = db.ids.tournament++;
 db.tournaments.push({ TournamentID:newID, TournamentName:name, CenterID:centerID,
 DateStart:date, GamesPerRound:gps, Notes:notes, Archived:false, NoTap:noTap,
-BakerFormat:bakerFormat, BakerTeamSize:bakerTeamSize });
+BakerFormat:bakerFormat, BakerTeamSize:bakerTeamSize, Sanctioned:sanctioned });
 saveDB(); closeModal(); renderTournamentList(); toast('Tournament created!');
 }
 }
@@ -26630,6 +26653,16 @@ openModal(`
           Restore with <b>Replace</b> on the target device. Your API key is never included.
         </p>
       </div>
+      <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border1)">
+        <label style="display:block">
+          <span class="btn btn-secondary" style="display:block;width:100%;text-align:center;cursor:pointer">🛟 Restore a safety copy</span>
+          <input type="file" accept=".json,application/json" style="display:none" onchange="rscHandleFile(this)">
+        </label>
+        <p style="font-size:11px;color:var(--t3);line-height:1.45;margin-top:6px">
+          Reads the <b>BowlingDB_SafetyCopy</b> file saved from the “didn’t start” screen. Adds only what this
+          phone is missing and never overwrites; you see what it adds first.
+        </p>
+      </div>
     </div>
 
     <div class="divider"></div>
@@ -26851,6 +26884,199 @@ try { await idbClear(store); if (rows.length) await idbPutAll(store, rows); }
 catch (e) {}
 }
 return snap.doc;
+}
+/* v30.225 RSC-1: Restore a safety copy -- the BowlingDB_SafetyCopy_<date>.json file that the
+   startup fallback (BOOT-1) saves. MERGE ONLY (James, 2026-10-24): it adds what this phone is
+   missing and never overwrites. Rules:
+   - Scoring (series, games, frames, attempts): a record is added when its ID is not on this phone.
+     If an ID on this phone already holds a DIFFERENT record, none of the scoring is added (adding
+     the rest could attach the copy's frames to this phone's game); the preview says so and points
+     to a Full Snapshot instead.
+   - Reference data (leagues, centers, balls, leaves, ...): rows missing by ID are added; a row
+     this phone already has is kept as it is. The ID counters take the higher of the two, so new
+     records never reuse an ID. One exception, shown in the preview: when this phone has no games
+     at all, its starter rows (the sample leagues, centers and balls of a fresh install) give way
+     to the copy's rows with the same ID.
+   - One-time fix flags (bowlingdb_fixNNN_*): on a phone with no games, the copy's flags win, because
+     they describe the copy's games; otherwise this phone's are kept.
+   - Lane library and recalled context: added when missing. Ball pictures are not in a safety copy
+     and are left alone. Other settings are added only when this phone has none; lists and maps
+     get their missing entries.
+   The whole plan is shown before anything is written; the app reloads afterwards. The keys it
+   added are kept in bowlingdb_rsc_undo. */
+const RSC_IDB_KEY = { series:'SeriesID', games:'GameID', frames:'FrameID', attempts:'AttemptID', laneLibrary:'LaneKey', recalledContext:'id' };
+const RSC_SCORING = ['series','games','frames','attempts'];
+const RSC_LABEL = { series:'series', games:'games', frames:'frames', attempts:'attempts', laneLibrary:'lane library entries', recalledContext:'recalled context entries' };
+const RSC_SKIP_LS = /^bdbgh_|ai_key|^bowlingdb_rsc_undo$/;
+function rscIsCopy(p) { return !!(p && p.kind === 'bowlingdb-emergency-copy' && p.localStorage && p.idb); }
+function _rscStable(v) {
+  if (Array.isArray(v)) return '[' + v.map(_rscStable).join(',') + ']';
+  if (v && typeof v === 'object') return '{' + Object.keys(v).sort().map(k => JSON.stringify(k) + ':' + _rscStable(v[k])).join(',') + '}';
+  return JSON.stringify(v === undefined ? null : v);
+}
+function _rscSame(a, b) { return _rscStable(a) === _rscStable(b); }
+function _rscIdField(rows) {
+  const r = (rows || []).find(x => x && typeof x === 'object' && !Array.isArray(x));
+  if (!r) return null;
+  const k = Object.keys(r).find(k => /ID$/.test(k));
+  return k || ('id' in r ? 'id' : null);
+}
+function _rscParse(s) { try { return JSON.parse(s); } catch (e) { return undefined; } }
+/* Missing rows of `theirs` appended to `mine` (by id field). starter: colliding rows take theirs. */
+function _rscMergeRows(mine, theirs, t, starter) {
+  const idf = _rscIdField(theirs) || _rscIdField(mine);
+  if (!idf) return { out: mine, changed: false };
+  const out = mine.slice(), at = new Map();
+  out.forEach((r, i) => { if (r && r[idf] != null) at.set(String(r[idf]), i); });
+  let changed = false;
+  theirs.forEach(r => {
+    if (!r || r[idf] == null) return;
+    const i = at.get(String(r[idf]));
+    if (i === undefined) { out.push(r); at.set(String(r[idf]), out.length - 1); t.rowsAdded++; changed = true; }
+    else if (!_rscSame(out[i], r)) {
+      if (starter) { out[i] = r; t.starterReplaced++; changed = true; } else t.kept++;
+    }
+  });
+  return { out, changed };
+}
+function _rscMergeDoc(mine, theirs, t, starter) {
+  const out = Object.assign({}, mine); let changed = false;
+  Object.keys(theirs).forEach(k => {
+    if (k === '_scoringCounts') return;
+    const a = mine[k], b = theirs[k];
+    if (a === undefined) { out[k] = b; changed = true; t.rowsAdded += Array.isArray(b) ? b.length : 0; return; }
+    if (k === 'ids' && a && b && typeof a === 'object') {
+      const ids = Object.assign({}, a);
+      Object.keys(b).forEach(n => { const v = Math.max(Number(a[n]) || 0, Number(b[n]) || 0); if (v !== a[n]) { ids[n] = v; changed = true; } });
+      out.ids = ids; return;
+    }
+    if (Array.isArray(a) && Array.isArray(b)) { const m = _rscMergeRows(a, b, t, starter); if (m.changed) { out[k] = m.out; changed = true; } return; }
+    if (a && b && typeof a === 'object' && typeof b === 'object' && !Array.isArray(a) && !Array.isArray(b)) {
+      const o = Object.assign({}, a); let c = false;
+      Object.keys(b).forEach(n => { if (!(n in a)) { o[n] = b[n]; c = true; } });
+      if (c) { out[k] = o; changed = true; }
+    }
+  });
+  return { out, changed };
+}
+async function rscPlan(copy) {
+  const t = { rowsAdded: 0, kept: 0, starterReplaced: 0, settingsAdded: 0, settingsMerged: 0 };
+  const plan = { idb: {}, ls: {}, t, scoringConflicts: 0, counts: {} };
+  /* IndexedDB */
+  let phoneGames = 0, phoneSeries = 0;
+  for (const store of Object.keys(RSC_IDB_KEY)) {
+    const rows = Array.isArray(copy.idb[store]) ? copy.idb[store] : [];
+    if (!rows.length) continue;
+    const key = RSC_IDB_KEY[store];
+    let mine = [];
+    try { mine = await idbGetAll(store); } catch (e) { mine = []; }
+    if (store === 'games') phoneGames = mine.length;
+    if (store === 'series') phoneSeries = mine.length;
+    const have = new Map(mine.map(r => [String(r[key]), r]));
+    const add = [];
+    rows.forEach(r => {
+      if (!r || r[key] == null) return;
+      const m = have.get(String(r[key]));
+      if (!m) add.push(r);
+      else if (!_rscSame(m, r)) { if (RSC_SCORING.includes(store)) plan.scoringConflicts++; else t.kept++; }
+    });
+    plan.idb[store] = add;
+  }
+  if (plan.scoringConflicts) RSC_SCORING.forEach(s => { plan.idb[s] = []; });
+  Object.keys(plan.idb).forEach(s => { plan.counts[s] = plan.idb[s].length; });
+  /* localStorage */
+  const starter = !phoneGames && !phoneSeries;
+  plan.starter = starter;
+  Object.keys(copy.localStorage).forEach(k => {
+    if (RSC_SKIP_LS.test(k)) return;
+    const theirs = copy.localStorage[k];
+    if (typeof theirs !== 'string') return;
+    const mineS = localStorage.getItem(k);
+    if (mineS === null) { plan.ls[k] = theirs; t.settingsAdded++; return; }
+    if (mineS === theirs) return;
+    /* A fresh phone writes its own one-time fix flags at start-up; they describe no data. When the
+       copy's games are coming in, the copy's flags (which describe those games) are the true ones. */
+    if (starter && /^bowlingdb_fix\d+/.test(k)) { plan.ls[k] = theirs; t.settingsAdded++; return; }
+    const a = _rscParse(mineS), b = _rscParse(theirs);
+    if (k === STORE_KEY) {
+      if (a && b && typeof a === 'object' && typeof b === 'object') { const m = _rscMergeDoc(a, b, t, starter); if (m.changed) plan.ls[k] = JSON.stringify(m.out); }
+      return;
+    }
+    if (Array.isArray(a) && Array.isArray(b) && _rscIdField(b)) {
+      const m = _rscMergeRows(a, b, t, false); if (m.changed) { plan.ls[k] = JSON.stringify(m.out); t.settingsMerged++; } return;
+    }
+    if (a && b && typeof a === 'object' && typeof b === 'object' && !Array.isArray(a) && !Array.isArray(b)) {
+      const o = Object.assign({}, a); let c = false;
+      Object.keys(b).forEach(n => { if (!(n in a)) { o[n] = b[n]; c = true; } });
+      if (c) { plan.ls[k] = JSON.stringify(o); t.settingsMerged++; } return;
+    }
+    t.kept++;
+  });
+  plan.empty = !Object.values(plan.counts).some(n => n) && !Object.keys(plan.ls).length;
+  return plan;
+}
+async function rscApply(plan) {
+  const undo = { at: new Date().toISOString(), idb: {}, lsAdded: [], lsChanged: [] };
+  for (const store of Object.keys(plan.idb)) {
+    const rows = plan.idb[store];
+    if (!rows.length) continue;
+    await idbPutAll(store, rows);
+    undo.idb[store] = rows.map(r => r[RSC_IDB_KEY[store]]);
+  }
+  Object.keys(plan.ls).forEach(k => {
+    (localStorage.getItem(k) === null ? undo.lsAdded : undo.lsChanged).push(k);
+    localStorage.setItem(k, plan.ls[k]);
+  });
+  try { localStorage.setItem('bowlingdb_rsc_undo', JSON.stringify(undo)); } catch (e) {}
+  return undo;
+}
+function _rscPreviewHtml(copy, plan) {
+  const lines = [];
+  Object.keys(plan.counts).forEach(s => { if (plan.counts[s]) lines.push(plan.counts[s].toLocaleString() + ' ' + RSC_LABEL[s]); });
+  const t = plan.t;
+  if (t.rowsAdded) lines.push(t.rowsAdded.toLocaleString() + ' leagues, centers, balls and other reference rows');
+  if (t.settingsAdded) lines.push(t.settingsAdded + ' settings this phone doesn\u2019t have');
+  if (t.settingsMerged) lines.push('missing entries in ' + t.settingsMerged + ' settings lists');
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
+  let h = '<div style="font-size:13px;color:var(--t2);margin-bottom:10px">Safety copy from ' + esc(String(copy.at || '').slice(0, 10)) + '. Nothing on this phone is overwritten.</div>';
+  if (plan.empty && !plan.scoringConflicts) h += '<div class="card" style="font-size:13px">This phone already has everything in the copy. Nothing to add.</div>';
+  else if (lines.length) h += '<div class="card" style="font-size:13px;line-height:1.6"><b>Adds</b><br>' + lines.map(esc).join('<br>') + '</div>';
+  if (plan.starter && t.starterReplaced) h += '<div class="card" style="font-size:12px;color:var(--gold);margin-top:8px">This phone has no games yet, so ' + t.starterReplaced + ' starter rows (sample leagues, centers, balls) are replaced by yours.</div>';
+  if (plan.scoringConflicts) h += '<div class="card" style="font-size:12px;color:var(--gold);margin-top:8px">Games are not added: ' + plan.scoringConflicts.toLocaleString() + ' scoring IDs on this phone already hold different records, and mixing them could join the wrong frames to a game. Restore those with a Full Snapshot (Replace) instead.</div>';
+  if (t.kept) h += '<div style="font-size:12px;color:var(--t3);margin-top:8px">' + t.kept.toLocaleString() + ' items differ from the copy and keep this phone\u2019s version.</div>';
+  h += '<div style="font-size:12px;color:var(--t3);margin-top:8px">Ball pictures are not in a safety copy and stay as they are. The app reloads when done.</div>';
+  return h;
+}
+function rscHandleFile(input) {
+  const file = input.files && input.files[0];
+  if (!file) return;
+  input.value = '';
+  const reader = new FileReader();
+  reader.onload = async e => {
+    let copy;
+    try { copy = JSON.parse(e.target.result); } catch (err) { toast('Not a readable file'); return; }
+    if (!rscIsCopy(copy)) { toast(isFullSnapshot(copy) ? 'That is a Full Snapshot: use Import from Access \u203a Choose JSON File' : 'Not a BowlingDB safety copy'); return; }
+    let plan;
+    try { plan = await rscPlan(copy); } catch (err) { toast('Could not read this phone\u2019s data: ' + err.message); return; }
+    window._rscPending = plan;
+    const canAdd = !plan.empty;
+    openModal('<div class="modal-title">\ud83d\udedf Restore a safety copy</div>' + _rscPreviewHtml(copy, plan) +
+      (canAdd ? '<button class="btn btn-primary" style="margin-top:12px" onclick="rscConfirm()">Add these</button>' : '') +
+      '<button class="btn btn-secondary" style="margin-top:8px" onclick="window._rscPending=null;closeModal()">' + (canAdd ? 'Cancel' : 'Close') + '</button>');
+  };
+  reader.onerror = () => toast('Could not read the file');
+  reader.readAsText(file);
+}
+async function rscConfirm() {
+  const plan = window._rscPending;
+  if (!plan) return;
+  window._rscPending = null;
+  try {
+    toast('Adding\u2026', 8000);
+    await rscApply(plan);
+    toast('Added. Reloading\u2026', 3000);
+    setTimeout(() => location.reload(), 600);
+  } catch (err) { toast('Restore stopped: ' + err.message, 6000); }
 }
 function copyExport() {
 navigator.clipboard?.writeText(JSON.stringify(buildExportDoc(),null,2))
@@ -30145,6 +30371,16 @@ b.BoxFinish = null; if (b.SpecSource) delete b.SpecSource.BoxFinish;
 if (log.length) { saveDB(); toast('Tidied ' + log.length + ' ball field' + (log.length === 1 ? '' : 's')); }
 localStorage.setItem(FLAG, log.length ? log.join(' | ') : 'nothing to tidy');
 } catch (e) { console.warn('fixBallText189:', e); }
+}
+
+/* v30.226 AWD-1: the trophy case lives in awards.js (same-origin, loaded on first use). */
+function openAwards() {
+if (typeof awOpen === 'function') { awOpen(); return; }
+const s = document.createElement('script');
+s.src = 'awards.js?v=' + encodeURIComponent(APP_VERSION);
+s.onload = () => { if (typeof awOpen === 'function') awOpen(); else toast('Trophy case did not load'); };
+s.onerror = () => toast('Trophy case unavailable: upload awards.js next to index.html');
+document.head.appendChild(s);
 }
 
 /* v30.190 PP-1: the PinPal compare lives in pinpal.js (same-origin, loaded on first use). */
@@ -37610,10 +37846,10 @@ _editStatus:'', _editPriority:1, _newSnap:null, _newStatus:'tbd', _editCat:'note
 };
 var _DKM_STATUS_LABELS = {ok:'🟢 Working',partial:'🟡 Partial',broken:'🔴 Broken',tbd:'⚪ TBD'};
 </script>
-<script src="devkit.js"></script>
-<script src="report.js"></script>
+<script src="devkit.js?v=v30.226"></script>
+<script src="report.js?v=v30.226"></script>
 <!-- v30.157 NEW-11 step 4: ball catalog manifest check + IDB cache (same-origin, like devkit.js/report.js). Optional: if missing, the app behaves exactly as before. -->
-<script src="catalog.js"></script>
+<script src="catalog.js?v=v30.226"></script>
 <script>
 /* v30.162 OFF-1: service worker (sw.js, same folder) so the app opens with
    no connection, and a request that the browser keep this app's storage.
