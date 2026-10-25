@@ -22,7 +22,7 @@
    Images: CACHE FIRST, any origin, capped at IMG_MAX (unchanged).
    Everything else (Anthropic API, catalog JSON on raw.githubusercontent,
    GitHub API) passes straight through untouched. */
-var SW_VERSION = 'v30.224';
+var SW_VERSION = 'v30.230';
 var SET_PREFIX = 'bdb-set-';
 var MISC_CACHE = 'bdb-misc-v1';      // manifest + icons
 var LEGACY_SHELL = 'bdb-shell-v1';   // v30.162-223 copy: used only until a complete set exists
@@ -102,23 +102,44 @@ function buildSet(info, indexText, indexHeaders) {
   return caches.open(name).then(function (c) {
     return setComplete(c).then(function (m) {
       if (m) return name;
+      /* v30.230: check every file and collect ALL that are missing or old, so the page can name them */
       return Promise.all(Object.keys(info.files).map(function (f) {
-        var url = fileUrl(f, info.v);
+        var url = fileUrl(f, info.v), want = info.files[f];
         return fetch(freshRequest(url)).then(function (res) {
-          if (!res || !res.ok) throw new Error(f + ': HTTP ' + (res && res.status));
-          var want = info.files[f];
-          if (!want) return c.put(url, res);
+          if (!res || !res.ok) return { file: f, problem: 'missing', status: res && res.status };
+          if (!want) return c.put(url, res).then(function () { return null; });
           return res.clone().text().then(function (t) {
-            if (!new RegExp("_VERSION\\s*=\\s*'" + reEsc(want) + "'").test(t)) throw new Error(f + ' on the server is not ' + want + ' yet');
-            return c.put(url, res);
+            if (!new RegExp("_VERSION\\s*=\\s*'" + reEsc(want) + "'").test(t)) {
+              var m = /_VERSION\s*=\s*'([^']+)'/.exec(t);
+              return { file: f, problem: 'old', want: want, found: m ? m[1] : null };
+            }
+            return c.put(url, res).then(function () { return null; });
           });
-        });
-      })).then(function () {
+        }, function () { return { file: f, problem: 'offline' }; });
+      })).then(function (results) {
+        var bad = results.filter(Boolean);
+        if (bad.length) { var e = new Error('incomplete'); e.bdbIncomplete = { v: info.v, files: bad }; throw e; }
+      }).then(function () {
         return c.put('./index.html', new Response(indexText, { headers: indexHeaders }));
       }).then(function () {
         return c.put(MARK, new Response(JSON.stringify({ v: info.v, at: Date.now(), sw: SW_VERSION }), { headers: { 'Content-Type': 'application/json' } }));
       }).then(function () { return prune(name); }).then(function () { return name; });
     });
+  });
+}
+/* v30.230: an update is on the server but some of its files are missing or still old. The app opens
+   the last complete version (as before) and now says so, naming the files, so it is never silent. */
+function withBanner(res, inc, runningV) {
+  return res.text().then(function (html) {
+    var esc = function (v) { return String(v).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+    var lines = inc.files.filter(function (x) { return x.problem !== 'offline'; }).map(function (x) {
+      return x.problem === 'missing' ? esc(x.file) + ' is not on the server' : esc(x.file) + ' on the server is ' + esc(x.found || 'an older copy') + ', needs ' + esc(x.want);
+    });
+    var banner = '<div id="bdb-update-blocked" onclick="this.remove()" style="position:fixed;left:10px;right:10px;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:2147483000;' +
+      'background:#2b2200;color:#ffd76a;border:1px solid #8a6d00;border-radius:12px;padding:10px 12px;font:13px/1.45 -apple-system,system-ui,sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.5)">' +
+      '<b>Update ' + esc(inc.v) + ' is waiting.</b> You are on ' + esc(runningV) + ' because ' + lines.join('; ') + '. Upload ' + (lines.length === 1 ? 'that file' : 'those files') + ', then reopen the app. <span style="opacity:.7">(tap to hide)</span></div>';
+    html = html.indexOf('</body>') >= 0 ? html.replace('</body>', banner + '</body>') : html + banner;
+    return new Response(html, { headers: htmlHeaders(res) });
   });
 }
 function indexFrom(name) {
@@ -154,7 +175,13 @@ function handleNavigate(e) {
       /* Something whole to fall back on: wait a while for the new set, else open the saved one. */
       return Promise.race([built, timeout(SET_TIMEOUT)]).then(function (b) {
         return b.name ? indexFrom(b.name) : raw(b.raw);
-      }).catch(fromLatest);
+      }).catch(function (err) {
+        return fromLatest().then(function (r) {
+          var inc = err && err.bdbIncomplete;
+          if (!inc || inc.v === latest.v || inc.files.every(function (x) { return x.problem === 'offline'; })) return r;
+          return withBanner(r, inc, latest.v);
+        });
+      });
     }
     /* First launch with OFF-2 (or after Fresh files): nothing complete yet. Open what the
        network gives, as v30.223 did; the set finishes in the background. Offline: the old copy. */
