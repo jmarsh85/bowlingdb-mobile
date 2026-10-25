@@ -1,6 +1,6 @@
 /* BowlingDB share cards -- SHR-1 (design: DESIGN_share_card.md, 2026-10-25).
    v30.236 slice 1: series card. v30.237 slice 2: game card (scorecard strip) + optional detail
-   (strikes, spares, splits, balls with pictures) on Story cards.
+   (strikes, spares, splits, balls with pictures) on Story cards. v30.239: league card + season card.
    A picture of the bowler's own play, made on the phone and handed to the iOS share sheet.
    No account, no server, works offline. Parts:
      seriesFacts / gameFacts (data, id, ctx) -- pure: everything the card says ("card facts").
@@ -9,7 +9,7 @@
    Loaded by index.html as share.js?v=APP_VERSION on first use; require()-able for the Node harness. */
 (function (root) {
 'use strict';
-var SHARE_VERSION = 'v30.237';
+var SHARE_VERSION = 'v30.239';
 var PREFS_KEY = 'bowlingdb_share_prefs';
 var DEFAULT_PREFS = { size: 'post', name: true, center: true, league: true, avg: true, hdcp: true, detail: true };
 var SIZES = { post: { w: 1080, h: 1350, label: 'Post 4:5' }, story: { w: 1080, h: 1920, label: 'Story 9:16' } };
@@ -255,7 +255,117 @@ function gameFacts(data, gameID, ctx) {
   return f;
 }
 
+
+/* ---------------- league and season cards (v30.239) ----------------
+   Same game pool as the League Report: league series, FinalScore > 0, not a teammate, not No-Tap,
+   no tournament series, never Baker leagues. ctx.leagueRow(league) / ctx.rowForSeries(series) (page)
+   give the League Report's own strike / spare / first-ball / clean numbers so the card matches the dashboard. */
+function poolFor(data, seriesList) {
+  var ids = {}; seriesList.forEach(function (s) { ids[s.SeriesID] = s; });
+  return (data.games || []).filter(function (g) { return ids[g.SeriesID] && g.FinalScore != null && g.FinalScore > 0 && !g.IsTeammate && !g.NoTap; });
+}
+function nightsOf(games, data) {
+  var S = {}; (data.series || []).forEach(function (s) { S[s.SeriesID] = s; });
+  var by = {};
+  games.forEach(function (g) { (by[g.SeriesID] = by[g.SeriesID] || { s: S[g.SeriesID], games: [] }).games.push(g); });
+  return Object.keys(by).map(function (k) { var x = by[k]; var t = x.games.reduce(function (a, g) { return a + g.FinalScore; }, 0); return { seriesID: +k, date: x.s.DateBowled || '', leagueID: x.s.LeagueID, total: t, n: x.games.length }; })
+    .sort(function (a, b) { return byDate(a.date, b.date); });
+}
+function rangeLabel(a, b) {
+  if (!a) return '';
+  var M = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  var pa = a.split('-'), pb = (b || a).split('-');
+  var fa = M[+pa[1] - 1] + ' ' + +pa[2], fb = M[+pb[1] - 1] + ' ' + +pb[2] + ', ' + pb[0];
+  return a === b ? fb : (pa[0] === pb[0] ? fa : fa + ', ' + pa[0]) + ' \u2013 ' + fb;
+}
+function honorPills(games, nights) {
+  var n300 = games.filter(function (g) { return g.FinalScore === 300; }).length;
+  var n700 = nights.filter(function (x) { return x.total >= 700; }).length;
+  var pills = [];
+  if (n300) pills.push({ text: '300 GAME' + (n300 > 1 ? ' \u00d7' + n300 : ''), tone: 'gold' });
+  if (n700) pills.push({ text: '700 SERIES' + (n700 > 1 ? ' \u00d7' + n700 : ''), tone: 'gold' });
+  return pills;
+}
+function pctNum(v) { var n = parseFloat(v); return isNaN(n) ? null : n; }
+function rowStats(row, data, games) {
+  if (row) return { strikePct: pctNum(row.strikePct), sparePct: pctNum(row.sparePct), fba: pctNum(row.firstBallAvg), clean: row.cleanGames != null ? row.cleanGames : null };
+  var d = data.frames ? detailFor(data, games) : null, clean = 0;
+  if (data.frames) games.forEach(function (g) { var r = readGame(data, g); if (r && r.clean) clean++; });
+  return { strikePct: d && d.strikeOpps ? Math.floor(d.strikes / d.strikeOpps * 1000) / 10 : null, sparePct: d && d.spareOpps ? Math.floor(d.spares / d.spareOpps * 1000) / 10 : null, fba: null, clean: d ? clean : null };
+}
+function leagueFacts(data, leagueID, ctx) {
+  ctx = ctx || {};
+  var lg = (data.leagues || []).filter(function (l) { return l.LeagueID === leagueID; })[0];
+  if (!lg || lg.LeagueID <= 0 || lg.BakerFormat) return null;
+  var series = (data.series || []).filter(function (s) { return s.LeagueID === leagueID && s.TournamentID == null && !s.NoTap; });
+  var games = poolFor(data, series);
+  if (!games.length) return null;
+  var nights = nightsOf(games, data), sum = games.reduce(function (a, g) { return a + g.FinalScore; }, 0);
+  var me = (data.bowlers || []).filter(function (b) { return b.IsMe; })[0];
+  var center = (data.centers || []).filter(function (c) { return c.CenterID === lg.CenterID; })[0];
+  var st = rowStats(ctx.leagueRow ? ctx.leagueRow(lg) : null, data, games);
+  var hiS = Math.max.apply(null, nights.map(function (x) { return x.total; }));
+  var hdcpNow = null;
+  if (lg.Handicap !== false && typeof ctx.hdcpNow === 'function') { try { hdcpNow = ctx.hdcpNow(leagueID); } catch (e) { hdcpNow = null; } }
+  var avg = floorAvg(sum, games.length);
+  return {
+    kind: 'league', v: 1, leagueID: leagueID, level: 'league', certified: lg.Sanctioned === true, noTap: false,
+    date: nights[nights.length - 1].date, dateLabel: rangeLabel(nights[0].date, nights[nights.length - 1].date),
+    pills: honorPills(games, nights), big: avg, bigLabel: 'LEAGUE AVERAGE \u00b7 ' + games.length + ' GAMES \u00b7 ' + nights.length + ' NIGHT' + (nights.length === 1 ? '' : 'S'),
+    avg: avg, games: games.length, nights: nights.length, highGame: Math.max.apply(null, games.map(function (g) { return g.FinalScore; })), highSeries: hiS,
+    strikePct: st.strikePct, sparePct: st.sparePct, fba: st.fba, clean: st.clean,
+    entering: ctx.entryAvg && ctx.entryAvg[leagueID] != null ? ctx.entryAvg[leagueID] : null, hdcpNow: hdcpNow, hdcpTotal: null, avgIn: null,
+    trend: nights.map(function (x) { return Math.floor(x.total / x.n); }),
+    bowler: (me && me.Name) || ctx.profileName || null, league: lg.LeagueName, center: center ? center.CenterName : null,
+    detail: data.frames ? detailFor(data, games) : null
+  };
+}
+function seasonFacts(data, seasonID, ctx) {
+  ctx = ctx || {};
+  var se = (data.seasons || []).filter(function (x) { return x.SeasonID === seasonID; })[0];
+  if (!se) return null;
+  var leagues = (data.leagues || []).filter(function (l) { return l.SeasonID === seasonID && l.LeagueID > 0 && !l.BakerFormat; });
+  var C = {}; (data.centers || []).forEach(function (c) { C[c.CenterID] = c.CenterName; });
+  var rows = [], allSeries = [];
+  leagues.forEach(function (l) {
+    var ser = (data.series || []).filter(function (s) { return s.LeagueID === l.LeagueID && s.TournamentID == null && !s.NoTap; });
+    var g = poolFor(data, ser);
+    if (!g.length) return;
+    allSeries = allSeries.concat(ser);
+    rows.push({ leagueID: l.LeagueID, name: l.LeagueName, center: C[l.CenterID] || null, avg: floorAvg(g.reduce(function (a, x) { return a + x.FinalScore; }, 0), g.length), games: g.length });
+  });
+  if (!rows.length) return null;
+  rows.sort(function (a, b) { return b.games - a.games || a.name.localeCompare(b.name); });
+  var games = poolFor(data, allSeries), nights = nightsOf(games, data), sum = games.reduce(function (a, g) { return a + g.FinalScore; }, 0);
+  var me = (data.bowlers || []).filter(function (b) { return b.IsMe; })[0];
+  var st = rowStats(ctx.rowForSeries ? ctx.rowForSeries(allSeries) : null, data, games);
+  var best = nights.slice().sort(function (a, b) { return b.total - a.total; })[0];
+  var avg = floorAvg(sum, games.length);
+  var centers = {}; rows.forEach(function (r) { if (r.center) centers[r.center] = 1; });
+  return {
+    kind: 'season', v: 1, seasonID: seasonID, level: 'season', certified: false, noTap: false,
+    date: nights[nights.length - 1].date, dateLabel: rangeLabel(nights[0].date, nights[nights.length - 1].date),
+    pills: honorPills(games, nights), big: avg,
+    bigLabel: 'SEASON AVERAGE \u00b7 ' + games.length + ' GAMES \u00b7 ' + rows.length + ' LEAGUE' + (rows.length === 1 ? '' : 'S'),
+    avg: avg, games: games.length, nights: nights.length, rows: rows, centers: Object.keys(centers).length,
+    highGame: Math.max.apply(null, games.map(function (g) { return g.FinalScore; })), highSeries: best.total, bestNight: best,
+    strikePct: st.strikePct, sparePct: st.sparePct, fba: st.fba, clean: st.clean, avgIn: null, hdcpTotal: null,
+    bowler: (me && me.Name) || ctx.profileName || null, league: se.Label, center: null, seasonLabel: se.Label,
+    detail: data.frames ? detailFor(data, games) : null
+  };
+}
+
+function seasonList(data) {
+  return (data.seasons || []).map(function (se) {
+    var lgs = (data.leagues || []).filter(function (l) { return l.SeasonID === se.SeasonID && l.LeagueID > 0 && !l.BakerFormat; });
+    var ids = {}; lgs.forEach(function (l) { ids[l.LeagueID] = 1; });
+    var ser = (data.series || []).filter(function (s) { return ids[s.LeagueID] && s.TournamentID == null && !s.NoTap; });
+    var g = poolFor(data, ser), used = {}; ser.forEach(function (s) { if (g.some(function (x) { return x.SeriesID === s.SeriesID; })) used[s.LeagueID] = 1; });
+    return { seasonID: se.SeasonID, label: se.Label, start: se.StartDate || '', games: g.length, leagues: Object.keys(used).length, avg: floorAvg(g.reduce(function (a, x) { return a + x.FinalScore; }, 0), g.length) };
+  }).filter(function (x) { return x.games; }).sort(function (a, b) { return byDate(b.start, a.start); });
+}
 function levelLabel(f) {
+  if (f.level === 'season') return 'SEASON' + (f.seasonLabel ? ' \u00b7 ' + f.seasonLabel.toUpperCase() : '');
   if (f.level === 'notap') return 'NO-TAP';
   if (f.level === 'open') return 'OPEN PLAY';
   if (f.level === 'tournament') return f.certified ? 'USBC-CERTIFIED TOURNAMENT' : 'TOURNAMENT';
@@ -313,16 +423,28 @@ function drawShareCard(f, opts, C, canvas, imgs) {
   var top = story ? 150 : 96;
   ctx.textAlign = 'left'; ctx.fillStyle = C.teal; ctx.font = '800 30px ' + SANS;
   ctx.fillText('B O W L I N G D B', 72, top);
-  ctx.textAlign = 'right'; ctx.fillStyle = C.t2; ctx.font = '600 30px ' + SANS; ctx.fillText(longDate(f.date), W - 72, top);
+  ctx.textAlign = 'right'; ctx.fillStyle = C.t2; ctx.font = '600 30px ' + SANS; ctx.fillText(f.dateLabel || longDate(f.date), W - 72, top);
 
-  var game = f.kind === 'game', n = game ? 1 : f.scores.length;
+  var game = f.kind === 'game', agg = f.kind === 'league' || f.kind === 'season';
+  var tiles = agg ? [{ k: 'HIGH GAME', v: f.highGame, hi: true }, { k: 'HIGH SERIES', v: f.highSeries }, f.kind === 'season' ? { k: 'NIGHTS', v: f.nights } : { k: 'CLEAN GAMES', v: f.clean != null ? f.clean : '\u2014' }] : null;
+  var n = game ? 1 : agg ? tiles.length : f.scores.length;
   var showAvg = opts.avg && f.avgIn != null, showH = opts.hdcp && f.hdcpTotal != null, det = detailShown(f, opts);
   var stats = [];
   if (showAvg) { stats.push({ k: 'AVG GOING IN', v: String(f.avgIn), c: C.t1 }); stats.push({ k: 'VS AVERAGE', v: (f.vsAvg > 0 ? '+' : '') + f.vsAvg, c: f.vsAvg > 0 ? C.teal : f.vsAvg < 0 ? C.red : C.t2 }); }
   if (showH) stats.push({ k: 'HANDICAP', v: String(f.hdcpTotal), c: C.gold, sub: game ? '+' + f.hdcpGame : '+' + f.hdcpGame + ' a game' });
-  if (!stats.length && !game) stats.push({ k: 'GAME AVERAGE', v: String(f.gameAvg), c: C.t1 });
+  if (agg) {
+    stats = [];
+    var pc = function (x) { return (Number.isInteger(x) ? String(x) : x.toFixed(1)) + '%'; };
+    if (f.strikePct != null) stats.push({ k: 'STRIKES', v: pc(f.strikePct), c: C.t1 });
+    if (f.sparePct != null) stats.push({ k: 'SPARES', v: pc(f.sparePct), c: C.t1 });
+    if (opts.hdcp && f.hdcpNow) stats.push({ k: 'HANDICAP', v: String(f.hdcpNow), c: C.gold, sub: 'a game now' });
+    else if (f.fba != null) stats.push({ k: 'FIRST BALL', v: f.fba.toFixed(2), c: C.t1 });
+    if (f.kind === 'season' && !story) stats = [];              // no room on a season Post card
+  }
+  if (!stats.length && !game && !agg) stats.push({ k: 'GAME AVERAGE', v: String(f.gameAvg), c: C.t1 });
+  var season = f.kind === 'season', ROWMAX = story ? 5 : 3, ROWH = story ? 62 : 58;
   var D = story ? { tot: det ? 270 : 300, totF: det ? 220 : 250, games: det ? 180 : 200, gF: 96, strip: 196, stats: det ? 150 : 160, gap: det ? 40 : 64 }
-                : { tot: game ? 250 : 270, totF: game ? 210 : 230, games: 180, gF: 88, strip: 176, stats: 150, gap: 32 };
+                : { tot: game ? 250 : season ? 230 : 270, totF: game ? 210 : season ? 190 : 230, games: 180, gF: 88, strip: 176, stats: 150, gap: 32 };
   /* identity + badge, laid out bottom-up so they never overlap */
   var by = H - (story ? 230 : 170);
   var idLines = [];
@@ -334,11 +456,17 @@ function drawShareCard(f, opts, C, canvas, imgs) {
   if (f.pills.length) blocks.push({ h: 60, draw: drawPills });
   blocks.push({ h: D.tot, draw: drawTotal });
   if (game) { if (f.frames) blocks.push({ h: D.strip, draw: drawStrip }); }
-  else blocks.push({ h: D.games, draw: drawGames });
+  else {
+    if (season) blocks.push({ h: 24 + ROWH * Math.min(f.rows.length, ROWMAX) + (f.rows.length > ROWMAX ? 34 : 0), draw: drawRows });
+    blocks.push({ h: agg ? 150 : D.games, draw: drawGames });
+  }
   if (stats.length) blocks.push({ h: D.stats, draw: drawStats });
-  if (det) blocks.push({ h: f.detail.balls.length ? 290 : 150, draw: drawDetail });
-  var bodyH = blocks.reduce(function (a, b) { return a + b.h; }, 0) + D.gap * (blocks.length - 1);
+  if (det && f.kind === 'league' && f.trend && f.trend.length > 1) blocks.push({ h: 170, draw: drawTrend });
+  if (det && !(agg && !f.detail.balls.length)) blocks.push({ h: agg ? (f.detail.balls.length ? 150 : 0) : (f.detail.balls.length ? 290 : 150), draw: drawDetail });
   var bodyTop = top + 56, bodyBot = idTop - (idLines.length ? 36 : 0);
+  var sumH = blocks.reduce(function (a, b) { return a + b.h; }, 0);
+  if (blocks.length > 1 && sumH + D.gap * (blocks.length - 1) > bodyBot - bodyTop) D.gap = Math.max(12, Math.floor((bodyBot - bodyTop - sumH) / (blocks.length - 1)));   // tighten to fit
+  var bodyH = sumH + D.gap * (blocks.length - 1);
   var y = bodyTop + Math.max(0, (bodyBot - bodyTop - bodyH) / 2);
   blocks.forEach(function (b) { b.draw(y, b.h); y += b.h + D.gap; });
 
@@ -355,14 +483,23 @@ function drawShareCard(f, opts, C, canvas, imgs) {
   function drawTotal(y0) {
     ctx.textAlign = 'center';
     ctx.fillStyle = gold ? C.gold : C.t1;
-    ctx.font = '900 ' + D.totF + 'px ' + SANS; ctx.fillText(String(game ? f.score : f.total), W / 2, y0 + D.totF * 0.88);
+    ctx.font = '900 ' + D.totF + 'px ' + SANS; ctx.fillText(String(game ? f.score : agg ? f.big : f.total), W / 2, y0 + D.totF * 0.88);
     ctx.fillStyle = C.t2; ctx.font = '700 32px ' + SANS;
-    var lab = game ? ((f.noTap ? 'NO-TAP ' : '') + 'GAME ' + f.gameNumber + (f.gamesInSeries > 1 ? ' OF ' + f.gamesInSeries + ' \u00b7 SERIES ' + f.seriesTotal : ''))
+    var lab = agg ? f.bigLabel : game ? ((f.noTap ? 'NO-TAP ' : '') + 'GAME ' + f.gameNumber + (f.gamesInSeries > 1 ? ' OF ' + f.gamesInSeries + ' \u00b7 SERIES ' + f.seriesTotal : ''))
                    : (f.noTap ? 'NO-TAP SERIES' : 'SERIES') + ' \u00b7 ' + n + ' GAME' + (n === 1 ? '' : 'S');
     ctx.fillText(lab, W / 2, y0 + D.tot - 14);
   }
   function drawGames(y0, h) {
     var m = 72, g = n > 4 ? 14 : 24, w = (W - 2 * m - g * (n - 1)) / n;
+    if (agg) {
+      tiles.forEach(function (t, i) {
+        var x = m + i * (w + g);
+        rr(ctx, x, y0, w, h, 28); ctx.fillStyle = C.bg3; ctx.fill();
+        ctx.textAlign = 'center'; ctx.fillStyle = C.t2; ctx.font = '700 24px ' + SANS; ctx.fillText(t.k, x + w / 2, y0 + h * 0.3);
+        ctx.fillStyle = t.hi ? hiCol : C.t1; fitFont(ctx, String(t.v), '900', 72, w - 24, 36); ctx.fillText(String(t.v), x + w / 2, y0 + h * 0.8);
+      });
+      return;
+    }
     f.scores.forEach(function (sc, i) {
       var x = m + i * (w + g), best = n > 1 && sc === f.best, g300 = sc === 300 && !f.noTap;
       rr(ctx, x, y0, w, h, 28); ctx.fillStyle = C.bg3; ctx.fill();
@@ -396,6 +533,32 @@ function drawShareCard(f, opts, C, canvas, imgs) {
       x += fw;
     });
   }
+  /* season: one row per league (most games first) */
+  function drawRows(y0, h) {
+    var m = 72, max = ROWMAX, list = f.rows.slice(0, max), rowH = ROWH;
+    rr(ctx, m, y0, W - 2 * m, h, 28); ctx.fillStyle = alpha(C.bg3, 0.7); ctx.fill();
+    list.forEach(function (r, i) {
+      var yy = y0 + 12 + i * rowH;
+      if (i) { ctx.fillStyle = alpha(C.t2, 0.2); ctx.fillRect(m + 24, yy, W - 2 * m - 48, 2); }
+      ctx.textAlign = 'left'; ctx.fillStyle = C.t1; fitFont(ctx, r.name, '700', 30, W - 2 * m - 300, 20); ctx.fillText(r.name, m + 28, yy + rowH * 0.66);
+      ctx.textAlign = 'right'; ctx.fillStyle = C.t2; ctx.font = '600 24px ' + SANS; ctx.fillText(r.games + ' g', W - m - 28, yy + rowH * 0.66);
+      ctx.fillStyle = C.t1; ctx.font = '900 40px ' + SANS; ctx.fillText(String(r.avg), W - m - 110, yy + rowH * 0.7);
+    });
+    if (f.rows.length > max) { ctx.textAlign = 'center'; ctx.fillStyle = C.t2; ctx.font = '600 22px ' + SANS; ctx.fillText('+' + (f.rows.length - max) + ' more', W / 2, y0 + h - 14); }
+  }
+  /* league: average by night, oldest to newest */
+  function drawTrend(y0, h) {
+    var m = 72, pts = f.trend, lo = Math.min.apply(null, pts), hi = Math.max.apply(null, pts), span = Math.max(1, hi - lo);
+    rr(ctx, m, y0, W - 2 * m, h, 28); ctx.fillStyle = alpha(C.bg3, 0.7); ctx.fill();
+    ctx.textAlign = 'left'; ctx.fillStyle = C.t2; ctx.font = '700 22px ' + SANS; ctx.fillText('AVERAGE BY NIGHT', m + 28, y0 + 36);
+    ctx.textAlign = 'right'; ctx.fillText((f.entering != null ? 'ENTERING ' + f.entering + ' \u2192 ' : '') + 'NOW ' + f.avg, W - m - 28, y0 + 36);
+    var x0 = m + 40, x1 = W - m - 40, yT = y0 + 58, yB = y0 + h - 22;
+    var X = function (i) { return pts.length === 1 ? (x0 + x1) / 2 : x0 + (x1 - x0) * i / (pts.length - 1); }, Y = function (v) { return yB - (yB - yT) * (v - lo) / span; };
+    if (f.avg >= lo && f.avg <= hi) { ctx.strokeStyle = alpha(C.t2, 0.35); ctx.lineWidth = 2; ctx.setLineDash && ctx.setLineDash([8, 8]); ctx.beginPath(); ctx.moveTo(x0, Y(f.avg)); ctx.lineTo(x1, Y(f.avg)); ctx.stroke(); ctx.setLineDash && ctx.setLineDash([]); }
+    ctx.strokeStyle = hiCol; ctx.lineWidth = 5; ctx.lineJoin = 'round'; ctx.beginPath();
+    pts.forEach(function (v, i) { if (i) ctx.lineTo(X(i), Y(v)); else ctx.moveTo(X(i), Y(v)); }); ctx.stroke();
+    ctx.fillStyle = hiCol; pts.forEach(function (v, i) { ctx.beginPath(); ctx.arc(X(i), Y(v), 6, 0, Math.PI * 2); ctx.fill(); });
+  }
   function drawStats(y0, h) {
     var k = stats.length, m = 72, w = (W - 2 * m) / k;
     rr(ctx, m, y0, W - 2 * m, h, 28); ctx.fillStyle = alpha(C.bg3, 0.7); ctx.fill();
@@ -409,6 +572,7 @@ function drawShareCard(f, opts, C, canvas, imgs) {
   }
   /* detail: strikes, spares, splits (when leaves are logged), then the balls thrown with counts */
   function drawDetail(y0, h) {
+    if (agg) { if (f.detail.balls.length) { rr(ctx, 72, y0, W - 144, h, 28); ctx.fillStyle = alpha(C.bg3, 0.7); ctx.fill(); drawBalls(y0 - 6); } return; }
     var d = f.detail, m = 72, cells = [
       { k: 'STRIKES', v: d.strikes + '/' + d.strikeOpps, sub: pct(d.strikes, d.strikeOpps) },
       { k: 'SPARES', v: d.spares + '/' + d.spareOpps, sub: pct(d.spares, d.spareOpps) }];
@@ -425,8 +589,13 @@ function drawShareCard(f, opts, C, canvas, imgs) {
     if (d.withFrames < d.games) { ctx.fillStyle = C.t2; ctx.font = '500 20px ' + SANS; ctx.fillText(d.withFrames + ' of ' + d.games + ' games have frame data', W / 2, y0 + rowH - 2); }
     if (!d.balls.length) return;
     ctx.fillStyle = alpha(C.t2, 0.25); ctx.fillRect(m + 30, y0 + rowH, W - 2 * m - 60, 2);
+    drawBalls(y0 + rowH);
+  }
+  /* the balls thrown: picture (or initials) with a count, most used first */
+  function drawBalls(yb) {
+    var d = f.detail;
     var list = d.balls.slice(0, MAX_BALLS), more = d.balls.length - list.length, r = 40, slot = 170;
-    var total = list.length * slot + (more ? 90 : 0), x0 = (W - total) / 2 + slot / 2, cy = y0 + rowH + 62;
+    var total = list.length * slot + (more ? 90 : 0), x0 = (W - total) / 2 + slot / 2, cy = yb + 62;
     list.forEach(function (b, i) {
       var cx = x0 + i * slot, im = imgs[b.id];
       ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.closePath();
@@ -473,11 +642,14 @@ function ctxForPage() {
   var d = DB(), entry = {};
   try { (d.leagues || []).forEach(function (l) { var c = typeof root.hdcpGet === 'function' ? root.hdcpGet(root.hdcpLeagueKey(l.LeagueID)) : null; if (c && c.entryAvg != null) entry[l.LeagueID] = c.entryAvg; }); } catch (e) {}
   var prof = null; try { prof = typeof root.fsGetProfile === 'function' ? root.fsGetProfile().name : null; } catch (e) {}
-  return { hdcpFor: typeof root.hdcpForSeries === 'function' ? root.hdcpForSeries : null, entryAvg: entry, profileName: prof && prof !== 'You' ? prof : null };
+  return { hdcpFor: typeof root.hdcpForSeries === 'function' ? root.hdcpForSeries : null, entryAvg: entry, profileName: prof && prof !== 'You' ? prof : null,
+    leagueRow: typeof root._leagueReportComputeRow === 'function' ? function (l) { return root._leagueReportComputeRow(l); } : null,
+    rowForSeries: typeof root._leagueReportComputeRow === 'function' ? function (ser) { return root._leagueReportComputeRow({ LeagueID: null, LeagueName: '' }, { seriesOverride: ser }); } : null,
+    hdcpNow: typeof root.hdcpCalc === 'function' ? function (id) { var r = root.hdcpCalc(root.hdcpLeagueKey(id), id); return r && r.qualified ? r.handicap : null; } : null };
 }
 function pageData() {
   var d = DB();
-  return { series: d.series, games: d.games, frames: d.frames, attempts: d.attempts, leaves: d.leaves, balls: d.balls,
+  return { series: d.series, games: d.games, frames: d.frames, attempts: d.attempts, leaves: d.leaves, balls: d.balls, seasons: d.seasons,
     leagues: d.leagues, tournaments: d.tournaments, centers: d.centers, bowlers: d.bowlers, openSessions: d.openSessions };
 }
 /* ball pictures: the phone's own picture first (blob URL), else the catalog / repo picture (CORS);
@@ -527,19 +699,21 @@ function render() {
   var cv = drawShareCard(f, p, themeColors(), null, st.imgs);
   var url = cv.toDataURL('image/png');
   st.blob = null; cv.toBlob(function (b) { st.blob = b; }, 'image/png');
-  var what = f.kind === 'game' ? 'game ' + f.score : 'series ' + f.total;
+  var what = f.kind === 'game' ? 'game ' + f.score : f.kind === 'league' ? f.league + ' ' + f.avg + ' avg' : f.kind === 'season' ? f.seasonLabel + ' ' + f.avg + ' avg' : 'series ' + f.total;
   st.name = ('BowlingDB ' + (f.noTap ? 'No-Tap ' : '') + what + ' ' + f.date).replace(/[^\w\- ]+/g, '').trim().replace(/\s+/g, '_') + '.png';
   var seg = function (k) { var on = p.size === k; return '<div class="oe-btn' + (on ? ' on' : '') + '" onclick="shrSize(\'' + k + '\')">' + SIZES[k].label + '</div>'; };
   var share = !!(navigator.share && navigator.canShare);
-  var detLabel = 'Detail: strikes, spares' + (f.detail && f.detail.leavesKnown ? ', splits' : '') + (f.detail && f.detail.balls.length ? ', balls' : '');
-  var html = '<div class="modal-title">\ud83d\udce4 ' + (f.kind === 'game' ? 'Game card' : 'Series card') + '</div>' +
+  var agg = f.kind === 'league' || f.kind === 'season';
+  var detLabel = agg ? 'Detail: ' + (f.kind === 'league' ? 'average by night' + (f.detail && f.detail.balls.length ? ', balls' : '') : 'balls') : 'Detail: strikes, spares' + (f.detail && f.detail.leavesKnown ? ', splits' : '') + (f.detail && f.detail.balls.length ? ', balls' : '');
+  var html = '<div class="modal-title">\ud83d\udce4 ' + ({ game: 'Game card', league: 'League card', season: 'Season card' }[f.kind] || 'Series card') + '</div>' +
     '<img src="' + url + '" alt="Share card" style="width:' + (p.size === 'story' ? '62%' : '100%') + ';margin:0 auto;border-radius:12px;display:block;box-shadow:0 6px 24px rgba(0,0,0,.45)">' +
     '<div class="odd-even-toggle" style="margin-top:12px">' + seg('post') + seg('story') + '</div>' +
     '<div style="margin-top:6px">' +
     toggle('detail', detLabel, p.detail, !!f.detail && p.size === 'story') +
-    toggle('name', 'Your name', p.name, !!f.bowler) + toggle('league', f.level === 'tournament' ? 'Tournament' : 'League', p.league, !!f.league) +
+    toggle('name', 'Your name', p.name, !!f.bowler) + toggle('league', f.kind === 'season' ? 'Season name' : f.level === 'tournament' ? 'Tournament' : 'League', p.league, !!f.league) +
     toggle('center', 'Center', p.center, !!f.center) + toggle('avg', 'Average comparison', p.avg, f.avgIn != null) +
-    toggle('hdcp', 'Handicap total', p.hdcp, f.hdcpTotal != null) + '</div>' +
+    toggle('hdcp', 'Handicap total', p.hdcp, f.hdcpTotal != null) + toggle('hdcp', 'Handicap (current)', p.hdcp, !!f.hdcpNow) + '</div>' +
+    (f.kind === 'season' ? '<div style="font-size:11px;color:var(--t3);margin-top:8px;line-height:1.5">Leagues in ' + f.seasonLabel + ': ' + f.rows.map(function (r) { return r.name; }).join(', ') + '. No-Tap, Baker and tournament games are left out.</div>' : '') +
     '<div style="font-size:11px;color:var(--t3);margin-top:8px;line-height:1.5">The picture stays on your phone until you send it. Switches are remembered for the next card.' +
     (f.detail && p.size !== 'story' ? ' Story size can add strikes, spares, splits and balls.' : '') +
     (f.kind === 'game' && !f.frames ? ' This game was saved as a score only, so there is no scorecard.' : '') +
@@ -560,6 +734,21 @@ function openFacts(kind, id, f) {
   return renderWithImages().then(function () { var mb = document.getElementById('modal-body'); if (mb) mb.scrollTop = 0; });
 }
 function shrOpen(id) { return openFacts('series', id, seriesFacts(pageData(), id, ctxForPage())); }
+function shrOpenLeague(leagueID) { return openFacts('league', leagueID, leagueFacts(pageData(), leagueID, ctxForPage())); }
+function shrOpenSeason(seasonID) { return openFacts('season', seasonID, seasonFacts(pageData(), seasonID, ctxForPage())); }
+/* season picker: every season with league games, newest first */
+function shrSeasonPicker() {
+  var list = seasonList(pageData());
+  if (!list.length) { if (root.toast) root.toast('No seasons with league games yet'); return; }
+  (root.openModal)('<div class="modal-title">\ud83d\udce4 Season card</div>' +
+    '<div style="font-size:12px;color:var(--t3);margin:-4px 0 10px">Pick a season. Its card shows every league in it, combined average and best night.</div>' +
+    list.map(function (x) {
+      return '<div class="list-row" style="padding:12px 14px;margin-bottom:8px;cursor:pointer" onclick="shrOpenSeason(' + x.seasonID + ')">' +
+        '<div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:700;color:var(--t1)">' + x.label + '</div>' +
+        '<div style="font-size:12px;color:var(--t3)">' + x.leagues + ' league' + (x.leagues === 1 ? '' : 's') + ' \u00b7 ' + x.games + ' games</div></div>' +
+        '<div style="font-size:22px;font-weight:800;color:var(--t1)">' + x.avg + '</div><span class="list-row-chevron">\u203a</span></div>';
+    }).join('') + '<button class="btn btn-secondary" style="margin-top:8px" onclick="closeModal()">Close</button>');
+}
 function shrOpenGame(gameID) { return openFacts('game', gameID, gameFacts(pageData(), gameID, ctxForPage())); }
 function shrSet(k) { var p = prefs(); p[k] = !p[k]; savePrefs(p); renderWithImages(); }
 function shrSize(k) { var p = prefs(); p.size = k; savePrefs(p); renderWithImages(); }
@@ -571,10 +760,10 @@ function shrShare() {
   else if (root.toast) root.toast('Press and hold the image to save it');
 }
 
-var api = { SHARE_VERSION: SHARE_VERSION, shareFacts: shareFacts, seriesFacts: seriesFacts, gameFacts: gameFacts, readGame: readGame, detailFor: detailFor,
+var api = { SHARE_VERSION: SHARE_VERSION, shareFacts: shareFacts, seriesFacts: seriesFacts, gameFacts: gameFacts, leagueFacts: leagueFacts, seasonFacts: seasonFacts, seasonList: seasonList, readGame: readGame, detailFor: detailFor,
   drawShareCard: drawShareCard, levelLabel: levelLabel, detailShown: detailShown, DEFAULT_PREFS: DEFAULT_PREFS, SIZES: SIZES };
 if (typeof document !== 'undefined') {
-  root.shrOpen = shrOpen; root.shrOpenGame = shrOpenGame; root.shrSet = shrSet; root.shrSize = shrSize; root.shrShare = shrShare;
+  root.shrOpen = shrOpen; root.shrOpenGame = shrOpenGame; root.shrOpenLeague = shrOpenLeague; root.shrOpenSeason = shrOpenSeason; root.shrSeasonPicker = shrSeasonPicker; root.shrSet = shrSet; root.shrSize = shrSize; root.shrShare = shrShare;
 }
 root.BDB_SHARE = api;
 root.SHARE_JS_VERSION = SHARE_VERSION;
