@@ -36,7 +36,7 @@
 'use strict';
 
 /* v30.169: shown in the app header when it differs from the build's EXPECTED_CATALOG_JS */
-var CAT_VERSION  = 'v30.223';
+var CAT_VERSION  = 'v30.224';
 var CAT_BASE     = 'https://raw.githubusercontent.com/jmarsh85/bowlingdb-mobile/dist/';
 var CAT_DB       = 'BowlingDB_Catalog';
 var CAT_DB_VER   = 1;
@@ -1311,7 +1311,7 @@ function catCorrectWithParsed(id, parsed, after) {
 }
 function catWorkbenchOpen(opt) {
   if (typeof root.wbOpen === 'function') return root.wbOpen(opt);
-  var sc = document.createElement('script'); sc.src = 'workbench.js?v=' + encodeURIComponent(CAT_VERSION);
+  var sc = document.createElement('script'); sc.src = 'workbench.js?v=' + encodeURIComponent(typeof APP_VERSION !== 'undefined' ? APP_VERSION : CAT_VERSION);   // v30.224 OFF-2: one ?v= for every file, so sw.js serves one matching set
   sc.onload = function () { if (typeof root.wbOpen === 'function') root.wbOpen(opt); else if (root.toast) root.toast('Workbench did not start'); };
   sc.onerror = function () { if (root.toast) root.toast('Workbench unavailable: upload workbench.js next to index.html'); };
   document.head.appendChild(sc);
