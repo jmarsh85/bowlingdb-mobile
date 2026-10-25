@@ -82,7 +82,7 @@
      (its *_VERSION line). sw.js reads this block: it keeps the app's
      files as one matching set and never opens a mix of old and new files. Every file
      is fetched as name.js?v=APP_VERSION. Update a version here when that file changes. -->
-<script type="application/json" id="bdb-files">{"devkit.js":"v30.230","report.js":"v30.156","catalog.js":"v30.224","workbench.js":"v30.223","pinpal.js":"v30.199","awards.js":"v30.232"}</script>
+<script type="application/json" id="bdb-files">{"devkit.js":"v30.234","report.js":"v30.156","catalog.js":"v30.224","workbench.js":"v30.223","pinpal.js":"v30.199","awards.js":"v30.233"}</script>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#0E0F11">
@@ -3536,7 +3536,7 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
    Bump both lines (and CATALOG_JS_VERSION in catalog.js when it changes).
    v30.224 OFF-2: also bump the ?v= on the three <script src> tags at the end of
    the page, and the file list in <script id="bdb-files"> when a .js file changes. */
-const APP_VERSION = 'v30.232';
+const APP_VERSION = 'v30.234';
 const APP_BUILD_DATE = '2026-10-24';
 /* catalog.js this build expects; an older file on the server shows a warning */
 const EXPECTED_CATALOG_JS = 'v30.224';
@@ -13610,7 +13610,7 @@ function _bssCalendarWindows(seriesList, minWeeks = 5, maxWeeks = 10) {
 const openIDs = openBowlSeriesIDs();
 const weekMap = {};
 seriesList.forEach(s => {
-const g = _bssQualifyingGames(s.SeriesID, openIDs);
+const g = _bssQualifyingGames(s.SeriesID, openIDs).filter(x => x.GameType !== 'Tournament');
 if (!g.length) return;
 const wk = _bssWeekStart(s.DateBowled);
 if (!wk) return;
@@ -13652,7 +13652,9 @@ return results;
 
 function calculateBestSeriesStreak(scope, id, minWeeks = 5, maxWeeks = 10) {
 if (scope === 'calendar') {
-const seriesList = (db.series || []).filter(s => !s._virtual);
+/* v30.234 Goal 7: the calendar streak is league weeks only, so tournament series (TournamentID) and
+   games typed Tournament are left out, as No-Tap and open bowling already are. */
+const seriesList = (db.series || []).filter(s => !s._virtual && s.TournamentID == null);
 return { scope, variant: 'calendar', windows: _bssCalendarWindows(seriesList, minWeeks, maxWeeks) };
 }
 if (scope === 'lineage') {
@@ -28781,6 +28783,13 @@ return `<div style="display:flex;align-items:center;justify-content:space-betwee
       </div>
     </details>
 
+    <details class="set-grp" data-g="awards" ${_setOpen('awards')} ontoggle="_setGrpToggle(this)">
+      <summary><span class="set-grp-ic">🏆</span><span class="set-grp-tx"><span class="set-grp-t">Awards</span><span class="set-grp-s">brackets, pins over average, certified leagues</span></span><span class="set-grp-ch">›</span></summary>
+      <div class="set-grp-body">
+      <button class="btn btn-secondary" style="width:100%" onclick="openAwardSettings()">⚙️ Award settings</button>
+      <button class="btn btn-secondary" style="width:100%;margin-top:8px" onclick="openAwards()">🏆 Open the trophy case</button>
+      </div>
+    </details>
     <details class="set-grp" data-g="data" ${_setOpen('data')} ontoggle="_setGrpToggle(this)">
       <summary><span class="set-grp-ic">🗄</span><span class="set-grp-tx"><span class="set-grp-t">Data &amp; app</span><span class="set-grp-s">${(typeof APP_VERSION!=='undefined'?APP_VERSION+' · ':'')}${(db._scoringCounts?.games ?? db.games.length).toLocaleString()} games · import/export, tools</span></span><span class="set-grp-ch">›</span></summary>
       <div class="set-grp-body">
@@ -30403,6 +30412,14 @@ s.onload = draw;
 document.head.appendChild(s);
 }
 
+function openAwardSettings() {
+if (typeof awOpenSettings === 'function') return awOpenSettings();
+const s = document.createElement('script');
+s.src = 'awards.js?v=' + encodeURIComponent(APP_VERSION);
+s.onload = () => { if (typeof awOpenSettings === 'function') awOpenSettings(); };
+s.onerror = () => toast('Trophy case unavailable: upload awards.js next to index.html');
+document.head.appendChild(s);
+}
 function openAwards() {
 if (typeof awOpen === 'function') { return awOpen(); }
 const s = document.createElement('script');
@@ -38033,10 +38050,10 @@ _editStatus:'', _editPriority:1, _newSnap:null, _newStatus:'tbd', _editCat:'note
 };
 var _DKM_STATUS_LABELS = {ok:'🟢 Working',partial:'🟡 Partial',broken:'🔴 Broken',tbd:'⚪ TBD'};
 </script>
-<script src="devkit.js?v=v30.232"></script>
-<script src="report.js?v=v30.232"></script>
+<script src="devkit.js?v=v30.234"></script>
+<script src="report.js?v=v30.234"></script>
 <!-- v30.157 NEW-11 step 4: ball catalog manifest check + IDB cache (same-origin, like devkit.js/report.js). Optional: if missing, the app behaves exactly as before. -->
-<script src="catalog.js?v=v30.232"></script>
+<script src="catalog.js?v=v30.234"></script>
 <script>
 /* v30.162 OFF-1: service worker (sw.js, same folder) so the app opens with
    no connection, and a request that the browser keep this app's storage.
