@@ -5,7 +5,7 @@
    (from step 3); also require()-able for the Node harness. */
 (function (root) {
 'use strict';
-var AWD_VERSION = 'v30.228';   // step 1 engine + step 3 trophy case (v30.227: filters, splits, brackets)
+var AWD_VERSION = 'v30.232';   // step 1 engine + step 3 trophy case (v30.227: filters, splits, brackets)
 
 /* USBC national brackets (2011-12 adult revision) -- default, editable in Settings (step 6). */
 var USBC_BRACKETS = [
@@ -482,14 +482,18 @@ function detailHtml(id) {
   if (occ.length) {
     var first = occ[occ.length - 1];
     h += '<div class="card" style="font-size:13px;margin-bottom:10px"><b>' + (occ.length === 1 ? 'Earned ' : 'First earned ') + fmtDate(first.date) + '</b>' + (occ.length > 1 ? ' \u00b7 ' + occ.length + ' times' : '') +
-      (first.avgUsed != null ? '<br><span style="color:var(--t3);font-size:12px">Average used: ' + first.avgUsed + ' (' + esc(first.avgRule) + ')</span>' : '') + '</div>';
+      (first.avgUsed != null ? '<br><span style="color:var(--t3);font-size:12px">Average used: ' + first.avgUsed + ' (' + esc(first.avgRule) + ')</span>' : '') + '</div>' +
+      '<button class="btn btn-secondary" style="margin-bottom:10px" onclick="awCertificate(' + res.occurrences.indexOf(first) + ')">\ud83c\udf96\ufe0f Certificate' + (occ.length > 1 ? ' (first)' : '') + '</button>' +
+      (occ.length > 1 ? '<div style="font-size:11px;color:var(--t3);margin:-4px 0 6px">Every row below has its own \ud83c\udf96\ufe0f certificate.</div>' : '');
   }
   h += occ.map(function (o) {
     var ln = lineFor(o), L = LEVELS[o.level];
     return '<div onclick="awOpenSeries(' + o.seriesID + ')" style="display:flex;align-items:center;gap:10px;padding:10px 4px;border-bottom:1px solid var(--border1, #2a3340);cursor:pointer">' +
       '<div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:600">' + fmtDate(o.date) + (ln.what ? ' \u00b7 ' + esc(ln.what) : '') + '</div>' +
       '<div style="font-size:12px;color:var(--t3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(ln.where) + (o.avgUsed != null ? ' \u00b7 avg ' + o.avgUsed : '') + '</div></div>' +
-      '<span style="font-size:11px;font-weight:700;color:' + L.color + ';white-space:nowrap">' + L.short + '</span><span style="color:var(--t3)">\u203a</span></div>';
+      '<span style="font-size:11px;font-weight:700;color:' + L.color + ';white-space:nowrap">' + L.short + '</span>' +
+      '<button onclick="event.stopPropagation();awCertificate(' + res.occurrences.indexOf(o) + ')" aria-label="Certificate" style="border:1px solid var(--border1, #2a3340);background:transparent;border-radius:8px;padding:4px 7px;font-size:15px;line-height:1">\ud83c\udf96\ufe0f</button>' +
+      '<span style="color:var(--t3)">\u203a</span></div>';
   }).join('');
   if (!occ.length) h += '<div class="card" style="font-size:13px">' + (isSplit ? 'Not converted yet' + (ui.filter !== 'all' || ui.certOnly ? ' in this filter' : '') + '.' : isBracket ? lockedWhy(id) : 'None for this filter.') + '</div>';
   if (isSplit) {
@@ -583,8 +587,145 @@ function awOpenSeries(sid) {
   root.navTo('s-game-select');
 }
 if (typeof document !== 'undefined') {
-  root.awOpen = awOpen; root.awFilter = awFilter; root.awCert = awCert; root.awUnlocksFor = awUnlocksFor; root.awOpenAward = awOpenAward; root.awBack = awBack; root.awDetail = awDetail; root.awPending = awPending;
+  root.awOpen = awOpen; root.awFilter = awFilter; root.awCert = awCert; root.awUnlocksFor = awUnlocksFor; root.awOpenAward = awOpenAward;
+  root.awCertificate = awCertificate; root.awShareCert = awShareCert; root.awBack = awBack; root.awDetail = awDetail; root.awPending = awPending;
   root.awMarkList = awMarkList; root.awMark = awMark; root.awOpenSeries = awOpenSeries;
+}
+
+/* ---------------- v30.232 AWD-1 step 5: certificate image + share ----------------
+   The app's own certificate design (never USBC artwork), drawn on a 1080 x 1350 canvas (4:5, fits
+   Messages / Photos / social), shared through the iOS share sheet; when sharing files isn't available
+   the image is shown full size to long-press and save. Personal award wording on every certificate. */
+var CERT_KIND = { honor: 'Honor Score', split: 'Split Conversion', capped: 'Achievement Award', poa: 'Pins Over Average', mile: 'Personal Milestone', notap: 'No-Tap Award' };
+var CERT_LEVEL = { certified: 'USBC-certified league or tournament', noncertified: 'League or tournament \u00b7 not USBC-certified', unmarked: 'League or tournament', open: 'Open play / practice', notap: 'No-Tap \u00b7 not a standard score' };
+var cert = { blob: null, url: null, name: '' };
+function certFacts(o) {
+  var d = DB(), a = AWARDS[o.award];
+  var s = (d.series || []).find(function (x) { return x.SeriesID === o.seriesID; }) || {};
+  var g = o.gameID != null ? (d.games || []).find(function (x) { return x.GameID === o.gameID; }) : null;
+  var lg = s.LeagueID != null ? (d.leagues || []).find(function (l) { return l.LeagueID === s.LeagueID; }) : null;
+  var t = s.TournamentID != null ? (d.tournaments || []).find(function (x) { return x.TournamentID === s.TournamentID; }) : null;
+  var cid = (g && g.CenterID != null) ? g.CenterID : s.CenterID;
+  var c = cid != null ? (d.centers || []).find(function (x) { return x.CenterID === cid; }) : null;
+  var me = (d.bowlers || []).find(function (b) { return b.IsMe; });
+  var title = a.leave ? NAMED_LEAVES[a.leave].name : a.name;
+  var big = '', sub = '';
+  var sGames = (d.games || []).filter(function (x) { return x.SeriesID === o.seriesID && x.FinalScore != null && !x.NoTap; }).sort(function (x, y) { return (x.GameNumber || 0) - (y.GameNumber || 0); }).slice(0, 3);
+  if (o.award === 'pg') { title = '+' + o.over + ' pins in a game'; big = String(o.value); sub = 'average ' + o.avgUsed; }
+  else if (o.award === 'ps') { title = '+' + o.over + ' pins in a series'; big = String(o.value); sub = 'series ' + sGames.map(function (x) { return x.FinalScore; }).join(' \u00b7 ') + ' \u00b7 average ' + o.avgUsed; }
+  else if (o.award === 'mrun') { big = String(o.value); sub = 'strikes in a row'; }
+  else if (a.leave) { big = a.leave.split(',').join('-'); sub = 'converted'; }
+  else if (o.gameID == null) { big = String(o.value); sub = 'series ' + sGames.map(function (x) { return x.FinalScore; }).join(' \u00b7 '); }
+  else { big = String(o.value != null ? o.value : ''); sub = o.previous != null ? 'previous best ' + o.previous : ''; }
+  var when = o.date ? new Date(o.date + 'T12:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : '';
+  var where = [t ? t.TournamentName : lg ? lg.LeagueName : 'Open play', c ? (c.CenterName || c.Name) : ''].filter(Boolean).join(' \u00b7 ');
+  return { kind: CERT_KIND[a.cls] || 'Award', title: title, big: big, sub: sub, name: me ? me.Name : '', when: when + (g && g.GameNumber ? ' \u00b7 Game ' + g.GameNumber : ''),
+    where: where, level: CERT_LEVEL[o.level] || '', cls: a.cls, app: !!a.app };
+}
+function wrapText(ctx, text, maxW) {
+  var words = String(text).split(' '), lines = [], line = '';
+  words.forEach(function (w) { var t = line ? line + ' ' + w : w; if (ctx.measureText(t).width > maxW && line) { lines.push(line); line = w; } else line = t; });
+  if (line) lines.push(line);
+  return lines;
+}
+function fitFont(ctx, text, weight, family, start, maxW, min) {
+  var size = start;
+  do { ctx.font = weight + ' ' + size + 'px ' + family; if (ctx.measureText(text).width <= maxW) break; size -= 4; } while (size > min);
+  return size;
+}
+function drawTrophy(ctx, cx, cy, s, color) {
+  ctx.save(); ctx.translate(cx, cy); ctx.scale(s, s); ctx.fillStyle = color;
+  ctx.beginPath(); ctx.moveTo(-34, -40); ctx.lineTo(34, -40); ctx.lineTo(30, 0); ctx.quadraticCurveTo(26, 22, 0, 26); ctx.quadraticCurveTo(-26, 22, -30, 0); ctx.closePath(); ctx.fill();
+  ctx.lineWidth = 7; ctx.strokeStyle = color;
+  ctx.beginPath(); ctx.arc(-38, -18, 15, Math.PI * 0.5, Math.PI * 1.5); ctx.stroke();
+  ctx.beginPath(); ctx.arc(38, -18, 15, Math.PI * 1.5, Math.PI * 0.5); ctx.stroke();
+  ctx.fillRect(-6, 24, 12, 18); ctx.fillRect(-24, 42, 48, 10);
+  ctx.restore();
+}
+function drawCertificate(o) {
+  var f = certFacts(o), W = 1080, H = 1350;
+  var cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+  var ctx = cv.getContext('2d');
+  var serif = 'Georgia, "Times New Roman", serif', sans = '-apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif';
+  var navy = '#14213d', gold = '#b8892d', goldL = '#d9b45a', ink = '#1f2430', soft = '#5b6170';
+  /* paper */
+  var bg = ctx.createLinearGradient(0, 0, 0, H); bg.addColorStop(0, '#fbf7ee'); bg.addColorStop(1, '#f3ecdc');
+  ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+  /* borders */
+  ctx.fillStyle = navy; ctx.fillRect(0, 0, W, 26); ctx.fillRect(0, H - 26, W, 26); ctx.fillRect(0, 0, 26, H); ctx.fillRect(W - 26, 0, 26, H);
+  ctx.strokeStyle = gold; ctx.lineWidth = 6; ctx.strokeRect(50, 50, W - 100, H - 100);
+  ctx.strokeStyle = goldL; ctx.lineWidth = 2; ctx.strokeRect(66, 66, W - 132, H - 132);
+  /* corner ornaments */
+  [[66, 66], [W - 66, 66], [66, H - 66], [W - 66, H - 66]].forEach(function (p) { ctx.fillStyle = gold; ctx.beginPath(); ctx.moveTo(p[0], p[1] - 14); ctx.lineTo(p[0] + 14, p[1]); ctx.lineTo(p[0], p[1] + 14); ctx.lineTo(p[0] - 14, p[1]); ctx.closePath(); ctx.fill(); });
+  ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+  /* header */
+  drawTrophy(ctx, W / 2, 200, 1.35, gold);
+  ctx.fillStyle = soft; ctx.font = '600 30px ' + sans; ctx.fillText('C E R T I F I C A T E', W / 2, 330);
+  ctx.fillStyle = navy; ctx.font = 'italic 46px ' + serif; ctx.fillText(f.kind, W / 2, 392);
+  ctx.strokeStyle = goldL; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(W / 2 - 170, 428); ctx.lineTo(W / 2 + 170, 428); ctx.stroke();
+  /* award title */
+  ctx.fillStyle = ink; var ts = fitFont(ctx, f.title, '700', serif, 74, W - 220, 40);
+  var tl = wrapText(ctx, f.title, W - 220).slice(0, 2), ty = 520;
+  tl.forEach(function (l, i) { ctx.fillText(l, W / 2, ty + i * (ts + 10)); });
+  var y = ty + (tl.length - 1) * (ts + 10);
+  /* the number: as large as fits, leaving room for everything below it above the badge */
+  ctx.font = '400 30px ' + sans;
+  var whereLines = wrapText(ctx, f.where, W - 240).slice(0, 2);
+  var below = (f.sub ? 56 : 0) + 92 + (f.name ? 72 : 0) + 136 + (whereLines.length - 1) * 40 + 40;
+  if (f.big) {
+    ctx.fillStyle = navy; var bs = fitFont(ctx, f.big, '700', serif, 190, W - 260, 90);
+    while (bs > 90 && y + 40 + bs + below > H - 262) bs -= 10;
+    ctx.font = '700 ' + bs + 'px ' + serif;
+    ctx.fillText(f.big, W / 2, y + 40 + bs);
+    y += 40 + bs;
+  }
+  if (f.sub) { ctx.fillStyle = soft; ctx.font = '500 34px ' + sans; ctx.fillText(f.sub, W / 2, y + 56); y += 56; }
+  /* name */
+  y += 92;
+  ctx.fillStyle = soft; ctx.font = 'italic 32px ' + serif; ctx.fillText(f.name ? 'awarded to' : '', W / 2, y);
+  if (f.name) { ctx.fillStyle = ink; fitFont(ctx, f.name, '600', serif, 62, W - 220, 36); ctx.fillText(f.name, W / 2, y + 72); y += 72; }
+  ctx.strokeStyle = goldL; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(W / 2 - 260, y + 26); ctx.lineTo(W / 2 + 260, y + 26); ctx.stroke();
+  /* when / where */
+  ctx.fillStyle = ink; ctx.font = '500 34px ' + sans; ctx.fillText(f.when, W / 2, y + 86);
+  ctx.fillStyle = soft; ctx.font = '400 30px ' + sans;
+  whereLines.forEach(function (l, i) { ctx.fillText(l, W / 2, y + 136 + i * 40); });
+  /* level badge */
+  ctx.font = '700 26px ' + sans;
+  var lw = ctx.measureText(f.level).width + 56, bx = W / 2 - lw / 2, by = H - 250;
+  ctx.fillStyle = o.level === 'certified' ? navy : '#e9e1cd'; ctx.strokeStyle = o.level === 'certified' ? navy : gold; ctx.lineWidth = 2;
+  ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(bx, by, lw, 56, 28); else ctx.rect(bx, by, lw, 56); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = o.level === 'certified' ? '#f3d98b' : navy; ctx.fillText(f.level, W / 2, by + 37);
+  /* footer */
+  ctx.fillStyle = soft; ctx.font = '400 22px ' + sans;
+  ctx.fillText(f.app ? 'App honor \u00b7 not a current USBC national award' : 'Personal award recorded in BowlingDB \u00b7 not an official USBC award', W / 2, H - 140);
+  ctx.fillStyle = gold; ctx.font = '700 24px ' + sans; ctx.fillText('Bowling' + 'DB', W / 2, H - 100);
+  return { canvas: cv, facts: f };
+}
+function certHtml(id, dataUrl) {
+  var share = !!(navigator.share && navigator.canShare);
+  return '<div class="modal-title">\ud83c\udf96\ufe0f Certificate</div>' +
+    '<img src="' + dataUrl + '" alt="Certificate" style="width:100%;border-radius:10px;display:block;box-shadow:0 6px 24px rgba(0,0,0,.4)">' +
+    (share ? '<button class="btn btn-primary" style="margin-top:12px" onclick="awShareCert()">Share or save</button>' :
+      '<div style="font-size:12px;color:var(--t3);margin-top:10px;text-align:center">Press and hold the image to save or share it.</div>') +
+    '<button class="btn btn-secondary" style="margin-top:8px" onclick="awDetail(\'' + id + '\')">\u2039 Back</button>';
+}
+function awCertificate(i) {
+  var o = ui.res && ui.res.occurrences[i];
+  if (!o) return;
+  var r = drawCertificate(o);
+  var dataUrl = r.canvas.toDataURL('image/png');
+  cert.name = ('BowlingDB ' + r.facts.title + ' ' + (o.date || '')).replace(/[^\w\- ]+/g, '').trim().replace(/\s+/g, '_') + '.png';
+  cert.blob = null;
+  r.canvas.toBlob(function (b) { cert.blob = b; }, 'image/png');
+  show(certHtml(o.award, dataUrl));
+}
+function awShareCert() {
+  if (!cert.blob) { setTimeout(awShareCert, 150); return; }
+  var file = null;
+  try { file = new File([cert.blob], cert.name, { type: 'image/png' }); } catch (e) {}
+  if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
+    navigator.share({ files: [file], title: cert.name.replace(/_/g, ' ').replace(/\.png$/, '') }).catch(function () {});
+  } else if (root.toast) root.toast('Press and hold the image to save it');
 }
 
 var api = { AWD_VERSION: AWD_VERSION, USBC_BRACKETS: USBC_BRACKETS, DEFAULT_CFG: DEFAULT_CFG, AWARDS: AWARDS, NAMED_LEAVES: NAMED_LEAVES,
