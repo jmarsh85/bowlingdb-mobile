@@ -9,7 +9,7 @@
    Loaded by index.html as share.js?v=APP_VERSION on first use; require()-able for the Node harness. */
 (function (root) {
 'use strict';
-var SHARE_VERSION = 'v30.239';
+var SHARE_VERSION = 'v30.240';
 var PREFS_KEY = 'bowlingdb_share_prefs';
 var DEFAULT_PREFS = { size: 'post', name: true, center: true, league: true, avg: true, hdcp: true, detail: true };
 var SIZES = { post: { w: 1080, h: 1350, label: 'Post 4:5' }, story: { w: 1080, h: 1920, label: 'Story 9:16' } };
@@ -720,6 +720,7 @@ function render() {
     (f.avgIn != null ? ' Average going in: ' + (f.avgWhy === 'league' ? 'this league before the night' : f.avgWhy === 'entering' ? 'the league\u2019s entering average' : 'your last ' + EST_GAMES + ' league games') + '.' : '') + '</div>' +
     (share ? '<button class="btn btn-primary" style="margin-top:12px" onclick="shrShare()">Share or save</button>' :
       '<div style="font-size:12px;color:var(--t3);margin-top:10px;text-align:center">Press and hold the image to save or share it.</div>') +
+    '<button class="btn btn-ghost" style="margin-top:8px" onclick="shrPost()">\ud83e\udd1d Post to Connect</button>' +
     '<button class="btn btn-secondary" style="margin-top:8px" onclick="closeModal()">Close</button>';
   show(html);
 }
@@ -752,6 +753,12 @@ function shrSeasonPicker() {
 function shrOpenGame(gameID) { return openFacts('game', gameID, gameFacts(pageData(), gameID, ctxForPage())); }
 function shrSet(k) { var p = prefs(); p[k] = !p[k]; savePrefs(p); renderWithImages(); }
 function shrSize(k) { var p = prefs(); p.size = k; savePrefs(p); renderWithImages(); }
+/* v30.240: post this card's facts to the Connect hub (on this phone until accounts exist) */
+function shrPost() {
+  var f = st.facts; if (!f) return;
+  var go = function () { if (typeof root.cnPost === 'function') root.cnPost(f, 'friends'); };
+  if (typeof root.cnPost === 'function') go(); else if (typeof root._cnLoad === 'function') root._cnLoad(go); else if (root.toast) root.toast('Connect unavailable');
+}
 function shrShare() {
   if (!st.blob) { setTimeout(shrShare, 150); return; }
   var file = null;
@@ -763,7 +770,7 @@ function shrShare() {
 var api = { SHARE_VERSION: SHARE_VERSION, shareFacts: shareFacts, seriesFacts: seriesFacts, gameFacts: gameFacts, leagueFacts: leagueFacts, seasonFacts: seasonFacts, seasonList: seasonList, readGame: readGame, detailFor: detailFor,
   drawShareCard: drawShareCard, levelLabel: levelLabel, detailShown: detailShown, DEFAULT_PREFS: DEFAULT_PREFS, SIZES: SIZES };
 if (typeof document !== 'undefined') {
-  root.shrOpen = shrOpen; root.shrOpenGame = shrOpenGame; root.shrOpenLeague = shrOpenLeague; root.shrOpenSeason = shrOpenSeason; root.shrSeasonPicker = shrSeasonPicker; root.shrSet = shrSet; root.shrSize = shrSize; root.shrShare = shrShare;
+  root.shrOpen = shrOpen; root.shrOpenGame = shrOpenGame; root.shrOpenLeague = shrOpenLeague; root.shrOpenSeason = shrOpenSeason; root.shrSeasonPicker = shrSeasonPicker; root.shrSet = shrSet; root.shrPost = shrPost; root.shrSize = shrSize; root.shrShare = shrShare;
 }
 root.BDB_SHARE = api;
 root.SHARE_JS_VERSION = SHARE_VERSION;
