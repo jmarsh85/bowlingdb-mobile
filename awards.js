@@ -5,7 +5,7 @@
    (from step 3); also require()-able for the Node harness. */
 (function (root) {
 'use strict';
-var AWD_VERSION = 'v30.232';   // step 1 engine + step 3 trophy case (v30.227: filters, splits, brackets)
+var AWD_VERSION = 'v30.233';   // step 1 engine + step 3 trophy case (v30.227: filters, splits, brackets)
 
 /* USBC national brackets (2011-12 adult revision) -- default, editable in Settings (step 6). */
 var USBC_BRACKETS = [
@@ -169,9 +169,22 @@ function gameDetail(g, frames, attemptsByFrame, leafKeyById) {
 }
 
 function floorAvg(sum, n) { return n ? Math.floor(sum / n) : null; }
+/* v30.233: each pins-over-average step is its own award (USBC 75 / 140 keep the ids pg / ps); custom
+   brackets and steps are registered here so the case can draw them. */
+function poaId(kind, n) { return kind === 'g' ? (n === 75 ? 'pg' : 'pg' + n) : (n === 140 ? 'ps' : 'ps' + n); }
+function registerCfg(cfg) {
+  (cfg.brackets || []).forEach(function (b) {
+    if (!AWARDS[b.id]) AWARDS[b.id] = { cls: 'capped', name: b.lo + '\u2013' + b.hi + ' ' + b.kind };
+    AWARDS[b.id].name = AWARDS[b.id].name || b.name;
+    AWARDS[b.id].desc = 'A ' + b.lo + ' to ' + b.hi + ' ' + b.kind + ' with an average of ' + b.maxAvg + ' or below.';
+  });
+  (cfg.poaGame || []).forEach(function (n) { var id = poaId('g', n); if (!AWARDS[id]) AWARDS[id] = { cls: 'poa', name: 'pins over average (game)' }; AWARDS[id].step = n; AWARDS[id].kindPoa = 'game'; AWARDS[id].desc = 'A game at least ' + n + ' pins over your average' + (n === 75 ? ' (USBC national).' : '.'); });
+  (cfg.poaSeries || []).forEach(function (n) { var id = poaId('s', n); if (!AWARDS[id]) AWARDS[id] = { cls: 'poa', name: 'pins over average (series)' }; AWARDS[id].step = n; AWARDS[id].kindPoa = 'series'; AWARDS[id].desc = 'A series at least ' + n + ' pins over three times your average' + (n === 140 ? ' (USBC national).' : '.'); });
+}
 
 function awardsScan(data, cfg) {
   cfg = cfg || DEFAULT_CFG;
+  registerCfg(cfg);
   var minG = cfg.minGames || 21;
   var L = {}, T = {}, S = {}, leafKeyById = {};
   (data.leagues || []).forEach(function (l) { L[l.LeagueID] = l; });
@@ -274,7 +287,7 @@ function awardsScan(data, cfg) {
         x.clean = det.marks.every(function (m) { return m !== 'O'; });
       }
       /* pins over average: game */
-      if (av && av.avg != null) cfg.poaGame.forEach(function (n) { if (sc - av.avg >= n) add('pg', s, x, { value: sc, step: n, over: sc - av.avg, avgUsed: av.avg, avgRule: av.rule }); });
+      if (av && av.avg != null) cfg.poaGame.forEach(function (n) { if (sc - av.avg >= n) add(poaId('g', n), s, x, { value: sc, step: n, over: sc - av.avg, avgUsed: av.avg, avgRule: av.rule }); });
       /* capped game brackets */
       cfg.brackets.forEach(function (br) {
         if (br.kind !== 'game' || sc < br.lo || sc > br.hi) return;
@@ -294,7 +307,7 @@ function awardsScan(data, cfg) {
     if (s.first3.every(function (x) { return x.clean === true; })) add('hcleans', s, null, { value: tot });
     var sc0 = s.first3[0].score;
     if (sc0 && s.first3.every(function (x) { return x.score === sc0; })) add('htrip', s, null, { value: sc0 });
-    if (av && av.avg != null) cfg.poaSeries.forEach(function (n) { if (tot - 3 * av.avg >= n) add('ps', s, null, { value: tot, step: n, over: tot - 3 * av.avg, avgUsed: av.avg, avgRule: av.rule }); });
+    if (av && av.avg != null) cfg.poaSeries.forEach(function (n) { if (tot - 3 * av.avg >= n) add(poaId('s', n), s, null, { value: tot, step: n, over: tot - 3 * av.avg, avgUsed: av.avg, avgRule: av.rule }); });
     cfg.brackets.forEach(function (br) {
       if (br.kind !== 'series' || tot < br.lo || tot > br.hi) return;
       if (!av || av.avg == null) add(br.id, s, null, { value: tot, pending: true });
@@ -325,7 +338,7 @@ var FILTERS = [['all', 'All'], ['league', 'League'], ['tournament', 'Tournament'
 var SECTIONS = [
   { cls: 'honor',  title: 'Honor scores',             note: 'Any average.' },
   { cls: 'poa',    title: 'Pins over average',        note: 'Against your average going into that session.' },
-  { cls: 'capped', title: 'Achievements',             note: 'Average-capped, USBC national brackets.' },
+  { cls: 'capped', title: 'Achievements',             note: 'Average-capped brackets (USBC national unless changed in \u2699\ufe0f Award settings).' },
   { cls: 'split',  title: 'Split conversions',        note: 'Unlocked by picking the split up. Locked ones show how many chances you have had.' },
   { cls: 'mile',   title: 'Personal milestones',      note: 'Against your own history; not USBC awards.' },
   { cls: 'notap',  title: 'No-Tap',                   note: 'A 9 on the first ball counts as a strike, so these are not standard scores and are kept apart from them.' }
@@ -353,7 +366,7 @@ function scanNow() {
   return ui.res;
 }
 function cfgNow() {
-  try { var c = JSON.parse(localStorage.getItem('bowlingdb_awards_cfg') || 'null'); if (c && c.brackets) return Object.assign({}, DEFAULT_CFG, c); } catch (e) {}
+  try { var c = JSON.parse(localStorage.getItem('bowlingdb_awards_cfg') || 'null'); if (c && Array.isArray(c.brackets)) return Object.assign({}, DEFAULT_CFG, c, { poaGame: Array.isArray(c.poaGame) ? c.poaGame : DEFAULT_CFG.poaGame, poaSeries: Array.isArray(c.poaSeries) ? c.poaSeries : DEFAULT_CFG.poaSeries }); } catch (e) {}
   return DEFAULT_CFG;
 }
 function groupOcc(list) {
@@ -408,7 +421,7 @@ function caseHtml() {
   var h = '<div class="modal-title">\ud83c\udfc6 Trophy case</div>';
   h += '<div style="font-size:12px;color:var(--t3);margin:-4px 0 10px">Personal awards from your own games. Official USBC awards need USBC-certified competition and an application at bowl.com.</div>';
   h += '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px">' + FILTERS.map(function (f) { return chip(f[1], ui.filter === f[0], "awFilter('" + f[0] + "')", 'var(--teal)'); }).join('') + '</div>';
-  h += '<div style="margin-bottom:12px">' + chip((ui.certOnly ? '\u2713 ' : '') + 'USBC-certified only', ui.certOnly, 'awCert()', 'var(--gold)') + '</div>';
+  h += '<div style="margin-bottom:12px;display:flex;gap:6px;flex-wrap:wrap">' + chip((ui.certOnly ? '\u2713 ' : '') + 'USBC-certified only', ui.certOnly, 'awCert()', 'var(--gold)') + chip('\u2699\ufe0f Award settings', false, 'awSettings()', 'var(--teal)') + '</div>';
   var um = unmarkedLists();
   if (um.length) h += '<div class="card" style="font-size:12px;margin-bottom:12px;cursor:pointer" onclick="awMarkList()"><b>' + um.length + ' league' + (um.length === 1 ? '' : 's') + ' or tournament' + (um.length === 1 ? '' : 's') + ' not marked</b> as certified or not. <span style="color:var(--teal)">Mark \u203a</span></div>';
   SECTIONS.forEach(function (sec) {
@@ -444,7 +457,7 @@ function caseHtml() {
     h += sectionHead(sec) + GRID;
     ids.forEach(function (k) {
       var occ = by[k], a = AWARDS[k], last = occ[occ.length - 1];
-      var title = k === 'pg' ? 'Game over average' : k === 'ps' ? 'Series over average' : a.name;
+      var title = a.kindPoa ? (a.kindPoa === 'game' ? 'Game ' : 'Series ') + a.step + '+ over average' : a.name;
       var sub = (k === 'mrun' || k === 'mhg' || k === 'mhs') ? '<b>' + occ.length + '\u00d7</b> \u00b7 now ' + last.value + (k === 'mrun' ? ' in a row' : '') + '<br>since ' + fmtDate(last.date) : countLine(occ);
       h += tileHtml({ js: "awDetail('" + k + "')", icon: ICON[a.cls], title: title, isNew: isNew(k), sub: sub, levels: levelLine(occ) });
     });
@@ -475,7 +488,7 @@ function detailHtml(id) {
   var occ = res.occurrences.filter(function (o) { return o.award === id && !o.pending && passFilter(o); }).slice().reverse();
   var isSplit = !!a.leave, isBracket = a.cls === 'capped';
   var left = isSplit ? res.occurrences.filter(function (o) { return o.award === id.slice(0, -1) + 'l' && passFilter(o); }).slice().reverse() : [];
-  var title = isSplit ? NAMED_LEAVES[a.leave].name : a.name;
+  var title = isSplit ? NAMED_LEAVES[a.leave].name : a.kindPoa ? (a.kindPoa === 'game' ? 'Game ' : 'Series ') + a.step + '+ pins over average' : a.name;
   var lockIcon = '\ud83d\udd12 ';
   var h = '<div class="modal-title">' + (isSplit ? (occ.length ? ICON.split + ' ' : lockIcon) : (isBracket && !occ.length ? lockIcon : ICON[a.cls] + ' ')) + esc(title) + '</div>';
   h += '<div style="font-size:13px;color:var(--t2);line-height:1.5;margin-bottom:12px">' + esc(a.desc) + (a.app ? '' : '') + '</div>';
@@ -551,7 +564,7 @@ function awUnlocksFor(gameID, seriesID) {
     if (!mine) return;
     var n = all.filter(function (x, j) { return x.award === o.award && j <= i; }).length;
     var a = AWARDS[o.award];
-    var name = o.award === 'pg' ? o.over + ' pins over average' : o.award === 'ps' ? 'Series ' + o.over + ' pins over average' : a.name;
+    var name = a.kindPoa === 'game' ? o.over + ' pins over average' : a.kindPoa === 'series' ? 'Series ' + o.over + ' pins over average' : a.name;
     out.push({ award: o.award, name: name, value: o.value, nth: n, first: n === 1, cls: a.cls, icon: ICON[a.cls] });
   });
   return out;
@@ -588,7 +601,10 @@ function awOpenSeries(sid) {
 }
 if (typeof document !== 'undefined') {
   root.awOpen = awOpen; root.awFilter = awFilter; root.awCert = awCert; root.awUnlocksFor = awUnlocksFor; root.awOpenAward = awOpenAward;
-  root.awCertificate = awCertificate; root.awShareCert = awShareCert; root.awBack = awBack; root.awDetail = awDetail; root.awPending = awPending;
+  root.awCertificate = awCertificate; root.awShareCert = awShareCert;
+  root.awSettings = awSettings; root.awSetB = awSetB; root.awAddB = awAddB; root.awDelB = awDelB; root.awStep = awStep;
+  root.awSaveSettings = awSaveSettings; root.awResetSettings = awResetSettings; root.awSeenAll = awSeenAll; root.awMarkS = awMarkS;
+  root.awOpenSettings = function () { return awOpen().then(awSettings); }; root.awBack = awBack; root.awDetail = awDetail; root.awPending = awPending;
   root.awMarkList = awMarkList; root.awMark = awMark; root.awOpenSeries = awOpenSeries;
 }
 
@@ -611,8 +627,8 @@ function certFacts(o) {
   var title = a.leave ? NAMED_LEAVES[a.leave].name : a.name;
   var big = '', sub = '';
   var sGames = (d.games || []).filter(function (x) { return x.SeriesID === o.seriesID && x.FinalScore != null && !x.NoTap; }).sort(function (x, y) { return (x.GameNumber || 0) - (y.GameNumber || 0); }).slice(0, 3);
-  if (o.award === 'pg') { title = '+' + o.over + ' pins in a game'; big = String(o.value); sub = 'average ' + o.avgUsed; }
-  else if (o.award === 'ps') { title = '+' + o.over + ' pins in a series'; big = String(o.value); sub = 'series ' + sGames.map(function (x) { return x.FinalScore; }).join(' \u00b7 ') + ' \u00b7 average ' + o.avgUsed; }
+  if (a.kindPoa === 'game') { title = '+' + o.over + ' pins in a game'; big = String(o.value); sub = 'average ' + o.avgUsed; }
+  else if (a.kindPoa === 'series') { title = '+' + o.over + ' pins in a series'; big = String(o.value); sub = 'series ' + sGames.map(function (x) { return x.FinalScore; }).join(' \u00b7 ') + ' \u00b7 average ' + o.avgUsed; }
   else if (o.award === 'mrun') { big = String(o.value); sub = 'strikes in a row'; }
   else if (a.leave) { big = a.leave.split(',').join('-'); sub = 'converted'; }
   else if (o.gameID == null) { big = String(o.value); sub = 'series ' + sGames.map(function (x) { return x.FinalScore; }).join(' \u00b7 '); }
@@ -726,6 +742,108 @@ function awShareCert() {
   if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
     navigator.share({ files: [file], title: cert.name.replace(/_/g, ' ').replace(/\.png$/, '') }).catch(function () {});
   } else if (root.toast) root.toast('Press and hold the image to save it');
+}
+
+/* ---------------- v30.233 AWD-1 step 6: Award settings ----------------
+   bowlingdb_awards_cfg = { brackets:[{id,kind,lo,hi,maxAvg,name}], poaGame:[n...], poaSeries:[n...] }.
+   Defaults are the USBC national values (James, 10/24). Brackets and steps can be changed or reset. */
+var POA_GAME_STEPS = [50, 75, 100], POA_SERIES_STEPS = [100, 140, 150];
+var sx = { draft: null };
+function cfgDraft() {
+  var c = cfgNow();
+  return { brackets: c.brackets.map(function (b) { return Object.assign({}, b); }), poaGame: c.poaGame.slice(), poaSeries: c.poaSeries.slice() };
+}
+function settingsHtml() {
+  var c = sx.draft, d = DB();
+  var inp = 'width:64px;padding:6px;border-radius:8px;border:1px solid var(--border1, #2a3340);background:var(--bg1, #0d1117);color:var(--t1);font-size:14px;text-align:center';
+  var h = '<div class="modal-title">\u2699\ufe0f Award settings</div>';
+  h += '<div style="font-size:12px;color:var(--t3);margin-bottom:12px">Changes apply to the whole trophy case, past games included. Nothing about your games is changed.</div>';
+  /* brackets */
+  h += '<div style="font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--t2);margin:6px 0">Average-capped brackets</div>';
+  h += '<div style="font-size:11px;color:var(--t3);margin-bottom:6px">A score in the range earns the award when your average going into that session is at or below the cap.</div>';
+  h += '<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:13px"><tr style="color:var(--t3);font-size:11px"><td>Type</td><td>From</td><td>To</td><td>Avg cap</td><td></td></tr>';
+  c.brackets.forEach(function (b, i) {
+    h += '<tr><td style="padding:4px 4px 4px 0"><select onchange="awSetB(' + i + ',\'kind\',this.value)" style="' + inp + ';width:84px;text-align:left"><option value="game"' + (b.kind === 'game' ? ' selected' : '') + '>Game</option><option value="series"' + (b.kind === 'series' ? ' selected' : '') + '>Series</option></select></td>' +
+      '<td style="padding:4px"><input type="number" inputmode="numeric" value="' + b.lo + '" onchange="awSetB(' + i + ',\'lo\',this.value)" style="' + inp + '"></td>' +
+      '<td style="padding:4px"><input type="number" inputmode="numeric" value="' + b.hi + '" onchange="awSetB(' + i + ',\'hi\',this.value)" style="' + inp + '"></td>' +
+      '<td style="padding:4px"><input type="number" inputmode="numeric" value="' + b.maxAvg + '" onchange="awSetB(' + i + ',\'maxAvg\',this.value)" style="' + inp + '"></td>' +
+      '<td style="padding:4px 0 4px 4px"><button onclick="awDelB(' + i + ')" aria-label="Remove" style="border:none;background:transparent;color:var(--t3);font-size:18px">\u00d7</button></td></tr>';
+  });
+  h += '</table></div><button class="btn btn-secondary btn-sm" style="margin-top:6px" onclick="awAddB()">+ Add a bracket</button>';
+  /* POA */
+  var stepBtn = function (kind, n, on, usbc) {
+    return '<button onclick="awStep(\'' + kind + '\',' + n + ')" style="padding:7px 12px;border-radius:16px;font-size:13px;font-weight:700;border:1px solid ' + (on ? 'var(--teal)' : 'var(--border1, #2a3340)') + ';background:' + (on ? 'rgba(0,217,217,0.14)' : 'transparent') + ';color:' + (on ? 'var(--teal)' : 'var(--t2)') + '">' + (on ? '\u2713 ' : '') + '+' + n + (usbc ? ' \u00b7 USBC' : '') + '</button>';
+  };
+  h += '<div style="font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--t2);margin:18px 0 6px">Pins over average</div>';
+  h += '<div style="font-size:11px;color:var(--t3);margin-bottom:6px">USBC national: 75 for a game, 140 for a series. Local associations often add more steps.</div>';
+  h += '<div style="font-size:12px;color:var(--t2);margin:6px 0 4px">Game</div><div style="display:flex;gap:6px;flex-wrap:wrap">' + POA_GAME_STEPS.map(function (n) { return stepBtn('g', n, c.poaGame.indexOf(n) >= 0, n === 75); }).join('') + '</div>';
+  h += '<div style="font-size:12px;color:var(--t2);margin:10px 0 4px">Series</div><div style="display:flex;gap:6px;flex-wrap:wrap">' + POA_SERIES_STEPS.map(function (n) { return stepBtn('s', n, c.poaSeries.indexOf(n) >= 0, n === 140); }).join('') + '</div>';
+  /* leagues */
+  var used = {}; (d.games || []).forEach(function (g) { if (g.LeagueID != null) used['L' + g.LeagueID] = 1; }); (d.series || []).forEach(function (s) { if (s.TournamentID != null) used['T' + s.TournamentID] = 1; });
+  var rows = [];
+  (d.leagues || []).forEach(function (l) { if (used['L' + l.LeagueID] && !l.IsTeamBowl) rows.push({ t: 'L', id: l.LeagueID, name: l.LeagueName, v: l.Sanctioned }); });
+  (d.tournaments || []).forEach(function (t) { if (used['T' + t.TournamentID]) rows.push({ t: 'T', id: t.TournamentID, name: '\ud83c\udfc5 ' + t.TournamentName, v: t.Sanctioned }); });
+  h += '<details style="margin-top:18px"' + (rows.some(function (r) { return r.v == null; }) ? ' open' : '') + '><summary style="font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--t2);cursor:pointer">Leagues and tournaments (' + rows.length + ')</summary>';
+  h += '<div style="font-size:11px;color:var(--t3);margin:6px 0">Certified = USBC-certified (sanctioned). Decides which shelf their awards sit on. Also on each league\u2019s and tournament\u2019s own form.</div>';
+  h += rows.map(function (r) {
+    var b = function (val, label) { var on = r.v === val; return '<button onclick="awMarkS(\'' + r.t + '\',' + r.id + ',' + JSON.stringify(val) + ')" style="padding:5px 9px;border-radius:10px;font-size:11px;font-weight:700;border:1px solid ' + (on ? 'var(--gold)' : 'var(--border1, #2a3340)') + ';background:transparent;color:' + (on ? 'var(--gold)' : 'var(--t3)') + '">' + label + '</button>'; };
+    return '<div style="display:flex;align-items:center;gap:6px;padding:8px 0;border-bottom:1px solid var(--border1, #2a3340)"><div style="flex:1;min-width:0;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(r.name) + '</div>' + b(true, 'Certified') + b(false, 'Not') + b(null, '?') + '</div>';
+  }).join('') + '</details>';
+  /* actions */
+  h += '<button class="btn btn-primary" style="margin-top:18px" onclick="awSaveSettings()">Save and rebuild</button>';
+  h += '<button class="btn btn-secondary" style="margin-top:8px" onclick="awResetSettings()">Reset to USBC national</button>';
+  h += '<button class="btn btn-secondary" style="margin-top:8px" onclick="awSeenAll()">Mark every award as seen</button>';
+  h += '<button class="btn btn-secondary" style="margin-top:8px" onclick="awBack()">\u2039 Trophy case</button>';
+  return h;
+}
+function awSettings() { sx.draft = cfgDraft(); if (!ui.res) scanNow(); show(settingsHtml()); }
+function awSetB(i, k, v) {
+  var b = sx.draft.brackets[i]; if (!b) return;
+  if (k === 'kind') b.kind = v; else { var n = parseInt(v, 10); if (isFinite(n) && n >= 0) b[k] = n; }
+}
+function awAddB() { sx.draft.brackets.push({ kind: 'series', lo: 600, hi: 699, maxAvg: 160 }); show(settingsHtml()); }
+function awDelB(i) { sx.draft.brackets.splice(i, 1); show(settingsHtml()); }
+function awStep(kind, n) {
+  var arr = kind === 'g' ? sx.draft.poaGame : sx.draft.poaSeries, i = arr.indexOf(n);
+  if (i >= 0) arr.splice(i, 1); else arr.push(n);
+  arr.sort(function (a, b) { return a - b; });
+  show(settingsHtml());
+}
+function normBrackets(list) {
+  var bad = null;
+  var out = list.map(function (b) {
+    var lo = +b.lo, hi = +b.hi, cap = +b.maxAvg, kind = b.kind === 'game' ? 'game' : 'series';
+    if (!(lo > 0 && hi >= lo && cap > 0) || hi > (kind === 'game' ? 300 : 900)) bad = bad || ((kind === 'game' ? 'Game ' : 'Series ') + lo + '\u2013' + hi);
+    var usbc = USBC_BRACKETS.filter(function (u) { return u.kind === kind && u.lo === lo && u.hi === hi; })[0];
+    return { id: usbc ? usbc.id : (kind === 'game' ? 'cg' : 'cs') + lo + '_' + hi, kind: kind, lo: lo, hi: hi, maxAvg: cap, name: lo + ' ' + kind };
+  });
+  var ids = {}; out.forEach(function (b) { if (ids[b.id]) bad = bad || ('two brackets for ' + b.name); ids[b.id] = 1; });
+  return { list: out, bad: bad };
+}
+function awSaveSettings() {
+  var n = normBrackets(sx.draft.brackets);
+  if (n.bad) { if (root.toast) root.toast('Check the bracket: ' + n.bad); return; }
+  try { localStorage.setItem('bowlingdb_awards_cfg', JSON.stringify({ brackets: n.list, poaGame: sx.draft.poaGame, poaSeries: sx.draft.poaSeries })); } catch (e) {}
+  scanNow(); if (root.toast) root.toast('Award settings saved');
+  show(caseHtml());
+}
+function awResetSettings() {
+  try { localStorage.removeItem('bowlingdb_awards_cfg'); } catch (e) {}
+  sx.draft = cfgDraft(); scanNow(); if (root.toast) root.toast('Reset to USBC national values');
+  show(settingsHtml());
+}
+function awSeenAll() {
+  var s = {}; (ui.res || scanNow()).occurrences.forEach(function (o) { if (!o.pending) s[o.award] = (s[o.award] || 0) + 1; });
+  try { localStorage.setItem(SEEN_KEY, JSON.stringify(s)); } catch (e) {}
+  if (root.toast) root.toast('All awards marked as seen');
+}
+function awMarkS(type, id, val) {
+  var d = DB();
+  var row = type === 'T' ? (d.tournaments || []).find(function (t) { return t.TournamentID === id; }) : (d.leagues || []).find(function (l) { return l.LeagueID === id; });
+  if (!row) return;
+  row.Sanctioned = val === null ? null : !!val;
+  if (typeof root.saveDB === 'function') root.saveDB();
+  scanNow(); show(settingsHtml());
 }
 
 var api = { AWD_VERSION: AWD_VERSION, USBC_BRACKETS: USBC_BRACKETS, DEFAULT_CFG: DEFAULT_CFG, AWARDS: AWARDS, NAMED_LEAVES: NAMED_LEAVES,
