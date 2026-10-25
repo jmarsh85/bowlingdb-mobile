@@ -1,5 +1,5 @@
 /* v30.224 OFF-2: sw.js checks this line against index.html's file list; bump it when devkit.js changes */
-var DK_VERSION = 'v30.224';
+var DK_VERSION = 'v30.227';
 
 
 
@@ -780,7 +780,7 @@ var atts = attsByFrame[fr.FrameID] || [];
 var flags = deriveFrameFlags(fr, atts, noTapByGame[fr.GameID]);
 if (!flags) { noData++; return; }
 if (!!fr.Strike === flags.Strike && !!fr.Spare === flags.Spare) { alreadyOK++; return; }
-var before = fr.Strike ? 'X': fr.Spare ? '/': 'open';
+var before = fr.Strike && fr.Spare ? 'X+/' : fr.Strike ? 'X': fr.Spare ? '/': 'open';
 var after  = flags.Strike ? 'X': flags.Spare ? '/': 'open';
 var key = before + ' \u2192 '+ after;
 if (!cats[key]) cats[key] = { key: key, n: 0, samples: [] };
@@ -790,8 +790,20 @@ var seq = atts.slice().sort(function(a,b){ return a.Attempt - b.Attempt; })
 .map(function(a){ return a.Pinfall === null || a.Pinfall === undefined ? '_': a.Pinfall; }).join(',');
 cats[key].samples.push('G'+ fr.GameID + (noTapByGame[fr.GameID] ? ' NoTap': '') + ' ['+ seq + ']');
 }
-changed.push({ fr: fr, flags: flags });
+var seqArr = atts.slice().sort(function(a,b){ return a.Attempt - b.Attempt; }).map(function(a){ return a.Pinfall === null || a.Pinfall === undefined ? null : a.Pinfall; });
+changed.push({ fr: fr, flags: flags, key: key, before: before, after: after, seq: seqArr });
 });
+/* v30.227 F10-REVIEW: every change listed for review. Changes that REMOVE a mark, or whose pins
+   are all zero, start unticked: the stored flag may be right and the pinfall a typo. */
+changed.forEach(function(c){
+var rank = { 'open': 0, '/': 1, 'X': 2, 'X+/': 2 };
+var losesMark = rank[c.after] < rank[c.before] || (c.before === '/' && c.after === 'open');
+var zeros = c.seq.filter(function(v){ return v !== null; }).every(function(v){ return v === 0; });
+c.include = !(losesMark || zeros);
+c.why = zeros ? 'pins all 0: likely not entered' : losesMark ? 'removes a mark: check the scorecard' : '';
+});
+window._dkF10Pending = changed;
+window._dkF10NoData = noData;
 
 
 
@@ -803,17 +815,7 @@ return (attsByFrame[f.FrameID] || []).some(function(a){ return a.Attempt === 1 &
 }).length;
 var pctB = framesWithData ? Math.round(cleanBefore / framesWithData * 100) : 0;
 var pctA = framesWithData ? Math.round(cleanAfter  / framesWithData * 100) : 0;
-var catRows = Object.keys(cats).sort(function(a,b){ return cats[b].n - cats[a].n; }).map(function(k){
-var c = cats[k];
-return '<div style="padding:7px 0;border-bottom:1px solid var(--border1)">'+
-'<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">'+
-'<span style="font-size:13px;font-weight:700;color:var(--t1)">'+ c.key + '</span>'+
-'<span style="font-size:13px;font-weight:800;color:var(--teal)">'+ c.n + '</span>'+
-'</div>'+
-'<div style="font-size:10px;color:var(--t3);margin-top:2px;word-break:break-word">'+
-c.samples.join(' \u00b7 ') + '</div>'+
-'</div>';
-}).join('');
+var catRows = _dkF10ReviewRows(changed, cats);
 var summary =
 '<div class="modal-title">Frame 10 Flags</div>'+
 '<div style="font-size:12px;color:var(--t2);line-height:1.5;margin-bottom:10px">'+
@@ -841,7 +843,8 @@ return;
 }
 openModal(summary +
 '<div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:2px">Changes by transition</div>'+
-'<div style="max-height:34vh;overflow-y:auto;overflow-x:clip">'+ catRows + '</div>'+
+'<div style="font-size:11px;color:var(--t3);margin-bottom:6px;line-height:1.45">Tap a group to see every game. Untick any you want left as it is; View opens the scorecard (come back to DevKit \u203a Frame 10 Flags, your ticks are kept).</div>'+
+'<div id="dk-f10-list">'+ catRows + '</div>'+
 '<div style="background:var(--bg3);border-radius:8px;padding:9px;margin-top:12px">'+
 '<div style="font-size:10px;color:var(--t3);letter-spacing:0.5px">EFFECT ON CLEAN %</div>'+
 '<div style="font-size:15px;font-weight:800;color:var(--t1);margin-top:2px">'+
@@ -854,13 +857,65 @@ pctB + '% \u2192 <span style="color:var(--teal)">'+ pctA + '%</span>'+
 'First-rack semantics: Strike = first ball struck; Spare = it did not and the first two made ten. '+
 'Marks earned on fill balls are not represented in the flags.'+
 '</div>'+
-'<button class="btn btn-primary" style="margin-top:12px;width:100%" onclick="dkApplyF10Flags()">Apply '+ changed.length + ' fix'+ (changed.length !== 1 ? 'es': '') + '</button>'+
+'<button class="btn btn-primary" id="dk-f10-apply" style="margin-top:12px;width:100%" onclick="dkApplyF10Flags()">'+ _dkF10ApplyLabel() + '</button>'+
 '<button class="btn btn-secondary" style="margin-top:8px;width:100%" onclick="closeModal()">Cancel</button>');
-window._dkF10Pending = changed;
-}async function dkApplyF10Flags() {
-var changed = window._dkF10Pending || [];
-if (!changed.length) { toast('Nothing to apply'); return; }
-changed.forEach(function(c){ c.fr.Strike = c.flags.Strike; c.fr.Spare = c.flags.Spare; });
+}
+/* v30.227 F10-REVIEW helpers */
+var _dkF10Excl = window._dkF10Excl || (window._dkF10Excl = {});   // FrameID -> true/false chosen by James (kept across View)
+function _dkF10On(c) { var k = c.fr.FrameID; return Object.prototype.hasOwnProperty.call(_dkF10Excl, k) ? !_dkF10Excl[k] : c.include; }
+function _dkF10ApplyLabel() {
+var list = window._dkF10Pending || [], on = list.filter(_dkF10On).length;
+return on === list.length ? 'Apply '+ on + ' fix'+ (on !== 1 ? 'es': '') : 'Apply '+ on + ' of '+ list.length + ' fixes';
+}
+var _DK_F10_EXPLAIN = {
+'open \u2192 X': 'The 10th opened with a strike, but the flag was never written.',
+'open \u2192 /': 'The 10th was a spare (first two balls made ten), but the flag was never written.',
+'/ \u2192 open': 'Flagged as a spare, but the pins entered don\u2019t make ten. Either the flag or the pinfall is wrong.',
+'X \u2192 open': 'Flagged as a strike, but the first ball was not a 10.',
+'X+/ \u2192 X': 'Both Strike and Spare were set; a frame can only start with one. The strike is kept.',
+'X \u2192 /': 'Flagged as a strike, but the pins show a spare.',
+'/ \u2192 X': 'Flagged as a spare, but the first ball was a strike.'
+};
+function _dkF10ReviewRows(changed, cats) {
+var byKey = {};
+changed.forEach(function(c, i){ (byKey[c.key] = byKey[c.key] || []).push(i); });
+var gById = {}; db.games.forEach(function(g){ gById[g.GameID] = g; });
+var sById = {}; db.series.forEach(function(x){ sById[x.SeriesID] = x; });
+var lName = function(sr){ if (!sr) return ''; if (sr.TournamentID != null) { var t = (db.tournaments||[]).find(function(x){ return x.TournamentID === sr.TournamentID; }); return t ? t.TournamentName : 'Tournament'; } var l = db.leagues.find(function(x){ return x.LeagueID === sr.LeagueID; }); return l ? l.LeagueName : 'Open play'; };
+return Object.keys(byKey).sort(function(a,b){ return byKey[b].length - byKey[a].length; }).map(function(k){
+var idx = byKey[k], on = idx.filter(function(i){ return _dkF10On(changed[i]); }).length;
+var rows = idx.map(function(i){
+var c = changed[i], g = gById[c.fr.GameID] || {}, sr = sById[g.SeriesID];
+var d = (g.DateBowled || (sr && sr.DateBowled) || '');
+var seq = c.seq.map(function(v){ return v === null ? '_' : v; }).join(' ');
+return '<label style="display:flex;gap:8px;align-items:flex-start;padding:7px 0;border-top:1px solid var(--border1)">'+
+'<input type="checkbox" '+ (_dkF10On(c) ? 'checked' : '') + ' onchange="dkF10Toggle('+ i + ',this.checked)" style="margin-top:3px;width:18px;height:18px;flex-shrink:0">'+
+'<div style="flex:1;min-width:0"><div style="font-size:12px;color:var(--t1);font-weight:600">'+ (d ? d.slice(5,7)+'/'+d.slice(8,10)+'/'+d.slice(2,4) : '?') + ' \u00b7 G'+ (g.GameNumber || '?') + ' \u00b7 '+ (g.FinalScore != null ? g.FinalScore : '\u2013') +
+' \u00b7 10th: <span style="font-family:monospace">'+ seq + '</span></div>'+
+'<div style="font-size:11px;color:var(--t3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+ lName(sr).replace(/</g,'&lt;') + ' \u00b7 game '+ c.fr.GameID + '</div>'+ (c.why ? '<div style="font-size:11px;color:var(--gold)">'+ c.why + '</div>' : '') + '</div>'+
+(g.SeriesID != null ? '<button class="btn btn-secondary btn-sm" style="flex-shrink:0;padding:4px 10px;font-size:11px" onclick="event.preventDefault();dkOpenStaleSeries('+ g.SeriesID + ')">View</button>' : '') +
+'</label>';
+}).join('');
+return '<details style="padding:7px 0;border-bottom:1px solid var(--border1)"><summary style="list-style:none;cursor:pointer">'+
+'<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">'+
+'<span style="font-size:13px;font-weight:700;color:var(--t1)">'+ k + ' <span style="font-size:11px;color:var(--t3);font-weight:600">\u25be</span></span>'+
+'<span style="font-size:13px;font-weight:800;color:var(--teal)" id="dk-f10-n-'+ k.replace(/[^a-z]/gi,'') + '">'+ (on === idx.length ? idx.length : on + ' of '+ idx.length) + '</span></div>'+
+'<div style="font-size:11px;color:var(--t2);margin-top:2px;line-height:1.4">'+ (_DK_F10_EXPLAIN[k] || '') + '</div></summary>'+
+'<div style="margin-top:4px">'+ rows + '</div></details>';
+}).join('');
+}
+function dkF10Toggle(i, checked) {
+var c = (window._dkF10Pending || [])[i];
+if (!c) return;
+_dkF10Excl[c.fr.FrameID] = !checked;
+var b = document.getElementById('dk-f10-apply'); if (b) b.textContent = _dkF10ApplyLabel();
+var list = window._dkF10Pending.filter(function(x){ return x.key === c.key; }), on = list.filter(_dkF10On).length;
+var n = document.getElementById('dk-f10-n-'+ c.key.replace(/[^a-z]/gi,'')); if (n) n.textContent = on === list.length ? list.length : on + ' of '+ list.length;
+}
+async function dkApplyF10Flags() {
+var changed = (window._dkF10Pending || []).filter(_dkF10On);
+if (!changed.length) { toast('Nothing ticked'); return; }
+changed.forEach(function(c){ c.fr.Strike = c.flags.Strike; c.fr.Spare = c.flags.Spare; delete _dkF10Excl[c.fr.FrameID]; });
 await saveAll();
 window._dkF10Pending = null;
 closeModal();
