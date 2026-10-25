@@ -82,7 +82,7 @@
      (its *_VERSION line). sw.js reads this block: it keeps the app's
      files as one matching set and never opens a mix of old and new files. Every file
      is fetched as name.js?v=APP_VERSION. Update a version here when that file changes. -->
-<script type="application/json" id="bdb-files">{"devkit.js":"v30.227","report.js":"v30.156","catalog.js":"v30.224","workbench.js":"v30.223","pinpal.js":"v30.199","awards.js":"v30.227"}</script>
+<script type="application/json" id="bdb-files">{"devkit.js":"v30.227","report.js":"v30.156","catalog.js":"v30.224","workbench.js":"v30.223","pinpal.js":"v30.199","awards.js":"v30.228"}</script>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#0E0F11">
@@ -3367,6 +3367,7 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
       <div class="sc-wrap">
         <div class="sc-scroll"><div class="sc-grid" id="sc-grid-complete"></div></div>
       </div>
+      <div id="gc-awards"></div>
       <div class="card gc-hero">
         <div class="gc-score" id="gc-score">—</div>
         <div class="gc-lbl">Final Score</div>
@@ -3535,7 +3536,7 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
    Bump both lines (and CATALOG_JS_VERSION in catalog.js when it changes).
    v30.224 OFF-2: also bump the ?v= on the three <script src> tags at the end of
    the page, and the file list in <script id="bdb-files"> when a .js file changes. */
-const APP_VERSION = 'v30.227';
+const APP_VERSION = 'v30.229';
 const APP_BUILD_DATE = '2026-10-24';
 /* catalog.js this build expects; an older file on the server shows a warning */
 const EXPECTED_CATALOG_JS = 'v30.224';
@@ -12211,6 +12212,7 @@ function renderGameComplete() {
 const game = db.games.find(g=>g.GameID===G.gameID);
 const score = game?.FinalScore ?? game?.GameTotal ?? 0;
 document.getElementById('gc-score').textContent = score;
+try { gcAwardsBanner(G.gameID, G.seriesID); } catch (e) {}
 
 hdcpUpdateGameComplete(G.seriesID, G.gameID, score);
 
@@ -30374,8 +30376,35 @@ localStorage.setItem(FLAG, log.length ? log.join(' | ') : 'nothing to tidy');
 }
 
 /* v30.226 AWD-1: the trophy case lives in awards.js (same-origin, loaded on first use). */
+/* v30.228 AWD-1 step 4: banner on Game Complete for awards this game earned (or its series, on game 3). */
+function gcAwardsBanner(gameID, seriesID) {
+const el = document.getElementById('gc-awards');
+if (!el) return;
+el.innerHTML = '';
+const draw = () => {
+if (typeof awUnlocksFor !== 'function' || G.gameID !== gameID) return;
+let list = [];
+try { list = awUnlocksFor(gameID, seriesID); } catch (e) { return; }
+if (!list.length) return;
+const esc = v => String(v).replace(/[&<>"]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
+el.innerHTML = `<div class="card" style="margin-bottom:10px;border:1px solid rgba(255,215,0,0.35)">
+      <div style="font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--gold);margin-bottom:6px">🏆 Unlocked</div>
+      ${list.map(a => `<div onclick="awOpenAward('${a.award}')" style="display:flex;align-items:center;gap:10px;padding:6px 0;cursor:pointer">
+        <span style="font-size:20px">${a.icon}</span>
+        <div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:700">${esc(a.name)}</div>
+        <div style="font-size:12px;color:var(--t3)">${a.first ? 'First ever' : a.nth + (a.nth % 10 === 1 && a.nth % 100 !== 11 ? 'st' : a.nth % 10 === 2 && a.nth % 100 !== 12 ? 'nd' : a.nth % 10 === 3 && a.nth % 100 !== 13 ? 'rd' : 'th') + ' time'}</div></div>
+        <span style="color:var(--t3)">›</span></div>`).join('')}
+    </div>`;
+};
+if (typeof awUnlocksFor === 'function') { setTimeout(draw, 0); return; }
+const s = document.createElement('script');
+s.src = 'awards.js?v=' + encodeURIComponent(APP_VERSION);
+s.onload = draw;
+document.head.appendChild(s);
+}
+
 function openAwards() {
-if (typeof awOpen === 'function') { awOpen(); return; }
+if (typeof awOpen === 'function') { return awOpen(); }
 const s = document.createElement('script');
 s.src = 'awards.js?v=' + encodeURIComponent(APP_VERSION);
 s.onload = () => { if (typeof awOpen === 'function') awOpen(); else toast('Trophy case did not load'); };
@@ -30547,6 +30576,107 @@ localStorage.setItem(FLAG, 'repaired ' + n);
 } catch (e) { console.warn('fixPinPalShape197:', e); }
 }
 
+/* v30.229 one-time: two games whose stored balls don't match what was bowled (found 10/24/26).
+   1) 8/20/25 Virtue Fun Fall 2025 G3 (188, game 786): from frame 2 on every ball was saved as 0 pins
+      with all ten standing, and every ball as the Obsession Tour. The frame marks and frame scores
+      survived. Rebuilt from James's scoresheet (Week 2, Chandler, lanes 31-32): pinfall, leaves, ball
+      (IP = Infinite Physix, P2 = Phaze II, TZ = Tzone), start and target boards (half boards rounded
+      down, as the app stores whole boards). F2's spare ball and its boards are not on the sheet: left blank.
+   2) 3/5/25 G2 (212, game 716): pins are right (they add to 212) but the strike/spare flags of
+      frames 3-10 belong to other frames. Flags rewritten from the pins.
+   Each repair runs only if the game still looks exactly as found; the original rows are kept in
+   bowlingdb_fix229_undo. Legacy pin format, as these games were imported: Pin = standing after the
+   ball, PinStart = standing before it, PinDelta = knocked by it, BSK B (down) / K (knocked now) / S. */
+const FIX229_SHEET = [
+  // [frame, [ [pinsStandingAfter], ballID, start, target ] per ball ]  (null ball = keep the row empty)
+  [1,  [[[], 11, 33, 9]]],
+  [2,  [[[6], 11, 33, 9], [[], null, null, null]]],
+  [3,  [[[6,7], 11, 33, 9], [[7], 17, 30, 15]]],
+  [4,  [[[], 2, 32, 9]]],
+  [5,  [[[], 2, 32, 9]]],
+  [6,  [[[], 2, 32, 9]]],
+  [7,  [[[4], 2, 32, 9], [[4], 17, 15, 17]]],
+  [8,  [[[4,7], 2, 32, 9], [[], 17, 15, 14]]],
+  [9,  [[[3,6,10], 2, 33, 9], [[], 17, 37, 17]]],
+  [10, [[[8], 2, 33, 9], [[], 2, 33, 7], [[6,10], 2, 33, 9]]]
+];
+function _fix229LeaveID(pins) {
+  const want = pins.slice().sort((a, b) => a - b).join(',');
+  const l = (db.leaves || []).find(x => { const p = []; for (let i = 1; i <= 10; i++) if (x['Pin' + i]) p.push(i); return p.join(',') === want && want; });
+  return l ? l.LeaveID : null;
+}
+function _fix229Write(a, before, after, ball, start, target, isFirst) {
+  const knocked = before.filter(p => !after.includes(p));
+  a.Pinfall = knocked.length;
+  a.LeaveID = after.length ? _fix229LeaveID(after) : (isFirst ? 91 : 93);
+  a.BallID = ball; a.BoardStart = start; a.StartingBoard = start; a.TargetBoard = target;
+  let bsk = '';
+  for (let p = 1; p <= 10; p++) {
+    const up = before.includes(p), down = up && !after.includes(p);
+    a['Pin' + p] = after.includes(p);
+    a['PinStart' + p] = up ? 1 : 0;
+    a['PinDelta' + p] = down ? 1 : 0;
+    bsk += isFirst ? (after.includes(p) ? 'S' : 'B') : (!up ? 'B' : down ? 'K' : 'S');
+  }
+  a.BSK_Progressive = bsk;
+  if (start != null) { a.StartingBoardSource = a.StartingBoardSource || 'legacy'; a.TargetBoardSource = a.TargetBoardSource || 'legacy'; }
+}
+async function fixScoresheet229() {
+  const FLAG = 'bowlingdb_fix229_sheet';
+  try {
+    if (localStorage.getItem(FLAG)) return;
+    await loadScoringData();
+    const undo = {}, done = [];
+    const framesOf = gid => db.frames.filter(f => f.GameID === gid).sort((a, b) => a.FrameNumber - b.FrameNumber);
+    const attsOf = f => db.attempts.filter(a => a.FrameID === f.FrameID).sort((a, b) => a.Attempt - b.Attempt);
+    /* 1) game 786 */
+    const g1 = db.games.find(g => g.GameID === 786);
+    const fr1 = g1 ? framesOf(786) : [];
+    const broken = g1 && g1.FinalScore === 188 && fr1.length === 10 &&
+      fr1.slice(1).every(f => { const at = attsOf(f); return at.length >= 2 && at[0].Pinfall === 0 && at[0].LeaveID === 129; });
+    if (broken) {
+      undo.g786 = fr1.map(f => ({ frame: Object.assign({}, f), atts: attsOf(f).map(a => Object.assign({}, a)) }));
+      FIX229_SHEET.forEach(([fn, balls]) => {
+        const f = fr1[fn - 1], at = attsOf(f);
+        let standing = [1,2,3,4,5,6,7,8,9,10];
+        /* rows past the balls on the sheet (a strike's second ball) go back to the empty shape */
+        at.slice(balls.length).forEach(a => {
+          a.Pinfall = null; a.LeaveID = null; a.BallID = null; a.BoardStart = null; a.StartingBoard = null; a.TargetBoard = null;
+          a.BSK_Progressive = 'SSSSSSSSSS'; a.StartingBoardSource = null; a.TargetBoardSource = null;
+          for (let p = 1; p <= 10; p++) { a['Pin' + p] = false; a['PinStart' + p] = 0; a['PinDelta' + p] = 0; }
+        });
+        balls.forEach((b, i) => {
+          const a = at[i]; if (!a) return;
+          const fresh = i === 0 || (fn === 10 && standing.length === 0);
+          const before = fresh ? [1,2,3,4,5,6,7,8,9,10] : standing.slice();
+          _fix229Write(a, before, b[0], b[1], b[2], b[3], fresh);
+          standing = b[0].slice();
+        });
+        const last = at[balls.length - 1]; if (last) f.BSK_PinStates = last.BSK_Progressive;
+      });
+      done.push('8/20/25 G3 rebuilt from the scoresheet');
+    }
+    /* 2) game 716 */
+    const g2 = db.games.find(g => g.GameID === 716);
+    const fr2 = g2 ? framesOf(716) : [];
+    if (g2 && g2.FinalScore === 212 && fr2.length === 10) {
+      const want = fr2.map(f => deriveFrameFlags(f, attsOf(f), !!g2.NoTap));
+      const wrong = fr2.filter((f, i) => want[i] && (!!f.Strike !== want[i].Strike || !!f.Spare !== want[i].Spare));
+      if (wrong.length >= 6 && wrong.length <= 8) {
+        undo.g716 = fr2.map(f => ({ FrameID: f.FrameID, Strike: f.Strike, Spare: f.Spare }));
+        fr2.forEach((f, i) => { if (want[i]) { f.Strike = want[i].Strike; f.Spare = want[i].Spare; } });
+        done.push('3/5/25 G2 marks fixed');
+      }
+    }
+    if (done.length) {
+      try { localStorage.setItem('bowlingdb_fix229_undo', JSON.stringify(undo)); } catch (e) {}
+      await saveScoringData();
+      toast('Repaired: ' + done.join(' · '), 5000);
+    }
+    localStorage.setItem(FLAG, done.length ? done.join('; ') : 'nothing to do');
+  } catch (e) { console.warn('fixScoresheet229:', e); }
+}
+
 document.addEventListener('DOMContentLoaded', async ()=>{
 
 
@@ -30570,7 +30700,7 @@ renderNavGrid();
 window.__bdbBoot = 1;   // v30.223 BOOT-1: home drawn, the startup guard stands down
 
 
-loadScoringData().then(async () => { renderHome(); fixPrecisionDup185(); fixBallText189(); await fixNoTap191(); await fixPinPalShape197(); await fixLeaveIDs196(); renderHome(); }).catch(() => {});
+loadScoringData().then(async () => { renderHome(); fixPrecisionDup185(); fixBallText189(); await fixNoTap191(); await fixPinPalShape197(); await fixLeaveIDs196(); await fixScoresheet229(); renderHome(); }).catch(() => {});
 
 
 warmBallImgCache().then(() => {
@@ -37846,10 +37976,10 @@ _editStatus:'', _editPriority:1, _newSnap:null, _newStatus:'tbd', _editCat:'note
 };
 var _DKM_STATUS_LABELS = {ok:'🟢 Working',partial:'🟡 Partial',broken:'🔴 Broken',tbd:'⚪ TBD'};
 </script>
-<script src="devkit.js?v=v30.227"></script>
-<script src="report.js?v=v30.227"></script>
+<script src="devkit.js?v=v30.229"></script>
+<script src="report.js?v=v30.229"></script>
 <!-- v30.157 NEW-11 step 4: ball catalog manifest check + IDB cache (same-origin, like devkit.js/report.js). Optional: if missing, the app behaves exactly as before. -->
-<script src="catalog.js?v=v30.227"></script>
+<script src="catalog.js?v=v30.229"></script>
 <script>
 /* v30.162 OFF-1: service worker (sw.js, same folder) so the app opens with
    no connection, and a request that the browser keep this app's storage.
