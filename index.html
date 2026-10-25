@@ -82,7 +82,7 @@
      (its *_VERSION line). sw.js reads this block: it keeps the app's
      files as one matching set and never opens a mix of old and new files. Every file
      is fetched as name.js?v=APP_VERSION. Update a version here when that file changes. -->
-<script type="application/json" id="bdb-files">{"devkit.js":"v30.234","report.js":"v30.156","catalog.js":"v30.224","workbench.js":"v30.223","pinpal.js":"v30.199","awards.js":"v30.233","share.js":"v30.236"}</script>
+<script type="application/json" id="bdb-files">{"devkit.js":"v30.234","report.js":"v30.156","catalog.js":"v30.224","workbench.js":"v30.223","pinpal.js":"v30.199","awards.js":"v30.233","share.js":"v30.237"}</script>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#0E0F11">
@@ -3387,7 +3387,10 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
       <div id="gc-game-nav" style="display:flex;gap:6px;margin-bottom:8px"></div>
       <button class="btn btn-gold" id="btn-next-game" onclick="goNextGame()" style="display:none">Start Game 2 →</button>
       <button class="btn btn-primary" id="btn-end-series" onclick="endSeries()">View Series</button>
-      <button class="btn btn-ghost" id="btn-gc-share" onclick="shrLaunch(G.seriesID)" style="width:100%;margin-top:8px">📤 Share series card</button>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="btn btn-ghost" id="btn-gc-share-game" onclick="shrLaunchGame(G.gameID)" style="flex:1">📤 Game card</button>
+        <button class="btn btn-ghost" id="btn-gc-share" onclick="shrLaunch(G.seriesID)" style="flex:1">📤 Series card</button>
+      </div>
     </div>
 
     <!-- STATS -->
@@ -3537,7 +3540,7 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
    Bump both lines (and CATALOG_JS_VERSION in catalog.js when it changes).
    v30.224 OFF-2: also bump the ?v= on the three <script src> tags at the end of
    the page, and the file list in <script id="bdb-files"> when a .js file changes. */
-const APP_VERSION = 'v30.236';
+const APP_VERSION = 'v30.237';
 const APP_BUILD_DATE = '2026-10-25';
 /* catalog.js this build expects; an older file on the server shows a warning */
 const EXPECTED_CATALOG_JS = 'v30.224';
@@ -6816,14 +6819,17 @@ if (!open) {
 }
 return db.games.some(g=>g.SeriesID===seriesID && !g.IsTeammate && g.FinalScore > 0);
 }
-function shrLaunch(seriesID) {
-if (typeof shrOpen === 'function') return shrOpen(seriesID);
+function _shrLoad(then) {
+if (typeof shrOpen === 'function') return then();
 const s = document.createElement('script');
 s.src = 'share.js?v=' + encodeURIComponent(APP_VERSION);
-s.onload = () => { if (typeof shrOpen === 'function') shrOpen(seriesID); else toast('Share card did not load'); };
+s.onload = () => { if (typeof shrOpen === 'function') then(); else toast('Share card did not load'); };
 s.onerror = () => toast('Share card unavailable: upload share.js next to index.html');
 document.head.appendChild(s);
 }
+function shrLaunch(seriesID) { _shrLoad(() => shrOpen(seriesID)); }
+/* v30.237 SHR-1 slice 2: game card (Games list chip, Game Complete) */
+function shrLaunchGame(gameID) { _shrLoad(() => typeof shrOpenGame === 'function' ? shrOpenGame(gameID) : toast('Upload the v30.237 share.js')); }
 function rptLaunch(seriesID, gameID) {
 if (typeof rptOpen !== 'function') { toast('Report unavailable: report.js did not load. Upload it next to index.html.'); return; }
 closeModal();
@@ -16927,7 +16933,7 @@ return `
               </div>
               <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
                 <div style="font-size:26px;font-weight:800;color:${scoreColor};line-height:1">${g.FinalScore}</div>
-                ${hasFrameData && !g.league?.BakerFormat ? `<div class="gl-print-chip" onclick="event.stopPropagation();rptLaunch(${g.SeriesID}, ${g.GameID})">Print</div>`: ''}
+                ${hasFrameData && !g.league?.BakerFormat ? `<div style="display:flex;gap:4px"><div class="gl-print-chip" onclick="event.stopPropagation();shrLaunchGame(${g.GameID})">Share</div><div class="gl-print-chip" onclick="event.stopPropagation();rptLaunch(${g.SeriesID}, ${g.GameID})">Print</div></div>`: ''}
                 ${_focusPerRow ? `<div style="font-size:11px;font-weight:700;color:var(--teal);background:rgba(0,217,217,0.1);border-radius:999px;padding:1px 7px;white-space:nowrap">${_focusMeta.label} ${_ldFocusGameVal(_focusKey, g.GameID)}</div>` : ''}
                 ${primaryBall ? `<img src="${getBallImgSrc(primaryBall.BallID,'cover')||''}" alt="${primaryBall.BallName}"
                   style="width:28px;height:28px;border-radius:50%;object-fit:cover${getBallImgSrc(primaryBall.BallID,'cover')?'':';display:none'}"
@@ -38113,10 +38119,10 @@ _editStatus:'', _editPriority:1, _newSnap:null, _newStatus:'tbd', _editCat:'note
 };
 var _DKM_STATUS_LABELS = {ok:'🟢 Working',partial:'🟡 Partial',broken:'🔴 Broken',tbd:'⚪ TBD'};
 </script>
-<script src="devkit.js?v=v30.236"></script>
-<script src="report.js?v=v30.236"></script>
+<script src="devkit.js?v=v30.237"></script>
+<script src="report.js?v=v30.237"></script>
 <!-- v30.157 NEW-11 step 4: ball catalog manifest check + IDB cache (same-origin, like devkit.js/report.js). Optional: if missing, the app behaves exactly as before. -->
-<script src="catalog.js?v=v30.236"></script>
+<script src="catalog.js?v=v30.237"></script>
 <script>
 /* v30.162 OFF-1: service worker (sw.js, same folder) so the app opens with
    no connection, and a request that the browser keep this app's storage.
