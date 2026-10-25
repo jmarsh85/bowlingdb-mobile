@@ -1,3 +1,5 @@
+/* v30.224 OFF-2: sw.js checks this line against index.html's file list; bump it when devkit.js changes */
+var DK_VERSION = 'v30.224';
 
 
 
