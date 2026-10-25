@@ -1,5 +1,5 @@
 /* v30.224 OFF-2: sw.js checks this line against index.html's file list; bump it when devkit.js changes */
-var DK_VERSION = 'v30.230';
+var DK_VERSION = 'v30.234';
 
 
 
@@ -533,6 +533,7 @@ host.insertAdjacentHTML('beforeend',`<!-- ── DEVKIT OVERLAY ─────�
 
           <div class="dk-tool-group">Maintenance — writes data</div>
           <button class="dk-tool-btn write" onclick="dkBackfillF10Flags()" title="Populate Strike/Spare flags on historical frame-10 rows (dry run first)">🔟 F10 Flags — backfill frame-10 Strike/Spare</button>
+          <button class="dk-tool-btn write" onclick="dkLeaveCheck()" title="First-ball leaves whose saved leave and pin string disagree (review first)">🧩 Leave check — saved leave vs pins</button>
           <button class="dk-tool-btn write" onclick="dkBackfillF10Flags(true)" title="Check Strike/Spare flags on every frame against the pins (review first)">🎳 Frame Flags — check all frames against the pins</button>
           <button class="dk-tool-btn write" onclick="dkReviewStaleGames()" title="Review and purge empty game shells that count as zeros">🧹 Stale Games — review &amp; purge empty shells</button>
           <button class="dk-tool-btn write" onclick="dkBakerPurgeShells()" title="Remove empty db.games shells created in Baker rounds by the pre-v30.126 routing bug">🎳 Baker Purge — remove Baker game shells</button>
@@ -765,6 +766,98 @@ toast('Purged '+ gameIDs.length + ' empty game shell(s)');
 
 
 
+/* v30.234 Goal 7: first balls whose saved leave (LeaveID) and pin string (BSK_Progressive) name different
+   pins. Read-only. For each, the second ball is used as a witness: the pins it faced must be the pins
+   left by the first ball, so whichever side matches it is very likely right. */
+function _dkLeaveSet(arr) { return arr.slice().sort(function(a,b){ return a-b; }).join('-') || '\u2014'; }
+function dkLeaveCheck() {
+var leafPins = {};
+(db.leaves || []).forEach(function(l){ var p = []; for (var i = 1; i <= 10; i++) if (l['Pin'+ i]) p.push(i); leafPins[l.LeaveID] = p; });
+var fById = {}; db.frames.forEach(function(f){ fById[f.FrameID] = f; });
+var gById = {}; db.games.forEach(function(g){ gById[g.GameID] = g; });
+var sById = {}; db.series.forEach(function(x){ sById[x.SeriesID] = x; });
+var byFrame = {}; db.attempts.forEach(function(a){ (byFrame[a.FrameID] = byFrame[a.FrameID] || []).push(a); });
+var checked = 0, items = [];
+db.attempts.forEach(function(a){
+if (a.Attempt !== 1 || a.Pinfall == null || !(a.Pinfall > 0 && a.Pinfall < 10) || !a.LeaveID || !leafPins[a.LeaveID]) return;
+var bsk = a.BSK_Progressive || ''; if (bsk.length !== 10) return;
+checked++;
+var pins = []; for (var i = 0; i < 10; i++) if (bsk[i] === 'S') pins.push(i + 1);
+var saved = leafPins[a.LeaveID];
+if (_dkLeaveSet(pins) === _dkLeaveSet(saved)) return;
+var need = 10 - a.Pinfall;
+var a2 = (byFrame[a.FrameID] || []).filter(function(x){ return x.Attempt === 2; })[0];
+var faced = null, flags = [];
+if (a2 && a2.Pinfall != null && (a2.BSK_Progressive || '').length === 10) { faced = []; for (var j = 0; j < 10; j++) if ('KS'.indexOf(a2.BSK_Progressive[j]) >= 0) faced.push(j + 1); }
+for (var q = 1; q <= 10; q++) if (a['Pin'+ q] === true) flags.push(q);
+var ps2 = []; if (a2) for (var r2 = 1; r2 <= 10; r2++) if (a2['PinStart'+ r2] === 1 || a2['PinStart'+ r2] === true) ps2.push(r2);
+/* ball 2's own leave, from its pin string (spare = '/') */
+var fix2 = null;
+if (a2 && a2.Pinfall != null && (a2.BSK_Progressive || '').length === 10) {
+var st2 = []; for (var k2 = 0; k2 < 10; k2++) if (a2.BSK_Progressive[k2] === 'S') st2.push(k2 + 1);
+var want2 = st2.length ? Object.keys(leafPins).filter(function(id){ return _dkLeaveSet(leafPins[id]) === _dkLeaveSet(st2) && leafPins[id].length; })[0] : (db.leaves || []).filter(function(l){ return l.DisplayName === '/'; }).map(function(l){ return String(l.LeaveID); })[0];
+if (want2 && String(a2.LeaveID) !== want2) fix2 = { a: a2, to: +want2, from: a2.LeaveID };
+}
+var allAgree = _dkLeaveSet(flags) === _dkLeaveSet(pins) && (!faced || _dkLeaveSet(faced) === _dkLeaveSet(pins)) && (!ps2.length || _dkLeaveSet(ps2) === _dkLeaveSet(pins));
+var want1 = Object.keys(leafPins).filter(function(id){ return _dkLeaveSet(leafPins[id]) === _dkLeaveSet(pins) && leafPins[id].length; })[0];
+var verdict = 'can\u2019t tell';
+if (faced) {
+var fs = _dkLeaveSet(faced);
+verdict = fs === _dkLeaveSet(pins) ? 'pins match ball 2' : fs === _dkLeaveSet(saved) ? 'saved leave matches ball 2' : 'ball 2 matches neither';
+} else if (pins.length === need && saved.length !== need) verdict = 'pins match the pinfall';
+else if (saved.length === need && pins.length !== need) verdict = 'saved leave matches the pinfall';
+var f = fById[a.FrameID] || {}, g = gById[f.GameID] || {}, sr = sById[g.SeriesID] || {};
+if (allAgree) verdict = 'pin picture, pin flags and ball 2 all agree';
+items.push({ a: a, f: f, g: g, sr: sr, pins: pins, saved: saved, faced: faced, need: need, verdict: verdict, allAgree: allAgree, to: want1 ? +want1 : null, fix2: fix2, on: !!(allAgree && want1) });
+});
+items.sort(function(x, y){ return (x.sr.DateBowled || '') < (y.sr.DateBowled || '') ? -1 : 1; });
+var lName = function(sr){ if (sr.TournamentID != null) { var t = (db.tournaments||[]).find(function(x){ return x.TournamentID === sr.TournamentID; }); return t ? t.TournamentName : 'Tournament'; } var l = db.leagues.find(function(x){ return x.LeagueID === sr.LeagueID; }); return l ? l.LeagueName : 'Open play'; };
+var tally = {}; items.forEach(function(it){ tally[it.verdict] = (tally[it.verdict] || 0) + 1; });
+var rows = items.map(function(it){
+var d = it.sr.DateBowled || '';
+var col = (it.allAgree || it.verdict.indexOf('pins match') === 0) ? 'var(--teal)' : it.verdict.indexOf('saved leave') === 0 ? 'var(--gold)' : 'var(--t3)';
+var idx = items.indexOf(it);
+return '<label style="display:flex;gap:8px;align-items:flex-start;padding:8px 0;border-top:1px solid var(--border1)">'+
+(it.to ? '<input type="checkbox" '+ (it.on ? 'checked' : '') + ' onchange="window._dkLeaveItems['+ idx + '].on=this.checked;dkLeaveBtn()" style="margin-top:3px;width:18px;height:18px;flex-shrink:0">' : '<span style="width:18px;flex-shrink:0"></span>')+
+'<div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:700;color:var(--t1)">'+ (d ? d.slice(5,7)+'/'+d.slice(8,10)+'/'+d.slice(2,4) : '?') + ' \u00b7 G'+ (it.g.GameNumber || '?') + ' \u00b7 F'+ it.f.FrameNumber + ' \u00b7 '+ it.a.Pinfall + ' down</div>'+
+'<div style="font-size:12px;color:var(--t2);font-family:monospace">saved '+ _dkLeaveSet(it.saved) + '  \u00b7  pins '+ _dkLeaveSet(it.pins) + (it.faced ? '  \u00b7  ball 2 faced '+ _dkLeaveSet(it.faced) : '') + '</div>'+
+'<div style="font-size:11px;color:'+ col + ';font-weight:700">'+ it.verdict + '</div>'+
+(it.fix2 ? '<div style="font-size:11px;color:var(--t3)">ball 2\u2019s saved leave is also off; fixed with it</div>' : '')+
+'<div style="font-size:11px;color:var(--t3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+ lName(it.sr).replace(/</g,'&lt;') + ' \u00b7 game '+ it.g.GameID + '</div></div>'+
+(it.g.SeriesID != null ? '<button class="btn btn-secondary btn-sm" style="flex-shrink:0;padding:4px 10px;font-size:11px" onclick="event.preventDefault();dkOpenStaleSeries('+ it.g.SeriesID + ')">View</button>' : '') + '</label>';
+}).join('');
+openModal('<div class="modal-title">Leave check</div>'+
+'<div style="font-size:12px;color:var(--t2);line-height:1.5;margin-bottom:10px">First balls whose saved leave (used by leave and split stats) names different pins from the pin picture (used by the scorecard). Nothing changes unless you tap the button; ticked rows take the pins\u2019 leave.</div>'+
+'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">'+
+'<div class="card" style="text-align:center;padding:10px"><div style="font-size:11px;color:var(--t3)">CHECKED</div><div style="font-size:22px;font-weight:800">'+ checked.toLocaleString() + '</div></div>'+
+'<div class="card" style="text-align:center;padding:10px"><div style="font-size:11px;color:var(--t3)">DISAGREE</div><div style="font-size:22px;font-weight:800;color:var(--teal)">'+ items.length + '</div></div></div>'+
+(items.length ? '<div style="font-size:12px;color:var(--t2);margin-bottom:6px">'+ Object.keys(tally).map(function(k){ return tally[k] + ' \u00b7 '+ k; }).join('<br>') + '</div>' : '<div class="card" style="font-size:13px">Every saved leave matches its pins.</div>')+
+'<div style="font-size:11px;color:var(--t3);line-height:1.45;margin-bottom:4px">The second ball is the witness: the pins it faced are the pins the first ball left.</div>'+
+rows +
+(items.some(function(it){ return it.to; }) ? '<button class="btn btn-primary" id="dk-leave-apply" style="margin-top:12px;width:100%" onclick="dkLeaveApply()"></button>' : '')+
+'<button class="btn btn-secondary" style="margin-top:8px;width:100%" onclick="closeModal()">Close</button>');
+window._dkLeaveItems = items;
+dkLeaveBtn();
+}
+function dkLeaveBtn() {
+var b = document.getElementById('dk-leave-apply'); if (!b) return;
+var n = (window._dkLeaveItems || []).filter(function(it){ return it.on && it.to; }).length;
+b.textContent = n ? 'Use the pins for '+ n + ' leave'+ (n === 1 ? '' : 's') : 'Nothing ticked';
+b.disabled = !n;
+}
+async function dkLeaveApply() {
+var list = (window._dkLeaveItems || []).filter(function(it){ return it.on && it.to; });
+if (!list.length) return;
+var undo = [];
+list.forEach(function(it){
+undo.push({ AttemptID: it.a.AttemptID, LeaveID: it.a.LeaveID }); it.a.LeaveID = it.to;
+if (it.fix2) { undo.push({ AttemptID: it.fix2.a.AttemptID, LeaveID: it.fix2.from }); it.fix2.a.LeaveID = it.fix2.to; }
+});
+try { var prev = JSON.parse(localStorage.getItem('bowlingdb_dkleave_undo') || '[]'); localStorage.setItem('bowlingdb_dkleave_undo', JSON.stringify(prev.concat([{ at: new Date().toISOString(), rows: undo }]))); } catch (e) {}
+await saveAll();
+toast('Leaves updated on '+ list.length + ' first ball'+ (list.length === 1 ? '' : 's'));
+dkLeaveCheck();
+}
 async function dkBackfillF10Flags(allFrames) {
 /* v30.230: allFrames = check frames 1-10 (same review, same rules); default frame 10 only */
 window._dkFlagsAll = !!allFrames;
