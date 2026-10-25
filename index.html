@@ -82,7 +82,7 @@
      (its *_VERSION line). sw.js reads this block: it keeps the app's
      files as one matching set and never opens a mix of old and new files. Every file
      is fetched as name.js?v=APP_VERSION. Update a version here when that file changes. -->
-<script type="application/json" id="bdb-files">{"devkit.js":"v30.230","report.js":"v30.156","catalog.js":"v30.224","workbench.js":"v30.223","pinpal.js":"v30.199","awards.js":"v30.228"}</script>
+<script type="application/json" id="bdb-files">{"devkit.js":"v30.230","report.js":"v30.156","catalog.js":"v30.224","workbench.js":"v30.223","pinpal.js":"v30.199","awards.js":"v30.232"}</script>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#0E0F11">
@@ -3536,7 +3536,7 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
    Bump both lines (and CATALOG_JS_VERSION in catalog.js when it changes).
    v30.224 OFF-2: also bump the ?v= on the three <script src> tags at the end of
    the page, and the file list in <script id="bdb-files"> when a .js file changes. */
-const APP_VERSION = 'v30.230';
+const APP_VERSION = 'v30.232';
 const APP_BUILD_DATE = '2026-10-24';
 /* catalog.js this build expects; an older file on the server shows a warning */
 const EXPECTED_CATALOG_JS = 'v30.224';
@@ -30679,6 +30679,61 @@ async function fixScoresheet229() {
   } catch (e) { console.warn('fixScoresheet229:', e); }
 }
 
+/* v30.231 one-time: games 1 and 2 of 8/20/25 (Virtue Fun Fall 2025, games 784 and 785) checked against
+   James's scoresheets. Pins and scores already match the sheets (205, 188); these details did not:
+   spare shots stored with the Infinite Physix instead of the Tzone, the 10th's second ball stored as the
+   Obsession Tour, the 10th's last ball with no ball, game 1 frame 9's first ball (Phaze II), and two
+   second-ball leaves. Each change is made only if the field still holds the value found on 10/25/26, so
+   anything James has edited since is left alone. Originals in bowlingdb_fix231_undo. */
+const FIX231 = [
+  // [gameID, frame, attempt, { ball: [was, now] } | { leave: [wasLeaveID, standingAfter] }]
+  [784, 1, 2, { ball: [11, 17] }],
+  [784, 8, 2, { leave: [10, [7]] }],
+  [784, 9, 1, { ball: [11, 2] }],
+  [784, 10, 2, { ball: [9, 11] }],
+  [784, 10, 3, { ball: [null, 17] }],
+  [785, 2, 2, { ball: [11, 17] }],
+  [785, 3, 2, { ball: [11, 17] }],
+  [785, 3, 2, { leave: [67, [5, 7]] }],
+  [785, 9, 2, { ball: [11, 17] }],
+  [785, 10, 2, { ball: [9, 11] }],
+  [785, 10, 3, { ball: [null, 17] }]
+];
+async function fixScoresheets231() {
+  const FLAG = 'bowlingdb_fix231_sheets';
+  try {
+    if (localStorage.getItem(FLAG)) return;
+    await loadScoringData();
+    const score = { 784: 205, 785: 188 };
+    const undo = [], done = [];
+    FIX231.forEach(([gid, fn, an, ch]) => {
+      const g = db.games.find(x => x.GameID === gid);
+      if (!g || g.FinalScore !== score[gid]) return;
+      const f = db.frames.find(x => x.GameID === gid && x.FrameNumber === fn); if (!f) return;
+      const a = db.attempts.find(x => x.FrameID === f.FrameID && x.Attempt === an); if (!a || a.Pinfall == null) return;
+      if (ch.ball) {
+        if ((a.BallID == null ? null : a.BallID) !== ch.ball[0]) return;
+        undo.push({ AttemptID: a.AttemptID, BallID: a.BallID }); a.BallID = ch.ball[1]; done.push(gid + ':' + fn + '.' + an + ' ball');
+      } else if (ch.leave) {
+        if (a.LeaveID !== ch.leave[0]) return;
+        const before = []; for (let p = 1; p <= 10; p++) if (a['PinStart' + p] === 1 || a['PinStart' + p] === true) before.push(p);
+        const after = ch.leave[1];
+        if (!after.every(p => before.includes(p)) || before.length - after.length !== a.Pinfall) return;   // must still add up
+        undo.push(Object.assign({}, a));
+        _fix229Write(a, before, after, a.BallID, a.StartingBoard, a.TargetBoard, false);
+        if (an === 2 || fn === 10) { const last = db.attempts.filter(x => x.FrameID === f.FrameID && x.Pinfall != null).sort((x, y) => y.Attempt - x.Attempt)[0]; if (last === a) f.BSK_PinStates = a.BSK_Progressive; }
+        done.push(gid + ':' + fn + '.' + an + ' leave');
+      }
+    });
+    if (done.length) {
+      try { localStorage.setItem('bowlingdb_fix231_undo', JSON.stringify(undo)); } catch (e) {}
+      await saveScoringData();
+      toast('8/20/25 games 1 and 2 matched to the scoresheets (' + done.length + ' fixes)', 5000);
+    }
+    localStorage.setItem(FLAG, done.length ? done.join(' ') : 'nothing to do');
+  } catch (e) { console.warn('fixScoresheets231:', e); }
+}
+
 document.addEventListener('DOMContentLoaded', async ()=>{
 
 
@@ -30702,7 +30757,7 @@ renderNavGrid();
 window.__bdbBoot = 1;   // v30.223 BOOT-1: home drawn, the startup guard stands down
 
 
-loadScoringData().then(async () => { renderHome(); fixPrecisionDup185(); fixBallText189(); await fixNoTap191(); await fixPinPalShape197(); await fixLeaveIDs196(); await fixScoresheet229(); renderHome(); }).catch(() => {});
+loadScoringData().then(async () => { renderHome(); fixPrecisionDup185(); fixBallText189(); await fixNoTap191(); await fixPinPalShape197(); await fixLeaveIDs196(); await fixScoresheet229(); await fixScoresheets231(); renderHome(); }).catch(() => {});
 
 
 warmBallImgCache().then(() => {
@@ -37978,10 +38033,10 @@ _editStatus:'', _editPriority:1, _newSnap:null, _newStatus:'tbd', _editCat:'note
 };
 var _DKM_STATUS_LABELS = {ok:'🟢 Working',partial:'🟡 Partial',broken:'🔴 Broken',tbd:'⚪ TBD'};
 </script>
-<script src="devkit.js?v=v30.230"></script>
-<script src="report.js?v=v30.230"></script>
+<script src="devkit.js?v=v30.232"></script>
+<script src="report.js?v=v30.232"></script>
 <!-- v30.157 NEW-11 step 4: ball catalog manifest check + IDB cache (same-origin, like devkit.js/report.js). Optional: if missing, the app behaves exactly as before. -->
-<script src="catalog.js?v=v30.230"></script>
+<script src="catalog.js?v=v30.232"></script>
 <script>
 /* v30.162 OFF-1: service worker (sw.js, same folder) so the app opens with
    no connection, and a request that the browser keep this app's storage.
