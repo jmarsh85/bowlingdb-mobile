@@ -3536,7 +3536,7 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
    Bump both lines (and CATALOG_JS_VERSION in catalog.js when it changes).
    v30.224 OFF-2: also bump the ?v= on the three <script src> tags at the end of
    the page, and the file list in <script id="bdb-files"> when a .js file changes. */
-const APP_VERSION = 'v30.234';
+const APP_VERSION = 'v30.235';
 const APP_BUILD_DATE = '2026-10-24';
 /* catalog.js this build expects; an older file on the server shows a warning */
 const EXPECTED_CATALOG_JS = 'v30.224';
@@ -30751,6 +30751,41 @@ async function fixScoresheets231() {
   } catch (e) { console.warn('fixScoresheets231:', e); }
 }
 
+/* v30.235 one-time: 2/3/25 at The Orleans (series 234) was the off-site tournament that comes with the
+   Valentine's Day Funtime Vegas League 2024 season, bowled for separate tournament money (James,
+   10/25/26). The app had no place for it then, so it sat in the league card with its games typed
+   Tournament. Give it its own tournament record and move the round there, so league stats leave it
+   out and the tournament's own screens show it (like any other tournament round). Not Baker.
+   Sanctioned left unmarked for James to set. Runs only on the exact state found; undo kept. */
+async function fixVegasTournament235() {
+  const FLAG = 'bowlingdb_fix235_vegas';
+  try {
+    if (localStorage.getItem(FLAG)) return;
+    await loadScoringData();
+    const s = db.series.find(x => x.SeriesID === 234);
+    const games = s ? db.games.filter(g => g.SeriesID === 234) : [];
+    const ok = s && s.LeagueID === 15 && s.TournamentID == null && s.DateBowled === '2025-02-03' &&
+      games.length === 3 && games.every(g => g.GameType === 'Tournament');
+    if (!ok) { localStorage.setItem(FLAG, 'nothing to do'); return; }
+    const lg = db.leagues.find(l => l.LeagueID === 15);
+    const undo = { series: Object.assign({}, s), games: games.map(g => ({ GameID: g.GameID, LeagueID: g.LeagueID })) };
+    if (!db.tournaments) db.tournaments = [];
+    if (!db.ids.tournament) db.ids.tournament = Math.max(0, ...db.tournaments.map(t => t.TournamentID || 0)) + 1;
+    const tid = db.ids.tournament++;
+    db.tournaments.push({ TournamentID: tid, TournamentName: 'Vegas Funtime tournament 2025', CenterID: s.CenterID || 8,
+      DateStart: s.DateBowled, GamesPerRound: 3, Notes: 'Off-site tournament of ' + (lg ? lg.LeagueName : 'the Vegas league') + ' (separate tournament pool).',
+      Archived: false, NoTap: false, BakerFormat: false, BakerTeamSize: null, Sanctioned: null });
+    s.TournamentID = tid; s.LeagueID = -1;
+    games.forEach(g => { g.LeagueID = -1; });
+    undo.tournamentID = tid;
+    try { localStorage.setItem('bowlingdb_fix235_undo', JSON.stringify(undo)); } catch (e) {}
+    saveDB();
+    await saveScoringData();
+    toast('2/3/25 Vegas round moved to its own tournament', 5000);
+    localStorage.setItem(FLAG, 'moved series 234 to tournament ' + tid);
+  } catch (e) { console.warn('fixVegasTournament235:', e); }
+}
+
 document.addEventListener('DOMContentLoaded', async ()=>{
 
 
@@ -30774,7 +30809,7 @@ renderNavGrid();
 window.__bdbBoot = 1;   // v30.223 BOOT-1: home drawn, the startup guard stands down
 
 
-loadScoringData().then(async () => { renderHome(); fixPrecisionDup185(); fixBallText189(); await fixNoTap191(); await fixPinPalShape197(); await fixLeaveIDs196(); await fixScoresheet229(); await fixScoresheets231(); renderHome(); }).catch(() => {});
+loadScoringData().then(async () => { renderHome(); fixPrecisionDup185(); fixBallText189(); await fixNoTap191(); await fixPinPalShape197(); await fixLeaveIDs196(); await fixScoresheet229(); await fixScoresheets231(); await fixVegasTournament235(); renderHome(); }).catch(() => {});
 
 
 warmBallImgCache().then(() => {
@@ -38050,10 +38085,10 @@ _editStatus:'', _editPriority:1, _newSnap:null, _newStatus:'tbd', _editCat:'note
 };
 var _DKM_STATUS_LABELS = {ok:'🟢 Working',partial:'🟡 Partial',broken:'🔴 Broken',tbd:'⚪ TBD'};
 </script>
-<script src="devkit.js?v=v30.234"></script>
-<script src="report.js?v=v30.234"></script>
+<script src="devkit.js?v=v30.235"></script>
+<script src="report.js?v=v30.235"></script>
 <!-- v30.157 NEW-11 step 4: ball catalog manifest check + IDB cache (same-origin, like devkit.js/report.js). Optional: if missing, the app behaves exactly as before. -->
-<script src="catalog.js?v=v30.234"></script>
+<script src="catalog.js?v=v30.235"></script>
 <script>
 /* v30.162 OFF-1: service worker (sw.js, same folder) so the app opens with
    no connection, and a request that the browser keep this app's storage.
