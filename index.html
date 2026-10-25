@@ -82,7 +82,7 @@
      (its *_VERSION line). sw.js reads this block: it keeps the app's
      files as one matching set and never opens a mix of old and new files. Every file
      is fetched as name.js?v=APP_VERSION. Update a version here when that file changes. -->
-<script type="application/json" id="bdb-files">{"devkit.js":"v30.234","report.js":"v30.156","catalog.js":"v30.224","workbench.js":"v30.223","pinpal.js":"v30.199","awards.js":"v30.233","share.js":"v30.237"}</script>
+<script type="application/json" id="bdb-files">{"devkit.js":"v30.234","report.js":"v30.156","catalog.js":"v30.224","workbench.js":"v30.223","pinpal.js":"v30.199","awards.js":"v30.233","share.js":"v30.239"}</script>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#0E0F11">
@@ -2201,6 +2201,7 @@ transition:all 0.12s;
 .sc-act-btn.del { color:var(--red); border-color:rgba(232,93,76,0.3); }
 .sc-act-btn.stats-btn { color:var(--purple); border-color:rgba(157,78,221,0.3); }
 .sc-act-btn.ai-btn    { color:var(--gold);   border-color:rgba(255,215,0,0.3); }
+.sc-act-btn.share-btn, .gr-act-btn.share { color:var(--teal); border-color:rgba(0,217,217,0.3); }   /* v30.238 SHR-1 */
 .sc-act-btn:active { transform:scale(0.95); }
 .sc-act-btn.reflect-split { display:flex; padding:0; overflow:hidden; color:var(--lilac); border-color:rgba(196,168,240,0.3); }
 .reflect-half { padding:5px 10px; }
@@ -3540,7 +3541,7 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
    Bump both lines (and CATALOG_JS_VERSION in catalog.js when it changes).
    v30.224 OFF-2: also bump the ?v= on the three <script src> tags at the end of
    the page, and the file list in <script id="bdb-files"> when a .js file changes. */
-const APP_VERSION = 'v30.237';
+const APP_VERSION = 'v30.239';
 const APP_BUILD_DATE = '2026-10-25';
 /* catalog.js this build expects; an older file on the server shows a warning */
 const EXPECTED_CATALOG_JS = 'v30.224';
@@ -6687,6 +6688,7 @@ const _lgPool = (_scoringLoaded && db.games.length) ? standardGamePool() : [];
 const all = db.leagues;
 const visible = all.filter(l => !l._virtual && (G_showArchived || !l.Archived));
 let html = `<div class="show-archived-row">
+    ${_scoringLoaded && db.games.length ? `<div class="sc-act-btn share-btn" style="margin-right:auto" onclick="shrLaunchSeasonPicker()">📤 Season card</div>`: ''}
     <span>Show archived</span>
     <div class="toggle-switch ${G_showArchived?'on':''}" onclick="toggleShowArchived()"></div>
   </div>`;
@@ -6755,6 +6757,7 @@ html += `<div class="series-card-wrap">
         <div class="sc-act-btn stats-btn" onclick="openLeagueStatsModal(${l.LeagueID})">Stats</div>
         ${(()=>{ const hasBeer = db.series.filter(s=>s.LeagueID===l.LeagueID).some(s=>(s.beerLog||[]).length>0) || grpLoadAll().some(sess=>sess.leagueID===l.LeagueID && sess.games.some(g=>g.beerFrames?.length)); return hasBeer ? `<div class="sc-act-btn" onclick="openLeagueBeerModal(${l.LeagueID});event.stopPropagation()" style="color:var(--gold);border-color:rgba(255,215,0,0.3)">🍺</div>`: ''; })()}
         <div class="sc-act-btn" onclick="openLeagueHandicap(${l.LeagueID});event.stopPropagation()" style="color:var(--gold);border-color:rgba(255,215,0,0.3)">HC</div>
+        ${_lgGames.length && !l.BakerFormat ? `<div class="sc-act-btn share-btn" onclick="shrLaunchLeague(${l.LeagueID});event.stopPropagation()">Share</div>`: ''}
         <div class="sc-act-btn edit" onclick="openEditLeagueModal(${l.LeagueID})">⋯</div>
         <div class="sc-act-btn" onclick="toggleArchiveLeague(${l.LeagueID})">${l.Archived?'Unarchive':'Archive'}</div>
       </div>
@@ -6828,6 +6831,38 @@ s.onerror = () => toast('Share card unavailable: upload share.js next to index.h
 document.head.appendChild(s);
 }
 function shrLaunch(seriesID) { _shrLoad(() => shrOpen(seriesID)); }
+/* v30.238: one Share sheet per series / game — the cards and the printed report in one place.
+   Reached from the Share button on league series cards, tournament rounds and game rows. */
+function shrMenuAvailable(seriesID) {
+try { return shrEligible(seriesID) || rptEligible(seriesID); } catch (e) { return false; }
+}
+function shrMenu(seriesID, gameID) {
+const open = (db.openSessions||[]).find(x=>x.SessionID===seriesID);
+const s = open || db.series.find(x=>x.SeriesID===seriesID);
+if (!s) return;
+const games = db.games.filter(g => g.SeriesID===seriesID && !g.IsTeammate && g.FinalScore > 0).sort((a,b)=>(a.GameNumber||0)-(b.GameNumber||0));
+const canCard = shrEligible(seriesID), canPrint = rptEligible(seriesID);
+const lg = db.leagues.find(l => l.LeagueID === s.LeagueID);
+const tn = s.TournamentID != null ? (db.tournaments||[]).find(t => t.TournamentID === s.TournamentID) : null;
+const where = tn ? tn.TournamentName : (lg && lg.LeagueID > 0 ? lg.LeagueName : (s.NoTap || s.LeagueID === -1 ? 'No-Tap' : 'Open play'));
+const total = games.reduce((a,g)=>a+g.FinalScore,0);
+const btn = (label, js, primary) => `<button class="btn ${primary ? 'btn-primary' : 'btn-ghost'}" style="margin-top:8px" onclick="${js}">${label}</button>`;
+const gameBtns = games.map(g => btn(`📤 Game ${g.GameNumber} card · ${g.FinalScore}`, `shrLaunchGame(${g.GameID})`, gameID === g.GameID)).join('');
+openModal(`
+    <div class="modal-title">📤 Share or print</div>
+    <div style="font-size:12px;color:var(--t3);margin:-4px 0 6px">${fmtDate(s.DateBowled, { month:'short', day:'numeric', year:'numeric' })} · ${_escHtml(where)} · ${total}</div>
+    ${canCard ? `<div class="modal-label" style="margin-top:10px">Picture for Messages, Instagram, Photos</div>
+      ${btn(`📤 Series card · ${total}`, `shrLaunch(${seriesID})`, !gameID)}
+      ${gameBtns}` : `<div style="font-size:12px;color:var(--t3);margin-top:10px">Cards aren't available for Baker yet.</div>`}
+    ${canPrint ? `<div class="modal-label" style="margin-top:16px">Printable scorecard (Print or Save as PDF)</div>
+      ${btn('🖨️ Print series', `rptLaunch(${seriesID})`)}
+      ${gameID ? btn(`🖨️ Print game ${(games.find(g=>g.GameID===gameID)||{}).GameNumber||''}`, `rptLaunch(${seriesID}, ${gameID})`) : ''}` : ''}
+    <button class="btn btn-secondary" style="margin-top:12px" onclick="closeModal()">Close</button>
+  `);
+}
+/* v30.239: league card (Leagues list Share, League Dashboard) and season card (Leagues list header) */
+function shrLaunchLeague(leagueID) { _shrLoad(() => typeof shrOpenLeague === 'function' ? shrOpenLeague(leagueID) : toast('Upload the v30.239 share.js')); }
+function shrLaunchSeasonPicker() { _shrLoad(() => typeof shrSeasonPicker === 'function' ? shrSeasonPicker() : toast('Upload the v30.239 share.js')); }
 /* v30.237 SHR-1 slice 2: game card (Games list chip, Game Complete) */
 function shrLaunchGame(gameID) { _shrLoad(() => typeof shrOpenGame === 'function' ? shrOpenGame(gameID) : toast('Upload the v30.237 share.js')); }
 function rptLaunch(seriesID, gameID) {
@@ -7224,6 +7259,7 @@ return `<div style="padding:7px 2px 4px;border-top:1px solid var(--border1);marg
           <span class="reflect-half" onclick="openReflectFramesModal(${s.SeriesID});event.stopPropagation()">Frames</span>
         </div>`: ''}
         ${scores.length ? `<div class="sc-act-btn ai-btn" onclick="openSeriesDebriefModal(${s.SeriesID});event.stopPropagation()">Debrief</div>`: ''}
+        ${scores.length && shrMenuAvailable(s.SeriesID) ? `<div class="sc-act-btn share-btn" onclick="shrMenu(${s.SeriesID});event.stopPropagation()">Share</div>`: ''}
         <div class="sc-act-btn edit" onclick="openEditSeriesModal(${s.SeriesID});event.stopPropagation()">⋯</div>
       </div>
     </div>`;
@@ -7599,6 +7635,7 @@ html += `<div class="game-row-wrap">
       <div class="game-row-actions">
         ${done ? `<div class="gr-act-btn stats" onclick="openGameStatsModal(${g.GameID});event.stopPropagation()">Stats</div>`: ''}
         <div class="gr-act-btn edit" onclick="openEditGameModal(${g.GameID});event.stopPropagation()">Edit</div>
+        ${done && shrMenuAvailable(g.SeriesID) ? `<div class="gr-act-btn share" onclick="shrMenu(${g.SeriesID}, ${g.GameID});event.stopPropagation()">Share</div>`: ''}
         ${hasFrames ? `<div class="gr-act-btn expand" id="snap-btn-${g.GameID}" onclick="toggleGameSnapshot(${g.GameID});event.stopPropagation()">Scorecard ▾</div>`: ''}
       </div>
       ${hasFrames ? `<div class="game-snapshot" id="snap-${g.GameID}">${buildGameSnapshotHTML(g.GameID)}</div>`: ''}
@@ -18313,7 +18350,7 @@ const navHTML = `<div style="display:flex;align-items:center;gap:10px;margin-bot
       style="background:none;border:none;font-size:20px;padding:4px 8px;color:${(navIdx === -1 || navIdx >= allOrdered.length - 1) ? 'var(--t3)': 'var(--teal)'};cursor:${(navIdx === -1 || navIdx >= allOrdered.length - 1) ? 'default': 'pointer'}">›</button>
   </div>
   <div style="text-align:center;font-size:10px;color:var(--t3);margin-bottom:2px">${navIdx + 1} of ${allOrdered.length} · sorted by first series date</div>
-  <div style="text-align:center;font-size:11px;color:var(--t2);margin-bottom:10px">${row.seriesCount} series · ${row.gameCount} games</div>`;
+  <div style="text-align:center;font-size:11px;color:var(--t2);margin-bottom:10px">${row.seriesCount} series · ${row.gameCount} games${league.BakerFormat ? '' : ` · <span onclick="shrLaunchLeague(${league.LeagueID})" style="color:var(--teal);font-weight:700;cursor:pointer">📤 Share</span>`}</div>`;
 
 
 
@@ -19704,6 +19741,7 @@ return `<div class="series-card-wrap">
       <div class="series-card-actions">
         <div class="sc-act-btn stats-btn" onclick="openSeriesStatsModal(${s.SeriesID});event.stopPropagation()">Stats</div>
         ${scores.length ? `<div class="sc-act-btn ai-btn" onclick="openSeriesDebriefModal(${s.SeriesID});event.stopPropagation()">Debrief</div>`: ''}
+        ${scores.length && shrMenuAvailable(s.SeriesID) ? `<div class="sc-act-btn share-btn" onclick="shrMenu(${s.SeriesID});event.stopPropagation()">Share</div>`: ''}
         <div class="sc-act-btn edit"      onclick="openEditSeriesModal(${s.SeriesID});event.stopPropagation()">⋯</div>
       </div>
     </div>`;
@@ -38119,10 +38157,10 @@ _editStatus:'', _editPriority:1, _newSnap:null, _newStatus:'tbd', _editCat:'note
 };
 var _DKM_STATUS_LABELS = {ok:'🟢 Working',partial:'🟡 Partial',broken:'🔴 Broken',tbd:'⚪ TBD'};
 </script>
-<script src="devkit.js?v=v30.237"></script>
-<script src="report.js?v=v30.237"></script>
+<script src="devkit.js?v=v30.239"></script>
+<script src="report.js?v=v30.239"></script>
 <!-- v30.157 NEW-11 step 4: ball catalog manifest check + IDB cache (same-origin, like devkit.js/report.js). Optional: if missing, the app behaves exactly as before. -->
-<script src="catalog.js?v=v30.237"></script>
+<script src="catalog.js?v=v30.239"></script>
 <script>
 /* v30.162 OFF-1: service worker (sw.js, same folder) so the app opens with
    no connection, and a request that the browser keep this app's storage.
