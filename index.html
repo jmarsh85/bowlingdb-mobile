@@ -82,7 +82,7 @@
      (its *_VERSION line). sw.js reads this block: it keeps the app's
      files as one matching set and never opens a mix of old and new files. Every file
      is fetched as name.js?v=APP_VERSION. Update a version here when that file changes. -->
-<script type="application/json" id="bdb-files">{"devkit.js":"v30.234","report.js":"v30.156","catalog.js":"v30.224","workbench.js":"v30.223","pinpal.js":"v30.199","awards.js":"v30.233","share.js":"v30.240","connect.js":"v30.240"}</script>
+<script type="application/json" id="bdb-files">{"devkit.js":"v30.234","report.js":"v30.156","catalog.js":"v30.224","workbench.js":"v30.223","pinpal.js":"v30.199","awards.js":"v30.233","share.js":"v30.240","connect.js":"v30.241","challenge.js":"v30.241"}</script>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#0E0F11">
@@ -3541,7 +3541,7 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
    Bump both lines (and CATALOG_JS_VERSION in catalog.js when it changes).
    v30.224 OFF-2: also bump the ?v= on the three <script src> tags at the end of
    the page, and the file list in <script id="bdb-files"> when a .js file changes. */
-const APP_VERSION = 'v30.240';
+const APP_VERSION = 'v30.241';
 const APP_BUILD_DATE = '2026-10-25';
 /* catalog.js this build expects; an older file on the server shows a warning */
 const EXPECTED_CATALOG_JS = 'v30.224';
@@ -4347,7 +4347,7 @@ navBack();
 
 
 
-const NAV_TILES_DEFAULT = ['leagues','tb','open','balls','settings','export','notap','stats','tournament','awards','connect'];
+const NAV_TILES_DEFAULT = ['leagues','tb','open','balls','settings','export','notap','stats','tournament','awards','connect','challenges'];
 const NAV_TILE_DEFS = {
 leagues: {
 label: 'Leagues',
@@ -4448,6 +4448,15 @@ bg: 'linear-gradient(135deg,rgba(0,217,217,0.26),rgba(255,200,60,0.20))',
 svg: `<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="url(#g-cn)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <defs><linearGradient id="g-cn" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#00D9D9"/><stop offset="100%" stop-color="#F5C542"/></linearGradient></defs>
       <circle cx="9" cy="8" r="3.2"/><circle cx="17" cy="9.5" r="2.6"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M15.5 14.6c3 .2 5.5 2.4 5.5 5.4"/>
+    </svg>`
+},
+challenges: {
+label: 'Challenges',
+action: () => openChallenges(),   // v30.241 SOC-1: challenges (challenge.js, inside the Connect screen)
+bg: 'linear-gradient(135deg,rgba(255,200,60,0.24),rgba(232,93,76,0.20))',
+svg: `<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="url(#g-ch)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <defs><linearGradient id="g-ch" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#F5C542"/><stop offset="100%" stop-color="#E85D4C"/></linearGradient></defs>
+      <path d="M5 21V4"/><path d="M5 4h12l-2 4 2 4H5"/>
     </svg>`
 },
 tournament: {
@@ -18836,6 +18845,16 @@ s.onload = () => { if (typeof cnRender === 'function') then(); else if (fallback
 s.onerror = () => { toast('Connect unavailable: upload connect.js next to index.html'); if (fallback) fallback(); };
 document.head.appendChild(s);
 }
+/* v30.241: challenges live in challenge.js, shown on the Connect screen's Challenges tab */
+function _chLoad(then) {
+if (typeof chTabHTML === 'function') return then();
+const s = document.createElement('script');
+s.src = 'challenge.js?v=' + encodeURIComponent(APP_VERSION);
+s.onload = () => { if (typeof chTabHTML === 'function') then(); else toast('Challenges did not load'); };
+s.onerror = () => toast('Challenges unavailable: upload challenge.js next to index.html');
+document.head.appendChild(s);
+}
+function openChallenges() { window._cnStartTab = 'challenges'; window._chDetail = null; navTo('s-friend-feed'); }
 function renderFriendFeed() {
 if (typeof cnRender === 'function') return cnRender();
 if (!window._cnTried) { window._cnTried = true; return _cnLoad(() => cnRender(), () => renderFriendFeed()); }
@@ -38179,10 +38198,10 @@ _editStatus:'', _editPriority:1, _newSnap:null, _newStatus:'tbd', _editCat:'note
 };
 var _DKM_STATUS_LABELS = {ok:'🟢 Working',partial:'🟡 Partial',broken:'🔴 Broken',tbd:'⚪ TBD'};
 </script>
-<script src="devkit.js?v=v30.240"></script>
-<script src="report.js?v=v30.240"></script>
+<script src="devkit.js?v=v30.241"></script>
+<script src="report.js?v=v30.241"></script>
 <!-- v30.157 NEW-11 step 4: ball catalog manifest check + IDB cache (same-origin, like devkit.js/report.js). Optional: if missing, the app behaves exactly as before. -->
-<script src="catalog.js?v=v30.240"></script>
+<script src="catalog.js?v=v30.241"></script>
 <script>
 /* v30.162 OFF-1: service worker (sw.js, same folder) so the app opens with
    no connection, and a request that the browser keep this app's storage.
