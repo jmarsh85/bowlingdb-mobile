@@ -7,7 +7,7 @@
    Loaded by index.html as connect.js?v=APP_VERSION on first use. */
 (function (root) {
 'use strict';
-var CONNECT_VERSION = 'v30.240';
+var CONNECT_VERSION = 'v30.241';
 var POSTS_KEY = 'bowlingdb_connect_posts', REACT_KEY = 'bowlingdb_connect_reacts';
 var REACTIONS = [
   { e: '\ud83d\udc4a', name: 'Fist bump' }, { e: '\ud83d\ude4c', name: 'High five' },
@@ -51,7 +51,7 @@ function friendPosts() {
 }
 
 /* ---------------- posting (also called from the share card sheet) ---------------- */
-function refOf(f) { return f.kind === 'game' ? f.gameID : f.kind === 'league' ? f.leagueID : f.kind === 'season' ? f.seasonID : f.seriesID; }
+function refOf(f) { return f.kind === 'challenge' ? f.challengeID : f.kind === 'game' ? f.gameID : f.kind === 'league' ? f.leagueID : f.kind === 'season' ? f.seasonID : f.seriesID; }
 function cnPost(facts, vis) {
   if (!facts) return false;
   var list = posts(), ref = refOf(facts), hit = list.filter(function (p) { return p.kind === facts.kind && p.ref === ref; })[0];
@@ -128,11 +128,14 @@ function bodyFor(f) {
   }
   if (f.kind === 'league') return big(f.avg, 'LEAGUE AVERAGE \u00b7 ' + f.games + ' GAMES', gold) +
     '<div style="font-size:11px;color:var(--t3);margin-top:6px">High game ' + f.highGame + ' \u00b7 high series ' + f.highSeries + (f.strikePct != null ? ' \u00b7 strikes ' + f.strikePct + '%' : '') + '</div>';
+  if (f.kind === 'challenge') return '<div style="font-size:15px;font-weight:800;color:var(--t1)">\ud83c\udfc1 ' + esc(f.name) + '</div><div style="font-size:11px;color:var(--t3);margin:2px 0 6px">' + esc(f.line) + '</div>' +
+    f.rows.map(function (r) { return '<div style="display:flex;justify-content:space-between;font-size:13px;padding:2px 0;color:' + (r.won ? 'var(--gold)' : 'var(--t2)') + '"><span>' + (r.won ? '\ud83c\udfc6 ' : '') + esc(r.name) + '</span><b>' + esc(r.display) + '</b></div>'; }).join('');
   if (f.kind === 'season') return big(f.avg, 'SEASON AVERAGE \u00b7 ' + f.games + ' GAMES', gold) +
     '<div style="margin-top:6px">' + f.rows.slice(0, 3).map(function (r) { return '<div style="display:flex;justify-content:space-between;font-size:12px;color:var(--t2);padding:2px 0"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + esc(r.name) + '</span><b style="color:var(--t1);margin-left:8px">' + r.avg + '</b></div>'; }).join('') + (f.rows.length > 3 ? '<div style="font-size:11px;color:var(--t3)">+' + (f.rows.length - 3) + ' more</div>' : '') + '</div>';
   return '';
 }
 function whereOf(f) {
+  if (f.kind === 'challenge') return 'Challenge result';
   var w = f.kind === 'season' ? f.seasonLabel : f.league || (f.level === 'open' ? 'Open play' : f.level === 'notap' ? 'No-Tap' : '');
   return w + (f.center ? ' \u00b7 ' + f.center : '');
 }
@@ -141,6 +144,7 @@ function openFacts(post) {
   if (f.kind === 'game') return 'shrLaunchGame(' + f.gameID + ')';
   if (f.kind === 'league') return 'shrLaunchLeague(' + f.leagueID + ')';
   if (f.kind === 'season') return '_shrLoad(function(){shrOpenSeason(' + f.seasonID + ')})';
+  if (f.kind === 'challenge') return "_chLoad(function(){chOpen('" + f.challengeID + "')})";
   return 'shrLaunch(' + f.seriesID + ')';
 }
 function myCard(post, manage) {
@@ -151,7 +155,7 @@ function myCard(post, manage) {
     '<div class="btn-pill" onclick="cnHide(\'' + post.id + '\')">' + (post.hidden ? 'Show' : 'Hide') + '</div>' +
     '<div class="btn-pill" style="color:var(--red)" onclick="cnTakeDown(\'' + post.id + '\')">Take down</div></div>' : '';
   return '<div class="card ' + (f.pills && f.pills.length ? 'card-best' : 'card-complete') + '" style="margin-bottom:12px' + (post.hidden ? ';opacity:.55' : '') + '">' +
-    '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">' + avatar(me, 38) +
+    '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><div onclick="cnBowlerMenu(\'me\')" style="cursor:pointer">' + avatar(me, 38) + '</div>' +
     '<div style="min-width:0;flex:1"><div style="font-weight:700;font-size:14px;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(me.name) + visPill + '</div>' +
     '<div style="font-size:11px;color:var(--t3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(whereOf(f)) + '</div></div>' +
     '<div style="font-size:11px;color:var(--t3);flex-shrink:0">' + ago(post.at, true) + '</div></div>' +
@@ -163,8 +167,8 @@ function friendCard(item) {
   var total = p.games.reduce(function (a, b) { return a + b; }, 0);
   var seed = (p.acks || []).filter(function (a) { return a !== 'me'; }).map(function () { return '\ud83d\ude4c'; });
   return '<div class="card ' + (p.headline ? 'card-best' : 'card-complete') + '" style="margin-bottom:12px">' +
-    '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><div onclick="cnFriend(\'' + p.friendId + '\')" style="cursor:pointer">' + avatar(fr, 38) + '</div>' +
-    '<div style="min-width:0;flex:1" onclick="cnFriend(\'' + p.friendId + '\')"><div style="font-weight:700;font-size:14px;color:var(--t1)">' + esc(fr.name) + '</div>' +
+    '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><div onclick="cnBowlerMenu(\'' + p.friendId + '\')" style="cursor:pointer">' + avatar(fr, 38) + '</div>' +
+    '<div style="min-width:0;flex:1;cursor:pointer" onclick="cnBowlerMenu(\'' + p.friendId + '\')"><div style="font-weight:700;font-size:14px;color:var(--t1)">' + esc(fr.name) + '</div>' +
     '<div style="font-size:11px;color:var(--t3)">' + esc(p.league || '') + (p.center ? ' \u00b7 ' + esc(p.center) : '') + '</div></div>' +
     '<div style="font-size:11px;color:var(--t3);flex-shrink:0">' + ago(item.at) + '</div></div>' +
     (p.headline ? '<div style="margin-bottom:8px"><span class="pill pill-gold">' + esc(p.headline) + '</span></div>' : '') +
@@ -208,12 +212,13 @@ function recentUnposted(n) {
 function youHTML() {
   var me = profile(), list = posts();
   var head = '<div class="stat-card" style="margin-bottom:14px"><div style="display:flex;align-items:center;gap:12px">' +
-    '<div onclick="openBowlerProfile(\'me\')" style="cursor:pointer">' + avatar(me, 48) + '</div>' +
+    '<div onclick="cnBowlerMenu(\'me\')" style="cursor:pointer">' + avatar(me, 48) + '</div>' +
     '<div style="flex:1;min-width:0"><div onclick="fsEditProfileName()" style="font-size:16px;font-weight:800;color:var(--t1);cursor:pointer">' + esc(me.name) + ' <span style="font-size:11px;color:var(--t3);font-weight:500">\u270f\ufe0f</span></div>' +
     '<div style="font-size:11px;color:var(--t3);margin-top:2px">' + list.length + ' post' + (list.length === 1 ? '' : 's') + ' \u00b7 ' + friends().length + ' friend' + (friends().length === 1 ? '' : 's') + '</div></div>' +
     '<button class="btn btn-ghost btn-sm" style="width:auto" onclick="cnInvite()">+ Invite</button></div></div>';
   var rec = '<div class="stat-card" style="margin-bottom:14px"><div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:.8px;text-transform:uppercase;margin-bottom:6px">Challenge record</div>' +
-    '<div style="font-size:20px;font-weight:900;color:var(--t1)">0 \u2013 0 \u2013 0</div><div style="font-size:11px;color:var(--t3);margin-top:2px">Wins \u2013 losses \u2013 ties. Challenges arrive in the next build.</div></div>';
+    '<div style="display:flex;align-items:center;gap:10px"><div style="flex:1"><div style="font-size:20px;font-weight:900;color:var(--t1)">' + recText('me') + '</div><div style="font-size:11px;color:var(--t3);margin-top:2px">Wins \u2013 losses \u2013 ties</div></div>' +
+    '<button class="btn btn-ghost btn-sm" style="width:auto" onclick="cnTab(\'challenges\')">Challenges \u203a</button></div></div>';
   var quick = recentUnposted(5);
   var q = quick.length ? '<div class="sec-header" style="margin-top:6px"><span class="sec-title" style="font-size:15px">Post a recent night</span></div>' +
     quick.map(function (x) {
@@ -232,23 +237,59 @@ function friendHTML(id) {
   return '<div onclick="cnBack()" style="font-size:13px;color:var(--teal);font-weight:700;cursor:pointer;margin-bottom:10px">\u2039 Feed</div>' +
     '<div class="stat-card" style="margin-bottom:14px;text-align:center">' + '<div style="display:inline-block">' + avatar(fr, 64) + '</div>' +
     '<div style="font-size:20px;font-weight:900;color:var(--t1);margin-top:8px">' + esc(fr.name) + '</div>' +
-    '<div style="font-size:11px;color:var(--t3);margin-top:2px">' + theirs.length + ' post' + (theirs.length === 1 ? '' : 's') + ' \u00b7 head-to-head 0 \u2013 0 \u2013 0</div>' +
+    '<div style="font-size:11px;color:var(--t3);margin-top:2px">' + theirs.length + ' post' + (theirs.length === 1 ? '' : 's') + ' \u00b7 challenges ' + recText('me', id) + '</div>' +
     '<div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn-ghost btn-sm" style="flex:1" onclick="openBowlerProfile(\'' + id + '\')">Profile</button>' +
-    '<button class="btn btn-ghost btn-sm" style="flex:1" onclick="fsOpenComparison(\'' + id + '\')">\u2696\ufe0f Compare</button></div></div>' +
+    '<button class="btn btn-ghost btn-sm" style="flex:1" onclick="fsOpenComparison(\'' + id + '\')">\u2696\ufe0f Compare</button>' +
+    '<button class="btn btn-ghost btn-sm" style="flex:1" onclick="cnChallenge(\'' + id + '\')">\ud83c\udfc1 Challenge</button></div></div>' +
+    (typeof root.chHeadToHeadHTML === 'function' ? root.chHeadToHeadHTML(id) : '') +
     (theirs.length ? theirs.map(friendCard).join('') : '<div style="font-size:12px;color:var(--t3)">No activity yet.</div>');
 }
 function challengesHTML() {
-  return '<div class="stat-card" style="margin-bottom:14px"><div style="font-size:16px;font-weight:800;color:var(--t1);margin-bottom:6px">\ud83c\udfc1 Challenges are next</div>' +
-    '<div style="font-size:12px;color:var(--t2);line-height:1.6"><b>League challenges</b> read the league and tournament games you already record. <b>Open challenges</b> are bowled as their own sessions, kept out of your stats: Low Ball, spare golf and other fun formats live there. ' +
-    'Presets (high series, first to 700, spare shootout\u2026), accept or suggest changes, your record and the fun awards come with the challenge build.</div></div>';
+  if (typeof root.chTabHTML === 'function') return root._chDetail ? root.chDetailHTML(root._chDetail) : root.chTabHTML();
+  if (typeof root._chLoad === 'function') root._chLoad(render);
+  return '<div style="color:var(--t3);font-size:13px;padding:12px 0">Loading challenges\u2026</div>';
+}
+function recText(pid, vs) {
+  if (typeof root.chRecordFor !== 'function') { if (typeof root._chLoad === 'function' && !cn.recLoading) { cn.recLoading = true; root._chLoad(render); } return '0 \u2013 0 \u2013 0'; }
+  var r = root.chRecordFor(pid, vs); return r.w + ' \u2013 ' + r.l + ' \u2013 ' + r.t;
+}
+/* tap a bowler's name or avatar: one menu for everything about them */
+function cnBowlerMenu(id) {
+  var isMe = id === 'me', p = isMe ? profile() : (friends().filter(function (x) { return x.id === id; })[0] || { name: 'Friend', avatar: '\ud83c\udfb3', color: 'var(--teal)' });
+  var b = function (icon, label, js, sub) { return '<button class="btn btn-ghost" style="margin-top:8px;text-align:left;display:flex;align-items:center;gap:10px" onclick="' + js + '"><span style="font-size:18px">' + icon + '</span><span style="flex:1"><span style="display:block;font-weight:800">' + label + '</span>' + (sub ? '<span style="display:block;font-size:11px;color:var(--t3);font-weight:500">' + sub + '</span>' : '') + '</span></button>'; };
+  var h = '<div style="text-align:center;margin-bottom:6px"><div style="display:inline-block">' + avatar(p, 56) + '</div><div style="font-size:18px;font-weight:900;color:var(--t1);margin-top:6px">' + esc(p.name) + '</div></div>';
+  if (isMe) {
+    h += b('\ud83d\udcca', 'Profile & stats', "closeModal();openBowlerProfile('me')") + b('\ud83c\udfc6', 'Trophy case', 'closeModal();openAwards()', 'awards, certificates') +
+      b('\ud83c\udfc1', 'Challenges', "closeModal();cnTab('challenges')", 'record ' + recText('me')) + b('\ud83d\udcdd', 'Your posts', "closeModal();cnTab('you')");
+  } else {
+    h += b('\ud83d\udcf0', 'Activity', "closeModal();cnFriend('" + id + "')", 'their nights, newest first') +
+      b('\ud83d\udcca', 'Profile & stats', "closeModal();openBowlerProfile('" + id + "')", 'high game, strike %, trend') +
+      b('\u2696\ufe0f', 'Compare', "closeModal();fsOpenComparison('" + id + "')", 'side by side') +
+      b('\ud83e\udd4a', 'Head-to-head', "cnHeadToHead('" + id + "')", 'same nights + challenges') +
+      b('\ud83c\udfc1', 'Challenge ' + esc((p.name || '').split(' ')[0]), "closeModal();cnChallenge('" + id + "')") +
+      b('\ud83c\udfc6', 'Achievements', "cnTheirAwards('" + id + "')", 'arrives with accounts');
+  }
+  h += '<button class="btn btn-secondary" style="margin-top:12px" onclick="closeModal()">Close</button>';
+  (root.openModal)(h);
+}
+function cnHeadToHead(id) {
+  var go = function () { (root.openModal)('<div class="modal-title">\ud83e\udd4a You vs ' + esc((friends().filter(function (x) { return x.id === id; })[0] || {}).name || 'friend') + '</div>' + root.chHeadToHeadHTML(id) +
+    '<button class="btn btn-secondary" onclick="closeModal()">Close</button>'); };
+  if (typeof root.chHeadToHeadHTML === 'function') go(); else if (typeof root._chLoad === 'function') root._chLoad(go);
+}
+function cnChallenge(id) { var go = function () { root.chNew({ opponent: id }); }; if (typeof root.chNew === 'function') go(); else if (typeof root._chLoad === 'function') root._chLoad(go); }
+function cnTheirAwards(id) {
+  (root.openModal)('<div class="modal-title">\ud83c\udfc6 Achievements</div><div style="font-size:13px;color:var(--t2);line-height:1.6;margin-bottom:12px">A friend\u2019s trophy case comes from their own phone, so it arrives with accounts. For now their profile shows the highs from the Team Bowl nights you recorded.</div>' +
+    '<button class="btn btn-primary" onclick="closeModal();openBowlerProfile(\'' + id + '\')">Open their profile</button><button class="btn btn-secondary" onclick="closeModal()">Close</button>');
 }
 function render() {
   var el = document.getElementById('friend-feed-content');
   if (!el) return;
+  if (root._cnStartTab) { cn.tab = root._cnStartTab; cn.friend = null; root._cnStartTab = null; }
   var body = cn.friend ? friendHTML(cn.friend) : cn.tab === 'you' ? youHTML() : cn.tab === 'challenges' ? challengesHTML() : feedHTML();
   el.innerHTML = '<div class="sec-header"><span class="sec-title">Connect</span></div>' + tabs() + (cn.tab === 'feed' || cn.friend ? banner() : '') + body;
 }
-function cnTab(t) { cn.tab = t; cn.friend = null; render(); }
+function cnTab(t) { cn.tab = t; cn.friend = null; root._chDetail = null; render(); }
 function cnFilter(f) { cn.filter = f; render(); }
 function cnFriend(id) { cn.friend = id; render(); var s = document.querySelector('#s-friend-feed'); if (s) s.scrollTop = 0; }
 function cnBack() { cn.friend = null; render(); }
@@ -261,6 +302,6 @@ function cnOpen(tab) { if (tab) { cn.tab = tab; cn.friend = null; } render(); }
 var api = { CONNECT_VERSION: CONNECT_VERSION, REACTIONS: REACTIONS };
 root.cnRender = render; root.cnOpen = cnOpen; root.cnPost = cnPost; root.cnTab = cnTab; root.cnFilter = cnFilter; root.cnFriend = cnFriend; root.cnBack = cnBack;
 root.cnReact = cnReact; root.cnSetVis = cnSetVis; root.cnHide = cnHide; root.cnTakeDown = cnTakeDown; root.cnTakeDownYes = cnTakeDownYes;
-root.cnQuickPost = cnQuickPost; root.cnInvite = cnInvite;
+root.cnQuickPost = cnQuickPost; root.cnInvite = cnInvite; root.cnBowlerMenu = cnBowlerMenu; root.cnHeadToHead = cnHeadToHead; root.cnChallenge = cnChallenge; root.cnTheirAwards = cnTheirAwards;
 root.BDB_CONNECT = api; root.CONNECT_JS_VERSION = CONNECT_VERSION;
 })(typeof window !== 'undefined' ? window : globalThis);
