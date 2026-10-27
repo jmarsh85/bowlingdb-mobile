@@ -82,7 +82,7 @@
      (its *_VERSION line). sw.js reads this block: it keeps the app's
      files as one matching set and never opens a mix of old and new files. Every file
      is fetched as name.js?v=APP_VERSION. Update a version here when that file changes. -->
-<script type="application/json" id="bdb-files">{"devkit.js":"v30.234","report.js":"v30.156","catalog.js":"v30.224","workbench.js":"v30.223","pinpal.js":"v30.199","awards.js":"v30.233","share.js":"v30.240","connect.js":"v30.241","challenge.js":"v30.241"}</script>
+<script type="application/json" id="bdb-files">{"devkit.js":"v30.234","report.js":"v30.156","catalog.js":"v30.224","workbench.js":"v30.223","pinpal.js":"v30.199","awards.js":"v30.233","share.js":"v30.240","connect.js":"v30.242","challenge.js":"v30.242"}</script>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#0E0F11">
@@ -3369,6 +3369,7 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
         <div class="sc-scroll"><div class="sc-grid" id="sc-grid-complete"></div></div>
       </div>
       <div id="gc-awards"></div>
+      <div id="gc-challenges"></div>
       <div class="card gc-hero">
         <div class="gc-score" id="gc-score">—</div>
         <div class="gc-lbl">Final Score</div>
@@ -3541,7 +3542,7 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
    Bump both lines (and CATALOG_JS_VERSION in catalog.js when it changes).
    v30.224 OFF-2: also bump the ?v= on the three <script src> tags at the end of
    the page, and the file list in <script id="bdb-files"> when a .js file changes. */
-const APP_VERSION = 'v30.241';
+const APP_VERSION = 'v30.242';
 const APP_BUILD_DATE = '2026-10-25';
 /* catalog.js this build expects; an older file on the server shows a warning */
 const EXPECTED_CATALOG_JS = 'v30.224';
@@ -30499,7 +30500,18 @@ localStorage.setItem(FLAG, log.length ? log.join(' | ') : 'nothing to tidy');
 
 /* v30.226 AWD-1: the trophy case lives in awards.js (same-origin, loaded on first use). */
 /* v30.228 AWD-1 step 4: banner on Game Complete for awards this game earned (or its series, on game 3). */
+/* v30.242: the push from a saved game to the running challenges it counts toward */
+function gcChallengesBanner(gameID) {
+const el = document.getElementById('gc-challenges');
+if (!el) return;
+el.innerHTML = '';
+let has = false; try { has = (JSON.parse(localStorage.getItem('bowlingdb_challenges') || '[]') || []).some(c => c.state === 'accepted' && !c.result); } catch (e) {}
+if (!has) return;
+_chLoad(() => { if (G.gameID !== gameID) return; try { el.innerHTML = chGameBannerHTML(gameID); } catch (e) { console.warn('challenge banner', e); } });
+}
+function openChallengeFromBanner(id) { window._cnStartTab = 'challenges'; navTo('s-friend-feed'); _chLoad(() => setTimeout(() => chOpen(id), 50)); }
 function gcAwardsBanner(gameID, seriesID) {
+try { gcChallengesBanner(gameID); } catch (e) {}
 const el = document.getElementById('gc-awards');
 if (!el) return;
 el.innerHTML = '';
@@ -38198,10 +38210,10 @@ _editStatus:'', _editPriority:1, _newSnap:null, _newStatus:'tbd', _editCat:'note
 };
 var _DKM_STATUS_LABELS = {ok:'🟢 Working',partial:'🟡 Partial',broken:'🔴 Broken',tbd:'⚪ TBD'};
 </script>
-<script src="devkit.js?v=v30.241"></script>
-<script src="report.js?v=v30.241"></script>
+<script src="devkit.js?v=v30.242"></script>
+<script src="report.js?v=v30.242"></script>
 <!-- v30.157 NEW-11 step 4: ball catalog manifest check + IDB cache (same-origin, like devkit.js/report.js). Optional: if missing, the app behaves exactly as before. -->
-<script src="catalog.js?v=v30.241"></script>
+<script src="catalog.js?v=v30.242"></script>
 <script>
 /* v30.162 OFF-1: service worker (sw.js, same folder) so the app opens with
    no connection, and a request that the browser keep this app's storage.
