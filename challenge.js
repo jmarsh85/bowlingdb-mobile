@@ -6,7 +6,7 @@
    require()-able for the Node harness (engine only). */
 (function (root) {
 'use strict';
-var CHALLENGE_VERSION = 'v30.241';
+var CHALLENGE_VERSION = 'v30.242';
 var KEY = 'bowlingdb_challenges';
 var EST_GAMES = 21, MIN_GAMES = 9;
 
@@ -116,7 +116,7 @@ function normTeam(sessions, bowlerID) {
       if (!(sc > 0)) return;
       var fr = (g.frames || []).filter(function (f) { return f.bowlerIdx === idx; }).sort(function (a, b) { return a.frameNum - b.frameNum; });
       var frames = fr.length === 10 ? fr.map(function (f) { return { balls: (f.att || []).filter(function (a) { return a && a.pins != null; }).map(function (a) { return { pins: a.pins, leave: Array.isArray(a.leave) ? a.leave : null }; }) }; }) : null;
-      out.push({ pid: 'tb' + bowlerID, date: sess.date || '', key: 'g' + sess.id, gameNo: g.gameNum || gi + 1, score: sc, leagueID: sess.leagueID != null ? sess.leagueID : null, tournament: false, frames: frames, entryAvg: sess.bowlers[idx].entryAvg });
+      out.push({ pid: 'tb' + bowlerID, sessId: sess.id, idx: idx, date: sess.date || '', key: 'g' + sess.id, gameNo: g.gameNum || gi + 1, score: sc, leagueID: sess.leagueID != null ? sess.leagueID : null, tournament: false, frames: frames, entryAvg: sess.bowlers[idx].entryAvg });
     });
   });
   return out.sort(function (a, b) { return byDate(a.date, b.date) || a.gameNo - b.gameNo; });
@@ -211,25 +211,47 @@ function seriesOf(list) {
   return order.map(function (k) { var gs = by[k].sort(function (a, b) { return a.gameNo - b.gameNo; }), f3 = gs.slice(0, 3); return { key: k, date: gs[0].date, games: f3, score: f3.length === 3 ? f3[0].score + f3[1].score + f3[2].score : null }; })
     .filter(function (s) { return s.score != null; });
 }
-function hdcpFor(avg, p) { if (p.scoring !== 'handicap' || avg == null) return 0; return Math.max(0, Math.floor(((p.basis || 220) - avg) * (p.pct || 90) / 100)); }
-function evaluate(ch, games, avgs, today) {
+/* handicap (v30.242): scratch | formula (basis, %, optional cap, from the chosen average) | league (each game uses the
+   handicap of the league night it was bowled in) | fixed (typed per bowler, per game). Old challenges: scoring 'handicap' = formula. */
+function hcMode(p) { return p.hcMode || (p.scoring === 'handicap' ? 'formula' : 'scratch'); }
+function makeHc(p, pid, avg, ctx) {
+  var mode = hcMode(p);
+  if (mode === 'formula') { var h = avg == null ? 0 : Math.max(0, Math.floor(((p.basis || 220) - avg) * (p.pct || 90) / 100)); if (p.hcCap != null && p.hcCap !== '' && h > +p.hcCap) h = +p.hcCap; return function () { return h; }; }
+  if (mode === 'fixed') { var f = p.fixed && p.fixed[pid] != null ? +p.fixed[pid] || 0 : 0; return function () { return f; }; }
+  if (mode === 'league') return function (g) { try { return ctx && ctx.leagueHdcp ? (+ctx.leagueHdcp(g) || 0) : 0; } catch (e) { return 0; } };
+  return function () { return 0; };
+}
+/* the average going in each bowler is measured from: established (last 21 league games before the start),
+   one league's average before the start, or typed per bowler */
+function averagesFor(ch, games) {
+  var p = ch.params, o = {};
+  ch.people.forEach(function (pid) {
+    var l = games[pid] || [], entry = l[0] && l[0].entryAvg != null ? l[0].entryAvg : null;
+    if (p.avgSource === 'manual') o[pid] = p.avgs && p.avgs[pid] != null && p.avgs[pid] !== '' ? +p.avgs[pid] : null;
+    else if (p.avgSource === 'league' && p.avgLeagueID != null) o[pid] = averageBefore(l.filter(function (g) { return g.leagueID === p.avgLeagueID; }), p.start, entry);
+    else o[pid] = averageBefore(l, p.start, entry);
+  });
+  return o;
+}
+function evaluate(ch, games, avgs, today, ctx) {
   var c = CONTESTS[ch.contest], p = ch.params, rows = [];
   var leaveK = normLeaveParam(p.leave);
   ch.people.forEach(function (pid) {
-    var all = games[pid] || [], avg = avgs[pid] != null ? avgs[pid] : null, hc = hdcpFor(avg, p);
+    var all = games[pid] || [], avg = avgs[pid] != null ? avgs[pid] : null, hcG = makeHc(p, pid, avg, ctx), mode = hcMode(p);
+    var hcU = function (u) { return u.games ? u.games.reduce(function (a, g) { return a + hcG(g); }, 0) : hcG(u); };
     var pool = all.filter(function (g) { return inWindow(g, p); });
     if (c.needs) pool = pool.filter(function (g) { return !!g.frames; });
-    var row = { pid: pid, avgIn: avg, hdcp: hc, value: null, display: '\u2014', counted: [], chances: null, reached: null, games: pool.length };
+    var row = { pid: pid, avgIn: avg, hdcp: mode === 'scratch' ? 0 : mode === 'league' ? 'league' : hcG({}), value: null, display: '\u2014', counted: [], chances: null, reached: null, games: pool.length };
     if (c.first) {
       var tgt = ch.contest === 'f_300' ? 300 : +p.target || 0, prog = 0, hit = null;
       if (c.unit === 'series') {
-        seriesOf(pool).forEach(function (s) { var v = s.score + hc * 3; if (v > prog) prog = v; if (!hit && v >= tgt) hit = { date: s.date, key: s.key, value: v }; });
+        seriesOf(pool).forEach(function (s) { var v = s.score + hcU(s); if (v > prog) prog = v; if (!hit && v >= tgt) hit = { date: s.date, key: s.key, value: v }; });
       } else if (ch.contest === 'f_run') {
         pool.forEach(function (g) { var st = gameStats(g); if (st.run > prog) prog = st.run; if (!hit && st.run >= tgt) hit = { date: g.date, key: g.key, gameNo: g.gameNo, value: st.run }; });
       } else if (ch.contest === 'f_leave') {
         pool.forEach(function (g) { var e = gameStats(g).leaves[leaveK]; if (e) prog += e.made; if (!hit && prog >= tgt) hit = { date: g.date, key: g.key, gameNo: g.gameNo, value: prog }; });
       } else {
-        pool.forEach(function (g) { var v = g.score + (ch.contest === 'f_300' ? 0 : hc); if (v > prog) prog = v; if (!hit && v >= tgt) hit = { date: g.date, key: g.key, gameNo: g.gameNo, value: v }; });
+        pool.forEach(function (g) { var v = g.score + (ch.contest === 'f_300' ? 0 : hcG(g)); if (v > prog) prog = v; if (!hit && v >= tgt) hit = { date: g.date, key: g.key, gameNo: g.gameNo, value: v }; });
       }
       row.value = prog; row.reached = hit; row.target = tgt;
       row.display = hit ? '\u2713 ' + hit.date : prog ? String(prog) + ' / ' + tgt : '\u2014';
@@ -237,7 +259,7 @@ function evaluate(ch, games, avgs, today) {
     }
     /* which games count */
     var units = c.unit === 'series' ? seriesOf(pool) : pool.slice();
-    var val = function (u) { return u.score + (c.unit === 'series' ? hc * 3 : hc); };
+    var val = function (u) { return u.score + hcU(u); };
     if (p.count === 'first' && p.n) units = units.slice(0, p.n);
     else if (p.count === 'best' && p.n) units = units.slice().sort(function (a, b) { return c.dir === 'low' ? metricOne(a) - metricOne(b) : val(b) - val(a); }).slice(0, p.n);
     row.counted = units.map(function (u) { return { date: u.date, key: u.key, gameNo: u.gameNo || null, score: u.score }; });
@@ -307,11 +329,15 @@ function record(list, pid, vs) {
 }
 
 var api = { CHALLENGE_VERSION: CHALLENGE_VERSION, CONTESTS: CONTESTS, PRESETS: PRESETS, normMe: normMe, normTeam: normTeam, sameNight: sameNight, gameStats: gameStats,
-  evaluate: evaluate, averageBefore: averageBefore, record: record, isSplit: isSplit, normLeaveParam: normLeaveParam, addDays: addDays };
+  evaluate: evaluate, averageBefore: averageBefore, averagesFor: averagesFor, hcMode: hcMode, record: record, isSplit: isSplit, normLeaveParam: normLeaveParam, addDays: addDays };
 
 /* ================= page screens (browser only) ================= */
 var FIELD_LABELS = { contest: 'Contest', start: 'Start', end: 'End', count: 'Games that count', n: 'Number', min: 'Minimum', target: 'Target', leave: 'Leave',
-  where: 'Where', leagueID: 'League', scoring: 'Scoring', basis: 'Handicap basis', pct: 'Handicap %', tie: 'Tie', proof: 'Proof', note: 'Note' };
+  where: 'Where', leagueID: 'League', hcMode: 'Handicap', basis: 'Handicap basis', pct: 'Handicap %', hcCap: 'Handicap cap', avgSource: 'Average from', avgLeagueID: 'Average league',
+  avgs: 'Typed averages', fixed: 'Fixed handicaps', tie: 'Tie', proof: 'Proof', note: 'Note' };
+var HC_LABEL = { scratch: 'Scratch', formula: 'Handicap: formula', league: 'Handicap: each league\u2019s own', fixed: 'Handicap: fixed per bowler' };
+var AVG_LABEL = { established: 'Last 21 league games before the start', league: 'One league\u2019s average', manual: 'Typed per bowler' };
+var HC_CONTESTS = ['hgame', 'hseries', 'pins', 'avg', 'f_game', 'f_series'];
 var PROOF = { none: 'None', photo: 'Photo per entry', confirm: 'Opponent confirms each entry' };
 function DBp() { try { return typeof db !== 'undefined' ? db : root.db; } catch (e) { return root.db; } }
 function todayStr() { return typeof root.azToday === 'function' ? root.azToday() : new Date().toISOString().slice(0, 10); }
@@ -349,8 +375,19 @@ function phase(ch) {
   if (byDate(todayStr(), ch.params.start) < 0) return 'upcoming';
   return 'running';
 }
+/* each league night's own handicap: yours from the series' handicap snapshot; a friend's from the league's
+   handicap setup applied to their Team Bowl entering average */
+function leagueHdcp(g) {
+  if (g.leagueID == null) return 0;
+  var lg = (DBp().leagues || []).filter(function (l) { return l.LeagueID === g.leagueID; })[0];
+  if (!lg || lg.Handicap === false) return 0;
+  if (g.pid === 'me') { var h = typeof root.hdcpForSeries === 'function' ? root.hdcpForSeries(g.leagueID, +String(g.key).slice(1)) : null; return h || 0; }
+  if (g.entryAvg == null || typeof root.hdcpGet !== 'function') return 0;
+  var cfg = root.hdcpGet(root.hdcpLeagueKey(g.leagueID));
+  return Math.max(0, Math.floor(((cfg.baseScore || 230) - g.entryAvg) * (cfg.pct || 90) / 100));
+}
 function evalNow(ch) {
-  var g = gamesFor(ch.people), r = evaluate(ch, g, avgsFor(ch.people, g, ch.params.start), todayStr());
+  var g = gamesFor(ch.people), r = evaluate(ch, g, averagesFor(ch, g), todayStr(), { leagueHdcp: leagueHdcp });
   if (r.status === 'final' && !ch.result && ch.state === 'accepted') {
     ch.result = { winners: r.winners, at: todayStr(), margin: r.margin, rows: r.rows.map(function (x) { return { pid: x.pid, display: x.display, value: x.value }; }) };
     chPut(ch);
@@ -364,7 +401,7 @@ function contestLine(ch) {
   if (p.target && c.param && c.param !== 'leave') bits[0] = c.name.replace(' a game', ' ' + p.target + ' game').replace(' a series', ' ' + p.target + ' series').replace('strikes in a row', p.target + ' in a row').replace('N conversions', p.target + ' conversions');
   if (p.leave && (ch.contest === 'leave' || ch.contest === 'f_leave')) bits.push('leave ' + p.leave.replace(/,/g, '-'));
   if (!c.first) bits.push(p.count === 'first' ? 'first ' + p.n + (c.unit === 'series' ? ' nights' : ' games') : p.count === 'best' ? 'best ' + p.n : 'all ' + (c.unit === 'series' ? 'nights' : 'games'));
-  if (p.scoring === 'handicap') bits.push('handicap');
+  var hm = hcMode(p); if (hm !== 'scratch' && HC_CONTESTS.indexOf(ch.contest) >= 0) bits.push(hm === 'formula' ? 'handicap ' + (p.pct || 90) + '% of ' + (p.basis || 220) : hm === 'league' ? 'each league\u2019s handicap' : 'fixed handicaps');
   return bits.join(' \u00b7 ');
 }
 function whenLine(p) {
@@ -413,10 +450,14 @@ function diffLines(a, b) {
   var out = [];
   Object.keys(FIELD_LABELS).forEach(function (k) {
     var x = k === 'contest' ? a.contest : a.params[k], y = k === 'contest' ? b.contest : b.params[k];
-    if (String(x == null ? '' : x) !== String(y == null ? '' : y)) out.push(FIELD_LABELS[k] + ': ' + show(k, x) + ' \u2192 ' + show(k, y));
+    var str = function (v) { return v == null ? '' : typeof v === 'object' ? JSON.stringify(v) : String(v); };
+    if (k === 'hcMode') { x = hcMode(a.params); y = hcMode(b.params); }
+    if ((k === 'avgs' || k === 'fixed') && !Object.keys(x || {}).length && !Object.keys(y || {}).length) return;
+    if (str(x) !== str(y)) out.push(FIELD_LABELS[k] + ': ' + show(k, x) + ' \u2192 ' + show(k, y));
   });
   return out;
-  function show(k, v) { if (v == null || v === '') return '\u2014'; if (k === 'contest') return CONTESTS[v].name; if (k === 'leagueID') return leagueName(v); if (k === 'proof') return PROOF[v]; return String(v); }
+  function show(k, v) { if (v == null || v === '') return '\u2014'; if (k === 'contest') return CONTESTS[v].name; if (k === 'leagueID' || k === 'avgLeagueID') return leagueName(v); if (k === 'proof') return PROOF[v];
+    if (k === 'hcMode') return HC_LABEL[v]; if (k === 'avgSource') return AVG_LABEL[v]; if (typeof v === 'object') { var ks = Object.keys(v); return ks.length ? ks.map(function (pid) { return first(pid) + ' ' + v[pid]; }).join(', ') : '\u2014'; } return String(v); }
 }
 function chDetailHTML(id) {
   var ch = chGet(id); if (!ch) return '<div style="color:var(--t3)">Challenge not found.</div>';
@@ -447,7 +488,7 @@ function chDetailHTML(id) {
       return '<div class="card" style="margin-bottom:8px' + (win ? ';border:1px solid var(--gold)' : '') + '"><div style="display:flex;align-items:center;gap:10px">' +
         '<div style="font-size:14px;font-weight:900;color:var(--t3);width:16px">' + (i + 1) + '</div>' + av(x.pid, 34) +
         '<div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:800;color:var(--t1)">' + escH(person(x.pid).name) + (win ? ' \ud83c\udfc6' : '') + '</div>' +
-        '<div style="font-size:11px;color:var(--t3)">' + (x.avgIn != null ? 'avg going in ' + x.avgIn : 'no average yet') + (x.hdcp ? ' \u00b7 +' + x.hdcp + ' a game' : '') + '</div></div>' +
+        '<div style="font-size:11px;color:var(--t3)">' + (x.avgIn != null ? 'avg going in ' + x.avgIn : 'no average yet') + (x.hdcp === 'league' ? ' \u00b7 league handicap' : x.hdcp ? ' \u00b7 +' + x.hdcp + ' a game' : '') + '</div></div>' +
         '<div style="font-size:20px;font-weight:900;color:' + (win ? 'var(--gold)' : 'var(--t1)') + ';text-align:right">' + escH(x.display) + '</div></div>' +
         '<div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:8px">' + games + '</div></div>';
     }).join('');
@@ -477,6 +518,9 @@ function chDetailHTML(id) {
   }
   if (ph === 'final') acts += '<button class="btn btn-ghost" style="margin-top:8px" onclick="chPostResult(\'' + id + '\')">\ud83e\udd1d Post the result to Connect</button>' +
     '<button class="btn btn-ghost" style="margin-top:8px" onclick="chRematch(\'' + id + '\')">\ud83d\udd01 Rematch</button>';
+  if (ph === 'running' || ph === 'upcoming') acts += '<button class="btn btn-primary" style="margin-top:8px" onclick="chAddGames(\'' + id + '\')">\ud83c\udfb3 Bowl / enter games for this</button>' +
+    '<div style="font-size:11px;color:var(--t3);margin-top:6px;line-height:1.5">Games are entered the usual way (league night, tournament round); they count here automatically. A friend\u2019s games come from the Team Bowl nights you record.' +
+    (CONTESTS[ch.contest].needs ? ' This contest needs pin-by-pin games: nights saved as scores only don\u2019t count.' : ' Scores-only nights count.') + '</div>';
   if (ph === 'sent' || ph === 'upcoming' || ph === 'running' || ph === 'countered') acts += '<button class="btn btn-ghost" style="margin-top:8px;color:var(--red)" onclick="chCancel(\'' + id + '\')">Cancel challenge</button>';
   if (ph === 'final' || ph === 'declined' || ph === 'cancelled') acts += '<button class="btn btn-ghost" style="margin-top:8px;color:var(--t3)" onclick="chDelete(\'' + id + '\')">Delete from the list</button>';
   return h + acts;
@@ -530,7 +574,7 @@ function defaults() {
   if (b) return { contest: b.contest, name: b.name, params: JSON.parse(JSON.stringify(b.params)), opponent: b.people.filter(function (x) { return x !== 'me'; })[0] || 'solo' };
   return { contest: p ? p.contest : 'hgame', name: p ? p.name : '', opponent: nx.opponent || (friendsList()[0] ? friendsList()[0].id : 'solo'),
     params: { start: t, end: addDays(t, (p && p.days) || 14), count: (p && p.count) || 'all', n: (p && p.n) || 9, min: (p && p.min) || '', target: (p && p.target) || '', leave: (p && p.leave) || '',
-      where: 'any', leagueID: null, scoring: 'scratch', basis: 220, pct: 90, tie: 'shared', proof: 'none', note: '' } };
+      where: 'any', leagueID: null, scoring: 'scratch', hcMode: 'scratch', basis: 220, pct: 90, hcCap: '', avgSource: 'established', avgLeagueID: null, avgs: {}, fixed: {}, tie: 'shared', proof: 'none', note: '' } };
 }
 function sel(id, opts, cur) { return '<select class="finput" id="' + id + '" onchange="chFormSync()">' + opts.map(function (o) { return '<option value="' + escH(o[0]) + '"' + (String(o[0]) === String(cur) ? ' selected' : '') + '>' + escH(o[1]) + '</option>'; }).join('') + '</select>'; }
 function fg(label, inner, id) { return '<div class="fgroup"' + (id ? ' id="' + id + '"' : '') + '><label class="flabel">' + label + '</label>' + inner + '</div>'; }
@@ -551,8 +595,13 @@ function stepForm() {
     fg('Minimum games / chances', '<input class="finput" id="cf-min" type="number" value="' + escH(p.min) + '" placeholder="optional">', 'cf-g-min') +
     fg('Where', sel('cf-where', [['any', 'Any league or tournament'], ['league', 'One league'], ['tournament', 'Tournaments only']], p.where)) +
     fg('League', sel('cf-league', leagues.map(function (l) { return [l.LeagueID, l.LeagueName]; }), p.leagueID), 'cf-g-league') +
-    '<div id="cf-g-scoring">' + fg('Scoring', sel('cf-scoring', [['scratch', 'Scratch'], ['handicap', 'Handicap (from each average going in)']], p.scoring)) +
-    '<div style="display:flex;gap:8px" id="cf-g-hc">' + fg('Basis', '<input class="finput" id="cf-basis" type="number" value="' + escH(p.basis) + '">') + fg('%', '<input class="finput" id="cf-pct" type="number" value="' + escH(p.pct) + '">') + '</div></div>' +
+    '<div id="cf-g-scoring">' + fg('Scoring', sel('cf-hc', Object.keys(HC_LABEL).map(function (k) { return [k, HC_LABEL[k]]; }), hcMode(p))) +
+    '<div id="cf-hc-about" style="font-size:11px;color:var(--t3);margin:-6px 0 10px"></div>' +
+    '<div style="display:flex;gap:8px" id="cf-g-hc">' + fg('Basis', '<input class="finput" id="cf-basis" type="number" value="' + escH(p.basis) + '">') + fg('%', '<input class="finput" id="cf-pct" type="number" value="' + escH(p.pct) + '">') +
+    fg('Cap', '<input class="finput" id="cf-cap" type="number" value="' + escH(p.hcCap == null ? '' : p.hcCap) + '" placeholder="none">') + '</div></div>' +
+    '<div id="cf-g-avg">' + fg('Average going in from', sel('cf-avgsrc', Object.keys(AVG_LABEL).map(function (k) { return [k, AVG_LABEL[k]]; }), p.avgSource || 'established')) +
+    fg('Average league', sel('cf-avgleague', leagues.map(function (l) { return [l.LeagueID, l.LeagueName]; }), p.avgLeagueID), 'cf-g-avgleague') + '</div>' +
+    '<div id="cf-per" data-avgs="' + escH(JSON.stringify(p.avgs || {})) + '" data-fixed="' + escH(JSON.stringify(p.fixed || {})) + '"></div>' +
     fg('Tie', sel('cf-tie', [['shared', 'Shared win'], ['pins', 'Most total pins wins the tie']], p.tie), 'cf-g-tie') +
     fg('Proof', sel('cf-proof', [['none', PROOF.none], ['photo', PROOF.photo], ['confirm', PROOF.confirm]], p.proof)) +
     fg('Note', '<input class="finput" id="cf-note" type="text" value="' + escH(p.note) + '" placeholder="loser buys the first pitcher">') +
@@ -571,16 +620,35 @@ function chFormSync() {
   showEl('cf-g-count', !c.first); showEl('cf-g-n', val('cf-count') !== 'all');
   showEl('cf-g-min', ['avg', 'spare', 'single', 'leave'].indexOf(k) >= 0);
   showEl('cf-g-league', val('cf-where') === 'league');
-  showEl('cf-g-scoring', ['hgame', 'hseries', 'pins', 'avg', 'f_game', 'f_series'].indexOf(k) >= 0); showEl('cf-g-hc', val('cf-scoring') === 'handicap');
+  var hcOn = HC_CONTESTS.indexOf(k) >= 0, hm = hcOn ? val('cf-hc') : 'scratch', needAvg = (hcOn && hm === 'formula') || k === 'poa' || k === 'beatavg';
+  showEl('cf-g-scoring', hcOn); showEl('cf-g-hc', hm === 'formula');
+  var ha = document.getElementById('cf-hc-about');
+  if (ha) ha.textContent = { scratch: 'Raw scores.', formula: 'Each bowler gets (basis \u2212 average going in) \u00d7 % a game, rounded down, up to the cap. Works across leagues.',
+    league: 'Each game takes the handicap of the league night it was bowled in (your series\u2019 handicap; a friend\u2019s from that league\u2019s setup). Leagues without handicap add 0.',
+    fixed: 'Type each bowler\u2019s handicap a game below.' }[hm] || '';
+  showEl('cf-g-avg', needAvg); showEl('cf-g-avgleague', needAvg && val('cf-avgsrc') === 'league');
+  /* per-bowler inputs: typed averages or fixed handicaps */
+  var per = document.getElementById('cf-per');
+  if (per) {
+    var keep = function (attr, cls) { var o = {}; try { o = JSON.parse(per.getAttribute(attr) || '{}'); } catch (e) {} per.querySelectorAll('.' + cls).forEach(function (i) { o[i.getAttribute('data-pid')] = i.value; }); per.setAttribute(attr, JSON.stringify(o)); return o; };
+    var avgs = keep('data-avgs', 'cf-pa'), fixed = keep('data-fixed', 'cf-pf');
+    var people = nx.mode === 'counter' && nx.base ? nx.base.people : ['me'].concat(val('cf-opp') && val('cf-opp') !== 'solo' ? [val('cf-opp')] : []);
+    var kind = needAvg && val('cf-avgsrc') === 'manual' ? 'pa' : hcOn && hm === 'fixed' ? 'pf' : null;
+    per.innerHTML = kind ? '<div class="flabel" style="margin-bottom:6px">' + (kind === 'pa' ? 'Average going in' : 'Handicap a game') + '</div><div style="display:flex;gap:8px;margin-bottom:10px">' + people.map(function (pid) {
+      var v = (kind === 'pa' ? avgs : fixed)[pid]; return '<div style="flex:1"><div style="font-size:11px;color:var(--t3);margin-bottom:3px">' + escH(person(pid).name) + '</div><input class="finput cf-p' + (kind === 'pa' ? 'a' : 'f') + '" data-pid="' + pid + '" type="number" value="' + escH(v == null ? '' : v) + '"></div>'; }).join('') + '</div>' : '';
+  }
   showEl('cf-g-tie', !c.first);
   var cnt = document.getElementById('cf-count'); if (cnt && c.dir === 'low' && cnt.value === 'best') cnt.value = 'first';
 }
+function perVals(cls) { var o = {}; document.querySelectorAll('#cf-per .' + cls).forEach(function (i) { if (i.value !== '') o[i.getAttribute('data-pid')] = +i.value; }); return o; }
 function readForm() {
   var k = val('cf-contest'), c = CONTESTS[k], num = function (id) { var v = val(id); return v === '' ? null : +v; };
   var p = { start: val('cf-start'), end: val('cf-end') || null, count: c.first ? 'all' : val('cf-count'), n: num('cf-n'), min: num('cf-min'), target: c.first && k !== 'f_300' ? num('cf-target') : null,
     leave: (k === 'leave' || k === 'f_leave') ? normLeaveParam(val('cf-leave')) : '', where: val('cf-where'), leagueID: val('cf-where') === 'league' ? num('cf-league') : null,
-    scoring: ['hgame', 'hseries', 'pins', 'avg', 'f_game', 'f_series'].indexOf(k) >= 0 ? val('cf-scoring') : 'scratch', basis: num('cf-basis') || 220, pct: num('cf-pct') || 90,
+    hcMode: HC_CONTESTS.indexOf(k) >= 0 ? val('cf-hc') : 'scratch', basis: num('cf-basis') || 220, pct: num('cf-pct') || 90, hcCap: num('cf-cap'),
+    avgSource: val('cf-avgsrc') || 'established', avgLeagueID: val('cf-avgsrc') === 'league' ? num('cf-avgleague') : null, avgs: perVals('cf-pa'), fixed: perVals('cf-pf'),
     tie: c.first ? 'shared' : val('cf-tie'), proof: val('cf-proof'), note: val('cf-note').trim() };
+  p.scoring = p.hcMode === 'scratch' ? 'scratch' : 'handicap';
   var err = !p.start ? 'Pick a start date' : (p.end && p.end < p.start) ? 'The end is before the start' : (c.first && k !== 'f_300' && !(p.target > 0)) ? 'Set a target' :
     ((k === 'leave' || k === 'f_leave') && !p.leave) ? 'Type the leave (pins standing), e.g. 10 or 3-6-10' : (p.count !== 'all' && !(p.n > 0)) ? 'Set how many games count' : (!c.first && !p.end) ? 'Set an end date' : '';
   return { contest: k, name: val('cf-name').trim(), opponent: val('cf-opp'), params: p, err: err };
@@ -605,6 +673,36 @@ function chSubmit() {
 function stepPresetBack() { stepPreset(); }
 function chBackSource() { stepSource(); }
 
+/* ---------------- entering games from a challenge: through the normal screens ---------------- */
+function chAddGames(id) {
+  var ch = chGet(id); if (!ch) return;
+  var p = ch.params;
+  if (p.where === 'league' && p.leagueID != null && typeof root.selectLeague === 'function') root.selectLeague(p.leagueID);
+  else if (p.where === 'tournament') root.navTo('s-tournaments');
+  else root.navTo('s-leagues');
+  if (root.toast) root.toast('Start or open the night as usual: it counts toward \u201c' + (ch.name || CONTESTS[ch.contest].name) + '\u201d', 4000);
+}
+/* ---------------- the push: after a game is saved, which running challenges it counts toward ---------------- */
+function chGameBannerHTML(gameID) {
+  var d = DBp(), g0 = (d.games || []).filter(function (x) { return x.GameID === gameID; })[0];
+  if (!g0) return '';
+  var list = chList().filter(function (ch) { return ch.state === 'accepted' && !ch.result && phase(ch) === 'running'; });
+  if (!list.length) return '';
+  var games = gamesFor(['me']).me, mine = games.filter(function (x) { return x.key === 's' + g0.SeriesID && x.gameNo === (g0.GameNumber || 0); })[0];
+  if (!mine) return '';
+  var lines = [];
+  list.forEach(function (ch) {
+    if (!inWindow(mine, ch.params) || (CONTESTS[ch.contest].needs && !mine.frames)) return;
+    var r = evalNow(ch), i = -1; r.rows.forEach(function (x, k) { if (x.pid === 'me') i = k; });
+    var me = r.rows[i], solo = ch.people.length < 2;
+    var where = solo ? (me ? me.display : '') : (i === 0 ? 'you lead' : 'you\u2019re ' + (i + 1) + (i === 1 ? 'nd' : i === 2 ? 'rd' : 'th')) + ' \u00b7 ' + r.rows.map(function (x) { return first(x.pid) + ' ' + x.display; }).join(' \u00b7 ');
+    lines.push('<div onclick="openChallengeFromBanner(\'' + ch.id + '\')" style="display:flex;align-items:center;gap:10px;padding:6px 0;cursor:pointer"><span style="font-size:18px">\ud83c\udfc1</span>' +
+      '<div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:700">' + escH(ch.name || CONTESTS[ch.contest].name) + (solo ? '' : ' vs ' + escH(vsLine(ch))) + '</div>' +
+      '<div style="font-size:12px;color:var(--t3)">Counts \u00b7 ' + escH(where) + '</div></div><span style="color:var(--t3)">\u203a</span></div>');
+  });
+  return lines.length ? '<div class="card" style="margin-bottom:10px;border:1px solid rgba(0,217,217,0.35)"><div style="font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--teal);margin-bottom:4px">\ud83c\udfc1 Challenges</div>' + lines.join('') + '</div>' : '';
+}
+
 /* ---------------- head-to-head (bowler menu) ---------------- */
 function chHeadToHeadHTML(pid) {
   var grp = typeof root.grpLoadAll === 'function' ? root.grpLoadAll() : [];
@@ -622,7 +720,7 @@ api.chTabHTML = chTabHTML;
 if (typeof document !== 'undefined') {
   root.chTabHTML = chTabHTML; root.chDetailHTML = chDetailHTML; root.chOpen = chOpen; root.chBack = chBack; root.chNew = chNew; root.chPickSource = chPickSource; root.chPickPreset = chPickPreset;
   root.chFormSync = chFormSync; root.chSubmit = chSubmit; root.chAnswer = chAnswer; root.chCounter = chCounter; root.chCancel = chCancel; root.chDelete = chDelete;
-  root.chRematch = chRematch; root.chPostResult = chPostResult; root.chRecordFor = chRecordFor; root.chHeadToHeadHTML = chHeadToHeadHTML; root.stepPresetBack = stepPresetBack; root.chBackSource = chBackSource;
+  root.chRematch = chRematch; root.chPostResult = chPostResult; root.chRecordFor = chRecordFor; root.chHeadToHeadHTML = chHeadToHeadHTML; root.stepPresetBack = stepPresetBack; root.chBackSource = chBackSource; root.chAddGames = chAddGames; root.chGameBannerHTML = chGameBannerHTML;
 }
 
 root.BDB_CHALLENGE = api;
