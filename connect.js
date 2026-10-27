@@ -7,7 +7,7 @@
    Loaded by index.html as connect.js?v=APP_VERSION on first use. */
 (function (root) {
 'use strict';
-var CONNECT_VERSION = 'v30.241';
+var CONNECT_VERSION = 'v30.242';
 var POSTS_KEY = 'bowlingdb_connect_posts', REACT_KEY = 'bowlingdb_connect_reacts';
 var REACTIONS = [
   { e: '\ud83d\udc4a', name: 'Fist bump' }, { e: '\ud83d\ude4c', name: 'High five' },
@@ -52,6 +52,51 @@ function friendPosts() {
 
 /* ---------------- posting (also called from the share card sheet) ---------------- */
 function refOf(f) { return f.kind === 'challenge' ? f.challengeID : f.kind === 'game' ? f.gameID : f.kind === 'league' ? f.leagueID : f.kind === 'season' ? f.seasonID : f.seriesID; }
+/* ---------------- tags (v30.242): every post carries its achievements so the feed can be searched ---------------- */
+var SERIES_AW = { h700: 1, h800: 1, h900: 1, hcleans: 1, htrip: 1, ps: 1, mhs: 1 };
+function withAwards(cb) {
+  if (typeof root.awUnlocksFor === 'function') return cb();
+  var s = document.createElement('script');
+  s.src = 'awards.js?v=' + encodeURIComponent(typeof APP_VERSION !== 'undefined' ? APP_VERSION : '');
+  s.onload = cb; s.onerror = cb; document.head.appendChild(s);
+}
+function awardNames(gameID, seriesID, gameOnly) {
+  if (typeof root.awUnlocksFor !== 'function') return [];
+  try {
+    return root.awUnlocksFor(gameID, seriesID).filter(function (a) { return !gameOnly || !(SERIES_AW[a.award] || /^ps/.test(a.award) || /^s\d/.test(a.award)); })
+      .map(function (a) { return a.name.charAt(0).toUpperCase() + a.name.slice(1); });
+  } catch (e) { return []; }
+}
+function computeTags(f) {
+  var t = [], d = DB();
+  if (f.kind === 'series') (d.games || []).filter(function (g) { return g.SeriesID === f.seriesID && !g.IsTeammate && g.FinalScore > 0; })
+    .forEach(function (g) { t = t.concat(awardNames(g.GameID, f.seriesID, false)); });
+  if (f.kind === 'game') t = t.concat(awardNames(f.gameID, f.seriesID, true));
+  if (f.kind === 'challenge') { t.push('Challenge'); t.push(f.name); }
+  (f.pills || []).forEach(function (p) { var x = p.text.replace(/\s*\u00d7\d+$/, '').toLowerCase(); t.push(x.charAt(0).toUpperCase() + x.slice(1)); });   // after the awards, so their wording wins
+  if (f.level === 'notap') t.push('No-Tap'); else if (f.level === 'tournament') t.push('Tournament');
+  if (f.certified) t.push('USBC-certified');
+  var seen = {}, out = [];
+  t.forEach(function (x) { var k = String(x).toLowerCase(); if (x && !seen[k]) { seen[k] = 1; out.push(x); } });
+  return out;
+}
+function tagChips(tags) {
+  return (tags || []).length ? '<div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:8px">' + tags.map(function (t) {
+    return '<span onclick="cnSearchTag(this.textContent.slice(1));event.stopPropagation()" style="font-size:10px;font-weight:700;color:var(--teal);background:rgba(0,217,217,0.08);border:1px solid rgba(0,217,217,0.25);border-radius:8px;padding:1px 6px;cursor:pointer">#' + esc(t) + '</span>'; }).join('') + '</div>' : '';
+}
+function searchText(parts) { return esc(parts.filter(Boolean).join(' ').toLowerCase()); }
+function cnSearch(q) {
+  cn.q = q || ''; var k = cn.q.trim().toLowerCase(), n = 0;
+  document.querySelectorAll('#friend-feed-content [data-search]').forEach(function (el) { var on = !k || el.getAttribute('data-search').indexOf(k) >= 0; el.style.display = on ? '' : 'none'; if (on) n++; });
+  var c = document.getElementById('cn-search-count'); if (c) c.textContent = k ? n + ' match' + (n === 1 ? '' : 'es') : '';
+}
+function cnSearchTag(t) { var i = document.getElementById('cn-search'); if (i) i.value = t; cnSearch(t); }
+function retag() {
+  var l = posts(), need = l.some(function (p) { return !p.tags; });
+  if (!need || cn.tagging) return;
+  cn.tagging = true;
+  withAwards(function () { var l2 = posts(); l2.forEach(function (p) { if (!p.tags) p.tags = computeTags(p.facts); }); save(POSTS_KEY, l2); cn.tagging = false; render(); });
+}
 function cnPost(facts, vis) {
   if (!facts) return false;
   var list = posts(), ref = refOf(facts), hit = list.filter(function (p) { return p.kind === facts.kind && p.ref === ref; })[0];
@@ -59,6 +104,8 @@ function cnPost(facts, vis) {
   if (hit) { hit.facts = snap; hit.hidden = false; if (vis) hit.vis = vis; }
   else list.unshift({ id: 'p' + Date.now().toString(36), at: new Date().toISOString(), kind: facts.kind, ref: ref, facts: snap, vis: vis || 'friends', hidden: false });
   if (!save(POSTS_KEY, list)) return false;
+  var pid = hit ? hit.id : list[0].id;
+  withAwards(function () { var l = posts(); l.forEach(function (x) { if (x.id === pid) x.tags = computeTags(x.facts); }); save(POSTS_KEY, l); if (document.getElementById('friend-feed-content') && cn.shown) render(); });
   if (root.toast) root.toast(hit ? 'Already posted: updated in Connect' : 'Posted to Connect (' + VIS[vis || 'friends'] + ')');
   return true;
 }
@@ -154,19 +201,19 @@ function myCard(post, manage) {
     Object.keys(VIS).map(function (k) { return '<div class="btn-pill' + (post.vis === k ? ' btn-pill-sel' : '') + '" onclick="cnSetVis(\'' + post.id + '\',\'' + k + '\')">' + VIS[k] + '</div>'; }).join('') +
     '<div class="btn-pill" onclick="cnHide(\'' + post.id + '\')">' + (post.hidden ? 'Show' : 'Hide') + '</div>' +
     '<div class="btn-pill" style="color:var(--red)" onclick="cnTakeDown(\'' + post.id + '\')">Take down</div></div>' : '';
-  return '<div class="card ' + (f.pills && f.pills.length ? 'card-best' : 'card-complete') + '" style="margin-bottom:12px' + (post.hidden ? ';opacity:.55' : '') + '">' +
+  return '<div class="card ' + (f.pills && f.pills.length ? 'card-best' : 'card-complete') + '" data-search="' + searchText([me.name, whereOf(f), f.kind, (post.tags || []).join(' '), f.total, f.score, f.avg]) + '" style="margin-bottom:12px' + (post.hidden ? ';opacity:.55' : '') + '">' +
     '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><div onclick="cnBowlerMenu(\'me\')" style="cursor:pointer">' + avatar(me, 38) + '</div>' +
     '<div style="min-width:0;flex:1"><div style="font-weight:700;font-size:14px;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(me.name) + visPill + '</div>' +
     '<div style="font-size:11px;color:var(--t3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(whereOf(f)) + '</div></div>' +
     '<div style="font-size:11px;color:var(--t3);flex-shrink:0">' + ago(post.at, true) + '</div></div>' +
     pills(f.pills) + '<div onclick="' + openFacts(post) + '" style="cursor:pointer">' + bodyFor(f) + '</div>' +
-    reactBar(post.id) + mg + '</div>';
+    tagChips(post.tags) + reactBar(post.id) + mg + '</div>';
 }
 function friendCard(item) {
   var p = item.p, fr = friends().filter(function (x) { return x.id === p.friendId; })[0] || { name: 'Friend', avatar: '\ud83c\udfb3', color: 'var(--teal)' };
   var total = p.games.reduce(function (a, b) { return a + b; }, 0);
   var seed = (p.acks || []).filter(function (a) { return a !== 'me'; }).map(function () { return '\ud83d\ude4c'; });
-  return '<div class="card ' + (p.headline ? 'card-best' : 'card-complete') + '" style="margin-bottom:12px">' +
+  return '<div class="card ' + (p.headline ? 'card-best' : 'card-complete') + '" data-search="' + searchText([fr.name, p.league, p.center, p.headline, total]) + '" style="margin-bottom:12px">' +
     '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><div onclick="cnBowlerMenu(\'' + p.friendId + '\')" style="cursor:pointer">' + avatar(fr, 38) + '</div>' +
     '<div style="min-width:0;flex:1;cursor:pointer" onclick="cnBowlerMenu(\'' + p.friendId + '\')"><div style="font-weight:700;font-size:14px;color:var(--t1)">' + esc(fr.name) + '</div>' +
     '<div style="font-size:11px;color:var(--t3)">' + esc(p.league || '') + (p.center ? ' \u00b7 ' + esc(p.center) : '') + '</div></div>' +
@@ -174,7 +221,7 @@ function friendCard(item) {
     (p.headline ? '<div style="margin-bottom:8px"><span class="pill pill-gold">' + esc(p.headline) + '</span></div>' : '') +
     '<div style="display:flex;align-items:center;justify-content:space-between"><div style="display:flex;gap:6px;flex-wrap:wrap">' + chips(p.games) + '</div>' +
     '<div style="font-size:22px;font-weight:900;color:' + (p.headline ? 'var(--gold)' : 'var(--t1)') + '">' + total + '</div></div>' +
-    reactBar(p.id, seed) + '</div>';
+    tagChips(p.headline ? [p.headline.replace(/^[^A-Za-z0-9]+\s*/, '')] : []) + reactBar(p.id, seed) + '</div>';
 }
 
 /* ---------------- screens ---------------- */
@@ -193,7 +240,9 @@ function feedHTML() {
   var items = cn.filter === 'you' ? mine : cn.filter === 'friends' ? theirs : mine.concat(theirs);
   items.sort(function (a, b) { return String(b.at).localeCompare(String(a.at)); });   // newest first
   var chip = function (k, l) { return '<div class="btn-pill' + (cn.filter === k ? ' btn-pill-sel' : '') + '" onclick="cnFilter(\'' + k + '\')">' + l + '</div>'; };
-  return '<div style="display:flex;gap:6px;margin-bottom:12px">' + chip('all', 'All') + chip('friends', 'Friends') + chip('you', 'You') + '</div>' +
+  return '<div style="position:relative;margin-bottom:10px"><input id="cn-search" class="finput" type="search" placeholder="Search posts, leagues, achievements (e.g. clean game)" value="' + esc(cn.q || '') + '" oninput="cnSearch(this.value)" style="padding-right:80px">' +
+    '<span id="cn-search-count" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--t3)"></span></div>' +
+    '<div style="display:flex;gap:6px;margin-bottom:12px">' + chip('all', 'All') + chip('friends', 'Friends') + chip('you', 'You') + '</div>' +
     (items.length ? items.map(function (it) { return it.kind === 'mine' ? myCard(it.post, false) : friendCard(it); }).join('') :
       '<div class="empty-state"><div class="empty-icon">\ud83e\udd1d</div><div class="empty-label">Nothing here yet</div><div class="empty-sub">Post a night from the You tab or any Share sheet</div></div>');
 }
@@ -259,14 +308,14 @@ function cnBowlerMenu(id) {
   var b = function (icon, label, js, sub) { return '<button class="btn btn-ghost" style="margin-top:8px;text-align:left;display:flex;align-items:center;gap:10px" onclick="' + js + '"><span style="font-size:18px">' + icon + '</span><span style="flex:1"><span style="display:block;font-weight:800">' + label + '</span>' + (sub ? '<span style="display:block;font-size:11px;color:var(--t3);font-weight:500">' + sub + '</span>' : '') + '</span></button>'; };
   var h = '<div style="text-align:center;margin-bottom:6px"><div style="display:inline-block">' + avatar(p, 56) + '</div><div style="font-size:18px;font-weight:900;color:var(--t1);margin-top:6px">' + esc(p.name) + '</div></div>';
   if (isMe) {
-    h += b('\ud83d\udcca', 'Profile & stats', "closeModal();openBowlerProfile('me')") + b('\ud83c\udfc6', 'Trophy case', 'closeModal();openAwards()', 'awards, certificates') +
+    h += b('\ud83d\udcca', 'Profile & stats', "closeModal();openBowlerProfile('me')") + b('\ud83c\udfc6', 'Trophy case', 'openAwards()', 'awards, certificates') +
       b('\ud83c\udfc1', 'Challenges', "closeModal();cnTab('challenges')", 'record ' + recText('me')) + b('\ud83d\udcdd', 'Your posts', "closeModal();cnTab('you')");
   } else {
     h += b('\ud83d\udcf0', 'Activity', "closeModal();cnFriend('" + id + "')", 'their nights, newest first') +
       b('\ud83d\udcca', 'Profile & stats', "closeModal();openBowlerProfile('" + id + "')", 'high game, strike %, trend') +
-      b('\u2696\ufe0f', 'Compare', "closeModal();fsOpenComparison('" + id + "')", 'side by side') +
+      b('\u2696\ufe0f', 'Compare', "fsOpenComparison('" + id + "')", 'side by side') +
       b('\ud83e\udd4a', 'Head-to-head', "cnHeadToHead('" + id + "')", 'same nights + challenges') +
-      b('\ud83c\udfc1', 'Challenge ' + esc((p.name || '').split(' ')[0]), "closeModal();cnChallenge('" + id + "')") +
+      b('\ud83c\udfc1', 'Challenge ' + esc((p.name || '').split(' ')[0]), "cnChallenge('" + id + "')") +
       b('\ud83c\udfc6', 'Achievements', "cnTheirAwards('" + id + "')", 'arrives with accounts');
   }
   h += '<button class="btn btn-secondary" style="margin-top:12px" onclick="closeModal()">Close</button>';
@@ -286,8 +335,10 @@ function render() {
   var el = document.getElementById('friend-feed-content');
   if (!el) return;
   if (root._cnStartTab) { cn.tab = root._cnStartTab; cn.friend = null; root._cnStartTab = null; }
+  cn.shown = true; retag();
   var body = cn.friend ? friendHTML(cn.friend) : cn.tab === 'you' ? youHTML() : cn.tab === 'challenges' ? challengesHTML() : feedHTML();
   el.innerHTML = '<div class="sec-header"><span class="sec-title">Connect</span></div>' + tabs() + (cn.tab === 'feed' || cn.friend ? banner() : '') + body;
+  if (cn.q && cn.tab === 'feed' && !cn.friend) cnSearch(cn.q);
 }
 function cnTab(t) { cn.tab = t; cn.friend = null; root._chDetail = null; render(); }
 function cnFilter(f) { cn.filter = f; render(); }
@@ -302,6 +353,6 @@ function cnOpen(tab) { if (tab) { cn.tab = tab; cn.friend = null; } render(); }
 var api = { CONNECT_VERSION: CONNECT_VERSION, REACTIONS: REACTIONS };
 root.cnRender = render; root.cnOpen = cnOpen; root.cnPost = cnPost; root.cnTab = cnTab; root.cnFilter = cnFilter; root.cnFriend = cnFriend; root.cnBack = cnBack;
 root.cnReact = cnReact; root.cnSetVis = cnSetVis; root.cnHide = cnHide; root.cnTakeDown = cnTakeDown; root.cnTakeDownYes = cnTakeDownYes;
-root.cnQuickPost = cnQuickPost; root.cnInvite = cnInvite; root.cnBowlerMenu = cnBowlerMenu; root.cnHeadToHead = cnHeadToHead; root.cnChallenge = cnChallenge; root.cnTheirAwards = cnTheirAwards;
+root.cnQuickPost = cnQuickPost; root.cnInvite = cnInvite; root.cnBowlerMenu = cnBowlerMenu; root.cnSearch = cnSearch; root.cnSearchTag = cnSearchTag; root.cnHeadToHead = cnHeadToHead; root.cnChallenge = cnChallenge; root.cnTheirAwards = cnTheirAwards;
 root.BDB_CONNECT = api; root.CONNECT_JS_VERSION = CONNECT_VERSION;
 })(typeof window !== 'undefined' ? window : globalThis);
