@@ -36,7 +36,7 @@
 'use strict';
 
 /* v30.169: shown in the app header when it differs from the build's EXPECTED_CATALOG_JS */
-var CAT_VERSION  = 'v30.224';
+var CAT_VERSION  = 'v30.243';
 var CAT_BASE     = 'https://raw.githubusercontent.com/jmarsh85/bowlingdb-mobile/dist/';
 var CAT_DB       = 'BowlingDB_Catalog';
 var CAT_DB_VER   = 1;
@@ -3685,8 +3685,9 @@ function fixPickFile(camera) {
 }
 function catImgDel(id) {
   if (_catImgObj[id]) { try { URL.revokeObjectURL(_catImgObj[id]); } catch (e) {} delete _catImgObj[id]; }
+  var sbx = catImgSbx();
   return catImgDB().then(function (db) { return new Promise(function (res) {
-    var t = db.transaction('img', 'readwrite'); t.objectStore('img').delete(id); t.oncomplete = function () { res(true); }; t.onerror = function () { res(false); }; }); }).catch(function () { return false; });
+    var t = db.transaction('img', 'readwrite'); if (sbx) t.objectStore('img').put({ gone: 1, at: env.now() }, id); else t.objectStore('img').delete(id); t.oncomplete = function () { res(true); }; t.onerror = function () { res(false); }; }); }).catch(function () { return false; });
 }
 function catFixPic(part, how) {
   if (!_fix) return; var e = _fix.e, ck = fixCoreKey(e);
@@ -4769,10 +4770,14 @@ function catCoreImageFor(brand, coreName) {
   var k = coreKeyOf(brand, coreName); if (!k) return null;
   return _catImgObj['core:' + k] || coreLinks()[k] || null;
 }
-function catImgDB() {
+/* v30.243 SBX-1: in Test mode picture files are read from the real store "by reference"; anything saved or
+   removed in Test mode goes to bdb_catimg_test (a removal is a {gone:1} marker), so the real store is never written. */
+function catImgSbx() { return root.bdbSandbox && root.bdbSandbox.mode ? root.bdbSandbox.mode() : null; }
+function catImgDB(real) {
   return new Promise(function (res, rej) {
     var idb = env.idb(); if (!idb) return rej(new Error('no IndexedDB'));
-    var r = idb.open('bdb_catimg', 1);
+    var m = real ? null : catImgSbx();
+    var r = idb.open(m ? 'bdb_catimg_' + m : 'bdb_catimg', 1);
     r.onupgradeneeded = function () { r.result.createObjectStore('img'); };
     r.onsuccess = function () { res(r.result); }; r.onerror = function () { rej(r.error); };
   });
@@ -4785,11 +4790,19 @@ function catImgPut(id, blob) {
     t.oncomplete = function () { res(true); }; t.onerror = function () { rej(t.error); }; }); })
     .then(function () { if (_catImgObj[id]) try { URL.revokeObjectURL(_catImgObj[id]); } catch (e) {} _catImgObj[id] = URL.createObjectURL(blob); });
 }
-function catImgAll() {
-  return catImgDB().then(function (db) { return new Promise(function (res) {
+function catImgList(real) {
+  return catImgDB(real).then(function (db) { return new Promise(function (res) {
     var out = [], rq = db.transaction('img', 'readonly').objectStore('img').openCursor();
     rq.onsuccess = function () { var c = rq.result; if (!c) return res(out); out.push({ key: c.key, value: c.value }); c.continue(); };
     rq.onerror = function () { res(out); }; }); });
+}
+function catImgAll() {
+  if (!catImgSbx()) return catImgList(true);
+  return Promise.all([catImgList(true).catch(function () { return []; }), catImgList(false).catch(function () { return []; })]).then(function (r) {
+    var mine = {}; r[1].forEach(function (x) { mine[x.key] = x; });
+    var out = r[0].filter(function (x) { return !mine[x.key]; }).concat(r[1]);
+    return out.filter(function (x) { return !(x.value && x.value.gone); });
+  });
 }
 function catImgWarm() {
   return catImgAll().then(function (all) { all.forEach(function (x) { if (x.value && x.value.blob) _catImgObj[x.key] = URL.createObjectURL(x.value.blob); }); }).catch(function () {});
@@ -5214,6 +5227,7 @@ function catImagesMerge(o) {
   }, Promise.resolve()).then(function () { return n; });
 }
 function catImagesImport() {
+  if (catImgSbx() && typeof root.bdbTestBlocked === 'function' && root.bdbTestBlocked('Imports')) return;
   var inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'application/json,.json'; inp.style.display = 'none';
   inp.addEventListener('change', function () {
     var f = inp.files && inp.files[0]; if (inp.parentNode) inp.parentNode.removeChild(inp); if (!f) return;
@@ -5339,6 +5353,7 @@ function catBackupMerge(o) {
   });
 }
 function catBackupRestore() {
+  if (catImgSbx() && typeof root.bdbTestBlocked === 'function' && root.bdbTestBlocked('Restores')) return;
   var inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'application/json,.json'; inp.style.display = 'none';
   inp.addEventListener('change', function () {
     var f = inp.files && inp.files[0]; if (inp.parentNode) inp.parentNode.removeChild(inp); if (!f) return;
@@ -6023,7 +6038,7 @@ root._catAPI = { catLoad: catLoad, byIdIn: byIdIn, cleanName: cleanName, esc: es
   catRestoreCorrection: catRestoreCorrection, catUpdateLine: catUpdateLine,
   apFetchIssue: apFetchIssue, apParseIssue: apParseIssue, apQueue: apQueue, apSetQueue: apSetQueue,
   catPastePicture: catPastePicture, catSaveCover: catSaveCover, catSaveCore: catSaveCore, catCoreShareOffer: catCoreShareOffer, coreShareCandidates: coreShareCandidates, taSuggest: taSuggest,
-  imgProbe: imgProbe, imgShrink: imgShrink, catImgDel: catImgDel, bowwwlImgCandidates: bowwwlImgCandidates, bowwwlCoreCandidates: bowwwlCoreCandidates, coreKeyOf: coreKeyOf, catCoreImageFor: catCoreImageFor, coreLinkSet: coreLinkSet, scanMem: scanMem, vocabLoad: vocabLoad, triageGet: triageGet, triageSave: triageSave, triageOf: triageOf, upcomingOf: upcomingOf, monthsSince: monthsSince, localOverrides: localOverrides, repoOverride: function (id) { return (_ovr && _ovr[id]) || null; },
+  imgProbe: imgProbe, imgShrink: imgShrink, catImgDel: catImgDel, catImgPut: catImgPut, catImgAll: catImgAll, bowwwlImgCandidates: bowwwlImgCandidates, bowwwlCoreCandidates: bowwwlCoreCandidates, coreKeyOf: coreKeyOf, catCoreImageFor: catCoreImageFor, coreLinkSet: coreLinkSet, scanMem: scanMem, vocabLoad: vocabLoad, triageGet: triageGet, triageSave: triageSave, triageOf: triageOf, upcomingOf: upcomingOf, monthsSince: monthsSince, localOverrides: localOverrides, repoOverride: function (id) { return (_ovr && _ovr[id]) || null; },
   apGH: apGH, regionOf: regionOf, regionTags: regionTags, regionTagSet: regionTagSet, regionFromText: regionFromText, imgPicks: imgPicks, imgPickSet: imgPickSet, REGIONS: REGION_WORDS.map(function (r) { return r[0]; }), AP_WEIGHTS: AP_WEIGHTS, version: CAT_VERSION }; root.catMyBallsOpen = catMyBallsOpen; root.catSaveCorrection = catSaveCorrection;
 root.catOldSearch = catOldSearch; root.catOldClose = catOldClose; root.catAddBlank = catAddBlank; root.catAddManual = catAddManual;
 root.catSpecReviewTab = catSpecReviewTab; root.catMissingCorrect = catMissingCorrect; root.catMissingFilter = catMissingFilter; root.catMissingPage = catMissingPage; root._ms = { msRows: msRows, oldMatchScore: oldMatchScore };
