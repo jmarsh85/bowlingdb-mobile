@@ -5,7 +5,7 @@
    (from step 3); also require()-able for the Node harness. */
 (function (root) {
 'use strict';
-var AWD_VERSION = 'v30.233';   // step 1 engine + step 3 trophy case (v30.227: filters, splits, brackets)
+var AWD_VERSION = 'v30.243';   // step 1 engine + step 3 trophy case (v30.227: filters, splits, brackets)
 
 /* USBC national brackets (2011-12 adult revision) -- default, editable in Settings (step 6). */
 var USBC_BRACKETS = [
@@ -715,6 +715,7 @@ function drawCertificate(o) {
   ctx.fillStyle = soft; ctx.font = '400 22px ' + sans;
   ctx.fillText(f.app ? 'App honor \u00b7 not a current USBC national award' : 'Personal award recorded in BowlingDB \u00b7 not an official USBC award', W / 2, H - 140);
   ctx.fillStyle = gold; ctx.font = '700 24px ' + sans; ctx.fillText('Bowling' + 'DB', W / 2, H - 100);
+  if (typeof window !== 'undefined' && window.bdbSandbox && window.bdbSandbox.mode()) window.bdbSandbox.watermark(cv);   // v30.243: TEST watermark
   return { canvas: cv, facts: f };
 }
 function certHtml(id, dataUrl) {
