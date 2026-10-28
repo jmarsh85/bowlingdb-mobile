@@ -7,7 +7,7 @@
    require()-able for the Node harness (engine only). */
 (function (root) {
 'use strict';
-var CHALLENGE_VERSION = 'v30.244';
+var CHALLENGE_VERSION = 'v30.245';
 var KEY = 'bowlingdb_challenges';
 var EST_GAMES = 21, MIN_GAMES = 9;
 
@@ -214,6 +214,15 @@ function seriesOf(list) {
   return order.map(function (k) { var gs = by[k].sort(function (a, b) { return a.gameNo - b.gameNo; }), f3 = gs.slice(0, 3); return { key: k, date: gs[0].date, games: f3, score: f3.length === 3 ? f3[0].score + f3[1].score + f3[2].score : null }; })
     .filter(function (s) { return s.score != null; });
 }
+/* v30.245: the night in progress (fewer than 3 games) for series contests, so standings show something mid-series */
+function partialSeries(list, val) {
+  var by = {}, order = [];
+  list.forEach(function (g) { if (!by[g.key]) { by[g.key] = []; order.push(g.key); } by[g.key].push(g); });
+  for (var i = order.length - 1; i >= 0; i--) {
+    var gs = by[order[i]]; if (gs.length < 3) return { games: gs.length, score: gs.reduce(function (a, g) { return a + val(g); }, 0), date: gs[0].date };
+  }
+  return null;
+}
 /* handicap (v30.242): scratch | formula (basis, %, optional cap, from the chosen average) | league (each game uses the
    handicap of the league night it was bowled in) | fixed (typed per bowler, per game). Old challenges: scoring 'handicap' = formula. */
 function hcMode(p) { return p.hcMode || (p.scoring === 'handicap' ? 'formula' : 'scratch'); }
@@ -257,7 +266,8 @@ function evaluate(ch, games, avgs, today, ctx) {
         pool.forEach(function (g) { var v = g.score + (ch.contest === 'f_300' ? 0 : hcG(g)); if (v > prog) prog = v; if (!hit && v >= tgt) hit = { date: g.date, key: g.key, gameNo: g.gameNo, value: v }; });
       }
       row.value = prog; row.reached = hit; row.target = tgt;
-      row.display = hit ? '\u2713 ' + hit.date : prog ? String(prog) + ' / ' + tgt : '\u2014';
+      if (c.unit === 'series' && !hit) row.partial = partialSeries(pool, function (g) { return g.score + hcG(g); });
+      row.display = hit ? '\u2713 ' + hit.date : prog ? String(prog) + ' / ' + tgt : row.partial ? row.partial.score + ' after ' + row.partial.games + ' of 3' : '\u2014';
       rows.push(row); return;
     }
     /* which games count */
@@ -266,7 +276,8 @@ function evaluate(ch, games, avgs, today, ctx) {
     if (p.count === 'first' && p.n) units = units.slice(0, p.n);
     else if (p.count === 'best' && p.n) units = units.slice().sort(function (a, b) { return c.dir === 'low' ? metricOne(a) - metricOne(b) : val(b) - val(a); }).slice(0, p.n);
     row.counted = units.map(function (u) { return { date: u.date, key: u.key, gameNo: u.gameNo || null, score: u.score }; });
-    if (!units.length) { rows.push(row); return; }
+    if (c.unit === 'series') row.partial = partialSeries(pool, function (g) { return g.score + hcG(g); });
+    if (!units.length) { if (row.partial) row.display = row.partial.score + ' after ' + row.partial.games + ' of 3'; rows.push(row); return; }
     var gamesList = c.unit === 'series' ? [].concat.apply([], units.map(function (u) { return u.games; })) : units;
     var sum = function (k) { return gamesList.reduce(function (a, g) { return a + gameStats(g)[k]; }, 0); };
     switch (ch.contest) {
@@ -493,7 +504,7 @@ function chDetailHTML(id) {
     h += r.rows.map(function (x, i) {
       var win = ch.result && ch.result.winners.indexOf(x.pid) >= 0;
       var games = x.counted.length ? x.counted.map(function (u) { var d = u.date.split('-'); return '<span style="font-size:11px;color:var(--t2);background:var(--bg3);border-radius:6px;padding:2px 6px">' + (+d[1]) + '/' + (+d[2]) + ' ' + u.score + '</span>'; }).join(' ') :
-        x.reached ? '<span style="font-size:11px;color:var(--teal)">reached ' + x.reached.date + ' (' + x.reached.value + ')</span>' : '<span style="font-size:11px;color:var(--t3)">' + (x.games ? x.games + ' games so far' : 'no games in the window yet') + '</span>';
+        x.reached ? '<span style="font-size:11px;color:var(--teal)">reached ' + x.reached.date + ' (' + x.reached.value + ')</span>' : '<span style="font-size:11px;color:var(--t3)">' + (x.partial ? 'series in progress: ' + x.partial.games + ' of 3 games, ' + x.partial.score + ' so far' : x.games ? x.games + ' games so far' : 'no games in the window yet') + '</span>';
       return '<div class="card" style="margin-bottom:8px' + (win ? ';border:1px solid var(--gold)' : '') + '"><div style="display:flex;align-items:center;gap:10px">' +
         '<div style="font-size:14px;font-weight:900;color:var(--t3);width:16px">' + (i + 1) + '</div>' + av(x.pid, 34) +
         '<div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:800;color:var(--t1)">' + escH(person(x.pid).name) + (win ? ' \ud83c\udfc6' : '') + '</div>' +
@@ -732,6 +743,11 @@ function chMiniStandingsHTML(id) {
   return '<div class="card" style="margin-top:8px"><div style="font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--teal);margin-bottom:4px">\ud83c\udfc1 ' + escH(CONTESTS[ch.contest].name) + (r.status === 'final' ? ' \u00b7 final' : '') + '</div>' +
     r.rows.map(function (x, i) { var win = (ch.result ? ch.result.winners : []).indexOf(x.pid) >= 0; return '<div style="display:flex;justify-content:space-between;font-size:13px;padding:3px 0;color:' + (i === 0 || win ? 'var(--t1)' : 'var(--t2)') + '"><span>' + (i + 1) + '. ' + escH(person(x.pid).name) + (win ? ' \ud83c\udfc6' : '') + '</span><b>' + escH(x.display) + '</b></div>'; }).join('') + '</div>';
 }
+function chStandingsLine(id) {
+  var ch = chGet(id); if (!ch) return '';
+  var r = evalNow(ch);
+  return r.rows.map(function (x) { var win = (ch.result ? ch.result.winners : []).indexOf(x.pid) >= 0; return '<span style="font-weight:700;color:' + (win ? 'var(--gold)' : 'var(--t1)') + '">' + (win ? '\ud83c\udfc6 ' : '') + escH(first(x.pid)) + ' <span style="color:var(--t2);font-weight:600">' + escH(x.display) + '</span></span>'; }).join('<span style="color:var(--t3)">\u00b7</span>');
+}
 /* ---------------- head-to-head (bowler menu) ---------------- */
 function chHeadToHeadHTML(pid) {
   var grp = typeof root.grpLoadAll === 'function' ? root.grpLoadAll() : [];
@@ -750,7 +766,7 @@ if (typeof document !== 'undefined') {
   root.chTabHTML = chTabHTML; root.chDetailHTML = chDetailHTML; root.chOpen = chOpen; root.chBack = chBack; root.chNew = chNew; root.chPickSource = chPickSource; root.chPickPreset = chPickPreset;
   root.chFormSync = chFormSync; root.chSubmit = chSubmit; root.chAnswer = chAnswer; root.chCounter = chCounter; root.chCancel = chCancel; root.chDelete = chDelete;
   root.chRematch = chRematch; root.chPostResult = chPostResult; root.chRecordFor = chRecordFor; root.chHeadToHeadHTML = chHeadToHeadHTML; root.stepPresetBack = stepPresetBack; root.chBackSource = chBackSource; root.chAddGames = chAddGames; root.chGameBannerHTML = chGameBannerHTML;
-  root.chPerson = person; root.chPhase = phase; root.chMiniStandingsHTML = chMiniStandingsHTML;
+  root.chPerson = person; root.chPhase = phase; root.chMiniStandingsHTML = chMiniStandingsHTML; root.chStandingsLine = chStandingsLine;
 }
 
 root.BDB_CHALLENGE = api;
