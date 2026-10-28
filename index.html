@@ -2,6 +2,209 @@
 <html lang="en">
 <head>
 <script>
+/* v30.243 SBX-1: storage sandbox (Test mode now, Demo mode later; DESIGN_demo_mode.md 3 + 7a).
+   MUST stay the first script on the page, ahead of the boot rescue and the main script.
+   While the flag "bdb_sandbox" (read unprefixed, with the browser's own methods) is "test":
+   - localStorage getItem / setItem / removeItem / key / length / clear work on "test:<key>" only,
+     and list only test keys. A few picture-link caches (REF) are read through from the real key
+     until Test mode writes its own copy ("by reference"; nothing real is ever written).
+   - indexedDB.open / deleteDatabase('BowlingDB') go to 'BowlingDB_test'.
+   Outside a sandbox the real keys are listed without any "test:" / "demo:" keys.
+   Downloads and shared files made in Test mode are named TEST_<name>.
+   Plain ES5, ASCII only. */
+(function () {
+  'use strict';
+  var W = window, FLAG = 'bdb_sandbox', META = 'bdb_sandbox_meta', MODES = { test: 1 };
+  var NS = /^(test|demo):/, TOMB = '\u0000bdb_removed';
+  var REF = /^(bdbimg_pick|bdbimg_core|bdbimg_links|bdbimg_scan|bdbgh_ap_cache|bowlingdb_ai_models)$/;
+  var SKIP = /_undo($|_)/;   // undo copies of real repairs never go into a test copy
+  var SP = W.Storage && Storage.prototype;
+  if (!SP) return;
+  var oGet = SP.getItem, oSet = SP.setItem, oRem = SP.removeItem, oKey = SP.key;
+  var lenD = Object.getOwnPropertyDescriptor(SP, 'length');
+  var LS = null; try { LS = W.localStorage; } catch (e) {}
+  if (!LS || !lenD || !lenD.get) return;
+  var mode = null; try { var f = oGet.call(LS, FLAG); if (MODES[f]) mode = f; } catch (e) {}
+  var PFX = mode ? mode + ':' : '';
+  function rawLen() { return lenD.get.call(LS); }
+  function rawKeys() { var a = [], n = rawLen(), k; for (var i = 0; i < n; i++) { k = oKey.call(LS, i); if (k != null) a.push(k); } return a; }
+  function sys(k) { return k === FLAG || k === META; }
+  function realKeys() { return rawKeys().filter(function (k) { return !NS.test(k) && !sys(k); }); }
+  function modeKeys() {
+    var own = {}, out = [];
+    rawKeys().forEach(function (k) { if (k.indexOf(PFX) === 0) { var b = k.slice(PFX.length); own[b] = 1; if (oGet.call(LS, k) !== TOMB) out.push(b); } });
+    realKeys().forEach(function (k) { if (REF.test(k) && !own[k]) out.push(k); });   // read-through keys are listed too
+    return out;
+  }
+  function keys() { return mode ? modeKeys() : realKeys(); }
+  SP.getItem = function (k) {
+    if (this !== LS || !mode) return oGet.call(this, k);
+    k = String(k); var v = oGet.call(LS, PFX + k);
+    if (v === TOMB) return null;
+    if (v === null && REF.test(k)) return oGet.call(LS, k);
+    return v;
+  };
+  var dead = false;   // set while the open test copy is being cleared: late writes (unload) must not bring it back
+  SP.setItem = function (k, v) { if (this !== LS || !mode) return oSet.call(this, k, v); if (dead) return; return oSet.call(LS, PFX + String(k), v); };
+  SP.removeItem = function (k) {
+    if (this !== LS || !mode) return oRem.call(this, k);
+    if (dead) return;
+    k = String(k);
+    if (REF.test(k)) { try { return oSet.call(LS, PFX + k, TOMB); } catch (e) {} }
+    return oRem.call(LS, PFX + k);
+  };
+  SP.key = function (i) { if (this !== LS) return oKey.call(this, i); var a = keys(); return i >= 0 && i < a.length ? a[i] : null; };
+  var oClear = SP.clear;
+  SP.clear = function () { if (this !== LS) return oClear.call(this); if (mode) dropKeys(mode); else realKeys().forEach(function (k) { oRem.call(LS, k); }); };
+  Object.defineProperty(SP, 'length', { configurable: true, enumerable: lenD.enumerable, get: function () { return this === LS ? keys().length : lenD.get.call(this); } });
+  /* Object.keys(localStorage) lists raw keys, so the app uses this instead */
+  W.bdbLsKeys = function () { return keys(); };
+
+  /* ---------- IndexedDB: BowlingDB -> BowlingDB_<mode> ---------- */
+  var IF = W.IDBFactory && IDBFactory.prototype, oOpen = IF && IF.open, oDel = IF && IF.deleteDatabase;
+  function mapDB(n) { return mode && n === 'BowlingDB' ? 'BowlingDB_' + mode : n; }
+  if (IF) {
+    IF.open = function (n, v) { return arguments.length > 1 && v !== undefined ? oOpen.call(this, mapDB(n), v) : oOpen.call(this, mapDB(n)); };
+    IF.deleteDatabase = function (n) { return oDel.call(this, mapDB(n)); };
+  }
+
+  /* ---------- TEST_ file names ---------- */
+  function testName(n) { n = String(n == null ? '' : n); return mode && n && !/^TEST_/.test(n) ? 'TEST_' + n : n; }
+  if (mode && W.HTMLAnchorElement) {
+    var oClick = HTMLAnchorElement.prototype.click;
+    HTMLAnchorElement.prototype.click = function () { try { if (this.hasAttribute('download')) this.download = testName(this.download || 'BowlingDB_file'); } catch (e) {} return oClick.apply(this, arguments); };
+  }
+  if (mode && typeof W.File === 'function') {
+    try {
+      var OF = W.File, NF = function File(bits, name, opts) { return new OF(bits, testName(name), opts); };
+      NF.prototype = OF.prototype; W.File = NF;
+    } catch (e) {}
+  }
+
+  /* ---------- copy / enter / exit / clear ---------- */
+  function rq(r) { return new Promise(function (res, rej) { r.onsuccess = function () { res(r.result); }; r.onerror = function () { rej(r.error); }; }); }
+  function openRaw(name, ver, upgrade) {
+    return new Promise(function (res, rej) {
+      var r = ver ? oOpen.call(W.indexedDB, name, ver) : oOpen.call(W.indexedDB, name);
+      r.onupgradeneeded = function () { if (upgrade) upgrade(r.result); };
+      r.onsuccess = function () { res(r.result); }; r.onerror = function () { rej(r.error); };
+    });
+  }
+  function delRaw(name) {
+    return new Promise(function (res, rej) {
+      var r = oDel.call(W.indexedDB, name), t = setTimeout(function () { rej(new Error('Another BowlingDB window is open. Close it and try again.')); }, 6000);
+      r.onsuccess = function () { clearTimeout(t); res(); }; r.onerror = function () { clearTimeout(t); rej(r.error); };
+    });
+  }
+  function closeAppDB() { try { if (typeof W.__bdbIdbClose === 'function') W.__bdbIdbClose(); } catch (e) {} }
+  function readMeta() { try { return JSON.parse(oGet.call(LS, META) || '{}') || {}; } catch (e) { return {}; } }
+  function writeMeta(m) { try { oSet.call(LS, META, JSON.stringify(m)); } catch (e) {} }
+  function usage() {
+    var u = { real: 0, test: 0, demo: 0, other: 0 };
+    rawKeys().forEach(function (k) { var v = oGet.call(LS, k) || '', n = k.length + v.length, m = /^(test|demo):/.exec(k); if (m) u[m[1]] += n; else if (sys(k)) u.other += n; else u.real += n; });
+    u.total = u.real + u.test + u.demo + u.other; return u;
+  }
+  function dropKeys(m) { rawKeys().forEach(function (k) { if (k.indexOf(m + ':') === 0) oRem.call(LS, k); }); }
+  function copyStore(src, dst, n) {
+    var s = src.transaction(n, 'readonly').objectStore(n), inl = s.keyPath != null;
+    return Promise.all([rq(s.getAll()), inl ? Promise.resolve(null) : rq(s.getAllKeys())]).then(function (r) {
+      var rows = r[0] || [], ks = r[1], i = 0;
+      function next() {
+        if (i >= rows.length) return Promise.resolve(rows.length);
+        return new Promise(function (res, rej) {
+          var t = dst.transaction(n, 'readwrite'), o = t.objectStore(n), end = Math.min(i + 500, rows.length);   // batches of 500 (iOS)
+          for (; i < end; i++) { if (inl) o.put(rows[i]); else o.put(rows[i], ks[i]); }
+          t.oncomplete = function () { res(); }; t.onerror = function () { rej(t.error); }; t.onabort = function () { rej(t.error || new Error('copy aborted')); };
+        }).then(next);
+      }
+      return next();
+    });
+  }
+  function copyIDB(m, progress) {
+    var target = 'BowlingDB_' + m, counts = {};
+    return openRaw('BowlingDB').then(function (src) {
+      var names = Array.prototype.slice.call(src.objectStoreNames), ver = src.version;
+      var specs = names.map(function (n) {
+        var s = src.transaction(n, 'readonly').objectStore(n);
+        return { n: n, kp: s.keyPath, ai: s.autoIncrement, ix: Array.prototype.slice.call(s.indexNames).map(function (x) { var i = s.index(x); return { n: x, kp: i.keyPath, u: i.unique, me: i.multiEntry }; }) };
+      });
+      return delRaw(target).then(function () {
+        return openRaw(target, ver, function (db) {
+          specs.forEach(function (sp) {
+            var os = db.createObjectStore(sp.n, sp.kp == null ? { autoIncrement: sp.ai } : { keyPath: sp.kp, autoIncrement: sp.ai });
+            sp.ix.forEach(function (x) { os.createIndex(x.n, x.kp, { unique: x.u, multiEntry: x.me }); });
+          });
+        });
+      }).then(function (dst) {
+        return names.reduce(function (p, n) {
+          return p.then(function () { if (progress) progress('Copying ' + n + '\u2026'); return copyStore(src, dst, n).then(function (c) { counts[n] = c; }); });
+        }, Promise.resolve()).then(function () { src.close(); dst.close(); return counts; }, function (e) { src.close(); dst.close(); throw e; });
+      });
+    });
+  }
+  /* A fresh copy of the real data into <m>: localStorage keys (no undo copies, no read-through caches) + every BowlingDB store. */
+  function makeCopy(m, progress) {
+    closeAppDB();
+    if (progress) progress('Copying settings\u2026');
+    dropKeys(m);
+    var n = 0, chars = 0, skipped = [];
+    try {
+      realKeys().forEach(function (k) {
+        if (SKIP.test(k) || REF.test(k)) { skipped.push(k); return; }
+        var v = oGet.call(LS, k); oSet.call(LS, m + ':' + k, v); n++; chars += k.length + v.length + m.length + 1;
+      });
+    } catch (e) {
+      dropKeys(m);
+      return Promise.reject(new Error('Not enough room on this phone for a test copy of the settings (' + (e && e.name || 'quota') + ').'));
+    }
+    return copyIDB(m, progress).then(function (counts) {
+      var meta = readMeta();
+      meta[m] = { at: new Date().toISOString(), app: typeof APP_VERSION !== 'undefined' ? APP_VERSION : '', keys: n, chars: chars, skipped: skipped, idb: counts };
+      writeMeta(meta); return meta[m];
+    }, function (e) { dropKeys(m); throw e; });
+  }
+  function enter(m, fresh, progress) {
+    m = m || 'test';
+    var go = function () { oSet.call(LS, FLAG, m); location.reload(); };
+    if (!fresh && readMeta()[m]) { go(); return Promise.resolve(); }
+    return makeCopy(m, progress).then(go);
+  }
+  function exit() { closeAppDB(); oRem.call(LS, FLAG); location.reload(); }
+  function clearCopy(m) {
+    m = m || 'test';
+    closeAppDB();
+    var inIt = mode === m;
+    if (inIt) { oRem.call(LS, FLAG); dead = true; }
+    dropKeys(m);
+    var meta = readMeta(); delete meta[m]; writeMeta(meta);
+    return delRaw('BowlingDB_' + m).then(function () { return delRaw('bdb_catimg_' + m).catch(function () {}); }).then(function () { if (inIt) { dropKeys(m); location.reload(); } });
+  }
+  /* TEST watermark on a finished canvas (share cards, certificates) */
+  function watermark(cv) {
+    if (!mode || !cv || !cv.getContext) return cv;
+    var c = cv.getContext('2d'), w = cv.width, h = cv.height, s = Math.max(w, h);
+    c.save();
+    c.globalAlpha = 0.13; c.fillStyle = '#ff8a00'; c.font = '900 ' + Math.round(w / 6) + 'px -apple-system, Helvetica, Arial, sans-serif';
+    c.textAlign = 'center'; c.textBaseline = 'middle'; c.translate(w / 2, h / 2); c.rotate(-Math.PI / 6);
+    for (var y = -s; y <= s; y += Math.round(w / 3.2)) c.fillText('TEST  TEST  TEST', 0, y);
+    c.restore(); c.save();
+    var bh = Math.round(w * 0.06);
+    c.fillStyle = '#ff8a00'; c.fillRect(0, h - bh, w, bh);
+    c.fillStyle = '#111'; c.font = '800 ' + Math.round(bh * 0.5) + 'px -apple-system, Helvetica, Arial, sans-serif';
+    c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText('TEST MODE \u00b7 not a real result', w / 2, h - bh / 2);
+    c.restore();
+    return cv;
+  }
+  W.bdbSandbox = {
+    mode: function () { return mode; }, isTest: function () { return mode === 'test'; },
+    info: function (m) { return readMeta()[m || 'test'] || null; }, usage: usage,
+    enter: enter, exit: exit, clear: clearCopy, makeCopy: makeCopy, testName: testName, watermark: watermark,
+    realKeys: realKeys, REF: REF, SKIP: SKIP
+  };
+  if (mode) document.documentElement.className += ' bdb-sbx bdb-' + mode;
+})();
+</script>
+<script>
 /* v30.223 BOOT-1: if the app doesn't start (a file that failed to update, a cached mix of old and new
    files, a script error), show what happened and three ways out instead of a blank home screen.
    Plain old JavaScript on purpose, in its own script tag, so it still runs when the main script can't.
@@ -44,6 +247,7 @@
   window.bdbBootBackup = function () {
     msg('Collecting\u2026');
     var out = { kind: 'bowlingdb-emergency-copy', at: new Date().toISOString(), localStorage: {}, idb: {}, skipped: 0 };
+    if (window.bdbSandbox && window.bdbSandbox.mode()) out.testCopy = true;
     try { for (var i = 0; i < localStorage.length; i++) { var k = localStorage.key(i); if (!/^bdbgh_|ai_key/.test(k)) out.localStorage[k] = localStorage.getItem(k); } } catch (e) {}
     var done = function () {
       try {
@@ -82,7 +286,7 @@
      (its *_VERSION line). sw.js reads this block: it keeps the app's
      files as one matching set and never opens a mix of old and new files. Every file
      is fetched as name.js?v=APP_VERSION. Update a version here when that file changes. -->
-<script type="application/json" id="bdb-files">{"devkit.js":"v30.234","report.js":"v30.156","catalog.js":"v30.224","workbench.js":"v30.223","pinpal.js":"v30.199","awards.js":"v30.233","share.js":"v30.240","connect.js":"v30.242","challenge.js":"v30.242"}</script>
+<script type="application/json" id="bdb-files">{"devkit.js":"v30.234","report.js":"v30.156","catalog.js":"v30.243","workbench.js":"v30.223","pinpal.js":"v30.199","awards.js":"v30.243","share.js":"v30.243","connect.js":"v30.242","challenge.js":"v30.244","chplay.js":"v30.244"}</script>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#0E0F11">
@@ -2929,9 +3133,15 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
     <div id="s-open" class="screen" data-title="Open Bowling">
       <div class="sec-header">
         <span class="sec-title">Open Bowling</span>
-        <button class="add-btn" onclick="openNewOpenSessionModal()"></button>
+        <button class="add-btn" onclick="openBowlAdd()"></button>
       </div>
+      <div id="open-tabs"></div>
       <div id="open-list"></div>
+    </div>
+
+    <!-- v30.244: open challenge card (chplay.js); its games never enter series / games -->
+    <div id="s-chplay" class="screen" data-title="Challenge game">
+      <div id="cp-root"></div>
     </div>
 
     <!-- TOURNAMENTS -->
@@ -3365,6 +3575,7 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
 
     <!-- GAME COMPLETE -->
     <div id="s-game-complete" class="screen" data-title="Game Complete">
+      <div id="gc-test"></div>
       <div class="sc-wrap">
         <div class="sc-scroll"><div class="sc-grid" id="sc-grid-complete"></div></div>
       </div>
@@ -3542,15 +3753,15 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
    Bump both lines (and CATALOG_JS_VERSION in catalog.js when it changes).
    v30.224 OFF-2: also bump the ?v= on the three <script src> tags at the end of
    the page, and the file list in <script id="bdb-files"> when a .js file changes. */
-const APP_VERSION = 'v30.242';
-const APP_BUILD_DATE = '2026-10-25';
+const APP_VERSION = 'v30.244';
+const APP_BUILD_DATE = '2026-10-27';
 /* catalog.js this build expects; an older file on the server shows a warning */
-const EXPECTED_CATALOG_JS = 'v30.224';
+const EXPECTED_CATALOG_JS = 'v30.243';
 function applyAppVersion() {
 const ref = document.getElementById('hdr-build-ref');
 const cat = (typeof window.CATALOG_JS_VERSION === 'string') ? window.CATALOG_JS_VERSION : null;
 if (ref) {
-ref.textContent = APP_VERSION + ' \u00b7 ' + APP_BUILD_DATE;
+ref.textContent = (window.bdbSandbox && window.bdbSandbox.isTest()) ? 'TEST \u00b7 ' + APP_VERSION : APP_VERSION + ' \u00b7 ' + APP_BUILD_DATE;
 if (cat && cat !== EXPECTED_CATALOG_JS) {
 const w = document.createElement('span');
 w.style.color = 'var(--gold)';
@@ -3560,8 +3771,9 @@ ref.appendChild(w);
 }
 }
 const home = document.getElementById('home-version');
-if (home) home.textContent = APP_VERSION;
-document.title = 'BowlingDB ' + APP_VERSION;
+const _tst = !!(window.bdbSandbox && window.bdbSandbox.isTest());
+if (home) { home.textContent = (_tst ? 'TEST \u00b7 ' : '') + APP_VERSION; if (_tst) home.style.color = '#ff9a1f'; }
+document.title = (_tst ? 'TEST ' : '') + 'BowlingDB ' + APP_VERSION;
 }
 document.addEventListener('DOMContentLoaded', applyAppVersion);
 window.addEventListener('load', applyAppVersion);
@@ -3710,7 +3922,7 @@ window.addEventListener('load', applyAppVersion);
 const STORE_KEY = 'bowlingdb_v2';
 
 const IDB_NAME   = 'BowlingDB';
-const IDB_VER    = 4; 
+const IDB_VER    = 5;   /* v30.244: + challengeSessions (open challenge games, out of every stat) */
 const IDB_STORES = ['series','games','frames','attempts'];
  
 function addLongPress(el, cb) {
@@ -3728,6 +3940,8 @@ el.addEventListener('touchcancel',()=> clearTimeout(timer), { passive: true });
 }
  
 let _idb = null;
+/* v30.243 SBX-1: Test mode closes the open database before it copies or clears */
+window.__bdbIdbClose = () => { try { if (_idb) _idb.close(); } catch (e) {} _idb = null; };
 function openIDB() {
 if (_idb) return Promise.resolve(_idb);
 return new Promise((res, rej) => {
@@ -3756,6 +3970,8 @@ idb.createObjectStore('laneLibrary', { keyPath: 'LaneKey'});
 
 if (!idb.objectStoreNames.contains('recalledContext'))
 idb.createObjectStore('recalledContext', { keyPath: 'id'});
+if (!idb.objectStoreNames.contains('challengeSessions'))
+idb.createObjectStore('challengeSessions', { keyPath: 'id'});
 };
 req.onsuccess = e => {
 _idb = e.target.result;
@@ -4252,6 +4468,7 @@ const target = document.getElementById(screenId);
 if (!target) return;
 target.classList.add('active');
 target.scrollTop = 0;
+document.body.dataset.screen = screenId;   /* v30.243: TEST chip on scoring / Game Complete */
 
 const isRoot = ROOT_SCREENS.includes(screenId);
 document.getElementById('hdr-back').classList.toggle('show', !isRoot);
@@ -4289,6 +4506,7 @@ try {
 's-home': renderHome,
 's-leagues': renderLeagues,
 's-open': renderOpenList,
+'s-chplay': renderChPlay,
 's-tournaments': renderTournamentList,
 's-tournament-series': renderTournamentSeriesList,
 's-balls': renderBallsScreen,
@@ -12296,6 +12514,7 @@ function renderGameComplete() {
 const game = db.games.find(g=>g.GameID===G.gameID);
 const score = game?.FinalScore ?? game?.GameTotal ?? 0;
 document.getElementById('gc-score').textContent = score;
+try { const _gt = document.getElementById('gc-test'); if (_gt) _gt.innerHTML = bdbTestGcHTML(); } catch (e) {}
 try { gcAwardsBanner(G.gameID, G.seriesID); } catch (e) {}
 
 hdcpUpdateGameComplete(G.seriesID, G.gameID, score);
@@ -18851,7 +19070,7 @@ function _chLoad(then) {
 if (typeof chTabHTML === 'function') return then();
 const s = document.createElement('script');
 s.src = 'challenge.js?v=' + encodeURIComponent(APP_VERSION);
-s.onload = () => { if (typeof chTabHTML === 'function') then(); else toast('Challenges did not load'); };
+s.onload = () => { if (typeof chTabHTML !== 'function') { toast('Challenges did not load'); return; } _cpLoad(then); };   /* v30.244: chplay.js too (open challenge games) */
 s.onerror = () => toast('Challenges unavailable: upload challenge.js next to index.html');
 document.head.appendChild(s);
 }
@@ -19256,9 +19475,41 @@ haptic('light');
 
 
 
+/* v30.244: Open Bowling has two tabs: Sessions (ordinary open play) and Challenges (open challenge games, chplay.js) */
+function openBowlTab(k) { window._openTab = k === 'ch' ? 'ch' : 'sessions'; renderOpenList(); }
+function openBowlAdd() { if (window._openTab === 'ch') _cpLoad(() => cpNewOpenChallenge()); else openNewOpenSessionModal(); }
+function _openTabsHTML() {
+const on = window._openTab === 'ch' ? 'ch' : 'sessions';
+const b = (k, l) => `<div class="btn-pill${on === k ? ' btn-pill-sel' : ''}" onclick="openBowlTab('${k}')">${l}</div>`;
+return `<div style="display:flex;gap:6px;margin:0 0 12px">${b('sessions', 'Sessions')}${b('ch', '\u{1F3C1} Challenges')}</div>`;
+}
+function renderChPlay() {
+const el = document.getElementById('cp-root');
+if (typeof cpRenderScorer === 'function') return cpRenderScorer();
+if (el) el.innerHTML = '<div style="color:var(--t3);font-size:13px">Loading\u2026</div>';
+_cpLoad(() => cpRenderScorer());
+}
+function _cpLoad(then) {
+if (typeof cpRenderScorer === 'function' && typeof chTabHTML === 'function') return cpLoadSessions().then(then);
+const go = () => {
+if (typeof cpRenderScorer === 'function') return cpLoadSessions().then(then);
+if (window._cpWaiting) { window._cpWaiting.push(then); return; }   /* one script tag, however many callers */
+window._cpWaiting = [then];
+const done = ok => { const w = window._cpWaiting || []; window._cpWaiting = null; if (ok) cpLoadSessions().then(() => w.forEach(f => f())); };
+const s = document.createElement('script');
+s.src = 'chplay.js?v=' + encodeURIComponent(APP_VERSION);
+s.onload = () => { if (typeof cpLoadSessions === 'function') done(true); else { done(false); toast('Challenge games did not load'); } };
+s.onerror = () => { done(false); toast('Challenge games unavailable: upload chplay.js next to index.html'); };
+document.head.appendChild(s);
+};
+if (typeof chTabHTML === 'function') go(); else _chLoad(go);
+}
 function renderOpenList() {
 const el = document.getElementById('open-list');
 if (!el) return;
+const tabs = document.getElementById('open-tabs');
+if (tabs) tabs.innerHTML = _openTabsHTML();
+if (window._openTab === 'ch') { el.innerHTML = '<div style="color:var(--t3);font-size:13px">Loading\u2026</div>'; _cpLoad(() => cpRenderOpenTab(el)); return; }
 const sessions = (db.openSessions||[]).sort((a,b)=>new Date(b.DateBowled)-new Date(a.DateBowled));
 if (!sessions.length) {
 el.innerHTML = `<div class="empty-state"><div class="empty-icon">🎳</div>
@@ -26745,6 +26996,7 @@ const totalEstKB = refKB + (scoringCounts.attempts||0)*0.8 + (scoringCounts.fram
 const roughMB = (totalEstKB/1024).toFixed(1);
 openModal(`
     <div class="modal-title">Data Sync</div>
+    ${bdbIsTest() ? '<div class="bdb-test-gc" style="line-height:1.45"><b>TEST</b><span>Test mode: exports and the Full Snapshot are saved as TEST_ files. Imports and restores are off.</span></div>' : ''}
 
     <!-- EXPORT -->
     <div class="settings-section">
@@ -26934,7 +27186,7 @@ catch(e) { return null; }
    device) and `bowlingdb_ai_models` (a regenerable 24h cache). Ball images
    are opt-in because they are base64 and dominate the file size.
    */
-const SNAPSHOT_IDB_STORES = ['ballImages', 'laneLibrary', 'recalledContext'];
+const SNAPSHOT_IDB_STORES = ['ballImages', 'laneLibrary', 'recalledContext', 'challengeSessions'];
 const SNAPSHOT_LS_SKIP = new Set(['bowlingdb_ai_key', 'bowlingdb_ai_models']);
  
 const SNAPSHOT_LS_EXTRA_PREFIXES = ['debrief_', 'fm_chip_dock', 'fm_spare_chip_dock',
@@ -26967,6 +27219,7 @@ snapshotVersion: 1,
 exportDate: new Date().toISOString(),
 exportSource: 'BowlingDB PWA ' + APP_VERSION,
 includesBallImages: !!includeBallImages,
+testCopy: bdbIsTest() || undefined,
 excluded: Array.from(SNAPSHOT_LS_SKIP)
 },
 doc: buildExportDoc(),
@@ -26981,11 +27234,12 @@ return !!(parsed && parsed.meta && parsed.meta.kind === 'bowlingdb-snapshot'&& p
 
 
 async function restoreFullSnapshot(snap) {
+if (bdbIsTest()) throw new Error('Restore is off in Test mode');
 if (!isFullSnapshot(snap)) throw new Error('Not a snapshot file');
 
 const keepKey = localStorage.getItem('bowlingdb_ai_key');
 const keepPics = {}; SNAPSHOT_LS_MERGE.forEach(k => { try { keepPics[k] = JSON.parse(localStorage.getItem(k) || '{}') || {}; } catch(e) { keepPics[k] = {}; } });
-Object.keys(localStorage)
+bdbLsKeys()
 .filter(_snapshotOwnsKey)
 .forEach(k => { try { localStorage.removeItem(k); } catch(e) {} });
 Object.entries(snap.localStorage || {}).forEach(([k, v]) => {
@@ -27022,9 +27276,9 @@ return snap.doc;
      get their missing entries.
    The whole plan is shown before anything is written; the app reloads afterwards. The keys it
    added are kept in bowlingdb_rsc_undo. */
-const RSC_IDB_KEY = { series:'SeriesID', games:'GameID', frames:'FrameID', attempts:'AttemptID', laneLibrary:'LaneKey', recalledContext:'id' };
+const RSC_IDB_KEY = { series:'SeriesID', games:'GameID', frames:'FrameID', attempts:'AttemptID', laneLibrary:'LaneKey', recalledContext:'id', challengeSessions:'id' };
 const RSC_SCORING = ['series','games','frames','attempts'];
-const RSC_LABEL = { series:'series', games:'games', frames:'frames', attempts:'attempts', laneLibrary:'lane library entries', recalledContext:'recalled context entries' };
+const RSC_LABEL = { series:'series', games:'games', frames:'frames', attempts:'attempts', laneLibrary:'lane library entries', recalledContext:'recalled context entries', challengeSessions:'open challenge sessions' };
 const RSC_SKIP_LS = /^bdbgh_|ai_key|^bowlingdb_rsc_undo$/;
 function rscIsCopy(p) { return !!(p && p.kind === 'bowlingdb-emergency-copy' && p.localStorage && p.idb); }
 function _rscStable(v) {
@@ -27169,10 +27423,12 @@ function rscHandleFile(input) {
   const file = input.files && input.files[0];
   if (!file) return;
   input.value = '';
+  if (bdbTestBlocked('Restores') || bdbTestFileRefused(file.name)) return;
   const reader = new FileReader();
   reader.onload = async e => {
     let copy;
     try { copy = JSON.parse(e.target.result); } catch (err) { toast('Not a readable file'); return; }
+    if (bdbTestFileRefused(file.name, copy)) return;
     if (!rscIsCopy(copy)) { toast(isFullSnapshot(copy) ? 'That is a Full Snapshot: use Import from Access \u203a Choose JSON File' : 'Not a BowlingDB safety copy'); return; }
     let plan;
     try { plan = await rscPlan(copy); } catch (err) { toast('Could not read this phone\u2019s data: ' + err.message); return; }
@@ -27208,6 +27464,7 @@ function handleImportFile(input) {
 const file = input.files?.[0];
 if (!file) return;
 input.value = ''; 
+if (bdbTestBlocked('Imports') || bdbTestFileRefused(file.name)) return;
 const fileMB = (file.size / 1024 / 1024).toFixed(1);
 
 
@@ -27238,6 +27495,7 @@ return;
 
 
 
+if (bdbTestFileRefused(file.name, parsed)) return;
 let _snapshotPayload = null;
 if (isFullSnapshot(parsed)) {
 _snapshotPayload = parsed;
@@ -27349,6 +27607,7 @@ openModal(`
   `);
 }
 async function confirmImport() {
+if (bdbTestBlocked('Imports')) { _importPending = null; return; }
 const stratEl = document.querySelector('input[name="import-strategy"]:checked');
 if (!stratEl || !_importPending) { toast('Nothing to import'); return; }
 const strategy = stratEl.value;
@@ -28547,6 +28806,122 @@ saveAll().then(() => { closeModal(); toast('Orphaned frames cleared'); runDataIn
 /* v30.177: Settings groups (collapsed by default; open ones remembered for this session) */
 function _setOpen(k){ try { return JSON.parse(sessionStorage.getItem('bdb_set_open')||'[]').includes(k) ? 'open' : ''; } catch(e) { return ''; } }
 function _setGrpToggle(el){ try { const o = new Set(JSON.parse(sessionStorage.getItem('bdb_set_open')||'[]')); el.open ? o.add(el.dataset.g) : o.delete(el.dataset.g); sessionStorage.setItem('bdb_set_open', JSON.stringify([...o])); } catch(e) {} }
+/* v30.243 SBX-1 Test mode (DESIGN_demo_mode.md 7a, T1-T4). Storage switching lives in the first script
+   (window.bdbSandbox); this is the marker, the Settings entry and the guards. */
+function bdbIsTest() { return !!(window.bdbSandbox && window.bdbSandbox.isTest()); }
+function bdbTestBlocked(what) {
+  if (!bdbIsTest()) return false;
+  toast(what + ' are off in Test mode. Exit Test mode to use them.', 4000);
+  return true;
+}
+/* a TEST file (TEST_ name, or marked inside) must never be read into the real data */
+function bdbTestFileRefused(name, parsed) {
+  if (bdbIsTest()) return false;
+  const marked = !!(parsed && ((parsed.meta && parsed.meta.testCopy) || parsed.testCopy));
+  if (!/^TEST_/i.test(String(name || '')) && !marked) return false;
+  toast('That is a Test mode file. It can’t be loaded into your real data.', 4500);
+  return true;
+}
+function bdbTestCSS() {
+  if (document.getElementById('bdb-test-css')) return;
+  const st = document.createElement('style'); st.id = 'bdb-test-css';
+  st.textContent = [
+    '#bdb-test-band{flex-shrink:0;display:flex;align-items:center;gap:8px;padding:calc(var(--safe-t) + 4px) 12px 6px;background:repeating-linear-gradient(135deg,#ff8a00 0 14px,#e56a00 14px 28px);color:#111;font:800 12px -apple-system,system-ui,sans-serif;position:relative;z-index:30;box-shadow:0 2px 8px rgba(0,0,0,.35)}',
+    '#bdb-test-band .tb-t{letter-spacing:.08em;background:#111;color:#ff9a1f;border-radius:6px;padding:2px 7px}',
+    '#bdb-test-band .tb-s{flex:1;min-width:0;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}',
+    '#bdb-test-band button{background:#111;color:#ff9a1f;border:none;border-radius:10px;padding:6px 14px;font:800 12px -apple-system,system-ui,sans-serif;cursor:pointer;flex-shrink:0}',
+    'html.bdb-test #hdr{padding-top:6px;min-height:50px;background:linear-gradient(180deg,rgba(255,138,0,.30) 0%,rgba(255,138,0,.10) 100%);border-bottom:1px solid rgba(255,138,0,.5)}',
+    'html.bdb-test #hdr-build-ref{color:#ff9a1f}',
+    '#bdb-test-chip{display:none;align-items:center;flex-shrink:0;background:#ff8a00;color:#111;font:900 10px -apple-system,system-ui,sans-serif;letter-spacing:.06em;border-radius:7px;padding:2px 6px;margin-left:-4px}',
+    'body[data-screen="s-scoring"] #bdb-test-chip,body[data-screen="s-game-complete"] #bdb-test-chip,body[data-screen="s-chplay"] #bdb-test-chip{display:inline-flex}',
+    '#bdb-test-pin{position:fixed;left:0;top:50%;transform:translateY(-50%);writing-mode:vertical-rl;z-index:2147483000;pointer-events:none;background:#ff8a00;color:#111;font:900 9px -apple-system,system-ui,sans-serif;letter-spacing:.2em;padding:8px 2px;border-radius:0 6px 6px 0;opacity:.9}',
+    '.bdb-test-gc{display:flex;align-items:center;gap:8px;background:rgba(255,138,0,.12);border:1px solid rgba(255,138,0,.5);color:#ff9a1f;border-radius:12px;padding:8px 12px;margin-bottom:12px;font-size:12px;font-weight:700}',
+    '.bdb-test-gc b{background:#ff8a00;color:#111;border-radius:6px;padding:1px 7px;letter-spacing:.08em}'
+  ].join('\n');
+  document.head.appendChild(st);
+}
+function bdbTestMarkers() {
+  if (!document.body.dataset.screen) document.body.dataset.screen = (document.querySelector('.screen.active') || {}).id || 's-home';
+  if (!bdbIsTest()) return;
+  bdbTestCSS();
+  document.documentElement.classList.add('bdb-test');
+  const app = document.getElementById('app');
+  if (app && !document.getElementById('bdb-test-band')) {
+    const b = document.createElement('div'); b.id = 'bdb-test-band';
+    b.innerHTML = '<span class="tb-t">TEST MODE</span><span class="tb-s">nothing here touches your real data</span><button onclick="bdbTestExit()">Exit</button>';
+    app.insertBefore(b, app.firstChild);
+  }
+  const t = document.getElementById('hdr-title');
+  if (t && !document.getElementById('bdb-test-chip')) {
+    const c = document.createElement('span'); c.id = 'bdb-test-chip'; c.textContent = 'TEST';
+    t.parentNode.insertBefore(c, t.nextSibling);
+  }
+  if (!document.getElementById('bdb-test-pin')) {
+    const p = document.createElement('div'); p.id = 'bdb-test-pin'; p.textContent = 'TEST'; document.body.appendChild(p);
+  }
+}
+document.addEventListener('DOMContentLoaded', bdbTestMarkers);
+if (document.readyState !== 'loading') setTimeout(bdbTestMarkers, 0);
+/* the Game Complete / scoring banner line (also in the header chip) */
+function bdbTestGcHTML() { return bdbIsTest() ? '<div class="bdb-test-gc"><b>TEST</b>Test mode game: kept in the test copy, never in your real data.</div>' : ''; }
+function bdbTestExit() {
+  try { saveGState(); } catch (e) {}
+  toast('Back to your real data…');
+  setTimeout(() => window.bdbSandbox.exit(), 250);
+}
+function _bdbFmtWhen(iso) {
+  try { const d = new Date(iso); return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) + ', ' + d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' }); } catch (e) { return iso || ''; }
+}
+/* localStorage room: Chrome / Edge allow about 5.2 million characters; Safari allows 5 MB counted at 2 bytes a
+   character, about 2.6 million. The Settings line uses the stricter Safari figure. */
+const BDB_LS_QUOTA_CHARS = 5 * 1024 * 1024 / 2;
+function bdbTestSettingsHTML() {
+  if (!window.bdbSandbox) return '';
+  const SB = window.bdbSandbox, inT = bdbIsTest(), info = SB.info('test'), u = SB.usage();
+  const games = info && info.idb ? (info.idb.games || 0) : 0;
+  const status = inT
+    ? `<b style="color:#ff9a1f">You are in Test mode.</b> Everything you do here stays in the test copy${info ? ' made ' + _bdbFmtWhen(info.at) : ''}.`
+    : info ? `Test copy made ${_bdbFmtWhen(info.at)} (${games.toLocaleString()} games). Entering carries on from where you left it.`
+           : 'No test copy yet. Entering makes a copy of your data to try things on: score a night, post, run a challenge.';
+  const btn = (label, js, style) => `<button class="btn ${style || 'btn-secondary'}" style="width:100%;margin-top:8px${style === 'tm' ? ';background:#ff8a00;color:#111;font-weight:800;border:none' : ''}" onclick="${js}">${label}</button>`;
+  let b = '';
+  if (inT) b = btn('↩ Exit to my real data', 'bdbTestExit()', 'tm') + btn('↻ Start fresh from real data', 'bdbTestFreshAsk()') + btn('🗑 Clear test copy and exit', 'bdbTestClearAsk()');
+  else if (info) b = btn('🧪 Continue in Test mode', 'bdbTestEnter(false)', 'tm') + btn('↻ Start fresh from real data', 'bdbTestEnter(true)') + btn('🗑 Clear test copy', 'bdbTestClearAsk()');
+  else b = btn('🧪 Enter Test mode', 'bdbTestEnter(true)', 'tm');
+  return `<div class="settings-section" id="bdb-test-settings" style="border:1px solid rgba(255,138,0,.4);border-radius:12px;padding:10px 12px;background:rgba(255,138,0,.05)">
+      <div class="settings-section-hdr">🧪 Test mode
+        <span class="settings-section-hint">Try things on a copy of your data. Your real games, settings and posts are never touched. Live AI works; imports and restores are off; exports are named TEST_.</span>
+      </div>
+      <div style="font-size:12px;color:var(--t2);line-height:1.5">${status}</div>
+      ${b}
+      <div style="font-size:11px;color:${u.total > BDB_LS_QUOTA_CHARS * 0.85 ? 'var(--gold)' : 'var(--t3)'};margin-top:8px">Settings storage on this phone: ${Math.round(u.total / BDB_LS_QUOTA_CHARS * 100)}% used${u.test ? ' (test copy ' + Math.round(u.test / BDB_LS_QUOTA_CHARS * 100) + '%)' : ''}.${u.total > BDB_LS_QUOTA_CHARS * 0.85 ? ' Getting full: clear the test copy when you are done with it.' : ''}</div>
+    </div>`;
+}
+function _bdbTestProgress(t) { const el = document.getElementById('bdb-test-prog'); if (el) el.textContent = t; }
+function bdbTestEnter(fresh) {
+  if (bdbIsTest()) { try { saveGState(); } catch (e) {} }   /* real mode: nothing is written on the way in */
+  if (!fresh && window.bdbSandbox.info('test')) { window.bdbSandbox.enter('test', false); return; }
+  _modalBackdropDismissDisabled = true;
+  openModal('<div class="modal-title">🧪 Making the test copy</div><div id="bdb-test-prog" style="font-size:13px;color:var(--t2);margin:8px 0 14px">Starting…</div><div style="font-size:11px;color:var(--t3)">Your real data is only read. This takes a few seconds; the app reopens in Test mode.</div>');
+  window.bdbSandbox.enter('test', true, _bdbTestProgress).catch(e => {
+    _modalBackdropDismissDisabled = false;
+    openModal('<div class="modal-title">Test copy not made</div><div style="font-size:13px;color:var(--t2);line-height:1.5;margin-bottom:14px">' + _escHtml(e && e.message ? e.message : String(e)) + '<br><br>Nothing was changed.</div><button class="btn btn-secondary" onclick="closeModal()">OK</button>');
+  });
+}
+function bdbTestFreshAsk() {
+  openModal('<div class="modal-title">Start fresh?</div><div style="font-size:13px;color:var(--t2);line-height:1.5;margin-bottom:14px">The test copy is replaced by a new copy of your real data. What you did in Test mode is lost. Your real data is not touched.</div>' +
+    '<button class="btn" style="width:100%;background:#ff8a00;color:#111;font-weight:800;margin-bottom:8px" onclick="bdbTestEnter(true)">Start fresh</button><button class="btn btn-secondary" onclick="closeModal()">Cancel</button>');
+}
+function bdbTestClearAsk() {
+  openModal('<div class="modal-title">Clear the test copy?</div><div style="font-size:13px;color:var(--t2);line-height:1.5;margin-bottom:14px">Everything done in Test mode is deleted. Your real data is not touched.' + (bdbIsTest() ? ' The app reopens with your real data.' : '') + '</div>' +
+    '<button class="btn" style="width:100%;background:var(--red);color:#fff;font-weight:700;margin-bottom:8px" onclick="bdbTestClearYes()">Clear test copy</button><button class="btn btn-secondary" onclick="closeModal()">Cancel</button>');
+}
+function bdbTestClearYes() {
+  const inT = bdbIsTest();
+  window.bdbSandbox.clear('test').then(() => { if (!inT) { toast('Test copy cleared'); openSettingsModal(); } })
+    .catch(e => toast('Could not clear: ' + (e && e.message ? e.message : e), 5000));
+}
+
 function openSettingsModal() {
 aiModelsRefreshIfStale(); 
 openModal(`
@@ -28907,6 +29282,7 @@ return `<div style="display:flex;align-items:center;justify-content:space-betwee
     <details class="set-grp" data-g="data" ${_setOpen('data')} ontoggle="_setGrpToggle(this)">
       <summary><span class="set-grp-ic">🗄</span><span class="set-grp-tx"><span class="set-grp-t">Data &amp; app</span><span class="set-grp-s">${(typeof APP_VERSION!=='undefined'?APP_VERSION+' · ':'')}${(db._scoringCounts?.games ?? db.games.length).toLocaleString()} games · import/export, tools</span></span><span class="set-grp-ch">›</span></summary>
       <div class="set-grp-body">
+    ${bdbTestSettingsHTML()}
     <!-- ── App Update ────────────────────────────────────── -->
     <div class="settings-section">
       <div class="settings-section-hdr">App Update
@@ -30556,6 +30932,7 @@ document.head.appendChild(s);
 
 /* v30.190 PP-1: the PinPal compare lives in pinpal.js (same-origin, loaded on first use). */
 function openPinpalCompare() {
+if (bdbTestBlocked('Imports')) return;
 if (typeof ppOpen === 'function') { ppOpen(); return; }
 const s = document.createElement('script');
 s.src = 'pinpal.js?v=' + encodeURIComponent(APP_VERSION);
@@ -31099,6 +31476,7 @@ openModal(`
   `);
 }
 function handlePreseedFile(input) {
+if (bdbTestBlocked('Imports')) { input.value = ''; return; }
 localStorage.setItem('bowlingdb_preseed_prompt','done');
 handleImportFile(input);
 }
@@ -38210,10 +38588,10 @@ _editStatus:'', _editPriority:1, _newSnap:null, _newStatus:'tbd', _editCat:'note
 };
 var _DKM_STATUS_LABELS = {ok:'🟢 Working',partial:'🟡 Partial',broken:'🔴 Broken',tbd:'⚪ TBD'};
 </script>
-<script src="devkit.js?v=v30.242"></script>
-<script src="report.js?v=v30.242"></script>
+<script src="devkit.js?v=v30.244"></script>
+<script src="report.js?v=v30.244"></script>
 <!-- v30.157 NEW-11 step 4: ball catalog manifest check + IDB cache (same-origin, like devkit.js/report.js). Optional: if missing, the app behaves exactly as before. -->
-<script src="catalog.js?v=v30.242"></script>
+<script src="catalog.js?v=v30.244"></script>
 <script>
 /* v30.162 OFF-1: service worker (sw.js, same folder) so the app opens with
    no connection, and a request that the browser keep this app's storage.
