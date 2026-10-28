@@ -9,7 +9,7 @@
    Loaded by index.html as share.js?v=APP_VERSION on first use; require()-able for the Node harness. */
 (function (root) {
 'use strict';
-var SHARE_VERSION = 'v30.240';
+var SHARE_VERSION = 'v30.243';
 var PREFS_KEY = 'bowlingdb_share_prefs';
 var DEFAULT_PREFS = { size: 'post', name: true, center: true, league: true, avg: true, hdcp: true, detail: true };
 var SIZES = { post: { w: 1080, h: 1350, label: 'Post 4:5' }, story: { w: 1080, h: 1920, label: 'Story 9:16' } };
@@ -621,6 +621,7 @@ function drawShareCard(f, opts, C, canvas, imgs) {
   ctx.fillStyle = bcol; ctx.fillText(lab, W / 2, by + 37);
   ctx.fillStyle = alpha(C.t2, 0.8); ctx.font = '500 24px ' + SANS;
   ctx.fillText('Personal stats recorded in BowlingDB', W / 2, H - (story ? 120 : 70));
+  if (root.bdbSandbox && root.bdbSandbox.mode()) root.bdbSandbox.watermark(cv);   // v30.243: TEST watermark in Test mode
   return cv;
 }
 
