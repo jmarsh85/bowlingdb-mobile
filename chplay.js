@@ -10,7 +10,7 @@
    Loaded by index.html as chplay.js?v=APP_VERSION with challenge.js. ASCII only. */
 (function (root) {
 'use strict';
-var CHPLAY_VERSION = 'v30.244';
+var CHPLAY_VERSION = 'v30.245';
 var STORE = 'challengeSessions';
 var ALL = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 var FORMATS = { standard: { name: 'Standard scoring', about: 'Ordinary bowling scoring.' },
@@ -22,31 +22,32 @@ function minus(rack, knocked) { return rack.filter(function (p) { return knocked
    leave = standing after it) and where the next ball goes (frame, ball, rack) or done. */
 function buildFrames(balls) {
   var frames = [], i = 0, n = (balls || []).length;
-  var at = function (f, b, rack) { return { frames: frames, done: false, next: { frame: f, ball: b, rack: rack.slice() }, used: i }; };
+  var at = function (f, b, rack, fresh) { return { frames: frames, done: false, next: { frame: f, ball: b, rack: rack.slice(), fresh: !!fresh }, used: i }; };
   for (var f = 1; f <= 10; f++) {
     var fr = { n: f, balls: [] }; frames.push(fr);
     var rack = ALL.slice();
     if (f < 10) {
-      if (i >= n) return at(f, 1, rack);
+      if (i >= n) return at(f, 1, rack, true);
       var k1 = balls[i++], lv1 = minus(rack, k1); fr.balls.push({ pins: rack.length - lv1.length, knocked: k1.slice(), leave: lv1 });
       if (!lv1.length) continue;
-      if (i >= n) return at(f, 2, lv1);
+      if (i >= n) return at(f, 2, lv1, false);
       var k2 = balls[i++], lv2 = minus(lv1, k2); fr.balls.push({ pins: lv1.length - lv2.length, knocked: k2.slice(), leave: lv2 });
       continue;
     }
     /* 10th frame: a strike earns two more balls, a spare one; each fresh rack resets */
-    var first = null;
+    var first = null, freshNext = true;
     for (var b = 1; b <= 3; b++) {
       if (b === 3) {
         var b1 = fr.balls[0], b2 = fr.balls[1];
         var earned = b1.pins === 10 || (b1.pins < 10 && !b2.leave.length);
         if (!earned) break;
       }
-      if (i >= n) return at(10, b, rack);
+      if (i >= n) return at(10, b, rack, freshNext);
       var k = balls[i++], lv = minus(rack, k); fr.balls.push({ pins: rack.length - lv.length, knocked: k.slice(), leave: lv });
-      if (b === 1) { first = lv; rack = lv.length ? lv : ALL.slice(); }
+      if (b === 1) { first = lv; rack = lv.length ? lv : ALL.slice(); freshNext = !lv.length; }
       else if (b === 2) {
         if (first.length && lv.length) break;          // open 10th: done after two balls
+        freshNext = !first.length ? !lv.length : true;  // X then X, or a spare: fresh fill; X then a count: spare attempt
         rack = lv.length ? lv : ALL.slice();
       }
     }
@@ -96,7 +97,7 @@ function normOpen(sessions, chID) {
     (s.games || []).forEach(function (g) {
       (s.bowlers || []).forEach(function (bw, bi) {
         var row = g.rows && g.rows[bi]; if (!row) return;
-        var item = { pid: bw.pid, date: s.date || '', key: 'c' + s.id + ':' + g.n, gameNo: g.n, score: null, leagueID: null, tournament: false, open: true, frames: null };
+        var item = { pid: bw.pid, date: s.date || '', key: 'c' + s.id, gameNo: g.n, score: null, leagueID: null, tournament: false, open: true, frames: null };
         if (row.typed != null && row.typed !== '') { item.score = +row.typed; item.typed = true; }
         else {
           var r = scoreOf(row.balls || [], s.format);
@@ -129,7 +130,7 @@ function gameDone(session, gi) {
   return session.bowlers.every(function (bw, bi) { var row = g.rows[bi]; return row && (row.typed != null || buildFrames(row.balls || []).done); });
 }
 
-var api = { CHPLAY_VERSION: CHPLAY_VERSION, STORE: STORE, FORMATS: FORMATS, buildFrames: buildFrames, scoreStd: scoreStd, scoreOf: scoreOf, marks: marks, normOpen: normOpen, turnOf: turnOf, gameDone: gameDone };
+var api = { knockedFrom: knockedFrom, CHPLAY_VERSION: CHPLAY_VERSION, STORE: STORE, FORMATS: FORMATS, buildFrames: buildFrames, scoreStd: scoreStd, scoreOf: scoreOf, marks: marks, normOpen: normOpen, turnOf: turnOf, gameDone: gameDone };
 root.BDB_CHPLAY = api; root.CHPLAY_JS_VERSION = CHPLAY_VERSION;
 if (typeof module !== 'undefined' && module.exports) module.exports = api;
 if (typeof document === 'undefined') return;
@@ -149,6 +150,13 @@ function avOf(pid, size) { try { return root._fsAvatarHTML(root.chPerson(pid), s
 function chName(ch) { return ch ? (ch.name || (root.BDB_CHALLENGE && root.BDB_CHALLENGE.CONTESTS[ch.contest] ? root.BDB_CHALLENGE.CONTESTS[ch.contest].name : 'Challenge')) : 'Challenge'; }
 function phaseOf(ch) { try { return root.chPhase(ch); } catch (e) { return 'running'; } }
 
+/* ---- entry mode (v30.245): like the league screen, a full rack is marked by the pins LEFT STANDING and a
+   spare attempt by the pins KNOCKED DOWN; either can be swapped and the choice is remembered. ---- */
+var MODE_KEY = 'bowlingdb_cp_entry';
+function modes() { var m = {}; try { m = JSON.parse(localStorage.getItem(MODE_KEY) || '{}') || {}; } catch (e) {} return { full: m.full === 'knocked' ? 'knocked' : 'standing', spare: m.spare === 'standing' ? 'standing' : 'knocked' }; }
+function modeFor(rack) { return modes()[rack.length === 10 ? 'full' : 'spare']; }
+/* pins knocked by this ball from what is tapped */
+function knockedFrom(rack, sel, mode) { return mode === 'standing' ? rack.filter(function (p) { return sel.indexOf(p) < 0; }) : rack.filter(function (p) { return sel.indexOf(p) >= 0; }); }
 /* ---- storage ---- */
 function load() {
   if (cp.list) return Promise.resolve(cp.list);
@@ -183,11 +191,19 @@ function css() {
     '.cp-bx{display:flex;justify-content:flex-end;height:16px;font:800 11px ui-monospace,Menlo,monospace;color:var(--t1)}',
     '.cp-bx span{width:13px;text-align:center;border-left:1px solid var(--border1);border-bottom:1px solid var(--border1);line-height:15px}',
     '.cp-tt{text-align:center;font:800 12px -apple-system,system-ui,sans-serif;color:var(--t2);height:17px;line-height:17px}',
-    '.cp-deck{display:flex;flex-direction:column;align-items:center;gap:10px;margin:12px 0 10px}',
+    '.cp-deck{display:flex;flex-direction:column;align-items:center;gap:10px;margin:10px 0 10px}',
     '.cp-deck div{display:flex;gap:14px}',
     '.cp-pin{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:800 15px -apple-system,system-ui,sans-serif;cursor:pointer;user-select:none;-webkit-user-select:none;transition:all .1s}',
     '.cp-pin.st{background:rgba(255,255,255,.08);border:1.5px solid var(--pin-border-stand,#9AAAC8);color:var(--t1)}',
     '.cp-pin.kn{background:rgba(0,217,217,.18);border:1.5px solid var(--teal);color:var(--teal);box-shadow:0 0 14px rgba(0,217,217,.35)}',
+    '.cp-pin.dn{background:rgba(0,217,217,.08);border:1.5px solid rgba(0,217,217,.35);color:rgba(0,217,217,.55)}',
+    '.cp-pin.lv{background:rgba(255,215,0,.16);border:1.5px solid var(--gold);color:var(--gold);box-shadow:0 0 14px rgba(255,215,0,.3)}',
+    '.cp-deckwrap{position:sticky;bottom:0;z-index:6;background:var(--bg0);padding:6px 0 calc(var(--safe-b,0px) + 4px);margin:0 -2px}',
+    '.cp-deckwrap .card{margin:0;padding:10px 12px;box-shadow:0 -8px 18px rgba(0,0,0,.45)}',
+    '.cp-deck{touch-action:none;-webkit-user-select:none;user-select:none}',
+    '.cp-mode{display:inline-flex;border:1px solid var(--border2);border-radius:10px;overflow:hidden;font:800 11px -apple-system,system-ui,sans-serif}',
+    '.cp-mode span{padding:4px 9px;color:var(--t3);cursor:pointer}', '.cp-mode span.on{background:rgba(0,217,217,.14);color:var(--teal)}',
+    '.cp-stand{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:12px;color:var(--t2);background:var(--bg2);border:1px solid var(--border1);border-radius:10px;padding:6px 10px;margin-bottom:8px;cursor:pointer}',
     '.cp-pin.gone{background:transparent;border:1.5px dashed var(--border1);color:var(--t3);opacity:.35;cursor:default}',
     '.cp-acts{display:grid;grid-template-columns:1fr 1.2fr 1fr;gap:8px}',
     '.cp-acts button{padding:14px 6px;border-radius:12px;font:800 15px -apple-system,system-ui,sans-serif;border:1px solid var(--border2);background:var(--bg3);color:var(--t1);cursor:pointer}',
@@ -221,6 +237,7 @@ function cpRenderOpenTab(el) {
         '<div style="flex:1;min-width:0;cursor:pointer"><div style="font-size:14px;font-weight:800;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + escH(chName(ch)) + '</div>' +
         '<div style="font-size:11px;color:var(--t3)">' + escH(ch.people.length < 2 ? 'Solo' : 'vs ' + ch.people.filter(function (x) { return x !== 'me'; }).map(nameOf).join(', ')) + ' \u00b7 ' + escH(FORMATS[ch.format || 'standard'].name) + ' \u00b7 ' + games + ' game' + (games === 1 ? '' : 's') + '</div></div>' +
         '<span style="font-size:10px;font-weight:800;color:' + (can ? 'var(--teal)' : 'var(--t3)') + ';border:1px solid currentColor;border-radius:8px;padding:2px 7px;flex-shrink:0">' + escH(lab) + '</span></div>' +
+        (p === 'running' || p === 'final' ? standLine(ch.id).replace('cpBackToChallenge()', 'cpOpenChallenge(\'' + ch.id + '\')') : '') +
         (ss.length ? '<div style="margin-top:8px">' + ss.slice(0, 4).map(sessLine).join('') + '</div>' : '') +
         (can ? '<button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="cpBowl(\'' + ch.id + '\')">\ud83c\udfb3 Bowl a challenge game</button>' :
           p === 'sent' || p === 'countered' ? '<div style="font-size:11px;color:var(--t3);margin-top:6px">Bowling opens once the challenge is accepted.</div>' : '') + '</div>';
@@ -286,7 +303,7 @@ function openScorer(id, gi) { cp.sid = id; cp.gi = gi; cp.bi = -1; cp.sel = []; 
 function cur() { return sess(cp.sid); }
 function rowState(s, gi, bi) { var row = s.games[gi].rows[bi]; return row.typed != null ? { typed: row.typed } : scoreOf(row.balls || [], s.format); }
 function cpRenderScorer() {
-  css();
+  css(); dragInit();
   var el = document.getElementById('cp-root'); if (!el) return;
   load().then(function () {
     var s = cur(); if (!s) { el.innerHTML = '<div style="color:var(--t3)">Session not found.</div>'; return; }
@@ -297,14 +314,14 @@ function cpRenderScorer() {
     var h = (root.bdbTestGcHTML ? root.bdbTestGcHTML() : '') +
       '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><div style="flex:1;min-width:0"><div style="font-size:16px;font-weight:900;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">\ud83c\udfc1 ' + escH(chName(ch)) + '</div>' +
       '<div style="font-size:11px;color:var(--t3)">Game ' + g.n + ' \u00b7 ' + escH(FORMATS[s.format || 'standard'].name) + ' \u00b7 not in your stats</div></div>' +
-      '<div style="display:flex;gap:4px">' + s.games.map(function (x, i) { return '<div class="btn-pill' + (i === cp.gi ? ' btn-pill-sel' : '') + '" onclick="cpGame(' + i + ')">G' + x.n + '</div>'; }).join('') + '</div></div>';
+      '<div class="btn-pill" onclick="cpSessionMenu()">\u22ef</div></div>' +
+      '<div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px">' + s.games.map(function (x, i) { return '<div class="btn-pill' + (i === cp.gi ? ' btn-pill-sel' : '') + '" onclick="cpGame(' + i + ')">G' + x.n + '</div>'; }).join('') + '</div>' +
+      standLine(s.challengeID);
     s.bowlers.forEach(function (bw, bi) { h += rowHTML(s, cp.gi, bi); });
     if (done) h += doneHTML(s, ch);
-    else if (cp.bi >= 0) h += deckHTML(s, cp.gi, cp.bi);
+    else if (cp.bi >= 0) h += '<div class="cp-deckwrap">' + deckHTML(s, cp.gi, cp.bi) + '</div>';
     else h += '<div class="card" style="font-size:13px;color:var(--t2)">Your game is in. Type your opponent\u2019s score now (tap \u22ef on their row) or later from this session.' +
       '<button class="btn btn-ghost btn-sm" style="margin-top:10px" onclick="cpNextGame()">Next game</button></div>';
-    h += '<div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn-ghost btn-sm" style="flex:1" onclick="cpBackToChallenge()">\u2039 Challenge</button>' +
-      '<button class="btn btn-ghost btn-sm" style="flex:1" onclick="cpSessionMenu()">\u22ef Session</button></div>';
     el.innerHTML = h;
   });
 }
@@ -329,14 +346,58 @@ function rowHTML(s, gi, bi) {
   return '<div class="cp-row' + (on ? ' on' : '') + (st.done ? ' done' : '') + '" onclick="cpPick(' + bi + ')">' + head + '<div class="cp-card">' + cells + '</div></div>';
 }
 function deckHTML(s, gi, bi) {
-  var st = rowState(s, gi, bi), nx = st.next, rack = nx.rack, sel = cp.sel;
-  var pin = function (p) { var inR = rack.indexOf(p) >= 0, k = sel.indexOf(p) >= 0; return '<div class="cp-pin ' + (!inR ? 'gone' : k ? 'kn' : 'st') + '"' + (inR ? ' onclick="cpTap(' + p + ')"' : '') + '>' + p + '</div>'; };
-  var fresh = rack.length === 10, all = fresh ? 'Strike X' : 'Spare /';
-  return '<div class="card" style="margin-top:4px;padding:12px">' +
-    '<div style="font-size:12px;color:var(--t2);text-align:center"><b style="color:var(--t1)">' + escH(firstOf(s.bowlers[bi].pid)) + '</b> \u00b7 frame ' + nx.frame + ' \u00b7 ball ' + nx.ball + ' \u00b7 tap the pins knocked down</div>' +
-    '<div class="cp-deck"><div>' + [7, 8, 9, 10].map(pin).join('') + '</div><div>' + [4, 5, 6].map(pin).join('') + '</div><div>' + [2, 3].map(pin).join('') + '</div><div>' + pin(1) + '</div></div>' +
-    '<div class="cp-acts"><button onclick="cpBall(\'miss\')">Gutter \u2014</button><button class="go" onclick="cpBall(\'sel\')">Enter ' + sel.length + ' \u2192</button><button class="mark" onclick="cpBall(\'all\')">' + all + '</button></div>' +
-    '<div style="display:flex;justify-content:center;margin-top:10px"><div class="btn-pill" onclick="cpUndo()">\u21b6 Undo last ball</div></div></div>';
+  var st = rowState(s, gi, bi), nx = st.next, rack = nx.rack, mode = modeFor(rack), kind = rack.length === 10 ? 'full' : 'spare';
+  var all = nx.fresh ? 'Strike X' : 'Spare /';
+  return '<div class="card">' +
+    '<div style="display:flex;align-items:center;gap:8px;justify-content:space-between"><div style="font-size:12px;color:var(--t2);min-width:0"><b style="color:var(--t1)">' + escH(firstOf(s.bowlers[bi].pid)) + '</b> \u00b7 F' + nx.frame + ' \u00b7 ball ' + nx.ball + '</div>' +
+    '<div class="cp-mode" title="What you tap"><span class="' + (mode === 'standing' ? 'on' : '') + '" onclick="cpMode(\'' + kind + '\',\'standing\')">Left standing</span><span class="' + (mode === 'knocked' ? 'on' : '') + '" onclick="cpMode(\'' + kind + '\',\'knocked\')">Knocked</span></div></div>' +
+    '<div id="cp-hint" style="font-size:11px;color:var(--t3);text-align:center;margin-top:6px">' + hintText(mode) + '</div>' +
+    '<div class="cp-deck" id="cp-deck"><div>' + [7, 8, 9, 10].map(pinHTML).join('') + '</div><div>' + [4, 5, 6].map(pinHTML).join('') + '</div><div>' + [2, 3].map(pinHTML).join('') + '</div><div>' + pinHTML(1) + '</div></div>' +
+    '<div class="cp-acts"><button onclick="cpBall(\'miss\')">Gutter \u2014</button><button class="go" id="cp-enter" onclick="cpBall(\'sel\')">' + enterText(rack, mode) + '</button><button class="mark" onclick="cpBall(\'all\')">' + all + '</button></div>' +
+    '<div style="display:flex;justify-content:center;margin-top:8px"><div class="btn-pill" onclick="cpUndo()">\u21b6 Undo last ball</div></div></div>';
+  function pinHTML(p) { return '<div class="cp-pin ' + pinClass(p, rack, mode) + '" id="cpp' + p + '" data-p="' + p + '"' + (rack.indexOf(p) >= 0 ? ' onclick="cpTap(' + p + ')"' : '') + '>' + p + '</div>'; }
+}
+function hintText(mode) { return mode === 'standing' ? 'Tap the pins LEFT STANDING (or drag across them). Untapped pins count as down.' : 'Tap the pins KNOCKED DOWN (or drag across them).'; }
+function pinClass(p, rack, mode) {
+  if (rack.indexOf(p) < 0) return 'gone';
+  var t = cp.sel.indexOf(p) >= 0;
+  return mode === 'standing' ? (t ? 'lv' : 'dn') : (t ? 'kn' : 'st');
+}
+function enterText(rack, mode) { var n = knockedFrom(rack, cp.sel, mode).length; return 'Enter ' + n + ' \u2192'; }
+/* repaint the deck in place (no full render, so a drag across the pins is not interrupted) */
+function paintDeck() {
+  var s = cur(); if (!s || cp.bi < 0) return;
+  var st = rowState(s, cp.gi, cp.bi); if (!st.next) return;
+  var rack = st.next.rack, mode = modeFor(rack);
+  for (var p = 1; p <= 10; p++) { var e = document.getElementById('cpp' + p); if (e) e.className = 'cp-pin ' + pinClass(p, rack, mode); }
+  var en = document.getElementById('cp-enter'); if (en) en.textContent = enterText(rack, mode);
+}
+function cpMode(kind, m) {
+  var cur0 = {}; try { cur0 = JSON.parse(localStorage.getItem(MODE_KEY) || '{}') || {}; } catch (e) {}
+  cur0[kind] = m; try { localStorage.setItem(MODE_KEY, JSON.stringify(cur0)); } catch (e) {}
+  cp.sel = []; cpRenderScorer();
+}
+/* drag-select: one finger across the pins toggles each pin once; the page does not scroll while on the deck */
+var drag = null;
+function pinAt(t) { var el = document.elementFromPoint(t.clientX, t.clientY); el = el && el.closest ? el.closest('.cp-pin') : null; return el && !el.classList.contains('gone') ? +el.getAttribute('data-p') : null; }
+function dragInit() {
+  if (dragInit.done) return; dragInit.done = true;
+  document.addEventListener('touchstart', function (e) {
+    var d = e.target && e.target.closest ? e.target.closest('#cp-deck') : null; if (!d) return;
+    e.preventDefault(); drag = {};
+    var p = pinAt(e.touches[0]); if (p) { drag[p] = 1; cpTap(p); }
+  }, { passive: false });
+  document.addEventListener('touchmove', function (e) {
+    if (!drag) return; e.preventDefault();
+    var p = pinAt(e.touches[0]); if (p && !drag[p]) { drag[p] = 1; cpTap(p); }
+  }, { passive: false });
+  var end = function () { drag = null; };
+  document.addEventListener('touchend', end, { passive: true }); document.addEventListener('touchcancel', end, { passive: true });
+}
+/* the live standings, one line, tap for the full challenge */
+function standLine(chID) {
+  var t = ''; try { t = root.chStandingsLine ? root.chStandingsLine(chID) : ''; } catch (e) { t = ''; }
+  return t ? '<div class="cp-stand" onclick="cpBackToChallenge()"><span style="font-weight:800;color:var(--teal)">\ud83c\udfc1 Standings</span>' + t + '<span style="margin-left:auto;color:var(--t3)">\u203a</span></div>' : '';
 }
 function doneHTML(s, ch) {
   var g = s.games[cp.gi], sc = s.bowlers.map(function (bw, bi) { var st = rowState(s, cp.gi, bi); return { pid: bw.pid, v: st.typed != null ? +st.typed : st.score }; });
@@ -349,11 +410,11 @@ function doneHTML(s, ch) {
     '<div style="display:flex;gap:8px;margin-top:10px"><button class="btn btn-primary" style="flex:1" onclick="cpNextGame()">Next game</button><button class="btn btn-secondary" style="flex:1" onclick="cpBackToChallenge()">Done</button></div>';
 }
 function cpPick(bi) { var s = cur(); if (!s) return; var row = s.games[cp.gi].rows[bi]; if (!row || row.typed != null) return; if (row.later && !(row.balls || []).length) return cpRowMenu(bi); if (buildFrames(row.balls || []).done) return; cp.bi = bi; cp.sel = []; cpRenderScorer(); }
-function cpTap(p) { var i = cp.sel.indexOf(p); if (i >= 0) cp.sel.splice(i, 1); else cp.sel.push(p); cpRenderScorer(); }
+function cpTap(p) { var i = cp.sel.indexOf(p); if (i >= 0) cp.sel.splice(i, 1); else cp.sel.push(p); if (root.haptic) try { root.haptic('light'); } catch (e) {} paintDeck(); }
 function cpBall(how) {
   var s = cur(); if (!s || cp.bi < 0) return;
   var row = s.games[cp.gi].rows[cp.bi], st = buildFrames(row.balls || []); if (st.done) return;
-  var rack = st.next.rack, k = how === 'all' ? rack.slice() : how === 'miss' ? [] : cp.sel.filter(function (p) { return rack.indexOf(p) >= 0; });
+  var rack = st.next.rack, k = how === 'all' ? rack.slice() : how === 'miss' ? [] : knockedFrom(rack, cp.sel, modeFor(rack));
   k.sort(function (a, b) { return a - b; });
   row.balls = (row.balls || []).concat([k]); row.later = false; cp.sel = [];
   var after = buildFrames(row.balls), frameEnded = after.done || after.next.frame !== st.next.frame;
@@ -409,6 +470,6 @@ function cpDelSess() { var s = cur(), ch = s.challengeID; del(s.id).then(functio
 root.cpRenderOpenTab = cpRenderOpenTab; root.cpTabsHTML = tabsHTML; root.cpRenderScorer = cpRenderScorer; root.cpLoadSessions = load; root.cpGamesFor = cpGamesFor;
 root.cpSessionsFor = sessionsFor; root.cpBowl = cpBowl; root.cpResume = cpResume; root.cpStart = cpStart; root.cpWith = cpWith; root.cpPick = cpPick; root.cpTap = cpTap; root.cpBall = cpBall; root.cpUndo = cpUndo;
 root.cpGame = cpGame; root.cpNextGame = cpNextGame; root.cpBackToChallenge = cpBackToChallenge; root.cpRowMenu = cpRowMenu; root.cpTypeSave = cpTypeSave; root.cpTypeClear = cpTypeClear;
-root.cpSessionMenu = cpSessionMenu; root.cpDelGameAsk = cpDelGameAsk; root.cpDelGame = cpDelGame; root.cpDelSessAsk = cpDelSessAsk; root.cpDelSess = cpDelSess;
+root.cpSessionMenu = cpSessionMenu; root.cpMode = cpMode; root.cpDelGameAsk = cpDelGameAsk; root.cpDelGame = cpDelGame; root.cpDelSessAsk = cpDelSessAsk; root.cpDelSess = cpDelSess;
 root.cpNewOpenChallenge = cpNewOpenChallenge; root.cpOpenChallenge = cpOpenChallenge; root._cp = cp;
 })(typeof window !== 'undefined' ? window : globalThis);
