@@ -1,12 +1,13 @@
 /* BowlingDB challenges -- v30.241 SOC-1 step 2 (design: DESIGN_social_1.md rev 3, sections 4-5).
    League challenges: read games already recorded (your league / tournament series; a friend's Team Bowl
    nights) inside a window, score them by a contest, and keep a record. Pure engine + page screens.
-   Open challenges (own sessions kept out of stats, Low Ball, fun awards) come in the next step.
+   v30.244: open challenges -- games bowled for the challenge in their own sessions (chplay.js, store
+   challengeSessions), kept out of every stat; source 'open', params.where 'open', format 'standard'.
    Storage: bowlingdb_challenges. Loaded by index.html as challenge.js?v=APP_VERSION on first use;
    require()-able for the Node harness (engine only). */
 (function (root) {
 'use strict';
-var CHALLENGE_VERSION = 'v30.242';
+var CHALLENGE_VERSION = 'v30.244';
 var KEY = 'bowlingdb_challenges';
 var EST_GAMES = 21, MIN_GAMES = 9;
 
@@ -196,6 +197,8 @@ function gameStats(g) {
    games: { pid: [normalised games, all dates] }   avgs: { pid: average going in | null }   today: 'YYYY-MM-DD' */
 function inWindow(g, p) {
   if (byDate(g.date, p.start) < 0 || (p.end && byDate(g.date, p.end) > 0)) return false;
+  if (p.where === 'open') return !!g.open;          // open challenge: only its own session games
+  if (g.open) return false;
   if (p.where === 'tournament') return g.tournament;
   if (p.where === 'league') return !g.tournament && g.leagueID != null && (p.leagueID == null || g.leagueID === p.leagueID);
   return true;
@@ -386,8 +389,14 @@ function leagueHdcp(g) {
   var cfg = root.hdcpGet(root.hdcpLeagueKey(g.leagueID));
   return Math.max(0, Math.floor(((cfg.baseScore || 230) - g.entryAvg) * (cfg.pct || 90) / 100));
 }
+function openGames(ch) {
+  var o = {}, got = typeof root.cpGamesFor === 'function' ? root.cpGamesFor(ch) || {} : {};
+  ch.people.forEach(function (pid) { o[pid] = got[pid] || []; });
+  return o;
+}
 function evalNow(ch) {
-  var g = gamesFor(ch.people), r = evaluate(ch, g, averagesFor(ch, g), todayStr(), { leagueHdcp: leagueHdcp });
+  var lg = gamesFor(ch.people), g = ch.source === 'open' ? openGames(ch) : lg;
+  var r = evaluate(ch, g, averagesFor(ch, lg), todayStr(), { leagueHdcp: leagueHdcp });   // averages going in always from league games
   if (r.status === 'final' && !ch.result && ch.state === 'accepted') {
     ch.result = { winners: r.winners, at: todayStr(), margin: r.margin, rows: r.rows.map(function (x) { return { pid: x.pid, display: x.display, value: x.value }; }) };
     chPut(ch);
@@ -406,7 +415,7 @@ function contestLine(ch) {
 }
 function whenLine(p) {
   var f = function (d) { if (!d) return 'open-ended'; var x = d.split('-'); return +x[1] + '/' + +x[2] + '/' + x[0].slice(2); };
-  return f(p.start) + ' \u2013 ' + f(p.end) + (p.where === 'league' ? ' \u00b7 ' + leagueName(p.leagueID) : p.where === 'tournament' ? ' \u00b7 tournaments' : ' \u00b7 league & tournament games');
+  return f(p.start) + ' \u2013 ' + f(p.end) + (p.where === 'open' ? ' \u00b7 open challenge games (not in stats)' : p.where === 'league' ? ' \u00b7 ' + leagueName(p.leagueID) : p.where === 'tournament' ? ' \u00b7 tournaments' : ' \u00b7 league & tournament games');
 }
 function leagueName(id) { if (id == null) return 'any league'; var l = (DBp().leagues || []).filter(function (x) { return x.LeagueID === id; })[0]; return l ? l.LeagueName : 'a league'; }
 function vsLine(ch) { return ch.people.length < 2 ? 'Solo challenge' : ch.people.filter(function (p) { return p !== 'me'; }).map(function (p) { return person(p).name; }).join(', '); }
@@ -435,7 +444,7 @@ function chTabHTML() {
   var h = '<div class="stat-card" style="margin-bottom:12px;display:flex;align-items:center;gap:12px"><div style="flex:1"><div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:.8px;text-transform:uppercase">Your challenge record</div>' +
     '<div style="font-size:22px;font-weight:900;color:var(--t1)">' + recStr(rec) + '</div><div style="font-size:11px;color:var(--t3)">wins \u2013 losses \u2013 ties</div></div>' +
     '<button class="btn btn-primary btn-sm" style="width:auto;padding:8px 14px" onclick="chNew()">+ New challenge</button></div>' +
-    '<div style="font-size:11px;color:var(--t3);margin:-4px 0 12px;line-height:1.5">League challenges read the league and tournament games you already record (a friend\u2019s from Team Bowl nights you scored). Answers from friends are simulated on this phone until accounts exist.</div>';
+    '<div style="font-size:11px;color:var(--t3);margin:-4px 0 12px;line-height:1.5">League challenges read the league and tournament games you already record (a friend\u2019s from Team Bowl nights you scored). Open challenges are bowled as their own games (Open Bowling \u203a Challenges) and stay out of your stats. Answers from friends are simulated on this phone until accounts exist.</div>';
   var any = false;
   groups.forEach(function (g) {
     var items = list.filter(g[1]); if (!items.length) return; any = true;
@@ -518,7 +527,14 @@ function chDetailHTML(id) {
   }
   if (ph === 'final') acts += '<button class="btn btn-ghost" style="margin-top:8px" onclick="chPostResult(\'' + id + '\')">\ud83e\udd1d Post the result to Connect</button>' +
     '<button class="btn btn-ghost" style="margin-top:8px" onclick="chRematch(\'' + id + '\')">\ud83d\udd01 Rematch</button>';
-  if (ph === 'running' || ph === 'upcoming') acts += '<button class="btn btn-primary" style="margin-top:8px" onclick="chAddGames(\'' + id + '\')">\ud83c\udfb3 Bowl / enter games for this</button>' +
+  if (ch.source === 'open') {
+    var ss = typeof root.cpSessionsFor === 'function' ? root.cpSessionsFor(id) : [];
+    if (ss.length) acts += '<div class="sec-header" style="margin-top:8px"><span class="sec-title" style="font-size:15px">Challenge games</span></div><div class="stat-card" style="margin-bottom:8px">' +
+      ss.map(function (x) { var d = (x.date || '').split('-'); return '<div onclick="_cpLoad(function(){cpResume(\'' + x.id + '\')})" style="display:flex;justify-content:space-between;padding:6px 0;cursor:pointer;font-size:12px;color:var(--t2)"><span>' + (+d[1]) + '/' + (+d[2]) + ' \u00b7 ' + x.games.length + ' game' + (x.games.length === 1 ? '' : 's') + '</span><span style="color:var(--teal)">Open \u203a</span></div>'; }).join('') + '</div>';
+    if (ph === 'running') acts += '<button class="btn btn-primary" style="margin-top:8px" onclick="chAddGames(\'' + id + '\')">\ud83c\udfb3 Bowl a challenge game</button>' +
+      '<div style="font-size:11px;color:var(--t3);margin-top:6px;line-height:1.5">Opens the challenge card in Open Bowling \u203a Challenges. These games never go into your stats, averages, awards or exports. Your opponent bowls on the same card, or you type their score in afterwards (typed scores count in score contests only).</div>';
+    else if (ph === 'upcoming') acts += '<div style="font-size:11px;color:var(--t3);margin-top:8px">Bowling opens on ' + escH(ch.params.start) + '.</div>';
+  } else if (ph === 'running' || ph === 'upcoming') acts += '<button class="btn btn-primary" style="margin-top:8px" onclick="chAddGames(\'' + id + '\')">\ud83c\udfb3 Bowl / enter games for this</button>' +
     '<div style="font-size:11px;color:var(--t3);margin-top:6px;line-height:1.5">Games are entered the usual way (league night, tournament round); they count here automatically. A friend\u2019s games come from the Team Bowl nights you record.' +
     (CONTESTS[ch.contest].needs ? ' This contest needs pin-by-pin games: nights saved as scores only don\u2019t count.' : ' Scores-only nights count.') + '</div>';
   if (ph === 'sent' || ph === 'upcoming' || ph === 'running' || ph === 'countered') acts += '<button class="btn btn-ghost" style="margin-top:8px;color:var(--red)" onclick="chCancel(\'' + id + '\')">Cancel challenge</button>';
@@ -547,16 +563,16 @@ function chPostResult(id) {
 
 /* ---------------- new challenge / suggest changes ---------------- */
 var nx = null;   // { mode:'new'|'counter', id, by, source, preset, opponent }
-function chNew(opts) { nx = Object.assign({ mode: 'new', source: null }, opts || {}); stepSource(); }
-function chRematch(id) { var ch = chGet(id); if (!ch) return; nx = { mode: 'new', source: 'league', base: ch }; stepForm(); }
-function chCounter(id, by) { var ch = chGet(id); if (!ch) return; nx = { mode: 'counter', id: id, by: by, source: 'league', base: ch }; stepForm(); }
+function chNew(opts) { nx = Object.assign({ mode: 'new', source: null }, opts || {}); if (nx.source) stepPreset(); else stepSource(); }
+function chRematch(id) { var ch = chGet(id); if (!ch) return; nx = { mode: 'new', source: ch.source || 'league', base: ch }; stepForm(); }
+function chCounter(id, by) { var ch = chGet(id); if (!ch) return; nx = { mode: 'counter', id: id, by: by, source: ch.source || 'league', base: ch }; stepForm(); }
 function sheet(html) { (root.openModal)(html); var mb = document.getElementById('modal-body'); if (mb) mb.scrollTop = 0; }
 function stepSource() {
   sheet('<div class="modal-title">\ud83c\udfc1 New challenge</div><div style="font-size:12px;color:var(--t3);margin:-4px 0 12px">Where do the games come from?</div>' +
     '<div class="card" style="margin-bottom:10px;cursor:pointer" onclick="chPickSource(\'league\')"><div style="font-size:15px;font-weight:800;color:var(--t1)">\ud83c\udfb3 League challenge</div>' +
     '<div style="font-size:12px;color:var(--t2);margin-top:4px;line-height:1.5">Reads the league and tournament games you already record. They stay in your stats as usual.</div></div>' +
-    '<div class="card" style="margin-bottom:10px;opacity:.55"><div style="font-size:15px;font-weight:800;color:var(--t1)">\ud83c\udfaf Open challenge <span style="font-size:11px;color:var(--gold)">next build</span></div>' +
-    '<div style="font-size:12px;color:var(--t2);margin-top:4px;line-height:1.5">Bowled as its own session and kept out of your stats: Low Ball, spare golf drills and other fun formats.</div></div>' +
+    '<div class="card" style="margin-bottom:10px;cursor:pointer" onclick="chPickSource(\'open\')"><div style="font-size:15px;font-weight:800;color:var(--t1)">\ud83c\udfaf Open challenge</div>' +
+    '<div style="font-size:12px;color:var(--t2);margin-top:4px;line-height:1.5">Bowled as its own games (Open Bowling \u203a Challenges) and kept out of your stats. You and your opponent on one card, or type their scores in. Low Ball comes next.</div></div>' +
     '<button class="btn btn-secondary" onclick="closeModal()">Cancel</button>');
 }
 function chPickSource(s) { nx.source = s; stepPreset(); }
@@ -571,10 +587,10 @@ function stepPreset() {
 function chPickPreset(id) { nx.preset = id ? PRESETS.filter(function (p) { return p.id === id; })[0] : null; stepForm(); }
 function defaults() {
   var t = todayStr(), p = nx.preset, b = nx.base;
-  if (b) return { contest: b.contest, name: b.name, params: JSON.parse(JSON.stringify(b.params)), opponent: b.people.filter(function (x) { return x !== 'me'; })[0] || 'solo' };
-  return { contest: p ? p.contest : 'hgame', name: p ? p.name : '', opponent: nx.opponent || (friendsList()[0] ? friendsList()[0].id : 'solo'),
+  if (b) return { contest: b.contest, name: b.name, format: b.format || 'standard', params: JSON.parse(JSON.stringify(b.params)), opponent: b.people.filter(function (x) { return x !== 'me'; })[0] || 'solo' };
+  return { contest: p ? p.contest : 'hgame', name: p ? p.name : '', format: 'standard', opponent: nx.opponent || (friendsList()[0] ? friendsList()[0].id : 'solo'),
     params: { start: t, end: addDays(t, (p && p.days) || 14), count: (p && p.count) || 'all', n: (p && p.n) || 9, min: (p && p.min) || '', target: (p && p.target) || '', leave: (p && p.leave) || '',
-      where: 'any', leagueID: null, scoring: 'scratch', hcMode: 'scratch', basis: 220, pct: 90, hcCap: '', avgSource: 'established', avgLeagueID: null, avgs: {}, fixed: {}, tie: 'shared', proof: 'none', note: '' } };
+      where: nx.source === 'open' ? 'open' : 'any', leagueID: null, scoring: 'scratch', hcMode: 'scratch', basis: 220, pct: 90, hcCap: '', avgSource: 'established', avgLeagueID: null, avgs: {}, fixed: {}, tie: 'shared', proof: 'none', note: '' } };
 }
 function sel(id, opts, cur) { return '<select class="finput" id="' + id + '" onchange="chFormSync()">' + opts.map(function (o) { return '<option value="' + escH(o[0]) + '"' + (String(o[0]) === String(cur) ? ' selected' : '') + '>' + escH(o[1]) + '</option>'; }).join('') + '</select>'; }
 function fg(label, inner, id) { return '<div class="fgroup"' + (id ? ' id="' + id + '"' : '') + '><label class="flabel">' + label + '</label>' + inner + '</div>'; }
@@ -582,10 +598,14 @@ function stepForm() {
   var d = defaults(), p = d.params, counter = nx.mode === 'counter';
   var leagues = (DBp().leagues || []).filter(function (l) { return l.LeagueID > 0 && !l.BakerFormat && !l.Archived; });
   var opp = [['solo', 'Just me (solo)']].concat(friendsList().map(function (f) { return [f.id, f.name]; }));
-  sheet('<div class="modal-title">' + (counter ? 'Suggest changes' : '\ud83c\udfc1 League challenge') + '</div>' +
+  var isOpen = nx.source === 'open';
+  var fmts = root.BDB_CHPLAY ? root.BDB_CHPLAY.FORMATS : { standard: { name: 'Standard scoring' } };
+  sheet('<div class="modal-title">' + (counter ? 'Suggest changes' : isOpen ? '\ud83c\udfaf Open challenge' : '\ud83c\udfc1 League challenge') + '</div>' +
     (counter ? '<div style="font-size:12px;color:var(--t3);margin:-4px 0 10px">' + (nx.by === 'me' ? 'Your changes go back to ' + escH(person(nx.base.people.filter(function (x) { return x !== 'me'; })[0]).name) : 'As ' + escH(person(nx.by).name) + ' (preview): the changes go back to you') + '.</div>' : '') +
     fg('Name', '<input class="finput" id="cf-name" type="text" value="' + escH(d.name) + '" placeholder="' + escH(CONTESTS[d.contest].name) + '">') +
     (counter ? '' : fg('Opponent', sel('cf-opp', opp, d.opponent))) +
+    (isOpen ? fg('Format', '<select class="finput" id="cf-format">' + Object.keys(fmts).map(function (k) { return '<option value="' + k + '"' + (fmts[k].soon ? ' disabled' : '') + (k === (d.format || 'standard') ? ' selected' : '') + '>' + escH(fmts[k].name) + (fmts[k].soon ? ' (next build)' : '') + '</option>'; }).join('') + '</select>') +
+      '<div style="font-size:11px;color:var(--t3);margin:-6px 0 10px">Games are bowled for this challenge only and never enter your stats.</div>' : '') +
     fg('Contest', sel('cf-contest', Object.keys(CONTESTS).map(function (k) { return [k, (CONTESTS[k].first ? 'First to: ' : '') + CONTESTS[k].name]; }), d.contest)) +
     '<div id="cf-about" style="font-size:11px;color:var(--t3);margin:-6px 0 10px">' + escH(CONTESTS[d.contest].about) + '</div>' +
     fg('Target', '<input class="finput" id="cf-target" type="number" value="' + escH(p.target) + '" placeholder="e.g. 700">', 'cf-g-target') +
@@ -593,9 +613,9 @@ function stepForm() {
     '<div style="display:flex;gap:8px">' + fg('Start', '<input class="finput" id="cf-start" type="date" value="' + escH(p.start) + '">') + fg('End', '<input class="finput" id="cf-end" type="date" value="' + escH(p.end || '') + '">') + '</div>' +
     '<div style="display:flex;gap:8px" id="cf-g-count">' + fg('Games that count', sel('cf-count', [['all', 'All in the window'], ['first', 'First N'], ['best', 'Best N']], p.count)) + fg('N', '<input class="finput" id="cf-n" type="number" value="' + escH(p.n) + '">', 'cf-g-n') + '</div>' +
     fg('Minimum games / chances', '<input class="finput" id="cf-min" type="number" value="' + escH(p.min) + '" placeholder="optional">', 'cf-g-min') +
-    fg('Where', sel('cf-where', [['any', 'Any league or tournament'], ['league', 'One league'], ['tournament', 'Tournaments only']], p.where)) +
+    (isOpen ? '<input type="hidden" id="cf-where" value="open">' : fg('Where', sel('cf-where', [['any', 'Any league or tournament'], ['league', 'One league'], ['tournament', 'Tournaments only']], p.where))) +
     fg('League', sel('cf-league', leagues.map(function (l) { return [l.LeagueID, l.LeagueName]; }), p.leagueID), 'cf-g-league') +
-    '<div id="cf-g-scoring">' + fg('Scoring', sel('cf-hc', Object.keys(HC_LABEL).map(function (k) { return [k, HC_LABEL[k]]; }), hcMode(p))) +
+    '<div id="cf-g-scoring">' + fg('Scoring', sel('cf-hc', Object.keys(HC_LABEL).filter(function (k) { return !isOpen || k !== 'league'; }).map(function (k) { return [k, HC_LABEL[k]]; }), hcMode(p))) +
     '<div id="cf-hc-about" style="font-size:11px;color:var(--t3);margin:-6px 0 10px"></div>' +
     '<div style="display:flex;gap:8px" id="cf-g-hc">' + fg('Basis', '<input class="finput" id="cf-basis" type="number" value="' + escH(p.basis) + '">') + fg('%', '<input class="finput" id="cf-pct" type="number" value="' + escH(p.pct) + '">') +
     fg('Cap', '<input class="finput" id="cf-cap" type="number" value="' + escH(p.hcCap == null ? '' : p.hcCap) + '" placeholder="none">') + '</div></div>' +
@@ -651,22 +671,23 @@ function readForm() {
   p.scoring = p.hcMode === 'scratch' ? 'scratch' : 'handicap';
   var err = !p.start ? 'Pick a start date' : (p.end && p.end < p.start) ? 'The end is before the start' : (c.first && k !== 'f_300' && !(p.target > 0)) ? 'Set a target' :
     ((k === 'leave' || k === 'f_leave') && !p.leave) ? 'Type the leave (pins standing), e.g. 10 or 3-6-10' : (p.count !== 'all' && !(p.n > 0)) ? 'Set how many games count' : (!c.first && !p.end) ? 'Set an end date' : '';
-  return { contest: k, name: val('cf-name').trim(), opponent: val('cf-opp'), params: p, err: err };
+  return { contest: k, name: val('cf-name').trim(), opponent: val('cf-opp'), format: val('cf-format') || 'standard', params: p, err: err };
 }
 function chSubmit() {
   var f = readForm(); if (f.err) { var e = document.getElementById('cf-err'); if (e) e.textContent = f.err; return; }
   if (nx.mode === 'counter') {
     var ch = chGet(nx.id); if (!ch) return;
     var before = { contest: ch.contest, params: JSON.parse(JSON.stringify(ch.params)) };
-    ch.contest = f.contest; ch.params = f.params; if (f.name) ch.name = f.name;
+    ch.contest = f.contest; ch.params = f.params; if (f.name) ch.name = f.name; if (ch.source === 'open') ch.format = f.format;
     stamp(ch, nx.by, 'counter', { before: before, after: { contest: f.contest, params: f.params } });
     ch.state = nx.by === 'me' ? 'sent' : 'countered';
     chPut(ch); root.closeModal(); chOpen(ch.id); return;
   }
   var solo = f.opponent === 'solo' || !f.opponent;
-  var ch2 = { id: 'c' + Date.now().toString(36), created: new Date().toISOString(), source: 'league', contest: f.contest, name: f.name, params: f.params,
+  var ch2 = { id: 'c' + Date.now().toString(36), created: new Date().toISOString(), source: nx.source === 'open' ? 'open' : 'league', contest: f.contest, name: f.name, params: f.params,
     people: solo ? ['me'] : ['me', f.opponent], state: solo ? 'accepted' : 'sent', rounds: [], result: null };
   stamp(ch2, 'me', solo ? 'accept' : 'sent');
+  if (ch2.source === 'open') ch2.format = f.format;
   chPut(ch2); root.closeModal(); chOpen(ch2.id);
   if (root.toast) root.toast(solo ? 'Solo challenge started' : 'Challenge sent (preview: answer it as your friend on the next screen)');
 }
@@ -676,6 +697,7 @@ function chBackSource() { stepSource(); }
 /* ---------------- entering games from a challenge: through the normal screens ---------------- */
 function chAddGames(id) {
   var ch = chGet(id); if (!ch) return;
+  if (ch.source === 'open') { root._cpLoad(function () { root.cpBowl(id); }); return; }   // its own card, never the league screens
   var p = ch.params;
   if (p.where === 'league' && p.leagueID != null && typeof root.selectLeague === 'function') root.selectLeague(p.leagueID);
   else if (p.where === 'tournament') root.navTo('s-tournaments');
@@ -686,7 +708,7 @@ function chAddGames(id) {
 function chGameBannerHTML(gameID) {
   var d = DBp(), g0 = (d.games || []).filter(function (x) { return x.GameID === gameID; })[0];
   if (!g0) return '';
-  var list = chList().filter(function (ch) { return ch.state === 'accepted' && !ch.result && phase(ch) === 'running'; });
+  var list = chList().filter(function (ch) { return ch.source !== 'open' && ch.state === 'accepted' && !ch.result && phase(ch) === 'running'; });
   if (!list.length) return '';
   var games = gamesFor(['me']).me, mine = games.filter(function (x) { return x.key === 's' + g0.SeriesID && x.gameNo === (g0.GameNumber || 0); })[0];
   if (!mine) return '';
@@ -703,6 +725,13 @@ function chGameBannerHTML(gameID) {
   return lines.length ? '<div class="card" style="margin-bottom:10px;border:1px solid rgba(0,217,217,0.35)"><div style="font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--teal);margin-bottom:4px">\ud83c\udfc1 Challenges</div>' + lines.join('') + '</div>' : '';
 }
 
+/* v30.244: standings strip for the open challenge card (chplay.js) */
+function chMiniStandingsHTML(id) {
+  var ch = chGet(id); if (!ch) return '';
+  var r = evalNow(ch);
+  return '<div class="card" style="margin-top:8px"><div style="font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--teal);margin-bottom:4px">\ud83c\udfc1 ' + escH(CONTESTS[ch.contest].name) + (r.status === 'final' ? ' \u00b7 final' : '') + '</div>' +
+    r.rows.map(function (x, i) { var win = (ch.result ? ch.result.winners : []).indexOf(x.pid) >= 0; return '<div style="display:flex;justify-content:space-between;font-size:13px;padding:3px 0;color:' + (i === 0 || win ? 'var(--t1)' : 'var(--t2)') + '"><span>' + (i + 1) + '. ' + escH(person(x.pid).name) + (win ? ' \ud83c\udfc6' : '') + '</span><b>' + escH(x.display) + '</b></div>'; }).join('') + '</div>';
+}
 /* ---------------- head-to-head (bowler menu) ---------------- */
 function chHeadToHeadHTML(pid) {
   var grp = typeof root.grpLoadAll === 'function' ? root.grpLoadAll() : [];
@@ -721,6 +750,7 @@ if (typeof document !== 'undefined') {
   root.chTabHTML = chTabHTML; root.chDetailHTML = chDetailHTML; root.chOpen = chOpen; root.chBack = chBack; root.chNew = chNew; root.chPickSource = chPickSource; root.chPickPreset = chPickPreset;
   root.chFormSync = chFormSync; root.chSubmit = chSubmit; root.chAnswer = chAnswer; root.chCounter = chCounter; root.chCancel = chCancel; root.chDelete = chDelete;
   root.chRematch = chRematch; root.chPostResult = chPostResult; root.chRecordFor = chRecordFor; root.chHeadToHeadHTML = chHeadToHeadHTML; root.stepPresetBack = stepPresetBack; root.chBackSource = chBackSource; root.chAddGames = chAddGames; root.chGameBannerHTML = chGameBannerHTML;
+  root.chPerson = person; root.chPhase = phase; root.chMiniStandingsHTML = chMiniStandingsHTML;
 }
 
 root.BDB_CHALLENGE = api;
