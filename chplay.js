@@ -10,11 +10,11 @@
    Loaded by index.html as chplay.js?v=APP_VERSION with challenge.js. ASCII only. */
 (function (root) {
 'use strict';
-var CHPLAY_VERSION = 'v30.245';
+var CHPLAY_VERSION = 'v30.247';
 var STORE = 'challengeSessions';
 var ALL = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 var FORMATS = { standard: { name: 'Standard scoring', about: 'Ordinary bowling scoring.' },
-  lowball: { name: 'Low Ball', about: 'Fewest pins wins; a miss is a strike. Next build.', soon: true } };
+  lowball: { name: 'Low Ball', about: 'Fewest pins wins. A miss on a fresh rack is a strike, a miss on a spare attempt a spare. Perfect game 20, worst 300.' } };
 
 /* ---------------- engine (pure) ---------------- */
 function minus(rack, knocked) { return rack.filter(function (p) { return knocked.indexOf(p) < 0; }); }
@@ -73,11 +73,72 @@ function scoreStd(frames) {
   }
   return out;
 }
-function scoreOf(balls, format) { var r = buildFrames(balls), t = scoreStd(r.frames); return { frames: r.frames, totals: t, done: r.done, next: r.next, score: r.done ? t[9] : null, partial: t.filter(function (x) { return x != null; }).pop() || 0 }; }
+/* ---------------- Low Ball (v30.247, DESIGN_social_1 5.4a) ----------------
+   Pins are entered as usual (each ball = pins knocked). Each ball becomes a mark:
+   fresh rack (ball 1, or a 10th-frame fill on a fresh rack): a miss = X, all ten = X (real strike), 1-9 = that count;
+   spare attempt: a miss = /, clearing the rest = / (real spare), else the count.
+   A mark ends the frame like a strike / spare; the 10th earns fills the same way (X two, / one) and the fills follow
+   the same table. Then normal scoring on the ball values (X = 10, / = 10 minus the first ball's value).
+   Every ball carries val (its Low Ball value), mark ('X' | '/' | null) and real (pins really all down). */
+function lowBall(rack, k, fresh, prevVal) {
+  var n = k.length, all = n === rack.length;
+  if (fresh) return n === 0 || all ? { val: 10, mark: 'X', real: all } : { val: n, mark: null, real: false };
+  return n === 0 || all ? { val: 10 - prevVal, mark: '/', real: all } : { val: n, mark: null, real: false };
+}
+function buildFramesLow(balls) {
+  var frames = [], i = 0, n = (balls || []).length;
+  var at = function (f, b, rack, fresh) { return { frames: frames, done: false, next: { frame: f, ball: b, rack: rack.slice(), fresh: !!fresh }, used: i }; };
+  var push = function (fr, rack, fresh, prevVal) { var k = balls[i++], lb = lowBall(rack, k, fresh, prevVal), lv = minus(rack, k);
+    fr.balls.push({ pins: rack.length - lv.length, knocked: k.slice(), leave: lv, val: lb.val, mark: lb.mark, real: lb.real }); return fr.balls[fr.balls.length - 1]; };
+  for (var f = 1; f <= 10; f++) {
+    var fr = { n: f, balls: [] }; frames.push(fr);
+    if (f < 10) {
+      if (i >= n) return at(f, 1, ALL, true);
+      var b1 = push(fr, ALL, true, 0); if (b1.mark) continue;
+      if (i >= n) return at(f, 2, b1.leave, false);
+      push(fr, b1.leave, false, b1.val); continue;
+    }
+    if (i >= n) return at(10, 1, ALL, true);
+    var a = push(fr, ALL, true, 0), rack2 = a.mark ? ALL : a.leave, fresh2 = !!a.mark;
+    if (i >= n) return at(10, 2, rack2, fresh2);
+    var c = push(fr, rack2, fresh2, a.val);
+    if (!a.mark && !c.mark) break;                       // open 10th: two balls
+    var fresh3 = !a.mark || !!c.mark, rack3 = fresh3 ? ALL : c.leave;   // X then a count: spare attempt on what is left
+    if (i >= n) return at(10, 3, rack3, fresh3);
+    push(fr, rack3, fresh3, fresh3 ? 0 : c.val);
+  }
+  return { frames: frames, done: true, next: null, used: i };
+}
+function scoreLow(frames) {
+  var flat = [], start = [];
+  frames.forEach(function (fr) { start.push(flat.length); fr.balls.forEach(function (b) { flat.push(b.val); }); });
+  var tot = 0, out = [];
+  for (var f = 0; f < frames.length; f++) {
+    var b = frames[f].balls, s = start[f], v = null;
+    if (f < 9) {
+      if (b.length && b[0].mark === 'X') v = flat[s + 1] != null && flat[s + 2] != null ? 10 + flat[s + 1] + flat[s + 2] : null;
+      else if (b.length === 2) v = b[1].mark === '/' ? (flat[s + 2] != null ? 10 + flat[s + 2] : null) : b[0].val + b[1].val;
+    } else {
+      var need = b.length && (b[0].mark === 'X' || (b[1] && b[1].mark === '/')) ? 3 : 2;
+      if (b.length === need) v = b.reduce(function (x, y) { return x + y.val; }, 0);
+    }
+    if (v == null) { for (; f < frames.length; f++) out.push(null); break; }
+    tot += v; out.push(tot);
+  }
+  return out;
+}
+function framesFor(format) { return format === 'lowball' ? buildFramesLow : buildFrames; }
+function scoreOf(balls, format) {
+  var low = format === 'lowball', r = (low ? buildFramesLow : buildFrames)(balls || []), t = low ? scoreLow(r.frames) : scoreStd(r.frames); return { frames: r.frames, totals: t, done: r.done, next: r.next, score: r.done ? t[9] : null, partial: t.filter(function (x) { return x != null; }).pop() || 0 }; }
 /* marks for the little scorecard: frames 1-9 [box1, box2], 10th [a, b, c] */
 function mk(n) { return n === 10 ? 'X' : n === 0 ? '-' : String(n); }
 function marks(fr) {
   var b = fr.balls;
+  if (b.some(function (x) { return x.val != null; })) {   // Low Ball: marks as scored, counts as knocked
+    var lo = b.map(function (x) { return x.mark || String(x.val); });
+    if (fr.n < 10) return lo[0] === 'X' ? ['', 'X'] : [lo[0] || '', lo[1] || ''];
+    return [lo[0] || '', lo[1] || '', lo[2] || ''];
+  }
   if (fr.n < 10) {
     if (!b.length) return ['', ''];
     if (b[0].pins === 10) return ['', 'X'];
@@ -93,7 +154,8 @@ function marks(fr) {
 function normOpen(sessions, chID) {
   var out = {};
   (sessions || []).forEach(function (s) {
-    if (s.challengeID !== chID || (s.format || 'standard') !== 'standard') return;
+    if (s.challengeID !== chID) return;
+    var low = s.format === 'lowball';
     (s.games || []).forEach(function (g) {
       (s.bowlers || []).forEach(function (bw, bi) {
         var row = g.rows && g.rows[bi]; if (!row) return;
@@ -103,10 +165,11 @@ function normOpen(sessions, chID) {
           var r = scoreOf(row.balls || [], s.format);
           if (!r.done) return;
           item.score = r.score;
+          if (low) { item.lowball = true; item.realMarks = 0; r.frames.forEach(function (fr) { fr.balls.forEach(function (x) { if (x.real) item.realMarks++; }); }); return push(); }
           item.frames = r.frames.map(function (fr) { return { balls: fr.balls.map(function (x) { return { pins: x.pins, leave: x.leave.slice() }; }) }; });
         }
-        if (!(item.score >= 0)) return;
-        (out[bw.pid] = out[bw.pid] || []).push(item);
+        push();
+        function push() { if (!(item.score >= 0)) return; if (low) item.lowball = true; (out[bw.pid] = out[bw.pid] || []).push(item); }
       });
     });
   });
@@ -115,7 +178,7 @@ function normOpen(sessions, chID) {
 }
 /* whose turn: the bowler with the fewest finished frames (ties: card order); typed / finished rows skipped */
 function turnOf(session, gi) {
-  var g = session.games[gi]; if (!g) return -1;
+  var g = session.games[gi]; if (!g) return -1; var buildFrames = framesFor(session.format);
   var best = -1, bestN = 99;
   session.bowlers.forEach(function (bw, bi) {
     var row = g.rows[bi]; if (!row || row.typed != null) return;
@@ -126,11 +189,11 @@ function turnOf(session, gi) {
   return best;
 }
 function gameDone(session, gi) {
-  var g = session.games[gi]; if (!g) return false;
+  var g = session.games[gi]; if (!g) return false; var buildFrames = framesFor(session.format);
   return session.bowlers.every(function (bw, bi) { var row = g.rows[bi]; return row && (row.typed != null || buildFrames(row.balls || []).done); });
 }
 
-var api = { knockedFrom: knockedFrom, CHPLAY_VERSION: CHPLAY_VERSION, STORE: STORE, FORMATS: FORMATS, buildFrames: buildFrames, scoreStd: scoreStd, scoreOf: scoreOf, marks: marks, normOpen: normOpen, turnOf: turnOf, gameDone: gameDone };
+var api = { buildFramesLow: buildFramesLow, scoreLow: scoreLow, lowBall: lowBall, framesFor: framesFor, knockedFrom: knockedFrom, CHPLAY_VERSION: CHPLAY_VERSION, STORE: STORE, FORMATS: FORMATS, buildFrames: buildFrames, scoreStd: scoreStd, scoreOf: scoreOf, marks: marks, normOpen: normOpen, turnOf: turnOf, gameDone: gameDone };
 root.BDB_CHPLAY = api; root.CHPLAY_JS_VERSION = CHPLAY_VERSION;
 if (typeof module !== 'undefined' && module.exports) module.exports = api;
 if (typeof document === 'undefined') return;
@@ -326,7 +389,7 @@ function cpRenderScorer() {
   });
 }
 function turnOfLive(s, gi) {
-  var g = s.games[gi], best = -1, bestN = 99;
+  var g = s.games[gi], best = -1, bestN = 99, buildFrames = framesFor(s.format);
   s.bowlers.forEach(function (bw, bi) { var row = g.rows[bi]; if (!row || row.typed != null || row.later) return; var r = buildFrames(row.balls || []); if (r.done) return; var n = r.next.frame - 1; if (n < bestN) { bestN = n; best = bi; } });
   return best;
 }
@@ -347,13 +410,14 @@ function rowHTML(s, gi, bi) {
 }
 function deckHTML(s, gi, bi) {
   var st = rowState(s, gi, bi), nx = st.next, rack = nx.rack, mode = modeFor(rack), kind = rack.length === 10 ? 'full' : 'spare';
-  var all = nx.fresh ? 'Strike X' : 'Spare /';
+  var low = s.format === 'lowball', all = low ? (nx.fresh ? 'All = X' : 'All = /') : nx.fresh ? 'Strike X' : 'Spare /';
   return '<div class="card">' +
     '<div style="display:flex;align-items:center;gap:8px;justify-content:space-between"><div style="font-size:12px;color:var(--t2);min-width:0"><b style="color:var(--t1)">' + escH(firstOf(s.bowlers[bi].pid)) + '</b> \u00b7 F' + nx.frame + ' \u00b7 ball ' + nx.ball + '</div>' +
     '<div class="cp-mode" title="What you tap"><span class="' + (mode === 'standing' ? 'on' : '') + '" onclick="cpMode(\'' + kind + '\',\'standing\')">Left standing</span><span class="' + (mode === 'knocked' ? 'on' : '') + '" onclick="cpMode(\'' + kind + '\',\'knocked\')">Knocked</span></div></div>' +
+    (low ? '<div style="font-size:11px;color:var(--gold);text-align:center;margin-top:6px;font-weight:700">Low Ball: knock as few as you can \u2014 a miss counts as ' + (nx.fresh ? 'a strike (X)' : 'a spare (/)') + '</div>' : '') +
     '<div id="cp-hint" style="font-size:11px;color:var(--t3);text-align:center;margin-top:6px">' + hintText(mode) + '</div>' +
     '<div class="cp-deck" id="cp-deck"><div>' + [7, 8, 9, 10].map(pinHTML).join('') + '</div><div>' + [4, 5, 6].map(pinHTML).join('') + '</div><div>' + [2, 3].map(pinHTML).join('') + '</div><div>' + pinHTML(1) + '</div></div>' +
-    '<div class="cp-acts"><button onclick="cpBall(\'miss\')">Gutter \u2014</button><button class="go" id="cp-enter" onclick="cpBall(\'sel\')">' + enterText(rack, mode) + '</button><button class="mark" onclick="cpBall(\'all\')">' + all + '</button></div>' +
+    '<div class="cp-acts"><button onclick="cpBall(\'miss\')">' + (low ? (nx.fresh ? 'Miss = X' : 'Miss = /') : 'Gutter \u2014') + '</button><button class="go" id="cp-enter" onclick="cpBall(\'sel\')">' + enterText(rack, mode) + '</button><button class="mark" onclick="cpBall(\'all\')">' + all + '</button></div>' +
     '<div style="display:flex;justify-content:center;margin-top:8px"><div class="btn-pill" onclick="cpUndo()">\u21b6 Undo last ball</div></div></div>';
   function pinHTML(p) { return '<div class="cp-pin ' + pinClass(p, rack, mode) + '" id="cpp' + p + '" data-p="' + p + '"' + (rack.indexOf(p) >= 0 ? ' onclick="cpTap(' + p + ')"' : '') + '>' + p + '</div>'; }
 }
@@ -401,7 +465,7 @@ function standLine(chID) {
 }
 function doneHTML(s, ch) {
   var g = s.games[cp.gi], sc = s.bowlers.map(function (bw, bi) { var st = rowState(s, cp.gi, bi); return { pid: bw.pid, v: st.typed != null ? +st.typed : st.score }; });
-  var best = Math.max.apply(null, sc.map(function (x) { return x.v; }));
+  var best = (s.format === 'lowball' ? Math.min : Math.max).apply(null, sc.map(function (x) { return x.v; }));   // Low Ball: lowest is best
   var stand = '';
   try { stand = root.chMiniStandingsHTML ? root.chMiniStandingsHTML(s.challengeID) : ''; } catch (e) { stand = ''; }
   return '<div class="card card-best" style="margin-top:6px;text-align:center"><div style="font-size:12px;font-weight:800;color:var(--gold);letter-spacing:.06em">GAME ' + g.n + ' DONE</div>' +
@@ -409,11 +473,11 @@ function doneHTML(s, ch) {
     stand +
     '<div style="display:flex;gap:8px;margin-top:10px"><button class="btn btn-primary" style="flex:1" onclick="cpNextGame()">Next game</button><button class="btn btn-secondary" style="flex:1" onclick="cpBackToChallenge()">Done</button></div>';
 }
-function cpPick(bi) { var s = cur(); if (!s) return; var row = s.games[cp.gi].rows[bi]; if (!row || row.typed != null) return; if (row.later && !(row.balls || []).length) return cpRowMenu(bi); if (buildFrames(row.balls || []).done) return; cp.bi = bi; cp.sel = []; cpRenderScorer(); }
+function cpPick(bi) { var s = cur(); if (!s) return; var row = s.games[cp.gi].rows[bi]; if (!row || row.typed != null) return; if (row.later && !(row.balls || []).length) return cpRowMenu(bi); if (framesFor(s.format)(row.balls || []).done) return; cp.bi = bi; cp.sel = []; cpRenderScorer(); }
 function cpTap(p) { var i = cp.sel.indexOf(p); if (i >= 0) cp.sel.splice(i, 1); else cp.sel.push(p); if (root.haptic) try { root.haptic('light'); } catch (e) {} paintDeck(); }
 function cpBall(how) {
   var s = cur(); if (!s || cp.bi < 0) return;
-  var row = s.games[cp.gi].rows[cp.bi], st = buildFrames(row.balls || []); if (st.done) return;
+  var buildFrames = framesFor(s.format), row = s.games[cp.gi].rows[cp.bi], st = buildFrames(row.balls || []); if (st.done) return;
   var rack = st.next.rack, k = how === 'all' ? rack.slice() : how === 'miss' ? [] : knockedFrom(rack, cp.sel, modeFor(rack));
   k.sort(function (a, b) { return a - b; });
   row.balls = (row.balls || []).concat([k]); row.later = false; cp.sel = [];
