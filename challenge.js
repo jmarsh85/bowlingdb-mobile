@@ -7,7 +7,7 @@
    require()-able for the Node harness (engine only). */
 (function (root) {
 'use strict';
-var CHALLENGE_VERSION = 'v30.245';
+var CHALLENGE_VERSION = 'v30.247';
 var KEY = 'bowlingdb_challenges';
 var EST_GAMES = 21, MIN_GAMES = 9;
 
@@ -29,6 +29,8 @@ var CONTESTS = {
   f_series:{ name: 'First to a series', first: true, unit: 'series', param: 'target', about: 'First to a series (first 3 games) at or above the target.' },
   f_300:   { name: 'First to 300', first: true, unit: 'game', about: 'First to bowl a standard 300.' },
   f_run:   { name: 'First to strikes in a row', first: true, unit: 'game', needs: 'frames', param: 'target', about: 'First to the number of strikes in a row in one game.' },
+  lb_game: { name: 'Low Ball: lowest game', dir: 'low', unit: 'game', fmt: 'n', lowball: true, about: 'Lowest single Low Ball game. A miss counts as a strike; perfect game 20, worst 300.' },
+  lb_total:{ name: 'Low Ball: lowest total', dir: 'low', unit: 'game', fmt: 'n', lowball: true, about: 'Low Ball scores added up over the games that count. Lowest wins.' },
   f_leave: { name: 'First to N conversions', first: true, unit: 'game', needs: 'leaves', param: 'leaveN', about: 'First to convert the chosen leave the set number of times.' }
 };
 var PRESETS = [
@@ -45,7 +47,21 @@ var PRESETS = [
   { id: 'f250', name: 'First to a 250 game', contest: 'f_game', target: 250, days: 60 },
   { id: 'f300', name: 'First to 300', contest: 'f_300', days: 180 },
   { id: 'frun', name: 'First to 6 in a row', contest: 'f_run', target: 6, days: 60 },
-  { id: 'f10', name: 'First to ten 10-pins', contest: 'f_leave', leave: '10', target: 10, days: 60 }
+  { id: 'f10', name: 'First to ten 10-pins', contest: 'f_leave', leave: '10', target: 10, days: 60 },
+  /* v30.246: open-only fun formats (bowled as challenge games on one night) */
+  { id: 'h2h_night', name: 'Head-to-head night', contest: 'hseries', days: 0, count: 'all', openOnly: true, about: 'Tonight only: best 3-game series on the challenge card.' },
+  { id: 'lowball', name: 'Low Ball', contest: 'lb_game', format: 'lowball', days: 0, count: 'all', openOnly: true, about: 'Tonight only: fewest pins wins. A miss counts as a strike. Perfect game 20.' },
+  { id: 'lowball3', name: 'Low Ball, 3 games', contest: 'lb_total', format: 'lowball', days: 0, count: 'first', n: 3, openOnly: true, about: 'Tonight only: lowest Low Ball total over three games.' },
+  { id: 'golf_night', name: 'Spare golf drill', contest: 'sgolf', days: 0, count: 'all', openOnly: true, about: 'Tonight only: spare golf over every frame you bowl. Lowest wins.' }
+];
+/* v30.246: the picker groups presets by what they measure (James 10/27) */
+var GROUPS = [
+  { key: 'score', icon: '\ud83c\udfc6', name: 'Score', about: 'Highest scores win.', ids: ['week_hg', 'series2', 'pinrace'] },
+  { key: 'fair', icon: '\u2696\ufe0f', name: 'Fair across averages', about: 'Measured against each bowler\u2019s own average going in.', ids: ['poa', 'beatavg'] },
+  { key: 'spares', icon: '\ud83c\udfaf', name: 'Spares', about: 'Spare shooting. Needs pin-by-pin games.', ids: ['spare', 'tenpin', 'golf'] },
+  { key: 'strikes', icon: '\ud83d\udca5', name: 'Strikes & clean play', about: 'Strings of strikes and open frames. Needs pin-by-pin games.', ids: ['frun', 'opens'] },
+  { key: 'first', icon: '\ud83c\udfc1', name: 'First to\u2026', about: 'The race ends when someone gets there.', ids: ['f700', 'f250', 'f300', 'f10'] },
+  { key: 'fun', icon: '\ud83c\udfb3', name: 'Fun formats', about: 'Open challenges only: bowled on the challenge card, never in your stats.', ids: ['lowball', 'lowball3', 'h2h_night', 'golf_night'], openOnly: true }
 ];
 
 function floorAvg(sum, n) { return n ? Math.floor(sum / n) : null; }
@@ -253,6 +269,7 @@ function evaluate(ch, games, avgs, today, ctx) {
     var hcU = function (u) { return u.games ? u.games.reduce(function (a, g) { return a + hcG(g); }, 0) : hcG(u); };
     var pool = all.filter(function (g) { return inWindow(g, p); });
     if (c.needs) pool = pool.filter(function (g) { return !!g.frames; });
+    pool = pool.filter(function (g) { return !!c.lowball === !!g.lowball; });   // v30.247: Low Ball games only in Low Ball contests
     var row = { pid: pid, avgIn: avg, hdcp: mode === 'scratch' ? 0 : mode === 'league' ? 'league' : hcG({}), value: null, display: '\u2014', counted: [], chances: null, reached: null, games: pool.length };
     if (c.first) {
       var tgt = ch.contest === 'f_300' ? 300 : +p.target || 0, prog = 0, hit = null;
@@ -293,6 +310,8 @@ function evaluate(ch, games, avgs, today, ctx) {
         var n = 0, m = 0; gamesList.forEach(function (g) { var e = gameStats(g).leaves[leaveK]; if (e) { n += e.n; m += e.made; } });
         row.chances = n; row.made = m; row.value = n >= (p.min || 1) ? Math.floor(m / n * 1000) / 10 : null; break;
       case 'sgolf': row.value = sum('golf'); break;
+      case 'lb_game': row.value = Math.min.apply(null, units.map(val)); break;
+      case 'lb_total': row.value = units.reduce(function (a, u) { return a + val(u); }, 0); break;
       case 'opens': row.value = Math.floor(sum('opens') / gamesList.length * 100) / 100; break;
     }
     row.display = row.value == null ? (avg == null && (ch.contest === 'poa' || ch.contest === 'beatavg') ? 'no average' : row.chances != null ? 'not enough (' + row.chances + ')' : '\u2014')
@@ -574,33 +593,55 @@ function chPostResult(id) {
 
 /* ---------------- new challenge / suggest changes ---------------- */
 var nx = null;   // { mode:'new'|'counter', id, by, source, preset, opponent }
-function chNew(opts) { nx = Object.assign({ mode: 'new', source: null }, opts || {}); if (nx.source) stepPreset(); else stepSource(); }
+function chNew(opts) { nx = Object.assign({ mode: 'new', source: 'league' }, opts || {}); if (nx.source !== 'open') nx.source = 'league'; stepPicker(); }
 function chRematch(id) { var ch = chGet(id); if (!ch) return; nx = { mode: 'new', source: ch.source || 'league', base: ch }; stepForm(); }
 function chCounter(id, by) { var ch = chGet(id); if (!ch) return; nx = { mode: 'counter', id: id, by: by, source: ch.source || 'league', base: ch }; stepForm(); }
 function sheet(html) { (root.openModal)(html); var mb = document.getElementById('modal-body'); if (mb) mb.scrollTop = 0; }
-function stepSource() {
-  sheet('<div class="modal-title">\ud83c\udfc1 New challenge</div><div style="font-size:12px;color:var(--t3);margin:-4px 0 12px">Where do the games come from?</div>' +
-    '<div class="card" style="margin-bottom:10px;cursor:pointer" onclick="chPickSource(\'league\')"><div style="font-size:15px;font-weight:800;color:var(--t1)">\ud83c\udfb3 League challenge</div>' +
-    '<div style="font-size:12px;color:var(--t2);margin-top:4px;line-height:1.5">Reads the league and tournament games you already record. They stay in your stats as usual.</div></div>' +
-    '<div class="card" style="margin-bottom:10px;cursor:pointer" onclick="chPickSource(\'open\')"><div style="font-size:15px;font-weight:800;color:var(--t1)">\ud83c\udfaf Open challenge</div>' +
-    '<div style="font-size:12px;color:var(--t2);margin-top:4px;line-height:1.5">Bowled as its own games (Open Bowling \u203a Challenges) and kept out of your stats. You and your opponent on one card, or type their scores in. Low Ball comes next.</div></div>' +
-    '<button class="btn btn-secondary" onclick="closeModal()">Cancel</button>');
+/* v30.246: one picker, two tabs (League games | Open challenge), presets grouped by what they measure */
+function presetCard(p) {
+  var c = CONTESTS[p.contest], tags = [];
+  if (c.needs) tags.push(['pin-by-pin', 'var(--t3)']);
+  if (c.dir === 'low') tags.push(['low wins', 'var(--gold)']);
+  if (p.openOnly) tags.push(['one night', 'var(--teal)']);
+  return '<div class="card" style="cursor:pointer;padding:10px 12px;margin:0" onclick="chPickPreset(\'' + p.id + '\')"><div style="font-size:13px;font-weight:800;color:var(--t1)">' + escH(p.name) + '</div>' +
+    '<div style="font-size:10px;color:var(--t3);margin-top:3px;line-height:1.4">' + escH(p.about || c.about) + '</div>' +
+    (tags.length ? '<div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:6px">' + tags.map(function (t) { return '<span style="font-size:9px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:' + t[1] + ';border:1px solid currentColor;border-radius:6px;padding:1px 5px">' + t[0] + '</span>'; }).join('') + '</div>' : '') + '</div>';
 }
-function chPickSource(s) { nx.source = s; stepPreset(); }
-function stepPreset() {
-  sheet('<div class="modal-title">Pick a starting point</div><div style="font-size:12px;color:var(--t3);margin:-4px 0 10px">Presets fill the form; everything stays editable.</div>' +
-    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">' + PRESETS.map(function (p) {
-      return '<div class="card" style="cursor:pointer;padding:10px 12px;margin:0" onclick="chPickPreset(\'' + p.id + '\')"><div style="font-size:13px;font-weight:800;color:var(--t1)">' + escH(p.name) + '</div>' +
-        '<div style="font-size:10px;color:var(--t3);margin-top:3px;line-height:1.4">' + escH(CONTESTS[p.contest].about) + '</div></div>'; }).join('') +
-    '<div class="card" style="cursor:pointer;padding:10px 12px;margin:0;border-style:dashed" onclick="chPickPreset(null)"><div style="font-size:13px;font-weight:800;color:var(--teal)">\u2795 Custom</div><div style="font-size:10px;color:var(--t3);margin-top:3px">Start from a blank form</div></div></div>' +
-    '<button class="btn btn-secondary" style="margin-top:12px" onclick="chBackSource()">\u2039 Back</button>');
+function soonCard(name, about) {
+  return '<div class="card" style="padding:10px 12px;margin:0;opacity:.5"><div style="font-size:13px;font-weight:800;color:var(--t1)">' + escH(name) + '</div><div style="font-size:10px;color:var(--t3);margin-top:3px;line-height:1.4">' + escH(about) + '</div>' +
+    '<div style="margin-top:6px"><span style="font-size:9px;font-weight:800;text-transform:uppercase;color:var(--gold);border:1px solid currentColor;border-radius:6px;padding:1px 5px">next build</span></div></div>';
 }
+function stepPicker() {
+  var open = nx.source === 'open';
+  var tab = function (k, l) { var on = nx.source === k; return '<div onclick="chPickSource(\'' + k + '\')" style="flex:1;text-align:center;padding:9px 0;border-radius:10px;cursor:pointer;font-size:13px;font-weight:800;' + (on ? 'background:rgba(0,217,217,.14);color:var(--teal);border:1px solid rgba(0,217,217,.4)' : 'color:var(--t2);border:1px solid var(--border1)') + '">' + l + '</div>'; };
+  var h = '<div class="modal-title">\ud83c\udfc1 New challenge</div>' +
+    '<div style="display:flex;gap:8px;margin-bottom:8px">' + tab('league', '\ud83c\udfb3 League games') + tab('open', '\ud83c\udfaf Open challenge') + '</div>' +
+    '<div style="font-size:11px;color:var(--t3);line-height:1.5;margin-bottom:12px">' + (open
+      ? 'Bowled as their own games on the challenge card (Open Bowling \u203a Challenges). Kept out of your stats. Your opponent bowls on the same card, or you type their score in.'
+      : 'Reads the league and tournament games you already record; they stay in your stats as usual. Pin-by-pin contests count only nights entered frame by frame.') + '</div>';
+  (open ? GROUPS.filter(function (g) { return g.openOnly; }).concat(GROUPS.filter(function (g) { return !g.openOnly; })) : GROUPS).forEach(function (g) {   // open: fun formats first
+    if (g.openOnly && !open) return;
+    var cards = g.ids.map(function (id) {
+      var p = PRESETS.filter(function (x) { return x.id === id; })[0]; return p ? presetCard(p) : '';
+    }).join('');
+    h += '<div style="margin:4px 0 6px"><span style="font-size:13px;font-weight:900;color:var(--t1)">' + g.icon + ' ' + escH(g.name) + '</span>' +
+      '<div style="font-size:10px;color:var(--t3);margin-top:1px">' + escH(g.about) + '</div></div>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">' + cards + '</div>';
+  });
+  if (!open) h += '<div style="font-size:11px;color:var(--t3);margin:-2px 0 12px">\ud83c\udfb3 Fun formats (Low Ball, one-night head-to-head, spare golf drill) are under <b onclick="chPickSource(\'open\')" style="color:var(--teal);cursor:pointer">Open challenge</b>.</div>';
+  h += '<div class="card" style="cursor:pointer;padding:10px 12px;margin:0 0 12px;border-style:dashed" onclick="chPickPreset(null)"><div style="font-size:13px;font-weight:800;color:var(--teal)">\u2795 Custom</div><div style="font-size:10px;color:var(--t3);margin-top:3px">Any contest, your own rules</div></div>' +
+    '<button class="btn btn-secondary" onclick="closeModal()">Cancel</button>';
+  sheet(h);
+}
+function chPickSource(s) { nx.source = s === 'open' ? 'open' : 'league'; stepPicker(); }
+function stepSource() { stepPicker(); }
+function stepPreset() { stepPicker(); }
 function chPickPreset(id) { nx.preset = id ? PRESETS.filter(function (p) { return p.id === id; })[0] : null; stepForm(); }
 function defaults() {
   var t = todayStr(), p = nx.preset, b = nx.base;
   if (b) return { contest: b.contest, name: b.name, format: b.format || 'standard', params: JSON.parse(JSON.stringify(b.params)), opponent: b.people.filter(function (x) { return x !== 'me'; })[0] || 'solo' };
-  return { contest: p ? p.contest : 'hgame', name: p ? p.name : '', format: 'standard', opponent: nx.opponent || (friendsList()[0] ? friendsList()[0].id : 'solo'),
-    params: { start: t, end: addDays(t, (p && p.days) || 14), count: (p && p.count) || 'all', n: (p && p.n) || 9, min: (p && p.min) || '', target: (p && p.target) || '', leave: (p && p.leave) || '',
+  return { contest: p ? p.contest : 'hgame', name: p ? p.name : '', format: (p && p.format) || 'standard', opponent: nx.opponent || (friendsList()[0] ? friendsList()[0].id : 'solo'),
+    params: { start: t, end: addDays(t, p && p.days != null ? p.days : 14), count: (p && p.count) || 'all', n: (p && p.n) || 9, min: (p && p.min) || '', target: (p && p.target) || '', leave: (p && p.leave) || '',
       where: nx.source === 'open' ? 'open' : 'any', leagueID: null, scoring: 'scratch', hcMode: 'scratch', basis: 220, pct: 90, hcCap: '', avgSource: 'established', avgLeagueID: null, avgs: {}, fixed: {}, tie: 'shared', proof: 'none', note: '' } };
 }
 function sel(id, opts, cur) { return '<select class="finput" id="' + id + '" onchange="chFormSync()">' + opts.map(function (o) { return '<option value="' + escH(o[0]) + '"' + (String(o[0]) === String(cur) ? ' selected' : '') + '>' + escH(o[1]) + '</option>'; }).join('') + '</select>'; }
@@ -615,9 +656,9 @@ function stepForm() {
     (counter ? '<div style="font-size:12px;color:var(--t3);margin:-4px 0 10px">' + (nx.by === 'me' ? 'Your changes go back to ' + escH(person(nx.base.people.filter(function (x) { return x !== 'me'; })[0]).name) : 'As ' + escH(person(nx.by).name) + ' (preview): the changes go back to you') + '.</div>' : '') +
     fg('Name', '<input class="finput" id="cf-name" type="text" value="' + escH(d.name) + '" placeholder="' + escH(CONTESTS[d.contest].name) + '">') +
     (counter ? '' : fg('Opponent', sel('cf-opp', opp, d.opponent))) +
-    (isOpen ? fg('Format', '<select class="finput" id="cf-format">' + Object.keys(fmts).map(function (k) { return '<option value="' + k + '"' + (fmts[k].soon ? ' disabled' : '') + (k === (d.format || 'standard') ? ' selected' : '') + '>' + escH(fmts[k].name) + (fmts[k].soon ? ' (next build)' : '') + '</option>'; }).join('') + '</select>') +
+    (isOpen ? fg('Format', '<select class="finput" id="cf-format" onchange="chFormSync()">' + Object.keys(fmts).map(function (k) { return '<option value="' + k + '"' + (fmts[k].soon ? ' disabled' : '') + (k === (d.format || 'standard') ? ' selected' : '') + '>' + escH(fmts[k].name) + (fmts[k].soon ? ' (next build)' : '') + '</option>'; }).join('') + '</select>') +
       '<div style="font-size:11px;color:var(--t3);margin:-6px 0 10px">Games are bowled for this challenge only and never enter your stats.</div>' : '') +
-    fg('Contest', sel('cf-contest', Object.keys(CONTESTS).map(function (k) { return [k, (CONTESTS[k].first ? 'First to: ' : '') + CONTESTS[k].name]; }), d.contest)) +
+    fg('Contest', sel('cf-contest', contestOpts(isOpen ? d.format || 'standard' : 'standard'), d.contest)) +
     '<div id="cf-about" style="font-size:11px;color:var(--t3);margin:-6px 0 10px">' + escH(CONTESTS[d.contest].about) + '</div>' +
     fg('Target', '<input class="finput" id="cf-target" type="number" value="' + escH(p.target) + '" placeholder="e.g. 700">', 'cf-g-target') +
     fg('Leave (pins standing)', '<input class="finput" id="cf-leave" type="text" value="' + escH(p.leave) + '" placeholder="e.g. 10, 7 or 3-6-10">', 'cf-g-leave') +
@@ -643,7 +684,17 @@ function stepForm() {
 }
 function val(id) { var e = document.getElementById(id); return e ? e.value : ''; }
 function showEl(id, on) { var e = document.getElementById(id); if (e) e.style.display = on ? '' : 'none'; }
+/* the contests a format allows: Low Ball contests only for the Low Ball format, and only those */
+function contestOpts(fmt) { return Object.keys(CONTESTS).filter(function (k) { return !!CONTESTS[k].lowball === (fmt === 'lowball'); }).map(function (k) { return [k, (CONTESTS[k].first ? 'First to: ' : '') + CONTESTS[k].name]; }); }
 function chFormSync() {
+  var fe = document.getElementById('cf-format'), ce = document.getElementById('cf-contest');
+  if (fe && ce) {
+    var want = contestOpts(fe.value), have = Array.prototype.map.call(ce.options, function (o) { return o.value; }).join(',');
+    if (have !== want.map(function (o) { return o[0]; }).join(',')) {
+      var keep = ce.value; ce.innerHTML = want.map(function (o) { return '<option value="' + o[0] + '">' + escH(o[1]) + '</option>'; }).join('');
+      ce.value = want.some(function (o) { return o[0] === keep; }) ? keep : want[0][0];
+    }
+  }
   var k = val('cf-contest'), c = CONTESTS[k] || {};
   var a = document.getElementById('cf-about'); if (a) a.textContent = c.about || '';
   showEl('cf-g-target', !!c.first && k !== 'f_300');
@@ -702,8 +753,8 @@ function chSubmit() {
   chPut(ch2); root.closeModal(); chOpen(ch2.id);
   if (root.toast) root.toast(solo ? 'Solo challenge started' : 'Challenge sent (preview: answer it as your friend on the next screen)');
 }
-function stepPresetBack() { stepPreset(); }
-function chBackSource() { stepSource(); }
+function stepPresetBack() { stepPicker(); }
+function chBackSource() { stepPicker(); }
 
 /* ---------------- entering games from a challenge: through the normal screens ---------------- */
 function chAddGames(id) {
