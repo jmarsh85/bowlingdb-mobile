@@ -1,5 +1,5 @@
 /* v30.224 OFF-2: sw.js checks this line against index.html's file list; bump it when devkit.js changes */
-var DK_VERSION = 'v30.234';
+var DK_VERSION = 'v30.248';
 
 
 
@@ -1450,7 +1450,7 @@ dkRenderTab(name);
 }function dkRenderTab(name) {
 ['entries','map','state','idb','tools'].forEach(function(t) {
 var pane = document.getElementById('dk-pane-'+t);
-if (pane) pane.style.display = (t === name) ? (t==='idb'?'flex':'block') : 'none';
+if (pane) pane.style.display = (t === name) ? ((t==='idb' || t==='map')?'flex':'block') : 'none';   /* v30.248: map must stay flex or its form can't scroll to Save */
 });
 if (name === 'entries') dkRenderEntries();
 if (name === 'state')   dkRenderState();
