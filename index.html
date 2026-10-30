@@ -286,7 +286,7 @@
      (its *_VERSION line). sw.js reads this block: it keeps the app's
      files as one matching set and never opens a mix of old and new files. Every file
      is fetched as name.js?v=APP_VERSION. Update a version here when that file changes. -->
-<script type="application/json" id="bdb-files">{"devkit.js":"v30.234","report.js":"v30.156","catalog.js":"v30.243","workbench.js":"v30.223","pinpal.js":"v30.199","awards.js":"v30.243","share.js":"v30.243","connect.js":"v30.242","challenge.js":"v30.247","chplay.js":"v30.247"}</script>
+<script type="application/json" id="bdb-files">{"devkit.js":"v30.248","report.js":"v30.156","catalog.js":"v30.243","workbench.js":"v30.223","pinpal.js":"v30.199","awards.js":"v30.243","share.js":"v30.248","connect.js":"v30.242","challenge.js":"v30.247","chplay.js":"v30.247"}</script>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#0E0F11">
@@ -3636,6 +3636,9 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
     <div id="s-leaves" class="screen" data-title="Leave Library">
       <div id="leaves-content" style="padding:0 0 32px"></div>
     </div>
+    <div id="s-leave-detail" class="screen" data-title="Leave Detail">
+      <div id="leave-detail-content" style="padding:0 0 32px"></div>
+    </div>
 
     <!-- LANE LIBRARY (v30.112, Phase A) -->
     <div id="s-lane-library" class="screen" data-title="Lane Library">
@@ -3753,7 +3756,7 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
    Bump both lines (and CATALOG_JS_VERSION in catalog.js when it changes).
    v30.224 OFF-2: also bump the ?v= on the three <script src> tags at the end of
    the page, and the file list in <script id="bdb-files"> when a .js file changes. */
-const APP_VERSION = 'v30.247';
+const APP_VERSION = 'v30.248';
 const APP_BUILD_DATE = '2026-10-27';
 /* catalog.js this build expects; an older file on the server shows a warning */
 const EXPECTED_CATALOG_JS = 'v30.243';
@@ -4521,6 +4524,7 @@ try {
 's-stats': renderStats,
 's-performance': renderPerformanceScreen,
 's-leaves': renderLeavesScreen,
+'s-leave-detail': renderLeaveDetail,
 's-lane-library': renderLaneLibrary,
 's-lane-detail': () => {},  
 's-league-dashboard': () => {}, 
@@ -16493,6 +16497,7 @@ function renderLeavesScreen() {
 var el = document.getElementById('leaves-content');
 if (!el) return;
 el.innerHTML = _buildLeavesScreenHTML();
+if (getCurrentScreen() === 's-leave-detail') renderLeaveDetail();
 }
 function _buildLeavesScreenHTML() {
 
@@ -16510,45 +16515,7 @@ gamePool = allStdGames.slice(0, parseInt(_leavesFilter, 10));
 }
 var gameIDSet = new Set(gamePool.map(function(g) { return g.GameID; }));
 
-function findLeave(standingSet, leaveID) {
-if (leaveID && db.leaves.length) {
-var lv = db.leaves.find(function(l) { return l.LeaveID === leaveID; });
-if (lv) return lv;
-}
-if (db.leaves.length) {
-var found = db.leaves.find(function(x) {
-for (var p = 1; p <= 10; p++) {
-if (!!(x['Pin'+ p]) !== standingSet.has(p)) return false;
-}
-return true;
-});
-if (found) return found;
-}
-
-var adj = {1:[2,3,5],2:[1,4,5,8],3:[1,5,6,9],4:[2,7,8],5:[1,2,3,8,9],
-6:[3,9,10],7:[4],8:[2,4,5],9:[3,5,6],10:[6]};
-var vis = {}, pns = {}, cl = 0;
-standingSet.forEach(function(p) { pns[p] = true; });
-for (var p = 2; p <= 10; p++) {
-if (pns[p] && !vis[p]) {
-cl++;
-var st = [p];
-while (st.length) {
-var n = st.pop();
-if (vis[n]) continue;
-vis[n] = true;
-(adj[n] || []).forEach(function(a) { if (pns[a] && !vis[a]) st.push(a); });
-}
-}
-}
-var isSplit = !standingSet.has(1) && standingSet.size >= 2 && cl > 1;
-var pa = {};
-for (var p = 1; p <= 10; p++) pa['Pin'+ p] = standingSet.has(p);
-var sp = Array.from(standingSet).sort(function(a, b) { return a - b; });
-var nm = standingSet.size === 1 ? sp[0] + '-pin': sp.join('-');
-var sid = leaveID != null ? 'L'+ leaveID : 'P'+ sp.join('_');
-return Object.assign({ LeaveID: sid, DisplayName: nm, LeaveType: isSplit ? 'Split': 'Standard'}, pa);
-}
+function findLeave(standingSet, leaveID) { return ldFindLeave(standingSet, leaveID); }
 
 
 
@@ -16695,10 +16662,8 @@ var alignLabel = hasAlign ? '⊕ Setup': '+ Setup';
 var alignColor = hasAlign ? 'var(--teal)': 'var(--t3)';
 var alignPart = '<span style="font-size:10px;color:'+ alignColor + ';margin-left:6px;cursor:pointer" '
 + 'onclick="event.stopPropagation();openLeaveAlignModal(_leavesAlignMap['+ _alignIdx + '])">'+ (_alnSum || alignLabel) + '</span>';
-var expandPart = _canExpand
-? '<span style="font-size:10px;color:var(--t3);margin-left:8px">' + (_isOpen ? '\u25B4' : '\u25BE') + ' best</span>'
-: '';
-var bestPart = _isOpen
+var expandPart = '<span style="font-size:10px;color:var(--teal);margin-left:8px;font-weight:700">Details \u203a</span>';
+var bestPart = false
 ? '<div style="grid-column:1 / -1;padding:2px 4px 6px 52px" onclick="event.stopPropagation()">'
 + '<div style="font-size:10px;color:var(--t3)">Best setups \u00b7 all games \u00b7 values you set</div>'
 + aln2BestSetupsHTML(lvID, ['hook', 'straight'], 'lib')
@@ -16706,7 +16671,7 @@ var bestPart = _isOpen
 : '';
 return '<div style="display:grid;grid-template-columns:44px 1fr 44px;gap:8px;'
 + 'align-items:center;padding:10px 0;border-bottom:1px solid var(--border1)'
-+ (_canExpand ? ';cursor:pointer" onclick="toggleLeaveBest(' + _alignIdx + ')">' : '">')
++ ';cursor:pointer" onclick="openLeaveDetail(' + _alignIdx + ')">'
 
 + '<div style="display:flex;justify-content:center;transform:scale(0.75);transform-origin:center">'+ pinHtml + '</div>'
 
@@ -16943,6 +16908,241 @@ return `<div style="display:flex;flex-direction:column;align-items:center;gap:3p
     <div style="display:flex;gap:3px">${dot(1)}${dot(2)}</div>
     <div style="display:flex;gap:3px">${dot(0)}</div>
   </div>`;
+}
+/* ── LEAVE DETAIL (v30.248) ───────────────────────────────────
+   Opened from a Leave Library row (s-leave-detail). One leave's history
+   from the same fresh-rack ledger the Library counts with (frames 1-9
+   att1; 10th-frame fresh racks with a spare attempt), so its totals equal
+   the Library's "All" filter. ldScan() is an indexed copy of
+   buildFreshRackScan()'s rules (parity checked in tests/leave_detail_test.py).
+   Streaks (James 10/29): conversions in a row in time order, ended by a
+   miss or by the edge of the scope: Night (one series), League (default;
+   a tournament is its own group), All. Average streak = conversions / runs
+   (runs of one or more). */
+var LD_SCOPE_KEY = 'bowlingdb_ld_scope';
+var _ldKey = null;
+var _ldCache = null;
+var _ldAllGroups = false;
+function ldEsc(v) { return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+/* the Leave Library's leave resolution (was nested in _buildLeavesScreenHTML) */
+function ldFindLeave(standingSet, leaveID) {
+if (leaveID && db.leaves.length) {
+var lv = db.leaves.find(function(l) { return l.LeaveID === leaveID; });
+if (lv) return lv;
+}
+if (db.leaves.length) {
+var found = db.leaves.find(function(x) {
+for (var p = 1; p <= 10; p++) { if (!!(x['Pin'+ p]) !== standingSet.has(p)) return false; }
+return true;
+});
+if (found) return found;
+}
+var adj = {1:[2,3,5],2:[1,4,5,8],3:[1,5,6,9],4:[2,7,8],5:[1,2,3,8,9],6:[3,9,10],7:[4],8:[2,4,5],9:[3,5,6],10:[6]};
+var vis = {}, pns = {}, cl = 0;
+standingSet.forEach(function(p) { pns[p] = true; });
+for (var q = 2; q <= 10; q++) {
+if (pns[q] && !vis[q]) {
+cl++;
+var st = [q];
+while (st.length) { var n = st.pop(); if (vis[n]) continue; vis[n] = true; (adj[n] || []).forEach(function(a) { if (pns[a] && !vis[a]) st.push(a); }); }
+}
+}
+var isSplit = !standingSet.has(1) && standingSet.size >= 2 && cl > 1;
+var pa = {};
+for (var r = 1; r <= 10; r++) pa['Pin'+ r] = standingSet.has(r);
+var sp = Array.from(standingSet).sort(function(a, b) { return a - b; });
+var nm = standingSet.size === 1 ? sp[0] + '-pin': sp.join('-');
+var sid = leaveID != null ? 'L'+ leaveID : 'P'+ sp.join('_');
+return Object.assign({ LeaveID: sid, DisplayName: nm, LeaveType: isSplit ? 'Split': 'Standard'}, pa);
+}
+function ldScope() { try { var v = localStorage.getItem(LD_SCOPE_KEY); return v === 'night' || v === 'all' ? v : 'league'; } catch (e) { return 'league'; } }
+function ldSetScope(v) { try { localStorage.setItem(LD_SCOPE_KEY, v); } catch (e) {} renderLeaveDetail(); }
+function ldScan() {
+var c = _ldCache;
+if (c && c.g === db.games && c.f === db.frames && c.a === db.attempts && c.s === db.series && c.l === db.leaves &&
+c.nG === db.games.length && c.nF === db.frames.length && c.nA === db.attempts.length && c.nS === db.series.length) return c;
+var pool = standardGamePool();
+var gByID = {}; pool.forEach(function(g) { gByID[g.GameID] = g; });
+var sByID = {}; db.series.forEach(function(s) { sByID[s.SeriesID] = s; });
+var aByF = {}; db.attempts.forEach(function(a) { (aByF[a.FrameID] = aByF[a.FrameID] || []).push(a); });
+var lgName = {}; (db.leagues || []).forEach(function(l) { lgName[l.LeagueID] = l.LeagueName; });
+var tnName = {}; (db.tournaments || []).forEach(function(t) { tnName[t.TournamentID] = t.TournamentName || t.Name; });
+var leaves = {}, memo = {}, events = [], framed = {};
+function grpOf(s) { return s && s.TournamentID != null ? 't' + s.TournamentID : 'l' + (s ? s.LeagueID : ''); }
+function push(g, f, ord, att, next, converted) {
+if (!att || att.Pinfall === null || att.Pinfall === undefined || att.Pinfall === 10) return;
+if (converted === null) return;
+var standing = getLeaveFromAtt(att);
+if (!standing.size) return;
+var pins = Array.from(standing).sort(function(x, y) { return x - y; });
+var mk = pins.join('_') + '|' + (att.LeaveID ?? '');
+var lv = memo[mk] || (memo[mk] = ldFindLeave(standing, att.LeaveID ?? null));
+leaves[lv.LeaveID] = lv;
+var s = sByID[g.SeriesID];
+events.push({ key: lv.LeaveID, conv: !!converted, gameID: g.GameID, seriesID: g.SeriesID, date: s ? s.DateBowled || '' : '',
+gameNo: g.GameNumber || 0, frameNo: f.FrameNumber, ord: ord, ballID: next ? next.BallID : null, grp: grpOf(s) });
+}
+db.frames.forEach(function(f) {
+var g = gByID[f.GameID];
+if (!g) return;
+framed[f.GameID] = true;
+var fa = aByF[f.FrameID] || [], a1 = null, a2 = null, a3 = null;
+fa.forEach(function(a) { if (a.Attempt === 1 && !a1) a1 = a; else if (a.Attempt === 2 && !a2) a2 = a; else if (a.Attempt === 3 && !a3) a3 = a; });
+if (!a1 || a1.Pinfall === null) return;
+if (f.FrameNumber <= 9) { push(g, f, 1, a1, a2, (a2 && a2.Pinfall !== null) ? (a1.Pinfall + a2.Pinfall >= 10) : null); return; }
+if (a1.Pinfall === 10) { if (a2 && a2.Pinfall !== null) push(g, f, 2, a2, a3, (a3 && a3.Pinfall !== null) ? (a2.Pinfall + a3.Pinfall >= 10) : null); }
+else push(g, f, 1, a1, a2, (a2 && a2.Pinfall !== null) ? (a1.Pinfall + a2.Pinfall >= 10) : null);
+});
+events.sort(function(x, y) { return x.date.localeCompare(y.date) || (x.seriesID - y.seriesID) || (x.gameNo - y.gameNo) || (x.frameNo - y.frameNo) || (x.ord - y.ord); });
+/* games with frame data, oldest first, and per group, for "left per game" */
+var fg = pool.filter(function(g) { return framed[g.GameID]; }).map(function(g) { var s = sByID[g.SeriesID]; return { id: g.GameID, sid: g.SeriesID, date: s ? s.DateBowled || '' : '', n: g.GameNumber || 0, grp: grpOf(s) }; })
+.sort(function(x, y) { return x.date.localeCompare(y.date) || (x.sid - y.sid) || (x.n - y.n); });
+var grpGames = {}, grpLast = {}, grpLabel = {}, nights = {};
+fg.forEach(function(g) { grpGames[g.grp] = (grpGames[g.grp] || 0) + 1; if (!grpLast[g.grp] || g.date > grpLast[g.grp]) grpLast[g.grp] = g.date; nights[g.sid] = true; });
+Object.keys(grpGames).forEach(function(k) { var id = +k.slice(1); grpLabel[k] = k[0] === 't' ? (tnName[id] || 'Tournament') : (lgName[id] || (id === -1 ? 'NoTap Games' : 'Open / other')); });
+_ldCache = { g: db.games, f: db.frames, a: db.attempts, s: db.series, l: db.leaves, nG: db.games.length, nF: db.frames.length, nA: db.attempts.length, nS: db.series.length,
+events: events, leaves: leaves, framedGames: fg, nights: Object.keys(nights).length, grpGames: grpGames, grpLast: grpLast, grpLabel: grpLabel };
+return _ldCache;
+}
+/* streak runs over events (time order); scope: 'night' | 'league' | 'all' */
+function ldStreaks(evs, scope) {
+var gk = scope === 'night' ? function(e) { return e.seriesID; } : scope === 'league' ? function(e) { return e.grp; } : function() { return 0; };
+var best = null, runs = 0, conv = 0, cur = 0, curStart = null, prev, lastGrp = null;
+evs.forEach(function(e) {
+var k = gk(e);
+if (k !== prev) { if (cur) runs++; cur = 0; prev = k; }
+if (e.conv) {
+if (!cur) curStart = e;
+cur++; conv++;
+if (!best || cur > best.n) best = { n: cur, from: curStart, to: e };
+} else { if (cur) runs++; cur = 0; }
+lastGrp = k;
+});
+if (cur) runs++;
+return { best: best, current: cur, runs: runs, conv: conv, avg: runs ? Math.floor(conv / runs * 10) / 10 : null };
+}
+function ldPct(c, n) { return n ? Math.round(c / n * 100) : null; }
+function openLeaveDetail(idx) {
+var id = _leavesAlignMap[idx];
+if (id == null) return;
+_ldKey = id;
+navTo('s-leave-detail');
+}
+function ldTrendSVG(evs, careerPct) {
+var N = 40, W = 320, H = 132, x0 = 30, x1 = 312, y0 = 10, y1 = 86, dotY = 112;
+var start = Math.max(0, evs.length - N), shown = evs.slice(start);
+if (shown.length < 2) return '';
+var step = (x1 - x0) / Math.max(1, shown.length - 1);
+var yOf = function(p) { return y1 - (y1 - y0) * p / 100; };
+var pts = [];
+shown.forEach(function(e, i) {
+var j = start + i, from = Math.max(0, j - 9), win = evs.slice(from, j + 1);
+var p = win.filter(function(x) { return x.conv; }).length / win.length * 100;
+pts.push((x0 + i * step).toFixed(1) + ',' + yOf(p).toFixed(1));
+});
+var grid = [0, 50, 100].map(function(v) {
+return '<line x1="' + x0 + '" x2="' + x1 + '" y1="' + yOf(v) + '" y2="' + yOf(v) + '" style="stroke:var(--border1);stroke-width:1"/>' +
+'<text x="' + (x0 - 4) + '" y="' + (yOf(v) + 3) + '" text-anchor="end" style="fill:var(--t3);font-size:8px">' + v + '%</text>';
+}).join('');
+var career = careerPct == null ? '' : '<line x1="' + x0 + '" x2="' + x1 + '" y1="' + yOf(careerPct) + '" y2="' + yOf(careerPct) + '" style="stroke:var(--gold);stroke-width:1.2;stroke-dasharray:4 3"/>';
+var dots = shown.map(function(e, i) {
+return '<circle cx="' + (x0 + i * step).toFixed(1) + '" cy="' + dotY + '" r="3.2" style="fill:' + (e.conv ? 'var(--teal)' : 'var(--sedona)') + '"/>';
+}).join('');
+return '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;height:auto;display:block">' + grid + career +
+'<polyline points="' + pts.join(' ') + '" style="fill:none;stroke:var(--teal);stroke-width:2;stroke-linejoin:round"/>' +
+'<text x="' + x0 + '" y="' + (dotY - 8) + '" style="fill:var(--t3);font-size:8px">oldest</text>' +
+'<text x="' + x1 + '" y="' + (dotY - 8) + '" text-anchor="end" style="fill:var(--t3);font-size:8px">latest</text>' + dots + '</svg>';
+}
+function renderLeaveDetail() {
+var el = document.getElementById('leave-detail-content');
+if (!el) return;
+var D = ldScan(), key = _ldKey;
+var evs = D.events.filter(function(e) { return e.key === key; });
+var lv = D.leaves[key] || (typeof key === 'number' ? db.leaves.find(function(l) { return l.LeaveID === key; }) : null);
+if (!lv || !evs.length) { el.innerHTML = '<div style="padding:40px 16px;text-align:center;color:var(--t3);font-size:13px">No history for this leave yet.</div>'; return; }
+var card = function(inner, title) { return '<div style="background:var(--bg2);border:1px solid var(--border1);border-radius:12px;padding:12px 14px;margin:0 14px 12px">' + (title ? '<div style="font-size:10px;font-weight:700;letter-spacing:0.6px;text-transform:uppercase;color:var(--t3);margin-bottom:8px">' + title + '</div>' : '') + inner + '</div>'; };
+var made = function(list) { return list.filter(function(e) { return e.conv; }).length; };
+var n = evs.length, c = made(evs), car = ldPct(c, n);
+var isSplit = lv.LeaveType === 'Split';
+var bsk = ''; for (var p = 1; p <= 10; p++) bsk += lv['Pin' + p] ? 'S' : 'B';
+var fd = function(s) { return s ? fmtDate(s, { month: 'short', day: 'numeric', year: '2-digit' }) : '\u2014'; };
+/* header */
+var h = '<div style="display:flex;align-items:center;gap:14px;padding:14px 16px 12px">' +
+'<div style="transform:scale(1.15);transform-origin:center">' + leavePinHTML(bsk) + '</div>' +
+'<div style="min-width:0"><div style="font-size:20px;font-weight:800;color:var(--t1)">' + ldEsc(lv.DisplayName || lv.ShortName || 'Leave') +
+(isSplit ? ' <span style="font-size:10px;background:rgba(220,80,60,0.18);color:var(--sedona);border-radius:4px;padding:2px 5px;vertical-align:middle">SPLIT</span>' : '') + '</div>' +
+'<div style="font-size:12px;color:var(--t2);margin-top:2px">Converted ' + c + ' of ' + n + ' \u00b7 career ' + car + '%</div></div></div>';
+/* recent vs career */
+var tile = function(lbl, list) {
+if (!list.length) return '';
+var pc = ldPct(made(list), list.length), col = pc >= car + 5 ? 'var(--teal)' : pc <= car - 5 ? 'var(--sedona)' : 'var(--t1)';
+return '<div style="flex:1;text-align:center"><div style="font-size:10px;font-weight:700;color:var(--t3);letter-spacing:0.4px">' + lbl + '</div>' +
+'<div style="font-size:22px;font-weight:800;color:' + col + '">' + pc + '%</div><div style="font-size:10px;color:var(--t3)">' + made(list) + '/' + list.length + '</div></div>';
+};
+var tiles = '<div style="display:flex;gap:4px">' + tile('LAST 10', evs.slice(-10)) + (n > 10 ? tile('LAST 30', evs.slice(-30)) : '') + tile('CAREER', evs) + '</div>' +
+'<div style="font-size:10px;color:var(--t3);margin-top:8px;text-align:center">Accent colour = 5+ points above career, red = 5+ below</div>';
+/* how often it's left */
+var nG = D.framedGames.length, rec = D.framedGames.slice(-30), recIDs = {};
+rec.forEach(function(g) { recIDs[g.id] = true; });
+var recN = evs.filter(function(e) { return recIDs[e.gameID]; }).length;
+var nights = {}; evs.forEach(function(e) { nights[e.seriesID] = true; });
+var f2 = function(v) { return (Math.floor(v * 100) / 100).toFixed(2); };
+var often = '<div style="display:flex;gap:4px;text-align:center">' +
+'<div style="flex:1"><div style="font-size:10px;font-weight:700;color:var(--t3)">PER GAME</div><div style="font-size:20px;font-weight:800;color:var(--t1)">' + f2(n / Math.max(1, nG)) + '</div><div style="font-size:10px;color:var(--t3)">career</div></div>' +
+'<div style="flex:1"><div style="font-size:10px;font-weight:700;color:var(--t3)">PER GAME</div><div style="font-size:20px;font-weight:800;color:var(--t1)">' + f2(recN / Math.max(1, rec.length)) + '</div><div style="font-size:10px;color:var(--t3)">last ' + rec.length + ' games</div></div>' +
+'<div style="flex:1"><div style="font-size:10px;font-weight:700;color:var(--t3)">PER SERIES</div><div style="font-size:20px;font-weight:800;color:var(--t1)">' + f2(n / Math.max(1, D.nights)) + '</div><div style="font-size:10px;color:var(--t3)">in ' + Object.keys(nights).length + ' of ' + D.nights + ' nights</div></div></div>';
+/* streaks */
+var sc = ldScope(), S = ldStreaks(evs, sc);
+var chip = function(v, lbl) { var on = v === sc; return '<button onclick="ldSetScope(\'' + v + '\')" style="flex:1;padding:6px 0;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;border:1px solid ' + (on ? 'var(--teal)' : 'var(--border1)') + ';background:' + (on ? 'rgba(0,217,217,0.12)' : 'transparent') + ';color:' + (on ? 'var(--teal)' : 'var(--t2)') + '">' + lbl + '</button>'; };
+var bestTxt = S.best ? (S.best.n > 1 ? fd(S.best.from.date) + ' \u2013 ' + fd(S.best.to.date) : fd(S.best.to.date)) + (sc !== 'all' ? ' \u00b7 ' + ldEsc(D.grpLabel[S.best.to.grp] || '') : '') : 'no conversions yet';
+var curLbl = sc === 'night' ? 'last night it came up' : sc === 'league' ? 'in ' + ldEsc(D.grpLabel[evs[n - 1].grp] || 'the latest league') : 'right now';
+var big = function(lbl, v, sub) { return '<div style="flex:1;text-align:center"><div style="font-size:10px;font-weight:700;color:var(--t3)">' + lbl + '</div><div style="font-size:24px;font-weight:800;color:var(--t1)">' + v + '</div><div style="font-size:10px;color:var(--t3);line-height:1.3">' + sub + '</div></div>'; };
+var avgs = ['night', 'league', 'all'].map(function(v) { var a = ldStreaks(evs, v).avg; return (v === 'night' ? 'Night' : v === 'league' ? 'League' : 'All') + ' ' + (a == null ? '\u2014' : a.toFixed(1)); }).join(' \u00b7 ');
+var streaks = '<div style="display:flex;gap:6px;margin-bottom:12px">' + chip('night', 'Night') + chip('league', 'League') + chip('all', 'All') + '</div>' +
+'<div style="display:flex;gap:4px">' + big('BEST', S.best ? S.best.n : 0, bestTxt) + big('CURRENT', S.current, curLbl) + big('AVERAGE', S.avg == null ? '\u2014' : S.avg.toFixed(1), S.conv + ' made in ' + S.runs + ' run' + (S.runs !== 1 ? 's' : '')) + '</div>' +
+'<div style="font-size:10px;color:var(--t3);margin-top:10px;line-height:1.5">A streak ends at a miss or at the end of the ' + (sc === 'night' ? 'night' : sc === 'league' ? 'league' : 'record') + '. Average streak by scope: ' + avgs + '</div>';
+/* trend */
+var trend = ldTrendSVG(evs, car);
+var trendCard = trend ? card(trend + '<div style="font-size:10px;color:var(--t3);margin-top:4px;line-height:1.5">Line: conversion over the last 10 tries at each point. Dots: each try (accent made, red missed), last ' + Math.min(40, n) + '. Dashed line: career ' + car + '%.</div>', 'Recent form') : '';
+/* by league */
+var byG = {};
+evs.forEach(function(e) { var g = byG[e.grp] || (byG[e.grp] = []); g.push(e); });
+var gKeys = Object.keys(byG).sort(function(a, b) { return (D.grpLast[b] || '').localeCompare(D.grpLast[a] || ''); });
+var gMore = gKeys.length > 6 && !_ldAllGroups ? gKeys.length - 6 : 0;
+var gRows = gKeys.slice(0, gMore ? 6 : gKeys.length).map(function(k) {
+var L = byG[k], b = ldStreaks(L, 'all').best;
+return '<div style="display:grid;grid-template-columns:1fr 40px 44px 40px;gap:6px;align-items:center;padding:7px 0;border-bottom:1px solid var(--border1);font-size:12px">' +
+'<span style="color:var(--t1);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + ldEsc(D.grpLabel[k] || k) + '<br><span style="font-size:10px;color:var(--t3)">' + L.length + ' left \u00b7 ' + f2(L.length / Math.max(1, D.grpGames[k] || 1)) + '/game</span></span>' +
+'<span style="text-align:right;color:var(--t2)">' + made(L) + '/' + L.length + '</span>' +
+'<span style="text-align:right;font-weight:800;color:var(--t1)">' + ldPct(made(L), L.length) + '%</span>' +
+'<span style="text-align:right;color:var(--teal);font-weight:700">' + (b ? b.n : 0) + '</span></div>';
+}).join('') + (gKeys.length > 6 ? '<div onclick="_ldAllGroups=!_ldAllGroups;renderLeaveDetail()" style="text-align:center;padding:8px 0 0;font-size:12px;font-weight:700;color:var(--teal);cursor:pointer">' + (gMore ? 'Show all ' + gKeys.length + ' leagues' : 'Show fewer') + '</div>' : '');
+var gHead = '<div style="display:grid;grid-template-columns:1fr 40px 44px 40px;gap:6px;font-size:9px;font-weight:700;color:var(--t3);letter-spacing:0.4px;padding-bottom:4px"><span>LEAGUE</span><span style="text-align:right">MADE</span><span style="text-align:right">CONV</span><span style="text-align:right">BEST</span></div>';
+/* spare ball */
+var bName = {}; (db.balls || []).forEach(function(b) { bName[b.BallID] = b.BallName; });
+var byB = {};
+evs.forEach(function(e) { var k = e.ballID == null ? 'none' : e.ballID; var b = byB[k] || (byB[k] = { n: 0, c: 0 }); b.n++; if (e.conv) b.c++; });
+var bRows = Object.keys(byB).sort(function(a, b) { return byB[b].n - byB[a].n; }).slice(0, 6).map(function(k) {
+var b = byB[k];
+return '<div style="display:flex;justify-content:space-between;padding:5px 0;font-size:12px;border-bottom:1px solid var(--border1)"><span style="color:var(--t1)">' + (k === 'none' ? 'Ball not recorded' : ldEsc(bName[k] || 'Ball ' + k)) + '</span><span style="color:var(--t2)">' + b.c + '/' + b.n + ' \u00b7 <b style="color:var(--t1)">' + ldPct(b.c, b.n) + '%</b></span></div>';
+}).join('');
+/* setups */
+var setup = '';
+if (typeof key === 'number') {
+var sum = aln2SetupSummary(key);
+setup = card('<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="font-size:12px;color:var(--t2)">' + (sum ? 'Saved: ' + sum : 'No saved setup') + '</span>' +
+'<button class="btn btn-ghost" style="font-size:12px;padding:5px 12px" onclick="openLeaveAlignModal(' + key + ')">' + (sum ? 'Edit setup' : '+ Setup') + '</button></div>' +
+aln2BestSetupsHTML(key, ['hook', 'straight'], 'lib'), 'Best setups \u00b7 values you set');
+}
+/* recent tries */
+var recent = evs.slice(-12).reverse().map(function(e) {
+return '<div style="display:flex;justify-content:space-between;gap:8px;padding:6px 0;border-bottom:1px solid var(--border1);font-size:12px">' +
+'<span style="color:var(--t2);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + fd(e.date) + ' \u00b7 G' + e.gameNo + ' F' + e.frameNo + (e.ord > 1 ? ' ball 2' : '') + ' \u00b7 ' + ldEsc(D.grpLabel[e.grp] || '') + '</span>' +
+'<span style="font-weight:800;color:' + (e.conv ? 'var(--teal)' : 'var(--sedona)') + '">' + (e.conv ? 'Made' : 'Missed') + '</span></div>';
+}).join('');
+el.innerHTML = h + card(tiles, 'Conversion: recent vs career') + trendCard + card(streaks, 'Conversion streaks') +
+card(often, 'How often it is left') + card(gHead + gRows, 'By league') + card(bRows, 'Spare ball') + setup + card(recent, 'Latest tries') +
+'<div style="font-size:10px;color:var(--t3);text-align:center;padding:0 20px 8px;line-height:1.5">All standard games with frame data \u00b7 frames 1\u20139 first ball and 10th-frame fresh racks, same as the Leave Library</div>';
 }
 function toggleGamesFilters() {
 window._glFiltersOpen = !(window._glFiltersOpen !== false);
@@ -38588,10 +38788,10 @@ _editStatus:'', _editPriority:1, _newSnap:null, _newStatus:'tbd', _editCat:'note
 };
 var _DKM_STATUS_LABELS = {ok:'🟢 Working',partial:'🟡 Partial',broken:'🔴 Broken',tbd:'⚪ TBD'};
 </script>
-<script src="devkit.js?v=v30.247"></script>
-<script src="report.js?v=v30.247"></script>
+<script src="devkit.js?v=v30.248"></script>
+<script src="report.js?v=v30.248"></script>
 <!-- v30.157 NEW-11 step 4: ball catalog manifest check + IDB cache (same-origin, like devkit.js/report.js). Optional: if missing, the app behaves exactly as before. -->
-<script src="catalog.js?v=v30.247"></script>
+<script src="catalog.js?v=v30.248"></script>
 <script>
 /* v30.162 OFF-1: service worker (sw.js, same folder) so the app opens with
    no connection, and a request that the browser keep this app's storage.
