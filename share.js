@@ -9,7 +9,7 @@
    Loaded by index.html as share.js?v=APP_VERSION on first use; require()-able for the Node harness. */
 (function (root) {
 'use strict';
-var SHARE_VERSION = 'v30.243';
+var SHARE_VERSION = 'v30.248';
 var PREFS_KEY = 'bowlingdb_share_prefs';
 var DEFAULT_PREFS = { size: 'post', name: true, center: true, league: true, avg: true, hdcp: true, detail: true };
 var SIZES = { post: { w: 1080, h: 1350, label: 'Post 4:5' }, story: { w: 1080, h: 1920, label: 'Story 9:16' } };
@@ -26,8 +26,12 @@ var IDX = typeof WeakMap === 'function' ? new WeakMap() : null;
 function idx(data) {
   var key = data.attempts || data;
   var hit = IDX && IDX.get(key);
-  if (hit && hit.frames === data.frames) return hit;
-  var x = { frames: data.frames, fByGame: {}, aByFrame: {}, leaf: {}, ball: {} };
+  /* v30.248: the app pushes new frames / attempts into the same arrays, so a cache keyed on the
+     array alone went stale when a card was opened earlier in the night (608 card read game 3 as
+     having no frames). Lengths are part of the key now. */
+  var nF = (data.frames || []).length, nA = (data.attempts || []).length, nL = (data.leaves || []).length, nB = (data.balls || []).length;
+  if (hit && hit.frames === data.frames && hit.nF === nF && hit.nA === nA && hit.nL === nL && hit.nB === nB) return hit;
+  var x = { frames: data.frames, nF: nF, nA: nA, nL: nL, nB: nB, fByGame: {}, aByFrame: {}, leaf: {}, ball: {} };
   (data.frames || []).forEach(function (f) { (x.fByGame[f.GameID] = x.fByGame[f.GameID] || []).push(f); });
   (data.attempts || []).forEach(function (a) { (x.aByFrame[a.FrameID] = x.aByFrame[a.FrameID] || []).push(a); });
   (data.leaves || []).forEach(function (l) { x.leaf[l.LeaveID] = l; });
