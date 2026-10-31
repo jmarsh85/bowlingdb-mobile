@@ -286,7 +286,7 @@
      (its *_VERSION line). sw.js reads this block: it keeps the app's
      files as one matching set and never opens a mix of old and new files. Every file
      is fetched as name.js?v=APP_VERSION. Update a version here when that file changes. -->
-<script type="application/json" id="bdb-files">{"devkit.js":"v30.248","report.js":"v30.156","catalog.js":"v30.243","workbench.js":"v30.223","pinpal.js":"v30.199","awards.js":"v30.243","share.js":"v30.248","connect.js":"v30.242","challenge.js":"v30.247","chplay.js":"v30.247"}</script>
+<script type="application/json" id="bdb-files">{"devkit.js":"v30.248","report.js":"v30.156","catalog.js":"v30.243","workbench.js":"v30.223","pinpal.js":"v30.199","awards.js":"v30.250","share.js":"v30.248","connect.js":"v30.242","challenge.js":"v30.250","chplay.js":"v30.247"}</script>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#0E0F11">
@@ -3756,7 +3756,7 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
    Bump both lines (and CATALOG_JS_VERSION in catalog.js when it changes).
    v30.224 OFF-2: also bump the ?v= on the three <script src> tags at the end of
    the page, and the file list in <script id="bdb-files"> when a .js file changes. */
-const APP_VERSION = 'v30.248';
+const APP_VERSION = 'v30.250';
 const APP_BUILD_DATE = '2026-10-27';
 /* catalog.js this build expects; an older file on the server shows a warning */
 const EXPECTED_CATALOG_JS = 'v30.243';
@@ -3925,7 +3925,7 @@ window.addEventListener('load', applyAppVersion);
 const STORE_KEY = 'bowlingdb_v2';
 
 const IDB_NAME   = 'BowlingDB';
-const IDB_VER    = 5;   /* v30.244: + challengeSessions (open challenge games, out of every stat) */
+const IDB_VER    = 6;   /* v30.244: + challengeSessions (open challenge games, out of every stat); v30.250: + challengePhotos (photo proof) */
 const IDB_STORES = ['series','games','frames','attempts'];
  
 function addLongPress(el, cb) {
@@ -3975,6 +3975,8 @@ if (!idb.objectStoreNames.contains('recalledContext'))
 idb.createObjectStore('recalledContext', { keyPath: 'id'});
 if (!idb.objectStoreNames.contains('challengeSessions'))
 idb.createObjectStore('challengeSessions', { keyPath: 'id'});
+if (!idb.objectStoreNames.contains('challengePhotos'))
+idb.createObjectStore('challengePhotos', { keyPath: 'id'});
 };
 req.onsuccess = e => {
 _idb = e.target.result;
@@ -4708,14 +4710,55 @@ return [...NAV_TILES_DEFAULT];
 function saveTileOrder(order) {
 localStorage.setItem('bowlingdb_tile_order', JSON.stringify(order));
 }
+/* v30.249 TILE-1: Settings > Home tiles shows / hides each tile. Hidden ids live in
+   bowlingdb_tile_hidden; the order keeps them in place so showing one puts it back where it was.
+   At least one tile always stays visible. */
+function getTileHidden() {
+try { const h = JSON.parse(localStorage.getItem('bowlingdb_tile_hidden') || '[]'); return Array.isArray(h) ? h.filter(id => NAV_TILE_DEFS[id]) : []; }
+catch(e) { return []; }
+}
+function saveTileHidden(list) {
+try { localStorage.setItem('bowlingdb_tile_hidden', JSON.stringify(list)); } catch(e) {}
+}
+function toggleTileHidden(id) {
+const hid = getTileHidden(), i = hid.indexOf(id);
+if (i >= 0) hid.splice(i, 1);
+else {
+if (getTileOrder().filter(x => hid.indexOf(x) < 0).length <= 1) { toast('Keep at least one tile on Home'); return; }
+hid.push(id);
+}
+saveTileHidden(hid);
+renderNavGrid();
+const body = document.getElementById('modal-body');
+if (body && document.getElementById('tile-vis-list')) body.innerHTML = _tileVisBody();
+haptic && haptic('light');
+}
+function _tileVisBody() {
+const hid = getTileHidden(), order = getTileOrder();
+const shown = order.filter(id => hid.indexOf(id) < 0).length;
+return `<div class="modal-title">Home tiles</div>
+    <div style="font-size:12px;color:var(--t3);margin:-4px 0 12px;line-height:1.5">${shown} of ${order.length} shown. Hidden tiles keep their place in the order. To rearrange, long-press a tile on Home.</div>
+    <div id="tile-vis-list">${order.map(id => {
+const t = NAV_TILE_DEFS[id], on = hid.indexOf(id) < 0;
+return `<div onclick="toggleTileHidden('${id}')" style="display:flex;align-items:center;gap:12px;padding:9px 4px;border-bottom:1px solid var(--border1);cursor:pointer${on ? '' : ';opacity:0.55'}">
+          <div class="nav-tile-icon-wrap" style="background:${t.bg};width:38px;height:38px;flex-shrink:0;transform:scale(0.8)">${t.svg}</div>
+          <span style="flex:1;font-size:14px;font-weight:600;color:var(--t1)">${t.label}</span>
+          <span style="width:44px;height:26px;border-radius:13px;position:relative;flex-shrink:0;background:${on ? 'var(--teal)' : 'var(--bg3)'};border:1px solid var(--border2)">
+            <span style="position:absolute;top:2px;${on ? 'right:2px' : 'left:2px'};width:20px;height:20px;border-radius:50%;background:#fff"></span></span>
+        </div>`;
+}).join('')}</div>
+    <button class="btn btn-ghost" style="width:100%;margin-top:14px" onclick="openSettingsModal()">\u2039 Back to Settings</button>`;
+}
+function openTileVisModal() { openModal(_tileVisBody()); }
  
 function renderNavGrid() {
 const grid = document.getElementById('nav-grid');
 if (!grid) return;
 const order = getTileOrder();
+const _hid = getTileHidden();
 grid.innerHTML = order.map(id => {
 const t = NAV_TILE_DEFS[id];
-if (!t) return '';
+if (!t || _hid.indexOf(id) >= 0) return '';
 return `<div class="nav-tile" data-tile-id="${id}">
       <div class="nav-tile-icon-wrap" style="background:${t.bg}">${t.svg}</div>
       <span class="nav-tile-txt">${t.label}</span>
@@ -17065,7 +17108,7 @@ var made = function(list) { return list.filter(function(e) { return e.conv; }).l
 var n = evs.length, c = made(evs), car = ldPct(c, n);
 var isSplit = lv.LeaveType === 'Split';
 var bsk = ''; for (var p = 1; p <= 10; p++) bsk += lv['Pin' + p] ? 'S' : 'B';
-var fd = function(s) { return s ? fmtDate(s, { month: 'short', day: 'numeric', year: '2-digit' }) : '\u2014'; };
+var fd = function(s) { return s ? fmtDate(s, { month: 'short', day: 'numeric', year: 'numeric' }) : '\u2014'; };
 /* header */
 var h = '<div style="display:flex;align-items:center;gap:14px;padding:14px 16px 12px">' +
 '<div style="transform:scale(1.15);transform-origin:center">' + leavePinHTML(bsk) + '</div>' +
@@ -19266,6 +19309,74 @@ s.onerror = () => { toast('Connect unavailable: upload connect.js next to index.
 document.head.appendChild(s);
 }
 /* v30.241: challenges live in challenge.js, shown on the Connect screen's Challenges tab */
+/* v30.250 PHO-1: photo proof per challenge entry (DESIGN_social_1 4.3). IndexedDB store challengePhotos
+   inside BowlingDB, so Test mode covers it; always in the Full Snapshot and the safety copy. One record:
+   { id, chID, entry ('s123' | 's123:g2' | 'cSESS:g1'), label, pid:'me', at, w, h, data (JPEG data URL, long edge 1280) }.
+   Shown on the challenge page; shared with the opponent once friends are on their own phones. Never posted. */
+var _chp = { list: null, loading: null };
+function chpLoad() {
+if (_chp.list) return Promise.resolve(_chp.list);
+if (_chp.loading) return _chp.loading;
+_chp.loading = idbGetAll('challengePhotos').then(l => { _chp.list = l || []; _chp.loading = null; return _chp.list; }, () => { _chp.list = []; _chp.loading = null; return _chp.list; });
+return _chp.loading;
+}
+function chpCached(chID) { return _chp.list ? _chp.list.filter(p => p.chID === chID) : null; }
+function _chpRerender() { if (typeof cnRender === 'function' && getCurrentScreen() === 's-friend-feed') cnRender(); }
+function chpShrink(file) {
+return new Promise((res, rej) => {
+const fr = new FileReader();
+fr.onerror = () => rej(new Error('read'));
+fr.onload = () => {
+const img = new Image();
+img.onerror = () => rej(new Error('image'));
+img.onload = () => {
+const k = Math.min(1, 1280 / Math.max(img.naturalWidth || 1, img.naturalHeight || 1));
+const c = document.createElement('canvas');
+c.width = Math.max(1, Math.round(img.naturalWidth * k)); c.height = Math.max(1, Math.round(img.naturalHeight * k));
+c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+res({ data: c.toDataURL('image/jpeg', 0.72), w: c.width, h: c.height });
+};
+img.src = fr.result;
+};
+fr.readAsDataURL(file);
+});
+}
+function chpAdd(chID, entry, label) {
+const inp = document.createElement('input');
+inp.type = 'file'; inp.accept = 'image/*'; inp.setAttribute('capture', 'environment'); inp.style.display = 'none'; inp.id = 'chp-input';
+inp.onchange = async () => {
+const f = inp.files && inp.files[0]; inp.remove();
+if (!f) return;
+try {
+const s = await chpShrink(f);
+const rec = { id: 'php_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), chID, entry, label: label || '', pid: 'me', at: new Date().toISOString(), w: s.w, h: s.h, data: s.data };
+await chpLoad();
+await idbPutAll('challengePhotos', [rec]);
+_chp.list.push(rec);
+toast('Photo saved');
+_chpRerender();
+} catch (e) { toast('Could not use that photo'); }
+};
+document.body.appendChild(inp);
+inp.click();
+}
+function chpView(id) {
+const p = (_chp.list || []).find(x => x.id === id);
+if (!p) return;
+openModal(`<div class="modal-title">\u{1F4F7} Photo proof</div>
+    <div style="font-size:12px;color:var(--t2);margin:-4px 0 10px">${_escHtml(p.label || '')}</div>
+    <img src="${p.data}" alt="" style="width:100%;border-radius:10px;display:block">
+    <div style="font-size:11px;color:var(--t3);margin-top:8px;line-height:1.5">Added ${new Date(p.at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}. Shown on this challenge only; your opponent sees it once friends are on their own phones. Never posted.</div>
+    <button class="btn btn-ghost" style="margin-top:12px;color:var(--red)" onclick="chpDelete('${p.id}')">Delete photo</button>
+    <button class="btn btn-secondary" style="margin-top:8px" onclick="closeModal()">Close</button>`);
+}
+function chpDelete(id) {
+idbDeleteKeys('challengePhotos', [id]).then(() => {
+_chp.list = (_chp.list || []).filter(x => x.id !== id);
+closeModal(); toast('Photo deleted'); setTimeout(_chpRerender, 350);
+}, () => toast('Could not delete'));
+}
+
 function _chLoad(then) {
 if (typeof chTabHTML === 'function') return then();
 const s = document.createElement('script');
@@ -26001,11 +26112,27 @@ return s;
 };
 
 const ballUsage = {};
+/* v30.249 BALL-1: games = first balls / 10 (James 10/30), total throws kept small, and games /
+   throws since the last logged prep (nights AFTER the prep date; same-day nights count as before it). */
+const _bfGame = {}; (db.frames||[]).forEach(f => { _bfGame[f.FrameID] = f.GameID; });
+const _bsDate = {}; (db.series||[]).forEach(s => { _bsDate[s.SeriesID] = s.DateBowled || ''; });
+const _bgDate = {}; (db.games||[]).forEach(g => { _bgDate[g.GameID] = _bsDate[g.SeriesID] || ''; });
+const _bLastPrep = {};
+(db.surfaceDetails||[]).forEach(sd => { const d = (sd.DateSurfaced||'').slice(0,10); if (sd.BallID != null && d && (!_bLastPrep[sd.BallID] || d > _bLastPrep[sd.BallID])) _bLastPrep[sd.BallID] = d; });
 (db.attempts||[]).forEach(a => {
-if (a.Attempt !== 1 || a.BallID == null || a.Pinfall === null) return;
-if (!ballUsage[a.BallID]) ballUsage[a.BallID] = { count:0, totalPins:0 };
-ballUsage[a.BallID].count++;
-ballUsage[a.BallID].totalPins += a.Pinfall;
+if (a.BallID == null || a.Pinfall === null || a.Pinfall === undefined) return;
+if (!ballUsage[a.BallID]) ballUsage[a.BallID] = { count:0, totalPins:0, throws:0, sinceFirst:0, sinceThrows:0, games:new Set(), sinceGames:new Set() };
+const u = ballUsage[a.BallID];
+const lp = _bLastPrep[a.BallID];
+const after = lp ? (_bgDate[_bfGame[a.FrameID]] || '') > lp : false;
+const _gid = _bfGame[a.FrameID];
+u.throws++;
+if (_gid != null) u.games.add(_gid);
+if (after) { u.sinceThrows++; if (_gid != null) u.sinceGames.add(_gid); }
+if (a.Attempt !== 1) return;
+u.count++;
+u.totalPins += a.Pinfall;
+if (after) u.sinceFirst++;
 });
 const allBalls    = db.balls || [];
 const brands      = [...new Set(allBalls.map(b=>b.MFG).filter(Boolean))].sort();
@@ -26074,8 +26201,8 @@ else if (F.sort === 'name-asc') balls.sort((a,b) => a.BallName.localeCompare(b.B
 else if (F.sort === 'name-desc')balls.sort((a,b) => b.BallName.localeCompare(a.BallName));
 else if (F.sort === 'weight-desc') balls.sort((a,b) => (b.Weight||0) - (a.Weight||0));
 else if (F.sort === 'weight-asc')  balls.sort((a,b) => (a.Weight||0) - (b.Weight||0));
-else if (F.sort === 'thrown-desc') balls.sort((a,b) => (ballUsage[b.BallID]?.count||0) - (ballUsage[a.BallID]?.count||0));
-else if (F.sort === 'thrown-asc')  balls.sort((a,b) => (ballUsage[a.BallID]?.count||0) - (ballUsage[b.BallID]?.count||0));
+else if (F.sort === 'thrown-desc') balls.sort((a,b) => (ballUsage[b.BallID]?.throws||0) - (ballUsage[a.BallID]?.throws||0));
+else if (F.sort === 'thrown-asc')  balls.sort((a,b) => (ballUsage[a.BallID]?.throws||0) - (ballUsage[b.BallID]?.throws||0));
 else if ((F.sort === 'str-desc' || F.sort === 'str-asc') && _hasMet) {
 const _sv = {}; balls.forEach(b => { const m = catMetric(b); _sv[b.BallID] = m ? m.strength : null; });
 const dir = F.sort === 'str-desc' ? -1 : 1;
@@ -26090,7 +26217,14 @@ return;
 listEl.innerHTML = balls.map(b => {
 const preps    = (db.surfaceDetails||[]).filter(sd=>sd.BallID==b.BallID);
 const lastPrep = preps.sort((a,z)=>z.DateSurfaced>a.DateSurfaced?1:-1)[0];
-const usage    = ballUsage[b.BallID] || { count:0, totalPins:0 };
+const usage    = ballUsage[b.BallID] || { count:0, totalPins:0, throws:0, sinceFirst:0, sinceThrows:0, games:new Set(), sinceGames:new Set() };
+/* a ball thrown mostly at spares (Tzone) has few first balls: count the games it was used in instead */
+const _spareBall = usage.throws > 0 && usage.count * 2 < usage.throws;
+const gamesEq  = _spareBall ? usage.games.size : Math.floor(usage.count / 10);
+const sinceEq  = _spareBall ? usage.sinceGames.size : Math.floor(usage.sinceFirst / 10);
+const _lp      = _bLastPrep[b.BallID] || null;
+const _due     = !b.Archived && !_spareBall && _lp ? (sinceEq >= 90 ? 'over' : sinceEq >= 60 ? 'due' : null) : null;
+const _fmtN    = n => Number(n).toLocaleString('en-US');
 const avgPins  = usage.count > 0 ? (usage.totalPins/usage.count).toFixed(1) : null;
 const _thumbSrc = getBallImgSrc(b.BallID, 'cover');
 const thumb = _thumbSrc
@@ -26112,18 +26246,25 @@ b.BoxFinish  ? { label:b.BoxFinish,        cls:'gold'} : null,
 ].filter(Boolean).slice(0,6);
 const chipHTML = chips.map(c=>`<span class="ball-chip-pill${c.cls?' '+c.cls:''}">${c.label}</span>`).join('');
 const prepLabel = lastPrep ? `Last prep: ${lastPrep.DateSurfaced?.slice(0,10)||'—'}`: 'No prep logged';
-const usageHTML = usage.count > 0 ? `
+const _prepLine = !_lp
+? `<div style="font-size:11px;color:var(--t3);margin-top:8px;text-align:center">No prep logged yet \u00b7 log one to track games since</div>`
+: `<div style="display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:8px;font-size:11px;color:var(--t2)">
+          <span>Since last prep (${fmtDate(_lp,{month:'short',day:'numeric',year:'numeric'})}): <b style="color:var(--t1)">${sinceEq} game${sinceEq===1?'':'s'}</b> \u00b7 ${_fmtN(usage.sinceThrows)} throws</span>
+          ${_due ? `<span style="font-size:10px;font-weight:800;border-radius:10px;padding:2px 8px;${_due==='over'?'background:rgba(220,80,60,0.18);color:var(--sedona)':'background:rgba(240,190,60,0.16);color:var(--gold)'}">${_due==='over'?'Resurface overdue (90+)':'Resurface recommended (60\u201390)'}</span>` : ''}
+        </div>`;
+const usageHTML = usage.throws > 0 ? `
       <div style="display:flex;gap:12px;margin-top:8px;padding-top:8px;border-top:1px solid var(--border1)">
         <div style="display:flex;flex-direction:column;align-items:center;flex:1">
-          <span style="font-size:18px;font-weight:900;color:var(--teal)">${usage.count}</span>
-          <span style="font-size:9px;color:var(--t3);font-weight:600;letter-spacing:0.5px;text-transform:uppercase;margin-top:1px">Thrown</span>
+          <span style="font-size:18px;font-weight:900;color:var(--teal)">${_fmtN(gamesEq)}</span>
+          <span style="font-size:9px;color:var(--t3);font-weight:600;letter-spacing:0.5px;text-transform:uppercase;margin-top:1px">${_spareBall ? 'Games used' : 'Games'}</span>
+          <span style="font-size:9px;color:var(--t3);margin-top:2px">${_spareBall ? 'spare ball \u00b7 ' + _fmtN(usage.throws) + ' throws' : _fmtN(usage.count) + ' first balls \u00b7 ' + _fmtN(usage.throws) + ' total'}</span>
         </div>
         <div style="width:1px;background:var(--border1);flex-shrink:0"></div>
         <div style="display:flex;flex-direction:column;align-items:center;flex:1">
-          <span style="font-size:18px;font-weight:900;color:var(--purple)">${avgPins}</span>
+          <span style="font-size:18px;font-weight:900;color:var(--purple)">${avgPins ?? '\u2014'}</span>
           <span style="font-size:9px;color:var(--t3);font-weight:600;letter-spacing:0.5px;text-transform:uppercase;margin-top:1px">Avg Pinfall</span>
         </div>
-      </div>`: '';
+      </div>${_prepLine}`: '';
 const _picked = _pick && _pick.includes(b.BallID);
 return `<div class="ball-card${b.Archived?' archived':''}"${_pick?` style="outline:2px solid ${_picked?'var(--teal)':'transparent'};outline-offset:-2px"`:''}>
       <div class="ball-card-top">
@@ -27355,6 +27496,7 @@ tileOrder: (() => {
 try { return JSON.parse(localStorage.getItem('bowlingdb_tile_order') || 'null'); }
 catch(e) { return null; }
 })(),
+tileHidden: getTileHidden(),
 customPins: db.customPins,
 theme: themeLoad(),
 ids: db.ids,
@@ -27386,7 +27528,7 @@ catch(e) { return null; }
    device) and `bowlingdb_ai_models` (a regenerable 24h cache). Ball images
    are opt-in because they are base64 and dominate the file size.
    */
-const SNAPSHOT_IDB_STORES = ['ballImages', 'laneLibrary', 'recalledContext', 'challengeSessions'];
+const SNAPSHOT_IDB_STORES = ['ballImages', 'laneLibrary', 'recalledContext', 'challengeSessions', 'challengePhotos'];   /* v30.250: proof photos always go in (they exist nowhere else) */
 const SNAPSHOT_LS_SKIP = new Set(['bowlingdb_ai_key', 'bowlingdb_ai_models']);
  
 const SNAPSHOT_LS_EXTRA_PREFIXES = ['debrief_', 'fm_chip_dock', 'fm_spare_chip_dock',
@@ -27476,9 +27618,9 @@ return snap.doc;
      get their missing entries.
    The whole plan is shown before anything is written; the app reloads afterwards. The keys it
    added are kept in bowlingdb_rsc_undo. */
-const RSC_IDB_KEY = { series:'SeriesID', games:'GameID', frames:'FrameID', attempts:'AttemptID', laneLibrary:'LaneKey', recalledContext:'id', challengeSessions:'id' };
+const RSC_IDB_KEY = { series:'SeriesID', games:'GameID', frames:'FrameID', attempts:'AttemptID', laneLibrary:'LaneKey', recalledContext:'id', challengeSessions:'id', challengePhotos:'id' };
 const RSC_SCORING = ['series','games','frames','attempts'];
-const RSC_LABEL = { series:'series', games:'games', frames:'frames', attempts:'attempts', laneLibrary:'lane library entries', recalledContext:'recalled context entries', challengeSessions:'open challenge sessions' };
+const RSC_LABEL = { series:'series', games:'games', frames:'frames', attempts:'attempts', laneLibrary:'lane library entries', recalledContext:'recalled context entries', challengeSessions:'open challenge sessions', challengePhotos:'challenge proof photos' };
 const RSC_SKIP_LS = /^bdbgh_|ai_key|^bowlingdb_rsc_undo$/;
 function rscIsCopy(p) { return !!(p && p.kind === 'bowlingdb-emergency-copy' && p.localStorage && p.idb); }
 function _rscStable(v) {
@@ -27885,6 +28027,7 @@ localStorage.setItem('bowlingdb_handicap', JSON.stringify(mergedHdcp));
 if (parsed.beerBoard) localStorage.setItem('bowlingdb_beerboard', JSON.stringify(parsed.beerBoard));
 
 if (parsed.tileOrder) localStorage.setItem('bowlingdb_tile_order', JSON.stringify(parsed.tileOrder));
+if (Array.isArray(parsed.tileHidden)) saveTileHidden(parsed.tileHidden);
 
 if (parsed.spareAlignments?.length) localStorage.setItem(SPARE_ALIGN_KEY, JSON.stringify(parsed.spareAlignments));
 
@@ -29128,6 +29271,8 @@ openModal(`
     <div class="modal-title">Settings</div>
     <button class="btn btn-secondary" style="width:100%;margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:8px"
       onclick="openThemeModal()">🎨 Theme &amp; Appearance</button>
+    <button class="btn btn-secondary" style="width:100%;margin:-6px 0 14px;display:flex;align-items:center;justify-content:center;gap:8px"
+      onclick="openTileVisModal()">🏠 Home tiles <span style="font-size:11px;color:var(--t3);font-weight:600">${(() => { const n = getTileHidden().length; return n ? n + ' hidden' : 'all shown'; })()}</span></button>
 
     <details class="set-grp" data-g="bowlers" ${_setOpen('bowlers')} ontoggle="_setGrpToggle(this)">
       <summary><span class="set-grp-ic">👤</span><span class="set-grp-tx"><span class="set-grp-t">Bowlers</span><span class="set-grp-s">${(db.bowlers||[]).filter(b=>b.Active!==false).length} on roster · ${(getPrefs().handedness||'right')==='left'?'Left':'Right'}-handed</span></span><span class="set-grp-ch">›</span></summary>
@@ -38788,10 +38933,10 @@ _editStatus:'', _editPriority:1, _newSnap:null, _newStatus:'tbd', _editCat:'note
 };
 var _DKM_STATUS_LABELS = {ok:'🟢 Working',partial:'🟡 Partial',broken:'🔴 Broken',tbd:'⚪ TBD'};
 </script>
-<script src="devkit.js?v=v30.248"></script>
-<script src="report.js?v=v30.248"></script>
+<script src="devkit.js?v=v30.250"></script>
+<script src="report.js?v=v30.250"></script>
 <!-- v30.157 NEW-11 step 4: ball catalog manifest check + IDB cache (same-origin, like devkit.js/report.js). Optional: if missing, the app behaves exactly as before. -->
-<script src="catalog.js?v=v30.248"></script>
+<script src="catalog.js?v=v30.250"></script>
 <script>
 /* v30.162 OFF-1: service worker (sw.js, same folder) so the app opens with
    no connection, and a request that the browser keep this app's storage.
