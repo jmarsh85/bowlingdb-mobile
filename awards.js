@@ -5,7 +5,7 @@
    (from step 3); also require()-able for the Node harness. */
 (function (root) {
 'use strict';
-var AWD_VERSION = 'v30.243';   // step 1 engine + step 3 trophy case (v30.227: filters, splits, brackets)
+var AWD_VERSION = 'v30.250';   // step 1 engine + step 3 trophy case (v30.227: filters, splits, brackets)
 
 /* USBC national brackets (2011-12 adult revision) -- default, editable in Settings (step 6). */
 var USBC_BRACKETS = [
@@ -344,7 +344,7 @@ var SECTIONS = [
   { cls: 'notap',  title: 'No-Tap',                   note: 'A 9 on the first ball counts as a strike, so these are not standard scores and are kept apart from them.' }
 ];
 var ICON = { honor: '\ud83c\udfc6', poa: '\ud83d\udcc8', capped: '\ud83c\udf96\ufe0f', split: '\ud83c\udfaf', mile: '\u2b50', notap: '\u2726' };
-var ui = { filter: 'all', certOnly: false, res: null };
+var ui = { filter: 'all', certOnly: false, res: null, fun: null };
 /* the app's db and G are top-level const/let in index.html: global, but not window properties */
 function DB() { try { return typeof db !== 'undefined' ? db : (root.db || {}); } catch (e) { return root.db || {}; } }
 function GS() { try { return typeof G !== 'undefined' ? G : root.G; } catch (e) { return root.G; } }
@@ -463,6 +463,7 @@ function caseHtml() {
     });
     h += '</div>';
   });
+  h += funShelfHtml();
   var earned = {}; real.forEach(function (o) { earned[o.award] = 1; });
   var notYet = Object.keys(AWARDS).filter(function (k) { return AWARDS[k].cls === 'honor' && !earned[k]; });
   if (notYet.length) h += '<details style="margin-top:16px"><summary style="font-size:13px;color:var(--t2);cursor:pointer">Honor scores not yet earned' + (ui.filter !== 'all' || ui.certOnly ? ' here' : '') + ' (' + notYet.length + ')</summary><div style="font-size:12px;color:var(--t3);line-height:1.7;margin-top:6px">' +
@@ -547,8 +548,56 @@ function markHtml() {
 }
 function show(html) { (typeof root.swapModal === 'function' ? root.swapModal : root.openModal)(html); var mb = document.getElementById('modal-body'); if (mb && mb.scrollTo) mb.scrollTo(0, 0); }
 
+/* v30.250: the Challenges shelf, "for fun" (DESIGN_social_1 4.5). Its awards come from challenge.js
+   (chFunAwards) and are never mixed with the USBC-style shelves above. Only your own appear here. */
+function funLoad() {
+  if (typeof root._chLoad !== 'function') { ui.fun = null; return Promise.resolve(); }
+  return new Promise(function (res) {
+    var done = false, fin = function () { if (done) return; done = true; try { ui.fun = typeof root.chFunAwards === 'function' ? root.chFunAwards() : null; } catch (e) { ui.fun = null; } res(); };
+    setTimeout(fin, 4000);
+    try { root._chLoad(fin); } catch (e) { fin(); }
+  });
+}
+function funDefs() { return root.BDB_CHALLENGE && root.BDB_CHALLENGE.FUN_AWARDS ? root.BDB_CHALLENGE.FUN_AWARDS : []; }
+function funShelfHtml() {
+  if (!ui.fun) return '';
+  var mine = ui.fun.filter(function (o) { return o.pid === 'me'; }), by = {};
+  mine.forEach(function (o) { (by[o.id] = by[o.id] || []).push(o); });
+  var h = '<div style="margin:18px 0 4px;font-size:13px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--t2)">\ud83c\udf89 Challenges <span style="font-size:10px;font-weight:700;color:var(--gold);border:1px solid var(--gold);border-radius:8px;padding:1px 6px;margin-left:4px;letter-spacing:0">FOR FUN</span></div>' +
+    '<div style="font-size:11px;color:var(--t3);margin-bottom:8px">Tongue-in-cheek awards from your challenges and challenge games. Not personal records and never mixed with the awards above.</div>' + GRID;
+  funDefs().forEach(function (a) {
+    var occ = by[a.id] || [];
+    if (occ.length) h += tileHtml({ js: "awFunDetail('" + a.id + "')", icon: a.icon, title: a.name, sub: countLine(occ) });
+    else h += tileHtml({ js: "awFunDetail('" + a.id + "')", icon: LOCK, title: a.name, locked: true, sub: esc(a.about) + (a.later ? '<br><span style="color:var(--t3)">not tracked yet</span>' : '') });
+  });
+  return h + '</div>';
+}
+function funDetailHtml(id) {
+  var a = funDefs().filter(function (x) { return x.id === id; })[0]; if (!a) return caseHtml();
+  var occ = (ui.fun || []).filter(function (o) { return o.id === id && o.pid === 'me'; }).slice().reverse();
+  var chs = []; try { chs = JSON.parse(localStorage.getItem('bowlingdb_challenges') || '[]') || []; } catch (e) {}
+  var nameOf = function (cid) { var c = chs.filter(function (x) { return x.id === cid; })[0]; if (!c) return 'Challenge'; var C = root.BDB_CHALLENGE && root.BDB_CHALLENGE.CONTESTS[c.contest]; return c.name || (C ? C.name : 'Challenge'); };
+  var h = '<div class="modal-title">' + a.icon + ' ' + esc(a.name) + '</div><div style="font-size:12px;color:var(--gold);font-weight:700;margin:-4px 0 6px">FOR FUN</div>' +
+    '<div style="font-size:13px;color:var(--t2);margin-bottom:12px">' + esc(a.about) + (a.later ? ' Not tracked yet: it needs the standings as they were partway through a challenge.' : '') + '</div>';
+  if (!occ.length) h += '<div style="font-size:13px;color:var(--t3);padding:12px 0">Not earned yet.</div>';
+  occ.forEach(function (o) {
+    h += '<div onclick="awFunOpenCh(\'' + esc(o.chID) + '\')" style="display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--border1, #2a3340);cursor:pointer">' +
+      '<div style="min-width:0"><div style="font-size:13px;font-weight:700">' + esc(nameOf(o.chID)) + '</div><div style="font-size:12px;color:var(--t2);margin-top:2px">' + esc(o.note) + '</div></div>' +
+      '<div style="font-size:12px;color:var(--t3);white-space:nowrap">' + fmtDate(o.date) + ' \u203a</div></div>';
+  });
+  return h + '<button class="btn btn-secondary" style="margin-top:14px" onclick="awBack()">\u2039 Trophy case</button>';
+}
+function awFunDetail(id) { show(funDetailHtml(id)); }
+function awFunOpenCh(id) {
+  if (!id) return;
+  if (typeof root.closeModal === 'function') root.closeModal();
+  root._cnStartTab = 'challenges'; root._chDetail = id;
+  if (typeof root.navTo === 'function') root.navTo('s-friend-feed');
+}
+
 async function awOpen() {
   try { if (typeof root.loadScoringData === 'function') await root.loadScoringData(); } catch (e) {}
+  await funLoad();
   scanNow();
   root.openModal(caseHtml());
 }
@@ -604,7 +653,7 @@ if (typeof document !== 'undefined') {
   root.awCertificate = awCertificate; root.awShareCert = awShareCert;
   root.awSettings = awSettings; root.awSetB = awSetB; root.awAddB = awAddB; root.awDelB = awDelB; root.awStep = awStep;
   root.awSaveSettings = awSaveSettings; root.awResetSettings = awResetSettings; root.awSeenAll = awSeenAll; root.awMarkS = awMarkS;
-  root.awOpenSettings = function () { return awOpen().then(awSettings); }; root.awBack = awBack; root.awDetail = awDetail; root.awPending = awPending;
+  root.awOpenSettings = function () { return awOpen().then(awSettings); }; root.awBack = awBack; root.awDetail = awDetail; root.awFunDetail = awFunDetail; root.awFunOpenCh = awFunOpenCh; root.awPending = awPending;
   root.awMarkList = awMarkList; root.awMark = awMark; root.awOpenSeries = awOpenSeries;
 }
 
