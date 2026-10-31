@@ -7,7 +7,7 @@
    require()-able for the Node harness (engine only). */
 (function (root) {
 'use strict';
-var CHALLENGE_VERSION = 'v30.247';
+var CHALLENGE_VERSION = 'v30.250';
 var KEY = 'bowlingdb_challenges';
 var EST_GAMES = 21, MIN_GAMES = 9;
 
@@ -173,7 +173,7 @@ var GM = typeof WeakMap === 'function' ? new WeakMap() : null;
 function gameStats(g) {
   if (!g.frames) return null;
   if (GM && GM.has(g)) return GM.get(g);
-  var r = { strikes: 0, strikeOpps: 0, spares: 0, spareOpps: 0, singles: 0, singlesMade: 0, opens: 0, run: 0, golf: 0, leaves: {}, leavesKnown: 0 };
+  var r = { strikes: 0, strikeOpps: 0, spares: 0, spareOpps: 0, singles: 0, singlesMade: 0, opens: 0, run: 0, golf: 0, splitsMade: 0, leaves: {}, leavesKnown: 0 };
   var cur = 0;
   var strikeBall = function (hit) { r.strikeOpps++; if (hit) { r.strikes++; cur++; if (cur > r.run) r.run = cur; } else cur = 0; };
   var rack = function (fresh, next, made) {
@@ -185,7 +185,7 @@ function gameStats(g) {
       var k = leaveKey(lv), e = r.leaves[k] || (r.leaves[k] = { n: 0, made: 0 }); e.n++; if (made) e.made++;
       if (lv.length === 1) { r.singles++; if (made) r.singlesMade++; }
       if (!made) r.golf += lv.length === 1 ? 2 : isSplit(lv) ? 0 : 1;
-      else if (isSplit(lv)) r.golf -= 1;
+      else if (isSplit(lv)) { r.golf -= 1; r.splitsMade++; }
     }
   };
   for (var i = 0; i < 10; i++) {
@@ -361,7 +361,117 @@ function record(list, pid, vs) {
   return r;
 }
 
-var api = { CHALLENGE_VERSION: CHALLENGE_VERSION, CONTESTS: CONTESTS, PRESETS: PRESETS, normMe: normMe, normTeam: normTeam, sameNight: sameNight, gameStats: gameStats,
+/* ---------------- fun challenge awards (v30.250, DESIGN_social_1 4.5, S10) ----------------
+   Their own "for fun" shelf, never mixed with the USBC-style awards. Pure: funScan(list, sessions, opts)
+   reads the challenge list, the open challenge sessions (pins per ball) and, through opts.evalFn(ch),
+   a challenge's evaluation and games; returns every occurrence { id, pid, chID, date, note }.
+   opts.engine = the chplay engine (scoreOf). Comeback Kid and Participation Trophy are listed, not tracked yet. */
+var FUN_AWARDS = [
+  { id: 'lb300', icon: '\ud83d\ude48', name: 'Perfectly Terrible', about: 'A Low Ball 300: every ball a miss.' },
+  { id: 'lb20', icon: '\ud83e\udeb6', name: 'Featherweight', about: 'A perfect Low Ball 20.' },
+  { id: 'lb40', icon: '\ud83d\udcc9', name: 'Low Expectations', about: 'Your first Low Ball game under 40.' },
+  { id: 'butter', icon: '\ud83e\uddc8', name: 'Butterfingers', about: 'A real strike in a Low Ball game.' },
+  { id: 'oops', icon: '\ud83d\ude2c', name: 'Oops, All Strikes', about: 'Three real strikes in one Low Ball game.' },
+  { id: 'gutter', icon: '\ud83c\udf7d\ufe0f', name: 'Gutter Gourmet', about: 'Most gutter balls in an open challenge (Low Ball games not counted).' },
+  { id: 'photo', icon: '\ud83d\udcf8', name: 'Photo Finish', about: 'Won a score challenge by 1 pin or less, or on a tiebreak.' },
+  { id: 'brides', icon: '\ud83d\udc90', name: 'Bridesmaid', about: 'Second place in three finished challenges in a row.' },
+  { id: 'partic', icon: '\ud83c\udf97\ufe0f', name: 'Participation Trophy', about: 'Lost every game of a challenge.', later: true },
+  { id: 'comeback', icon: '\ud83d\udd04', name: 'Comeback Kid', about: 'Won after trailing at the halfway point.', later: true },
+  { id: 'icecold', icon: '\ud83e\uddca', name: 'Ice Cold', about: 'Won a first-to challenge on your first night of it.' },
+  { id: 'late', icon: '\u23f0', name: 'Fashionably Late', about: 'Won a first-to challenge on its last day.' },
+  { id: 'splitp', icon: '\ud83c\udfad', name: 'Split Personality', about: 'Three splits converted in one spare-golf challenge.' },
+  { id: 'rivals', icon: '\ud83e\udd1d', name: 'Old Rivals', about: 'Five challenges against the same friend.' },
+  { id: 'sore', icon: '\ud83d\ude24', name: 'Sore Winner', about: 'Beat the same friend five challenges running.' }
+];
+function funScan(list, sessions, opts) {
+  opts = opts || {};
+  var E = opts.engine, out = [], chBy = {}, nm = opts.nameOf || function (x) { return x; };
+  (list || []).forEach(function (c) { chBy[c.id] = c; });
+  var add = function (id, pid, chID, date, note) { out.push({ id: id, pid: pid, chID: chID || null, date: date || '', note: note || '' }); };
+  /* 1 per Low Ball game, and gutters per open challenge, from the pins on the challenge card */
+  var lbGames = [], gut = {};
+  (sessions || []).slice().sort(function (a, b) { return byDate(a.date, b.date) || byDate(a.created, b.created); }).forEach(function (s) {
+    var low = s.format === 'lowball';
+    (s.games || []).forEach(function (g) {
+      (s.bowlers || []).forEach(function (bw, bi) {
+        var row = g.rows && g.rows[bi];
+        if (!row || row.typed != null || !E) return;
+        var r = E.scoreOf(row.balls || [], s.format);
+        if (!r.done) return;
+        if (low) {
+          var real = 0; r.frames.forEach(function (fr) { fr.balls.forEach(function (x) { if (x.real && x.mark === 'X') real++; }); });
+          lbGames.push({ pid: bw.pid, chID: s.challengeID, date: s.date || '', score: r.score, real: real, n: g.n });
+        } else {
+          var gx = 0; (row.balls || []).forEach(function (k) { if (!k || !k.length) gx++; });
+          var cg = gut[s.challengeID] || (gut[s.challengeID] = { by: {}, date: '', bowled: {} });
+          cg.by[bw.pid] = (cg.by[bw.pid] || 0) + gx; cg.bowled[bw.pid] = 1; if ((s.date || '') > cg.date) cg.date = s.date || '';
+        }
+      });
+    });
+  });
+  var under40 = {};
+  lbGames.forEach(function (x) {
+    var note = 'Low Ball ' + x.score + ' (game ' + x.n + ')';
+    if (x.score === 300) add('lb300', x.pid, x.chID, x.date, note);
+    if (x.score === 20) add('lb20', x.pid, x.chID, x.date, note);
+    if (x.score < 40 && !under40[x.pid]) { under40[x.pid] = 1; add('lb40', x.pid, x.chID, x.date, note); }
+    if (x.real >= 1) add('butter', x.pid, x.chID, x.date, x.real + ' real strike' + (x.real === 1 ? '' : 's') + ' (game ' + x.n + ')');
+    if (x.real >= 3) add('oops', x.pid, x.chID, x.date, x.real + ' real strikes (game ' + x.n + ')');
+  });
+  Object.keys(gut).forEach(function (id) {
+    var ch = chBy[id], cg = gut[id], pids = Object.keys(cg.bowled);
+    if (!ch || !ch.result || pids.length < 2) return;
+    var best = Math.max.apply(null, pids.map(function (p) { return cg.by[p] || 0; }));
+    if (best > 0) pids.forEach(function (p) { if ((cg.by[p] || 0) === best) add('gutter', p, id, ch.result.at || cg.date, best + ' gutter ball' + (best === 1 ? '' : 's')); });
+  });
+  /* 2 from finished challenges between two or more bowlers, in the order they finished */
+  var fin = (list || []).filter(function (c) { return c.result && c.people && c.people.length > 1 && c.state === 'accepted'; })
+    .sort(function (a, b) { return byDate(a.result.at, b.result.at) || byDate(a.params.end, b.params.end) || (a.id < b.id ? -1 : 1); });
+  var bridesRun = {}, soreRun = {};
+  fin.forEach(function (ch) {
+    var c = CONTESTS[ch.contest] || {}, res = ch.result, w = res.winners || [], at = res.at || ch.params.end || '';
+    if (!c.first && (c.fmt === 'n' || c.fmt === 'signed') && w.length === 1 && res.margin != null && res.margin <= 1)
+      add('photo', w[0], ch.id, at, res.margin === 0 ? 'won on the tiebreak' : 'won by ' + res.margin);
+    var order = (res.rows || []).map(function (r) { return r.pid; });
+    ch.people.forEach(function (pid) {
+      var second = order.indexOf(pid) === 1 && w.indexOf(pid) < 0;
+      bridesRun[pid] = second ? (bridesRun[pid] || 0) + 1 : 0;
+      if (second && bridesRun[pid] % 3 === 0) add('brides', pid, ch.id, at, bridesRun[pid] + ' second places in a row');
+    });
+    if (ch.people.length === 2 && w.length === 1) {
+      var a = ch.people[0], b = ch.people[1], key = [a, b].sort().join('|'), win = w[0], los = win === a ? b : a;
+      var sr = soreRun[key] || (soreRun[key] = { pid: null, n: 0 });
+      if (sr.pid === win) sr.n++; else { sr.pid = win; sr.n = 1; }
+      if (sr.n % 5 === 0) add('sore', win, ch.id, at, sr.n + ' wins in a row vs ' + nm(los));
+    } else if (ch.people.length === 2) { var k2 = ch.people.slice().sort().join('|'); soreRun[k2] = { pid: null, n: 0 }; }
+    if (opts.evalFn && (c.first || ch.contest === 'sgolf')) {
+      var ev = opts.evalFn(ch); if (!ev || !ev.r) return;
+      ev.r.rows.forEach(function (row) {
+        if (c.first && row.reached && w.indexOf(row.pid) >= 0) {
+          var mine = ((ev.games || {})[row.pid] || []).filter(function (g) { return inWindow(g, ch.params); }).map(function (g) { return g.date; }).sort();
+          if (mine.length && row.reached.date === mine[0]) add('icecold', row.pid, ch.id, row.reached.date, 'reached ' + row.reached.value + ' on the first night');
+          if (ch.params.end && row.reached.date === ch.params.end) add('late', row.pid, ch.id, row.reached.date, 'reached ' + row.reached.value + ' on the last day');
+        }
+        if (ch.contest === 'sgolf') {
+          var pool = (ev.games || {})[row.pid] || [], made = 0;
+          (row.counted || []).forEach(function (u) { pool.forEach(function (g) { if (g.key === u.key && (g.gameNo || null) === (u.gameNo || null) && g.frames) made += gameStats(g).splitsMade; }); });
+          if (made >= 3) add('splitp', row.pid, ch.id, at, made + ' splits converted');
+        }
+      });
+    }
+  });
+  /* 3 rivalries: every accepted challenge between the same two bowlers, by start date */
+  var riv = {};
+  (list || []).filter(function (c) { return c.state === 'accepted' && c.people && c.people.length === 2; })
+    .sort(function (a, b) { return byDate(a.params.start, b.params.start) || (a.id < b.id ? -1 : 1); })
+    .forEach(function (ch) {
+      var key = ch.people.slice().sort().join('|'); riv[key] = (riv[key] || 0) + 1;
+      if (riv[key] % 5 === 0) ch.people.forEach(function (pid) { add('rivals', pid, ch.id, ch.params.start, riv[key] + ' challenges vs ' + nm(ch.people.filter(function (x) { return x !== pid; })[0])); });
+    });
+  return out.sort(function (a, b) { return byDate(a.date, b.date); });
+}
+
+var api = { FUN_AWARDS: FUN_AWARDS, funScan: funScan, CHALLENGE_VERSION: CHALLENGE_VERSION, CONTESTS: CONTESTS, PRESETS: PRESETS, normMe: normMe, normTeam: normTeam, sameNight: sameNight, gameStats: gameStats,
   evaluate: evaluate, averageBefore: averageBefore, averagesFor: averagesFor, hcMode: hcMode, record: record, isSplit: isSplit, normLeaveParam: normLeaveParam, addDays: addDays };
 
 /* ================= page screens (browser only) ================= */
@@ -434,6 +544,14 @@ function evalNow(ch) {
   return r;
 }
 function chRecordFor(pid, vs) { return record(chList(), pid || 'me', vs); }
+/* v30.250: fun awards for the trophy case; sessions come from chplay.js (already loaded by _chLoad) */
+function chFunAwards() {
+  var sess = root._cp && root._cp.list ? root._cp.list : [];
+  var evalFn = function (ch) { var lg = gamesFor(ch.people), g = ch.source === 'open' ? openGames(ch) : lg;
+    return { r: evaluate(ch, g, averagesFor(ch, lg), todayStr(), { leagueHdcp: leagueHdcp }), games: g }; };
+  try { return funScan(chList(), sess, { engine: root.BDB_CHPLAY, evalFn: evalFn, nameOf: function (x) { return person(x).name; } }); } catch (e) { return []; }
+}
+function chFunName(pid) { return pid === 'me' ? 'You' : person(pid).name; }
 function recStr(r) { return r.w + ' \u2013 ' + r.l + ' \u2013 ' + r.t; }
 function contestLine(ch) {
   var c = CONTESTS[ch.contest], p = ch.params, bits = [c.name];
@@ -532,6 +650,8 @@ function chDetailHTML(id) {
         '<div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:8px">' + games + '</div></div>';
     }).join('');
   }
+  /* v30.250 PHO-1: photo proof per entry (proof: photo). Your counted entries, each with its photos. */
+  if (r && ch.params.proof === 'photo') h += proofHTML(ch, r);
   /* rounds */
   if (ch.rounds && ch.rounds.length) {
     h += '<div class="sec-header" style="margin-top:8px"><span class="sec-title" style="font-size:15px">History</span></div><div class="stat-card" style="margin-bottom:12px">' +
@@ -570,6 +690,30 @@ function chDetailHTML(id) {
   if (ph === 'sent' || ph === 'upcoming' || ph === 'running' || ph === 'countered') acts += '<button class="btn btn-ghost" style="margin-top:8px;color:var(--red)" onclick="chCancel(\'' + id + '\')">Cancel challenge</button>';
   if (ph === 'final' || ph === 'declined' || ph === 'cancelled') acts += '<button class="btn btn-ghost" style="margin-top:8px;color:var(--t3)" onclick="chDelete(\'' + id + '\')">Delete from the list</button>';
   return h + acts;
+}
+function proofEntries(r) {
+  var me = r.rows.filter(function (x) { return x.pid === 'me'; })[0]; if (!me) return [];
+  var list = me.counted && me.counted.length ? me.counted : me.reached ? [me.reached] : [];
+  return list.map(function (u) {
+    var d = (u.date || '').split('-'), key = u.key + (u.gameNo ? ':g' + u.gameNo : '');
+    return { key: key, label: (+d[1]) + '/' + (+d[2]) + (u.gameNo ? ' game ' + u.gameNo : ' series') + (u.score != null ? ' \u00b7 ' + u.score : u.value != null ? ' \u00b7 ' + u.value : '') };
+  });
+}
+function proofHTML(ch, r) {
+  var photos = typeof root.chpCached === 'function' ? root.chpCached(ch.id) : [];
+  if (photos === null) { root.chpLoad().then(function () { if (root._chDetail === ch.id) rerender(); }); photos = []; }
+  var ents = proofEntries(r);
+  var h = '<div class="sec-header" style="margin-top:8px"><span class="sec-title" style="font-size:15px">\ud83d\udcf7 Photo proof</span></div><div class="stat-card" style="margin-bottom:12px">' +
+    '<div style="font-size:11px;color:var(--t3);margin-bottom:8px;line-height:1.5">A photo of the scoresheet or monitor for each of your entries. Shown here only; your opponent sees them once friends are on their own phones. Never posted.</div>';
+  if (!ents.length) h += '<div style="font-size:12px;color:var(--t3)">No entries yet.</div>';
+  ents.forEach(function (e, i) {
+    var ps = photos.filter(function (p) { return p.entry === e.key; });
+    h += '<div style="display:flex;align-items:center;gap:8px;padding:8px 0;' + (i ? 'border-top:1px solid var(--border1)' : '') + '">' +
+      '<div style="flex:1;min-width:0;font-size:12px;color:var(--t1)">' + escH(e.label) + '<div style="font-size:10px;color:' + (ps.length ? 'var(--teal)' : 'var(--gold)') + '">' + (ps.length ? ps.length + ' photo' + (ps.length === 1 ? '' : 's') : 'no photo yet') + '</div></div>' +
+      ps.map(function (p) { return '<img src="' + p.data + '" onclick="chpView(\'' + p.id + '\')" alt="" style="width:44px;height:44px;object-fit:cover;border-radius:8px;cursor:pointer;border:1px solid var(--border1)">'; }).join('') +
+      '<button class="btn btn-ghost btn-sm" style="flex-shrink:0" onclick="chpAdd(\'' + escH(ch.id) + '\',\'' + escH(e.key) + '\',\'' + escH(e.label).replace(/'/g, '') + '\')">+ Photo</button></div>';
+  });
+  return h + '</div>';
 }
 function rerender() { if (typeof root.cnRender === 'function') root.cnRender(); }
 function chOpen(id) { root._chDetail = id; if (typeof root.cnTab === 'function') { root.cnTab('challenges'); root._chDetail = id; rerender(); } var s = document.getElementById('s-friend-feed'); if (s) s.scrollTop = 0; }
@@ -817,7 +961,7 @@ if (typeof document !== 'undefined') {
   root.chTabHTML = chTabHTML; root.chDetailHTML = chDetailHTML; root.chOpen = chOpen; root.chBack = chBack; root.chNew = chNew; root.chPickSource = chPickSource; root.chPickPreset = chPickPreset;
   root.chFormSync = chFormSync; root.chSubmit = chSubmit; root.chAnswer = chAnswer; root.chCounter = chCounter; root.chCancel = chCancel; root.chDelete = chDelete;
   root.chRematch = chRematch; root.chPostResult = chPostResult; root.chRecordFor = chRecordFor; root.chHeadToHeadHTML = chHeadToHeadHTML; root.stepPresetBack = stepPresetBack; root.chBackSource = chBackSource; root.chAddGames = chAddGames; root.chGameBannerHTML = chGameBannerHTML;
-  root.chPerson = person; root.chPhase = phase; root.chMiniStandingsHTML = chMiniStandingsHTML; root.chStandingsLine = chStandingsLine;
+  root.chFunAwards = chFunAwards; root.chFunName = chFunName; root.chPerson = person; root.chPhase = phase; root.chMiniStandingsHTML = chMiniStandingsHTML; root.chStandingsLine = chStandingsLine;
 }
 
 root.BDB_CHALLENGE = api;
