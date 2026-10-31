@@ -3756,7 +3756,7 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
    Bump both lines (and CATALOG_JS_VERSION in catalog.js when it changes).
    v30.224 OFF-2: also bump the ?v= on the three <script src> tags at the end of
    the page, and the file list in <script id="bdb-files"> when a .js file changes. */
-const APP_VERSION = 'v30.250';
+const APP_VERSION = 'v30.251';
 const APP_BUILD_DATE = '2026-10-27';
 /* catalog.js this build expects; an older file on the server shows a warning */
 const EXPECTED_CATALOG_JS = 'v30.243';
@@ -4454,9 +4454,18 @@ const LOCK_BUFFER = 1;
 
 const ROOT_SCREENS = ['s-home','s-leagues','s-open','s-tournaments','s-stats','s-tb-sessions','s-notap','s-ai-chat'];
 const SCORING_SCREENS = new Set(['s-series','s-tournament-series','s-game-select','s-baker-games','s-scoring','s-game-complete','s-stats','s-games','s-league-report','s-league-dashboard','s-friend-feed','s-bowler-profile','s-handicap-tb','s-handicap-league','s-tb-sessions','s-performance','s-lane-library','s-lane-detail']);
+/* v30.251 NAV-2: the scoring screen and Game Complete are one flow. Going forward into either drops
+   any scoring-flow screens already on top of the history, and Back from either skips them, so Back
+   from a game always lands on the screen the flow was entered from (the Games list). Before, Game 1's
+   Game Complete stayed under Game 2's scoring screen: Back showed Game Complete for the game in
+   progress (score 0), Back again reopened the game, and only the third Back left. */
+const SCORING_FLOW = new Set(['s-scoring', 's-game-complete']);
 async function navTo(screenId, opts={}) {
 toastDismiss(); 
-if (!opts.back) G.screenHistory.push(getCurrentScreen());
+if (!opts.back) {
+G.screenHistory.push(getCurrentScreen());
+if (SCORING_FLOW.has(screenId)) { while (G.screenHistory.length && SCORING_FLOW.has(G.screenHistory[G.screenHistory.length - 1])) G.screenHistory.pop(); }
+}
 
 saveGState();
 
@@ -4551,7 +4560,10 @@ function getCurrentScreen() {
 return document.querySelector('.screen.active')?.id || 's-home';
 }
 function navBack() {
-const prev = G.screenHistory.pop();
+let prev = G.screenHistory.pop();
+/* v30.251 NAV-2: from the scoring flow, Back never lands on another scoring-flow screen (also cleans
+   histories saved by earlier versions) */
+if (SCORING_FLOW.has(getCurrentScreen())) { while (prev && SCORING_FLOW.has(prev)) prev = G.screenHistory.pop(); }
 if (prev) navTo(prev, { back:true });
 else navTo('s-home', { back:true });
 }
@@ -12559,6 +12571,9 @@ navTo('s-game-complete');
 }
 function renderGameComplete() {
 const game = db.games.find(g=>g.GameID===G.gameID);
+/* v30.251 NAV-2: a game still in progress has no Game Complete; send it back to scoring instead of
+   showing a 0 "final score" */
+if (game && game.FinalScore == null && game.GameTotal == null && gameFrames().length) { setTimeout(() => navTo('s-scoring', { back:true }), 0); return; }
 const score = game?.FinalScore ?? game?.GameTotal ?? 0;
 document.getElementById('gc-score').textContent = score;
 try { const _gt = document.getElementById('gc-test'); if (_gt) _gt.innerHTML = bdbTestGcHTML(); } catch (e) {}
@@ -38933,10 +38948,10 @@ _editStatus:'', _editPriority:1, _newSnap:null, _newStatus:'tbd', _editCat:'note
 };
 var _DKM_STATUS_LABELS = {ok:'🟢 Working',partial:'🟡 Partial',broken:'🔴 Broken',tbd:'⚪ TBD'};
 </script>
-<script src="devkit.js?v=v30.250"></script>
-<script src="report.js?v=v30.250"></script>
+<script src="devkit.js?v=v30.251"></script>
+<script src="report.js?v=v30.251"></script>
 <!-- v30.157 NEW-11 step 4: ball catalog manifest check + IDB cache (same-origin, like devkit.js/report.js). Optional: if missing, the app behaves exactly as before. -->
-<script src="catalog.js?v=v30.250"></script>
+<script src="catalog.js?v=v30.251"></script>
 <script>
 /* v30.162 OFF-1: service worker (sw.js, same folder) so the app opens with
    no connection, and a request that the browser keep this app's storage.
