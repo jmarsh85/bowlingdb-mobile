@@ -3756,7 +3756,7 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
    Bump both lines (and CATALOG_JS_VERSION in catalog.js when it changes).
    v30.224 OFF-2: also bump the ?v= on the three <script src> tags at the end of
    the page, and the file list in <script id="bdb-files"> when a .js file changes. */
-const APP_VERSION = 'v30.252';
+const APP_VERSION = 'v30.253';
 const APP_BUILD_DATE = '2026-10-27';
 /* catalog.js this build expects; an older file on the server shows a warning */
 const EXPECTED_CATALOG_JS = 'v30.243';
@@ -26139,6 +26139,12 @@ const _bPrepSteps = {};
 (db.surfaceDetails||[]).forEach(sd => { const d = (sd.DateSurfaced||'').slice(0,10); if (sd.BallID != null && d && d === _bLastPrep[sd.BallID]) (_bPrepSteps[sd.BallID] = _bPrepSteps[sd.BallID] || []).push(sd); });
 Object.keys(_bPrepSteps).forEach(k => _bPrepSteps[k].sort((a,z) => (a.SurfacedDetailID||0) - (z.SurfacedDetailID||0)));
 const _bLastUsed = {};
+/* v30.253: last use is ordered by date, then series, game, frame and ball, so balls used on the same night
+   sort by when they were last thrown (was: same-night ties fell back to A-Z) */
+const _bLastKey = {};
+const _bfMeta = {}; (db.frames||[]).forEach(f => { _bfMeta[f.FrameID] = f.FrameNumber || 0; });
+const _bgMeta = {}; (db.games||[]).forEach(g => { _bgMeta[g.GameID] = [g.SeriesID || 0, g.GameNumber || 0]; });
+const _pad = (n, w) => String(n).padStart(w, '0');
 (db.attempts||[]).forEach(a => {
 if (a.BallID == null || a.Pinfall === null || a.Pinfall === undefined) return;
 if (!ballUsage[a.BallID]) ballUsage[a.BallID] = { count:0, totalPins:0, throws:0, sinceFirst:0, sinceThrows:0, games:new Set(), sinceGames:new Set() };
@@ -26148,6 +26154,8 @@ const after = lp ? (_bgDate[_bfGame[a.FrameID]] || '') > lp : false;
 const _gid = _bfGame[a.FrameID];
 const _ud = _bgDate[_gid] || '';
 if (_ud && (!_bLastUsed[a.BallID] || _ud > _bLastUsed[a.BallID])) _bLastUsed[a.BallID] = _ud;
+if (_ud) { const gm = _bgMeta[_gid] || [0, 0], k = _ud + '|' + _pad(gm[0], 7) + '|' + _pad(gm[1], 3) + '|' + _pad(_bfMeta[a.FrameID] || 0, 2) + '|' + (a.Attempt || 0);
+  if (!_bLastKey[a.BallID] || k > _bLastKey[a.BallID]) _bLastKey[a.BallID] = k; }
 u.throws++;
 if (_gid != null) u.games.add(_gid);
 if (after) { u.sinceThrows++; if (_gid != null) u.sinceGames.add(_gid); }
@@ -26231,7 +26239,7 @@ else if (F.sort === 'weight-asc')  balls.sort((a,b) => (a.Weight||0) - (b.Weight
 else if (F.sort === 'thrown-desc') balls.sort((a,b) => (ballUsage[b.BallID]?.throws||0) - (ballUsage[a.BallID]?.throws||0));
 else if (F.sort === 'recent-desc' || F.sort === 'recent-asc') {
 /* never-used balls go last either way; ties by name */
-const dir = F.sort === 'recent-desc' ? -1 : 1, lu = b => _bLastUsed[b.BallID] || '';
+const dir = F.sort === 'recent-desc' ? -1 : 1, lu = b => _bLastKey[b.BallID] || '';
 balls.sort((a,b) => (!lu(a)) - (!lu(b)) || dir * lu(a).localeCompare(lu(b)) || a.BallName.localeCompare(b.BallName));
 }
 else if (F.sort === 'thrown-asc')  balls.sort((a,b) => (ballUsage[a.BallID]?.throws||0) - (ballUsage[b.BallID]?.throws||0));
@@ -26240,13 +26248,21 @@ const _sv = {}; balls.forEach(b => { const m = catMetric(b); _sv[b.BallID] = m ?
 const dir = F.sort === 'str-desc' ? -1 : 1;
 balls.sort((a,b) => (_sv[a.BallID]==null) - (_sv[b.BallID]==null) || dir * ((_sv[a.BallID]||0) - (_sv[b.BallID]||0)));
 }
+/* v30.253: spare balls (first balls under half their throws, e.g. Tzone) sit in their own group at the
+   bottom of the active list, whatever the sort; the sort applies inside each group */
+const _isSpareBall = b => { const u = ballUsage[b.BallID]; return !!u && u.throws > 0 && u.count * 2 < u.throws; };
+let _spareStart = -1;
+if (!F.showArchived && !_pick) {
+const _main = balls.filter(b => !_isSpareBall(b)), _spares = balls.filter(_isSpareBall);
+if (_spares.length) { _spareStart = _main.length; balls = _main.concat(_spares); }
+}
 if (!balls.length) {
 listEl.innerHTML = `<div class="empty-state"><div class="empty-icon">🎳</div>
       <div class="empty-label">${F.showArchived?'No archived balls':'No active balls'}</div>
       <div class="empty-sub">Tap + to add a ball</div></div>`;
 return;
 }
-listEl.innerHTML = balls.map(b => {
+listEl.innerHTML = balls.map((b, _bi) => {
 const preps    = (db.surfaceDetails||[]).filter(sd=>sd.BallID==b.BallID);
 const lastPrep = preps.sort((a,z)=>z.DateSurfaced>a.DateSurfaced?1:-1)[0];
 const usage    = ballUsage[b.BallID] || { count:0, totalPins:0, throws:0, sinceFirst:0, sinceThrows:0, games:new Set(), sinceGames:new Set() };
@@ -26304,7 +26320,8 @@ const usageHTML = usage.throws > 0 ? `
         </div>
       </div>${_prepSurf}${_prepLine}`: '';
 const _picked = _pick && _pick.includes(b.BallID);
-return `<div class="ball-card${b.Archived?' archived':''}"${_pick?` style="outline:2px solid ${_picked?'var(--teal)':'transparent'};outline-offset:-2px"`:''}>
+const _grpHdr = _bi === _spareStart ? `<div style="margin:18px 4px 8px;font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--t3)">Spare balls</div>` : '';
+return _grpHdr + `<div class="ball-card${b.Archived?' archived':''}"${_pick?` style="outline:2px solid ${_picked?'var(--teal)':'transparent'};outline-offset:-2px"`:''}>
       <div class="ball-card-top">
         <div class="ball-card-img">${thumb}</div>
         <div class="ball-card-body" onclick="${_pick?`ballsPickTap(${b.BallID})`:`openBallDetailModal(${b.BallID})`};event.stopPropagation()">
@@ -38971,10 +38988,10 @@ _editStatus:'', _editPriority:1, _newSnap:null, _newStatus:'tbd', _editCat:'note
 };
 var _DKM_STATUS_LABELS = {ok:'🟢 Working',partial:'🟡 Partial',broken:'🔴 Broken',tbd:'⚪ TBD'};
 </script>
-<script src="devkit.js?v=v30.252"></script>
-<script src="report.js?v=v30.252"></script>
+<script src="devkit.js?v=v30.253"></script>
+<script src="report.js?v=v30.253"></script>
 <!-- v30.157 NEW-11 step 4: ball catalog manifest check + IDB cache (same-origin, like devkit.js/report.js). Optional: if missing, the app behaves exactly as before. -->
-<script src="catalog.js?v=v30.252"></script>
+<script src="catalog.js?v=v30.253"></script>
 <script>
 /* v30.162 OFF-1: service worker (sw.js, same folder) so the app opens with
    no connection, and a request that the browser keep this app's storage.
