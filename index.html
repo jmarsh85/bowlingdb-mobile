@@ -3756,7 +3756,7 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
    Bump both lines (and CATALOG_JS_VERSION in catalog.js when it changes).
    v30.224 OFF-2: also bump the ?v= on the three <script src> tags at the end of
    the page, and the file list in <script id="bdb-files"> when a .js file changes. */
-const APP_VERSION = 'v30.251';
+const APP_VERSION = 'v30.252';
 const APP_BUILD_DATE = '2026-10-27';
 /* catalog.js this build expects; an older file on the server shows a warning */
 const EXPECTED_CATALOG_JS = 'v30.243';
@@ -26114,7 +26114,7 @@ const listEl   = document.getElementById('balls-screen-list');
 if (!filterEl || !listEl) return;
 
 if (!window._ballsScreenFilter) window._ballsScreenFilter = {
-sort:'ps-desc', showArchived:false, coverstock:'', brand:'', coreType:''
+sort:'recent-desc', showArchived:false, coverstock:'', brand:'', coreType:''   /* v30.252 BALL-2: default = last used first */
 };
 const F = window._ballsScreenFilter;
 
@@ -26134,6 +26134,11 @@ const _bsDate = {}; (db.series||[]).forEach(s => { _bsDate[s.SeriesID] = s.DateB
 const _bgDate = {}; (db.games||[]).forEach(g => { _bgDate[g.GameID] = _bsDate[g.SeriesID] || ''; });
 const _bLastPrep = {};
 (db.surfaceDetails||[]).forEach(sd => { const d = (sd.DateSurfaced||'').slice(0,10); if (sd.BallID != null && d && (!_bLastPrep[sd.BallID] || d > _bLastPrep[sd.BallID])) _bLastPrep[sd.BallID] = d; });
+/* v30.252 BALL-2: the last prep's steps (every entry on that date, in the order logged) and whether it was polished */
+const _bPrepSteps = {};
+(db.surfaceDetails||[]).forEach(sd => { const d = (sd.DateSurfaced||'').slice(0,10); if (sd.BallID != null && d && d === _bLastPrep[sd.BallID]) (_bPrepSteps[sd.BallID] = _bPrepSteps[sd.BallID] || []).push(sd); });
+Object.keys(_bPrepSteps).forEach(k => _bPrepSteps[k].sort((a,z) => (a.SurfacedDetailID||0) - (z.SurfacedDetailID||0)));
+const _bLastUsed = {};
 (db.attempts||[]).forEach(a => {
 if (a.BallID == null || a.Pinfall === null || a.Pinfall === undefined) return;
 if (!ballUsage[a.BallID]) ballUsage[a.BallID] = { count:0, totalPins:0, throws:0, sinceFirst:0, sinceThrows:0, games:new Set(), sinceGames:new Set() };
@@ -26141,6 +26146,8 @@ const u = ballUsage[a.BallID];
 const lp = _bLastPrep[a.BallID];
 const after = lp ? (_bgDate[_bfGame[a.FrameID]] || '') > lp : false;
 const _gid = _bfGame[a.FrameID];
+const _ud = _bgDate[_gid] || '';
+if (_ud && (!_bLastUsed[a.BallID] || _ud > _bLastUsed[a.BallID])) _bLastUsed[a.BallID] = _ud;
 u.throws++;
 if (_gid != null) u.games.add(_gid);
 if (after) { u.sinceThrows++; if (_gid != null) u.sinceGames.add(_gid); }
@@ -26172,6 +26179,9 @@ const wtNext   = F.sort==='weight-desc'? 'weight-asc': 'weight-desc';
 const thrOn    = F.sort==='thrown-desc'|| F.sort==='thrown-asc';
 const thrLbl   = thrOn ? (F.sort==='thrown-asc'? 'Used ↑': 'Used ↓') : 'Most Used';
 const thrNext  = F.sort==='thrown-desc'? 'thrown-asc': 'thrown-desc';
+const recOn    = F.sort==='recent-desc'|| F.sort==='recent-asc';
+const recLbl   = recOn ? (F.sort==='recent-asc'? 'Recent \u2191': 'Recent \u2193') : 'Recent';
+const recNext  = F.sort==='recent-desc'? 'recent-asc': 'recent-desc';
 /* v30.158 MET-1: Strength sort (catalog.js). Balls without enough specs sort last. */
 const _hasMet  = typeof catMetric === 'function';
 const strOn    = F.sort==='str-desc'|| F.sort==='str-asc';
@@ -26183,6 +26193,8 @@ const _pick    = Array.isArray(window._ballsPick) ? window._ballsPick : null;
 filterEl.innerHTML = `
     <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;-webkit-overflow-scrolling:touch;scrollbar-width:none;align-items:center">
       ${_hasCmp?`<button class="ball-filter-chip${_pick?' on':''}" onclick="ballsPickToggle()">${_pick?'Cancel':'Compare'}</button>`:''}
+      <button class="ball-filter-chip${recOn?' on':''}"
+        onclick="window._ballsScreenFilter.sort='${recNext}';renderBallsScreen()">${recLbl}</button>
       <button class="ball-filter-chip${hookOn?' on':''}"
         onclick="window._ballsScreenFilter.sort='${hookNext}';renderBallsScreen()">${hookLbl}</button>
       <button class="ball-filter-chip${nameOn?' on':''}"
@@ -26217,6 +26229,11 @@ else if (F.sort === 'name-desc')balls.sort((a,b) => b.BallName.localeCompare(a.B
 else if (F.sort === 'weight-desc') balls.sort((a,b) => (b.Weight||0) - (a.Weight||0));
 else if (F.sort === 'weight-asc')  balls.sort((a,b) => (a.Weight||0) - (b.Weight||0));
 else if (F.sort === 'thrown-desc') balls.sort((a,b) => (ballUsage[b.BallID]?.throws||0) - (ballUsage[a.BallID]?.throws||0));
+else if (F.sort === 'recent-desc' || F.sort === 'recent-asc') {
+/* never-used balls go last either way; ties by name */
+const dir = F.sort === 'recent-desc' ? -1 : 1, lu = b => _bLastUsed[b.BallID] || '';
+balls.sort((a,b) => (!lu(a)) - (!lu(b)) || dir * lu(a).localeCompare(lu(b)) || a.BallName.localeCompare(b.BallName));
+}
 else if (F.sort === 'thrown-asc')  balls.sort((a,b) => (ballUsage[a.BallID]?.throws||0) - (ballUsage[b.BallID]?.throws||0));
 else if ((F.sort === 'str-desc' || F.sort === 'str-asc') && _hasMet) {
 const _sv = {}; balls.forEach(b => { const m = catMetric(b); _sv[b.BallID] = m ? m.strength : null; });
@@ -26233,10 +26250,11 @@ listEl.innerHTML = balls.map(b => {
 const preps    = (db.surfaceDetails||[]).filter(sd=>sd.BallID==b.BallID);
 const lastPrep = preps.sort((a,z)=>z.DateSurfaced>a.DateSurfaced?1:-1)[0];
 const usage    = ballUsage[b.BallID] || { count:0, totalPins:0, throws:0, sinceFirst:0, sinceThrows:0, games:new Set(), sinceGames:new Set() };
-/* a ball thrown mostly at spares (Tzone) has few first balls: count the games it was used in instead */
+/* v30.252 BALL-2 (James 10/31): games = total throws / 10. A spare ball (first balls under half its
+   throws, e.g. Tzone) keeps its "spare ball" tag and gets no resurface badge. */
 const _spareBall = usage.throws > 0 && usage.count * 2 < usage.throws;
-const gamesEq  = _spareBall ? usage.games.size : Math.floor(usage.count / 10);
-const sinceEq  = _spareBall ? usage.sinceGames.size : Math.floor(usage.sinceFirst / 10);
+const gamesEq  = Math.floor(usage.throws / 10);
+const sinceEq  = Math.floor(usage.sinceThrows / 10);
 const _lp      = _bLastPrep[b.BallID] || null;
 const _due     = !b.Archived && !_spareBall && _lp ? (sinceEq >= 90 ? 'over' : sinceEq >= 60 ? 'due' : null) : null;
 const _fmtN    = n => Number(n).toLocaleString('en-US');
@@ -26260,26 +26278,31 @@ coreAbbrev   ? { label:coreAbbrev,         cls:''} : null,
 b.BoxFinish  ? { label:b.BoxFinish,        cls:'gold'} : null,
 ].filter(Boolean).slice(0,6);
 const chipHTML = chips.map(c=>`<span class="ball-chip-pill${c.cls?' '+c.cls:''}">${c.label}</span>`).join('');
-const prepLabel = lastPrep ? `Last prep: ${lastPrep.DateSurfaced?.slice(0,10)||'—'}`: 'No prep logged';
+const _lu = _bLastUsed[b.BallID];
+const prepLabel = _lu ? `Last used ${fmtDate(_lu,{month:'short',day:'numeric',year:'numeric'})}` : 'Not used yet';
+const _steps = _bPrepSteps[b.BallID] || [];
+const _grits = _steps.map(s => s.GritSimple).filter(x => x != null);
+const _pol = _steps.some(s => s.Polished);
+const _prepSurf = _steps.length ? `<div style="font-size:11px;color:var(--t2);margin-top:8px;text-align:center">Last prep ${fmtDate(_lp,{month:'short',day:'numeric',year:'numeric'})} \u00b7 <b style="color:var(--t1)">${_grits.length ? _grits.join(' \u2192 ') + ' grit' : 'surface not recorded'}</b> \u00b7 <span style="color:${_pol ? 'var(--gold)' : 'var(--t3)'}">${_pol ? 'polished' : 'not polished'}</span></div>` : '';
 const _prepLine = !_lp
 ? `<div style="font-size:11px;color:var(--t3);margin-top:8px;text-align:center">No prep logged yet \u00b7 log one to track games since</div>`
 : `<div style="display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:8px;font-size:11px;color:var(--t2)">
-          <span>Since last prep (${fmtDate(_lp,{month:'short',day:'numeric',year:'numeric'})}): <b style="color:var(--t1)">${sinceEq} game${sinceEq===1?'':'s'}</b> \u00b7 ${_fmtN(usage.sinceThrows)} throws</span>
+          <span>Since then: <b style="color:var(--t1)">${sinceEq} game${sinceEq===1?'':'s'}</b> \u00b7 ${_fmtN(usage.sinceThrows)} throws</span>
           ${_due ? `<span style="font-size:10px;font-weight:800;border-radius:10px;padding:2px 8px;${_due==='over'?'background:rgba(220,80,60,0.18);color:var(--sedona)':'background:rgba(240,190,60,0.16);color:var(--gold)'}">${_due==='over'?'Resurface overdue (90+)':'Resurface recommended (60\u201390)'}</span>` : ''}
         </div>`;
 const usageHTML = usage.throws > 0 ? `
       <div style="display:flex;gap:12px;margin-top:8px;padding-top:8px;border-top:1px solid var(--border1)">
         <div style="display:flex;flex-direction:column;align-items:center;flex:1">
           <span style="font-size:18px;font-weight:900;color:var(--teal)">${_fmtN(gamesEq)}</span>
-          <span style="font-size:9px;color:var(--t3);font-weight:600;letter-spacing:0.5px;text-transform:uppercase;margin-top:1px">${_spareBall ? 'Games used' : 'Games'}</span>
-          <span style="font-size:9px;color:var(--t3);margin-top:2px">${_spareBall ? 'spare ball \u00b7 ' + _fmtN(usage.throws) + ' throws' : _fmtN(usage.count) + ' first balls \u00b7 ' + _fmtN(usage.throws) + ' total'}</span>
+          <span style="font-size:9px;color:var(--t3);font-weight:600;letter-spacing:0.5px;text-transform:uppercase;margin-top:1px">Games</span>
+          <span style="font-size:9px;color:var(--t3);margin-top:2px">${_fmtN(usage.throws)} throws \u00b7 ${_spareBall ? 'spare ball' : _fmtN(usage.count) + ' first balls'}</span>
         </div>
         <div style="width:1px;background:var(--border1);flex-shrink:0"></div>
         <div style="display:flex;flex-direction:column;align-items:center;flex:1">
           <span style="font-size:18px;font-weight:900;color:var(--purple)">${avgPins ?? '\u2014'}</span>
           <span style="font-size:9px;color:var(--t3);font-weight:600;letter-spacing:0.5px;text-transform:uppercase;margin-top:1px">Avg Pinfall</span>
         </div>
-      </div>${_prepLine}`: '';
+      </div>${_prepSurf}${_prepLine}`: '';
 const _picked = _pick && _pick.includes(b.BallID);
 return `<div class="ball-card${b.Archived?' archived':''}"${_pick?` style="outline:2px solid ${_picked?'var(--teal)':'transparent'};outline-offset:-2px"`:''}>
       <div class="ball-card-top">
@@ -38948,10 +38971,10 @@ _editStatus:'', _editPriority:1, _newSnap:null, _newStatus:'tbd', _editCat:'note
 };
 var _DKM_STATUS_LABELS = {ok:'🟢 Working',partial:'🟡 Partial',broken:'🔴 Broken',tbd:'⚪ TBD'};
 </script>
-<script src="devkit.js?v=v30.251"></script>
-<script src="report.js?v=v30.251"></script>
+<script src="devkit.js?v=v30.252"></script>
+<script src="report.js?v=v30.252"></script>
 <!-- v30.157 NEW-11 step 4: ball catalog manifest check + IDB cache (same-origin, like devkit.js/report.js). Optional: if missing, the app behaves exactly as before. -->
-<script src="catalog.js?v=v30.251"></script>
+<script src="catalog.js?v=v30.252"></script>
 <script>
 /* v30.162 OFF-1: service worker (sw.js, same folder) so the app opens with
    no connection, and a request that the browser keep this app's storage.
