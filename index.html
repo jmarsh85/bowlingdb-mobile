@@ -3756,8 +3756,8 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
    Bump both lines (and CATALOG_JS_VERSION in catalog.js when it changes).
    v30.224 OFF-2: also bump the ?v= on the three <script src> tags at the end of
    the page, and the file list in <script id="bdb-files"> when a .js file changes. */
-const APP_VERSION = 'v30.253';
-const APP_BUILD_DATE = '2026-10-27';
+const APP_VERSION = 'v30.254';
+const APP_BUILD_DATE = '2026-10-31';
 /* catalog.js this build expects; an older file on the server shows a warning */
 const EXPECTED_CATALOG_JS = 'v30.243';
 function applyAppVersion() {
@@ -26432,8 +26432,34 @@ _tenPinSkipSeriesID = null;
    The alignment banner in Focus Mode reads this table to show reference values
    during att2. It NEVER auto-writes to the drum wheels — display only.        */
 const SPARE_ALIGN_KEY = 'bowlingdb_spare_alignments';
+/* v30.254 T3: one spelling, one record. Rows saved by old builds or restored from old backups can carry
+   LeaveID (capital L) or a leave number as text; getSpareAlignment() matches r.leaveID === n, so those
+   rows were silently invisible. Read them as leaveID (number), keep the newest row per leave + style,
+   and write the cleaned list back once if anything changed. */
+function _normSpareAlignments(rows) {
+if (!Array.isArray(rows)) return [];
+var best = {}, order = [];
+rows.forEach(function(r) {
+if (!r || typeof r !== 'object') return;
+var o = Object.assign({}, r);
+if (o.leaveID == null && o.LeaveID != null) o.leaveID = o.LeaveID;
+delete o.LeaveID;
+if (typeof o.leaveID === 'string' && /^\d+$/.test(o.leaveID)) o.leaveID = Number(o.leaveID);
+if (o.leaveID == null) return;
+var k = o.leaveID + '|' + (o.style || '');
+if (!(k in best)) { best[k] = o; order.push(k); }
+else if ((o.updatedAt || '') > (best[k].updatedAt || '')) best[k] = o;
+});
+return order.map(function(k) { return best[k]; });
+}
 function getSpareAlignments() {
-try { return JSON.parse(localStorage.getItem(SPARE_ALIGN_KEY) || '[]'); }
+try {
+var raw = localStorage.getItem(SPARE_ALIGN_KEY) || '[]';
+var rows = _normSpareAlignments(JSON.parse(raw));
+var clean = JSON.stringify(rows);
+if (clean !== raw) { try { localStorage.setItem(SPARE_ALIGN_KEY, clean); } catch(e) {} }
+return rows;
+}
 catch(e) { return []; }
 }
 
@@ -27555,10 +27581,7 @@ tileHidden: getTileHidden(),
 customPins: db.customPins,
 theme: themeLoad(),
 ids: db.ids,
-spareAlignments: (() => {
-try { return JSON.parse(localStorage.getItem(SPARE_ALIGN_KEY) || '[]'); }
-catch(e) { return []; }
-})(),
+spareAlignments: getSpareAlignments(),
 leaveDiagnosis: (() => {
 try { return JSON.parse(localStorage.getItem(LEAVE_DIAGNOSIS_KEY) || 'null'); }
 catch(e) { return null; }
@@ -28084,7 +28107,7 @@ if (parsed.beerBoard) localStorage.setItem('bowlingdb_beerboard', JSON.stringify
 if (parsed.tileOrder) localStorage.setItem('bowlingdb_tile_order', JSON.stringify(parsed.tileOrder));
 if (Array.isArray(parsed.tileHidden)) saveTileHidden(parsed.tileHidden);
 
-if (parsed.spareAlignments?.length) localStorage.setItem(SPARE_ALIGN_KEY, JSON.stringify(parsed.spareAlignments));
+if (parsed.spareAlignments?.length) localStorage.setItem(SPARE_ALIGN_KEY, JSON.stringify(_normSpareAlignments(parsed.spareAlignments)));
 
 
 if (parsed.leaveDiagnosis) localStorage.setItem(LEAVE_DIAGNOSIS_KEY, JSON.stringify(parsed.leaveDiagnosis));
@@ -28197,13 +28220,10 @@ toast(`Merged ${newBaker.length} new Baker game${newBaker.length>1?'s':''}`);
 
 if (parsed.spareAlignments?.length) {
 try {
-const _alignKey = a => (a.leaveID ?? a.LeaveID);
-const localAlign = JSON.parse(localStorage.getItem(SPARE_ALIGN_KEY) || '[]');
-const localLeaveIDs = new Set(localAlign.map(_alignKey).filter(k => k != null));
-const newAlign = parsed.spareAlignments.filter(a => {
-const k = _alignKey(a);
-return k != null && !localLeaveIDs.has(k);
-});
+const _alignKey = a => a.leaveID + '|' + (a.style || '');   // v30.254: a straight setup no longer blocks the hook one
+const localAlign = getSpareAlignments();
+const localKeys = new Set(localAlign.map(_alignKey));
+const newAlign = _normSpareAlignments(parsed.spareAlignments).filter(a => !localKeys.has(_alignKey(a)));
 if (newAlign.length) localStorage.setItem(SPARE_ALIGN_KEY, JSON.stringify([...localAlign, ...newAlign]));
 } catch(e) {}
 }
@@ -31688,6 +31708,46 @@ async function fixVegasTournament235() {
   } catch (e) { console.warn('fixVegasTournament235:', e); }
 }
 
+/* v30.254 one-time (T2): two Team Bowl frames carry a third ball in frames 1-9.
+   - 3/25/26 game 1 (game 1055) frame 2: 9 (Physix), 0 (Physix), 0 (Tzone). The miss on the 4 pin was
+     logged twice; Tzone, the spare ball, is the one kept. The stored 199 already counts frame 2 as 9,
+     so no score changes.
+   - 4/1/26 game 2 (game 1061) frame 4: an empty third ball (no pins, no ball) after 6 and 3. Removed.
+   Runs only on the exact state found; the removed rows are kept in bowlingdb_fix254_undo. */
+async function fixExtraBalls254() {
+  const FLAG = 'bowlingdb_fix254_extraballs';
+  try {
+    if (localStorage.getItem(FLAG)) return;
+    await loadScoringData();
+    const undo = [], done = [], del = [];
+    const frameAtts = (gid, fn) => {
+      const f = db.frames.find(x => x.GameID === gid && x.FrameNumber === fn);
+      return f ? db.attempts.filter(a => a.FrameID === f.FrameID).sort((a, b) => a.Attempt - b.Attempt) : [];
+    };
+    const a1 = frameAtts(1055, 2);
+    if (a1.length === 3 && a1[0].Pinfall === 9 && a1[1].Pinfall === 0 && a1[1].BallID === 11 &&
+        a1[2].Pinfall === 0 && a1[2].BallID === 17) {
+      undo.push(Object.assign({}, a1[1]), Object.assign({}, a1[2]));
+      del.push(a1[1].AttemptID); a1[2].Attempt = 2;
+      done.push('1055 frame 2');
+    }
+    const a2 = frameAtts(1061, 4);
+    if (a2.length === 3 && a2[0].Pinfall === 6 && a2[1].Pinfall === 3 && a2[2].Pinfall == null && a2[2].BallID == null) {
+      undo.push(Object.assign({}, a2[2]));
+      del.push(a2[2].AttemptID);
+      done.push('1061 frame 4');
+    }
+    if (done.length) {
+      try { localStorage.setItem('bowlingdb_fix254_undo', JSON.stringify(undo)); } catch (e) {}
+      db.attempts = db.attempts.filter(a => !del.includes(a.AttemptID));
+      await idbDeleteKeys('attempts', del);
+      await saveAll();
+      toast('Removed an extra ball from ' + done.length + ' Team Bowl frame' + (done.length > 1 ? 's' : ''), 5000);
+    }
+    localStorage.setItem(FLAG, done.length ? done.join(', ') : 'nothing to do');
+  } catch (e) { console.warn('fixExtraBalls254:', e); }
+}
+
 document.addEventListener('DOMContentLoaded', async ()=>{
 
 
@@ -31711,7 +31771,7 @@ renderNavGrid();
 window.__bdbBoot = 1;   // v30.223 BOOT-1: home drawn, the startup guard stands down
 
 
-loadScoringData().then(async () => { renderHome(); fixPrecisionDup185(); fixBallText189(); await fixNoTap191(); await fixPinPalShape197(); await fixLeaveIDs196(); await fixScoresheet229(); await fixScoresheets231(); await fixVegasTournament235(); renderHome(); }).catch(() => {});
+loadScoringData().then(async () => { renderHome(); fixPrecisionDup185(); fixBallText189(); await fixNoTap191(); await fixPinPalShape197(); await fixLeaveIDs196(); await fixScoresheet229(); await fixScoresheets231(); await fixVegasTournament235(); await fixExtraBalls254(); renderHome(); }).catch(() => {});
 
 
 warmBallImgCache().then(() => {
@@ -35295,8 +35355,11 @@ const scores = grpCalcScores(bi);
 GRP.gameIdx = savedGI;
 game.frames.filter(f => f.bowlerIdx === bi).forEach(fr => {
 const frameID  = db.ids.frame++;
-const p1 = fr.att[0]?.pins ?? 0;
-const p2 = fr.att[1]?.pins ?? 0;
+/* v30.254: frames 1-9 hold at most two balls. A session frame that picked up a third (game 1055 frame 2:
+   9, then the miss logged with two balls) keeps its first ball and the last one entered. */
+const atts = (fr.frameNum < 10 && (fr.att || []).length > 2) ? [fr.att[0], fr.att[fr.att.length - 1]] : (fr.att || []);
+const p1 = atts[0]?.pins ?? 0;
+const p2 = atts[1]?.pins ?? 0;
 const isStrike = fr.frameNum < 10 ? p1 === 10 : false;
 const isSpare  = fr.frameNum < 10 && !isStrike ? (p1 + p2) === 10 : false;
 const rt   = scores[fr.frameNum - 1] ?? null;
@@ -35308,7 +35371,7 @@ Strike: isStrike, Spare: isSpare,
 FrameScore: rt !== null && prev !== null ? rt - prev : null,
 RunningTotal: rt
 });
-fr.att.forEach((att, ai) => {
+atts.forEach((att, ai) => {
 const knocked = att.knocked || [];
 const pf = {};
 for (let p = 1; p <= 10; p++) {
@@ -38988,10 +39051,10 @@ _editStatus:'', _editPriority:1, _newSnap:null, _newStatus:'tbd', _editCat:'note
 };
 var _DKM_STATUS_LABELS = {ok:'🟢 Working',partial:'🟡 Partial',broken:'🔴 Broken',tbd:'⚪ TBD'};
 </script>
-<script src="devkit.js?v=v30.253"></script>
-<script src="report.js?v=v30.253"></script>
+<script src="devkit.js?v=v30.254"></script>
+<script src="report.js?v=v30.254"></script>
 <!-- v30.157 NEW-11 step 4: ball catalog manifest check + IDB cache (same-origin, like devkit.js/report.js). Optional: if missing, the app behaves exactly as before. -->
-<script src="catalog.js?v=v30.253"></script>
+<script src="catalog.js?v=v30.254"></script>
 <script>
 /* v30.162 OFF-1: service worker (sw.js, same folder) so the app opens with
    no connection, and a request that the browser keep this app's storage.
