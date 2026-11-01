@@ -3756,7 +3756,7 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
    Bump both lines (and CATALOG_JS_VERSION in catalog.js when it changes).
    v30.224 OFF-2: also bump the ?v= on the three <script src> tags at the end of
    the page, and the file list in <script id="bdb-files"> when a .js file changes. */
-const APP_VERSION = 'v30.254';
+const APP_VERSION = 'v30.255';
 const APP_BUILD_DATE = '2026-10-31';
 /* catalog.js this build expects; an older file on the server shows a warning */
 const EXPECTED_CATALOG_JS = 'v30.243';
@@ -31748,6 +31748,29 @@ async function fixExtraBalls254() {
   } catch (e) { console.warn('fixExtraBalls254:', e); }
 }
 
+/* v30.255 one-time (T4): James's Hyroad is the Bowlero Hy-Road (Storm, Nov 2019; R2S Hybrid cover,
+   Inverted Fe2 core; 15 lb RG 2.57 / Diff 0.046 -- his saved numbers, from the bowwwl spec sheet he sent
+   10/31). It was linked to the Hy-Road Hybrid and its cover typed as R2S Solid / Solid. Re-link it and
+   set the cover. Name, weight, surface, RG/Diff, dates and the specs link stay as they are. Runs only on
+   the exact state found; the old values are kept in bowlingdb_fix255_undo. */
+function fixHyroad255() {
+  const FLAG = 'bowlingdb_fix255_hyroad';
+  try {
+    if (localStorage.getItem(FLAG)) return;
+    const b = (db.balls || []).find(x => x.BallID === 7);
+    const ok = b && b.BallName === 'Hyroad' && b.MFG === 'Storm' && b.CatalogID === 'storm-hy-road-hybrid' &&
+      b.CoverName === 'R2S Solid' && b.Coverstock === 'Solid';
+    if (!ok) { localStorage.setItem(FLAG, 'nothing to do'); return; }
+    try { localStorage.setItem('bowlingdb_fix255_undo', JSON.stringify({ BallID: 7, CatalogID: b.CatalogID, CoverName: b.CoverName, Coverstock: b.Coverstock })); } catch (e) {}
+    b.CatalogID = 'storm-bowlero-hy-road';
+    b.CoverName = 'R2S Hybrid';
+    b.Coverstock = 'Hybrid Reactive';
+    saveDB();
+    toast('Hyroad linked to the Bowlero Hy-Road (R2S Hybrid cover)', 5000);
+    localStorage.setItem(FLAG, 'ball 7 relinked to storm-bowlero-hy-road');
+  } catch (e) { console.warn('fixHyroad255:', e); }
+}
+
 document.addEventListener('DOMContentLoaded', async ()=>{
 
 
@@ -31771,7 +31794,7 @@ renderNavGrid();
 window.__bdbBoot = 1;   // v30.223 BOOT-1: home drawn, the startup guard stands down
 
 
-loadScoringData().then(async () => { renderHome(); fixPrecisionDup185(); fixBallText189(); await fixNoTap191(); await fixPinPalShape197(); await fixLeaveIDs196(); await fixScoresheet229(); await fixScoresheets231(); await fixVegasTournament235(); await fixExtraBalls254(); renderHome(); }).catch(() => {});
+loadScoringData().then(async () => { renderHome(); fixPrecisionDup185(); fixBallText189(); await fixNoTap191(); await fixPinPalShape197(); await fixLeaveIDs196(); await fixScoresheet229(); await fixScoresheets231(); await fixVegasTournament235(); await fixExtraBalls254(); fixHyroad255(); renderHome(); }).catch(() => {});
 
 
 warmBallImgCache().then(() => {
@@ -39051,10 +39074,10 @@ _editStatus:'', _editPriority:1, _newSnap:null, _newStatus:'tbd', _editCat:'note
 };
 var _DKM_STATUS_LABELS = {ok:'🟢 Working',partial:'🟡 Partial',broken:'🔴 Broken',tbd:'⚪ TBD'};
 </script>
-<script src="devkit.js?v=v30.254"></script>
-<script src="report.js?v=v30.254"></script>
+<script src="devkit.js?v=v30.255"></script>
+<script src="report.js?v=v30.255"></script>
 <!-- v30.157 NEW-11 step 4: ball catalog manifest check + IDB cache (same-origin, like devkit.js/report.js). Optional: if missing, the app behaves exactly as before. -->
-<script src="catalog.js?v=v30.254"></script>
+<script src="catalog.js?v=v30.255"></script>
 <script>
 /* v30.162 OFF-1: service worker (sw.js, same folder) so the app opens with
    no connection, and a request that the browser keep this app's storage.
