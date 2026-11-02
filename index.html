@@ -286,7 +286,7 @@
      (its *_VERSION line). sw.js reads this block: it keeps the app's
      files as one matching set and never opens a mix of old and new files. Every file
      is fetched as name.js?v=APP_VERSION. Update a version here when that file changes. -->
-<script type="application/json" id="bdb-files">{"devkit.js":"v30.248","report.js":"v30.156","catalog.js":"v30.243","workbench.js":"v30.223","pinpal.js":"v30.199","awards.js":"v30.250","share.js":"v30.248","connect.js":"v30.242","challenge.js":"v30.250","chplay.js":"v30.247"}</script>
+<script type="application/json" id="bdb-files">{"devkit.js":"v30.256","report.js":"v30.156","catalog.js":"v30.243","workbench.js":"v30.223","pinpal.js":"v30.199","awards.js":"v30.250","share.js":"v30.248","connect.js":"v30.242","challenge.js":"v30.250","chplay.js":"v30.247"}</script>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#0E0F11">
@@ -3756,8 +3756,8 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
    Bump both lines (and CATALOG_JS_VERSION in catalog.js when it changes).
    v30.224 OFF-2: also bump the ?v= on the three <script src> tags at the end of
    the page, and the file list in <script id="bdb-files"> when a .js file changes. */
-const APP_VERSION = 'v30.255';
-const APP_BUILD_DATE = '2026-10-31';
+const APP_VERSION = 'v30.256';
+const APP_BUILD_DATE = '2026-11-01';
 /* catalog.js this build expects; an older file on the server shows a warning */
 const EXPECTED_CATALOG_JS = 'v30.243';
 function applyAppVersion() {
@@ -31679,6 +31679,114 @@ async function fixScoresheets231() {
    Tournament. Give it its own tournament record and move the round there, so league stats leave it
    out and the tournament's own screens show it (like any other tournament round). Not Baker.
    Sanctioned left unmarked for James to set. Runs only on the exact state found; undo kept. */
+/* v30.256 DATA-1 D1 (DESIGN_data1_rec1.md): league schedule and week matching. Pure; one helper for every
+   screen. Week 1 = first DayOfBowling on or after StartDate; Weeks 0 = open-ended (to EndDate, else today
+   while current, else the last series). A series takes: its user-answered week (D2: LeagueWeekSrc 'user', LeagueWeek 0 = extra),
+   else the week on its date, else the nearest free week within 6 days (after = make-up, before = pre-bowl),
+   else 'extra' (inside the season) or 'outside'. Nothing is stored; series.WeekID (old Access key) is not used.
+   SCHED-D1 begin */
+var SCHED_DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+var SCHED_WINDOW = 6;
+function _schedD(s) { var p = String(s).slice(0, 10).split('-'); return Date.UTC(+p[0], +p[1] - 1, +p[2]) / 86400000; }
+function _schedS(n) { return new Date(n * 86400000).toISOString().slice(0, 10); }
+function schedNights(league, opts) {
+  opts = opts || {};
+  if (!league || !/^\d{4}-\d{2}-\d{2}/.test(league.StartDate || '')) return null;
+  var wd = SCHED_DAYS.indexOf(league.DayOfBowling);
+  if (wd < 0) return null;
+  var st = _schedD(league.StartDate);
+  var first = st + ((wd - new Date(st * 86400000).getUTCDay() + 7) % 7);
+  var n = +league.Weeks || 0, open = !(n > 0);
+  if (open) {
+    /* open-ended: to the league's end date if set, else to today while the league is current, else to its
+       last series; never short of the last series */
+    var until = /^\d{4}-\d{2}-\d{2}/.test(league.EndDate || '') ? _schedD(league.EndDate)
+      : (league.Archived || league.Active === false) ? (opts.lastDate ? _schedD(opts.lastDate) : first - 1)
+      : _schedD(opts.today);
+    if (opts.lastDate && _schedD(opts.lastDate) > until) until = _schedD(opts.lastDate);
+    n = until >= first ? Math.floor((until - first) / 7) + 1 : 0;
+  }
+  var weeks = [];
+  for (var i = 0; i < n; i++) weeks.push({ week: i + 1, date: _schedS(first + 7 * i) });
+  return { first: _schedS(first), open: open, sub: !!league.IsSub, weeks: weeks };
+}
+function schedMatch(league, series, opts) {
+  opts = opts || {};
+  var today = opts.today;
+  var list = (series || []).filter(function(s) { return s && /^\d{4}-\d{2}-\d{2}/.test(s.DateBowled || ''); })
+    .slice().sort(function(a, b) { return a.DateBowled < b.DateBowled ? -1 : a.DateBowled > b.DateBowled ? 1 : a.SeriesID - b.SeriesID; });
+  var lastDate = list.length ? list[list.length - 1].DateBowled : null;
+  var sch = schedNights(league, { today: today, lastDate: lastDate });
+  if (!sch) return null;
+  var tn = _schedD(today);
+  var wk = sch.weeks.map(function(w) { return { week: w.week, date: w.date, dn: _schedD(w.date), series: [] }; });
+  var by = {};
+  var put = function(s, w, how) { w.series.push(s.SeriesID); by[s.SeriesID] = { week: w.week, date: w.date, how: how, delta: _schedD(s.DateBowled) - w.dn }; };
+  var left = [];
+  list.forEach(function(s) {
+    if (s.LeagueWeekSrc === 'user' && s.LeagueWeek != null) {
+      var w = s.LeagueWeek > 0 ? wk[s.LeagueWeek - 1] : null;
+      if (w) put(s, w, 'user'); else by[s.SeriesID] = { week: null, date: null, how: 'extra', user: true };
+    } else left.push(s);
+  });
+  var rest = [];
+  left.forEach(function(s) {
+    var dn = _schedD(s.DateBowled), w = null;
+    for (var i = 0; i < wk.length; i++) if (wk[i].dn === dn) { w = wk[i]; break; }
+    if (w && !w.series.length) put(s, w, 'on'); else rest.push(s);
+  });
+  var firstN = wk.length ? wk[0].dn : _schedD(sch.first), lastN = wk.length ? wk[wk.length - 1].dn : firstN;
+  rest.forEach(function(s) {
+    var dn = _schedD(s.DateBowled), best = null;
+    wk.forEach(function(w) {
+      var d = Math.abs(dn - w.dn);
+      if (w.series.length || d === 0 || d > SCHED_WINDOW) return;
+      if (!best || d < Math.abs(dn - best.dn)) best = w;
+    });
+    if (best) put(s, best, dn > best.dn ? 'makeup' : 'prebowl');
+    else by[s.SeriesID] = { week: null, date: null, how: (dn < firstN - SCHED_WINDOW || (!sch.open && dn > lastN + SCHED_WINDOW)) ? 'outside' : 'extra' };
+  });
+  var counts = { weeks: wk.length, bowled: 0, nodata: 0, upcoming: 0, on: 0, makeup: 0, prebowl: 0, extra: 0, outside: 0, user: 0 };
+  var weeks = wk.map(function(w) {
+    var st = w.series.length ? 'bowled' : (w.dn >= tn ? 'upcoming' : 'nodata');   // tonight is still upcoming
+    counts[st]++;
+    return { week: w.week, date: w.date, status: st, series: w.series.slice() };
+  });
+  Object.keys(by).forEach(function(k) { counts[by[k].how]++; });
+  return { leagueID: league.LeagueID, first: sch.first, open: sch.open, sub: sch.sub, weeks: weeks, bySeries: by, counts: counts };
+}
+/* SCHED-D1 end */
+function _schedToday() { var d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+function schedLeague(leagueID, today) {
+  var l = (db.leagues || []).find(function(x) { return x.LeagueID === leagueID; });
+  if (!l) return null;
+  var ss = (db.series || []).filter(function(s) { return s.LeagueID === leagueID && s.TournamentID == null; });
+  return schedMatch(l, ss, { today: today || _schedToday() });
+}
+function seriesLeagueWeek(seriesID) {
+  var s = (db.series || []).find(function(x) { return x.SeriesID === seriesID; });
+  if (!s || s.LeagueID == null || s.TournamentID != null) return null;
+  var m = schedLeague(s.LeagueID), r = m && m.bySeries[seriesID];
+  return r ? Object.assign({ of: m.weeks.length, open: m.open }, r) : null;
+}
+
+/* v30.256 one-time (DATA-1 decision 4): James is a roster alternate in Tri-City and Construction A and
+   bowls only when someone is out, like Virtue Classic. Mark them IsSub ("I bowl some weeks") so the gap
+   check (D2) never prompts for them. Nothing else in the app reads IsSub today. */
+function fixAltLeagues256() {
+  var FLAG = 'bowlingdb_fix256_altsub';
+  try {
+    if (localStorage.getItem(FLAG)) return;
+    var done = [];
+    [[133, /^Tri-City/], [134, /^CONSTRUCTION A/]].forEach(function(p) {
+      var l = (db.leagues || []).find(function(x) { return x.LeagueID === p[0]; });
+      if (l && p[1].test(l.LeagueName || '') && !l.IsSub) { l.IsSub = true; done.push(p[0]); }
+    });
+    if (done.length) saveDB();
+    localStorage.setItem(FLAG, done.length ? 'leagues ' + done.join(', ') + ' set IsSub' : 'nothing to do');
+  } catch (e) { console.warn('fixAltLeagues256:', e); }
+}
+
 async function fixVegasTournament235() {
   const FLAG = 'bowlingdb_fix235_vegas';
   try {
@@ -31794,7 +31902,7 @@ renderNavGrid();
 window.__bdbBoot = 1;   // v30.223 BOOT-1: home drawn, the startup guard stands down
 
 
-loadScoringData().then(async () => { renderHome(); fixPrecisionDup185(); fixBallText189(); await fixNoTap191(); await fixPinPalShape197(); await fixLeaveIDs196(); await fixScoresheet229(); await fixScoresheets231(); await fixVegasTournament235(); await fixExtraBalls254(); fixHyroad255(); renderHome(); }).catch(() => {});
+loadScoringData().then(async () => { renderHome(); fixPrecisionDup185(); fixBallText189(); await fixNoTap191(); await fixPinPalShape197(); await fixLeaveIDs196(); await fixScoresheet229(); await fixScoresheets231(); await fixVegasTournament235(); await fixExtraBalls254(); fixHyroad255(); fixAltLeagues256(); renderHome(); }).catch(() => {});
 
 
 warmBallImgCache().then(() => {
@@ -39074,10 +39182,10 @@ _editStatus:'', _editPriority:1, _newSnap:null, _newStatus:'tbd', _editCat:'note
 };
 var _DKM_STATUS_LABELS = {ok:'🟢 Working',partial:'🟡 Partial',broken:'🔴 Broken',tbd:'⚪ TBD'};
 </script>
-<script src="devkit.js?v=v30.255"></script>
-<script src="report.js?v=v30.255"></script>
+<script src="devkit.js?v=v30.256"></script>
+<script src="report.js?v=v30.256"></script>
 <!-- v30.157 NEW-11 step 4: ball catalog manifest check + IDB cache (same-origin, like devkit.js/report.js). Optional: if missing, the app behaves exactly as before. -->
-<script src="catalog.js?v=v30.255"></script>
+<script src="catalog.js?v=v30.256"></script>
 <script>
 /* v30.162 OFF-1: service worker (sw.js, same folder) so the app opens with
    no connection, and a request that the browser keep this app's storage.
