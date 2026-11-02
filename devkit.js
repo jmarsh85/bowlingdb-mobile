@@ -1,5 +1,5 @@
 /* v30.224 OFF-2: sw.js checks this line against index.html's file list; bump it when devkit.js changes */
-var DK_VERSION = 'v30.248';
+var DK_VERSION = 'v30.256';
 
 
 
@@ -545,6 +545,7 @@ host.insertAdjacentHTML('beforeend',`<!-- ── DEVKIT OVERLAY ─────�
           <div class="dk-tool-group">Seasons &amp; lineages</div>
           <button class="dk-tool-btn" onclick="dkSeasonDryRun()">Season Dry Run</button>
           <button class="dk-tool-btn" onclick="dkLineageDryRun()">Lineage Dry Run</button>
+          <button class="dk-tool-btn" onclick="dkScheduleCheck()" title="Expected league weeks vs the series logged (read-only)">\ud83d\udcc5 League schedule check</button>
 
           <div class="dk-tool-group">Alignment provenance</div>
           <button class="dk-tool-btn" onclick="dkAlignAudit()">Alignment Audit</button>
@@ -765,6 +766,63 @@ toast('Purged '+ gameIDs.length + ' empty game shell(s)');
 
 
 
+
+/* v30.256 DATA-1 D1: League schedule check. Read-only. For each league with a start date and a bowling day:
+   expected weeks, which series filled them (on the night / make-up / pre-bowl), extra nights, series
+   outside the season, and past weeks with no games. Uses schedLeague() from index.html. */
+function _dkMD(d) { return d ? (+d.slice(5, 7)) + '/' + (+d.slice(8, 10)) + (d.slice(0, 4) !== String(new Date().getFullYear()) ? '/' + d.slice(2, 4) : '') : '?'; }
+function dkScheduleCheck(showAll) {
+  if (typeof schedLeague !== 'function') { toast('Schedule helpers missing (needs index.html v30.256+)'); return; }
+  var today = _schedToday(), cutoff = _schedS(_schedD(today) - 120);
+  var cards = [], none = [], tot = { leagues: 0, nodata: 0, moved: 0, extra: 0, outside: 0 };
+  var sById = {}; db.series.forEach(function(s) { sById[s.SeriesID] = s; });
+  var leagues = (db.leagues || []).filter(function(l) { return l.LeagueID > 0; })
+    .sort(function(a, b) { return (b.StartDate || '').localeCompare(a.StartDate || ''); });
+  leagues.forEach(function(l) {
+    var m = schedLeague(l.LeagueID, today);
+    var nSeries = db.series.filter(function(s) { return s.LeagueID === l.LeagueID && s.TournamentID == null; }).length;
+    if (!m) { if (nSeries) none.push(l); return; }
+    var lastWeek = m.weeks.length ? m.weeks[m.weeks.length - 1].date : m.first;
+    var recent = lastWeek >= cutoff || l.Active === true;
+    if (!showAll && !recent) return;
+    tot.leagues++;
+    var past = m.weeks.filter(function(w) { return w.status !== 'upcoming'; }).length;
+    var nod = m.weeks.filter(function(w) { return w.status === 'nodata'; }).map(function(w) { return w.date; });
+    var list = function(how) { return Object.keys(m.bySeries).filter(function(k) { return m.bySeries[k].how === how; })
+      .map(function(k) { return { s: sById[k], r: m.bySeries[k] }; })
+      .sort(function(a, b) { return (a.s.DateBowled || '').localeCompare(b.s.DateBowled || ''); }); };
+    var moved = list('makeup').concat(list('prebowl')), extra = list('extra'), out = list('outside');
+    if (!m.sub) tot.nodata += nod.length;
+    tot.moved += moved.length; tot.extra += extra.length; tot.outside += out.length;
+    var movedSet = {}; moved.forEach(function(x) { movedSet[x.r.week] = 1; });
+    var strip = m.weeks.map(function(w) {
+      var bg = w.status === 'bowled' ? (movedSet[w.week] ? 'var(--gold)' : 'var(--teal)') : 'transparent';
+      var bd = w.status === 'upcoming' ? '1px dashed var(--border1)' : w.status === 'nodata' ? '1px solid var(--t3)' : '1px solid ' + bg;
+      return '<span title="Week ' + w.week + ' \u00b7 ' + w.date + ' \u00b7 ' + w.status + '" style="display:inline-block;width:12px;height:12px;border-radius:2px;margin:1px;background:' + bg + ';border:' + bd + '"></span>';
+    }).join('');
+    var line = function(label, arr, col) { return arr.length ? '<div style="font-size:12px;color:' + (col || 'var(--t2)') + ';line-height:1.5"><b>' + label + '</b> ' + arr.join(', ') + '</div>' : ''; };
+    cards.push('<div class="card" style="padding:10px;margin-bottom:8px">' +
+      '<div style="font-size:13px;font-weight:700;color:var(--t1)">' + String(l.LeagueName || '').replace(/</g, '&lt;') + (m.sub ? ' <span style="font-size:10px;color:var(--t3);border:1px solid var(--border1);border-radius:8px;padding:1px 6px">alternate/sub</span>' : '') + '</div>' +
+      '<div style="font-size:11px;color:var(--t3);margin-bottom:6px">' + l.DayOfBowling + 's from ' + _dkMD(m.first) + ' \u00b7 ' + (m.open ? 'open-ended, ' + m.weeks.length + ' weeks so far' : 'week ' + past + ' of ' + m.weeks.length) + ' \u00b7 ' + m.counts.bowled + ' bowled</div>' +
+      '<div style="line-height:0;margin-bottom:6px">' + strip + '</div>' +
+      line(m.sub ? 'Not bowled:' : 'No games:', nod.map(_dkMD), m.sub ? 'var(--t3)' : 'var(--t2)') +
+      line('Make-up / pre-bowl:', moved.map(function(x) { return _dkMD(x.s.DateBowled) + ' \u2192 wk ' + x.r.week + ' (' + _dkMD(x.r.date) + ')'; })) +
+      line('Extra night:', extra.map(function(x) { return _dkMD(x.s.DateBowled); }), 'var(--gold)') +
+      line('Outside the season:', out.map(function(x) { return _dkMD(x.s.DateBowled); }), 'var(--gold)') +
+      (out.length ? '<div style="font-size:11px;color:var(--t3)">Usually a start date or bowling day that needs correcting.</div>' : '') +
+      '</div>');
+  });
+  var stat = function(label, n, col) { return '<div class="card" style="text-align:center;padding:8px"><div style="font-size:10px;color:var(--t3)">' + label + '</div><div style="font-size:20px;font-weight:800;color:' + (col || 'var(--t1)') + '">' + n + '</div></div>'; };
+  openModal('<div class="modal-title">\ud83d\udcc5 League schedule check</div>' +
+    '<div style="font-size:12px;color:var(--t2);line-height:1.5;margin-bottom:10px">Weeks worked out from each league\u2019s start date, bowling day and weeks. A series off the league night fills the nearest open week within 6 days. Read-only: nothing is saved.</div>' +
+    '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:8px">' +
+      stat('LEAGUES', tot.leagues) + stat('NO GAMES', tot.nodata) + stat('MOVED', tot.moved, 'var(--gold)') + stat('EXTRA/OUT', tot.extra + tot.outside, 'var(--gold)') + '</div>' +
+    '<div style="font-size:11px;color:var(--t3);margin-bottom:8px"><span style="display:inline-block;width:10px;height:10px;background:var(--teal);border-radius:2px"></span> on the night \u00b7 <span style="display:inline-block;width:10px;height:10px;background:var(--gold);border-radius:2px"></span> make-up / pre-bowl \u00b7 <span style="display:inline-block;width:10px;height:10px;border:1px solid var(--t3);border-radius:2px"></span> no games \u00b7 <span style="display:inline-block;width:10px;height:10px;border:1px dashed var(--border1);border-radius:2px"></span> upcoming</div>' +
+    (cards.join('') || '<div class="card" style="font-size:13px">No leagues with a schedule.</div>') +
+    (none.length ? '<div style="font-size:12px;color:var(--t3);margin:6px 0">No schedule (start date or bowling day missing): ' + none.map(function(l) { return String(l.LeagueName || '').replace(/</g, '&lt;'); }).join(', ') + '</div>' : '') +
+    '<button class="btn btn-secondary" style="margin-top:8px;width:100%" onclick="dkScheduleCheck(' + (showAll ? 'false' : 'true') + ')">' + (showAll ? 'Recent leagues only' : 'All leagues') + '</button>' +
+    '<button class="btn btn-secondary" style="margin-top:8px;width:100%" onclick="closeModal()">Close</button>');
+}
 
 /* v30.234 Goal 7: first balls whose saved leave (LeaveID) and pin string (BSK_Progressive) name different
    pins. Read-only. For each, the second ball is used as a witness: the pins it faced must be the pins
