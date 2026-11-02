@@ -1,6 +1,6 @@
 {
  "Counts": {
-  "approved": 8065
+  "approved": 8066
  },
  "Eligibility": {
   "3g-galaxy-black": {
@@ -2016,6 +2016,10 @@
    "SlowOil78D": false
   },
   "abs-nanodesu-accu-line-tour-premium-intel-ii": {
+   "NoSlowOil": false,
+   "SlowOil78D": false
+  },
+  "abs-nanodesu-accu-line-tour-premium-intel-iii": {
    "NoSlowOil": false,
    "SlowOil78D": false
   },
@@ -32264,5 +32268,5 @@
    "SlowOil78D": false
   }
  },
- "ListVersion": "2026-10-26"
+ "ListVersion": "2026-11-02"
 }
