@@ -120,6 +120,14 @@ transition:background var(--transition), border-color var(--transition);
 .dk-tool-btn:active { background:var(--bg4,#27292d); }
 .dk-tool-btn.write  { color:var(--gold);   border-color:rgba(255,215,0,0.28); }
 .dk-tool-btn.danger { color:var(--sedona); border-color:rgba(232,93,76,0.32); }
+/* v30.256: folded groups in the Tools tab */
+.dk-tool-fold { margin-top:14px; border-top:1px solid var(--border1); }
+.dk-tool-fold > summary { list-style:none; cursor:pointer; padding:10px 0 4px; font-size:10px; font-weight:800; color:var(--t3);
+text-transform:uppercase; letter-spacing:0.8px; -webkit-tap-highlight-color:transparent; }
+.dk-tool-fold > summary::-webkit-details-marker { display:none; }
+.dk-tool-fold > summary::before { content:'\\25B8  '; }
+.dk-tool-fold[open] > summary::before { content:'\\25BE  '; }
+.dk-tool-note { font-size:11px; color:var(--t3); line-height:1.45; margin:2px 0 2px; }
 #dk-body { flex:1; overflow-y:auto; padding:14px; }
 /* ── Log tab ── */
 .dk-cat-row { display:flex; gap:6px; margin-bottom:10px; }
@@ -531,59 +539,62 @@ host.insertAdjacentHTML('beforeend',`<!-- ── DEVKIT OVERLAY ─────�
       <div id="dk-pane-tools" style="display:none">
         <div id="dk-purge-panel" style="padding:4px 4px 4px">
 
-          <div class="dk-tool-group">Maintenance — writes data</div>
-          <button class="dk-tool-btn write" onclick="dkBackfillF10Flags()" title="Populate Strike/Spare flags on historical frame-10 rows (dry run first)">🔟 F10 Flags — backfill frame-10 Strike/Spare</button>
+          <!-- v30.256: regrouped. Everyday checks first; feature dry runs, one-time legacy repairs and
+               destructive tools fold away. Same buttons and handlers as before. -->
+          <div class="dk-tool-group">Data checks \u2014 review first</div>
+          <button class="dk-tool-btn" onclick="dkScheduleCheck()" title="Expected league weeks vs the series logged (read-only)">\ud83d\udcc5 League schedule check</button>
+          <button class="dk-tool-btn" onclick="dkFrame10Scan()" title="Read-only: games whose frame-10 running total does not match the saved score">🔎 Frame-10 total check — read only</button>
           <button class="dk-tool-btn write" onclick="dkLeaveCheck()" title="First-ball leaves whose saved leave and pin string disagree (review first)">🧩 Leave check — saved leave vs pins</button>
           <button class="dk-tool-btn write" onclick="dkBackfillF10Flags(true)" title="Check Strike/Spare flags on every frame against the pins (review first)">🎳 Frame Flags — check all frames against the pins</button>
           <button class="dk-tool-btn write" onclick="dkReviewStaleGames()" title="Review and purge empty game shells that count as zeros">🧹 Stale Games — review &amp; purge empty shells</button>
-          <button class="dk-tool-btn write" onclick="dkBakerPurgeShells()" title="Remove empty db.games shells created in Baker rounds by the pre-v30.126 routing bug">🎳 Baker Purge — remove Baker game shells</button>
-          <button class="dk-tool-btn write" onclick="dkUpdateGamesSincePrompt()">Update Games-Since-Prompt</button>
-          <button class="dk-tool-btn write" onclick="dkEnsureLineagesRun()">Ensure Lineages</button>
-          <button class="dk-tool-btn danger" onclick="dkPurgeOrphans()">Purge Orphan IDB Records</button>
-          <button class="dk-tool-btn danger" onclick="dkNukeOpenPhantoms()">NUCLEAR: Clear Phantom Open Bowling</button>
-
-          <div class="dk-tool-group">Seasons &amp; lineages</div>
-          <button class="dk-tool-btn" onclick="dkSeasonDryRun()">Season Dry Run</button>
-          <button class="dk-tool-btn" onclick="dkLineageDryRun()">Lineage Dry Run</button>
-          <button class="dk-tool-btn" onclick="dkScheduleCheck()" title="Expected league weeks vs the series logged (read-only)">\ud83d\udcc5 League schedule check</button>
-
-          <div class="dk-tool-group">Alignment provenance</div>
           <button class="dk-tool-btn" onclick="dkAlignAudit()">Alignment Audit</button>
-          <button class="dk-tool-btn" onclick="dkAlignMigrateDryRun()">Alignment Migration — Dry Run</button>
-          <button class="dk-tool-btn" onclick="dkAlignMigrateDryRun(true)">Alignment Migration — COMMIT</button>
-
-          <div class="dk-tool-group">Streaks</div>
-          <button class="dk-tool-btn" onclick="dkStreakDryRun()">Streak Dry Run</button>
-          <button class="dk-tool-btn" onclick="dkStreakDryRunDetail()">Streak Detail — League 129</button>
-          <button class="dk-tool-btn" onclick="dkStreakRollingDryRun()">Rolling Avg Streak — League 129</button>
-          <button class="dk-tool-btn" onclick="dkStreakRollingDryRun('lineage', 1)">Rolling Avg Streak — Lineage 1</button>
-          <button class="dk-tool-btn" onclick="dkStreakRollingDryRun('global')">Rolling Avg Streak — Global</button>
-          <button class="dk-tool-btn" onclick="dkBestSeriesStreakDryRun('lineage', 1)">Best Streak — Lineage 1</button>
-          <button class="dk-tool-btn" onclick="dkBestSeriesStreakDryRun('calendar')">Best Streak — Calendar/Global</button>
-          <button class="dk-tool-btn" onclick="dkPreviewCompareStreaks()">Preview: Compare Streaks Tab</button>
-
-          <div class="dk-tool-group">Leaves &amp; lane condition</div>
-          <button class="dk-tool-btn" onclick="dkLeaveDiagnosisDiffRun()">Leave Diagnosis Diff — old vs new</button>
-          <button class="dk-tool-btn" onclick="dkLeaveSideClusteringDryRun()">Leave-Side Clustering Dry Run</button>
-          <button class="dk-tool-btn" onclick="dkLaneHookRatingDryRun()">Lane Hook Rating Dry Run</button>
-          <button class="dk-tool-btn" onclick="dkSbtbComparisonDryRun()">SB/TB Comparison Dry Run</button>
-          <button class="dk-tool-btn" onclick="dkLanePrepBriefPreview()">Lane Prep Brief Preview — no AI call</button>
-
-          <div class="dk-tool-group">Ball change &amp; motion</div>
-          <button class="dk-tool-btn" onclick="dkBallChangeRetrospectiveDryRun()">Ball-Change Retrospective</button>
-          <button class="dk-tool-btn" onclick="dkBallChangeStep2DryRun()">Ball-Change Step 2 Join</button>
-          <button class="dk-tool-btn" onclick="dkBallMotionProfileInspector()">Ball Motion Profile Inspector</button>
-
-          <div class="dk-tool-group">Data integrity</div>
-          <button class="dk-tool-btn" onclick="dkFrame10Scan()" title="Read-only: games whose frame-10 running total does not match the saved score">🔎 Frame-10 total check — read only</button>
 
           <div class="dk-tool-group">Diagnostics</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
-            <button class="dk-tool-btn" style="margin-top:0" onclick="dkIDBDump()">Dump IDB</button>
-            <button class="dk-tool-btn" style="margin-top:0" onclick="dkAIAnalyze()">AI Analyze</button>
-            <button class="dk-tool-btn write" style="margin-top:0" onclick="dkApplyAIFix()">Apply AI Fix</button>
-            <button class="dk-tool-btn" style="margin-top:0" onclick="dkCopyResult()">Copy Result</button>
+          <button class="dk-tool-btn" style="margin-top:0" onclick="dkIDBDump()">Dump IDB</button>
+          <button class="dk-tool-btn" style="margin-top:0" onclick="dkAIAnalyze()">AI Analyze</button>
+          <button class="dk-tool-btn write" style="margin-top:0" onclick="dkApplyAIFix()">Apply AI Fix</button>
+          <button class="dk-tool-btn" style="margin-top:0" onclick="dkCopyResult()">Copy Result</button>
           </div>
+
+          <details class="dk-tool-fold">
+            <summary>Feature dry runs (read-only)</summary>
+            <div class="dk-tool-note">Previews used while building seasons, streaks, leaves and ball change. Results show below.</div>
+            <button class="dk-tool-btn" onclick="dkSeasonDryRun()">Season Dry Run</button>
+            <button class="dk-tool-btn" onclick="dkLineageDryRun()">Lineage Dry Run</button>
+            <button class="dk-tool-btn" onclick="dkStreakDryRun()">Streak Dry Run</button>
+            <button class="dk-tool-btn" onclick="dkStreakDryRunDetail()">Streak Detail — League 129</button>
+            <button class="dk-tool-btn" onclick="dkStreakRollingDryRun()">Rolling Avg Streak — League 129</button>
+            <button class="dk-tool-btn" onclick="dkStreakRollingDryRun('lineage', 1)">Rolling Avg Streak — Lineage 1</button>
+            <button class="dk-tool-btn" onclick="dkStreakRollingDryRun('global')">Rolling Avg Streak — Global</button>
+            <button class="dk-tool-btn" onclick="dkBestSeriesStreakDryRun('lineage', 1)">Best Streak — Lineage 1</button>
+            <button class="dk-tool-btn" onclick="dkBestSeriesStreakDryRun('calendar')">Best Streak — Calendar/Global</button>
+            <button class="dk-tool-btn" onclick="dkPreviewCompareStreaks()">Preview: Compare Streaks Tab</button>
+            <button class="dk-tool-btn" onclick="dkLeaveDiagnosisDiffRun()">Leave Diagnosis Diff — old vs new</button>
+            <button class="dk-tool-btn" onclick="dkLeaveSideClusteringDryRun()">Leave-Side Clustering Dry Run</button>
+            <button class="dk-tool-btn" onclick="dkLaneHookRatingDryRun()">Lane Hook Rating Dry Run</button>
+            <button class="dk-tool-btn" onclick="dkSbtbComparisonDryRun()">SB/TB Comparison Dry Run</button>
+            <button class="dk-tool-btn" onclick="dkLanePrepBriefPreview()">Lane Prep Brief Preview — no AI call</button>
+            <button class="dk-tool-btn" onclick="dkBallChangeRetrospectiveDryRun()">Ball-Change Retrospective</button>
+            <button class="dk-tool-btn" onclick="dkBallChangeStep2DryRun()">Ball-Change Step 2 Join</button>
+            <button class="dk-tool-btn" onclick="dkBallMotionProfileInspector()">Ball Motion Profile Inspector</button>
+            <button class="dk-tool-btn" onclick="dkAlignMigrateDryRun()">Alignment Migration — Dry Run</button>
+          </details>
+          <details class="dk-tool-fold">
+            <summary>One-time repairs (legacy, write data)</summary>
+            <div class="dk-tool-note">Fixes for old data and old bugs. Normally nothing left to do; each reviews or dry-runs first where it can.</div>
+            <button class="dk-tool-btn write" onclick="dkBackfillF10Flags()" title="Populate Strike/Spare flags on historical frame-10 rows (dry run first)">🔟 F10 Flags — backfill frame-10 Strike/Spare</button>
+            <button class="dk-tool-btn write" onclick="dkBakerPurgeShells()" title="Remove empty db.games shells created in Baker rounds by the pre-v30.126 routing bug">🎳 Baker Purge — remove Baker game shells</button>
+            <button class="dk-tool-btn write" onclick="dkUpdateGamesSincePrompt()">Update Games-Since-Prompt</button>
+            <button class="dk-tool-btn write" onclick="dkEnsureLineagesRun()">Ensure Lineages</button>
+            <button class="dk-tool-btn" onclick="dkAlignMigrateDryRun(true)">Alignment Migration — COMMIT</button>
+          </details>
+          <details class="dk-tool-fold">
+            <summary>Danger zone</summary>
+            <div class="dk-tool-note">Deletes records. Export a Full Snapshot first.</div>
+            <button class="dk-tool-btn danger" onclick="dkPurgeOrphans()">Purge Orphan IDB Records</button>
+            <button class="dk-tool-btn danger" onclick="dkNukeOpenPhantoms()">NUCLEAR: Clear Phantom Open Bowling</button>
+          </details>
 
           <div id="dk-purge-result" style="font-size:11px;color:var(--t2);margin-top:8px;font-family:monospace;white-space:pre-wrap;max-height:280px;overflow-y:auto;border:1px solid #333;border-radius:6px;padding:6px;background:#0a0a0a"></div>
         </div>
