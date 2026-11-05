@@ -1925,6 +1925,11 @@ transition:transform 0.12s, background 0.12s;
 .series-card:active { transform:scale(0.985); background:var(--bg3); }
 .series-hdr { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; }
 .series-date { font-size:15px; font-weight:800; letter-spacing:-0.2px; }
+/* v30.257 DATA-1 D2 season strip */
+.wk-strip-card { padding:10px 12px; margin-bottom:10px; }
+.wk-strip { display:flex; flex-wrap:wrap; gap:3px; }
+.wk-cell { width:18px; height:18px; border-radius:3px; padding:0; cursor:pointer; -webkit-tap-highlight-color:transparent; }
+.wk-cell:active { transform:scale(0.9); }
 .series-total { font-size:28px; font-weight:900; color:var(--teal); letter-spacing:-0.5px; }
 .series-games { display:flex; flex-wrap:wrap; gap:10px; row-gap:10px; align-items:center; }
 .game-badge {
@@ -3756,8 +3761,8 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
    Bump both lines (and CATALOG_JS_VERSION in catalog.js when it changes).
    v30.224 OFF-2: also bump the ?v= on the three <script src> tags at the end of
    the page, and the file list in <script id="bdb-files"> when a .js file changes. */
-const APP_VERSION = 'v30.256';
-const APP_BUILD_DATE = '2026-11-01';
+const APP_VERSION = 'v30.257';
+const APP_BUILD_DATE = '2026-11-03';
 /* catalog.js this build expects; an older file on the server shows a warning */
 const EXPECTED_CATALOG_JS = 'v30.243';
 function applyAppVersion() {
@@ -4132,7 +4137,7 @@ const refSnap = {
 centers: db.centers, leagues: db.leagues, balls: db.balls,
 patterns: db.patterns, leaves: db.leaves, surfaces: db.surfaces,
 surfaceDetails: db.surfaceDetails, openSessions: db.openSessions,
-seasons: db.seasons || [], lineages: db.lineages || [],
+seasons: db.seasons || [], lineages: db.lineages || [], leagueWeeks: db.leagueWeeks || [],
 tournaments: db.tournaments, customPins: db.customPins, ids: db.ids,
 bowlers: db.bowlers || [],
 _scoringCounts: {
@@ -4226,6 +4231,7 @@ seasons: [],
 
 
 lineages: [],
+leagueWeeks: [],
 series: [], games: [], frames: [], attempts: [],
 
 bowlers: [
@@ -4246,6 +4252,7 @@ if (!data.surfaces) data.surfaces = [];
 if (!data.surfaceDetails) data.surfaceDetails = [];
 if (!data.seasons) data.seasons = [];
 if (!data.lineages) data.lineages = [];
+if (!data.leagueWeeks) data.leagueWeeks = [];
 if (!data.ids.center) data.ids.center = Math.max(0,...(data.centers||[]).map(c=>c.CenterID))+1;
 if (!data.ids.league) data.ids.league = Math.max(0,...(data.leagues||[]).map(l=>l.LeagueID))+1;
 if (!data.ids.ball) data.ids.ball = Math.max(0,...(data.balls||[]).map(b=>b.BallID))+1;
@@ -7400,7 +7407,7 @@ if (bakerHistBtn) bakerHistBtn.style.display = currentLeague?.BakerFormat ? 'blo
 const mySeries = db.series.filter(s=>s.LeagueID===G.leagueID)
 .sort((a,b)=>new Date(b.DateBowled)-new Date(a.DateBowled));
 if (!mySeries.length) {
-el.innerHTML = `<div class="empty-state"><div class="empty-icon">📅</div><div class="empty-label">No series yet</div><div class="empty-sub">Tap + to start bowling</div></div>`;
+el.innerHTML = ((G.leagueID > 0 && typeof seasonStripHTML === 'function') ? seasonStripHTML(G.leagueID) : '') + `<div class="empty-state"><div class="empty-icon">📅</div><div class="empty-label">No series yet</div><div class="empty-sub">Tap + to start bowling</div></div>`;
 return;
 }
 
@@ -7440,7 +7447,8 @@ const sc = db.games.filter(g=>g.SeriesID===s.SeriesID&&!g.IsTeammate)
 return { SeriesID: s.SeriesID, total: sc.reduce((a,b)=>a+b,0), hasScores: sc.length>0 };
 });
 const leagueBestTotal = Math.max(0, ...leagueSeriesTotals.filter(x=>x.hasScores).map(x=>x.total));
-el.innerHTML = mySeries.map(s => {
+const _wkMap = (G.leagueID > 0 && typeof schedLeague === 'function') ? schedLeague(G.leagueID) : null;
+el.innerHTML = ((G.leagueID > 0 && typeof seasonStripHTML === 'function') ? seasonStripHTML(G.leagueID) : '') + mySeries.map(s => {
 const league = db.leagues.find(l=>l.LeagueID===G.leagueID);
 const games = db.games.filter(g=>g.SeriesID===s.SeriesID).sort((a,b)=>a.GameNumber-b.GameNumber);
 let scores = games.filter(g=>!g.IsTeammate).map(g=>g.FinalScore).filter(x=>x!=null);
@@ -7499,7 +7507,9 @@ return `<div class="series-card-wrap">
       <div class="series-card${scBarClass?' '+scBarClass:''}" onclick="handleSeriesCardTap(event,${s.SeriesID})">
         <div class="series-hdr">
           <div>
-            <span class="series-date">${dateStr}</span>
+            <span class="series-date">${dateStr}</span>${(()=>{ const r = _wkMap && _wkMap.bySeries[s.SeriesID]; if (!r) return '';
+              const t = r.week ? 'Wk ' + r.week + (r.how === 'makeup' ? ' \u00b7 make-up' : r.how === 'prebowl' ? ' \u00b7 pre-bowl' : '') : (r.how === 'outside' ? 'outside season' : 'extra night');
+              return `<span class="series-wk" style="font-size:10px;color:var(--t3);margin-left:6px">${t}</span>`; })()}
             ${center ? `<div style="font-size:10px;color:var(--t3);margin-top:1px">${center.CenterName}</div>`: ''}
             <div style="display:flex;gap:6px;margin-top:4px;flex-wrap:wrap">
               ${s.LanePair ? `<span class="pill pill-teal" style="font-size:10px;cursor:pointer" onclick="openLanePairGames(${s.SeriesID},event)" title="View games on this lane pair">🎳 ${formatLanePairWithStart(s.LanePair, s.LaneStart)}</span>`: ''}
@@ -20617,6 +20627,13 @@ openModal(`
         </select>
       </div>
     </div>
+    <div class="fgroup">
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+        <input type="checkbox" id="ml-sub" style="width:16px;height:16px;accent-color:var(--teal)" ${l?.IsSub?'checked':''}>
+        <span class="flabel" style="margin:0">I bowl some weeks (alternate/sub)</span>
+      </label>
+      <div style="font-size:11px;color:var(--t2);margin-top:3px">On a roster but only bowling when someone is out. Weeks you don\u2019t bowl are never flagged as missing.</div>
+    </div>
     <!-- ── Season support fields (v30.41) — all optional ── -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
       <div class="fgroup"><label class="flabel">Start Date <span style="opacity:.6;font-weight:400">(optional)</span></label>
@@ -20696,6 +20713,7 @@ l.BakerFormat=bakerFormat; l.BakerTeamSize=bakerTeamSize;
 
 const datesChanged = l.StartDate !== startDate || l.EndDate !== endDate;
 l.StartDate = startDate; l.EndDate = endDate; l.Sanctioned = sanctioned;
+l.IsSub = !!document.getElementById('ml-sub')?.checked;
 if (datesChanged && l.SeasonSource !== 'user') { l.SeasonID = null; l.SeasonSource = null; }
 if (lineageChanged) {
 l.LineageID = lineageRaw ? parseInt(lineageRaw) : null;
@@ -20710,7 +20728,7 @@ const newLeague = { LeagueID:newId, LeagueName:name, TeamName:teamName, CenterID
 DayOfBowling:day, Weeks:weeks, WeeklyDues:dues, DefaultBallID:ballID, DefaultSpareBallID:spareBallID, Notes:notes,
 Active:true, Handicap:handicap, Sport:sport, Archived:false,
 BakerFormat:bakerFormat, BakerTeamSize:bakerTeamSize,
-StartDate:startDate, EndDate:endDate, Sanctioned:sanctioned, SeasonID:null, SeasonSource:null,
+StartDate:startDate, EndDate:endDate, Sanctioned:sanctioned, SeasonID:null, SeasonSource:null, IsSub: !!document.getElementById('ml-sub')?.checked,
 LineageID:null, LineageSource:null };
 if (lineageChanged && lineageRaw) { newLeague.LineageID = parseInt(lineageRaw); newLeague.LineageSource = 'user'; }
 db.leagues.push(newLeague);
@@ -20764,9 +20782,11 @@ const laneSection = `
     </div>`;
 openModal(`
     <div class="modal-title">${isEdit?'Edit Series':'New Series'}</div>
+    <div id="ms-gaps"></div>
     <div class="fgroup"><label class="flabel">Date</label>
       <input class="finput" id="ms-date" type="date" value="${s?.DateBowled||today}" onchange="msDateRangeCheck()">
-      <div id="ms-date-warn" style="display:none;font-size:11px;color:var(--gold);margin-top:4px"></div></div>
+      <div id="ms-date-warn" style="display:none;font-size:11px;color:var(--gold);margin-top:4px"></div>
+      <div id="ms-week"></div></div>
     <div class="fgroup"><label class="flabel">League</label>
       <select class="finput" id="ms-league" onchange="msDateRangeCheck()">${lOpts}</select></div>
     <div class="fgroup"><label class="flabel">Center</label>
@@ -20792,6 +20812,7 @@ openModal(`
     ${isEdit && shrEligible(id) ? `<button class="btn btn-ghost btn-sm" style="width:100%;margin-top:8px" onclick="shrLaunch(${id})">📤 Share card</button>`: ''}
     <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
   `);
+window._msWeek = isEdit ? { editID: s.SeriesID, orig: { leagueID: s.LeagueID, date: s.DateBowled, pick: s.LeagueWeekSrc === 'user' ? s.LeagueWeekDate : undefined } } : {};
 setTimeout(()=>{
 document.getElementById('ms-date')?.focus();
 if (!isEdit) {
@@ -20820,6 +20841,7 @@ if (!dateEl || !leagueEl || !warnEl) return;
 const date = dateEl.value;
 const leagueID = parseInt(leagueEl.value);
 const l = db.leagues.find(x => x.LeagueID === leagueID);
+try { msWeekRender(); } catch (e) { console.warn('msWeekRender:', e); }
 if (!date || !l || !l.StartDate || !l.EndDate) { warnEl.style.display = 'none'; return; }
 if (date < l.StartDate || date > l.EndDate) {
 warnEl.textContent = `⚠ Outside "${l.LeagueName}"'s dates (${l.StartDate} to ${l.EndDate}) — you can still save`;
@@ -20937,6 +20959,7 @@ g.LaneStart !== computeGameLaneForNumber(newLanePair, newLaneStart, g.GameNumber
 
 
 const snap = readSeriesHdcpSection();
+msWeekApply(s);
 const rest = { date, centerID, ballID, notes, leagueID, snap };
 if ((laneChanged || staleGames) && seriesGames.length) {
 confirmSeriesLaneRemap(id, newLanePair, newLaneStart, rest);
@@ -20960,6 +20983,7 @@ const newSeriesObj = { SeriesID:newId, LeagueID:leagueID, CenterID:centerID,
 DateBowled:date, LanePair:lanePair, LaneStart:laneStart, BallID:ballID, Notes:notes,
 NoTap:noTap };
 if (newSnap) newSeriesObj.handicapSnapshot = newSnap;
+msWeekApply(newSeriesObj);
 db.series.push(newSeriesObj);
 G.seriesID = newId; G.laneStart = laneStart; G.lanePair = lanePair;
 G.oddLane = Math.min(oddLane,evenLane); G.evenLane = Math.max(oddLane,evenLane);
@@ -27543,6 +27567,7 @@ surfaces: db.surfaces,
 surfaceDetails: db.surfaceDetails,
 seasons: db.seasons || [],
 lineages: db.lineages || [],
+leagueWeeks: db.leagueWeeks || [],
 
 series: exportSeries,
 games: exportGames,
@@ -27965,6 +27990,7 @@ parsed.surfaces?.length       ? `${parsed.surfaces.length} surfaces`: null,
 parsed.surfaceDetails?.length ? `${parsed.surfaceDetails.length} prep logs`: null,
 parsed.seasons?.length        ? `${parsed.seasons.length} seasons`: null,
 parsed.lineages?.length       ? `${parsed.lineages.length} lineages`: null,
+parsed.leagueWeeks?.length    ? `${parsed.leagueWeeks.length} league week marks`: null,
 parsed.series?.length         ? `${parsed.series.length} series`: null,
 parsed.games?.length          ? `${parsed.games.length} games`: null,
 parsed.frames?.length         ? `${parsed.frames.length} frames`: null,
@@ -28144,7 +28170,7 @@ await loadScoringData();
 const refTables = {
 centers:'CenterID', leagues:'LeagueID', balls:'BallID',
 patterns:'PatternID', leaves:'LeaveID', surfaces:'SurfaceID', surfaceDetails:'SurfacedDetailID',
-seasons:'SeasonID', lineages:'LineageID'
+seasons:'SeasonID', lineages:'LineageID', leagueWeeks:'WeekKey'
 };
 const scoringTables = {
 series:'SeriesID', games:'GameID', frames:'FrameID', attempts:'AttemptID'
@@ -31681,12 +31707,29 @@ async function fixScoresheets231() {
    Sanctioned left unmarked for James to set. Runs only on the exact state found; undo kept. */
 /* v30.256 DATA-1 D1 (DESIGN_data1_rec1.md): league schedule and week matching. Pure; one helper for every
    screen. Week 1 = first DayOfBowling on or after StartDate; Weeks 0 = open-ended (to EndDate, else today
-   while current, else the last series). A series takes: its user-answered week (D2: LeagueWeekSrc 'user', LeagueWeek 0 = extra),
+   while current, else the last series). A series takes: its user-answered week (D2: LeagueWeekSrc 'user',
+   LeagueWeekDate = the scheduled date it counts for, or 'extra'),
    else the week on its date, else the nearest free week within 6 days (after = make-up, before = pre-bowl),
    else 'extra' (inside the season) or 'outside'. Nothing is stored; series.WeekID (old Access key) is not used.
    SCHED-D1 begin */
 var SCHED_DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 var SCHED_WINDOW = 6;
+/* D2 week marks (only for weeks with no series). Absent and No league carry no score. */
+var SCHED_MARKS = { absent: 'Absent', noleague: 'No league', notlogged: 'Bowled, not logged', unsure: 'Not sure' };
+/* US holiday weeks: a hint on the week, never a preselected answer (some leagues bowl through them). */
+function schedHoliday(date) {
+  var p = String(date).slice(0, 10).split('-'), y = +p[0], m = +p[1], d = +p[2];
+  var dn = Date.UTC(y, m - 1, d) / 86400000;
+  var nth = function(mo, wd, n) { var x = Date.UTC(y, mo, 1) / 86400000; var w0 = new Date(x * 86400000).getUTCDay(); return x + ((wd - w0 + 7) % 7) + 7 * (n - 1); };
+  var lastMon = function(mo) { var x = Date.UTC(y, mo + 1, 0) / 86400000; return x - ((new Date(x * 86400000).getUTCDay() + 6) % 7); };
+  var near = function(h) { return Math.abs(dn - h) <= 3; };
+  if (near(nth(8, 1, 1))) return 'Labor Day week';
+  if (near(nth(10, 4, 4))) return 'Thanksgiving week';
+  if ((m === 12 && d >= 20) || (m === 1 && d <= 3)) return 'Christmas / New Year';
+  if (near(lastMon(4))) return 'Memorial Day week';
+  if (m === 7 && d <= 7) return 'July 4 week';
+  return null;
+}
 function _schedD(s) { var p = String(s).slice(0, 10).split('-'); return Date.UTC(+p[0], +p[1] - 1, +p[2]) / 86400000; }
 function _schedS(n) { return new Date(n * 86400000).toISOString().slice(0, 10); }
 function schedNights(league, opts) {
@@ -31722,19 +31765,28 @@ function schedMatch(league, series, opts) {
   var wk = sch.weeks.map(function(w) { return { week: w.week, date: w.date, dn: _schedD(w.date), series: [] }; });
   var by = {};
   var put = function(s, w, how) { w.series.push(s.SeriesID); by[s.SeriesID] = { week: w.week, date: w.date, how: how, delta: _schedD(s.DateBowled) - w.dn }; };
-  var left = [];
+  /* order: series on their own night (no answer) -> answered series -> nearest free week. An answer whose
+     week is gone (start date edited) or already filled falls back to the usual matching. */
+  var answered = [], rest = [];
   list.forEach(function(s) {
-    if (s.LeagueWeekSrc === 'user' && s.LeagueWeek != null) {
-      var w = s.LeagueWeek > 0 ? wk[s.LeagueWeek - 1] : null;
-      if (w) put(s, w, 'user'); else by[s.SeriesID] = { week: null, date: null, how: 'extra', user: true };
-    } else left.push(s);
-  });
-  var rest = [];
-  left.forEach(function(s) {
+    if (s.LeagueWeekSrc === 'user' && s.LeagueWeekDate) { answered.push(s); return; }
     var dn = _schedD(s.DateBowled), w = null;
     for (var i = 0; i < wk.length; i++) if (wk[i].dn === dn) { w = wk[i]; break; }
     if (w && !w.series.length) put(s, w, 'on'); else rest.push(s);
   });
+  var late = [];
+  answered.forEach(function(s) {
+    if (s.LeagueWeekDate === 'extra') { by[s.SeriesID] = { week: null, date: null, how: 'extra', user: true }; return; }
+    var w = null;
+    for (var i = 0; i < wk.length; i++) if (wk[i].date === s.LeagueWeekDate) { w = wk[i]; break; }
+    if (w && !w.series.length) put(s, w, 'user'); else late.push(s);
+  });
+  late.forEach(function(s) {
+    var dn = _schedD(s.DateBowled), w = null;
+    for (var i = 0; i < wk.length; i++) if (wk[i].dn === dn) { w = wk[i]; break; }
+    if (w && !w.series.length) put(s, w, 'on'); else rest.push(s);
+  });
+  rest.sort(function(a, b) { return a.DateBowled < b.DateBowled ? -1 : a.DateBowled > b.DateBowled ? 1 : a.SeriesID - b.SeriesID; });
   var firstN = wk.length ? wk[0].dn : _schedD(sch.first), lastN = wk.length ? wk[wk.length - 1].dn : firstN;
   rest.forEach(function(s) {
     var dn = _schedD(s.DateBowled), best = null;
@@ -31746,23 +31798,187 @@ function schedMatch(league, series, opts) {
     if (best) put(s, best, dn > best.dn ? 'makeup' : 'prebowl');
     else by[s.SeriesID] = { week: null, date: null, how: (dn < firstN - SCHED_WINDOW || (!sch.open && dn > lastN + SCHED_WINDOW)) ? 'outside' : 'extra' };
   });
-  var counts = { weeks: wk.length, bowled: 0, nodata: 0, upcoming: 0, on: 0, makeup: 0, prebowl: 0, extra: 0, outside: 0, user: 0 };
+  var counts = { weeks: wk.length, bowled: 0, nodata: 0, upcoming: 0, absent: 0, noleague: 0, notlogged: 0, unsure: 0,
+    on: 0, makeup: 0, prebowl: 0, extra: 0, outside: 0, user: 0 };
+  var marks = {};
+  (opts.marks || []).forEach(function(mk) { if (mk && mk.Date && SCHED_MARKS[mk.Status]) marks[mk.Date] = mk.Status; });
   var weeks = wk.map(function(w) {
-    var st = w.series.length ? 'bowled' : (w.dn >= tn ? 'upcoming' : 'nodata');   // tonight is still upcoming
+    var mk = marks[w.date] || null;
+    var st = w.series.length ? 'bowled' : mk ? mk : (w.dn >= tn ? 'upcoming' : 'nodata');   // tonight is still upcoming
     counts[st]++;
-    return { week: w.week, date: w.date, status: st, series: w.series.slice() };
+    return { week: w.week, date: w.date, status: st, mark: mk, series: w.series.slice() };
   });
   Object.keys(by).forEach(function(k) { counts[by[k].how]++; });
   return { leagueID: league.LeagueID, first: sch.first, open: sch.open, sub: sch.sub, weeks: weeks, bySeries: by, counts: counts };
 }
 /* SCHED-D1 end */
-function _schedToday() { var d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
-function schedLeague(leagueID, today) {
+function _schedToday() { return azToday(); }
+function schedLeague(leagueID, today, extraSeries, skipID) {
   var l = (db.leagues || []).find(function(x) { return x.LeagueID === leagueID; });
   if (!l) return null;
-  var ss = (db.series || []).filter(function(s) { return s.LeagueID === leagueID && s.TournamentID == null; });
-  return schedMatch(l, ss, { today: today || _schedToday() });
+  var ss = (db.series || []).filter(function(s) { return s.LeagueID === leagueID && s.TournamentID == null && s.SeriesID !== skipID; });
+  if (extraSeries) ss = ss.concat(extraSeries);
+  return schedMatch(l, ss, { today: today || _schedToday(), marks: weekMarksFor(leagueID) });
 }
+
+/* v30.257 DATA-1 D2: week marks. db.leagueWeeks = [{ WeekKey 'LeagueID:YYYY-MM-DD', LeagueID, Date (the
+   scheduled night), Status (SCHED_MARKS key), Src 'user', At }]. Kept with the reference data (saveDB),
+   exported, restored and merged like lineages. Keyed by the scheduled date, so a mark stays on its night. */
+function weekMarksFor(leagueID) { return (db.leagueWeeks || []).filter(function(r) { return r.LeagueID === leagueID; }); }
+function setWeekMark(leagueID, date, status) {
+  if (!db.leagueWeeks) db.leagueWeeks = [];
+  var key = leagueID + ':' + date;
+  db.leagueWeeks = db.leagueWeeks.filter(function(r) { return r.WeekKey !== key; });
+  if (status && SCHED_MARKS[status]) db.leagueWeeks.push({ WeekKey: key, LeagueID: leagueID, Date: date, Status: status, Src: 'user', At: new Date().toISOString() });
+  saveDB();
+}
+/* Forward-only gap prompts (decision 5): weeks before the day this build first ran never ask. */
+function weeksSince() {
+  var k = 'bowlingdb_weeks_since', v = null;
+  try { v = localStorage.getItem(k); if (!v) { v = azToday(); localStorage.setItem(k, v); } } catch (e) { v = azToday(); }
+  return v;
+}
+function _wkMD(d) { var x = localDate(d); return x.toLocaleDateString('en-US', { weekday: 'short', month: 'numeric', day: 'numeric' }); }
+function _wkDay(l) { return (l && l.DayOfBowling) ? l.DayOfBowling + 's' : ''; }
+function _wkEsc(t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function(c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+/* Past weeks with no games and no mark, since weeksSince(); none for alternate/sub leagues. */
+function leagueGapWeeks(leagueID) {
+  var l = (db.leagues || []).find(function(x) { return x.LeagueID === leagueID; });
+  if (!l || l.IsSub) return [];
+  var m = schedLeague(leagueID), since = weeksSince();
+  return m ? m.weeks.filter(function(w) { return w.status === 'nodata' && w.date >= since; }) : [];
+}
+
+/* Season strip at the top of a league's series list. Tap a week to see or mark it. */
+function seasonStripHTML(leagueID) {
+  var l = (db.leagues || []).find(function(x) { return x.LeagueID === leagueID; });
+  var m = l && schedLeague(leagueID);
+  if (!m || !m.weeks.length) return '';
+  var moved = {}; Object.keys(m.bySeries).forEach(function(k) { var r = m.bySeries[k]; if (r.week && r.how !== 'on') moved[r.week] = 1; });
+  var col = { bowled: 'var(--teal)', absent: 'var(--sedona)', noleague: 'var(--t3)', notlogged: 'var(--purple)', unsure: 'var(--border2)' };
+  var cells = m.weeks.map(function(w) {
+    var st = w.status, bg = st === 'bowled' ? (moved[w.week] ? 'var(--gold)' : col.bowled) : (col[st] || 'transparent');
+    var bd = st === 'upcoming' ? '1px dashed var(--border2)' : st === 'nodata' ? '1px solid var(--t3)' : '1px solid ' + bg;
+    var op = (st === 'noleague' || st === 'unsure') ? ';opacity:.55' : '';
+    return '<button class="wk-cell" data-wk="' + w.week + '" data-st="' + st + '" aria-label="Week ' + w.week + ' ' + w.date + ' ' + st + '" onclick="openWeekSheet(' + leagueID + ',\'' + w.date + '\');event.stopPropagation()" style="background:' + bg + ';border:' + bd + op + '"></button>';
+  }).join('');
+  var past = m.weeks.filter(function(w) { return w.status !== 'upcoming' && w.date < _schedToday(); }).length;
+  var nod = m.counts.nodata, gap = leagueGapWeeks(leagueID).length;
+  var sum = (m.open ? m.weeks.length + ' weeks so far' : 'Week ' + Math.min(past + 1, m.weeks.length) + ' of ' + m.weeks.length) + ' \u00b7 ' + m.counts.bowled + ' bowled' +
+    (m.counts.absent ? ' \u00b7 ' + m.counts.absent + ' absent' : '') + (m.counts.noleague ? ' \u00b7 ' + m.counts.noleague + ' no league' : '') +
+    (m.counts.notlogged ? ' \u00b7 ' + m.counts.notlogged + ' not logged' : '') + (nod ? ' \u00b7 ' + nod + (m.sub ? ' not bowled' : ' no games') : '');
+  return '<div class="card wk-strip-card" id="wk-strip">' +
+    '<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px"><div class="stat-card-title" style="margin:0">Season</div>' +
+    (m.sub ? '<span style="font-size:10px;color:var(--t3);border:1px solid var(--border1);border-radius:8px;padding:1px 6px">alternate/sub</span>' : '') + '</div>' +
+    '<div class="wk-sum" style="font-size:11px;color:var(--t2);margin:2px 0 6px">' + sum + '</div>' +
+    '<div class="wk-strip">' + cells + '</div>' +
+    (gap ? '<div style="font-size:11px;color:var(--gold);margin-top:6px">' + gap + ' week' + (gap > 1 ? 's' : '') + ' with no games \u2014 tap to mark</div>'
+         : '<div style="font-size:10px;color:var(--t3);margin-top:6px">Tap a week to see or mark it</div>') +
+    '</div>';
+}
+function openWeekSheet(leagueID, date) {
+  var l = (db.leagues || []).find(function(x) { return x.LeagueID === leagueID; });
+  var m = l && schedLeague(leagueID);
+  var w = m && m.weeks.find(function(x) { return x.date === date; });
+  if (!w) return;
+  var hol = schedHoliday(date), body;
+  var how = { on: 'on the league night', makeup: 'make-up', prebowl: 'pre-bowl', user: 'as you set it' };
+  if (w.series.length) {
+    body = w.series.map(function(id) {
+      var sr = db.series.find(function(x) { return x.SeriesID === id; }) || {};
+      var tot = db.games.filter(function(g) { return g.SeriesID === id && !g.IsTeammate && g.FinalScore != null; }).reduce(function(a, g) { return a + g.FinalScore; }, 0);
+      var r = m.bySeries[id] || {};
+      return '<div class="stat-row"><span>' + _wkMD(sr.DateBowled) + ' \u00b7 ' + (how[r.how] || '') + '</span><span class="sval t">' + (tot || '\u2014') + '</span></div>';
+    }).join('') + '<div style="font-size:11px;color:var(--t3);margin:8px 0 12px;line-height:1.45">To count a series for a different week, open it (Edit Series) and pick the week.</div>';
+  } else {
+    body = '<div style="font-size:12px;color:var(--t2);margin-bottom:8px">' + (w.date >= _schedToday() ? 'Not bowled yet.' : 'No games logged for this week.') + ' What happened?</div>' +
+      Object.keys(SCHED_MARKS).map(function(k) {
+        var on = w.mark === k;
+        return '<button class="btn ' + (on ? 'btn-primary' : 'btn-secondary') + '" data-mark="' + k + '" style="width:100%;margin-bottom:8px" onclick="weekSheetSet(' + leagueID + ',\'' + date + '\',\'' + k + '\')">' + SCHED_MARKS[k] + (on ? ' \u2713' : '') + '</button>';
+      }).join('') +
+      '<div style="font-size:11px;color:var(--t3);line-height:1.45;margin-bottom:8px">Absent and No league never change your average or stats. Typing scores for a night you bowled but didn\u2019t log comes in a later update.</div>' +
+      (w.mark ? '<button class="btn btn-ghost btn-sm" data-mark="clear" style="width:100%;margin-bottom:8px" onclick="weekSheetSet(' + leagueID + ',\'' + date + '\',null)">Clear mark</button>' : '');
+  }
+  openModal('<div class="modal-title">Week ' + w.week + ' \u00b7 ' + _wkMD(date) + '</div>' +
+    '<div style="font-size:11px;color:var(--t3);margin-bottom:12px">' + _wkEsc(l.LeagueName) + (hol ? ' \u00b7 <span style="color:var(--gold)">' + hol + '</span>' : '') + '</div>' +
+    body + '<button class="btn btn-secondary" style="width:100%" onclick="closeModal()">Close</button>');
+}
+function weekSheetSet(leagueID, date, status) {
+  setWeekMark(leagueID, date, status);
+  closeModal();
+  if (typeof renderSeriesList === 'function' && G.leagueID === leagueID) renderSeriesList();
+  toast(status ? 'Week marked: ' + SCHED_MARKS[status] : 'Mark cleared');
+}
+
+/* Series modal: which week this series counts for (off-schedule asks; on the night just says the week),
+   and, for a new night, earlier weeks with no games. The week answer is held until Save. */
+function msWeekRender() {
+  var box = document.getElementById('ms-week'); if (!box) return;
+  var dEl = document.getElementById('ms-date'), lEl = document.getElementById('ms-league');
+  var date = dEl ? dEl.value : '', leagueID = parseInt(lEl ? lEl.value : '');
+  var st = window._msWeek || (window._msWeek = {});
+  if (st.leagueID !== leagueID || st.date !== date) {
+    st.pick = (st.editID && st.orig && st.orig.leagueID === leagueID && st.orig.date === date) ? st.orig.pick : undefined;
+    st.leagueID = leagueID; st.date = date;
+  }
+  var l = (db.leagues || []).find(function(x) { return x.LeagueID === leagueID; });
+  var m = (l && /^\d{4}-\d{2}-\d{2}$/.test(date)) ? schedLeague(leagueID, null, [{ SeriesID: 999999999, DateBowled: date }], st.editID) : null;   // id sorts after real series the same day
+  st.asked = false;
+  if (!m) { box.innerHTML = ''; renderMsGaps(); return; }
+  var auto = m.bySeries[999999999] || {};
+  if (auto.how === 'on' && st.pick === undefined) { box.innerHTML = '<div class="ms-wk-line" style="font-size:11px;color:var(--t3);margin-top:4px">Week ' + auto.week + (m.open ? '' : ' of ' + m.weeks.length) + '</div>'; renderMsGaps(); return; }
+  st.asked = true;
+  var dn = _schedD(date), onNight = m.weeks.find(function(w) { return w.date === date; });
+  var head = (onNight && auto.how !== 'on') ? 'Week ' + onNight.week + ' (' + _wkMD(date) + ') already has a series.'
+    : auto.how === 'outside' ? _wkMD(date) + ' is outside this season.'
+    : auto.how === 'on' ? 'Week ' + auto.week + ' (' + _wkMD(date) + ').'
+    : _wkMD(date) + ' isn\u2019t a league night (' + _wkDay(l) + ').';
+  var near = m.weeks.filter(function(w) { return !w.series.length && w.date !== date && Math.abs(_schedD(w.date) - dn) <= 14; })
+    .sort(function(a, b) { return Math.abs(_schedD(a.date) - dn) - Math.abs(_schedD(b.date) - dn); }).slice(0, 3);
+  if (auto.week && !near.some(function(w) { return w.week === auto.week; })) near.unshift(m.weeks[auto.week - 1]);
+  if (st.pick && st.pick !== 'extra' && !near.some(function(w) { return w.date === st.pick; })) { var pw = m.weeks.find(function(w) { return w.date === st.pick; }); if (pw) near.push(pw); }
+  near.sort(function(a, b) { return a.week - b.week; });
+  var guess = auto.week ? auto.date : 'extra';
+  st.guess = guess;
+  var cur = st.pick !== undefined ? st.pick : guess;
+  var chip = function(val, label) { var on = cur === val;
+    return '<button class="oe-btn' + (on ? ' on' : '') + '" data-pick="' + val + '" style="flex:1 1 45%;min-width:0;white-space:normal;line-height:1.3;padding:8px 6px" onclick="msWeekPick(\'' + val + '\')">' + label + '</button>'; };
+  box.innerHTML = '<div class="ms-wk-ask" style="margin-top:8px;padding:10px;border:1px solid var(--border2);border-radius:10px">' +
+    '<div style="font-size:12px;color:var(--gold);margin-bottom:6px">' + head + ' Counts as:</div>' +
+    '<div style="display:flex;flex-wrap:wrap;gap:6px">' +
+    near.map(function(w) { var d = _schedD(w.date) - dn;
+      return chip(w.date, (d === 0 ? 'League night' : d < 0 ? 'Make-up' : 'Pre-bowl') + ' \u00b7 wk ' + w.week + ' (' + _wkMD(w.date) + ')'); }).join('') +
+    chip('extra', 'Extra night (no week)') + '</div></div>';
+  renderMsGaps();
+}
+function msWeekPick(val) { var st = window._msWeek || (window._msWeek = {}); st.pick = val; msWeekRender(); }
+function renderMsGaps() {
+  var box = document.getElementById('ms-gaps'); if (!box) return;
+  var st = window._msWeek || {};
+  if (st.editID) { box.innerHTML = ''; return; }
+  var lEl = document.getElementById('ms-league'), dEl = document.getElementById('ms-date');
+  var leagueID = parseInt(lEl ? lEl.value : ''), date = dEl ? dEl.value : '';
+  var sel = st.asked ? (st.pick !== undefined ? st.pick : st.guess) : null;   // the week this series will fill
+  var mine = (sel && sel !== 'extra') ? sel : null;
+  var gaps = leagueGapWeeks(leagueID).filter(function(w) { return w.date !== date && w.date !== mine; });
+  if (!gaps.length) { box.innerHTML = ''; return; }
+  var short = { absent: 'Absent', noleague: 'No league', notlogged: 'Not logged', unsure: 'Not sure' };
+  box.innerHTML = '<div class="ms-gaps-box" style="margin-bottom:12px;padding:10px;border:1px solid var(--border2);border-radius:10px">' +
+    '<div style="font-size:12px;color:var(--t2);margin-bottom:6px">Earlier week' + (gaps.length > 1 ? 's' : '') + ' with no games. Optional \u2014 skip to ask next time.</div>' +
+    gaps.slice(0, 4).map(function(w) { var h = schedHoliday(w.date);
+      return '<div style="margin-top:6px"><div style="font-size:12px;font-weight:700;color:var(--t1)">Wk ' + w.week + ' \u00b7 ' + _wkMD(w.date) + (h ? ' <span style="font-weight:400;color:var(--gold)">' + h + '</span>' : '') + '</div>' +
+        '<div style="display:flex;gap:4px;margin-top:4px">' + Object.keys(short).map(function(k) {
+          return '<button class="oe-btn" data-gap="' + w.date + ':' + k + '" style="flex:1;padding:6px 2px;font-size:11px" onclick="msGapSet(' + leagueID + ',\'' + w.date + '\',\'' + k + '\')">' + short[k] + '</button>'; }).join('') + '</div></div>'; }).join('') +
+    (gaps.length > 4 ? '<div style="font-size:11px;color:var(--t3);margin-top:6px">+' + (gaps.length - 4) + ' more on the league\u2019s season strip</div>' : '') + '</div>';
+}
+function msGapSet(leagueID, date, status) { setWeekMark(leagueID, date, status); renderMsGaps(); }
+/* Applied on Save: store the answer only when the modal asked; a series back on its own night drops it. */
+function msWeekApply(s) {
+  var st = window._msWeek || {};
+  if (st.asked && st.pick !== undefined) { s.LeagueWeekDate = st.pick; s.LeagueWeekSrc = 'user'; }
+  else if (!st.asked && s.LeagueWeekSrc === 'user') { delete s.LeagueWeekDate; delete s.LeagueWeekSrc; }
+}
+
 function seriesLeagueWeek(seriesID) {
   var s = (db.series || []).find(function(x) { return x.SeriesID === seriesID; });
   if (!s || s.LeagueID == null || s.TournamentID != null) return null;
@@ -31785,6 +32001,23 @@ function fixAltLeagues256() {
     if (done.length) saveDB();
     localStorage.setItem(FLAG, done.length ? 'leagues ' + done.join(', ') + ' set IsSub' : 'nothing to do');
   } catch (e) { console.warn('fixAltLeagues256:', e); }
+}
+
+/* v30.257 one-time: James, 11/3: the NFL League 2025-2026 series on Sun 12/14/25 was a pre-bowl for
+   Mon 12/22 (Mon 12/15 was that week's own night). Record it as his answer. */
+async function fixPrebowl257() {
+  var FLAG = 'bowlingdb_fix257_prebowl';
+  try {
+    if (localStorage.getItem(FLAG)) return;
+    await loadScoringData();
+    var s = db.series.find(function(x) { return x.LeagueID === 21 && x.DateBowled === '2025-12-14'; });
+    var l = db.leagues.find(function(x) { return x.LeagueID === 21; });
+    if (s && l && /^NFL League 2025/.test(l.LeagueName || '') && !s.LeagueWeekSrc) {
+      s.LeagueWeekDate = '2025-12-22'; s.LeagueWeekSrc = 'user';
+      await saveAll();
+      localStorage.setItem(FLAG, 'series ' + s.SeriesID + ' counts for 12/22');
+    } else localStorage.setItem(FLAG, 'nothing to do');
+  } catch (e) { console.warn('fixPrebowl257:', e); }
 }
 
 async function fixVegasTournament235() {
@@ -31902,7 +32135,7 @@ renderNavGrid();
 window.__bdbBoot = 1;   // v30.223 BOOT-1: home drawn, the startup guard stands down
 
 
-loadScoringData().then(async () => { renderHome(); fixPrecisionDup185(); fixBallText189(); await fixNoTap191(); await fixPinPalShape197(); await fixLeaveIDs196(); await fixScoresheet229(); await fixScoresheets231(); await fixVegasTournament235(); await fixExtraBalls254(); fixHyroad255(); fixAltLeagues256(); renderHome(); }).catch(() => {});
+loadScoringData().then(async () => { renderHome(); fixPrecisionDup185(); fixBallText189(); await fixNoTap191(); await fixPinPalShape197(); await fixLeaveIDs196(); await fixScoresheet229(); await fixScoresheets231(); await fixVegasTournament235(); await fixExtraBalls254(); fixHyroad255(); fixAltLeagues256(); await fixPrebowl257(); weeksSince(); renderHome(); }).catch(() => {});
 
 
 warmBallImgCache().then(() => {
@@ -39182,10 +39415,10 @@ _editStatus:'', _editPriority:1, _newSnap:null, _newStatus:'tbd', _editCat:'note
 };
 var _DKM_STATUS_LABELS = {ok:'🟢 Working',partial:'🟡 Partial',broken:'🔴 Broken',tbd:'⚪ TBD'};
 </script>
-<script src="devkit.js?v=v30.256"></script>
-<script src="report.js?v=v30.256"></script>
+<script src="devkit.js?v=v30.257"></script>
+<script src="report.js?v=v30.257"></script>
 <!-- v30.157 NEW-11 step 4: ball catalog manifest check + IDB cache (same-origin, like devkit.js/report.js). Optional: if missing, the app behaves exactly as before. -->
-<script src="catalog.js?v=v30.256"></script>
+<script src="catalog.js?v=v30.257"></script>
 <script>
 /* v30.162 OFF-1: service worker (sw.js, same folder) so the app opens with
    no connection, and a request that the browser keep this app's storage.
