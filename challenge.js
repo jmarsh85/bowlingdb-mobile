@@ -7,7 +7,7 @@
    require()-able for the Node harness (engine only). */
 (function (root) {
 'use strict';
-var CHALLENGE_VERSION = 'v30.250';
+var CHALLENGE_VERSION = 'v30.263';
 var KEY = 'bowlingdb_challenges';
 var EST_GAMES = 21, MIN_GAMES = 9;
 
@@ -650,6 +650,8 @@ function chDetailHTML(id) {
         '<div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:8px">' + games + '</div></div>';
     }).join('');
   }
+  /* v30.263 DATA-1: how complete your league weeks are inside the window (index.html chCoverageHTML) */
+  if (r && ch.source !== 'open' && typeof root.chCoverageHTML === 'function') h += root.chCoverageHTML(ch);
   /* v30.250 PHO-1: photo proof per entry (proof: photo). Your counted entries, each with its photos. */
   if (r && ch.params.proof === 'photo') h += proofHTML(ch, r);
   /* rounds */
