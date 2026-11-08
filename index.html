@@ -286,7 +286,7 @@
      (its *_VERSION line). sw.js reads this block: it keeps the app's
      files as one matching set and never opens a mix of old and new files. Every file
      is fetched as name.js?v=APP_VERSION. Update a version here when that file changes. -->
-<script type="application/json" id="bdb-files">{"devkit.js":"v30.256","report.js":"v30.156","catalog.js":"v30.243","workbench.js":"v30.223","pinpal.js":"v30.199","awards.js":"v30.250","share.js":"v30.248","connect.js":"v30.242","challenge.js":"v30.250","chplay.js":"v30.247"}</script>
+<script type="application/json" id="bdb-files">{"devkit.js":"v30.256","report.js":"v30.156","catalog.js":"v30.243","workbench.js":"v30.223","pinpal.js":"v30.199","awards.js":"v30.250","share.js":"v30.248","connect.js":"v30.242","challenge.js":"v30.263","chplay.js":"v30.247"}</script>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#0E0F11">
@@ -1925,11 +1925,47 @@ transition:transform 0.12s, background 0.12s;
 .series-card:active { transform:scale(0.985); background:var(--bg3); }
 .series-hdr { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; }
 .series-date { font-size:15px; font-weight:800; letter-spacing:-0.2px; }
-/* v30.257 DATA-1 D2 season strip */
+/* v30.259 season strip: slim bars in theme colours. The button is the tap target; the bar inside is the mark. */
 .wk-strip-card { padding:10px 12px; margin-bottom:10px; }
-.wk-strip { display:flex; flex-wrap:wrap; gap:3px; }
-.wk-cell { width:18px; height:18px; border-radius:3px; padding:0; cursor:pointer; -webkit-tap-highlight-color:transparent; }
-.wk-cell:active { transform:scale(0.9); }
+.wk-sum { font-size:11px; color:var(--t2); margin:2px 0 6px; }
+.wk-badge { font-size:10px; color:var(--t3); border:1px solid var(--border1); border-radius:8px; padding:1px 6px; }
+.wk-strip { display:grid; column-gap:3px; row-gap:2px; }
+.wk-cell { display:flex; align-items:center; height:20px; min-width:0; padding:0; border:0; background:none; position:relative; cursor:pointer; -webkit-tap-highlight-color:transparent; }
+.wk-bar { display:block; position:relative; width:100%; height:8px; border-radius:2.5px; border:1px solid transparent; background:var(--bg4); box-sizing:border-box; transition:transform .1s; }
+.wk-cell:active .wk-bar { transform:scaleY(1.4); }
+.wk-cell[data-st="bowled"] .wk-bar    { background:var(--bar-complete); }
+.wk-cell[data-mv] .wk-bar::after      { content:''; position:absolute; left:50%; top:50%; width:3px; height:3px; margin:-1.5px 0 0 -1.5px; border-radius:50%; background:var(--bg1); }
+.wk-cell[data-st="nodata"] .wk-bar    { background:transparent; border-color:var(--t2); }
+.wk-cell[data-st="upcoming"] .wk-bar  { background:var(--bg3); }
+.wk-cell[data-st="absent"] .wk-bar    { background:var(--bg4); }
+.wk-cell[data-st="absent"] .wk-bar::after { content:''; position:absolute; left:25%; right:25%; top:50%; height:1px; margin-top:-.5px; background:var(--t2); }
+.wk-cell[data-st="noleague"] .wk-bar  { background:repeating-linear-gradient(135deg, var(--border2) 0 1px, transparent 1px 3px); border-color:var(--border1); }
+.wk-cell[data-st="notlogged"] .wk-bar { background:transparent; border-color:var(--bar-complete); }
+.wk-cell[data-st="unsure"] .wk-bar    { background:transparent; border:1px dashed var(--t2); }
+.wk-cell[data-st="notjoined"] .wk-bar { background:transparent; border-color:var(--border1); }
+.wk-cell[data-now]::after             { content:''; position:absolute; left:50%; bottom:0; width:3px; height:3px; margin-left:-1.5px; border-radius:50%; background:var(--t2); }
+.rec-pick { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+.rec-opt { padding:9px 6px; border-radius:9px; border:1px solid var(--border2); background:var(--bg3); color:var(--t2); font-size:12px; font-weight:700; cursor:pointer; }
+.rec-opt.on { border-color:var(--teal); color:var(--teal); background:var(--bg2); }
+.rec-unlock { font-size:11px; color:var(--t3); margin-top:6px; line-height:1.4; }
+.sc-row { display:flex; gap:6px; }
+.sc-row .finput { flex:1; min-width:0; text-align:center; font-weight:800; }
+.sc-foot { display:flex; justify-content:space-between; align-items:center; gap:8px; font-size:11px; color:var(--t3); margin-top:6px; }
+.sc-link { background:none; border:0; padding:0; color:var(--t2); font-size:11px; text-decoration:underline; cursor:pointer; flex-shrink:0; }
+.sc-hd { display:block; font-size:12px; color:var(--t1); margin:10px 0; line-height:1.4; }
+.sc-hd input { margin-right:6px; accent-color:var(--teal); }
+.sc-hd span { display:block; font-size:10px; color:var(--t3); margin:2px 0 0 22px; }
+.cov-line { font-size:11px; color:var(--t2); margin:6px 0 10px; line-height:1.45; }
+.cov-miss { color:var(--t3); }
+.wk-legend { display:flex; flex-wrap:wrap; gap:4px 10px; margin-top:8px; }
+.wk-leg { display:inline-flex; align-items:center; gap:4px; font-size:10px; color:var(--t3); }
+.wk-leg .wk-cell { width:10px; height:auto; cursor:default; }
+.wk-leg .wk-bar { height:6px; }
+.wk-q { margin-top:10px; padding:10px; border:1px solid var(--border2); border-radius:10px; }
+.wk-q-t { font-size:12px; color:var(--t1); margin-bottom:8px; line-height:1.4; }
+.wk-q-btn { display:block; width:100%; text-align:left; padding:8px 10px; margin-top:6px; border-radius:8px; border:1px solid var(--border2);
+  background:var(--bg3); color:var(--t1); font-size:12px; font-weight:700; cursor:pointer; }
+.wk-q-btn span { display:block; font-size:10px; font-weight:400; color:var(--t3); margin-top:1px; }
 .series-total { font-size:28px; font-weight:900; color:var(--teal); letter-spacing:-0.5px; }
 .series-games { display:flex; flex-wrap:wrap; gap:10px; row-gap:10px; align-items:center; }
 .game-badge {
@@ -3761,7 +3797,7 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
    Bump both lines (and CATALOG_JS_VERSION in catalog.js when it changes).
    v30.224 OFF-2: also bump the ?v= on the three <script src> tags at the end of
    the page, and the file list in <script id="bdb-files"> when a .js file changes. */
-const APP_VERSION = 'v30.257';
+const APP_VERSION = 'v30.265';
 const APP_BUILD_DATE = '2026-11-03';
 /* catalog.js this build expects; an older file on the server shows a warning */
 const EXPECTED_CATALOG_JS = 'v30.243';
@@ -4957,8 +4993,12 @@ cfg, locked: true
 }
 
 
-let pwaGames = 0, pwaPins = 0;
-if (leagueID != null) {
+let pwaGames = 0, pwaPins = 0, _lg = null;
+if (leagueID != null && db.series.some(s => s.LeagueID === leagueID && s.handicapSnapshot) || (leagueID != null && (db.leagues.find(l => l.LeagueID === leagueID)?.SheetAvgs || []).length)) {
+_lg = hdcpLedger(leagueID);   // v30.261: calculated in league-week order
+pwaGames = _lg.after.games; pwaPins = _lg.after.pins;
+}
+if (false) {
 
 const latestSnap = db.series
 .filter(s => s.LeagueID===leagueID && s.handicapSnapshot)
@@ -4971,9 +5011,9 @@ pwaPins  = latestSnap.totalPins  || 0;
 const latestSeriesID = db.series
 .filter(s => s.LeagueID===leagueID && s.handicapSnapshot)
 .sort((a,b) => (b.DateBowled||'').localeCompare(a.DateBowled||''))[0]?.SeriesID;
-if (latestSeriesID && db.games?.length) {
-db.games.filter(g=>g.SeriesID===latestSeriesID&&!g.IsTeammate&&g.FinalScore!=null)
-.forEach(g=>{pwaGames++;pwaPins+=g.FinalScore;});
+if (latestSeriesID) {
+const _ls = seriesScratch(db.series.find(s => s.SeriesID === latestSeriesID));   // v30.260: includes total-only nights
+pwaGames += _ls.games; pwaPins += _ls.pins;
 }
 }
 }
@@ -4983,7 +5023,7 @@ let avg = null, qualified = false, reason = '';
 if (totalGames >= cfg.qualifyGames) {
 avg = Math.floor(totalPins / totalGames);
 qualified = true;
-reason = `${totalGames} games this season`;
+reason = _lg && _lg.sheet ? `League sheet thru ${fmtDate(_lg.sheet.WeekDate,{month:'numeric',day:'numeric'})}: ${_lg.sheet.Games} games${_lg.sheet.Pins ? ', ' + _lg.sheet.Pins.toLocaleString() + ' pins' : ', ' + _lg.sheet.Avg + ' avg'}${totalGames > _lg.sheet.Games ? ' + ' + (totalGames - _lg.sheet.Games) + ' games since' : ''}` : `${totalGames} games this season`;
 } else if (cfg.entryAvg != null) {
 avg = cfg.entryAvg;
 qualified = true;
@@ -4995,7 +5035,7 @@ reason = `${totalGames}/${cfg.qualifyGames} games — set entry avg or bowl more
 const handicap = (avg != null)
 ? Math.max(0, Math.floor((cfg.baseScore - avg) * (cfg.pct / 100)))
 : null;
-return { handicap, avg, pwaGames, totalGames, qualified, reason, cfg };
+return { handicap, avg, pwaGames, totalGames, qualified, reason, cfg, sheet: _lg ? _lg.sheet : null };
 }
 
 
@@ -5007,7 +5047,9 @@ const snap = thisSeries.handicapSnapshot;
 if (!snap) return null;
 
 if (snap.lockedHdcp != null) return snap.lockedHdcp;
-const { totalGames, totalPins, baseScore, pct, qualifyGames, entryAvg } = snap;
+const { baseScore, pct, qualifyGames, entryAvg } = snap;
+const _b = hdcpLedger(leagueID).before[seriesID] || { games: snap.totalGames || 0, pins: snap.totalPins || 0 };   // v30.261
+const totalGames = _b.games, totalPins = _b.pins;
 let avg = null;
 if (totalGames > 0 && totalGames >= (qualifyGames || 9)) {
 avg = Math.floor(totalPins / totalGames);
@@ -5100,6 +5142,7 @@ el.innerHTML = `
           Entry avg: ${cfg.entryAvg ?? '—'} · ${result.totalGames} games recorded
         </div>
       `}
+      ${coverageLine(_hdcpLeagueID)}
       <div style="margin-top:10px;text-align:center">
         <button class="btn btn-secondary btn-sm" style="font-size:11px;color:var(--red);
           border-color:rgba(232,93,76,0.3);padding:6px 14px"
@@ -5198,6 +5241,8 @@ el.innerHTML = `
     </div>
     <div style="height:20px"></div>
   `;
+const _heroL = el.querySelector('.card.hdcp-preview-card');   // v30.261 D4: league sheet card under the hero
+if (_heroL) _heroL.insertAdjacentHTML('afterend', hdcpSheetCardHTML(_hdcpLeagueID));
 hdcpUpdatePreview();
 
 hdcpRenderBreakdown();
@@ -5212,8 +5257,10 @@ if (!snapSeries.length) {
 el.innerHTML = '<div style="color:var(--t3);font-size:13px;text-align:center;padding:8px 0">No snapshots yet — add via New Series or ⋯ Edit on a series card</div>';
 return;
 }
+const _lgB = hdcpLedger(_hdcpLeagueID);
 el.innerHTML = snapSeries.map(s => {
-const snap = s.handicapSnapshot;
+const _bb = _lgB.before[s.SeriesID] || {};
+const snap = Object.assign({}, s.handicapSnapshot, { totalGames: _bb.games ?? s.handicapSnapshot.totalGames, totalPins: _bb.pins ?? s.handicapSnapshot.totalPins });   // v30.261 calculated
 const hdcp = hdcpForSeries(s.LeagueID, s.SeriesID);
 const d = s.DateBowled ? fmtDate(s.DateBowled,{month:'numeric',day:'numeric',year:'2-digit'}) : '—';
 const avg = snap.totalGames >= (snap.qualifyGames||9)
@@ -6720,14 +6767,9 @@ const daysDiff = seriesDate && priorDate
 : 999;
 const gapDetected = daysDiff > 9 || daysDiff < 5;
 
-const priorGames = (db.games || []).filter(
-g => g.SeriesID === prior.SeriesID && !g.IsTeammate && g.FinalScore != null
-);
-const priorScratch = priorGames.reduce((s, g) => s + g.FinalScore, 0);
-const priorGameCount = priorGames.length || gps;
-
-const totalGames = (snap.totalGames || 0) + priorGameCount;
-const totalPins  = (snap.totalPins  || 0) + priorScratch;
+const _t = hdcpTotalsForDate(leagueID, seriesDate);   // v30.261: calculated in league-week order
+const totalGames = _t.games;
+const totalPins  = _t.pins;
 return { totalGames, totalPins, ...base,
 prefilled: true, gapDetected, daysDiff };
 }
@@ -6755,7 +6797,8 @@ let snap, prefillNote, noteColor;
 if (existingSeries?.handicapSnapshot) {
 
 snap = { ...existingSeries.handicapSnapshot };
-prefillNote = 'Stored handicap snapshot — edit to adjust';
+if (snap.src !== 'user') { const _bx = hdcpLedger(leagueID).before[existingSeries.SeriesID]; if (_bx) { snap.totalGames = _bx.games; snap.totalPins = _bx.pins; } }
+prefillNote = snap.src === 'user' ? 'Totals set by hand for this night — edit to adjust' : 'Calculated from earlier weeks — edit only to set totals by hand';
 noteColor = 'var(--t3)';
 } else {
 
@@ -6778,6 +6821,7 @@ noteColor = 'var(--teal)';
 }
 }
 
+window._hdcpPrefill = { g: snap.totalGames || 0, p: snap.totalPins || 0, user: snap.src === 'user' };
 const previewHdcp = () => {
 const g = parseInt(document.getElementById('ms-hdcp-games')?.value) || 0;
 const p = parseInt(document.getElementById('ms-hdcp-pins')?.value) || 0;
@@ -6884,7 +6928,9 @@ const eaRaw = parseFloat(document.getElementById('ms-hdcp-entry')?.value);
 const entryAvg = isNaN(eaRaw) ? null : eaRaw;
 
 if (!totalGames && !totalPins && entryAvg == null) return null;
-return { totalGames, totalPins, baseScore, pct, qualifyGames, entryAvg };
+const _pf = window._hdcpPrefill;   // v30.261: totals typed over the calculated ones become this night's anchor
+const src = _pf && (_pf.user || _pf.g !== totalGames || _pf.p !== totalPins) ? 'user' : undefined;
+return src ? { totalGames, totalPins, baseScore, pct, qualifyGames, entryAvg, src } : { totalGames, totalPins, baseScore, pct, qualifyGames, entryAvg };
 }
 /* Canonical "last 10 bowling weeks" game pool -- same definition used by the
    Stats screen (context:'all', period:'last10wks', condition:'any'):
@@ -7242,8 +7288,9 @@ const allGamesInLeague = db.games.filter(g => seriesIDs.has(g.SeriesID) && g.Fin
 const allGames = allGamesInLeague.filter(g => !g.NoTap);
 const ntGames  = allGamesInLeague.filter(g => g.NoTap);
 const scores = allGames.map(g=>g.FinalScore);
-const total  = scores.reduce((a,b)=>a+b,0);
-const avg    = scores.length ? Math.floor(total/scores.length) : 0;
+const _cov   = leagueCoverage(leagueID);   // v30.260: average includes total-only nights
+const total  = scores.reduce((a,b)=>a+b,0) + _cov.totalOnlyPins;
+const avg    = (scores.length + _cov.totalOnlyGames) ? Math.floor(total/(scores.length + _cov.totalOnlyGames)) : 0;
 const high   = scores.length ? Math.max(...scores) : 0;
 const low    = scores.length ? Math.min(...scores) : 0;
 
@@ -7273,7 +7320,8 @@ openModal(`
         <div style="font-size:22px;font-weight:900;color:var(--purple)">${bestSeries||'—'}</div>
       </div>
     </div>
-    <div class="stat-row"><span>Games Bowled</span><span class="sval t">${allGames.length}</span></div>
+    ${coverageLine(leagueID)}
+    <div class="stat-row"><span>Games Bowled</span><span class="sval t">${allGames.length + _cov.totalOnlyGames}</span></div>
     <div class="stat-row"><span>Clean Games</span><span class="sval t">${cleanGames} / ${allGames.length}</span></div>
     ${allGames.length >= 1 ? renderRadarChart(stats, avg||null) : ''}
     <div class="stat-row"><span>First Ball Avg</span><span class="sval t">${stats.firstBallAvg}</span></div>
@@ -7423,10 +7471,9 @@ const seriesAvgMap = {};
 let cumulativePins  = 0;
 let cumulativeGames = 0;
 allLeagueSeries.forEach(s => {
-const myGames = db.games.filter(g=>g.SeriesID===s.SeriesID&&!g.IsTeammate&&g.FinalScore!=null);
-const myScores = myGames.map(g=>g.FinalScore);
-const seriesTotal = myScores.reduce((a,b)=>a+b,0);
-const seriesGames = myScores.length;
+const _sx = seriesScratch(s);   // v30.260: total-only nights count by their total
+const seriesTotal = _sx.pins;
+const seriesGames = _sx.games;
 
 if (cumulativeGames > 0 && seriesGames > 0) {
 const priorAvg    = cumulativePins / cumulativeGames;
@@ -7444,7 +7491,7 @@ cumulativeGames += seriesGames;
 const leagueSeriesTotals = mySeries.map(s => {
 const sc = db.games.filter(g=>g.SeriesID===s.SeriesID&&!g.IsTeammate)
 .map(g=>g.FinalScore).filter(x=>x!=null);
-return { SeriesID: s.SeriesID, total: sc.reduce((a,b)=>a+b,0), hasScores: sc.length>0 };
+return s.ScoresTotalOnly ? { SeriesID: s.SeriesID, total: +s.ScoresTotal || 0, hasScores: true } : { SeriesID: s.SeriesID, total: sc.reduce((a,b)=>a+b,0), hasScores: sc.length>0 };
 });
 const leagueBestTotal = Math.max(0, ...leagueSeriesTotals.filter(x=>x.hasScores).map(x=>x.total));
 const _wkMap = (G.leagueID > 0 && typeof schedLeague === 'function') ? schedLeague(G.leagueID) : null;
@@ -7453,6 +7500,7 @@ const league = db.leagues.find(l=>l.LeagueID===G.leagueID);
 const games = db.games.filter(g=>g.SeriesID===s.SeriesID).sort((a,b)=>a.GameNumber-b.GameNumber);
 let scores = games.filter(g=>!g.IsTeammate).map(g=>g.FinalScore).filter(x=>x!=null);
 let total = scores.reduce((a,b)=>a+b,0);
+if (s.ScoresTotalOnly) total = +s.ScoresTotal || 0;
 const d = localDate(s.DateBowled);
 const dateStr = d.toLocaleDateString('en-US',{month:'numeric',day:'numeric',year:'2-digit'});
 const center = db.centers.find(c=>c.CenterID===s.CenterID);
@@ -7514,6 +7562,7 @@ return `<div class="series-card-wrap">
             <div style="display:flex;gap:6px;margin-top:4px;flex-wrap:wrap">
               ${s.LanePair ? `<span class="pill pill-teal" style="font-size:10px;cursor:pointer" onclick="openLanePairGames(${s.SeriesID},event)" title="View games on this lane pair">🎳 ${formatLanePairWithStart(s.LanePair, s.LaneStart)}</span>`: ''}
               ${s.NoTap ? `<span class="pill pill-gold" style="font-size:10px">✦ NoTap</span>`: ''}
+              ${s.RecLevel === 'scores' ? `<span class="pill" style="font-size:10px;color:var(--t2)">${s.ScoresTotalOnly ? 'Total only · ' + (s.ScoresGames||0) + ' games' : 'Game scores'}</span>`: ''}
               ${s.Notes ? `<span class="pill" style="font-size:10px;color:var(--t3)">📝</span>`: ''}
               ${(()=>{
 const bl=(s.beerLog||[]);
@@ -7651,6 +7700,8 @@ return;
 bakerHandleGameSlotTap({ leagueID: G.leagueID }, seriesID, gameNum);
 return;
 }
+const _sr = db.series.find(x => x.SeriesID === seriesID);
+if (_sr && _sr.RecLevel === 'scores') { openScoresEdit(seriesID); return; }   // v30.260: Game Scores nights have no frames
 const badge = event.target.closest('.game-badge.done.has-frames');
 if (badge) {
 
@@ -8203,6 +8254,7 @@ db.attempts.push(blankAttempt(db.ids.attempt++, fid, fn, gameNum, gameID, an));
 }
 }
 saveAll();
+if (series?.RecLevel) { G.numericMode = series.RecLevel === 'frames'; G.numericPinfall = null; }   // v30.264 D5: Frame Scores opens with # NUM on
 openGame(gameID, gameNum);
 }
 function blankAttempt(id, fid, fn, gn, gid, an) {
@@ -8893,7 +8945,7 @@ const tenPinAmbiguous = is10PinLeave
 && getPrefs().tenPinPrompt !== false && _tenPinSkipSeriesID !== G.seriesID;
 if (tenPinAmbiguous) {
 _pendingConfirmAfterTenPin = { frame, att, pinfall };
-const sdpWillShow = getPrefs().practiceMode && !getPrefs().shotDetailPaused && !att.ShotDetailLogged;
+const sdpWillShow = recShotOn() && !getPrefs().shotDetailPaused && !att.ShotDetailLogged;
 if (sdpWillShow) {
 
 openShotDetailPrompt(G.frame, G.attempt, true, false, att.AttemptID, false, true);
@@ -9989,7 +10041,7 @@ if (delBtn) delBtn.style.display = 'flex';
 const practiceBtn = document.getElementById('hdr-practice-btn');
 if (practiceBtn) {
 practiceBtn.style.display = 'flex';
-practiceBtn.classList.toggle('active', !!getPrefs().practiceMode);
+practiceBtn.classList.toggle('active', recShotOn());
 }
 const focusBtn = document.getElementById('hdr-focus-btn');
 if (focusBtn) {
@@ -10038,13 +10090,18 @@ haptic('light');
 
 
 
+/* v30.264 D5: the scoring-header button switches tonight's level between Shot Detail and Pin Leaves.
+   Outside a series it changes the Settings default. */
 function togglePracticeMode() {
-var on = !getPrefs().practiceMode;
-savePrefs({ practiceMode: on });
+var s = (db.series || []).find(x => x.SeriesID === G.seriesID);
+var on = !recShotOn();
+if (s) { s.RecLevel = on ? 'shot' : 'pins'; saveAll(); }
+else savePrefs({ recLevel: on ? 'shot' : 'pins', practiceMode: on });
 var btn = document.getElementById('hdr-practice-btn');
 if (btn) btn.classList.toggle('active', on);
+var sb = document.getElementById('sdp-reopen-btn'); if (sb) sb.style.display = on ? '' : 'none';
 haptic && haptic('light');
-toast(on ? 'Practice Mode on — shot detail will be logged': 'Practice Mode off');
+toast(on ? (s ? 'Shot Detail for tonight \u2014 a panel follows each ball' : 'Default: Shot Detail') : (s ? 'Pin Leaves for tonight' : 'Default: Pin Leaves'));
 }
  
 var _sdp = {
@@ -10061,7 +10118,7 @@ marker: null, speed: null, revs: null,
 entry: null, miss: null, boards: null
 };
 function openShotDetailPrompt(scoredFrame, scoredAtt, isFresh, isSpareConv, attID, force, tenPinPending) {
-if (!getPrefs().practiceMode) return;
+if (!recShotOn()) return;
 if (getPrefs().shotDetailPaused && !force) return;
 
 
@@ -10247,7 +10304,7 @@ sdCloseAndResume();
 
 
 function sdOpenManual() {
-if (!getPrefs().practiceMode) { toast('Enable Practice Mode in Settings'); return; }
+if (!recShotOn()) { toast('Switch tonight to Shot Detail (the \u25a6 button) first'); return; }
 var frame = getFrame(G.frame);
 var att = frame ? frameAttempts(frame.FrameID).find(function(a) { return a.Attempt === G.attempt; }) : null;
 if (!att || att.Pinfall === null) { toast('Score this attempt first'); return; }
@@ -11530,7 +11587,7 @@ _cbtn.innerHTML = (_frameDone && G.frame < 10) ? 'Next Frame \u2192'
 }
 
 var _sdpBtn = document.getElementById('sdp-reopen-btn');
-if (_sdpBtn) _sdpBtn.style.display = getPrefs().practiceMode ? '': 'none';
+if (_sdpBtn) _sdpBtn.style.display = recShotOn() ? '': 'none';
 
 const game = db.games.find(g=>g.GameID===G.gameID);
 const laneStr = game?.LaneStart ? ` · Ln ${game.LaneStart}`: '';
@@ -13806,16 +13863,17 @@ function _streakCompute(avgs, comparatorFn, getTarget) {
 
 
 
-let current = 0, max = 0, target = null;
-avgs.forEach(avg => {
+let current = 0, max = 0, target = null, curStart = null, maxStart = null;   // v30.263: run positions for gap notes
+avgs.forEach((avg, i) => {
 if (target === null || !comparatorFn(avg, target)) {
 target = getTarget(avg);
 current = 0;
 }
 current = comparatorFn(avg, target) ? current + 1 : 0;
-if (current > max) max = current;
+if (current === 1) curStart = i;
+if (current > max) { max = current; maxStart = curStart; }
 });
-return { current, max };
+return { current, max, curStart: current ? curStart : null, maxStart };
 }
 
 function computeFloorStreaks(avgs, floors) {
@@ -13858,11 +13916,9 @@ return seriesList
 .slice()
 .sort((a, b) => (a.DateBowled || '').localeCompare(b.DateBowled || ''))
 .map(s => {
-const scores = db.games
-.filter(g => g.SeriesID === s.SeriesID && !g.IsTeammate && g.FinalScore != null)
-.map(g => g.FinalScore);
-if (!scores.length) return null;
-return { seriesID: s.SeriesID, date: s.DateBowled, avg: scores.reduce((a,b)=>a+b,0) / scores.length };
+const x = seriesScratch(s);   // v30.263: Game Scores and total-only nights count
+if (!x.games) return null;
+return { seriesID: s.SeriesID, date: s.DateBowled, avg: x.pins / x.games };
 })
 .filter(Boolean);
 }
@@ -13879,11 +13935,9 @@ const sorted = seriesList.slice().sort((a, b) => (a.DateBowled || '').localeComp
 let totalPins = 0, totalGames = 0;
 const out = [];
 sorted.forEach(s => {
-const scores = db.games
-.filter(g => g.SeriesID === s.SeriesID && !g.IsTeammate && g.FinalScore != null)
-.map(g => g.FinalScore);
-if (!scores.length) return;
-scores.forEach(sc => { totalPins += sc; totalGames++; });
+const x = seriesScratch(s);   // v30.263
+if (!x.games) return;
+totalPins += x.pins; totalGames += x.games;
 out.push({ seriesID: s.SeriesID, date: s.DateBowled, avg: Math.floor(totalPins / totalGames), totalGames });
 });
 return out;
@@ -13928,10 +13982,18 @@ return out;
 
 
 function _bssQualifyingGames(seriesID, openIDs) {
-return db.games.filter(g =>
+const out = db.games.filter(g =>
 g.SeriesID === seriesID && g.FinalScore != null && g.FinalScore > 0 &&
 !g.IsTeammate && !g.NoTap && !openIDs.has(g.SeriesID)
 );
+/* v30.265: a total-only Game Scores night has no game rows; stand in one row per game whose scores add
+   up to its total (only pins and game counts are read here). */
+if (!out.length) { const s = db.series.find(x => x.SeriesID === seriesID);
+  if (s && s.ScoresTotalOnly && !s.NoTap && !openIDs.has(seriesID) && s.ScoresGames > 0) {
+    const n = +s.ScoresGames, t = +s.ScoresTotal || 0, base = Math.floor(t / n);
+    for (let i = 0; i < n; i++) out.push({ SeriesID: seriesID, FinalScore: base + (i < t - base * n ? 1 : 0), GameType: s.GameType || 'League', _totalOnly: true });
+  } }
+return out;
 }
 
 
@@ -14632,12 +14694,19 @@ for (let f = lo; f <= hi; f += 10) allFloors.push(f);
 
 const relevantFloors = dataMode === 'rolling'? allFloors.filter(f => f >= relFloor) : allFloors;
 const floorStreaks = computeFloorStreaks(vals, relevantFloors);
-return Object.assign({}, r, { bucket, relevantFloors, floorStreaks });
+const _bk = dataMode === 'rolling' ? streakRunPoints(avgs, bucket.curStart, bucket.current) : streakRunPoints(avgs, bucket.maxStart, bucket.max);
+const bucketGap = gapPhrase(weekGapsBetween(_bk));   // v30.263: non-continuous streaks are marked
+const floorGap = {};
+relevantFloors.forEach(f => { const fs = floorStreaks[f]; if (!fs) return;
+  const pts = dataMode === 'rolling' ? streakRunPoints(avgs, fs.curStart, fs.current) : streakRunPoints(avgs, fs.maxStart, fs.max);
+  floorGap[f] = weekGapsBetween(pts).total; });
+return Object.assign({}, r, { bucket, relevantFloors, floorStreaks, bucketGap, floorGap });
 });
 const tier1CardsHTML = `<div style="display:flex;gap:8px">${slotData.map(s => `
     <div style="flex:1;background:var(--bg2);border:1px solid var(--border1);border-radius:10px;padding:12px">
       <div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;color:${s.color}">${s.letter} · ${s.name.length > 12 ? s.name.slice(0, 11) + '…': s.name}</div>
       <div style="font-size:28px;font-weight:900;letter-spacing:-1.5px;color:var(--t1);line-height:1">${dataMode==='rolling'? s.bucket.current : s.bucket.max}</div>
+      ${s.bucketGap ? `<div class="streak-gap" style="font-size:10px;margin-top:4px;color:var(--t3)">non-continuous: ${s.bucketGap}</div>` : ''}
       <div style="font-size:11px;font-weight:700;margin-top:4px;color:var(--t3)">${dataMode==='rolling'? 'current bucket streak · best '+s.bucket.max : 'best bucket streak ever · current '+s.bucket.current}</div>
     </div>`).join('')}</div>`;
 const A = slotData[0], B = slotData[1];
@@ -14662,7 +14731,7 @@ const bC = B.floorStreaks[f] ? B.floorStreaks[f][floorMetricKey] : 0;
 const aH = aC ? Math.max(4, Math.round(aC / maxFloorVal * FLOOR_BAR_MAX_H)) : 0;
 const bH = bC ? Math.max(4, Math.round(bC / maxFloorVal * FLOOR_BAR_MAX_H)) : 0;
 return `<div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex:0 0 auto">
-          <div style="font-size:9px;font-weight:700;color:var(--t3)">${aC}·${bC}</div>
+          <div style="font-size:9px;font-weight:700;color:var(--t3)">${aC}${A.floorGap[f] ? '*' : ''}·${bC}${B.floorGap[f] ? '*' : ''}</div>
           <div style="display:flex;align-items:flex-end;gap:3px;height:${FLOOR_BAR_MAX_H}px">
             <div style="width:16px;border-radius:3px 3px 0 0;background:var(--teal);height:${aH}px"></div>
             <div style="width:16px;border-radius:3px 3px 0 0;background:var(--gold);height:${bH}px"></div>
@@ -14671,6 +14740,7 @@ return `<div style="display:flex;flex-direction:column;align-items:center;gap:3p
         </div>`;
 }).join('')}
     </div>
+    ${unionFloors.some(f => A.floorGap[f] || B.floorGap[f]) ? '<div class="streak-gap" style="font-size:10px;color:var(--t3);margin-top:8px">* streak runs across weeks with no games (absent or not logged); it continues, but isn\u2019t continuous</div>' : ''}
   </div>`: `<div style="background:var(--bg2);border:1px solid var(--border1);border-radius:10px;padding:16px;text-align:center;color:var(--t3);font-size:12px">
     No floors at or above both scopes' current average yet.</div>`;
 return `<div style="padding:12px 16px 90px;display:flex;flex-direction:column;gap:10px">
@@ -17162,7 +17232,9 @@ var often = '<div style="display:flex;gap:4px;text-align:center">' +
 /* streaks */
 var sc = ldScope(), S = ldStreaks(evs, sc);
 var chip = function(v, lbl) { var on = v === sc; return '<button onclick="ldSetScope(\'' + v + '\')" style="flex:1;padding:6px 0;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;border:1px solid ' + (on ? 'var(--teal)' : 'var(--border1)') + ';background:' + (on ? 'rgba(0,217,217,0.12)' : 'transparent') + ';color:' + (on ? 'var(--teal)' : 'var(--t2)') + '">' + lbl + '</button>'; };
-var bestTxt = S.best ? (S.best.n > 1 ? fd(S.best.from.date) + ' \u2013 ' + fd(S.best.to.date) : fd(S.best.to.date)) + (sc !== 'all' ? ' \u00b7 ' + ldEsc(D.grpLabel[S.best.to.grp] || '') : '') : 'no conversions yet';
+var _skipN = S.best && S.best.n > 1 ? nightsBelowLevel(S.best.from.date, S.best.to.date, 'pins', sc === 'all' ? null : S.best.to.grp) : 0;   // v30.265
+var bestTxt = S.best ? (S.best.n > 1 ? fd(S.best.from.date) + ' \u2013 ' + fd(S.best.to.date) : fd(S.best.to.date)) + (sc !== 'all' ? ' \u00b7 ' + ldEsc(D.grpLabel[S.best.to.grp] || '') : '') +
+  (_skipN ? '<br><span class="streak-gap">non-continuous: ' + _skipN + ' night' + (_skipN > 1 ? 's' : '') + ' without pin leaves</span>' : '') : 'no conversions yet';
 var curLbl = sc === 'night' ? 'last night it came up' : sc === 'league' ? 'in ' + ldEsc(D.grpLabel[evs[n - 1].grp] || 'the latest league') : 'right now';
 var big = function(lbl, v, sub) { return '<div style="flex:1;text-align:center"><div style="font-size:10px;font-weight:700;color:var(--t3)">' + lbl + '</div><div style="font-size:24px;font-weight:800;color:var(--t1)">' + v + '</div><div style="font-size:10px;color:var(--t3);line-height:1.3">' + sub + '</div></div>'; };
 var avgs = ['night', 'league', 'all'].map(function(v) { var a = ldStreaks(evs, v).avg; return (v === 'night' ? 'Night' : v === 'league' ? 'League' : 'All') + ' ' + (a == null ? '\u2014' : a.toFixed(1)); }).join(' \u00b7 ');
@@ -20634,6 +20706,13 @@ openModal(`
       </label>
       <div style="font-size:11px;color:var(--t2);margin-top:3px">On a roster but only bowling when someone is out. Weeks you don\u2019t bowl are never flagged as missing.</div>
     </div>
+    <div class="fgroup">
+      <label class="flabel">Recording level for this league</label>
+      <select class="finput" id="ml-rec">
+        <option value="">Use the Settings default (${REC_LEVELS[recPrefDefault()]})</option>
+        ${REC_ORDER.map(k => `<option value="${k}" ${l?.RecLevel===k?'selected':''}>${REC_LEVELS[k]}</option>`).join('')}
+      </select>
+    </div>
     <!-- ── Season support fields (v30.41) — all optional ── -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
       <div class="fgroup"><label class="flabel">Start Date <span style="opacity:.6;font-weight:400">(optional)</span></label>
@@ -20714,6 +20793,7 @@ l.BakerFormat=bakerFormat; l.BakerTeamSize=bakerTeamSize;
 const datesChanged = l.StartDate !== startDate || l.EndDate !== endDate;
 l.StartDate = startDate; l.EndDate = endDate; l.Sanctioned = sanctioned;
 l.IsSub = !!document.getElementById('ml-sub')?.checked;
+{ const _r = document.getElementById('ml-rec')?.value; if (REC_LEVELS[_r]) l.RecLevel = _r; else delete l.RecLevel; }
 if (datesChanged && l.SeasonSource !== 'user') { l.SeasonID = null; l.SeasonSource = null; }
 if (lineageChanged) {
 l.LineageID = lineageRaw ? parseInt(lineageRaw) : null;
@@ -20728,7 +20808,7 @@ const newLeague = { LeagueID:newId, LeagueName:name, TeamName:teamName, CenterID
 DayOfBowling:day, Weeks:weeks, WeeklyDues:dues, DefaultBallID:ballID, DefaultSpareBallID:spareBallID, Notes:notes,
 Active:true, Handicap:handicap, Sport:sport, Archived:false,
 BakerFormat:bakerFormat, BakerTeamSize:bakerTeamSize,
-StartDate:startDate, EndDate:endDate, Sanctioned:sanctioned, SeasonID:null, SeasonSource:null, IsSub: !!document.getElementById('ml-sub')?.checked,
+StartDate:startDate, EndDate:endDate, Sanctioned:sanctioned, SeasonID:null, SeasonSource:null, IsSub: !!document.getElementById('ml-sub')?.checked, ...(REC_LEVELS[document.getElementById('ml-rec')?.value] ? { RecLevel: document.getElementById('ml-rec').value } : {}),
 LineageID:null, LineageSource:null };
 if (lineageChanged && lineageRaw) { newLeague.LineageID = parseInt(lineageRaw); newLeague.LineageSource = 'user'; }
 db.leagues.push(newLeague);
@@ -20796,13 +20876,16 @@ openModal(`
     ${laneSection}
     <div class="fgroup"><label class="flabel">Notes</label>
       <input class="finput" id="ms-notes" type="text" placeholder="Optional notes" value="${s?.Notes||''}"></div>
-    ${!isEdit ? `<div class="fgroup"><label class="flabel">NoTap Mode <span style="color:var(--gold);font-size:11px">(9-pin = strike)</span></label>
+    ${!isEdit ? `<div class="fgroup"><label class="flabel">Recording</label>
+      <div id="ms-rec">${recPickerHTML(recDefault(s?.LeagueID ?? G.leagueID), 'msRecPick')}</div>
+      <div id="ms-scores" style="margin-top:10px"></div></div>`: ''}
+    ${!isEdit ? `<div class="fgroup" id="ms-notap-wrap"><label class="flabel">NoTap Mode <span style="color:var(--gold);font-size:11px">(9-pin = strike)</span></label>
       <div class="odd-even-toggle">
         <div class="oe-btn on" id="ms-notap-off" onclick="setSeriesNoTap(false)">Off</div>
         <div class="oe-btn" id="ms-notap-on" onclick="setSeriesNoTap(true)">✦ On</div>
       </div></div>`: ''}
     <div id="ms-hdcp-section"></div>
-    <button class="btn btn-primary" onclick="saveSeries(${id||'null'})">${isEdit?'Save Changes':'Start Bowling →'}</button>
+    <button class="btn btn-primary" id="ms-save-btn"${isEdit?' data-edit="1"':''} onclick="saveSeries(${id||'null'})">${isEdit?'Save Changes':'Start Bowling →'}</button>
     ${isEdit && s?.NoTap && s?.LeagueID !== -1 ? `
     <button class="btn btn-ghost btn-sm" style="width:100%;margin-top:8px;color:var(--gold);
       border-color:rgba(255,215,0,0.3)" onclick="transferSeriesToNoTap(${id})">
@@ -20816,7 +20899,8 @@ window._msWeek = isEdit ? { editID: s.SeriesID, orig: { leagueID: s.LeagueID, da
 setTimeout(()=>{
 document.getElementById('ms-date')?.focus();
 if (!isEdit) {
-window._seriesModalState = { startOdd:true, noTap:false };
+window._seriesModalState = { startOdd:true, noTap:false, rec: recDefault(parseInt(document.getElementById('ms-league')?.value) || G.leagueID) };
+setTimeout(() => { try { msRecSet(window._seriesModalState.rec); } catch (e) {} }, 0);
 } else {
 window._seriesModalState = { startOdd:_editStartOdd, noTap:!!s?.NoTap };
 }
@@ -20842,6 +20926,8 @@ const date = dateEl.value;
 const leagueID = parseInt(leagueEl.value);
 const l = db.leagues.find(x => x.LeagueID === leagueID);
 try { msWeekRender(); } catch (e) { console.warn('msWeekRender:', e); }
+try { const _st = window._seriesModalState; const _lv = parseInt(document.getElementById('ms-league')?.value);
+  if (_st && !_st.recTouched && _st.recLeague !== _lv && document.getElementById('ms-rec')) { _st.recLeague = _lv; msRecSet(recDefault(_lv), true); } } catch (e) {}
 if (!date || !l || !l.StartDate || !l.EndDate) { warnEl.style.display = 'none'; return; }
 if (date < l.StartDate || date > l.EndDate) {
 warnEl.textContent = `⚠ Outside "${l.LeagueName}"'s dates (${l.StartDate} to ${l.EndDate}) — you can still save`;
@@ -20967,6 +21053,7 @@ confirmSeriesLaneRemap(id, newLanePair, newLaneStart, rest);
 applySeriesEdit(id, rest, newLanePair, newLaneStart);
 }
 } else {
+if (window._seriesModalState?.rec === 'scores') { saveSeriesScores(); return; }   // v30.260 Game Scores night
 const _lnA = parseInt(document.getElementById('ms-lane-odd')?.value);
 const _lnB = parseInt(document.getElementById('ms-lane-even')?.value);
 if (isNaN(_lnA) && isNaN(_lnB)) { toast('Enter a lane pair'); document.getElementById('ms-lane-odd')?.focus(); return; }
@@ -20984,6 +21071,7 @@ DateBowled:date, LanePair:lanePair, LaneStart:laneStart, BallID:ballID, Notes:no
 NoTap:noTap };
 if (newSnap) newSeriesObj.handicapSnapshot = newSnap;
 msWeekApply(newSeriesObj);
+if (window._seriesModalState && REC_LEVELS[window._seriesModalState.rec]) newSeriesObj.RecLevel = window._seriesModalState.rec;   // v30.264 D5
 db.series.push(newSeriesObj);
 G.seriesID = newId; G.laneStart = laneStart; G.lanePair = lanePair;
 G.oddLane = Math.min(oddLane,evenLane); G.evenLane = Math.max(oddLane,evenLane);
@@ -25674,6 +25762,7 @@ gameNum: game?.GameNumber || 0,
 seriesID: game?.SeriesID || null,
 dateBowled: series?.DateBowled || null,
 score: game?.FinalScore || null,
+recScores: series?.RecLevel === 'scores',   // v30.265: entered as Game Scores (direct entry; old imports keep breaking)
 balls
 };
 });
@@ -25725,8 +25814,10 @@ if (trailing === 0) continue;
 let chainLen = trailing;
 let chainGames = [gameSequences[i].gameNum];
 let chainDesc = `G${gameSequences[i].gameNum} (last ${trailing})`;
+let skippedNoFrames = 0;
 for (let k = i + 1; k < gameSequences.length; k++) {
 const kBalls = gameSequences[k].balls;
+if (!kBalls.length && gameSequences[k].recScores) { skippedNoFrames++; continue; }   // v30.265: a Game Scores game has no frames: skipped, never a break
 
 let leading = 0;
 for (let j = 0; j < kBalls.length; j++) {
@@ -25750,7 +25841,8 @@ const seriesGames = firstSeq.seriesID
 crossGameStreaks.push({
 length: chainLen,
 games: [...chainGames],
-desc: chainDesc,
+desc: chainDesc + (skippedNoFrames ? ` \u00b7 across ${skippedNoFrames} scores-only game${skippedNoFrames > 1 ? 's' : ''}` : ''),
+skippedNoFrames,
 crossGame: true,
 dateBowled: firstSeq.dateBowled,
 gameScores: seriesGames.map(g => g.FinalScore),
@@ -25797,7 +25889,8 @@ const scoresStr = s.gameScores?.length
 ? s.gameScores.map((sc,i) => `G${i+1}: ${sc}`).join(' · ') + (s.gameScores.length > 1 ? ` = ${s.seriesTotal}`: '')
 : '';
 const crossTag = s.crossGame
-? `<span style="font-size:9px;background:rgba(0,217,217,0.12);color:var(--teal);border-radius:4px;padding:1px 5px;font-weight:700;margin-left:5px">CROSS</span>`
+? `<span style="font-size:9px;background:rgba(0,217,217,0.12);color:var(--teal);border-radius:4px;padding:1px 5px;font-weight:700;margin-left:5px">CROSS</span>` +
+  (s.skippedNoFrames ? `<span class="streak-gap" style="font-size:9px;color:var(--t3);border:1px solid var(--border2);border-radius:4px;padding:1px 5px;margin-left:5px">non-continuous</span>` : '')
 : '';
 return `<div style="padding:7px 0;border-bottom:1px solid var(--border1)">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px">
@@ -27543,7 +27636,7 @@ const exportFrames = frames.filter(f => exportGameIDs.has(f.GameID));
 const exportFrameIDs = new Set(exportFrames.map(f => f.FrameID));
 const exportAttempts = db.attempts.filter(a => exportFrameIDs.has(a.FrameID));
 const exportSeriesIDs = new Set(exportGames.map(g => g.SeriesID));
-const exportSeries = db.series.filter(s => exportSeriesIDs.has(s.SeriesID) || db.games.some(g=>g.SeriesID===s.SeriesID) || !!s.TournamentID);
+const exportSeries = db.series.filter(s => exportSeriesIDs.has(s.SeriesID) || db.games.some(g=>g.SeriesID===s.SeriesID) || !!s.TournamentID || !!s.ScoresTotalOnly);   // v30.260: total-only Game Scores nights have no game rows
 return {
 meta: {
 version: '1.0',
@@ -29659,20 +29752,18 @@ return 'Profile inactive · '+ _p.gamesInSample + '/'+ _p.noiseGate + ' games (n
 
     <!-- ── Practice Mode ───────────────────────────────────── -->
     <div class="settings-section">
-      <div class="settings-section-hdr">Practice Mode
-        <span class="settings-section-hint">Log shot detail during scoring for alignment and execution analysis</span>
+      <div class="settings-section-hdr">Recording level
+        <span class="settings-section-hint">How much each night records by default. Change it per league, or for one night when you start it.</span>
       </div>
       ${(() => {
-const on = !!getPrefs().practiceMode;
+const _rl = recPrefDefault();
+const on = _rl === 'shot';
 const prefs = getPrefs();
 return `
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:${on?'14px':'0'}">
-            <span style="font-size:13px;color:var(--t1)">Enable Practice Mode</span>
-            <div class="toggle-switch ${on?'on':''}" onclick="togglePracticeMode();openSettingsModal()"></div>
-          </div>
+          <div style="margin-bottom:${on?'14px':'0'}">${recPickerHTML(_rl, 'recSetDefault')}</div>
           ${on ? `
           <div style="font-size:11px;color:var(--t3);margin-bottom:12px;line-height:1.5">
-            After each delivery, a quick panel lets you log marker, speed, revs, entry, and miss data.
+            Shot Detail: after each delivery, a quick panel lets you log marker, speed, revs, entry, and miss data.
             Tap the <span style="color:var(--purple);font-weight:700">&#x25A6;</span> icon in the scoring header to toggle on the fly.
           </div>
           <div style="display:flex;flex-direction:column;gap:8px">
@@ -31798,13 +31889,13 @@ function schedMatch(league, series, opts) {
     if (best) put(s, best, dn > best.dn ? 'makeup' : 'prebowl');
     else by[s.SeriesID] = { week: null, date: null, how: (dn < firstN - SCHED_WINDOW || (!sch.open && dn > lastN + SCHED_WINDOW)) ? 'outside' : 'extra' };
   });
-  var counts = { weeks: wk.length, bowled: 0, nodata: 0, upcoming: 0, absent: 0, noleague: 0, notlogged: 0, unsure: 0,
+  var counts = { weeks: wk.length, bowled: 0, nodata: 0, upcoming: 0, absent: 0, noleague: 0, notlogged: 0, unsure: 0, notjoined: 0,
     on: 0, makeup: 0, prebowl: 0, extra: 0, outside: 0, user: 0 };
   var marks = {};
   (opts.marks || []).forEach(function(mk) { if (mk && mk.Date && SCHED_MARKS[mk.Status]) marks[mk.Date] = mk.Status; });
   var weeks = wk.map(function(w) {
     var mk = marks[w.date] || null;
-    var st = w.series.length ? 'bowled' : mk ? mk : (w.dn >= tn ? 'upcoming' : 'nodata');   // tonight is still upcoming
+    var st = w.series.length ? 'bowled' : mk ? mk : (opts.joined && w.date < opts.joined) ? 'notjoined' : (w.dn >= tn ? 'upcoming' : 'nodata');   // tonight is still upcoming
     counts[st]++;
     return { week: w.week, date: w.date, status: st, mark: mk, series: w.series.slice() };
   });
@@ -31818,7 +31909,7 @@ function schedLeague(leagueID, today, extraSeries, skipID) {
   if (!l) return null;
   var ss = (db.series || []).filter(function(s) { return s.LeagueID === leagueID && s.TournamentID == null && s.SeriesID !== skipID; });
   if (extraSeries) ss = ss.concat(extraSeries);
-  return schedMatch(l, ss, { today: today || _schedToday(), marks: weekMarksFor(leagueID) });
+  return schedMatch(l, ss, { today: today || _schedToday(), marks: weekMarksFor(leagueID), joined: l.JoinedDate || null });
 }
 
 /* v30.257 DATA-1 D2: week marks. db.leagueWeeks = [{ WeekKey 'LeagueID:YYYY-MM-DD', LeagueID, Date (the
@@ -31855,26 +31946,85 @@ function seasonStripHTML(leagueID) {
   var m = l && schedLeague(leagueID);
   if (!m || !m.weeks.length) return '';
   var moved = {}; Object.keys(m.bySeries).forEach(function(k) { var r = m.bySeries[k]; if (r.week && r.how !== 'on') moved[r.week] = 1; });
-  var col = { bowled: 'var(--teal)', absent: 'var(--sedona)', noleague: 'var(--t3)', notlogged: 'var(--purple)', unsure: 'var(--border2)' };
+  var today = _schedToday(), n = m.weeks.length;
+  var nowWk = m.weeks.find(function(w) { return w.date >= today; });
+  var perRow = n <= 26 ? n : Math.ceil(n / 2);   // one slim row for most seasons
+  var seen = {};
   var cells = m.weeks.map(function(w) {
-    var st = w.status, bg = st === 'bowled' ? (moved[w.week] ? 'var(--gold)' : col.bowled) : (col[st] || 'transparent');
-    var bd = st === 'upcoming' ? '1px dashed var(--border2)' : st === 'nodata' ? '1px solid var(--t3)' : '1px solid ' + bg;
-    var op = (st === 'noleague' || st === 'unsure') ? ';opacity:.55' : '';
-    return '<button class="wk-cell" data-wk="' + w.week + '" data-st="' + st + '" aria-label="Week ' + w.week + ' ' + w.date + ' ' + st + '" onclick="openWeekSheet(' + leagueID + ',\'' + w.date + '\');event.stopPropagation()" style="background:' + bg + ';border:' + bd + op + '"></button>';
+    seen[w.status === 'bowled' && moved[w.week] ? 'moved' : w.status] = 1;
+    return '<button class="wk-cell" data-wk="' + w.week + '" data-st="' + w.status + '"' + (moved[w.week] ? ' data-mv="1"' : '') + (nowWk && nowWk.week === w.week ? ' data-now="1"' : '') +
+      ' aria-label="Week ' + w.week + ' ' + w.date + ' ' + w.status + '" onclick="openWeekSheet(' + leagueID + ',\'' + w.date + '\');event.stopPropagation()"><i class="wk-bar"></i></button>';
   }).join('');
-  var past = m.weeks.filter(function(w) { return w.status !== 'upcoming' && w.date < _schedToday(); }).length;
+  var past = m.weeks.filter(function(w) { return w.date < today; }).length;
   var nod = m.counts.nodata, gap = leagueGapWeeks(leagueID).length;
-  var sum = (m.open ? m.weeks.length + ' weeks so far' : 'Week ' + Math.min(past + 1, m.weeks.length) + ' of ' + m.weeks.length) + ' \u00b7 ' + m.counts.bowled + ' bowled' +
+  var sum = (m.open ? n + ' weeks so far' : 'Week ' + Math.min(past + 1, n) + ' of ' + n) + ' \u00b7 ' + m.counts.bowled + ' bowled' +
     (m.counts.absent ? ' \u00b7 ' + m.counts.absent + ' absent' : '') + (m.counts.noleague ? ' \u00b7 ' + m.counts.noleague + ' no league' : '') +
     (m.counts.notlogged ? ' \u00b7 ' + m.counts.notlogged + ' not logged' : '') + (nod ? ' \u00b7 ' + nod + (m.sub ? ' not bowled' : ' no games') : '');
+  var LEG = [['bowled', 'Bowled'], ['moved', 'Pre/post-bowl'], ['absent', 'Absent'], ['noleague', 'No league'], ['notlogged', 'Not logged'], ['unsure', 'Not sure'], ['notjoined', 'Before you joined'], ['nodata', m.sub ? 'Not bowled' : 'No games'], ['upcoming', 'Upcoming']];
+  var legend = LEG.filter(function(x) { return seen[x[0]]; }).map(function(x) {
+    return '<span class="wk-leg"><span class="wk-cell" data-st="' + (x[0] === 'moved' ? 'bowled' : x[0]) + '"' + (x[0] === 'moved' ? ' data-mv="1"' : '') + '><i class="wk-bar"></i></span>' + x[1] + '</span>'; }).join('');
   return '<div class="card wk-strip-card" id="wk-strip">' +
     '<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px"><div class="stat-card-title" style="margin:0">Season</div>' +
-    (m.sub ? '<span style="font-size:10px;color:var(--t3);border:1px solid var(--border1);border-radius:8px;padding:1px 6px">alternate/sub</span>' : '') + '</div>' +
-    '<div class="wk-sum" style="font-size:11px;color:var(--t2);margin:2px 0 6px">' + sum + '</div>' +
-    '<div class="wk-strip">' + cells + '</div>' +
-    (gap ? '<div style="font-size:11px;color:var(--gold);margin-top:6px">' + gap + ' week' + (gap > 1 ? 's' : '') + ' with no games \u2014 tap to mark</div>'
-         : '<div style="font-size:10px;color:var(--t3);margin-top:6px">Tap a week to see or mark it</div>') +
+    (m.sub ? '<span class="wk-badge">alternate/sub</span>' : '') + '</div>' +
+    '<div class="wk-sum">' + sum + '</div>' +
+    '<div class="wk-strip" style="grid-template-columns:repeat(' + perRow + ',minmax(0,16px))">' + cells + '</div>' +
+    '<div class="wk-legend">' + legend + '</div>' +
+    seasonQuestionHTML(l, m) +
+    (gap ? '<div style="font-size:11px;color:var(--t2);margin-top:6px">' + gap + ' week' + (gap > 1 ? 's' : '') + ' with no games \u2014 tap to mark</div>' : '') +
     '</div>';
+}
+/* v30.258 DATA-1 D2b: once-per-season schedule questions, shown on the strip.
+   Late start: the first week with a series is not week 1 and every week before it is empty and unmarked
+   (current leagues only). Short season: a finished, closed season whose final weeks are empty and unmarked
+   (current, not archived, leagues only: the design is built around direct entry; history is a bridge).
+   Answers change only the schedule (StartDate / JoinedDate / Weeks), never games. */
+function seasonQuestions(l, m) {
+  var q = {};
+  if (!l || !m || l.IsSub || !m.weeks.length) return q;
+  var w = m.weeks, today = _schedToday();
+  var fi = w.findIndex(function(x) { return x.status === 'bowled'; });
+  var li = -1; for (var i = w.length - 1; i >= 0; i--) if (w[i].status === 'bowled') { li = i; break; }
+  if (!l.SchedStartAns && !l.Archived && fi > 0 && w.slice(0, fi).every(function(x) { return x.status === 'nodata'; })) q.start = { first: w[fi], before: fi };
+  if (!l.SchedEndAns && !l.Archived && !m.open && li >= 0 && li < w.length - 1 && w[w.length - 1].date < today &&
+      w.slice(li + 1).every(function(x) { return x.status === 'nodata'; })) q.end = { last: w[li], after: w.length - 1 - li, weeks: w.length };
+  return q;
+}
+function seasonQuestionHTML(l, m) {
+  var q = seasonQuestions(l, m), out = '';
+  var btn = function(fn, label, sub) { return '<button class="wk-q-btn" onclick="' + fn + ';event.stopPropagation()">' + label + (sub ? '<span>' + sub + '</span>' : '') + '</button>'; };
+  if (q.start) out += '<div class="wk-q" data-q="start"><div class="wk-q-t">Your first series this season is week ' + q.start.first.week + ' (' + _wkMD(q.start.first.date) + ').</div>' +
+    btn("schedAnswerStart(" + l.LeagueID + ",'started')", 'Season started ' + _wkMD(q.start.first.date), 'moves week 1 there') +
+    btn("schedAnswerStart(" + l.LeagueID + ",'joined')", 'I joined in week ' + q.start.first.week, 'earlier weeks aren\u2019t yours') +
+    btn("schedAnswerStart(" + l.LeagueID + ",'skip')", 'Not now', '') + '</div>';
+  if (q.end) out += '<div class="wk-q" data-q="end"><div class="wk-q-t">Nothing logged after week ' + q.end.last.week + ' (' + _wkMD(q.end.last.date) + ') of ' + q.end.weeks + '.</div>' +
+    btn("schedAnswerEnd(" + l.LeagueID + ",'ended')", 'Season ended at week ' + q.end.last.week, 'sets ' + q.end.last.week + ' weeks') +
+    btn("schedAnswerEnd(" + l.LeagueID + ",'ran')", 'It ran ' + q.end.weeks + ' weeks', 'leave the last ' + q.end.after + ' as no games') +
+    btn("schedAnswerEnd(" + l.LeagueID + ",'skip')", 'Not now', '') + '</div>';
+  return out;
+}
+function _schedRefresh(l, msg) {
+  saveDB();
+  if (typeof renderSeriesList === 'function' && G.leagueID === l.LeagueID) renderSeriesList();
+  if (msg) toast(msg);
+}
+function schedAnswerStart(leagueID, choice) {
+  var l = db.leagues.find(function(x) { return x.LeagueID === leagueID; }); if (!l) return;
+  var q = seasonQuestions(l, schedLeague(leagueID));
+  if (choice === 'started' && q.start) {
+    l.SchedStartPrev = l.StartDate || null;
+    l.StartDate = q.start.first.date;
+    if (l.SeasonSource !== 'user') { l.SeasonID = null; l.SeasonSource = null; }
+    if (typeof ensureLineages === 'function') ensureLineages();
+  } else if (choice === 'joined' && q.start) l.JoinedDate = q.start.first.date;
+  l.SchedStartAns = choice;
+  _schedRefresh(l, choice === 'started' ? 'Week 1 is now ' + _wkMD(l.StartDate) : choice === 'joined' ? 'Earlier weeks set as before you joined' : '');
+}
+function schedAnswerEnd(leagueID, choice) {
+  var l = db.leagues.find(function(x) { return x.LeagueID === leagueID; }); if (!l) return;
+  var q = seasonQuestions(l, schedLeague(leagueID));
+  if (choice === 'ended' && q.end) { l.SchedWeeksPrev = l.Weeks; l.Weeks = q.end.last.week; }
+  l.SchedEndAns = choice;
+  _schedRefresh(l, choice === 'ended' ? 'Season set to ' + l.Weeks + ' weeks' : '');
 }
 function openWeekSheet(leagueID, date) {
   var l = (db.leagues || []).find(function(x) { return x.LeagueID === leagueID; });
@@ -31891,12 +32041,14 @@ function openWeekSheet(leagueID, date) {
       return '<div class="stat-row"><span>' + _wkMD(sr.DateBowled) + ' \u00b7 ' + (how[r.how] || '') + '</span><span class="sval t">' + (tot || '\u2014') + '</span></div>';
     }).join('') + '<div style="font-size:11px;color:var(--t3);margin:8px 0 12px;line-height:1.45">To count a series for a different week, open it (Edit Series) and pick the week.</div>';
   } else {
-    body = '<div style="font-size:12px;color:var(--t2);margin-bottom:8px">' + (w.date >= _schedToday() ? 'Not bowled yet.' : 'No games logged for this week.') + ' What happened?</div>' +
+    body = (w.date <= _schedToday() && w.status !== 'notjoined' ? '<button class="btn btn-primary" data-act="scores" style="width:100%;margin-bottom:6px" onclick="openWeekScores(' + leagueID + ',\'' + date + '\')">Enter scores</button>' +
+      '<div style="font-size:11px;color:var(--t3);margin-bottom:12px">Bowled but didn\u2019t log it? Type the game scores; they count in your average and handicap.</div>' : '') +
+      '<div style="font-size:12px;color:var(--t2);margin-bottom:8px">' + (w.status === 'notjoined' ? 'Before you joined this league.' : w.date >= _schedToday() ? 'Not bowled yet.' : 'No games logged for this week.') + ' What happened?</div>' +
       Object.keys(SCHED_MARKS).map(function(k) {
         var on = w.mark === k;
         return '<button class="btn ' + (on ? 'btn-primary' : 'btn-secondary') + '" data-mark="' + k + '" style="width:100%;margin-bottom:8px" onclick="weekSheetSet(' + leagueID + ',\'' + date + '\',\'' + k + '\')">' + SCHED_MARKS[k] + (on ? ' \u2713' : '') + '</button>';
       }).join('') +
-      '<div style="font-size:11px;color:var(--t3);line-height:1.45;margin-bottom:8px">Absent and No league never change your average or stats. Typing scores for a night you bowled but didn\u2019t log comes in a later update.</div>' +
+      '<div style="font-size:11px;color:var(--t3);line-height:1.45;margin-bottom:8px">Absent and No league never change your average or stats. Bowled, not logged without scores is shown as not counted.</div>' +
       (w.mark ? '<button class="btn btn-ghost btn-sm" data-mark="clear" style="width:100%;margin-bottom:8px" onclick="weekSheetSet(' + leagueID + ',\'' + date + '\',null)">Clear mark</button>' : '');
   }
   openModal('<div class="modal-title">Week ' + w.week + ' \u00b7 ' + _wkMD(date) + '</div>' +
@@ -31919,13 +32071,14 @@ function msWeekRender() {
   var st = window._msWeek || (window._msWeek = {});
   if (st.leagueID !== leagueID || st.date !== date) {
     st.pick = (st.editID && st.orig && st.orig.leagueID === leagueID && st.orig.date === date) ? st.orig.pick : undefined;
-    st.leagueID = leagueID; st.date = date;
+    st.other = false; st.leagueID = leagueID; st.date = date;
   }
   var l = (db.leagues || []).find(function(x) { return x.LeagueID === leagueID; });
-  var m = (l && /^\d{4}-\d{2}-\d{2}$/.test(date)) ? schedLeague(leagueID, null, [{ SeriesID: 999999999, DateBowled: date }], st.editID) : null;   // id sorts after real series the same day
+  var VID = 999999999;   // draft series id, sorts after real series the same day
+  var m = (l && /^\d{4}-\d{2}-\d{2}$/.test(date)) ? schedLeague(leagueID, null, [{ SeriesID: VID, DateBowled: date }], st.editID) : null;
   st.asked = false;
   if (!m) { box.innerHTML = ''; renderMsGaps(); return; }
-  var auto = m.bySeries[999999999] || {};
+  var auto = m.bySeries[VID] || {};
   if (auto.how === 'on' && st.pick === undefined) { box.innerHTML = '<div class="ms-wk-line" style="font-size:11px;color:var(--t3);margin-top:4px">Week ' + auto.week + (m.open ? '' : ' of ' + m.weeks.length) + '</div>'; renderMsGaps(); return; }
   st.asked = true;
   var dn = _schedD(date), onNight = m.weeks.find(function(w) { return w.date === date; });
@@ -31933,25 +32086,41 @@ function msWeekRender() {
     : auto.how === 'outside' ? _wkMD(date) + ' is outside this season.'
     : auto.how === 'on' ? 'Week ' + auto.week + ' (' + _wkMD(date) + ').'
     : _wkMD(date) + ' isn\u2019t a league night (' + _wkDay(l) + ').';
-  var near = m.weeks.filter(function(w) { return !w.series.length && w.date !== date && Math.abs(_schedD(w.date) - dn) <= 14; })
-    .sort(function(a, b) { return Math.abs(_schedD(a.date) - dn) - Math.abs(_schedD(b.date) - dn); }).slice(0, 3);
-  if (auto.week && !near.some(function(w) { return w.week === auto.week; })) near.unshift(m.weeks[auto.week - 1]);
-  if (st.pick && st.pick !== 'extra' && !near.some(function(w) { return w.date === st.pick; })) { var pw = m.weeks.find(function(w) { return w.date === st.pick; }); if (pw) near.push(pw); }
-  near.sort(function(a, b) { return a.week - b.week; });
+  var taken = function(w) { return w.series.some(function(id) { return id !== VID; }); };   // the draft itself doesn't count
+  var free = m.weeks.filter(function(w) { return !taken(w); });
+  var post = null, pre = null;
+  free.forEach(function(w) { var d = _schedD(w.date) - dn;
+    if (d < 0 && d >= -14 && (!post || d > _schedD(post.date) - dn)) post = w;
+    if (d > 0 && d <= 14 && (!pre || d < _schedD(pre.date) - dn)) pre = w; });
   var guess = auto.week ? auto.date : 'extra';
   st.guess = guess;
   var cur = st.pick !== undefined ? st.pick : guess;
-  var chip = function(val, label) { var on = cur === val;
-    return '<button class="oe-btn' + (on ? ' on' : '') + '" data-pick="' + val + '" style="flex:1 1 45%;min-width:0;white-space:normal;line-height:1.3;padding:8px 6px" onclick="msWeekPick(\'' + val + '\')">' + label + '</button>'; };
+  var isOther = st.other || (cur !== 'extra' && !(post && post.date === cur) && !(pre && pre.date === cur) && !(onNight && auto.how === 'on' && onNight.date === cur));
+  var chip = function(val, label, on, fn) {
+    return '<button class="oe-btn' + (on ? ' on' : '') + '" data-pick="' + val + '" style="flex:1 1 45%;min-width:0;white-space:normal;line-height:1.3;padding:8px 6px" onclick="' + (fn || "msWeekPick('" + val + "')") + '">' + label + '</button>'; };
+  var opts = '';
+  if (post) opts += chip(post.date, 'Post-bowl \u00b7 wk ' + post.week + ' (' + _wkMD(post.date) + ')', !isOther && cur === post.date);
+  if (pre) opts += chip(pre.date, 'Pre-bowl \u00b7 wk ' + pre.week + ' (' + _wkMD(pre.date) + ')', !isOther && cur === pre.date);
+  if (onNight && auto.how === 'on') opts = chip(onNight.date, 'League night \u00b7 wk ' + onNight.week, !isOther && cur === onNight.date) + opts;
+  opts += chip('other', 'Other week\u2026', isOther, 'msWeekOther()');
+  opts += chip('extra', 'Extra night (no week)', !isOther && cur === 'extra');
+  var sel = '';
+  if (isOther) {
+    sel = '<select class="finput" id="ms-wk-other" style="margin-top:8px" onchange="msWeekPick(this.value, true)">' +
+      '<option value="">Pick the week it counts for\u2026</option>' +
+      m.weeks.map(function(w) { var tk = taken(w), d = _schedD(w.date) - dn;
+        return '<option value="' + w.date + '"' + (tk ? ' disabled' : '') + (cur === w.date ? ' selected' : '') + '>Wk ' + w.week + ' \u00b7 ' + _wkMD(w.date) +
+          (tk ? ' (has a series)' : d < 0 ? ' (post-bowl)' : d > 0 ? ' (pre-bowl)' : '') + '</option>'; }).join('') + '</select>';
+  }
   box.innerHTML = '<div class="ms-wk-ask" style="margin-top:8px;padding:10px;border:1px solid var(--border2);border-radius:10px">' +
-    '<div style="font-size:12px;color:var(--gold);margin-bottom:6px">' + head + ' Counts as:</div>' +
-    '<div style="display:flex;flex-wrap:wrap;gap:6px">' +
-    near.map(function(w) { var d = _schedD(w.date) - dn;
-      return chip(w.date, (d === 0 ? 'League night' : d < 0 ? 'Make-up' : 'Pre-bowl') + ' \u00b7 wk ' + w.week + ' (' + _wkMD(w.date) + ')'); }).join('') +
-    chip('extra', 'Extra night (no week)') + '</div></div>';
+    '<div style="font-size:12px;color:var(--t2);margin-bottom:6px">' + head + ' Counts as:</div>' +
+    '<div style="display:flex;flex-wrap:wrap;gap:6px">' + opts + '</div>' + sel + '</div>';
   renderMsGaps();
 }
-function msWeekPick(val) { var st = window._msWeek || (window._msWeek = {}); st.pick = val; msWeekRender(); }
+function msWeekPick(val, fromOther) { var st = window._msWeek || (window._msWeek = {}); if (!val) return; st.pick = val; st.other = !!fromOther; msWeekRender(); }
+function msWeekOther() { var st = window._msWeek || (window._msWeek = {}); st.other = true;
+  if (st.pick === undefined || st.pick === 'extra') st.pick = st.guess && st.guess !== 'extra' ? st.guess : undefined;
+  msWeekRender(); }
 function renderMsGaps() {
   var box = document.getElementById('ms-gaps'); if (!box) return;
   var st = window._msWeek || {};
@@ -31984,6 +32153,417 @@ function seriesLeagueWeek(seriesID) {
   if (!s || s.LeagueID == null || s.TournamentID != null) return null;
   var m = schedLeague(s.LeagueID), r = m && m.bySeries[seriesID];
   return r ? Object.assign({ of: m.weeks.length, open: m.open }, r) : null;
+}
+
+/* v30.260 DATA-1 D3 / REC-1 Level 1: Game Scores nights. A series with RecLevel 'scores' and games that
+   have FinalScore and no frames (the import shape). Fallback: series total + number of games
+   (ScoresTotalOnly, ScoresTotal, ScoresGames; no game records), which counts in average and handicap
+   only. Entered from the week sheet (a missed week) or New Series (Game Scores). */
+var REC_LEVELS = { scores: 'Game Scores', frames: 'Frame Scores', pins: 'Pin Leaves', shot: 'Shot Detail' };
+/* v30.264 DATA-1 D5 / REC-1: recording level per night. Opens at the league's default (league.RecLevel),
+   else the Settings default (prefs.recLevel; an older Practice Mode on reads as Shot Detail). Stored on the
+   series as RecLevel. Game Scores = totals only (D3); Frame Scores = pins down per ball (# NUM on);
+   Pin Leaves = which pins stand; Shot Detail = Pin Leaves + the shot-detail panel (was Practice Mode). */
+var REC_ORDER = ['scores', 'frames', 'pins', 'shot'];
+var REC_UNLOCKS = {
+  scores: 'Average, handicap, high game and series, score streaks, score challenges.',
+  frames: 'Adds strikes, spares, opens, clean games, strike streaks and frame stats.',
+  pins:   'Adds leaves, conversion rates, splits, pin maps and leave streaks.',
+  shot:   'Adds boards and targeting, pocket entry, speed and revs, miss direction.'
+};
+function recPrefDefault() { var p = getPrefs(); return REC_LEVELS[p.recLevel] ? p.recLevel : (p.practiceMode ? 'shot' : 'pins'); }
+function recDefault(leagueID) {
+  var l = (db.leagues || []).find(function(x) { return x.LeagueID === leagueID; });
+  return (l && REC_LEVELS[l.RecLevel]) ? l.RecLevel : recPrefDefault();
+}
+/* the level of the series being scored (series without a level follow the Settings default) */
+function recCurrent() {
+  var s = (db.series || []).find(function(x) { return x.SeriesID === G.seriesID; });
+  return (s && REC_LEVELS[s.RecLevel]) ? s.RecLevel : recPrefDefault();
+}
+function recShotOn() { return recCurrent() === 'shot'; }
+function recSetDefault(k) { savePrefs({ recLevel: k, practiceMode: k === 'shot' }); if (typeof openSettingsModal === 'function') openSettingsModal(); toast('Default recording level: ' + REC_LEVELS[k]); }
+function msRecPick(k) { var st = window._seriesModalState || (window._seriesModalState = {}); st.recTouched = true; msRecSet(k); }
+function recPickerHTML(cur, fn) {
+  return '<div class="rec-pick">' + REC_ORDER.map(function(k) {
+    return '<button type="button" class="rec-opt' + (k === cur ? ' on' : '') + '" data-rec="' + k + '" onclick="' + fn + '(\'' + k + '\')">' + REC_LEVELS[k] + '</button>'; }).join('') +
+    '</div><div class="rec-unlock" id="rec-unlock">' + REC_UNLOCKS[cur] + '</div>';
+}
+function seriesScratch(s) {
+  if (!s) return { games: 0, pins: 0 };
+  if (s.ScoresTotalOnly) return { games: +s.ScoresGames || 0, pins: +s.ScoresTotal || 0 };
+  var g = (db.games || []).filter(function(x) { return x.SeriesID === s.SeriesID && !x.IsTeammate && x.FinalScore != null; });
+  return { games: g.length, pins: g.reduce(function(a, x) { return a + x.FinalScore; }, 0) };
+}
+/* v30.261 DATA-1: handicap totals are calculated, not frozen. Going into any night: every game counted for
+   an earlier league week (the week a series is matched to by the schedule, so pre-/post-bowls count in
+   their assigned week; series with no week use their date), on top of the starting totals (the first
+   night's stored snapshot). Anchors override from their point: a night whose totals were typed by hand
+   (handicapSnapshot.src 'user', totals going into that night) and league-sheet averages (league.SheetAvgs,
+   totals after that week; D4). Stored snapshots still carry each night's rules (base, %, qualify, entry
+   average, lock). */
+function hdcpLedger(leagueID, extraSeries, opts) {
+  opts = opts || {};
+  var l = (db.leagues || []).find(function(x) { return x.LeagueID === leagueID; });
+  var ss = (db.series || []).filter(function(s) { return s.LeagueID === leagueID && s.TournamentID == null; });
+  if (extraSeries) ss = ss.concat(extraSeries);
+  var m = (l && typeof schedMatch === 'function') ? schedMatch(l, ss, { today: _schedToday(), marks: weekMarksFor(leagueID), joined: l.JoinedDate || null }) : null;
+  var key = function(s) { var r = m && m.bySeries[s.SeriesID]; return (r && r.date) || s.DateBowled || ''; };
+  var rows = ss.map(function(s) { return { s: s, k: key(s) }; }).sort(function(a, b) {
+    return a.k < b.k ? -1 : a.k > b.k ? 1 : (a.s.DateBowled || '') < (b.s.DateBowled || '') ? -1 : (a.s.DateBowled || '') > (b.s.DateBowled || '') ? 1 : a.s.SeriesID - b.s.SeriesID; });
+  var sheets = ((l && l.SheetAvgs) || []).filter(function(a) { return a && a.WeekDate && a.Games > 0 && (a.Avg > 0 || a.Pins > 0) && a.WeekDate !== opts.skipSheet; })
+    .slice().sort(function(a, b) { return a.WeekDate < b.WeekDate ? -1 : 1; });
+  var first = rows.find(function(r) { return r.s.handicapSnapshot && !r.s._virtual; });
+  var g = first ? (+first.s.handicapSnapshot.totalGames || 0) : 0, p = first ? (+first.s.handicapSnapshot.totalPins || 0) : 0;
+  var before = {}, si = 0, src = first ? 'start' : 'none', lastSheet = null;
+  var applySheets = function(uptoKey, inclusive) {
+    while (si < sheets.length && (inclusive ? sheets[si].WeekDate <= uptoKey : sheets[si].WeekDate < uptoKey)) {
+      g = +sheets[si].Games; p = sheets[si].Pins > 0 ? +sheets[si].Pins : +sheets[si].Avg * +sheets[si].Games; lastSheet = sheets[si]; src = 'sheet'; si++; }   // v30.262: total pins when the sheet has them
+  };
+  rows.forEach(function(r) {
+    applySheets(r.k, false);
+    var hs = r.s.handicapSnapshot;
+    if (hs && hs.src === 'user' && r !== first) { g = +hs.totalGames || 0; p = +hs.totalPins || 0; src = 'user'; }
+    before[r.s.SeriesID] = { games: g, pins: p, src: src, key: r.k };
+    var x = seriesScratch(r.s); g += x.games; p += x.pins;
+    applySheets(r.k, true);
+  });
+  applySheets('9999-12-31', true);
+  return { before: before, after: { games: g, pins: p, src: src }, sheet: lastSheet, rows: rows };
+}
+/* v30.261 DATA-1 D4: league-sheet average. league.SheetAvgs = [{ WeekDate (scheduled night it's "as of",
+   after that week's games), Avg, Games, At }]. The latest one is the handicap's anchor; the app's own
+   games after that week add on. The card shows how the sheet and the app's games compare. */
+function hdcpSheetCardHTML(leagueID) {
+  var l = db.leagues.find(function(x) { return x.LeagueID === leagueID; }); if (!l) return '';
+  var m = schedLeague(leagueID), today = _schedToday();
+  var weeks = m ? m.weeks.filter(function(w) { return w.date <= today; }) : [];
+  var sheets = (l.SheetAvgs || []).slice().sort(function(a, b) { return a.WeekDate < b.WeekDate ? 1 : -1; });
+  var lastB = weeks.filter(function(w) { return w.status === 'bowled'; }).pop();
+  var defW = lastB ? lastB.date : (weeks.length ? weeks[weeks.length - 1].date : '');
+  var opts = weeks.map(function(w) { return '<option value="' + w.date + '"' + (w.date === defW ? ' selected' : '') + '>Wk ' + w.week + ' \u00b7 ' + _wkMD(w.date) + '</option>'; }).join('');
+  var rec = sheets.length ? hdcpSheetReconcile(leagueID, sheets[0]) : null;
+  var list = sheets.map(function(a) { var wk = m && m.weeks.find(function(w) { return w.date === a.WeekDate; });
+    return '<div class="stat-row"><span style="font-size:12px">Thru ' + (wk ? 'wk ' + wk.week + ' \u00b7 ' : '') + _wkMD(a.WeekDate) + '</span><span style="font-size:12px;color:var(--t2)">' + a.Games + ' games' + (a.Pins ? ' \u00b7 ' + a.Pins.toLocaleString() + ' pins' : '') + ' \u00b7 ' + a.Avg + ' avg</span>' +
+      '<button class="sc-link" onclick="hdcpSheetDelete(' + leagueID + ',\'' + a.WeekDate + '\')">Remove</button></div>'; }).join('');
+  return '<div class="card" id="hdcp-sheet" style="margin-bottom:14px">' +
+    '<div class="stat-card-title">League sheet</div>' +
+    '<div style="font-size:11px;color:var(--t3);line-height:1.45;margin-bottom:8px">Copy your line from the league\u2019s standings (LeaguePals: <b>Gms</b>, <b>Pins</b>, <b>Avg</b>). It becomes the final say for your average and handicap; games you log after that week add on.</div>' +
+    (rec ? '<div class="cov-line" id="hdcp-sheet-rec">' + rec + '</div>' : '') + list +
+    (weeks.length ? '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px">' +
+      '<div><div class="flabel">Games</div><input class="finput" id="hs-games" type="number" inputmode="numeric" min="1" placeholder="Gms"></div>' +
+      '<div><div class="flabel">Total pins</div><input class="finput" id="hs-pins" type="number" inputmode="numeric" min="1" placeholder="Pins" oninput="hdcpSheetAvgHint()"></div>' +
+      '<div><div class="flabel">Average</div><input class="finput" id="hs-avg" type="number" inputmode="numeric" min="1" max="300" placeholder="Avg"></div></div>' +
+      '<div id="hs-hint" style="font-size:10px;color:var(--t3);margin-top:4px">Total pins gives an exact match; the average alone is close (it\u2019s rounded down).</div>' +
+      '<div class="fgroup" style="margin-top:8px"><div class="flabel">Through week</div><select class="finput" id="hs-week">' + opts + '</select></div>' +
+      '<button class="btn btn-secondary btn-sm" style="width:100%" onclick="hdcpSheetSave(' + leagueID + ')">Save league sheet</button>'
+      : '<div style="font-size:12px;color:var(--t3)">Set the league\u2019s start date and bowling day to enter the league sheet.</div>') +
+    '</div>';
+}
+function hdcpSheetAvgHint() {
+  var g = parseInt(document.getElementById('hs-games')?.value), p = parseInt(document.getElementById('hs-pins')?.value), el = document.getElementById('hs-hint');
+  if (el && g > 0 && p > 0) el.textContent = 'Average from pins: ' + Math.floor(p / g) + ' (' + (p / g).toFixed(2) + ')';
+}
+/* "3 games not logged \u00b7 sheet 216 \u00b7 app 216" for the app's own games up to that week (exact with pins) */
+function hdcpSheetReconcile(leagueID, a) {
+  var lg = hdcpLedger(leagueID, null, { skipSheet: a.WeekDate });
+  var g = 0, p = 0;
+  lg.rows.forEach(function(r) { if (r.k <= a.WeekDate) { var x = seriesScratch(r.s); g += x.games; p += x.pins; } });
+  var appAvg = g ? Math.floor(p / g) : null, miss = a.Games - g;
+  var head = miss > 0 ? miss + ' game' + (miss > 1 ? 's' : '') + ' not logged' : miss < 0 ? 'App has ' + (-miss) + ' more game' + (-miss > 1 ? 's' : '') + ' than the sheet' : 'Same games as the sheet';
+  var tail = '';
+  if (a.Pins > 0) {
+    var dp = a.Pins - p;
+    if (miss > 0) tail = ' \u00b7 ' + dp.toLocaleString() + ' pins (' + (dp / miss).toFixed(1) + ' a game)';
+    else if (miss === 0) tail = dp === 0 ? ' \u00b7 pins match exactly' : ' \u00b7 pins differ by ' + Math.abs(dp) + ' \u2014 check a score';
+  } else if (miss > 0) { var lo = a.Avg * a.Games - p, hi = lo + a.Games - 1;
+    tail = ' \u00b7 about ' + lo + '\u2013' + hi + ' pins (' + Math.floor(lo / miss) + '\u2013' + Math.floor(hi / miss) + ' a game)'; }
+  return head + ' \u00b7 sheet ' + a.Avg + ' \u00b7 app ' + (appAvg != null ? appAvg : '\u2014') + ' (' + g + ' games' + (a.Pins ? ', ' + p.toLocaleString() + ' pins' : '') + ' thru ' + _wkMD(a.WeekDate) + ')' + tail;
+}
+function hdcpSheetSave(leagueID) {
+  var l = db.leagues.find(function(x) { return x.LeagueID === leagueID; }); if (!l) return;
+  var avg = parseInt(document.getElementById('hs-avg')?.value), games = parseInt(document.getElementById('hs-games')?.value),
+      pins = parseInt(document.getElementById('hs-pins')?.value), wk = document.getElementById('hs-week')?.value;
+  if (!(games > 0) || !wk) { toast('Enter the games and the week'); return; }
+  if (pins > 0) {
+    if (pins > games * 300) { toast('That many pins isn’t possible in ' + games + ' games'); return; }
+    var pa = Math.floor(pins / games);
+    if (avg > 0 && avg !== pa) toast('Average from pins is ' + pa + ' — using pins');
+    avg = pa;
+  } else if (!(avg > 0 && avg <= 300)) { toast('Enter total pins (best) or the average'); return; }
+  l.SheetAvgs = (l.SheetAvgs || []).filter(function(a) { return a.WeekDate !== wk; });
+  var rec = { WeekDate: wk, Avg: avg, Games: games, At: new Date().toISOString() }; if (pins > 0) rec.Pins = pins;
+  l.SheetAvgs.push(rec);
+  saveDB(); renderLeagueHandicap(); toast('Sheet average saved');
+}
+function hdcpSheetDelete(leagueID, wk) {
+  var l = db.leagues.find(function(x) { return x.LeagueID === leagueID; }); if (!l) return;
+  l.SheetAvgs = (l.SheetAvgs || []).filter(function(a) { return a.WeekDate !== wk; });
+  saveDB(); renderLeagueHandicap(); toast('Sheet average removed');
+}
+/* v30.263 DATA-1 coverage: weeks with no games inside a span of league nights (streaks) or a date window
+   (challenges). Absent / empty weeks never break a streak (decision 11/8); they are counted here so a
+   streak across them can be marked non-continuous. No league, before-you-joined and upcoming weeks are
+   not gaps. */
+function weekGapsBetween(points) {
+  var out = { absent: 0, nodata: 0, notlogged: 0, unsure: 0, total: 0 };
+  if (!points || points.length < 2) return out;
+  var byLeague = {};
+  points.forEach(function(pt) { var s = (db.series || []).find(function(x) { return x.SeriesID === pt.seriesID; });
+    if (s && s.LeagueID > 0) (byLeague[s.LeagueID] = byLeague[s.LeagueID] || []).push(pt.date); });
+  Object.keys(byLeague).forEach(function(lid) {
+    var ds = byLeague[lid].sort(), lo = ds[0], hi = ds[ds.length - 1];
+    var l = (db.leagues || []).find(function(x) { return x.LeagueID === +lid; });
+    if (!l || l.IsSub) return;
+    var m = schedLeague(+lid); if (!m) return;
+    m.weeks.forEach(function(w) { if (w.date > lo && w.date < hi && out[w.status] != null) { out[w.status]++; out.total++; } });
+  });
+  return out;
+}
+/* v30.265: recording levels in order. Only nights entered with a level (RecLevel, v30.260+) count as
+   lower-level nights; older imported score-only nights are history (a bridge) and are not flagged. */
+var _REC_RANK = { scores: 0, frames: 1, pins: 2, shot: 3 };
+/* nights strictly between two dates recorded below `needs` (optionally one league / tournament group) */
+function nightsBelowLevel(fromDate, toDate, needs, grp) {
+  if (!fromDate || !toDate || fromDate >= toDate) return 0;
+  var need = _REC_RANK[needs], n = 0;
+  (db.series || []).forEach(function(s) {
+    var d = s.DateBowled || ''; if (!(d > fromDate && d < toDate)) return;
+    if (grp && (s.TournamentID != null ? 't' + s.TournamentID : 'l' + s.LeagueID) !== grp) return;
+    if (s.LeagueID === 0 || s.NoTap) return;
+    if (_REC_RANK[s.RecLevel] != null && _REC_RANK[s.RecLevel] < need) n++;
+  });
+  return n;
+}
+function gapPhrase(g) {
+  if (!g || !g.total) return '';
+  var parts = [];
+  if (g.absent) parts.push(g.absent + ' absent');
+  if (g.nodata) parts.push(g.nodata + ' no games');
+  if (g.notlogged) parts.push(g.notlogged + ' not logged');
+  if (g.unsure) parts.push(g.unsure + ' not sure');
+  return 'across ' + g.total + ' week' + (g.total > 1 ? 's' : '') + ' (' + parts.join(', ') + ')';
+}
+/* the points (series) of a streak run */
+function streakRunPoints(avgs, start, len) { return len > 0 && start != null ? avgs.slice(start, start + len) : []; }
+/* Challenge window coverage for your own league nights. */
+function windowCoverage(params) {
+  if (!params || params.where === 'open' || params.where === 'tournament' || !params.start) return null;
+  var today = _schedToday(), hi = params.end && params.end < today ? params.end : today;
+  var ids = params.leagueID != null ? [params.leagueID] : (db.leagues || []).filter(function(l) { return l.LeagueID > 0 && !l.IsSub; }).map(function(l) { return l.LeagueID; });
+  var c = { bowled: 0, absent: 0, noleague: 0, nodata: 0, notlogged: 0, unsure: 0, leagues: 0 };
+  ids.forEach(function(id) {
+    var l = (db.leagues || []).find(function(x) { return x.LeagueID === id; }); if (!l || l.IsSub) return;
+    var m = schedLeague(id); if (!m) return;
+    var n = 0;
+    m.weeks.forEach(function(w) { if (w.date >= params.start && w.date < hi && c[w.status] != null) { c[w.status]++; n++; } });
+    if (n) c.leagues++;
+  });
+  return (c.bowled + c.absent + c.nodata + c.notlogged + c.unsure) ? c : null;
+}
+function chCoverageHTML(ch) {
+  var c = windowCoverage(ch && ch.params); if (!c) return '';
+  var miss = [];
+  if (c.absent) miss.push(c.absent + ' absent');
+  if (c.nodata) miss.push(c.nodata + ' no games');
+  if (c.notlogged) miss.push(c.notlogged + ' bowled, not logged');
+  if (c.unsure) miss.push(c.unsure + ' not sure');
+  return '<div class="cov-line" data-cov="challenge">Your league weeks in this window: ' + c.bowled + ' bowled' + (miss.length ? '<span class="cov-miss"> \u00b7 ' + miss.join(' \u00b7 ') + ' (no games counted)</span>' : '') +
+    '<br><span class="cov-miss">Friends\u2019 coverage needs accounts; their games come from your Team Bowl nights.</span></div>';
+}
+/* totals going into a night that doesn't exist yet (New Series prefill) */
+function hdcpTotalsForDate(leagueID, date) {
+  var v = { SeriesID: 999999998, DateBowled: date, LeagueID: leagueID, _virtual: true };
+  var lg = hdcpLedger(leagueID, [v]); return lg.before[v.SeriesID] || { games: 0, pins: 0, src: 'none' };
+}
+
+function scoresBoxHTML(gps, init) {
+  init = init || {};
+  var mode = init.total != null ? 'total' : 'games';
+  window._scMode = mode;
+  var n = Math.max(1, Math.min(6, gps || 3));
+  var games = init.games || [];
+  var gIn = ''; for (var i = 1; i <= Math.max(n, games.length); i++) gIn += '<input class="finput sc-g" id="sc-g' + i + '" type="number" inputmode="numeric" min="0" max="300" placeholder="G' + i + '" value="' + (games[i - 1] != null ? games[i - 1] : '') + '" oninput="scoresSum()">';
+  return '<div id="sc-box" data-mode="' + mode + '">' +
+    '<div id="sc-games" style="display:' + (mode === 'games' ? 'block' : 'none') + '">' +
+      '<div class="sc-row">' + gIn + '</div>' +
+      '<div class="sc-foot"><span id="sc-sum">' + (games.length ? 'Series ' + games.reduce(function(a, b) { return a + b; }, 0) : '') + '</span>' +
+      '<button class="sc-link" onclick="scoresMode(\'total\')">I only have the series total</button></div></div>' +
+    '<div id="sc-total" style="display:' + (mode === 'total' ? 'block' : 'none') + '">' +
+      '<div class="sc-row"><input class="finput" id="sc-tot" type="number" inputmode="numeric" min="0" placeholder="Series total" value="' + (init.total != null ? init.total : '') + '">' +
+      '<input class="finput" id="sc-n" type="number" inputmode="numeric" min="1" max="6" placeholder="Games" value="' + (init.n || n) + '" style="max-width:90px"></div>' +
+      '<div class="sc-foot"><span style="color:var(--gold)">Total only: counts in average and handicap, not high game. Enter each game when you can.</span>' +
+      '<button class="sc-link" onclick="scoresMode(\'games\')">Enter each game</button></div></div>' +
+    '</div>';
+}
+function scoresMode(m) { window._scMode = m; var a = document.getElementById('sc-games'), b = document.getElementById('sc-total');
+  if (a) a.style.display = m === 'games' ? 'block' : 'none'; if (b) b.style.display = m === 'total' ? 'block' : 'none';
+  var box = document.getElementById('sc-box'); if (box) box.dataset.mode = m; }
+function scoresSum() { var v = [].map.call(document.querySelectorAll('#sc-games .sc-g'), function(e) { return parseInt(e.value); }).filter(function(x) { return !isNaN(x); });
+  var el = document.getElementById('sc-sum'); if (el) el.textContent = v.length ? 'Series ' + v.reduce(function(a, b) { return a + b; }, 0) : ''; }
+/* -> { games: [..] } | { total, n } | { error } */
+function scoresRead() {
+  if (window._scMode === 'total') {
+    var t = parseInt(document.getElementById('sc-tot')?.value), n = parseInt(document.getElementById('sc-n')?.value);
+    if (isNaN(t) || isNaN(n) || n < 1 || n > 6) return { error: 'Enter the series total and number of games' };
+    if (t < 0 || t > 300 * n) return { error: 'That total isn\u2019t possible for ' + n + ' games' };
+    return { total: t, n: n };
+  }
+  var raw = [].map.call(document.querySelectorAll('#sc-games .sc-g'), function(e) { return e.value.trim(); });
+  var g = [];
+  for (var i = 0; i < raw.length; i++) { if (raw[i] === '') continue; var v = Number(raw[i]);
+    if (!Number.isInteger(v) || v < 0 || v > 300) return { error: 'Game ' + (i + 1) + ' must be 0\u2013300' }; g.push(v); }
+  if (!g.length) return { error: 'Enter at least one game score' };
+  return { games: g };
+}
+function _hdcpLaterSeries(leagueID, date, skipID) {
+  return (db.series || []).filter(function(s) { return s.LeagueID === leagueID && s.handicapSnapshot && s.SeriesID !== skipID && (s.DateBowled || '') > date; });
+}
+function _hdcpLaterHTML(leagueID, date) {
+  return '';   // v30.261: handicap totals are calculated, so later nights need no patching
+  var n = _hdcpLaterSeries(leagueID, date).length;
+  return n ? '<label class="sc-hd"><input type="checkbox" id="sc-hdcp-later" checked> Add these games to the handicap totals of the ' + n + ' later night' + (n > 1 ? 's' : '') +
+    '<span>Leave on if your handicap comes from the app; turn off if those nights already use the league sheet\u2019s totals.</span></label>' : '';
+}
+/* Build and save a Game Scores series. opts: leagueID, date, centerID, ballID, notes, lanePair, laneStart,
+   weekDate (the scheduled night it counts for, from the week sheet), weekApply (series-modal answer),
+   shiftLater (bool), sc (scoresRead result). */
+async function saveScoresSeries(opts) {
+  var sc = opts.sc, l = db.leagues.find(function(x) { return x.LeagueID === opts.leagueID; });
+  var id = db.ids.series++;
+  var s = { SeriesID: id, LeagueID: opts.leagueID, CenterID: opts.centerID || l?.CenterID || null, DateBowled: opts.date,
+    LanePair: opts.lanePair || null, LaneStart: opts.laneStart || null, BallID: opts.ballID || null, Notes: opts.notes || '',
+    NoTap: false, GameType: 'League', GamesPerSeries: l?.GamesPerSeries || 3, RecLevel: 'scores' };
+  if (sc.total != null) { s.ScoresTotalOnly = true; s.ScoresTotal = sc.total; s.ScoresGames = sc.n; }
+  if (opts.weekApply) opts.weekApply(s);
+  else if (opts.weekDate && opts.weekDate !== opts.date) { s.LeagueWeekDate = opts.weekDate; s.LeagueWeekSrc = 'user'; }
+  try {
+    var hc = hdcpGet(hdcpLeagueKey(opts.leagueID));
+    var uses = db.series.some(function(x) { return x.LeagueID === opts.leagueID && x.handicapSnapshot; }) || hc.entryAvg != null || hc.baseScore !== 230 || hc.pct !== 90;
+    if (uses) { var b = hdcpBuildSnapshot(opts.leagueID, opts.date);
+      s.handicapSnapshot = { totalGames: b.totalGames, totalPins: b.totalPins, baseScore: b.baseScore, pct: b.pct, qualifyGames: b.qualifyGames, entryAvg: b.entryAvg }; }
+  } catch (e) { console.warn('scores snapshot:', e); }
+  db.series.push(s);
+  (sc.games || []).forEach(function(v, i) {
+    db.games.push({ GameID: db.ids.game++, SeriesID: id, DateBowled: opts.date, GameNumber: i + 1, LeagueID: opts.leagueID, CenterID: s.CenterID,
+      FinalScore: v, GameTotal: v, LanePair: s.LanePair, LaneStart: null, BallID: s.BallID, NoTap: false, GameType: 'League', RecLevel: 'scores' });
+  });
+  if (false && opts.shiftLater) { var add = seriesScratch(s);
+    _hdcpLaterSeries(opts.leagueID, opts.date, id).forEach(function(x) { x.handicapSnapshot.totalGames = (x.handicapSnapshot.totalGames || 0) + add.games; x.handicapSnapshot.totalPins = (x.handicapSnapshot.totalPins || 0) + add.pins; }); }
+  var m = schedLeague(opts.leagueID), r = m && m.bySeries[id];
+  if (r && r.date) { var mk = weekMarksFor(opts.leagueID).find(function(x) { return x.Date === r.date; }); if (mk) setWeekMark(opts.leagueID, r.date, null); }
+  await saveAll();
+  return s;
+}
+function openWeekScores(leagueID, date) {
+  var l = db.leagues.find(function(x) { return x.LeagueID === leagueID; }); if (!l) return;
+  var m = schedLeague(leagueID), w = m && m.weeks.find(function(x) { return x.date === date; });
+  var today = _schedToday(), d0 = date <= today ? date : today;
+  var cOpts = db.centers.map(function(c) { return '<option value="' + c.CenterID + '"' + (c.CenterID === l.CenterID ? ' selected' : '') + '>' + _wkEsc(c.CenterName) + '</option>'; }).join('');
+  openModal('<div class="modal-title">Enter scores</div>' +
+    '<div style="font-size:11px;color:var(--t3);margin-bottom:12px">' + _wkEsc(l.LeagueName) + (w ? ' \u00b7 Week ' + w.week + ' \u00b7 ' + _wkMD(date) : '') + '</div>' +
+    '<div class="fgroup"><label class="flabel">Date bowled</label><input class="finput" id="ws-date" type="date" value="' + d0 + '"></div>' +
+    '<div class="fgroup"><label class="flabel">Center</label><select class="finput" id="ws-center">' + cOpts + '</select></div>' +
+    '<div class="fgroup"><label class="flabel">Game scores</label>' + scoresBoxHTML(l.GamesPerSeries || 3) + '</div>' +
+    _hdcpLaterHTML(leagueID, d0) +
+    '<button class="btn btn-primary" onclick="saveWeekScores(' + leagueID + ',\'' + date + '\')">Save scores</button>' +
+    '<button class="btn btn-secondary" onclick="openWeekSheet(' + leagueID + ',\'' + date + '\')">Back</button>');
+}
+async function saveWeekScores(leagueID, weekDate) {
+  var sc = scoresRead(); if (sc.error) { toast(sc.error); return; }
+  var date = document.getElementById('ws-date')?.value; if (!date) { toast('Date required'); return; }
+  var s = await saveScoresSeries({ leagueID: leagueID, date: date, centerID: parseInt(document.getElementById('ws-center')?.value) || null,
+    weekDate: weekDate, shiftLater: !!document.getElementById('sc-hdcp-later')?.checked, sc: sc });
+  closeModal();
+  if (typeof renderSeriesList === 'function' && G.leagueID === leagueID) renderSeriesList();
+  toast('Scores saved for ' + _wkMD(weekDate));
+  return s;
+}
+/* Tapping a Game Scores series opens its scores (it has no frames to score). */
+function openScoresEdit(seriesID) {
+  var s = db.series.find(function(x) { return x.SeriesID === seriesID; }); if (!s) return;
+  var l = db.leagues.find(function(x) { return x.LeagueID === s.LeagueID; });
+  var games = db.games.filter(function(g) { return g.SeriesID === seriesID && !g.IsTeammate; }).sort(function(a, b) { return a.GameNumber - b.GameNumber; }).map(function(g) { return g.FinalScore; });
+  var init = s.ScoresTotalOnly ? { total: s.ScoresTotal, n: s.ScoresGames } : { games: games };
+  openModal('<div class="modal-title">Game scores \u00b7 ' + _wkMD(s.DateBowled) + '</div>' +
+    '<div style="font-size:11px;color:var(--t3);margin-bottom:12px">' + _wkEsc(l?.LeagueName || '') + ' \u00b7 recorded as Game Scores (no frames)</div>' +
+    scoresBoxHTML(Math.max(l?.GamesPerSeries || 3, games.length), init) +
+    '<button class="btn btn-primary" style="margin-top:12px" onclick="saveScoresEdit(' + seriesID + ')">Save</button>' +
+    '<button class="btn btn-ghost btn-sm" style="width:100%;margin-top:8px" onclick="closeModal();openSeriesModal(' + seriesID + ')">Date, center and week\u2026</button>' +
+    '<button class="btn btn-secondary" onclick="closeModal()">Close</button>');
+}
+async function saveScoresEdit(seriesID) {
+  var sc = scoresRead(); if (sc.error) { toast(sc.error); return; }
+  var s = db.series.find(function(x) { return x.SeriesID === seriesID; }); if (!s) return;
+  var old = db.games.filter(function(g) { return g.SeriesID === seriesID && !g.IsTeammate; });
+  if (old.some(function(g) { return db.frames.some(function(f) { return f.GameID === g.GameID; }); })) { toast('This series has scored frames; edit it in scoring'); return; }
+  db.games = db.games.filter(function(g) { return !(g.SeriesID === seriesID && !g.IsTeammate); });
+  if (old.length) await idbDeleteKeys('games', old.map(function(g) { return g.GameID; }));
+  delete s.ScoresTotalOnly; delete s.ScoresTotal; delete s.ScoresGames;
+  if (sc.total != null) { s.ScoresTotalOnly = true; s.ScoresTotal = sc.total; s.ScoresGames = sc.n; }
+  (sc.games || []).forEach(function(v, i) {
+    db.games.push({ GameID: db.ids.game++, SeriesID: seriesID, DateBowled: s.DateBowled, GameNumber: i + 1, LeagueID: s.LeagueID, CenterID: s.CenterID,
+      FinalScore: v, GameTotal: v, LanePair: s.LanePair || null, LaneStart: null, BallID: s.BallID || null, NoTap: false, GameType: 'League', RecLevel: 'scores' });
+  });
+  await saveAll();
+  if (old.length) await idbDeleteKeys('games', old.map(function(g) { return g.GameID; }));   // again, after any save still writing
+  closeModal();
+  if (typeof renderSeriesList === 'function') renderSeriesList();
+  toast('Scores updated');
+}
+/* New Series: recording level (D3 offers Pin Leaves / Game Scores; D5 adds the rest). */
+function msRecSet(level, auto) {
+  var st = window._seriesModalState || (window._seriesModalState = {}); st.rec = level;
+  document.querySelectorAll('#ms-rec .rec-opt').forEach(function(b) { b.classList.toggle('on', b.dataset.rec === level); });
+  var u = document.querySelector('#ms-rec #rec-unlock'); if (u) u.textContent = REC_UNLOCKS[level] || '';
+  var box = document.getElementById('ms-scores'), lanes = document.getElementById('ms-lanes-wrap');
+  if (box) { if (level === 'scores') { var l = db.leagues.find(function(x) { return x.LeagueID === parseInt(document.getElementById('ms-league')?.value); });
+    box.innerHTML = '<label class="flabel">Game scores</label>' + scoresBoxHTML(l?.GamesPerSeries || 3) + _hdcpLaterHTML(l?.LeagueID, document.getElementById('ms-date')?.value || ''); }
+    else box.innerHTML = ''; }
+  var nt = document.getElementById('ms-notap-wrap'); if (nt) nt.style.display = level === 'scores' ? 'none' : '';
+  var btn = document.getElementById('ms-save-btn'); if (btn && !btn.dataset.edit) btn.textContent = level === 'scores' ? 'Save Scores' : 'Start Bowling \u2192';
+}
+async function saveSeriesScores() {
+  var sc = scoresRead(); if (sc.error) { toast(sc.error); return; }
+  var date = document.getElementById('ms-date').value, leagueID = parseInt(document.getElementById('ms-league').value);
+  if (!date) { toast('Date required'); return; }
+  var a = parseInt(document.getElementById('ms-lane-odd')?.value), b = parseInt(document.getElementById('ms-lane-even')?.value);
+  var lp = (!isNaN(a) && !isNaN(b)) ? Math.min(a, b) + ',' + Math.max(a, b) : null;
+  await saveScoresSeries({ leagueID: leagueID, date: date, centerID: parseInt(document.getElementById('ms-center').value) || null,
+    ballID: parseInt(document.getElementById('ms-ball').value) || null, notes: document.getElementById('ms-notes').value.trim(), lanePair: lp,
+    weekApply: msWeekApply, shiftLater: !!document.getElementById('sc-hdcp-later')?.checked, sc: sc });
+  G.leagueID = leagueID; closeModal();
+  if (typeof renderSeriesList === 'function') renderSeriesList();
+  toast('Scores saved');
+}
+
+/* Coverage: how complete the data behind a league's average is. One helper for every label. */
+function leagueCoverage(leagueID) {
+  var ss = (db.series || []).filter(function(s) { return s.LeagueID === leagueID && s.TournamentID == null; });
+  var ids = {}; ss.forEach(function(s) { ids[s.SeriesID] = 1; });
+  var games = (db.games || []).filter(function(g) { return ids[g.SeriesID] && !g.IsTeammate && !g.NoTap && g.FinalScore != null && g.FinalScore > 0; });
+  var framed = {}; (db.frames || []).forEach(function(f) { framed[f.GameID] = 1; });
+  var c = { games: games.length, pins: games.reduce(function(a, g) { return a + g.FinalScore; }, 0), scoresOnly: 0, totalOnlyNights: 0, totalOnlyGames: 0, totalOnlyPins: 0 };
+  games.forEach(function(g) { if (!framed[g.GameID]) c.scoresOnly++; });
+  ss.forEach(function(s) { if (s.ScoresTotalOnly && !s.NoTap) { c.totalOnlyNights++; c.totalOnlyGames += +s.ScoresGames || 0; c.totalOnlyPins += +s.ScoresTotal || 0; } });
+  c.avgGames = c.games + c.totalOnlyGames; c.avgPins = c.pins + c.totalOnlyPins;
+  var m = schedLeague(leagueID);
+  c.weeks = m ? m.counts : null;
+  c.sub = m ? m.sub : false;
+  return c;
+}
+function coverageLine(leagueID) {
+  var c = leagueCoverage(leagueID), parts = [];
+  if (!c.avgGames) return '';
+  parts.push('From ' + c.avgGames + ' game' + (c.avgGames > 1 ? 's' : ''));
+  if (c.scoresOnly) parts.push(c.scoresOnly + ' score' + (c.scoresOnly > 1 ? 's' : '') + ' only');
+  if (c.totalOnlyNights) parts.push(c.totalOnlyNights + ' night' + (c.totalOnlyNights > 1 ? 's' : '') + ' total only');
+  var miss = [];
+  if (c.weeks && !c.sub) {
+    if (c.weeks.notlogged) miss.push(c.weeks.notlogged + ' week' + (c.weeks.notlogged > 1 ? 's' : '') + ' bowled, not logged');
+    if (c.weeks.nodata) miss.push(c.weeks.nodata + ' week' + (c.weeks.nodata > 1 ? 's' : '') + ' no games');
+  }
+  return '<div class="cov-line">' + parts.join(' \u00b7 ') + (miss.length ? '<span class="cov-miss"> \u00b7 not counted: ' + miss.join(', ') + '</span>' : '') + '</div>';
 }
 
 /* v30.256 one-time (DATA-1 decision 4): James is a roster alternate in Tri-City and Construction A and
@@ -39415,10 +39995,10 @@ _editStatus:'', _editPriority:1, _newSnap:null, _newStatus:'tbd', _editCat:'note
 };
 var _DKM_STATUS_LABELS = {ok:'🟢 Working',partial:'🟡 Partial',broken:'🔴 Broken',tbd:'⚪ TBD'};
 </script>
-<script src="devkit.js?v=v30.257"></script>
-<script src="report.js?v=v30.257"></script>
+<script src="devkit.js?v=v30.265"></script>
+<script src="report.js?v=v30.265"></script>
 <!-- v30.157 NEW-11 step 4: ball catalog manifest check + IDB cache (same-origin, like devkit.js/report.js). Optional: if missing, the app behaves exactly as before. -->
-<script src="catalog.js?v=v30.257"></script>
+<script src="catalog.js?v=v30.265"></script>
 <script>
 /* v30.162 OFF-1: service worker (sw.js, same folder) so the app opens with
    no connection, and a request that the browser keep this app's storage.
