@@ -7,17 +7,24 @@
    Loaded by index.html as connect.js?v=APP_VERSION on first use. */
 (function (root) {
 'use strict';
-var CONNECT_VERSION = 'v30.268';   // v30.268: trophy markers on your posts
+var CONNECT_VERSION = 'v30.269';   // v30.268: trophy markers on your posts; v30.269: select + dismiss
 var POSTS_KEY = 'bowlingdb_connect_posts', REACT_KEY = 'bowlingdb_connect_reacts';
 var REACTIONS = [
   { e: '\ud83d\udc4a', name: 'Fist bump' }, { e: '\ud83d\ude4c', name: 'High five' },
   { e: '\ud83d\udd25', name: 'On fire' }, { e: '\ud83c\udfb3', name: 'Strike!' }];
 var VIS = { friends: 'Friends', league: 'League', me: 'Only me' };
-var cn = { tab: 'feed', filter: 'all', friend: null };
+var cn = { tab: 'feed', filter: 'all', friend: null, sel: null };
+/* v30.269 (James 11/12): mass select + dismiss. The feed fills up on its own (Team Bowl nights, history on a
+   first import), so items can be dismissed one by one, in a batch, or everything older than N days.
+   Dismissing is a view choice: nothing is deleted. Your own posts are hidden (the You tab's Hide, so Show
+   brings one back); friends' items and unposted nights are remembered in bowlingdb_connect_dismissed
+   { key: when }. Keys: p:<post id> (yours), f:<item id> (a friend's), s:<series id> (a night to post). */
+var DISMISS_KEY = 'bowlingdb_connect_dismissed', HIST_KEY = 'bowlingdb_connect_hist_asked';
 
 function load(k, fb) { try { var v = JSON.parse(localStorage.getItem(k) || 'null'); return v == null ? fb : v; } catch (e) { return fb; } }
 function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { if (root.toast) root.toast('Could not save on this phone'); return false; } }
 function posts() { var p = load(POSTS_KEY, []); return Array.isArray(p) ? p : []; }
+function dismissed() { var d = load(DISMISS_KEY, {}); return d && typeof d === 'object' && !Array.isArray(d) ? d : {}; }
 function reacts() { var r = load(REACT_KEY, {}); return r && typeof r === 'object' ? r : {}; }
 function esc(v) { return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
 function DB() { try { return typeof db !== 'undefined' ? db : root.db; } catch (e) { return root.db; } }
@@ -110,7 +117,7 @@ function cnPost(facts, vis) {
   return true;
 }
 function cnSetVis(id, v) { var l = posts(); l.forEach(function (p) { if (p.id === id) p.vis = v; }); save(POSTS_KEY, l); render(); }
-function cnHide(id) { var l = posts(); l.forEach(function (p) { if (p.id === id) p.hidden = !p.hidden; }); save(POSTS_KEY, l); render(); }
+function cnHide(id) { var l = posts(), shown = false; l.forEach(function (p) { if (p.id === id) { p.hidden = !p.hidden; shown = !p.hidden; } }); save(POSTS_KEY, l); if (shown) { var dm = dismissed(); if (dm['p:' + id]) { delete dm['p:' + id]; save(DISMISS_KEY, dm); } } render(); }
 function cnTakeDown(id) {
   (root.openModal)('<div class="modal-title">Take down this post?</div><div style="font-size:13px;color:var(--t2);margin-bottom:14px;line-height:1.5">It leaves Connect. Your games are not touched.</div>' +
     '<button class="btn" style="background:var(--red);color:#fff;font-weight:700;width:100%;margin-bottom:8px" onclick="cnTakeDownYes(\'' + id + '\')">Take down</button>' +
@@ -252,24 +259,108 @@ function banner() {
     '\ud83d\udee0\ufe0f <b>Preview on this phone.</b> Posts and reactions stay here until accounts and friends by invite arrive. ' +
     (usingSample() ? 'The other people are sample bowlers.' : 'Friends are your Team Bowl teammates; their games are the ones you recorded.') + '</div>';
 }
+function itemKey(it) { return it.kind === 'mine' ? 'p:' + it.post.id : 'f:' + it.id; }
+function selWrap(k, html) {
+  if (!cn.sel) return html;
+  var on = !!cn.sel[k];
+  return '<div onclick="cnSelToggle(\'' + esc(k) + '\')" style="position:relative;cursor:pointer">' +
+    '<div style="pointer-events:none;' + (on ? '' : 'opacity:.6') + '">' + html + '</div>' +
+    '<div style="position:absolute;top:-7px;right:-5px;z-index:2;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;' +
+    (on ? 'background:var(--teal);color:#0b0b10;border:2px solid var(--teal)' : 'background:var(--bg1);color:transparent;border:2px solid var(--border2)') + '">\u2713</div></div>';
+}
+function selBar(items) {
+  var n = Object.keys(cn.sel).length, all = items.length && n === items.length;
+  var b = function (l, js, st) { return '<div class="btn-pill" style="' + (st || '') + '" onclick="' + js + '">' + l + '</div>'; };
+  return '<div style="position:sticky;top:0;z-index:5;background:var(--bg0, #0b0b10);padding:6px 0 10px;margin-bottom:4px;display:flex;gap:6px;align-items:center;flex-wrap:wrap">' +
+    '<span style="font-size:13px;font-weight:800;color:var(--t1);margin-right:4px">' + n + ' selected</span>' +
+    b(all ? 'None' : 'All', all ? 'cnSelNone()' : 'cnSelAll()') +
+    b('Older\u2026', 'cnDismissOlder()') +
+    b('Dismiss' + (n ? ' (' + n + ')' : ''), n ? 'cnDismissSel()' : '', n ? 'color:var(--red);border-color:var(--red)' : 'opacity:.45') +
+    b('Done', 'cnSelDone()', 'margin-left:auto') + '</div>';
+}
+/* first visit with a history: offer to keep only recent items (asked once) */
+function histBanner(items) {
+  if (cn.sel || load(HIST_KEY, null)) return '';
+  var old = items.filter(function (it) { return daysAgo(String(it.at).slice(0, 10)) > 30; }).length;
+  if (items.length < 8 || old < 5) return '';
+  return '<div style="background:rgba(196,168,240,0.07);border:1px solid rgba(196,168,240,0.25);border-radius:12px;padding:10px 12px;margin-bottom:12px;font-size:12px;color:var(--t2);line-height:1.5">' +
+    '<b>' + old + ' items are older than 30 days</b> (history). Keep the feed to the last 30 days? Nothing is deleted.' +
+    '<div style="display:flex;gap:6px;margin-top:8px"><div class="btn-pill btn-pill-sel" onclick="cnDismissOlderYes(30,1)">Dismiss older</div><div class="btn-pill" onclick="cnHistKeep()">Keep all</div></div></div>';
+}
+function cnSelStart() { cn.sel = {}; render(); }
+function cnSelDone() { cn.sel = null; render(); }
+function cnSelToggle(k) { if (!cn.sel) return; if (cn.sel[k]) delete cn.sel[k]; else cn.sel[k] = 1; render(); }
+function cnSelAll() { if (!cn.sel) cn.sel = {}; (cn.items || []).forEach(function (it) { cn.sel[itemKey(it)] = 1; }); render(); }
+function cnSelNone() { cn.sel = {}; render(); }
+function dismissKeys(keys) {
+  if (!keys.length) return 0;
+  var dm = dismissed(), now = new Date().toISOString(), mineIds = {}, n = 0;
+  keys.forEach(function (k) { if (dm[k]) return; dm[k] = now; n++; if (k.slice(0, 2) === 'p:') mineIds[k.slice(2)] = 1; });
+  if (Object.keys(mineIds).length) { var l = posts(); l.forEach(function (p) { if (mineIds[p.id]) p.hidden = true; }); save(POSTS_KEY, l); }
+  save(DISMISS_KEY, dm);
+  return n;
+}
+function cnDismissSel() {
+  var n = dismissKeys(Object.keys(cn.sel || {}));
+  cn.sel = null; render();
+  if (root.toast) root.toast(n + ' dismissed from the feed');
+}
+function olderThan(days) { return (cn.items || []).filter(function (it) { return days === 0 || daysAgo(String(it.at).slice(0, 10)) > days; }); }
+function cnDismissOlder() {
+  var opt = function (d, l) { var c = olderThan(d).length; return '<button class="btn btn-ghost" style="width:100%;margin-bottom:8px;' + (c ? '' : 'opacity:.45') + '" ' + (c ? 'onclick="cnDismissOlderYes(' + d + ')"' : 'disabled') + '>' + l + ' <span style="color:var(--t3);font-weight:500">(' + c + ')</span></button>'; };
+  (root.openModal)('<div class="modal-title">Dismiss from the feed</div><div style="font-size:12px;color:var(--t3);margin-bottom:12px">Uses the filter you are on. Nothing is deleted; Show again brings them back.</div>' +
+    opt(7, 'Older than 7 days') + opt(30, 'Older than 30 days') + opt(90, 'Older than 90 days') + opt(0, 'Everything in the feed') +
+    '<button class="btn btn-secondary" style="width:100%" onclick="closeModal()">Cancel</button>');
+}
+function cnDismissOlderYes(days, fromBanner) {
+  var n = dismissKeys(olderThan(days).map(itemKey));
+  if (fromBanner) save(HIST_KEY, new Date().toISOString());
+  cn.sel = null; if (root.closeModal && !fromBanner) root.closeModal(); render();
+  if (root.toast) root.toast(n + ' dismissed from the feed');
+}
+function cnHistKeep() { save(HIST_KEY, new Date().toISOString()); render(); }
+function cnRestoreFeed() {
+  var dm = dismissed(), mineIds = {}, n = 0;
+  Object.keys(dm).forEach(function (k) { if (k.charAt(0) === 's') return; if (k.slice(0, 2) === 'p:') mineIds[k.slice(2)] = 1; delete dm[k]; n++; });
+  var l = posts(); l.forEach(function (p) { if (mineIds[p.id]) p.hidden = false; }); save(POSTS_KEY, l);
+  save(DISMISS_KEY, dm); render();
+  if (root.toast) root.toast(n + ' back in the feed');
+}
+function cnDismissNight(sid) { dismissKeys(['s:' + sid]); render(); }
+function cnDismissAllNights() {
+  var n = dismissKeys(unpostedAll().map(function (x) { return 's:' + x.id; }));
+  render(); if (root.toast) root.toast(n + ' nights dismissed');
+}
+function cnRestoreNights() {
+  var dm = dismissed(); Object.keys(dm).forEach(function (k) { if (k.charAt(0) === 's') delete dm[k]; }); save(DISMISS_KEY, dm); render();
+}
 function feedHTML() {
   var mine = posts().filter(function (p) { return !p.hidden && p.vis !== 'me'; }).map(function (p) { return { id: p.id, who: 'me', at: p.at, exact: true, kind: 'mine', post: p }; });
-  var theirs = friendPosts();
+  var dm = dismissed();
+  var theirs = friendPosts().filter(function (it) { return !dm['f:' + it.id]; });
   var items = cn.filter === 'you' ? mine : cn.filter === 'friends' ? theirs : mine.concat(theirs);
   items.sort(function (a, b) { return String(b.at).localeCompare(String(a.at)); });   // newest first
+  cn.items = items;
   var chip = function (k, l) { return '<div class="btn-pill' + (cn.filter === k ? ' btn-pill-sel' : '') + '" onclick="cnFilter(\'' + k + '\')">' + l + '</div>'; };
+  var nDis = Object.keys(dm).filter(function (k) { return k.charAt(0) !== 's'; }).length;
   return '<div style="position:relative;margin-bottom:10px"><input id="cn-search" class="finput" type="search" placeholder="Search posts, leagues, achievements (e.g. clean game)" value="' + esc(cn.q || '') + '" oninput="cnSearch(this.value)" style="padding-right:80px">' +
     '<span id="cn-search-count" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--t3)"></span></div>' +
-    '<div style="display:flex;gap:6px;margin-bottom:12px">' + chip('all', 'All') + chip('friends', 'Friends') + chip('you', 'You') + '</div>' +
-    (items.length ? items.map(function (it) { return it.kind === 'mine' ? myCard(it.post, false) : friendCard(it); }).join('') :
+    (cn.sel ? selBar(items) : '<div style="display:flex;gap:6px;margin-bottom:12px;align-items:center">' + chip('all', 'All') + chip('friends', 'Friends') + chip('you', 'You') +
+      (items.length ? '<div class="btn-pill" style="margin-left:auto" onclick="cnSelStart()">Select</div>' : '') + '</div>') +
+    histBanner(items) +
+    (items.length ? items.map(function (it) { var k = itemKey(it); return selWrap(k, it.kind === 'mine' ? myCard(it.post, false) : friendCard(it)); }).join('') +
+      (nDis ? '<div style="text-align:center;font-size:12px;color:var(--t3);margin:4px 0 14px">' + nDis + ' dismissed \u00b7 <span style="color:var(--teal);font-weight:700;cursor:pointer" onclick="cnRestoreFeed()">Show again</span></div>' : '') :
+      (nDis ? '<div style="text-align:center;font-size:12px;color:var(--t3);margin:4px 0 14px">' + nDis + ' dismissed \u00b7 <span style="color:var(--teal);font-weight:700;cursor:pointer" onclick="cnRestoreFeed()">Show again</span></div>' : '') +
       '<div class="empty-state"><div class="empty-icon">\ud83e\udd1d</div><div class="empty-label">Nothing here yet</div><div class="empty-sub">Post a night from the You tab or any Share sheet</div></div>');
 }
-function recentUnposted(n) {
-  var d = DB(), posted = {}; posts().forEach(function (p) { if (p.kind === 'series') posted[p.ref] = 1; });
+function recentUnposted(n) { return unpostedAll().slice(0, n); }
+function unpostedAll() {
+  var d = DB(), posted = {}, dm = dismissed(); posts().forEach(function (p) { if (p.kind === 'series') posted[p.ref] = 1; });
+  Object.keys(dm).forEach(function (k) { if (k.slice(0, 2) === 's:') posted[+k.slice(2)] = 1; });
   var bySeries = {};
   (d.games || []).forEach(function (g) { if (g.FinalScore > 0 && !g.IsTeammate) (bySeries[g.SeriesID] = bySeries[g.SeriesID] || []).push(g); });
   return (d.series || []).filter(function (s) { return bySeries[s.SeriesID] && !posted[s.SeriesID] && (typeof root.shrEligible !== 'function' || root.shrEligible(s.SeriesID)); })
-    .sort(function (a, b) { return String(b.DateBowled || '').localeCompare(String(a.DateBowled || '')); }).slice(0, n)
+    .sort(function (a, b) { return String(b.DateBowled || '').localeCompare(String(a.DateBowled || '')); })
     .map(function (s) {
       var lg = (d.leagues || []).filter(function (l) { return l.LeagueID === s.LeagueID; })[0], tn = s.TournamentID != null ? (d.tournaments || []).filter(function (t) { return t.TournamentID === s.TournamentID; })[0] : null;
       var gs = bySeries[s.SeriesID].sort(function (a, b) { return (a.GameNumber || 0) - (b.GameNumber || 0); }).map(function (g) { return g.FinalScore; });
@@ -286,13 +377,16 @@ function youHTML() {
   var rec = '<div class="stat-card" style="margin-bottom:14px"><div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:.8px;text-transform:uppercase;margin-bottom:6px">Challenge record</div>' +
     '<div style="display:flex;align-items:center;gap:10px"><div style="flex:1"><div style="font-size:20px;font-weight:900;color:var(--t1)">' + recText('me') + '</div><div style="font-size:11px;color:var(--t3);margin-top:2px">Wins \u2013 losses \u2013 ties</div></div>' +
     '<button class="btn btn-ghost btn-sm" style="width:auto" onclick="cnTab(\'challenges\')">Challenges \u203a</button></div></div>';
-  var quick = recentUnposted(5);
-  var q = quick.length ? '<div class="sec-header" style="margin-top:6px"><span class="sec-title" style="font-size:15px">Post a recent night</span></div>' +
+  var allQ = unpostedAll(), quick = allQ.slice(0, 5), nNightDis = Object.keys(dismissed()).filter(function (k) { return k.slice(0, 2) === 's:'; }).length;
+  var q = quick.length ? '<div class="sec-header" style="margin-top:6px"><span class="sec-title" style="font-size:15px">Post a recent night</span>' +
+      '<span style="font-size:12px;color:var(--teal);font-weight:700;cursor:pointer" onclick="cnDismissAllNights()">Dismiss all' + (allQ.length > 1 ? ' (' + allQ.length + ')' : '') + '</span></div>' +
     quick.map(function (x) {
       return '<div class="list-row" style="padding:10px 12px;margin-bottom:8px"><div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:700;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(x.where) + '</div>' +
         '<div style="font-size:11px;color:var(--t3)">' + ago(x.date) + ' \u00b7 ' + x.games.join(' \u00b7 ') + ' = ' + x.games.reduce(function (a, b) { return a + b; }, 0) + '</div></div>' +
-        '<button class="btn btn-ghost btn-sm" style="width:auto;padding:5px 12px" onclick="cnQuickPost(' + x.id + ')">Post</button></div>';
-    }).join('') : '';
+        '<button class="btn btn-ghost btn-sm" style="width:auto;padding:5px 12px" onclick="cnQuickPost(' + x.id + ')">Post</button>' +
+        '<button title="Not this one" onclick="cnDismissNight(' + x.id + ')" style="background:none;border:none;color:var(--t3);font-size:16px;padding:4px 2px 4px 10px;cursor:pointer">\u2715</button></div>';
+    }).join('') + (allQ.length > 5 ? '<div style="font-size:11px;color:var(--t3);margin:-2px 0 10px">+' + (allQ.length - 5) + ' older nights not posted</div>' : '') : '';
+  if (nNightDis) q += '<div style="font-size:11px;color:var(--t3);margin:0 0 10px">' + nNightDis + ' night' + (nNightDis === 1 ? '' : 's') + ' dismissed \u00b7 <span style="color:var(--teal);font-weight:700;cursor:pointer" onclick="cnRestoreNights()">Show again</span></div>';
   var mine = '<div class="sec-header" style="margin-top:10px"><span class="sec-title" style="font-size:15px">Your posts</span></div>' +
     (list.length ? list.map(function (p) { return myCard(p, true); }).join('') : '<div style="font-size:12px;color:var(--t3);margin-bottom:14px">No posts yet. Post a recent night above, or use \u201cPost to Connect\u201d on any share card.</div>');
   return head + rec + q + mine;
@@ -358,8 +452,8 @@ function render() {
   el.innerHTML = '<div class="sec-header"><span class="sec-title">Connect</span></div>' + tabs() + (cn.tab === 'feed' || cn.friend ? banner() : '') + body;
   if (cn.q && cn.tab === 'feed' && !cn.friend) cnSearch(cn.q);
 }
-function cnTab(t) { cn.tab = t; cn.friend = null; root._chDetail = null; render(); }
-function cnFilter(f) { cn.filter = f; render(); }
+function cnTab(t) { cn.tab = t; cn.friend = null; cn.sel = null; root._chDetail = null; render(); }
+function cnFilter(f) { cn.filter = f; cn.sel = null; render(); }
 function cnFriend(id) { cn.friend = id; render(); var s = document.querySelector('#s-friend-feed'); if (s) s.scrollTop = 0; }
 function cnBack() { cn.friend = null; render(); }
 function cnInvite() {
@@ -371,6 +465,9 @@ function cnOpen(tab) { if (tab) { cn.tab = tab; cn.friend = null; } render(); }
 var api = { CONNECT_VERSION: CONNECT_VERSION, REACTIONS: REACTIONS };
 root.cnRender = render; root.cnOpen = cnOpen; root.cnPost = cnPost; root.cnTab = cnTab; root.cnFilter = cnFilter; root.cnFriend = cnFriend; root.cnBack = cnBack;
 root.cnReact = cnReact; root.cnSetVis = cnSetVis; root.cnHide = cnHide; root.cnTakeDown = cnTakeDown; root.cnTakeDownYes = cnTakeDownYes;
+root.cnSelStart = cnSelStart; root.cnSelDone = cnSelDone; root.cnSelToggle = cnSelToggle; root.cnSelAll = cnSelAll; root.cnSelNone = cnSelNone;
+root.cnDismissSel = cnDismissSel; root.cnDismissOlder = cnDismissOlder; root.cnDismissOlderYes = cnDismissOlderYes; root.cnHistKeep = cnHistKeep;
+root.cnRestoreFeed = cnRestoreFeed; root.cnDismissNight = cnDismissNight; root.cnDismissAllNights = cnDismissAllNights; root.cnRestoreNights = cnRestoreNights;
 root.cnQuickPost = cnQuickPost; root.cnInvite = cnInvite; root.cnBowlerMenu = cnBowlerMenu; root.cnSearch = cnSearch; root.cnSearchTag = cnSearchTag; root.cnHeadToHead = cnHeadToHead; root.cnChallenge = cnChallenge; root.cnTheirAwards = cnTheirAwards;
 root.BDB_CONNECT = api; root.CONNECT_JS_VERSION = CONNECT_VERSION;
 })(typeof window !== 'undefined' ? window : globalThis);
