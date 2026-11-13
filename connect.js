@@ -7,7 +7,7 @@
    Loaded by index.html as connect.js?v=APP_VERSION on first use. */
 (function (root) {
 'use strict';
-var CONNECT_VERSION = 'v30.242';
+var CONNECT_VERSION = 'v30.268';   // v30.268: trophy markers on your posts
 var POSTS_KEY = 'bowlingdb_connect_posts', REACT_KEY = 'bowlingdb_connect_reacts';
 var REACTIONS = [
   { e: '\ud83d\udc4a', name: 'Fist bump' }, { e: '\ud83d\ude4c', name: 'High five' },
@@ -161,6 +161,15 @@ function pills(list) {
     return '<span class="pill ' + (p.tone === 'notap' ? '' : 'pill-gold') + '" style="' + (p.tone === 'notap' ? 'color:var(--bar-notap);border-color:var(--bar-notap)' : '') + '">' + esc(p.text) + '</span>'; }).join('') + '</div>' : '';
 }
 function chips(scores) { return scores.map(function (g) { return '<span style="font-size:12px;font-weight:700;color:var(--t2);background:var(--bg3);padding:3px 8px;border-radius:8px">' + g + '</span>'; }).join(''); }
+/* v30.268: a game posted before the night was finished said "GAME 2 OF 2"; count the series' scored games now */
+function liveGamesIn(f) {
+  var n = f.gamesInSeries || 0;
+  try {
+    var d = DB(), g0 = (d.games || []).filter(function (g) { return g.GameID === f.gameID; })[0];
+    if (g0) { var live = (d.games || []).filter(function (g) { return g.SeriesID === g0.SeriesID && g.FinalScore != null && !g.IsTeammate && !!g.NoTap === !!g0.NoTap; }).length; if (live > n) n = live; }
+  } catch (e) {}
+  return n;
+}
 function bodyFor(f) {
   var big = function (v, lbl, gold) { return '<div style="display:flex;align-items:flex-end;justify-content:space-between;gap:8px"><div style="font-size:11px;color:var(--t3);font-weight:700;letter-spacing:.04em">' + lbl + '</div><div style="font-size:26px;font-weight:900;line-height:1;color:' + (gold ? 'var(--gold)' : 'var(--t1)') + '">' + v + '</div></div>'; };
   var gold = f.pills && f.pills.length && f.pills[0].tone === 'gold';
@@ -171,7 +180,8 @@ function bodyFor(f) {
   }
   if (f.kind === 'game') {
     var marks = f.frames ? '<div style="font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--t2);margin-top:6px;letter-spacing:.02em">' + f.frames.map(function (x) { return x.marks.join('') || '-'; }).join(' \u00b7 ') + '</div>' : '';
-    return big(f.score, (f.noTap ? 'NO-TAP ' : '') + 'GAME ' + f.gameNumber + (f.gamesInSeries > 1 ? ' OF ' + f.gamesInSeries : ''), gold) + marks;
+    var nIn = liveGamesIn(f);
+    return big(f.score, (f.noTap ? 'NO-TAP ' : '') + 'GAME ' + f.gameNumber + (nIn > 1 ? ' OF ' + nIn : ''), gold) + marks;
   }
   if (f.kind === 'league') return big(f.avg, 'LEAGUE AVERAGE \u00b7 ' + f.games + ' GAMES', gold) +
     '<div style="font-size:11px;color:var(--t3);margin-top:6px">High game ' + f.highGame + ' \u00b7 high series ' + f.highSeries + (f.strikePct != null ? ' \u00b7 strikes ' + f.strikePct + '%' : '') + '</div>';
@@ -180,6 +190,14 @@ function bodyFor(f) {
   if (f.kind === 'season') return big(f.avg, 'SEASON AVERAGE \u00b7 ' + f.games + ' GAMES', gold) +
     '<div style="margin-top:6px">' + f.rows.slice(0, 3).map(function (r) { return '<div style="display:flex;justify-content:space-between;font-size:12px;color:var(--t2);padding:2px 0"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + esc(r.name) + '</span><b style="color:var(--t1);margin-left:8px">' + r.avg + '</b></div>'; }).join('') + (f.rows.length > 3 ? '<div style="font-size:11px;color:var(--t3)">+' + (f.rows.length - 3) + ' more</div>' : '') + '</div>';
   return '';
+}
+/* v30.268: trophy markers (awMarkersHTML in index.html) for a game or series post; awards already named by the
+   post's own headline pill are left out so nothing shows twice */
+function postMarkers(f) {
+  if (typeof root.awMarkersHTML !== 'function') return '';
+  var ref = f.kind === 'game' && f.gameID != null ? { gameID: f.gameID } : f.kind === 'series' && f.seriesID != null ? { seriesID: f.seriesID } : null;
+  if (!ref) return '';
+  try { return root.awMarkersHTML(ref, { skip: (f.pills || []).map(function (p) { return p.text; }), wrap: 'margin-bottom:8px' }); } catch (e) { return ''; }
 }
 function whereOf(f) {
   if (f.kind === 'challenge') return 'Challenge result';
@@ -206,7 +224,7 @@ function myCard(post, manage) {
     '<div style="min-width:0;flex:1"><div style="font-weight:700;font-size:14px;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(me.name) + visPill + '</div>' +
     '<div style="font-size:11px;color:var(--t3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(whereOf(f)) + '</div></div>' +
     '<div style="font-size:11px;color:var(--t3);flex-shrink:0">' + ago(post.at, true) + '</div></div>' +
-    pills(f.pills) + '<div onclick="' + openFacts(post) + '" style="cursor:pointer">' + bodyFor(f) + '</div>' +
+    pills(f.pills) + postMarkers(f) + '<div onclick="' + openFacts(post) + '" style="cursor:pointer">' + bodyFor(f) + '</div>' +
     tagChips(post.tags) + reactBar(post.id) + mg + '</div>';
 }
 function friendCard(item) {
