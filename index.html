@@ -286,7 +286,7 @@
      (its *_VERSION line). sw.js reads this block: it keeps the app's
      files as one matching set and never opens a mix of old and new files. Every file
      is fetched as name.js?v=APP_VERSION. Update a version here when that file changes. -->
-<script type="application/json" id="bdb-files">{"devkit.js":"v30.256","report.js":"v30.156","catalog.js":"v30.243","workbench.js":"v30.223","pinpal.js":"v30.199","awards.js":"v30.250","share.js":"v30.248","connect.js":"v30.242","challenge.js":"v30.263","chplay.js":"v30.247"}</script>
+<script type="application/json" id="bdb-files">{"devkit.js":"v30.256","report.js":"v30.156","catalog.js":"v30.243","workbench.js":"v30.223","pinpal.js":"v30.199","awards.js":"v30.268","share.js":"v30.248","connect.js":"v30.268","challenge.js":"v30.263","chplay.js":"v30.247"}</script>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#0E0F11">
@@ -665,6 +665,11 @@ transition:width 0.3s ease;
 .list-row-name { font-size:16px; font-weight:800; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .list-row-meta { font-size:12px; color:var(--t3); margin-top:2px; }
 .list-row-chevron { color:var(--t3); font-size:20px; flex-shrink:0; }
+.aw-mk { display:flex; gap:6px; flex-wrap:wrap; }
+.aw-mk-chip { display:inline-flex; align-items:center; gap:3px; font-size:10px; font-weight:700; color:var(--gold); background:rgba(255,215,0,0.08);
+  border:1px solid rgba(255,215,0,0.35); border-radius:10px; padding:2px 7px; cursor:pointer; white-space:nowrap; line-height:1.4; }
+.aw-mk-chip.aw-mk-more { color:var(--t2); border-color:var(--border2); background:transparent; }
+.game-row-stats2 { font-size:12px; color:var(--t3); margin-top:6px; display:flex; gap:6px; align-items:baseline; flex-wrap:wrap; }
 .list-row-dashed { border-left-color:var(--border2); }
 .home-hero { text-align:center; padding:14px 0 18px; }
 .home-logo {
@@ -674,7 +679,7 @@ background:linear-gradient(135deg, var(--cyan) 0%, var(--teal) 45%, var(--purple
 background-clip:text;
 }
 .home-sub { font-size:9px; color:var(--t3); letter-spacing:4px; text-transform:uppercase; margin-top:5px; font-weight:700; }
-.qs-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-bottom:16px; }
+.qs-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-bottom:14px; }
 .qs-card {
 background:var(--bg1); border-radius:14px;
 border:1px solid var(--border1);
@@ -740,17 +745,19 @@ position: relative;
 display: flex;
 align-items: center;
 justify-content: space-between;
-padding: 0 2px 10px;
+padding: 0 2px 0;
 gap: 8px;
 opacity: 0;
 transform: translateY(-8px);
 pointer-events: none;
-transition: opacity 0.2s, transform 0.2s;
+max-height: 0; overflow: hidden;   /* v30.267: the hidden bar no longer leaves a gap above the tiles */
+transition: opacity 0.2s, transform 0.2s, max-height 0.2s, padding 0.2s;
 }
 .tile-edit-bar.show {
 opacity: 1;
 transform: translateY(0);
 pointer-events: auto;
+max-height: 60px; padding-bottom: 10px;
 }
 .tile-edit-bar-label {
 font-size: 11px; font-weight: 700;
@@ -2452,6 +2459,27 @@ transition:all 0.12s;
 .reflect-half { padding:5px 10px; }
 .reflect-half:active { background:rgba(196,168,240,0.15); }
 .reflect-half + .reflect-half { border-left:1px solid var(--border1); }
+/* v30.266 REF-2 R1: one Reflect button, form v2, summary line on the series card */
+.sc-act-btn.reflect-btn { color:var(--lilac); border-color:rgba(196,168,240,0.3); }
+.rf2-line { margin-top:8px; padding:6px 8px; border-radius:8px; background:rgba(196,168,240,0.07); border:1px solid rgba(196,168,240,0.18);
+  font-size:11px; line-height:1.45; color:var(--t2); cursor:pointer; }
+.rf2-txt { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.rf2-row { margin-bottom:14px; }
+.rf2-pills { display:flex; gap:7px; flex-wrap:wrap; }
+.rf2-hint { font-weight:400; color:var(--t3); margin-left:6px; font-size:11px; }
+.rf2-sec { font-size:10px; font-weight:800; letter-spacing:1.2px; text-transform:uppercase; color:var(--t3); margin:18px 0 10px; padding-top:10px; border-top:1px solid var(--border1); }
+.rf2-numrow { margin:-6px 0 14px; }
+.rf2-num { width:140px; padding:7px 10px; border-radius:8px; border:1px solid var(--border1); background:var(--bg2); color:var(--t1); font-size:14px; }
+.rf2-ball { margin-top:8px; width:100%; }
+.rf2-note { width:100%; padding:8px 10px; border-radius:8px; border:1px solid var(--border1); background:var(--bg2); color:var(--t1); font-size:14px; resize:vertical; box-sizing:border-box; }
+.rf2-n { display:inline-block; min-width:14px; padding:0 4px; margin-left:3px; border-radius:7px; background:var(--lilac); color:#14121c; font-size:10px; font-weight:800; }
+.btn-pill.rf2-open { box-shadow:0 0 0 2px rgba(196,168,240,0.45); }
+.rf2-panel { background:var(--bg2); border:1px solid var(--border1); border-radius:10px; padding:10px 10px 4px; margin-bottom:14px; }
+.rf2-sub { margin-bottom:10px; }
+.rf2-sublbl { font-size:10px; font-weight:700; color:var(--t3); text-transform:uppercase; letter-spacing:0.8px; margin-bottom:6px; }
+.rf2-panel-foot { display:flex; justify-content:space-between; font-size:12px; font-weight:700; padding:4px 2px 8px; }
+.rf2-panel-foot span:first-child { color:var(--t3); cursor:pointer; }
+.rf2-panel-foot span:last-child { color:var(--lilac); cursor:pointer; }
 .modal-label { font-size:12px; font-weight:700; color:var(--t2); margin-bottom:8px; display:flex; align-items:center; }
 .btn-pill { padding:7px 13px; border-radius:20px; font-size:12px; font-weight:600; cursor:pointer;
 border:1px solid var(--border1); background:var(--bg2); color:var(--t2); transition:all 0.12s; }
@@ -3797,8 +3825,8 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
    Bump both lines (and CATALOG_JS_VERSION in catalog.js when it changes).
    v30.224 OFF-2: also bump the ?v= on the three <script src> tags at the end of
    the page, and the file list in <script id="bdb-files"> when a .js file changes. */
-const APP_VERSION = 'v30.265';
-const APP_BUILD_DATE = '2026-11-03';
+const APP_VERSION = 'v30.268';
+const APP_BUILD_DATE = '2026-11-12';
 /* catalog.js this build expects; an older file on the server shows a warning */
 const EXPECTED_CATALOG_JS = 'v30.243';
 function applyAppVersion() {
@@ -4715,27 +4743,27 @@ svg: `<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="url(#g
 awards: {
 label: 'Trophies',
 action: () => openAwards(),   // v30.226 AWD-1: trophy case (awards.js, loaded on first use)
-bg: 'linear-gradient(135deg,rgba(255,200,60,0.26),rgba(157,78,221,0.22))',
+bg: 'linear-gradient(135deg,rgba(157,78,221,0.26),rgba(0,217,217,0.22))',   /* v30.267: same palette as the other tiles */
 svg: `<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="url(#g-aw)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <defs><linearGradient id="g-aw" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#F5C542"/><stop offset="100%" stop-color="#00D9D9"/></linearGradient></defs>
+      <defs><linearGradient id="g-aw" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#9D4EDD"/><stop offset="100%" stop-color="#00D9D9"/></linearGradient></defs>
       <path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v5a5 5 0 01-10 0V4z"/><path d="M17 5h3v2a3 3 0 01-3 3"/><path d="M7 5H4v2a3 3 0 003 3"/>
     </svg>`
 },
 connect: {
 label: 'Connect',
 action: () => navTo('s-friend-feed'),   // v30.240 SOC-1: Connect hub (connect.js, loaded on first use)
-bg: 'linear-gradient(135deg,rgba(0,217,217,0.26),rgba(255,200,60,0.20))',
+bg: 'linear-gradient(135deg,rgba(0,217,217,0.26),rgba(157,78,221,0.22))',
 svg: `<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="url(#g-cn)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <defs><linearGradient id="g-cn" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#00D9D9"/><stop offset="100%" stop-color="#F5C542"/></linearGradient></defs>
+      <defs><linearGradient id="g-cn" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#00D9D9"/><stop offset="100%" stop-color="#9D4EDD"/></linearGradient></defs>
       <circle cx="9" cy="8" r="3.2"/><circle cx="17" cy="9.5" r="2.6"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M15.5 14.6c3 .2 5.5 2.4 5.5 5.4"/>
     </svg>`
 },
 challenges: {
 label: 'Challenges',
 action: () => openChallenges(),   // v30.241 SOC-1: challenges (challenge.js, inside the Connect screen)
-bg: 'linear-gradient(135deg,rgba(255,200,60,0.24),rgba(232,93,76,0.20))',
+bg: 'linear-gradient(135deg,rgba(157,78,221,0.30),rgba(0,217,217,0.22))',
 svg: `<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="url(#g-ch)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <defs><linearGradient id="g-ch" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#F5C542"/><stop offset="100%" stop-color="#E85D4C"/></linearGradient></defs>
+      <defs><linearGradient id="g-ch" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#9D4EDD"/><stop offset="100%" stop-color="#00D9D9"/></linearGradient></defs>
       <path d="M5 21V4"/><path d="M5 4h12l-2 4 2 4H5"/>
     </svg>`
 },
@@ -7564,6 +7592,7 @@ return `<div class="series-card-wrap">
               ${s.NoTap ? `<span class="pill pill-gold" style="font-size:10px">✦ NoTap</span>`: ''}
               ${s.RecLevel === 'scores' ? `<span class="pill" style="font-size:10px;color:var(--t2)">${s.ScoresTotalOnly ? 'Total only · ' + (s.ScoresGames||0) + ' games' : 'Game scores'}</span>`: ''}
               ${s.Notes ? `<span class="pill" style="font-size:10px;color:var(--t3)">📝</span>`: ''}
+              ${awMarkersHTML({ seriesID: s.SeriesID }, { inline: true })}
               ${(()=>{
 const bl=(s.beerLog||[]);
 if (!bl.length) return '';
@@ -7605,14 +7634,12 @@ return `<div style="padding:7px 2px 4px;border-top:1px solid var(--border1);marg
           </div>`;
 })() : ''}
         <div class="series-games">${badges}${emptyBadges}</div>
+        ${rf2CardLine(s.SeriesID)}
         <div class="series-mini-sc" id="mini-sc-${s.SeriesID}" onclick="event.stopPropagation()"></div>
       </div>
       <div class="series-card-actions">
         <div class="sc-act-btn stats-btn" onclick="openSeriesStatsModal(${s.SeriesID});event.stopPropagation()">Stats</div>
-        ${scores.length ? `<div class="sc-act-btn reflect-split">
-          <span class="reflect-half" onclick="openReflectSessionModal(${s.SeriesID});event.stopPropagation()">Session</span>
-          <span class="reflect-half" onclick="openReflectFramesModal(${s.SeriesID});event.stopPropagation()">Frames</span>
-        </div>`: ''}
+        ${scores.length ? `<div class="sc-act-btn reflect-btn" onclick="openReflectModal(${s.SeriesID});event.stopPropagation()">Reflect</div>`: ''}
         ${scores.length ? `<div class="sc-act-btn ai-btn" onclick="openSeriesDebriefModal(${s.SeriesID});event.stopPropagation()">Debrief</div>`: ''}
         ${scores.length && shrMenuAvailable(s.SeriesID) ? `<div class="sc-act-btn share-btn" onclick="shrMenu(${s.SeriesID});event.stopPropagation()">Share</div>`: ''}
         <div class="sc-act-btn edit" onclick="openEditSeriesModal(${s.SeriesID});event.stopPropagation()">⋯</div>
@@ -7952,7 +7979,23 @@ inlineStats = `<div style="font-size:11px;color:var(--t3);margin-top:4px;display
         <span style="color:var(--gold)">↯${maxStreak}X</span>
         <span style="color:var(--border1)">·</span>
         <span style="color:var(--teal)">${fba}</span><span style="font-size:9px;color:var(--t3)">fba</span>
-      </div>`;
+      </div>${(() => { /* v30.267: second line (taller game banner). Fresh racks incl. frame 10 via buildFreshRackScan */
+        const _fr = buildFreshRackScan([g.GameID]);
+        const _sp = _fr.ledger.filter(e => e.converted !== null);
+        const _one = _sp.filter(e => e.pins.length === 1);
+        const _spl = _fr.ledger.filter(e => e.isSplit);
+        const _mk = a => a.filter(e => e.converted).length;
+        const _pct = _fr.total ? Math.floor(100 * _fr.strikes / _fr.total) : null;
+        const _lbl = t => `<span style="font-size:9px;color:var(--t3)">${t}</span>`;
+        return `<div class="game-row-stats2">
+        ${_lbl('spares')}<span style="color:var(--teal)">${_mk(_sp)}/${_sp.length}</span>
+        <span style="color:var(--border1)">·</span>
+        ${_lbl('single pin')}<span style="color:var(--teal)">${_mk(_one)}/${_one.length}</span>
+        <span style="color:var(--border1)">·</span>
+        ${_lbl('splits')}<span style="color:${_spl.length ? 'var(--gold)' : 'var(--t3)'}">${_spl.length}${_spl.length ? ' (' + _mk(_spl.filter(e => e.converted !== null)) + ' made)' : ''}</span>
+        <span style="color:var(--border1)">·</span>
+        ${_lbl('strike')}<span style="color:var(--gold)">${_pct == null ? '—' : _pct + '%'}</span>
+      </div>`; })()}`;
 }
 
 let beerRowHTML = '';
@@ -7985,6 +8028,7 @@ html += `<div class="game-row-wrap">
           </div>
           ${patternLbl ? `<div class="list-row-meta" style="margin-top:2px">${patternLbl.slice(3)}</div>`: ''}
           ${inlineStats}
+          ${done ? awMarkersHTML({ gameID: g.GameID }, { wrap: 'margin-top:6px' }) : ''}
           ${beerRowHTML}
         </div>
         <span class="list-row-chevron">›</span>
@@ -15929,7 +15973,7 @@ return `
       <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border1)">
         <div style="font-size:10px;font-weight:700;color:var(--t3);letter-spacing:0.6px;text-transform:uppercase;margin-bottom:6px">What-If Projections</div>
         <div class="stat-row" style="border:none;padding:2px 0">
-          <span style="color:var(--t2)">100% 9-Count Avg</span>
+          <span style="color:var(--t2)">100% Single Pin Avg</span>
           <span class="sval">${fmtProj(advStats.singleProjAvg, advStats.singleProjDelta)}</span>
         </div>
         <div class="stat-row" style="border:none;padding:2px 0">
@@ -15944,6 +15988,9 @@ const summaryHTML = `
       <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:0.8px;text-transform:uppercase;margin-bottom:10px">Summary</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
         <div class="stat-row" style="border:none;padding:2px 0"><span>Clean Games</span><span class="sval t">${core.cleanGames} / ${core.gameCount}</span></div>
+        <div class="stat-row" style="border:none;padding:2px 0"><span>Clean Series</span><span class="sval t">${(() => { /* v30.267: every in-scope game of the series clean (same rule as the League Report) */
+          const _cs = seriesInScope.filter(sid => { const sg = games.filter(g => g.SeriesID === sid); return sg.length > 0 && sg.every(g => isGameClean(g.GameID)); }).length;
+          return _cs + ' / ' + seriesInScope.length; })()}</span></div>
         <div class="stat-row" style="border:none;padding:2px 0"><span>Low Game</span><span class="sval" style="color:rgba(157,78,221,0.7)">${core.low??'—'}</span></div>
         <div class="stat-row" style="border:none;padding:2px 0"><span>Total Pins</span><span class="sval" style="color:var(--teal)">${core.totalPins.toLocaleString()}</span></div>
         <div class="stat-row" style="border:none;padding:2px 0"><span>Series</span><span class="sval t">${seriesInScope.length}</span></div>
@@ -20004,7 +20051,7 @@ openModal(`
     ${stats.projGamesCount > 0 ? `
     <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border1)">
       <div style="font-size:10px;font-weight:700;color:var(--t3);letter-spacing:0.6px;text-transform:uppercase;margin-bottom:6px">What-If Projections</div>
-      <div class="stat-row" style="border:none;padding:2px 0"><span style="color:var(--t2)">100% 9-Count Avg</span><span class="sval"><span style="font-weight:800;color:var(--teal)">${stats.singleProjAvg}</span><span style="font-size:11px;color:var(--teal);margin-left:4px">+${stats.singleProjDelta}</span></span></div>
+      <div class="stat-row" style="border:none;padding:2px 0"><span style="color:var(--t2)">100% Single Pin Avg</span><span class="sval"><span style="font-weight:800;color:var(--teal)">${stats.singleProjAvg}</span><span style="font-size:11px;color:var(--teal);margin-left:4px">+${stats.singleProjDelta}</span></span></div>
       <div class="stat-row" style="border:none;padding:2px 0"><span style="color:var(--t2)">100% Makeable Avg</span><span class="sval"><span style="font-weight:800;color:var(--teal)">${stats.makeableProjAvg}</span><span style="font-size:11px;color:var(--teal);margin-left:4px">+${stats.makeableProjDelta}</span></span></div>
       ${stats.projGamesCount < stdSessionGames.length ? `<div style="font-size:10px;color:var(--t3);margin-top:4px">${stats.projGamesCount} of ${stdSessionGames.length} games had pin data</div>`: ''}
     </div>`: ''}
@@ -22256,9 +22303,439 @@ all[category] = list;
 localStorage.setItem('bowlingdb_tagvocab', JSON.stringify(all));
 } catch(e) { console.warn('setTagVocab:', e); }
 }
+/* ==== REF2-R1 CORE BEGIN ==== */
+/* v30.266 REF-2 R1 (DESIGN_reflect.md draft 3, sections 3-4): Reflect form v2 vocabulary,
+   v1 read-through and the series-card summary line. Pure functions (no DOM, no IDB) so the
+   test harness can load this block as it is. Reflect only annotates: nothing here changes a
+   score or a stat pool. Vocabulary stays editable through getTagVocab / setTagVocab (retire
+   an option with active:false, never delete it, so old records keep their labels). */
+var RF2_VOCAB_DEFAULTS = {
+'reflect.feel': [
+{ value: 1, label: 'Rough' }, { value: 2, label: 'Off' }, { value: 3, label: 'Average' },
+{ value: 4, label: 'Good' }, { value: 5, label: 'Clean' }
+],
+'reflect.speedLevel': [
+{ value: 1, label: 'Much slower' }, { value: 2, label: 'Slower' }, { value: 3, label: 'Normal' },
+{ value: 4, label: 'Faster' }, { value: 5, label: 'Much faster' }
+],
+'reflect.revLevel': [
+{ value: 1, label: 'Much lower' }, { value: 2, label: 'Lower' }, { value: 3, label: 'Normal' },
+{ value: 4, label: 'Higher' }, { value: 5, label: 'Much higher' }
+],
+'reflect.friction': [
+{ value: 'early', label: 'Hooking early' }, { value: 'normal', label: 'Normal' }, { value: 'late', label: 'Hooking late' }
+],
+'reflect.transition': [
+{ value: 'none', label: 'None' }, { value: 'early', label: 'Early' }, { value: 'mid', label: 'Mid-series' }, { value: 'late', label: 'Late' }
+],
+'reflect.moved': [
+{ value: 'feet', label: 'Feet' }, { value: 'target', label: 'Target' }, { value: 'ball', label: 'Ball' }, { value: 'surface', label: 'Surface' }
+],
+'reflect.when': [
+{ value: 'early', label: 'Early' }, { value: 'middle', label: 'Middle' }, { value: 'late', label: 'Late' }
+],
+'reflect.vars': [
+{ value: 'accuracy', label: 'Accuracy', when: true, groups: [
+{ key: 'direction', label: 'Direction', single: true, opts: [{ value: 'left', label: 'Left' }, { value: 'right', label: 'Right' }, { value: 'both', label: 'Both' }] },
+{ key: 'where', label: 'Where', opts: [{ value: 'target', label: 'At the target' }, { value: 'breakpoint', label: 'At the breakpoint' }] },
+{ key: 'on', label: 'On', opts: [{ value: 'strike', label: 'Strike ball' }, { value: 'spares', label: 'Spares' }] }
+] },
+{ value: 'speedControl', label: 'Speed control', when: true, groups: [
+{ key: 'how', label: 'Came out', single: true, opts: [{ value: 'faster', label: 'Faster' }, { value: 'slower', label: 'Slower' }, { value: 'inconsistent', label: 'Inconsistent' }] }
+] },
+{ value: 'approach', label: 'Approach', groups: [
+{ key: 'drift', label: 'Drift', single: true, opts: [{ value: 'left', label: 'Left' }, { value: 'right', label: 'Right' }] },
+{ key: 'timing', label: 'Timing', single: true, opts: [{ value: 'early', label: 'Early' }, { value: 'late', label: 'Late' }] },
+{ key: 'other', label: 'Other', opts: [{ value: 'lastStep', label: 'Last step / slide' }] }
+] },
+{ value: 'release', label: 'Release', when: true, groups: [
+{ key: 'how', label: 'What', opts: [
+{ value: 'early', label: 'Came out early' }, { value: 'late', label: 'Came out late' },
+{ value: 'overRev', label: 'Over-revving' }, { value: 'notAround', label: 'Not getting around it' },
+{ value: 'dropping', label: 'Dropping it' }, { value: 'chickenWing', label: 'Chicken-wing' },
+{ value: 'gripSqueeze', label: 'Grip squeeze' }
+] }
+] },
+{ value: 'mental', label: 'Mental', groups: [
+{ key: 'how', label: 'What', opts: [{ value: 'rushing', label: 'Rushing' }, { value: 'distracted', label: 'Distracted' }, { value: 'tight', label: 'Tight / pressing' }] }
+] }
+]
+};
+/* v1 execution chips -> v2 items (design section 4). Missing + Targeting merge into Accuracy;
+   the missing side is kept as Accuracy's direction, so nothing the old chip said is lost.
+   Drifting folds into Approach. "Felt clean" is not an item: with no fault chip it reads as
+   feel 5 (Clean); next to a fault it is left out of feel (the record keeps the original). */
+var RC_V1_EXEC_MAP = {
+missingLeft:  { v: 'accuracy', subs: { direction: ['left'] } },
+missingRight: { v: 'accuracy', subs: { direction: ['right'] } },
+missingBoth:  { v: 'accuracy', subs: { direction: ['both'] } },
+targeting:    { v: 'accuracy', subs: {} },
+drifting:     { v: 'approach', subs: {} },
+approach:     { v: 'approach', subs: {} },
+speed:        { v: 'speedControl', subs: {} }
+};
+function rf2Empty() {
+return { v: 2, feel: null, speedLevel: null, speedMph: null, revLevel: null, revRpm: null,
+lanes: { oil: null, hookedMore: null, friction: null, transition: null, moved: [], movedBall: null },
+items: [], note: null };
+}
+/* Any stored series record (v1 or v2) as a v2-shaped object. v1 records are read, never rewritten
+   here; they become v2 only when the form is saved. */
+function rcNormalize(rec) {
+if (!rec) return null;
+if (rec.v === 2) return rec;
+var out = rf2Empty();
+out.fromV1 = true;
+out.note = rec.note || null;
+var ans = {};
+(rec.answers || []).forEach(function (a) { if (a && a.questionId) ans[a.questionId] = a; });
+if (ans.oilVolume && ans.oilVolume.value != null) out.lanes.oil = ans.oilVolume.value;
+if (ans.laneComparison && ans.laneComparison.value != null) out.lanes.hookedMore = ans.laneComparison.value;
+var ex = (ans.execution && Array.isArray(ans.execution.value)) ? ans.execution.value : [];
+var faults = 0;
+ex.forEach(function (t) {
+if (t === 'feltClean') return;
+faults++;
+var m = RC_V1_EXEC_MAP[t] || { v: t, subs: {} };   /* a chip James added himself carries over as its own item */
+var it = out.items.filter(function (i) { return i.var === m.v; })[0];
+if (!it) { it = { var: m.v, subs: {} }; out.items.push(it); }
+Object.keys(m.subs).forEach(function (k) {
+var cur = it.subs[k] || [];
+m.subs[k].forEach(function (x) { if (cur.indexOf(x) < 0) cur = cur.concat([x]); });
+it.subs[k] = cur;
+});
+});
+out.items.forEach(function (it) {   /* left + right from two chips = both */
+var d = it.subs.direction;
+if (d && (d.indexOf('both') >= 0 || (d.indexOf('left') >= 0 && d.indexOf('right') >= 0))) it.subs.direction = ['both'];
+});
+if (ex.indexOf('feltClean') >= 0 && !faults) out.feel = 5;
+function lvl(q) { var a = ans[q]; return !a ? null : a.value === 'yes' ? 4 : a.value === 'no' ? 3 : null; }
+out.speedLevel = lvl('throwingHarder');
+out.revLevel = lvl('moreRevs');
+return out;
+}
+function rf2HasContent(r) {
+if (!r) return false;
+var L = r.lanes || {};
+return r.feel != null || r.speedLevel != null || r.revLevel != null || r.speedMph != null || r.revRpm != null ||
+L.oil != null || L.hookedMore != null || L.friction != null || L.transition != null ||
+(L.moved && L.moved.length > 0) || (r.items && r.items.length > 0) || !!(r.note && String(r.note).trim());
+}
+/* label lookups go through the live vocabulary first, then the defaults, so retired or edited options still read */
+function rf2VocabList(cat, vocab) {
+var live = (typeof vocab === 'function') ? vocab(cat) : null;
+var def = RF2_VOCAB_DEFAULTS[cat] || [];
+return (live && live.length) ? live.concat(def) : def;
+}
+function rf2Label(cat, value, vocab) {
+var o = rf2VocabList(cat, vocab).filter(function (x) { return x.value === value; })[0];
+return o ? (o.label || o.band || String(value)) : null;
+}
+function rf2VarDef(varValue, vocab) {
+return rf2VocabList('reflect.vars', vocab).filter(function (x) { return x.value === varValue; })[0] || null;
+}
+function rf2WhenLabel(w, vocab) {
+var m = /^g(\d+)$/.exec(w);
+if (m) return 'G' + m[1];
+return rf2Label('reflect.when', w, vocab) || w;
+}
+function rf2SubLabel(def, key, value) {
+var g = def && (def.groups || []).filter(function (x) { return x.key === key; })[0];
+var o = g && (g.opts || []).filter(function (x) { return x.value === value; })[0];
+return o ? o.label : String(value);
+}
+/* One item as words: "Accuracy: right, at the target, late" */
+function rf2ItemText(it, vocab) {
+var def = rf2VarDef(it.var, vocab);
+var name = def ? def.label : (rf2Label('flowA.execution', it.var, vocab) || it.var);
+var bits = [];
+Object.keys(it.subs || {}).forEach(function (k) {
+(it.subs[k] || []).forEach(function (v) {
+bits.push(k === 'when' ? rf2WhenLabel(v, vocab).toLowerCase().replace(/^g(\d)/, 'G$1') : rf2SubLabel(def, k, v).toLowerCase());
+});
+});
+return bits.length ? name + ': ' + bits.join(', ') : name;
+}
+/* Short parts for the series-card line, most telling first. Normal / none / not-sure answers are left
+   out of the line (they are still stored and shown in the form). */
+function rf2SummaryParts(r, vocab) {
+if (!r) return [];
+var p = [], L = r.lanes || {};
+if (r.feel != null) p.push('Felt ' + (rf2Label('reflect.feel', r.feel, vocab) || r.feel).toLowerCase());
+if (r.speedLevel != null && r.speedLevel !== 3) p.push('Speed ' + (rf2Label('reflect.speedLevel', r.speedLevel, vocab) || r.speedLevel).toLowerCase() + (r.speedMph ? ' (' + r.speedMph + ' mph)' : ''));
+else if (r.speedMph) p.push(r.speedMph + ' mph');
+if (r.revLevel != null && r.revLevel !== 3) p.push('Revs ' + (rf2Label('reflect.revLevel', r.revLevel, vocab) || r.revLevel).toLowerCase() + (r.revRpm ? ' (' + r.revRpm + ' rpm)' : ''));
+else if (r.revRpm) p.push(r.revRpm + ' rpm');
+if (L.oil != null) p.push((rf2Label('oilVolume.bands', L.oil, vocab) || ('Oil ' + L.oil)) + ' oil');
+if (L.hookedMore === 'left' || L.hookedMore === 'right') p.push((L.hookedMore === 'left' ? 'Left' : 'Right') + ' lane hooked more');
+else if (L.hookedMore === 'same') p.push('Pair even');
+if (L.friction === 'early' || L.friction === 'late') p.push((rf2Label('reflect.friction', L.friction, vocab) || L.friction));
+if (L.transition && L.transition !== 'none') p.push('Transition ' + (rf2Label('reflect.transition', L.transition, vocab) || L.transition).toLowerCase());
+if (L.moved && L.moved.length) p.push('Moved ' + L.moved.map(function (m) { return (rf2Label('reflect.moved', m, vocab) || m).toLowerCase(); }).join(', '));
+(r.items || []).forEach(function (it) { p.push(rf2ItemText(it, vocab)); });
+return p;
+}
+/* ==== REF2-R1 CORE END ==== */
+
+Object.keys(RF2_VOCAB_DEFAULTS).forEach(function (k) { if (!TAG_VOCAB_DEFAULTS[k]) TAG_VOCAB_DEFAULTS[k] = RF2_VOCAB_DEFAULTS[k]; });
+/* v30.266 REF-2 R1: Reflect form v2 (DESIGN_reflect.md section 3). One form from the series
+   card's Reflect button; the Frames flow is retired from the button (its records, none so far,
+   stay readable). Every row is optional and a second tap clears a pick. Saving writes
+   rc_series_<id> as v:2; a v1 record is read through rcNormalize and, on save, its original
+   answers are kept on the record under v1 so nothing it said is lost. Saving with every row
+   empty removes the reflection. */
+var _rf2 = null;
+async function openReflectModal(seriesID) {
+if (!_rcCache) await rcLoadAll();
+var s = db.series.find(function (x) { return x.SeriesID === seriesID; });
+if (!s) return;
+var raw = rcGetCached(rcSeriesRecordId(seriesID));
+var base = rcNormalize(raw) || rf2Empty();
+var r = JSON.parse(JSON.stringify(base));
+delete r.fromV1;
+if (!r.lanes) r.lanes = rf2Empty().lanes;
+if (!Array.isArray(r.lanes.moved)) r.lanes.moved = [];
+if (!Array.isArray(r.items)) r.items = [];
+var nG = db.games.filter(function (g) { return g.SeriesID === seriesID && !g.IsTeammate; })
+.reduce(function (m, g) { return Math.max(m, g.GameNumber || 0); }, 0);
+if (!nG) { var lg = db.leagues.find(function (l) { return l.LeagueID === s.LeagueID; }); nG = (lg && lg.GamesPerSeries) || 3; }
+_rf2 = { seriesID: seriesID, lanePair: s.LanePair || null, askLanePair: !s.LanePair, r: r, raw: raw, open: null, nGames: nG };
+rf2Render();
+}
+function openReflectSessionModal(seriesID) { return openReflectModal(seriesID); }   /* v30.266: old entry point, same form */
+function rf2Opts(cat) {
+return getTagVocab(cat).filter(function (o) { return o.active !== false; });
+}
+function rf2Get(path) {
+var o = _rf2.r, ks = path.split('.');
+for (var i = 0; i < ks.length; i++) { if (o == null) return null; o = o[ks[i]]; }
+return o;
+}
+function rf2SetPath(path, v) {
+var o = _rf2.r, ks = path.split('.');
+for (var i = 0; i < ks.length - 1; i++) o = o[ks[i]];
+o[ks[ks.length - 1]] = v;
+}
+/* single pick by index into the live vocabulary; tapping the picked one clears it */
+function rf2Pick(path, cat, idx) {
+if (!_rf2) return;
+var o = rf2Opts(cat)[idx];
+if (!o) return;
+rf2SetPath(path, rf2Get(path) === o.value ? null : o.value);
+rf2Render();
+}
+function rf2ToggleMoved(idx) {
+if (!_rf2) return;
+var o = rf2Opts('reflect.moved')[idx];
+if (!o) return;
+var cur = _rf2.r.lanes.moved, i = cur.indexOf(o.value);
+_rf2.r.lanes.moved = i >= 0 ? cur.slice(0, i).concat(cur.slice(i + 1)) : cur.concat([o.value]);
+if (_rf2.r.lanes.moved.indexOf('ball') < 0) _rf2.r.lanes.movedBall = null;
+rf2Render();
+}
+function rf2MovedBall(v) { if (_rf2) _rf2.r.lanes.movedBall = v ? +v : null; }
+function rf2Num(path, v) {
+if (!_rf2) return;
+var n = parseFloat(v);
+rf2SetPath(path, isFinite(n) && n > 0 ? n : null);
+}
+function rf2Note(v) { if (_rf2) _rf2.r.note = v; }
+function rf2LanePair(v) { if (_rf2) _rf2.lanePair = v; }
+function rf2Item(varValue) { return _rf2.r.items.filter(function (i) { return i.var === varValue; })[0] || null; }
+/* a variable chip: first tap adds and opens it, tap again folds it (it stays tagged) */
+function rf2TapVar(idx) {
+if (!_rf2) return;
+var def = rf2Opts('reflect.vars')[idx];
+if (!def) return;
+if (!rf2Item(def.value)) { _rf2.r.items.push({ var: def.value, subs: {} }); _rf2.open = def.value; }
+else _rf2.open = (_rf2.open === def.value) ? null : def.value;
+rf2Render();
+}
+function rf2RemoveVar(varValue) {
+if (!_rf2) return;
+_rf2.r.items = _rf2.r.items.filter(function (i) { return i.var !== varValue; });
+if (_rf2.open === varValue) _rf2.open = null;
+rf2Render();
+}
+function rf2RemoveItemAt(i) {
+if (!_rf2) return;
+_rf2.r.items = _rf2.r.items.filter(function (x, j) { return j !== i; });
+rf2Render();
+}
+function rf2WhenOpts() {
+var out = rf2Opts('reflect.when').slice();
+for (var g = 1; g <= _rf2.nGames; g++) out.push({ value: 'g' + g, label: 'Game ' + g });
+return out;
+}
+function rf2SubOpts(def, key) {
+if (key === 'when') return rf2WhenOpts();
+var g = (def.groups || []).filter(function (x) { return x.key === key; })[0];
+return g ? (g.opts || []).filter(function (o) { return o.active !== false; }) : [];
+}
+function rf2TapSub(varValue, key, idx) {
+if (!_rf2) return;
+var def = rf2Opts('reflect.vars').filter(function (d) { return d.value === varValue; })[0];
+var it = rf2Item(varValue);
+if (!def || !it) return;
+var o = rf2SubOpts(def, key)[idx];
+if (!o) return;
+var g = (def.groups || []).filter(function (x) { return x.key === key; })[0];
+var cur = it.subs[key] || [], i = cur.indexOf(o.value);
+if (i >= 0) cur = cur.slice(0, i).concat(cur.slice(i + 1));
+else cur = (g && g.single) ? [o.value] : cur.concat([o.value]);
+if (cur.length) it.subs[key] = cur; else delete it.subs[key];
+rf2Render();
+}
+function rf2Pill(label, sel, onclick) {
+return '<button class="btn-pill' + (sel ? ' btn-pill-sel' : '') + '" onclick="' + onclick + '">' + ldEsc(label) + '</button>';
+}
+function rf2Row(title, inner, hint) {
+return '<div class="rf2-row"><div class="modal-label">' + title + (hint ? '<span class="rf2-hint">' + hint + '</span>' : '') + '</div>' +
+'<div class="rf2-pills">' + inner + '</div></div>';
+}
+function rf2PickRow(title, path, cat, hint) {
+var cur = rf2Get(path);
+var inner = rf2Opts(cat).map(function (o, i) {
+return rf2Pill(o.label || o.band, cur === o.value, "rf2Pick('" + path + "','" + cat + "'," + i + ")");
+}).join('');
+return rf2Row(title, inner, hint);
+}
+function rf2Render() {
+var d = _rf2, r = d.r, L = r.lanes;
+var s = db.series.find(function (x) { return x.SeriesID === d.seriesID; });
+var dateStr = s && s.DateBowled ? fmtDate(s.DateBowled, { month: 'short', day: 'numeric', year: 'numeric' }) : '';
+var numIn = function (path, ph, val) {
+return '<input class="rf2-num" type="number" inputmode="decimal" step="any" min="0" placeholder="' + ph + '" value="' + (val != null ? val : '') + '" oninput="rf2Num(\'' + path + '\',this.value)">';
+};
+var movedInner = rf2Opts('reflect.moved').map(function (o, i) {
+return rf2Pill(o.label, L.moved.indexOf(o.value) >= 0, 'rf2ToggleMoved(' + i + ')');
+}).join('');
+var ballSel = '';
+if (L.moved.indexOf('ball') >= 0) {
+var balls = (typeof sortedBalls === 'function') ? sortedBalls(L.movedBall) : db.balls;
+ballSel = '<select class="finput rf2-ball" onchange="rf2MovedBall(this.value)"><option value="">Which ball?</option>' +
+balls.map(function (b) { return '<option value="' + b.BallID + '"' + (L.movedBall === b.BallID ? ' selected' : '') + '>' + ldEsc(b.BallName) + '</option>'; }).join('') +
+'</select>';
+}
+var defs = rf2Opts('reflect.vars');
+var varChips = defs.map(function (def, i) {
+var it = rf2Item(def.value);
+var n = it ? Object.keys(it.subs).reduce(function (a, k) { return a + it.subs[k].length; }, 0) : 0;
+return '<button class="btn-pill' + (it ? ' btn-pill-sel' : '') + (d.open === def.value ? ' rf2-open' : '') + '" onclick="rf2TapVar(' + i + ')">' +
+ldEsc(def.label) + (n ? ' <span class="rf2-n">' + n + '</span>' : '') + '</button>';
+}).join('');
+/* v1 chips James added himself carry over as items with no definition: shown so they can be removed */
+var extra = r.items.map(function (it, i) {
+if (defs.some(function (df) { return df.value === it.var; })) return '';
+return '<button class="btn-pill btn-pill-sel" onclick="rf2RemoveItemAt(' + i + ')">' + ldEsc(rf2ItemText(it, getTagVocab)) + ' ✕</button>';
+}).join('');
+var openPanel = '';
+var od = d.open ? defs.filter(function (df) { return df.value === d.open; })[0] : null;
+var oit = d.open ? rf2Item(d.open) : null;
+if (od && oit) {
+var keys = (od.groups || []).map(function (g) { return { key: g.key, label: g.label }; });
+if (od.when) keys.push({ key: 'when', label: 'When' });
+openPanel = '<div class="rf2-panel">' + keys.map(function (k) {
+var cur = oit.subs[k.key] || [];
+return '<div class="rf2-sub"><div class="rf2-sublbl">' + ldEsc(k.label) + '</div><div class="rf2-pills">' +
+rf2SubOpts(od, k.key).map(function (o, i) {
+return rf2Pill(o.label, cur.indexOf(o.value) >= 0, "rf2TapSub('" + od.value + "','" + k.key + "'," + i + ")");
+}).join('') + '</div></div>';
+}).join('') +
+'<div class="rf2-panel-foot"><span onclick="rf2RemoveVar(\'' + od.value + '\')">Remove ' + ldEsc(od.label) + '</span>' +
+'<span onclick="rf2TapVar(' + defs.indexOf(od) + ')">Done</span></div></div>';
+}
+var lanePairBlock = d.askLanePair ?
+'<div class="rf2-row"><div class="modal-label">Lane pair<span class="rf2-hint">not on file for this series</span></div>' +
+'<input class="finput" type="text" placeholder="e.g. 7,8" value="' + ldEsc(d.lanePair || '') + '" oninput="rf2LanePair(this.value)"></div>' : '';
+var sheet = document.querySelector('#modal-bg .modal-sheet');
+var keepTop = sheet ? sheet.scrollTop : 0;
+var wasOpen = document.getElementById('modal-bg').classList.contains('open') && document.getElementById('rf2-root');
+(wasOpen ? swapModal : openModal)(
+'<div id="rf2-root">' +
+'<div class="modal-title">🗒️ Reflect</div>' +
+'<div style="font-size:12px;color:var(--t3);margin-bottom:12px">' + dateStr + ' · every row optional · tap again to clear</div>' +
+rf2PickRow('Overall feel', 'feel', 'reflect.feel') +
+'<div class="rf2-sec">How you played it</div>' +
+rf2PickRow('Speed', 'speedLevel', 'reflect.speedLevel', 'vs your normal') +
+'<div class="rf2-numrow">' + numIn('speedMph', 'mph, if known', r.speedMph) + '</div>' +
+rf2PickRow('Revs', 'revLevel', 'reflect.revLevel', 'vs your normal') +
+'<div class="rf2-numrow">' + numIn('revRpm', 'rpm, if known', r.revRpm) + '</div>' +
+'<div class="rf2-sec">Lanes</div>' +
+lanePairBlock +
+rf2PickRow('Oil volume', 'lanes.oil', 'oilVolume.bands') +
+rf2PickRow('Which pair hooked more?', 'lanes.hookedMore', 'flowA.laneComparison') +
+rf2PickRow('Friction read', 'lanes.friction', 'reflect.friction') +
+rf2PickRow('Transition', 'lanes.transition', 'reflect.transition') +
+rf2Row('What you moved', movedInner + ballSel, 'any') +
+'<div class="rf2-sec">Execution</div>' +
+'<div style="font-size:11px;color:var(--t3);margin:-4px 0 8px">Tap a variable to describe it; not every option is a fault.</div>' +
+'<div class="rf2-pills" style="margin-bottom:10px">' + varChips + extra + '</div>' +
+openPanel +
+'<div class="rf2-row"><div class="modal-label">Notes</div>' +
+'<textarea rows="3" placeholder="Optional" oninput="rf2Note(this.value)" class="rf2-note">' + ldEsc(r.note || '') + '</textarea></div>' +
+'<button class="btn btn-primary" style="width:100%" onclick="rf2Save()">Save</button>' +
+'<button class="btn btn-secondary" style="width:100%;margin-top:8px" onclick="closeModal()">Cancel</button>' +
+'</div>'
+);
+if (sheet) sheet.scrollTop = keepTop;
+}
+async function rf2Save() {
+var d = _rf2;
+if (!d) return;
+var id = rcSeriesRecordId(d.seriesID);
+var lp = (d.lanePair || '').trim();
+if (d.askLanePair && lp) {
+var s = db.series.find(function (x) { return x.SeriesID === d.seriesID; });
+if (s && !s.LanePair) { s.LanePair = lp; await idbPutAll('series', [s]); }
+}
+var r = JSON.parse(JSON.stringify(d.r));
+if (r.note != null) { r.note = String(r.note).trim() || null; }
+if (r.lanes.moved.indexOf('ball') < 0) r.lanes.movedBall = null;
+r.items.forEach(function (it) { Object.keys(it.subs).forEach(function (k) { if (!it.subs[k] || !it.subs[k].length) delete it.subs[k]; }); });
+if (!rf2HasContent(r)) {
+if (d.raw) {
+await idbDeleteKeys('recalledContext', [id]);
+_rcCache = (_rcCache || []).filter(function (x) { return x.id !== id; });
+closeModal(); toast('Reflection cleared'); renderSeriesList();
+} else if (d.askLanePair && lp) {
+closeModal(); toast('Lane pair saved'); renderSeriesList();
+} else toast('Nothing to save yet');
+return;
+}
+var now = new Date().toISOString();
+var rec = {
+id: id, eventRef: { type: 'series', seriesID: d.seriesID }, v: 2,
+feel: r.feel, speedLevel: r.speedLevel, speedMph: r.speedMph, revLevel: r.revLevel, revRpm: r.revRpm,
+lanes: r.lanes, items: r.items, note: r.note,
+source: 'user-recalled', createdAt: (d.raw && d.raw.createdAt) || now, updatedAt: now
+};
+if (d.raw && d.raw.v !== 2) rec.v1 = { answers: d.raw.answers || [], note: d.raw.note || null, createdAt: d.raw.createdAt || null };
+else if (d.raw && d.raw.v1) rec.v1 = d.raw.v1;
+await rcSave(rec);
+closeModal();
+toast('Reflection saved');
+renderSeriesList();
+}
+/* the line on the series card; tapping it opens the form */
+var _rcLoading = false;
+function rf2CardLine(seriesID) {
+if (!_rcCache) {
+if (!_rcLoading) { _rcLoading = true; rcLoadAll().then(function () { _rcLoading = false; if (document.getElementById('series-list')) renderSeriesList(); }).catch(function () { _rcLoading = false; _rcCache = []; }); }
+return '';
+}
+var n = rcNormalize(rcGetCached(rcSeriesRecordId(seriesID)));
+if (!n || !rf2HasContent(n)) return '';
+var parts = rf2SummaryParts(n, getTagVocab);
+var hasNote = !!(n.note && String(n.note).trim());
+if (!parts.length && !hasNote) return '';
+return '<div class="rf2-line" onclick="openReflectModal(' + seriesID + ');event.stopPropagation()"><span class="rf2-txt">🗒️ ' + ldEsc(parts.join(' · ')) + (hasNote ? (parts.length ? ' · ' : '') + '📝' : '') + '</span></div>';
+}
  
 var _rfDraft = null; 
-async function openReflectSessionModal(seriesID) {
+/* v30.266: the v1 Session form, kept unused (openReflectSessionModal now opens form v2) */
+async function openReflectSessionModalV1(seriesID) {
 if (!_rcCache) await rcLoadAll();
 var s = db.series.find(function(x){ return x.SeriesID === seriesID; });
 if (!s) return;
@@ -24597,7 +25074,7 @@ openModal(`
     ${stats.projGamesCount > 0 ? `
     <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border1)">
       <div style="font-size:10px;font-weight:700;color:var(--t3);letter-spacing:0.6px;text-transform:uppercase;margin-bottom:6px">What-If Projections</div>
-      <div class="stat-row" style="border:none;padding:2px 0"><span style="color:var(--t2)">100% 9-Count Avg</span><span class="sval"><span style="font-weight:800;color:var(--teal)">${stats.singleProjAvg}</span><span style="font-size:11px;color:var(--teal);margin-left:4px">+${stats.singleProjDelta}</span></span></div>
+      <div class="stat-row" style="border:none;padding:2px 0"><span style="color:var(--t2)">100% Single Pin Avg</span><span class="sval"><span style="font-weight:800;color:var(--teal)">${stats.singleProjAvg}</span><span style="font-size:11px;color:var(--teal);margin-left:4px">+${stats.singleProjDelta}</span></span></div>
       <div class="stat-row" style="border:none;padding:2px 0;padding-left:12px"><span style="color:var(--t3);font-size:12px">Series Total</span><span class="sval"><span style="font-weight:700;color:var(--teal);font-size:13px">${stats.singleProjTotal}</span><span style="font-size:11px;color:var(--teal);margin-left:4px">+${stats.singleProjTotalDelta}</span></span></div>
       <div class="stat-row" style="border:none;padding:2px 0;margin-top:4px"><span style="color:var(--t2)">100% Makeable Avg</span><span class="sval"><span style="font-weight:800;color:var(--teal)">${stats.makeableProjAvg}</span><span style="font-size:11px;color:var(--teal);margin-left:4px">+${stats.makeableProjDelta}</span></span></div>
       <div class="stat-row" style="border:none;padding:2px 0;padding-left:12px"><span style="color:var(--t3);font-size:12px">Series Total</span><span class="sval"><span style="font-weight:700;color:var(--teal);font-size:13px">${stats.makeableProjTotal}</span><span style="font-size:11px;color:var(--teal);margin-left:4px">+${stats.makeableProjTotalDelta}</span></span></div>
@@ -24955,7 +25432,7 @@ openModal(`
     ${stats.projGamesCount > 0 ? `
     <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border1)">
       <div style="font-size:10px;font-weight:700;color:var(--t3);letter-spacing:0.6px;text-transform:uppercase;margin-bottom:6px">What-If Projection</div>
-      <div class="stat-row" style="border:none;padding:2px 0"><span style="color:var(--t2)">100% 9-Count</span><span class="sval"><span style="font-weight:800;color:var(--teal)">${stats.singleProjAvg}</span><span style="font-size:11px;color:var(--teal);margin-left:4px">+${stats.singleProjDelta}</span></span></div>
+      <div class="stat-row" style="border:none;padding:2px 0"><span style="color:var(--t2)">100% Single Pin</span><span class="sval"><span style="font-weight:800;color:var(--teal)">${stats.singleProjAvg}</span><span style="font-size:11px;color:var(--teal);margin-left:4px">+${stats.singleProjDelta}</span></span></div>
       <div class="stat-row" style="border:none;padding:2px 0"><span style="color:var(--t2)">100% Makeable</span><span class="sval"><span style="font-weight:800;color:var(--teal)">${stats.makeableProjAvg}</span><span style="font-size:11px;color:var(--teal);margin-left:4px">+${stats.makeableProjDelta}</span></span></div>
     </div>`: ''}
     ${buildBallUsageHTML([gameID])}
@@ -31465,6 +31942,90 @@ s.src = 'awards.js?v=' + encodeURIComponent(APP_VERSION);
 s.onload = () => { if (typeof awOpen === 'function') awOpen(); else toast('Trophy case did not load'); };
 s.onerror = () => toast('Trophy case unavailable: upload awards.js next to index.html');
 document.head.appendChild(s);
+}
+
+/* v30.268 AWD-MK: trophy markers on series cards, game rows and Connect posts (James 11/12).
+   Reads the trophy case's own scan (awScanNow in awards.js: same settings, entering averages and
+   certified marks), so a marker and the trophy case never disagree. Shown: honors, No-Tap, milestones,
+   USBC brackets, pins over average and named splits converted. Not shown: "Left the ..." awards (chance)
+   and awards still waiting on an average (pending); both stay in the trophy case. awards.js loads the
+   first time a marker is needed; the scan is cached until games, frames, scores or award settings change.
+   Up to 3 chips and a "+N" chip; tapping a chip opens that award in the trophy case. */
+var _awMk = { res: null, sig: '', loading: false, failed: false };
+var AW_MK_ICON = { honor: '🏆', poa: '📈', capped: '🎖️', split: '🎯', mile: '⭐', notap: '✦' };
+var AW_MK_ORDER = { honor: 0, notap: 1, mile: 2, capped: 3, poa: 4, split: 5 };
+var AW_MK_SHORT = { h300: '300 game', h299: '299 game', h298: '298 game', h700: '700 series', h800: '800 series', h900: '900 series',
+  h11f: '11 in a row', h11b: '11 in a row', hclean: 'Clean game', hcleans: 'Clean series', hspare: 'All-spare game', hdutch: 'Dutch 200',
+  htrip: 'Triplicate', nt300: 'No-Tap 300', mhg: 'Career high game', mhs: 'Career high series', m250: 'First 250', m275: 'First 275', mrun: 'Longest strike run' };
+function _awMkSig() {
+  var gs = db.games || [], n = 0;
+  for (var i = 0; i < gs.length; i++) n = (n + (gs[i].FinalScore || 0) * ((i % 13) + 1) + (gs[i].NoTap ? 7 : 0)) % 1000000007;
+  var lg = (db.leagues || []).map(function (l) { return l.Sanctioned == null ? '-' : l.Sanctioned ? 1 : 0; }).join('');
+  var tn = (db.tournaments || []).map(function (t) { return t.Sanctioned == null ? '-' : t.Sanctioned ? 1 : 0; }).join('');
+  var cfg = ''; try { cfg = localStorage.getItem('bowlingdb_awards_cfg') || ''; } catch (e) {}
+  return gs.length + ':' + (db.frames || []).length + ':' + (db.attempts || []).length + ':' + (db.series || []).length + ':' + n + ':' + lg + ':' + tn + ':' + cfg;
+}
+function _awMkRedraw() {
+  var cur = getCurrentScreen();
+  try {
+    if (cur === 's-series') renderSeriesList();
+    else if (cur === 's-game-select') renderGameSelect();
+    else if (cur === 's-friend-feed' && typeof cnOpen === 'function') cnOpen();
+  } catch (e) { console.warn('awMk redraw', e); }
+}
+function _awMkLoad() {
+  if (_awMk.loading || _awMk.failed) return;
+  if (typeof BDB_AWARDS !== 'undefined' && typeof awScanNow !== 'function') { _awMk.failed = true; return; }   /* an older awards.js is loaded: no markers until it is updated */
+  _awMk.loading = true;
+  var s = document.createElement('script');
+  s.src = 'awards.js?v=' + encodeURIComponent(APP_VERSION);
+  s.onload = function () { _awMk.loading = false; if (typeof awScanNow !== 'function') { _awMk.failed = true; return; } _awMkRedraw(); };
+  s.onerror = function () { _awMk.loading = false; _awMk.failed = true; };
+  document.head.appendChild(s);
+}
+/* awards for one game ({gameID}) or one series ({seriesID}: the series' own awards plus its games'), grouped */
+function awMkList(ref) {
+  if (!ref || (ref.gameID == null && ref.seriesID == null)) return [];
+  if (typeof awScanNow !== 'function' || typeof BDB_AWARDS === 'undefined') { _awMkLoad(); return []; }
+  var sig = _awMkSig();
+  if (!_awMk.res || _awMk.sig !== sig) {
+    try { _awMk.res = awScanNow(); } catch (e) { console.warn('awMk scan', e); _awMk.res = { occurrences: [] }; }
+    _awMk.sig = sig;
+  }
+  var A = BDB_AWARDS.AWARDS, groups = {}, order = [];
+  (_awMk.res.occurrences || []).forEach(function (o) {
+    var a = A[o.award];
+    if (!a || o.pending || a.chance) return;
+    if (ref.gameID != null ? o.gameID !== ref.gameID : o.seriesID !== ref.seriesID) return;
+    if (!groups[o.award]) { groups[o.award] = { award: o.award, cls: a.cls, n: 0, first: o }; order.push(o.award); }
+    groups[o.award].n++;
+  });
+  return order.map(function (k) { return groups[k]; })
+    .sort(function (x, y) { return (AW_MK_ORDER[x.cls] == null ? 9 : AW_MK_ORDER[x.cls]) - (AW_MK_ORDER[y.cls] == null ? 9 : AW_MK_ORDER[y.cls]); });
+}
+function awMkLabel(gp) {
+  var A = (typeof BDB_AWARDS !== 'undefined') ? BDB_AWARDS.AWARDS : {}, a = A[gp.award] || {}, o = gp.first;
+  var t;
+  if (AW_MK_SHORT[gp.award]) t = AW_MK_SHORT[gp.award] + (gp.award === 'mrun' && o.value ? ' (' + o.value + ')' : '');
+  else if (a.kindPoa) t = (a.kindPoa === 'game' ? 'Game ' : 'Series ') + (gp.n > 1 ? (a.step || '') + '+' : '+' + o.over) + ' over avg';
+  else if (a.cls === 'split') t = 'Made the ' + String(a.name || '').replace(/ converted$/, '');
+  else t = a.name || gp.award;
+  return t + (gp.n > 1 ? ' \u00d7' + gp.n : '');
+}
+function awMarkersHTML(ref, opts) {
+  var o = opts || {};
+  var skip = (o.skip || []).map(function (x) { return String(x).toLowerCase().replace(/[^a-z0-9]/g, ''); });
+  var list = awMkList(ref).filter(function (gp) {
+    var key = (AW_MK_SHORT[gp.award] || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+    return !key || skip.indexOf(key) < 0;
+  });
+  if (!list.length) return '';
+  var max = o.max || 3;
+  var chips = list.slice(0, max).map(function (gp) {
+    return '<span class="aw-mk-chip" onclick="awOpenAward(\'' + gp.award + '\');event.stopPropagation()">' + (AW_MK_ICON[gp.cls] || '🏆') + ' ' + ldEsc(awMkLabel(gp)) + '</span>';
+  }).join('') + (list.length > max ? '<span class="aw-mk-chip aw-mk-more" onclick="openAwards();event.stopPropagation()">+' + (list.length - max) + '</span>' : '');
+  if (o.inline) return chips;
+  return '<div class="aw-mk"' + (o.wrap ? ' style="' + o.wrap + '"' : '') + '>' + chips + '</div>';
 }
 
 /* v30.190 PP-1: the PinPal compare lives in pinpal.js (same-origin, loaded on first use). */
@@ -38414,7 +38975,7 @@ b.splitRateBaseline  != null ? 'Split rate '+ Math.round(b.splitRateBaseline * 1
 b.subEightRateBaseline != null ? 'Sub-8 rate '+ Math.round(b.subEightRateBaseline * 100) + '%': null,
 ].filter(Boolean).join(' | '));
 if (b.subNineRateBaseline != null) {
-baselineLines.push('First-ball counts (historical): 9-count '+ b.freshCountsBaseline.nine +
+baselineLines.push('First-ball counts (historical): single pin '+ b.freshCountsBaseline.nine +
 ' | 8-count '+ b.freshCountsBaseline.eight +
 ' | 7-or-less '+ b.freshCountsBaseline.sevenOrLess +
 ' | sub-9 rate '+ Math.round(b.subNineRateBaseline * 100) + '%');
@@ -38477,7 +39038,7 @@ deltaStr(spareRateSeries, b ? b.spareRateBaseline : null),
 ' | Splits faced: '+ ctx.splitOpp + ' (made '+ ctx.splitConv + ')',
 'First-ball counts ('+ ctx.freshNonStrike + ' non-strike fresh racks of '+
 (ctx.freshStrikes + ctx.freshNonStrike) + ' total): '+
-'9-count '+ ctx.freshCounts.nine + ' (single pin) | '+
+'single pin '+ ctx.freshCounts.nine + ' (9 down) | '+
 '8-count '+ ctx.freshCounts.eight + ' (two pins) | '+
 '7-or-less '+ ctx.freshCounts.sevenOrLess + ' (three or more)',
 'Sub-9 rate: '+ (ctx.subNineRate != null ? Math.round(ctx.subNineRate * 100) + '%': '—') +
@@ -39995,10 +40556,10 @@ _editStatus:'', _editPriority:1, _newSnap:null, _newStatus:'tbd', _editCat:'note
 };
 var _DKM_STATUS_LABELS = {ok:'🟢 Working',partial:'🟡 Partial',broken:'🔴 Broken',tbd:'⚪ TBD'};
 </script>
-<script src="devkit.js?v=v30.265"></script>
-<script src="report.js?v=v30.265"></script>
+<script src="devkit.js?v=v30.268"></script>
+<script src="report.js?v=v30.268"></script>
 <!-- v30.157 NEW-11 step 4: ball catalog manifest check + IDB cache (same-origin, like devkit.js/report.js). Optional: if missing, the app behaves exactly as before. -->
-<script src="catalog.js?v=v30.265"></script>
+<script src="catalog.js?v=v30.268"></script>
 <script>
 /* v30.162 OFF-1: service worker (sw.js, same folder) so the app opens with
    no connection, and a request that the browser keep this app's storage.
