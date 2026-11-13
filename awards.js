@@ -5,7 +5,7 @@
    (from step 3); also require()-able for the Node harness. */
 (function (root) {
 'use strict';
-var AWD_VERSION = 'v30.250';   // step 1 engine + step 3 trophy case (v30.227: filters, splits, brackets)
+var AWD_VERSION = 'v30.268';   // v30.268: awScanNow exported for the trophy markers on cards   // step 1 engine + step 3 trophy case (v30.227: filters, splits, brackets)
 
 /* USBC national brackets (2011-12 adult revision) -- default, editable in Settings (step 6). */
 var USBC_BRACKETS = [
@@ -655,6 +655,7 @@ if (typeof document !== 'undefined') {
   root.awSaveSettings = awSaveSettings; root.awResetSettings = awResetSettings; root.awSeenAll = awSeenAll; root.awMarkS = awMarkS;
   root.awOpenSettings = function () { return awOpen().then(awSettings); }; root.awBack = awBack; root.awDetail = awDetail; root.awFunDetail = awFunDetail; root.awFunOpenCh = awFunOpenCh; root.awPending = awPending;
   root.awMarkList = awMarkList; root.awMark = awMark; root.awOpenSeries = awOpenSeries;
+  root.awScanNow = scanNow;   /* v30.268: same scan (settings, entering averages) for the markers on series cards, game rows and Connect posts */
 }
 
 /* ---------------- v30.232 AWD-1 step 5: certificate image + share ----------------
