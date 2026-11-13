@@ -286,7 +286,7 @@
      (its *_VERSION line). sw.js reads this block: it keeps the app's
      files as one matching set and never opens a mix of old and new files. Every file
      is fetched as name.js?v=APP_VERSION. Update a version here when that file changes. -->
-<script type="application/json" id="bdb-files">{"devkit.js":"v30.256","report.js":"v30.156","catalog.js":"v30.243","workbench.js":"v30.223","pinpal.js":"v30.199","awards.js":"v30.268","share.js":"v30.248","connect.js":"v30.268","challenge.js":"v30.263","chplay.js":"v30.247"}</script>
+<script type="application/json" id="bdb-files">{"devkit.js":"v30.256","report.js":"v30.156","catalog.js":"v30.243","workbench.js":"v30.223","pinpal.js":"v30.199","awards.js":"v30.268","share.js":"v30.248","connect.js":"v30.269","challenge.js":"v30.263","chplay.js":"v30.247"}</script>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#0E0F11">
@@ -3825,7 +3825,7 @@ margin-bottom:10px; display:flex; justify-content:space-between; align-items:cen
    Bump both lines (and CATALOG_JS_VERSION in catalog.js when it changes).
    v30.224 OFF-2: also bump the ?v= on the three <script src> tags at the end of
    the page, and the file list in <script id="bdb-files"> when a .js file changes. */
-const APP_VERSION = 'v30.268';
+const APP_VERSION = 'v30.270';
 const APP_BUILD_DATE = '2026-11-12';
 /* catalog.js this build expects; an older file on the server shows a warning */
 const EXPECTED_CATALOG_JS = 'v30.243';
@@ -13544,6 +13544,113 @@ try { localStorage.setItem(STATS_SCOPE_KEY, JSON.stringify(sc)); } catch(e) {}
 
 var _statsBlocksExpanded = false;
 var _statsBlocksGamesPool = [];
+/* v30.270 MS-2 (James 11/12): Milestones on the Stats overview.
+   Highs / Lows toggle (Lows = games and full series under each line, plus the lowest of each).
+   The lines are blocks set from the average of the games in scope until you pick your own:
+     highs  games  floor(avg/25)*25, +25 ... up to 4, then 300      (217 -> 200 225 250 275 300)
+            series round(3*avg/25)*25, +50, +100                     (217 -> 650 700 750)
+     lows   games  floor(avg/25)*25 - 25, -25 ... 4 lines          (217 -> 175 150 125 100)
+            series round(3*avg/25)*25 - 50, -100, -150               (217 -> 600 550 500)
+   Tap a number to choose another line (counts shown for each choice); "Reset to my average" goes
+   back to the blocks. Choices are stored per mode in localStorage bowlingdb_ms_cfg. Lows count full
+   series only (3+ games), so a night cut short is not a low series. */
+const MS_CFG_KEY = 'bowlingdb_ms_cfg';
+let _msLast = null;
+function msCfg() { try { const c = JSON.parse(localStorage.getItem(MS_CFG_KEY) || 'null'); return c && typeof c === 'object' ? c : {}; } catch (e) { return {}; } }
+function msSaveCfg(c) { try { localStorage.setItem(MS_CFG_KEY, JSON.stringify(c)); } catch (e) {} }
+function msMode() { return msCfg().mode === 'lows' ? 'lows' : 'highs'; }
+function msDefaults(kind, mode, avg) {
+  const a = Math.max(100, Math.min(290, avg || 200));
+  if (kind === 'game') {
+    const b = Math.floor(a / 25) * 25, out = [];
+    if (mode === 'highs') { for (let t = b; t < 300 && out.length < 4; t += 25) out.push(t); out.push(300); return out; }
+    for (let t = b - 25; t >= 50 && out.length < 4; t -= 25) out.push(t);
+    return out;
+  }
+  const s = Math.round(3 * a / 25) * 25;
+  if (mode === 'highs') return [s, s + 50, s + 100].map(v => Math.min(v, 900)).filter((v, i, arr) => arr.indexOf(v) === i);
+  return [s - 50, s - 100, s - 150].filter(v => v > 0);
+}
+function msLines(kind, mode, avg) {
+  const c = msCfg(), own = c[mode] && Array.isArray(c[mode][kind]) && c[mode][kind].length ? c[mode][kind].slice() : null;
+  const arr = (own || msDefaults(kind, mode, avg)).filter((v, i, a) => a.indexOf(v) === i);
+  arr.sort((x, y) => mode === 'highs' ? x - y : y - x);
+  return { lines: arr, custom: !!own };
+}
+function msCount(vals, t, mode) { return mode === 'highs' ? vals.filter(v => v >= t).length : vals.filter(v => v < t).length; }
+function msSetMode(m) { const c = msCfg(); c.mode = m === 'lows' ? 'lows' : 'highs'; msSaveCfg(c); renderStats(); }
+function msOptions(kind, mode) {
+  const out = [];
+  if (kind === 'game') { for (let t = 100; t < 300; t += 10) out.push(t); if (mode === 'highs') out.push(300); }
+  else { for (let t = mode === 'highs' ? 450 : 300; t <= (mode === 'highs' ? 900 : 800); t += 25) out.push(t); }
+  return out;
+}
+function msEdit(kind, idx) {
+  if (!_msLast) return;
+  const mode = _msLast.mode, cur = _msLast[kind].lines, vals = _msLast[kind + 'Vals'];
+  const lbl = t => mode === 'highs' ? (kind === 'game' && t === 300 ? '300' : t + '+') : 'under ' + t;
+  const chips = msOptions(kind, mode).map(t => {
+    const on = t === cur[idx], used = !on && cur.indexOf(t) >= 0;
+    return `<button class="btn-pill${on ? ' btn-pill-sel' : ''}" ${used ? 'disabled style="opacity:.35"' : `onclick="msPick('${kind}',${idx},${t})"`}>${lbl(t)} <span style="opacity:.6;font-weight:500">${msCount(vals, t, mode)}</span></button>`;
+  }).join('');
+  openModal(`<div class="modal-title">${kind === 'game' ? 'Game' : 'Series'} ${mode === 'highs' ? 'milestone' : 'lowlight'}</div>
+    <div style="font-size:12px;color:var(--t3);margin-bottom:12px">Replaces <b style="color:var(--t1)">${lbl(cur[idx])}</b>. The small number is how many ${kind === 'game' ? 'games' : 'series'} in this view qualify.</div>
+    <div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px">${chips}</div>
+    ${_msLast[kind].custom ? `<button class="btn btn-ghost" style="width:100%;margin-bottom:8px" onclick="msReset('${kind}')">Reset to my average (${_msLast.avg})</button>` : ''}
+    <button class="btn btn-secondary" style="width:100%" onclick="closeModal()">Cancel</button>`);
+}
+function msPick(kind, idx, t) {
+  if (!_msLast) return;
+  const mode = _msLast.mode, arr = _msLast[kind].lines.slice();
+  arr[idx] = t;
+  const c = msCfg(); c[mode] = c[mode] || {}; c[mode][kind] = arr.filter((v, i, a) => a.indexOf(v) === i);
+  msSaveCfg(c); closeModal(); renderStats();
+}
+function msReset(kind) {
+  const c = msCfg(), mode = msMode();
+  if (c[mode]) delete c[mode][kind];
+  msSaveCfg(c); closeModal(); renderStats();
+}
+/* the card body; games = in-scope games, seriesTotals = { SeriesID: total }, seriesN = { SeriesID: games } */
+function msCardHTML(games, seriesTotals, seriesN) {
+  const mode = msMode();
+  const gVals = games.map(g => g.FinalScore).filter(v => v != null);
+  const avg = gVals.length ? Math.floor(gVals.reduce((a, b) => a + b, 0) / gVals.length) : 200;
+  const sAll = Object.keys(seriesTotals).map(k => seriesTotals[k]);
+  const sFull = Object.keys(seriesTotals).filter(k => (seriesN[k] || 0) >= 3).map(k => seriesTotals[k]);
+  const sVals = mode === 'highs' ? sAll : sFull;
+  const G = msLines('game', mode, avg), S = msLines('series', mode, avg);
+  _msLast = { mode, avg, game: G, series: S, gameVals: gVals, seriesVals: sVals };
+  const hiCols = ['var(--t2)', 'var(--teal)', 'var(--gold)', 'var(--purple)', 'var(--gold)'];
+  const loCols = ['var(--t2)', 'rgba(157,78,221,0.85)', 'rgba(232,93,76,0.85)', 'var(--red)'];
+  const tile = (kind, t, i, n, isTop) => {
+    const lbl = mode === 'highs' ? (kind === 'game' && t === 300 ? '300' : t + '+') : '<' + t;
+    const col = mode === 'highs' ? hiCols[Math.min(i + (kind === 'series' ? 1 : 0), 4)] : loCols[Math.min(i, 3)];
+    const big = mode === 'highs' && kind === 'game' && t === 300;
+    return `<div onclick="msEdit('${kind}',${i})" style="cursor:pointer;min-width:44px">
+          <div style="font-size:${big ? '26px' : '20px'};font-weight:900;color:${n > 0 ? col : 'var(--t3)'}${big && n > 0 ? ';text-shadow:0 0 12px var(--gold)' : ''}">${n}</div>
+          <div style="font-size:10px;color:var(--t3);margin-top:2px;border-bottom:1px dashed var(--border2);display:inline-block;padding-bottom:1px">${lbl}</div>
+        </div>`;
+  };
+  const lowTile = (v) => `<div style="min-width:44px"><div style="font-size:20px;font-weight:900;color:var(--t2)">${v == null ? '\u2014' : v}</div><div style="font-size:10px;color:var(--t3);margin-top:2px">low</div></div>`;
+  const seg = (m, l) => `<span onclick="msSetMode('${m}')" style="cursor:pointer;padding:3px 10px;border-radius:10px;font-size:10px;font-weight:800;letter-spacing:.5px;${mode === m ? 'background:var(--bg3);color:var(--t1)' : 'color:var(--t3)'}">${l}</span>`;
+  const sub = (G.custom || S.custom) ? 'Your own lines' : `Blocks from your ${avg} average`;
+  return `
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+        <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:0.8px;text-transform:uppercase">${mode === 'highs' ? 'Milestones' : 'Lowlights'}</div>
+        <div style="display:flex;gap:2px;border:1px solid var(--border1);border-radius:12px;padding:2px">${seg('highs', 'HIGHS')}${seg('lows', 'LOWS')}</div>
+      </div>
+      <div style="font-size:10px;color:var(--t3);margin-bottom:10px">${sub} \u00b7 tap a number to change</div>
+      <div style="font-size:10px;font-weight:700;color:var(--t3);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:6px">Series${mode === 'lows' ? ' (full series)' : ''}</div>
+      <div style="display:flex;justify-content:space-around;text-align:center;margin-bottom:12px">
+        ${S.lines.map((t, i) => tile('series', t, i, msCount(sVals, t, mode))).join('')}${mode === 'lows' ? lowTile(sVals.length ? Math.min(...sVals) : null) : ''}
+      </div>
+      <div style="font-size:10px;font-weight:700;color:var(--t3);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:6px">Games</div>
+      <div style="display:flex;justify-content:space-around;text-align:center">
+        ${G.lines.map((t, i) => tile('game', t, i, msCount(gVals, t, mode))).join('')}${mode === 'lows' ? lowTile(gVals.length ? Math.min(...gVals) : null) : ''}
+      </div>`;
+}
+
 function _statsToggleBlocks() { _statsBlocksExpanded = !_statsBlocksExpanded; renderStats(); }
 
 
@@ -15929,25 +16036,9 @@ const scoreBlocksHTML = (msGameBlocks.length || msSeriesBlocks.length) ? `
         ${_statsBlocksHTML(msGameBlocks, 'game')}
       `: ''}
     </div>`: '';
+const _msN = {}; games.forEach(g => { _msN[g.SeriesID] = (_msN[g.SeriesID] || 0) + 1; });
 const milestonesHTML = `
-    <div class="stat-card" style="margin-bottom:16px">
-      <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:0.8px;text-transform:uppercase;margin-bottom:10px">Milestones</div>
-      <div style="font-size:10px;font-weight:700;color:var(--t3);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:6px">Series</div>
-      <div style="display:flex;justify-content:space-around;text-align:center;margin-bottom:12px">
-        ${[{lbl:'675+',val:ms675,col:'var(--teal)'},{lbl:'750+',val:ms750,col:'var(--gold)'},{lbl:'800+',val:ms800,col:'var(--purple)'}].map(m=>`
-        <div>
-          <div style="font-size:20px;font-weight:900;color:${m.val>0?m.col:'var(--t3)'}">${m.val}</div>
-          <div style="font-size:10px;color:var(--t3);margin-top:2px">${m.lbl}</div>
-        </div>`).join('')}
-      </div>
-      <div style="font-size:10px;font-weight:700;color:var(--t3);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:6px">Games</div>
-      <div style="display:flex;justify-content:space-around;text-align:center">
-        ${[{lbl:'200+',val:ms200,col:'var(--t2)'},{lbl:'225+',val:ms225,col:'var(--teal)'},{lbl:'250+',val:ms250,col:'var(--gold)'},{lbl:'275+',val:ms275,col:'var(--purple)'},{lbl:'300',val:ms300,col:'var(--gold)'}].map(m=>`
-        <div>
-          <div style="font-size:${m.lbl==='300'?'26px':'20px'};font-weight:900;color:${m.val>0?m.col:'var(--t3)'}${m.lbl==='300'&&m.val>0?';text-shadow:0 0 12px var(--gold)':''}">${m.val}</div>
-          <div style="font-size:10px;color:var(--t3);margin-top:2px">${m.lbl}</div>
-        </div>`).join('')}
-      </div>
+    <div class="stat-card" style="margin-bottom:16px">${msCardHTML(games, msSeriesTotals, _msN)}
       ${scoreBlocksHTML}
       <div style="display:flex;gap:8px;margin-top:14px">
         <button class="btn btn-ghost" style="flex:1;font-size:12px;padding:8px"
@@ -40556,10 +40647,10 @@ _editStatus:'', _editPriority:1, _newSnap:null, _newStatus:'tbd', _editCat:'note
 };
 var _DKM_STATUS_LABELS = {ok:'🟢 Working',partial:'🟡 Partial',broken:'🔴 Broken',tbd:'⚪ TBD'};
 </script>
-<script src="devkit.js?v=v30.268"></script>
-<script src="report.js?v=v30.268"></script>
+<script src="devkit.js?v=v30.270"></script>
+<script src="report.js?v=v30.270"></script>
 <!-- v30.157 NEW-11 step 4: ball catalog manifest check + IDB cache (same-origin, like devkit.js/report.js). Optional: if missing, the app behaves exactly as before. -->
-<script src="catalog.js?v=v30.268"></script>
+<script src="catalog.js?v=v30.270"></script>
 <script>
 /* v30.162 OFF-1: service worker (sw.js, same folder) so the app opens with
    no connection, and a request that the browser keep this app's storage.
